@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.AppServer.Contracts.Sdrns</RootNamespace>
+    <AssemblyName>Atdi.AppServer.Contracts.Sdrns</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Enums\MeasTaskExecutionMode.cs" />
+    <Compile Include="Enums\MeasTaskResultType.cs" />
+    <Compile Include="Enums\MeasTaskType.cs" />
+    <Compile Include="Enums\SpectrumOccupationType.cs" />
+    <Compile Include="Enums\SpectrumScanType.cs" />
+    <Compile Include="Enums\DetectingType.cs" />
+    <Compile Include="Enums\FrequencyMode.cs" />
+    <Compile Include="Enums\MeasurementMode.cs" />
+    <Compile Include="Enums\MeasurementType.cs" />
+    <Compile Include="Enums\AntennaGainType.cs" />
+    <Compile Include="Enums\AntennaPolarization.cs" />
+    <Compile Include="Enums\AntennaDirectional.cs" />
+    <Compile Include="ISdrnsController.cs" />
+    <Compile Include="Models\Devices\BB60C\FSemples.cs" />
+    <Compile Include="Models\Devices\BB60C\MeasSdrLoc.cs" />
+    <Compile Include="Models\Devices\BB60C\MeasSdrParam.cs" />
+    <Compile Include="Models\Devices\BB60C\MeasSdrResults.cs" />
+    <Compile Include="Models\Devices\BB60C\MeasSdrSOParam.cs" />
+    <Compile Include="Models\Devices\BB60C\MeasSdrTask.cs" />
+    <Compile Include="Models\Measurements\MeasurementResultsIdentifier.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementOnlineResult.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />
+    <Compile Include="Models\Sensors\AntennaPattern.cs" />
+    <Compile Include="Models\Sensors\SensorPoligonPoint.cs" />
+    <Compile Include="Models\StationDataForMeasurements\FrequencyForSectorFormICSM.cs" />
+    <Compile Include="Models\StationDataForMeasurements\MaskElements.cs" />
+    <Compile Include="Models\StationDataForMeasurements\OwnerData.cs" />
+    <Compile Include="Models\StationDataForMeasurements\PermissionForAssignment.cs" />
+    <Compile Include="Models\StationDataForMeasurements\SectorStationForMeas.cs" />
+    <Compile Include="Models\StationDataForMeasurements\SiteStationForMeas.cs" />
+    <Compile Include="Models\StationDataForMeasurements\StationDataForMeasurements.cs" />
+    <Compile Include="Models\Tasks\MeasDtParam.cs" />
+    <Compile Include="Models\Tasks\MeasFreq.cs" />
+    <Compile Include="Models\Tasks\MeasFreqParam.cs" />
+    <Compile Include="Models\Tasks\MeasLocParam.cs" />
+    <Compile Include="Models\Tasks\MeasOther.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\AmplitudeModulationMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\BandwidthMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\FrequencyModulationMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\FrequencyOffsetMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\FrequencyMeasurement.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\IntermodulationMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\LocationMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\LocationSensorMeasurement.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\MVinfoMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\PhaseModulationMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\SpectrumOccupationMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\StationMeasurements.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\SubAudioToneMeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\TextrMeasurementResult.cs" />
+    <Compile Include="Models\Tasks\MeasStation.cs" />
+    <Compile Include="Models\Tasks\MeasLocParamIdentifier.cs" />
+    <Compile Include="Models\Tasks\MeasSubTask.cs" />
+    <Compile Include="Models\Tasks\MeasSubTaskStation.cs" />
+    <Compile Include="Models\Tasks\MeasTask.cs" />
+    <Compile Include="Models\Tasks\MeasStationIdentifier.cs" />
+    <Compile Include="Models\Tasks\MeasTaskIdentifier.cs" />
+    <Compile Include="Models\Tasks\MeasTimeParamList.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\MeasurementResult.cs" />
+    <Compile Include="Models\Measurements\MeasurementResults\MeasurementResultIdentifier.cs" />
+    <Compile Include="Models\Sensors\Sensor.cs" />
+    <Compile Include="Models\Sensors\SensorAntenna.cs" />
+    <Compile Include="Models\Sensors\SensorEquip.cs" />
+    <Compile Include="Models\Sensors\SensorEquipSensitivity.cs" />
+    <Compile Include="Models\Sensors\SensorIdentifier.cs" />
+    <Compile Include="Models\Sensors\SensorLocation.cs" />
+    <Compile Include="Models\Measurements\ShortMeasurementResults.cs" />
+    <Compile Include="Models\Tasks\ShortMeasTask.cs" />
+    <Compile Include="Models\Sensors\ShortSensor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServicesSpecification.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
+      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
+      <Name>Atdi.AppServer.Contracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
