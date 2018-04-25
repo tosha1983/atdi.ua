@@ -1,0 +1,25 @@
+﻿USE [SENSOR]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].XBS_AntennaPattern(
+	[ID] [numeric](9, 0) IDENTITY(1,1) NOT NULL,
+	[SensorAntenna_ID] [numeric](9, 0) NULL,
+	[Freq] [numeric](22, 8) NULL,
+	[Gain] [numeric](22, 8) NULL,
+	[DiagA] [nvarchar](1000) NULL,
+	[DiagH] [nvarchar](1000) NULL,
+	[DiagV] [nvarchar](1000) NULL
+
+ CONSTRAINT [PK_XBS_AntennaPattern] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO

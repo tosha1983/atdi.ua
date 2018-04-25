@@ -1,0 +1,46 @@
+﻿USE [SENSOR]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].XBS_SensorEquip(
+	[ID] [numeric](9, 0) IDENTITY(1,1) NOT NULL,
+	[SensorID] [numeric](9, 0) NULL,
+	[Code] [nvarchar](50) NULL,
+	[Manufacturer] [nvarchar](50) NULL,
+	[Name] [nvarchar](50) NULL,
+	[Family] [nvarchar](50) NULL,
+	[TechId] [nvarchar](50) NULL,
+	[Version] [nvarchar](50) NULL,
+	[LowerFreq] [numeric](22, 8) NULL,
+	[UpperFreq] [numeric](22, 8) NULL,	
+	[RBWMin] [numeric](22, 8) NULL,	
+	[RBWMax] [numeric](22, 8) NULL,	
+	[VBWMin] [numeric](22, 8) NULL,	
+	[VBWMax] [numeric](22, 8) NULL,	
+	[Mobility] [numeric](1, 0) NULL,
+	[FFTPointMax] [numeric](22, 8) NULL,	
+	[RefLeveldBm] [numeric](22, 8) NULL,	
+	[OperationMode] [nvarchar](50) NULL,
+	[Type] [nvarchar](50) NULL,
+	[EquipClass] [nvarchar](50) NULL,
+	[TuningStep] [numeric](22, 8) NULL,
+	[UseType] [nvarchar](50) NULL,
+	[Category] [nvarchar](50) NULL,
+	[Remark] [nvarchar](250) NULL,
+	[CustTxt1] [nvarchar](250) NULL,
+	[CustData1] [nvarchar](250) NULL,
+	[CustNbr1] [numeric](22, 8) NULL
+
+ CONSTRAINT [PK_XBS_SensorEquip] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
