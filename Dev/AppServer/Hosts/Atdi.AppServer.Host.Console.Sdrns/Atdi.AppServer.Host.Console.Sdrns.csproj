@@ -69,55 +69,55 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Atdi.AppServer.AppService.Sdrns\Atdi.AppServer.AppService.SdrnsController.csproj">
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
       <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
       <Name>Atdi.AppServer.AppService.SdrnsController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
       <Project>{2556f633-8292-4e00-a9d0-8abb4e09d1e3}</Project>
       <Name>Atdi.AppServer.AppServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
       <Name>Atdi.AppServer.Contracts.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
       <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
       <Name>Atdi.AppServer.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.CoreServices.DataLayer.MsSql\Atdi.AppServer.CoreServices.DataLayer.MsSql.csproj">
+    <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer.MsSql\Atdi.AppServer.CoreServices.DataLayer.MsSql.csproj">
       <Project>{238ef57c-17ba-464f-a818-717b872712dd}</Project>
       <Name>Atdi.AppServer.CoreServices.DataLayer.MsSql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.CoreServices.DataLayer.Oracle\Atdi.AppServer.CoreServices.DataLayer.Oracle.csproj">
+    <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer.Oracle\Atdi.AppServer.CoreServices.DataLayer.Oracle.csproj">
       <Project>{14e3c8db-bfff-4390-a1f1-06540ffadbb6}</Project>
       <Name>Atdi.AppServer.CoreServices.DataLayer.Oracle</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.CoreServices.DataLayer\Atdi.AppServer.CoreServices.DataLayer.csproj">
+    <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer\Atdi.AppServer.CoreServices.DataLayer.csproj">
       <Project>{999a1a60-ea67-49c6-9fee-ab4e33c5bd5d}</Project>
       <Name>Atdi.AppServer.CoreServices.DataLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.CoreServices\Atdi.AppServer.CoreServices.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.CoreServices\Atdi.AppServer.CoreServices.csproj">
       <Project>{c6605af9-033d-40ca-b656-d2e38a7d181f}</Project>
       <Name>Atdi.AppServer.CoreServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
       <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
       <Name>Atdi.AppServer.Model.SdrnsController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.RunServices\Atdi.AppServer.RunServices.csproj">
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.RunServices\Atdi.AppServer.RunServices.csproj">
       <Project>{81c83541-efb3-4802-a577-1d98e8164292}</Project>
       <Name>Atdi.AppServer.RunServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.Services.Sdrns\Atdi.AppServer.Services.Sdrns.csproj">
+    <ProjectReference Include="..\..\WcfServices\Atdi.AppServer.Services.Sdrns\Atdi.AppServer.Services.Sdrns.csproj">
       <Project>{2c0d02fc-9d02-4a5b-af1b-8ad2e9a37403}</Project>
       <Name>Atdi.AppServer.Services.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.Services\Atdi.AppServer.Services.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.Services\Atdi.AppServer.Services.csproj">
       <Project>{01edf962-3c20-4db5-b5b4-e855138b6bbc}</Project>
       <Name>Atdi.AppServer.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer\Atdi.AppServer.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
       <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
       <Name>Atdi.AppServer</Name>
     </ProjectReference>
