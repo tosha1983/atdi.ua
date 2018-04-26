@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8943C072-6F62-4601-BCDA-1295DDE93C3A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XICSM.ICSControlClient</RootNamespace>
+    <AssemblyName>XICSM_ICSControlClient</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GMap.NET.Core, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsPresentation, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
+    </Reference>
+    <Reference Include="NetPlugins">
+      <HintPath>..\..\..\..\ATDI\ICS Manager\NetPlugins.dll</HintPath>
+    </Reference>
+    <Reference Include="OrmCs">
+      <HintPath>..\..\..\..\ATDI\ICS Manager\OrmCs.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Environment\IRepositoryCreatedEntity.cs" />
+    <Compile Include="Environment\IRepositoryUpdatedEntity.cs" />
+    <Compile Include="Environment\IRepositoryReadedEntity.cs" />
+    <Compile Include="Environment\IRepositoryEntity.cs" />
+    <Compile Include="Environment\Logger.cs" />
+    <Compile Include="Environment\Repository.cs" />
+    <Compile Include="Environment\RepositoryEntityReader.cs" />
+    <Compile Include="Environment\Utitlity.cs" />
+    <Compile Include="Environment\WcfServiceClientBase.cs" />
+    <Compile Include="Environment\Extentions.cs" />
+    <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
+    <Compile Include="Environment\Wpf\WpfCommand.cs" />
+    <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
+    <Compile Include="Environment\Wpf\WpfExtensions.cs" />
+    <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\Allotments\AllotmentsContextMenuBuilder.cs" />
+    <Compile Include="Handlers\Allotments\Commands\StartMeasurementsSOCommand.cs" />
+    <Compile Include="Handlers\Tour\Commands\SynchroInspectionsCommand.cs" />
+    <Compile Include="Metadata\FreqPlanChan.cs" />
+    <Compile Include="Metadata\AllStations.cs" />
+    <Compile Include="Metadata\Allotments.cs" />
+    <Compile Include="Models\Common\Location.cs" />
+    <Compile Include="Models\Common\LocationPolygon.cs" />
+    <Compile Include="Models\Common\LocationPolygonRect.cs" />
+    <Compile Include="Models\DTO\Station.cs" />
+    <Compile Include="Metadata\Employee.cs" />
+    <Compile Include="Metadata\MobStationFrequencies.cs" />
+    <Compile Include="Metadata\MobStations.cs" />
+    <Compile Include="Models\Processes\BuildInspections\Inspection.cs" />
+    <Compile Include="Models\Processes\BuildInspections\AllStation.cs" />
+    <Compile Include="Models\Processes\BuildInspections\NfraApplication.cs" />
+    <Compile Include="Models\Processes\BuildInspections\Tour.cs" />
+    <Compile Include="Metadata\Inspection.cs" />
+    <Compile Include="Models\Processes\StartMeasurementsSO\Allotment.cs" />
+    <Compile Include="Models\Processes\StartMeasurementsSO\FreqPlanChan.cs" />
+    <Compile Include="Models\Processes\CreateMeasTask\Inspection.cs" />
+    <Compile Include="Models\Processes\CreateMeasTask\MobStation.cs" />
+    <Compile Include="Models\Processes\CreateMeasTask\MobStationFrequencies.cs" />
+    <Compile Include="Models\Processes\CreateMeasTask\NfraApplication.cs" />
+    <Compile Include="Models\Processes\CreateMeasTask\Tour.cs" />
+    <Compile Include="Metadata\NfraApplication.cs" />
+    <Compile Include="Metadata\PluginMetadata.cs" />
+    <Compile Include="Metadata\SysLogs.cs" />
+    <Compile Include="Metadata\Tours.cs" />
+    <Compile Include="Models\Processes\SynchroInspections\Inspection.cs" />
+    <Compile Include="Models\Processes\SynchroInspections\Tour.cs" />
+    <Compile Include="Models\Views\LevelMeasurementsCarViewModel.cs" />
+    <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
+    <Compile Include="Models\Views\MeasTaskViewModel.cs" />
+    <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
+    <Compile Include="Models\Views\ResultsMeasurementsStationViewModel.cs" />
+    <Compile Include="Models\Views\SensorViewModel.cs" />
+    <Compile Include="Models\Views\ShortMeasTaskViewModel.cs" />
+    <Compile Include="Models\Views\ShortMeasurementResultsViewModel.cs" />
+    <Compile Include="Models\Views\ShortSensorViewModel.cs" />
+    <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\Mappers.cs" />
+    <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\ShortMeasTaskDataAdatper.cs" />
+    <Compile Include="Models\WcfDataApadters\ShortMeasurementResultsDataAdatper.cs" />
+    <Compile Include="Models\WcfDataApadters\ShortSensorDataAdatper.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Handlers\PluginCommands.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Handlers\Tour\Commands\UpdateInspectionsCommand.cs" />
+    <Compile Include="Handlers\Tour\Commands\CreateMeasTaskCommand.cs" />
+    <Compile Include="Handlers\Tour\Commands\BuildInspectionsCommand.cs" />
+    <Compile Include="Handlers\Tour\ToursContextMenuBuilder.cs" />
+    <Compile Include="ViewModels\ControlClientViewModel.cs" />
+    <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
+    <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
+    <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
+    <Compile Include="WpfControls\Charts\ChartLineStyle.cs" />
+    <Compile Include="WpfControls\Charts\ChartOption.cs" />
+    <Compile Include="WpfControls\Charts\ChartStyle.cs" />
+    <Compile Include="WpfControls\Charts\LineChart.xaml.cs">
+      <DependentUpon>LineChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WpfControls\MainFormWpfControl.xaml.cs">
+      <DependentUpon>MainFormWpfControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WpfControls\Maps\Map.cs" />
+    <Compile Include="WpfControls\Maps\MapData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Contracts\Atdi.AppServer.Contracts.dll" />
+    <Content Include="Contracts\Atdi.AppServer.Contracts.Sdrns.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="WpfControls\Charts\LineChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WpfControls\MainFormWpfControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
+      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
+      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
+      <Name>Atdi.AppServer.Contracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

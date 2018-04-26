@@ -1,0 +1,303 @@
+﻿<UserControl x:Class="XICSM.ICSControlClient.WpfControls.MainFormWpfControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts"
+             xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps"
+             mc:Ignorable="d" 
+             d:DesignHeight="936.1" d:DesignWidth="710">
+    <UserControl.Resources>
+
+        <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+        </Style>
+
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True" MinHeight="30">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Refersh Meas Tasks" Command="{Binding RefreshShortTasksCommand}"/>
+
+            <MenuItem Header="Run Meas Task" Command="{Binding RunMeasTaskCommand}"/>
+            <MenuItem Header="Stop Meas Task" Command="{Binding StopMeasTaskCommand}"/>
+            <MenuItem Header="Delete Meas Task" Command="{Binding DeleteMeasTaskCommand}"/>
+
+            <MenuItem Header="Refersh Sensors" Command="{Binding RefreshShortSensorsCommand}"/>
+            <MenuItem Header="Show/Hide Meas Task Detail" Command="{Binding ShowHideMeasTaskDetailCommand}"/>
+            <MenuItem Header="Show/Hide Meas Results Detail" Command="{Binding ShowHideMeasResultsDetailCommand}"/>
+        </Menu>
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <GroupBox  Header="  Meas Tasks  " Margin="5, 5, 0, 0" Grid.Column="0" Grid.Row="0" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="True" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}">
+                        <DataGrid.Style>
+                            <Style TargetType="DataGrid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MeasTaskDetailVisibility}" Value="Hidden">
+                                        <Setter Property="Grid.ColumnSpan" Value="3"/>
+                                        <Setter Property="Grid.RowSpan" Value="3"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding MeasTaskDetailVisibility}" Value="Visible">
+                                        <Setter Property="Grid.Column" Value="0"/>
+                                        <Setter Property="Grid.Row" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Style>
+                    </DataGrid>
+
+                    <GridSplitter Visibility="{Binding MeasTaskDetailVisibility}" Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+
+                    </GridSplitter>
+
+                    <GroupBox Visibility="{Binding MeasTaskDetailVisibility}" Header=" Parameters "  Grid.Column="2" Grid.Row="0">
+                        <ScrollViewer>
+                            <Grid DataContext="{Binding CurrentMeasTask}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Column="0" Grid.Row="0" Content = "Task ID"  />
+                                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Id}"  IsReadOnly="True"/>
+
+                                <Label Grid.Column="0" Grid.Row="1" Content = "Order ID"  />
+                                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=OrderId}"  IsReadOnly="True" />
+
+                                <Label Grid.Column="0" Grid.Row="2" Content = "Status"  />
+                                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=Status}"  IsReadOnly="True" />
+
+                                <Expander Grid.ColumnSpan="2" Grid.Row="3" Header="Meas Dt Parameter">
+                                    <StackPanel>
+                                        <Label Content = "Measurements Type"  />
+                                        <TextBox Text="{Binding Path=MeasDtParamTypeMeasurements}"  IsReadOnly="True" />
+
+                                        <Label Content = "Detect Type"  />
+                                        <TextBox Text="{Binding Path=MeasDtParamDetectType}"  IsReadOnly="True" />
+                                    </StackPanel>
+                                </Expander>
+
+                                <Expander Grid.ColumnSpan="2" Grid.Row="4" Header="Meas Freq Parameter">
+                                    <StackPanel>
+                                        <Label Content = "Mode"  />
+                                        <TextBox Text="{Binding Path=MeasFreqParamMode}"  IsReadOnly="True" />
+
+                                        <Label Content = "RgL"  />
+                                        <TextBox Text="{Binding Path=MeasFreqParamRgL}"  IsReadOnly="True" />
+
+                                        <Label Content = "RgU"  />
+                                        <TextBox Text="{Binding Path=MeasFreqParamRgU}"  IsReadOnly="True" />
+
+                                        <Label Content = "Step"  />
+                                        <TextBox Text="{Binding Path=MeasFreqParamStep}"  IsReadOnly="True" />
+                                    </StackPanel>
+                                </Expander>
+
+                            </Grid>
+                        </ScrollViewer>
+                    </GroupBox>
+
+                    <GridSplitter Visibility="{Binding MeasTaskDetailVisibility}" Grid.ColumnSpan="3" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    </GridSplitter>
+
+                    <GroupBox Visibility="{Binding MeasTaskDetailVisibility}" Header=" Stations "  Grid.ColumnSpan="3" Grid.Row="2">
+                        <DataGrid IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasTaskDetailStations}" SelectedItem="{Binding CurrentMeasTaskStation}" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Station ID" Binding="{Binding Path=StationId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Owner ID" Binding="{Binding Path=OwnerId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Owner Name" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Owner Code" Binding="{Binding Path=OwnerCode}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Site Lat" Binding="{Binding Path=SiteLat}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Site Lon" Binding="{Binding Path=SiteLon}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
+
+            </GroupBox>
+
+            <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
+
+            <GroupBox  Header="  Results  " Margin="5, 0, 0, 5"  Grid.Column="0" Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Column="0" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MeasResultsDetailVisibility}" Value="Hidden">
+                                        <Setter Property="Grid.ColumnSpan" Value="3"/>
+                                        <Setter Property="Grid.RowSpan" Value="1"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding MeasResultsDetailVisibility}" Value="Visible">
+                                        <Setter Property="Grid.Column" Value="0"/>
+                                        <Setter Property="Grid.Row" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="True" ItemsSource="{Binding ShortMeasResults}" SelectedItem="{Binding CurrentShortMeasurementResults}" >
+                            <DataGrid.Style>
+                                <Style TargetType="DataGrid">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MeasResultsDetailVisibility}" Value="Hidden">
+                                            <Setter Property="Grid.ColumnSpan" Value="1"/>
+                                            <Setter Property="Grid.RowSpan" Value="3"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding MeasResultsDetailVisibility}" Value="Visible">
+                                            <Setter Property="Grid.Column" Value="0"/>
+                                            <Setter Property="Grid.Row" Value="0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Style>
+                        </DataGrid>
+
+                        <GridSplitter Visibility="{Binding MeasResultsDetailVisibility}" Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        </GridSplitter>
+
+                        <GroupBox Visibility="{Binding MeasResultsDetailVisibility}" Header=" Results of Stations "  Grid.Column="0" Grid.Row="2">
+                            <DataGrid IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="True" ItemsSource="{Binding ResultsMeasurementsStations}"  SelectedItem="{Binding CurrentResultsMeasurementsStation}">
+
+                            </DataGrid>
+                        </GroupBox>
+                    </Grid>
+
+                    <GridSplitter Visibility="{Binding MeasResultsDetailVisibility}" Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                    </GridSplitter>
+
+                    <Grid Grid.Column="3" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Visibility="{Binding MeasResultsDetailVisibility}" Header=" Results of General "  Grid.Column="0" Grid.Row="0">
+                            <ScrollViewer>
+                                <Grid DataContext="{Binding CurrentMeasurementResults}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Label Grid.Column="0" Grid.Row="0" Content = "SDR Results ID"  />
+                                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasSdrResultsId}"  IsReadOnly="True"/>
+
+                                    <Label Grid.Column="0" Grid.Row="1" Content = "Task ID"  />
+                                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTaskId}"  IsReadOnly="True" />
+
+                                    <Label Grid.Column="0" Grid.Row="2" Content = "Sub Task ID"  />
+                                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=SubMeasTaskId}"  IsReadOnly="True" />
+
+                                    <Label Grid.Column="0" Grid.Row="3" Content = "Station ID"  />
+                                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=SubMeasTaskStationId}"  IsReadOnly="True" />
+
+                                </Grid>
+                            </ScrollViewer>
+                        </GroupBox>
+
+                        <GridSplitter Visibility="{Binding MeasResultsDetailVisibility}" Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        </GridSplitter>
+
+                        <GroupBox Visibility="{Binding MeasResultsDetailVisibility}" Header=" Graphic "  Grid.Column="0" Grid.Row="2">
+                            <cs:LineChart  Option="{Binding CurrentChartOption}">
+
+                            </cs:LineChart>
+                        </GroupBox>
+                    </Grid>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>
+
+            <GroupBox  Header="  Sensors  "  Margin="0, 5, 5, 5" Grid.Column="2" Grid.RowSpan="3" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="True" ItemsSource="{Binding ShortSensors}" SelectedItem="{Binding CurrentShortSensor}" ></DataGrid>
+                    <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
+                    <maps:Map Grid.Column="0" Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
+</UserControl>
