@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.AppService.SdrnsController", "AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj", "{E3444180-04B4-4338-9C9B-D8CAACCC56B1}"
 EndProject
@@ -70,6 +70,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Host.Console.Sdrns", "AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\Atdi.AppServer.Host.Console.Sdrns.csproj", "{3E4233B7-1F1C-4BD1-B5EF-62D75A509052}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Host.WinSvc", "AppServer\Hosts\Atdi.AppServer.Host.WinSvc\Atdi.AppServer.Host.WinSvc.csproj", "{12FBC61C-47B6-44E4-A033-2978CBE12CE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 ICSM Plugins", "03 ICSM Plugins", "{9A3B0C37-5E19-4694-85F2-62FB877039D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICS Control Client", "IcsmPlugins\ICS Control Client\ICS Control Client.csproj", "{8943C072-6F62-4601-BCDA-1295DDE93C3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,6 +173,10 @@ Global
 		{12FBC61C-47B6-44E4-A033-2978CBE12CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12FBC61C-47B6-44E4-A033-2978CBE12CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12FBC61C-47B6-44E4-A033-2978CBE12CE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +213,7 @@ Global
 		{9219E658-24DC-4F38-A249-F4026CCBA82B} = {7AC48106-B512-4784-A8B0-C989D9D3D525}
 		{3E4233B7-1F1C-4BD1-B5EF-62D75A509052} = {7AC48106-B512-4784-A8B0-C989D9D3D525}
 		{12FBC61C-47B6-44E4-A033-2978CBE12CE2} = {7AC48106-B512-4784-A8B0-C989D9D3D525}
+		{8943C072-6F62-4601-BCDA-1295DDE93C3A} = {9A3B0C37-5E19-4694-85F2-62FB877039D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D40073F-3D0F-47FC-B9C7-D3E192D6D6DE}

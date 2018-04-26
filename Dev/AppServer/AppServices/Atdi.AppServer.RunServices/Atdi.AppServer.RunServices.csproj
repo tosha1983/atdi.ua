@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
       <Name>Atdi.AppServer.Contracts.Sdrns</Name>
@@ -77,10 +81,6 @@
     <ProjectReference Include="..\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
       <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
       <Name>Atdi.AppServer.AppService.SdrnsController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
