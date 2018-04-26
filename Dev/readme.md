@@ -1,1 +1,1 @@
-Main folder of Projetcs
+Main folder of Projects
