@@ -187,6 +187,9 @@
       <Name>Atdi.AppServer.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Xaml\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager"</PostBuildEvent>
