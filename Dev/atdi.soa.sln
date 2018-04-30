@@ -75,6 +75,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 ICSM Plugins", "03 ICSM 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICS Control Client", "IcsmPlugins\ICS Control Client\ICS Control Client.csproj", "{8943C072-6F62-4601-BCDA-1295DDE93C3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Platform", "Platform\Atdi.Platform\Atdi.Platform.csproj", "{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,6 +179,10 @@ Global
 		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8943C072-6F62-4601-BCDA-1295DDE93C3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -214,6 +220,7 @@ Global
 		{3E4233B7-1F1C-4BD1-B5EF-62D75A509052} = {7AC48106-B512-4784-A8B0-C989D9D3D525}
 		{12FBC61C-47B6-44E4-A033-2978CBE12CE2} = {7AC48106-B512-4784-A8B0-C989D9D3D525}
 		{8943C072-6F62-4601-BCDA-1295DDE93C3A} = {9A3B0C37-5E19-4694-85F2-62FB877039D4}
+		{2C2B4FDF-FF87-49B5-8080-DA8A5715710A} = {7AF2EEE1-1C56-4B92-9BF6-46B625F1AE1E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D40073F-3D0F-47FC-B9C7-D3E192D6D6DE}
