@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="LisMaps.ocx"/>
+    <OBJFILES value="LisMaps.obj LisMap_TLB.obj LisMaps_ATL.obj LisMapImpl.obj BaseMap.obj 
+      CustomMap.obj uAnalyzer.obj uDlgMapConf.obj uParams.obj uProfileView.obj 
+      uReliefFrm.obj CoordConv.obj 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\MSXML_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\MapXLib_OCX.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\MapXLib_TLB.obj&quot; &quot;C:\Program Files\Borland\CBuilder6\Imports\MSXML_OCX.obj&quot;"/>
+    <RESFILES value="LisMaps.res LisMap.tlb"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) LisMapImpl.dfm BaseMap.dfm CustomMap.dfm uDlgMapConf.dfm 
+      uProfileView.dfm uReliefFrm.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="vclnp.lib dacvcl60.lib odac60.lib dac60.lib oraprov60.lib NumEdit.lib 
+      bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib 
+      nmfast.lib dbexpress.lib inetdbxpress.lib inetdbbde.lib bcbsmp.lib 
+      dsnapcon.lib dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib 
+      teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib 
+      bdertl.lib adortl.lib vcldb.lib rtl.lib vcl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib 
+      cds.lib bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
+      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
+      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
+      dbxcds.lib indy.lib bcb2kaxserver.lib NumEdit.lib oraprov60.lib dac60.lib 
+      odac60.lib dacvcl60.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi adortl.bpi vcldb.bpi vclx.bpi bdertl.bpi 
+      vcldbx.bpi ibxpress.bpi dsnap.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi 
+      teedb.bpi tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi 
+      dsnapcrba.bpi dsnapcon.bpi bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi 
+      inetdbbde.bpi inetdbxpress.bpi inetdb.bpi nmfast.bpi webdsnap.bpi 
+      bcbie.bpi websnap.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi dbxcds.bpi 
+      indy.bpi bcb2kaxserver.bpi msxml20.bpi"/>
+    <PATHCPP value=".;&quot;C:\Program Files\Borland\CBuilder6\Imports&quot;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT;_ATL_APARTMENT_THREADED;USING_ATLVCL;_ATL_NO_SECURITY;INC_ATL_HEADERS"/>
+    <MAINSOURCE value="LisMaps.cpp"/>
+    <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder6\Imports&quot;;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;D:\Projects\maps\maptest7;$(BCB)\include;$(BCB)\include\vcl;&quot;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Include&quot;;&quot;C:\Program Files\Borland\CBuilder6\Odac\Include&quot;;$(BCB)\include\atl"/>
+    <LIBPATH value="&quot;C:\Program Files\Borland\CBuilder6\Imports&quot;;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;D:\Projects\maps\maptest7;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;&quot;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Lib&quot;;&quot;C:\Program Files\Borland\CBuilder6\Odac\Lib&quot;"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I&quot;C:\Program Files\Borland\CBuilder6\Imports&quot; 
+      -I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; 
+      -ID:\Projects\maps\maptest7 -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I&quot;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Include&quot; 
+      -I&quot;C:\Program Files\Borland\CBuilder6\Odac\Include&quot; -I$(BCB)\include\atl 
+      -boa"/>
+    <CFLAG1 value="-WD -Od -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM"/>
+    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x -Gn -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="LisMaps.res" FORMNAME="" UNITNAME="LisMaps.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LisMaps.cpp" FORMNAME="" UNITNAME="LisMaps" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LisMap.tlb" FORMNAME="" UNITNAME="LisMap.tlb" CONTAINERID="TypeLibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LisMap_TLB.cpp" FORMNAME="" UNITNAME="LisMap_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LisMaps_ATL.cpp" FORMNAME="" UNITNAME="LisMaps_ATL" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LisMapImpl.cpp" FORMNAME="LisMapX" UNITNAME="LisMapImpl" COCLASSES="LisMapX" CONTAINERID="CCompiler" DESIGNCLASS="TActiveForm" LOCALCOMMAND=""/>
+      <FILE FILENAME="BaseMap.cpp" FORMNAME="BaseMapFrame" UNITNAME="BaseMap" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="CustomMap.cpp" FORMNAME="CustomMapFrame" UNITNAME="CustomMap" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="uAnalyzer.cpp" FORMNAME="" UNITNAME="uAnalyzer.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDlgMapConf.cpp" FORMNAME="dlgMapConf" UNITNAME="uDlgMapConf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uParams.cpp" FORMNAME="" UNITNAME="uParams.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uProfileView.cpp" FORMNAME="fmProfileView" UNITNAME="uProfileView" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="uReliefFrm.cpp" FORMNAME="frmRelief" UNITNAME="uReliefFrm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CoordConv.pas" FORMNAME="" UNITNAME="CoordConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\MSXML_TLB.cpp" FORMNAME="" UNITNAME="MSXML_TLB.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\MapXLib_OCX.cpp" FORMNAME="" UNITNAME="MapXLib_OCX.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\MapXLib_TLB.cpp" FORMNAME="" UNITNAME="MapXLib_TLB.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\MSXML_OCX.cpp" FORMNAME="" UNITNAME="MSXML_OCX.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=0
+MinorVer=1
+Release=1
+Build=1
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1049
+CodePage=1251
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=0.1.1.1
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[Deployment]
+DeployDir=
+DeployURL=
+HTMLDir=
+CABCompress=0
+CodeSign=0
+IncludeVerInfo=1
+AutoIncRelease=0
+DeployPackages=1
+DeployFiles=0
+CompanyURL=
+Description=
+CredFile=
+PrivKey=
+CryptoType=0
+Timestamping=0
+TimestampServer=
+
+[HistoryLists\hlIncludePath]
+Count=4
+Item0=$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Include;C:\Program Files\Borland\CBuilder6\Odac\Include;$(BCB)\include\atl
+Item1=$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Include
+Item2=$(BCB)\include;$(BCB)\include\vcl
+Item3=..\..\..;C:\Program Files\Borland\CBuilder6\Projects;D:\Projects\KgsMap;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\Borland\CBuilder6\Odac\Include
+
+[HistoryLists\hlLibraryPath]
+Count=4
+Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Lib;C:\Program Files\Borland\CBuilder6\Odac\Lib
+Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\CoreLab\VirtualTable for CBuilder 6\Lib
+Item2=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item3=..\..\..;C:\Program Files\Borland\CBuilder6\Projects;D:\Projects\KgsMap;$(BCB)\Projects\Lib;..\..\..\AfalinaSoft\XL Report 4\b6units;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\Borland\CBuilder6\Odac\Lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=E:\Sergey\Project\СистемаIII\Maps\LisMapX_test\bin\Release\WindowsFormsApplication2.exe
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>
