@@ -1,0 +1,387 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="lisbc.exe"/>
+    <OBJFILES value="LISBC.obj uMainForm.obj uMainDm.obj uConnect.obj uEditBases.obj uAbout.obj 
+      uFrmTxBase.obj uFrmTxBaseAir.obj uFrmTxBaseAirAnalog.obj 
+      uFrmTxBaseAirDigital.obj uFrmTxLfMf.obj uFrmTxVHF.obj uFrmTxTVA.obj 
+      uFrmTxDAB.obj uFrmTxDVB.obj uFrmTxCTV.obj uFrmTxFxm.obj 
+      uFrmDocumentsSettings.obj uCalcParamsDlg.obj uBaseObjForm.obj TxBroker.obj 
+      FormProvider.obj uAnalyzer.obj uPlanning.obj uSelection.obj 
+      uNewTxWizard.obj uTable36.obj uExplorer.obj uNewSelection.obj 
+      uBaseList.obj uBaseListTree.obj uSelectTxTree.obj uSectorDlg.obj 
+      uOffsetRangeDlg.obj uUserActivityLog.obj uWhere.obj uSearch.obj 
+      uLayoutMngr.obj uMessageLog.obj uListFrequencyGrid.obj uFormOwner.obj 
+      uDuelResult.obj uDiagramPanel.obj DlgSelectTypeDoc.obj uProfileView.obj 
+      uReliefFrm.obj SelectColumnsForm.obj uExportDlg.obj Transliterator.obj 
+      LISBC_TLB.obj LISBC_ATL.obj CoCalcProgressImpl.obj CoStorageImpl.obj 
+      uCoordinationPoint.obj CoPWRCallbackImpl.obj uContourForm.obj 
+      uFrmPoint.obj uEnterCoordDlg.obj uImportDigLayer.obj BcDrawer.obj 
+      uItuImport.obj uItuExport.obj uParams.obj uXmlDoc.obj uAllotmentForm.obj 
+      uDlgList.obj uDlgConstrSet.obj uDlgEminAndNote.obj CoordConv.obj 
+      BaseMap.obj CustomMap.obj uDlgMapConf.obj uLogger.obj uAutoUpgrade.obj 
+      uBcAutoUpgrade.obj DbCreation.obj uOtherTerrSrvc.obj uSelectStations.obj 
+      uNewChPlanDlg.obj uSaveServer.obj uSelectServer.obj uLisObjectGrid.obj 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\LISBCProtect_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\ExpServer_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\MapXLib_OCX.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\MapXLib_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\RSAGeography_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\LISPropagation_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\p1546_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\p370_TLB.obj&quot; 
+      &quot;C:\Program Files\Borland\CBuilder6\Imports\LISBCCalc_TLB.obj&quot; 
+      uListAccountCondition.obj uListAnalogRadioSystem.obj 
+      uListAnalogTeleSystem.obj uListArea.obj uListBank.obj uListBlockDAB.obj 
+      uListCarrierGuardInterval.obj uListChannel.obj uListCity.obj 
+      uListCityModal.obj uListCountry.obj uListDigAllotments.obj 
+      uListDigitalSystem.obj uListDistrict.obj uListEquipment.obj 
+      uListLicense.obj uListMinFieldStrength.obj uListOffsetCarryFreqTVA.obj 
+      uListOwner.obj uListRadioService.obj uListStand.obj uListStreet.obj 
+      uListSynhroNet.obj uListSystemCast.obj uListSubareas.obj 
+      uListTelecomOrganization.obj uListTPOnBorder.obj uListTransmitters.obj 
+      uListTypeReceive.obj uListTypeSFN.obj uListUncompatibleChannels.obj 
+      uSelectionGridProxi.obj uLisObjectGridForm.obj uOtherParams.obj 
+      uCoordZoneFieldStr.obj"/>
+    <RESFILES value="LISBC.res LISBC.tlb"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) uMainForm.dfm uMainDm.dfm uConnect.dfm uEditBases.dfm 
+      uAbout.dfm uFrmTxBase.dfm uFrmTxBaseAir.dfm uFrmTxBaseAirAnalog.dfm 
+      uFrmTxBaseAirDigital.dfm uFrmTxLfMf.dfm uFrmTxVHF.dfm uFrmTxTVA.dfm 
+      uFrmTxDAB.dfm uFrmTxDVB.dfm uFrmTxCTV.dfm uFrmTxFxm.dfm 
+      uFrmDocumentsSettings.dfm uCalcParamsDlg.dfm uBaseObjForm.dfm 
+      uPlanning.dfm uSelection.dfm uNewTxWizard.dfm uTable36.dfm uExplorer.dfm 
+      uNewSelection.dfm uBaseList.dfm uBaseListTree.dfm uSelectTxTree.dfm 
+      uSectorDlg.dfm uOffsetRangeDlg.dfm uUserActivityLog.dfm uWhere.dfm 
+      uSearch.dfm uListFrequencyGrid.dfm uFormOwner.dfm uDuelResult.dfm 
+      DlgSelectTypeDoc.dfm uProfileView.dfm uReliefFrm.dfm SelectColumnsForm.dfm 
+      uExportDlg.dfm uContourForm.dfm uFrmPoint.dfm uEnterCoordDlg.dfm 
+      uImportDigLayer.dfm uItuImport.dfm uItuExport.dfm uAllotmentForm.dfm 
+      uDlgList.dfm uDlgConstrSet.dfm uDlgEminAndNote.dfm BaseMap.dfm 
+      CustomMap.dfm uDlgMapConf.dfm uOtherTerrSrvc.dfm uSelectStations.dfm 
+      uNewChPlanDlg.dfm uSaveServer.dfm uSelectServer.dfm uLisObjectGrid.dfm 
+      uListAccountCondition.dfm uListAnalogRadioSystem.dfm 
+      uListAnalogTeleSystem.dfm uListArea.dfm uListBank.dfm uListBlockDAB.dfm 
+      uListCarrierGuardInterval.dfm uListChannel.dfm uListCity.dfm 
+      uListCityModal.dfm uListCountry.dfm uListDigAllotments.dfm 
+      uListDigitalSystem.dfm uListDistrict.dfm uListEquipment.dfm 
+      uListLicense.dfm uListMinFieldStrength.dfm uListOffsetCarryFreqTVA.dfm 
+      uListOwner.dfm uListRadioService.dfm uListStand.dfm uListStreet.dfm 
+      uListSynhroNet.dfm uListSystemCast.dfm uListSubareas.dfm 
+      uListTelecomOrganization.dfm uListTPOnBorder.dfm uListTransmitters.dfm 
+      uListTypeReceive.dfm uListTypeSFN.dfm uListUncompatibleChannels.dfm 
+      uLisObjectGridForm.dfm uCoordZoneFieldStr.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="vclnp.lib oraprov60.lib odacvcl60.lib odac60.lib dacvcl60.lib dac60.lib 
+      CRControls60.lib inet.lib xmlrtl.lib msxml20.lib PiFolio.lib NumEdit.lib 
+      B6XLR4_R.lib rsMapUniversalX.lib vclx.lib bcb2kaxserver.lib indy.lib 
+      dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib nmfast.lib inetdbxpress.lib 
+      inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib 
+      teeqr.lib dss.lib tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib 
+      vcldbx.lib bdertl.lib adortl.lib vcldb.lib dbexpress.lib dsnap.lib cds.lib 
+      ibxpress.lib dbrtl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib dbrtl.lib ibxpress.lib cds.lib dsnap.lib dbexpress.lib 
+      vcldb.lib adortl.lib bdertl.lib vcldbx.lib bdecds.lib qrpt.lib teeui.lib 
+      teedb.lib tee.lib dss.lib teeqr.lib visualdbclx.lib dsnapcrba.lib 
+      dsnapcon.lib bcbsmp.lib inetdbbde.lib inetdbxpress.lib nmfast.lib 
+      bcbie.lib soaprtl.lib dclocx.lib dbxcds.lib indy.lib bcb2kaxserver.lib 
+      vclx.lib rsMapUniversalX.lib B6XLR4_R.lib NumEdit.lib PiFolio.lib 
+      msxml20.lib xmlrtl.lib inet.lib CRControls60.lib dac60.lib dacvcl60.lib 
+      odac60.lib odacvcl60.lib oraprov60.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi"/>
+    <PATHCPP value=".;&quot;C:\Program Files\Borland\CBuilder6\Imports&quot;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT;_ATL_APARTMENT_THREADED;USING_ATLVCL;_ATL_NO_SECURITY;INC_ATL_HEADERS;_BCB_ATL_DEBUG;USEPACKAGES"/>
+    <MAINSOURCE value="LISBC.cpp"/>
+    <INCLUDEPATH value="..\..\..;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Imports;&quot;C:\Program Files\AfalinaSoft\XL Report 4\B6units&quot;"/>
+    <LIBPATH value="..\..\..;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Imports;&quot;C:\Program Files\AfalinaSoft\XL Report 4\B6units&quot;;$(BCB)\Projects\Lib;$(BCB)\lib\psdk"/>
+    <WARNINGS value="-w-pck -w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\.. -I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\Imports 
+      -I&quot;C:\Program Files\AfalinaSoft\XL Report 4\B6units&quot; -src_suffix cpp 
+      -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -Vx -Ve -X- -r- -a2 -b -k -y -v -vi- -c -tW -tWM"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="LISBC.res" FORMNAME="" UNITNAME="LISBC.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LISBC.cpp" FORMNAME="" UNITNAME="LISBC" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uMainForm.cpp" FORMNAME="frmMain" UNITNAME="uMainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uMainDm.cpp" FORMNAME="dmMain" UNITNAME="uMainDm" CONTAINERID="CCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
+      <FILE FILENAME="uConnect.pas" FORMNAME="dlgConnect" UNITNAME="uConnect" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uEditBases.pas" FORMNAME="dlgEditBase" UNITNAME="uEditBases" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uAbout.pas" FORMNAME="dlgAboutBox" UNITNAME="uAbout" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxBase.cpp" FORMNAME="frmTxBase" UNITNAME="uFrmTxBase" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxBaseAir.cpp" FORMNAME="frmTxBaseAir" UNITNAME="uFrmTxBaseAir" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxBaseAirAnalog.cpp" FORMNAME="frmTxBaseAirAnalog" UNITNAME="uFrmTxBaseAirAnalog" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxBaseAirDigital.cpp" FORMNAME="frmTxBaseAirDigital" UNITNAME="uFrmTxBaseAirDigital" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxLfMf.cpp" FORMNAME="frmTxLfMf" UNITNAME="uFrmTxLfMf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxVHF.cpp" FORMNAME="frmTxVHF" UNITNAME="uFrmTxVHF" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxTVA.cpp" FORMNAME="frmTxTVA" UNITNAME="uFrmTxTVA" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxDAB.cpp" FORMNAME="frmTxDAB" UNITNAME="uFrmTxDAB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxDVB.cpp" FORMNAME="frmTxDVB" UNITNAME="uFrmTxDVB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxCTV.cpp" FORMNAME="frmTxCTV" UNITNAME="uFrmTxCTV" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmTxFxm.cpp" FORMNAME="frmTxFxm" UNITNAME="uFrmTxFxm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmDocumentsSettings.cpp" FORMNAME="frmDocumentsSettings" UNITNAME="uFrmDocumentsSettings" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uCalcParamsDlg.cpp" FORMNAME="dlgCalcParams" UNITNAME="uCalcParamsDlg" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uBaseObjForm.cpp" FORMNAME="frmBaseObjForm" UNITNAME="uBaseObjForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TxBroker.cpp" FORMNAME="" UNITNAME="TxBroker" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="FormProvider.cpp" FORMNAME="" UNITNAME="FormProvider" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uAnalyzer.cpp" FORMNAME="" UNITNAME="uAnalyzer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uPlanning.cpp" FORMNAME="frmPlanning" UNITNAME="uPlanning" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSelection.cpp" FORMNAME="frmSelection" UNITNAME="uSelection" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uNewTxWizard.cpp" FORMNAME="frmNewTxWizard" UNITNAME="uNewTxWizard" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uTable36.cpp" FORMNAME="frmTable36" UNITNAME="uTable36" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uExplorer.cpp" FORMNAME="frmExplorer" UNITNAME="uExplorer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uNewSelection.cpp" FORMNAME="dlgNewSelection" UNITNAME="uNewSelection" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uBaseList.cpp" FORMNAME="frmBaseList" UNITNAME="uBaseList" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uBaseListTree.cpp" FORMNAME="frmBaseListTree" UNITNAME="uBaseListTree" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSelectTxTree.cpp" FORMNAME="frmSelectTxTree" UNITNAME="uSelectTxTree" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSectorDlg.cpp" FORMNAME="dlgSector" UNITNAME="uSectorDlg" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uOffsetRangeDlg.cpp" FORMNAME="OffsetRangeDlg" UNITNAME="uOffsetRangeDlg" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uUserActivityLog.cpp" FORMNAME="frmUserActivityLog" UNITNAME="uUserActivityLog" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uWhere.cpp" FORMNAME="fmWhereCriteria" UNITNAME="uWhere" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSearch.cpp" FORMNAME="frmSearch" UNITNAME="uSearch" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uLayoutMngr.cpp" FORMNAME="" UNITNAME="uLayoutMngr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uMessageLog.cpp" FORMNAME="" UNITNAME="uMessageLog" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListFrequencyGrid.cpp" FORMNAME="frmListFrequencyGrid" UNITNAME="uListFrequencyGrid" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFormOwner.cpp" FORMNAME="frmFormTRK" UNITNAME="uFormOwner" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDuelResult.cpp" FORMNAME="frmDuelResult" UNITNAME="uDuelResult" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDiagramPanel.cpp" FORMNAME="" UNITNAME="uDiagramPanel" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="DlgSelectTypeDoc.cpp" FORMNAME="SelectTypeDoc" UNITNAME="DlgSelectTypeDoc" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uProfileView.cpp" FORMNAME="fmProfileView" UNITNAME="uProfileView" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="uReliefFrm.cpp" FORMNAME="frmRelief" UNITNAME="uReliefFrm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SelectColumnsForm.cpp" FORMNAME="frmSelectColumns" UNITNAME="SelectColumnsForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uExportDlg.cpp" FORMNAME="dlgExport" UNITNAME="uExportDlg" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Transliterator.pas" FORMNAME="" UNITNAME="Transliterator" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LISBC.tlb" FORMNAME="" UNITNAME="LISBC.tlb" CONTAINERID="TypeLibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LISBC_TLB.cpp" FORMNAME="" UNITNAME="LISBC_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LISBC_ATL.cpp" FORMNAME="" UNITNAME="LISBC_ATL" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CoCalcProgressImpl.cpp" FORMNAME="" UNITNAME="CoCalcProgressImpl" COCLASSES="CoCalcProgress" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CoStorageImpl.cpp" FORMNAME="" UNITNAME="CoStorageImpl" COCLASSES="CoLisBcStorage" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uCoordinationPoint.cpp" FORMNAME="" UNITNAME="uCoordinationPoint" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CoPWRCallbackImpl.cpp" FORMNAME="" UNITNAME="CoPWRCallbackImpl" COCLASSES="CoPWRCallback" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uContourForm.cpp" FORMNAME="frmContour" UNITNAME="uContourForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uFrmPoint.cpp" FORMNAME="frmPoint" UNITNAME="uFrmPoint" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uEnterCoordDlg.cpp" FORMNAME="dlgEnterCoord" UNITNAME="uEnterCoordDlg" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uImportDigLayer.cpp" FORMNAME="dlgImportDigLayer" UNITNAME="uImportDigLayer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="BcDrawer.cpp" FORMNAME="" UNITNAME="BcDrawer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uItuImport.cpp" FORMNAME="frmRrc06Import" UNITNAME="uItuImport" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uItuExport.cpp" FORMNAME="frmRrc06Export" UNITNAME="uItuExport" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uParams.cpp" FORMNAME="" UNITNAME="uParams" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uXmlDoc.cpp" FORMNAME="" UNITNAME="uXmlDoc" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="LISBC.todo" FORMNAME="" UNITNAME="LISBC.todo" CONTAINERID="ToDo" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uAllotmentForm.cpp" FORMNAME="frmAllotment" UNITNAME="uAllotmentForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDlgList.cpp" FORMNAME="dlgList" UNITNAME="uDlgList" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDlgConstrSet.cpp" FORMNAME="dlgConstrSet" UNITNAME="uDlgConstrSet" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDlgEminAndNote.cpp" FORMNAME="dlgEminAndNote" UNITNAME="uDlgEminAndNote" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CoordConv.pas" FORMNAME="" UNITNAME="CoordConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="BaseMap.cpp" FORMNAME="BaseMapFrame" UNITNAME="BaseMap" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="CustomMap.cpp" FORMNAME="CustomMapFrame" UNITNAME="CustomMap" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="uDlgMapConf.cpp" FORMNAME="dlgMapConf" UNITNAME="uDlgMapConf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uLogger.cpp" FORMNAME="" UNITNAME="uLogger" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uAutoUpgrade.cpp" FORMNAME="" UNITNAME="uAutoUpgrade" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uBcAutoUpgrade.cpp" FORMNAME="" UNITNAME="uBcAutoUpgrade" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="DbCreation.cpp" FORMNAME="" UNITNAME="DbCreation" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uOtherTerrSrvc.cpp" FORMNAME="frmOtherTerrSrvc" UNITNAME="uOtherTerrSrvc" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSelectStations.cpp" FORMNAME="dgSelectStations" UNITNAME="uSelectStations" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uNewChPlanDlg.cpp" FORMNAME="dgCreateChannelPlan" UNITNAME="uNewChPlanDlg" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSaveServer.cpp" FORMNAME="dlgSaveServer" UNITNAME="uSaveServer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSelectServer.cpp" FORMNAME="dlgSelectServer" UNITNAME="uSelectServer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uLisObjectGrid.cpp" FORMNAME="LisObjectGrid" UNITNAME="uLisObjectGrid" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\LISBCProtect_TLB.cpp" FORMNAME="" UNITNAME="LISBCProtect_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\ExpServer_TLB.cpp" FORMNAME="" UNITNAME="ExpServer_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\MapXLib_OCX.cpp" FORMNAME="" UNITNAME="MapXLib_OCX" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\MapXLib_TLB.cpp" FORMNAME="" UNITNAME="MapXLib_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\RSAGeography_TLB.cpp" FORMNAME="" UNITNAME="RSAGeography_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\LISPropagation_TLB.cpp" FORMNAME="" UNITNAME="LISPropagation_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\p1546_TLB.cpp" FORMNAME="" UNITNAME="p1546_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\p370_TLB.cpp" FORMNAME="" UNITNAME="p370_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Imports\LISBCCalc_TLB.cpp" FORMNAME="" UNITNAME="LISBCCalc_TLB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListAccountCondition.cpp" FORMNAME="frmListAccountCondition" UNITNAME="uListAccountCondition" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListAnalogRadioSystem.cpp" FORMNAME="frmListAnalogRadioSystem" UNITNAME="uListAnalogRadioSystem" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListAnalogTeleSystem.cpp" FORMNAME="frmListAnalogTeleSystem" UNITNAME="uListAnalogTeleSystem" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListArea.cpp" FORMNAME="frmListArea" UNITNAME="uListArea" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListBank.cpp" FORMNAME="frmListBank" UNITNAME="uListBank" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListBlockDAB.cpp" FORMNAME="frmListBlockDAB" UNITNAME="uListBlockDAB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListCarrierGuardInterval.cpp" FORMNAME="frmListCarrierGuardInterval" UNITNAME="uListCarrierGuardInterval" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListChannel.cpp" FORMNAME="frmListChannel" UNITNAME="uListChannel" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListCity.cpp" FORMNAME="frmListCity" UNITNAME="uListCity" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListCityModal.cpp" FORMNAME="frmListCityModal" UNITNAME="uListCityModal" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListCountry.cpp" FORMNAME="frmListCountry" UNITNAME="uListCountry" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListDigAllotments.cpp" FORMNAME="frmListDigAllotments" UNITNAME="uListDigAllotments" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListDigitalSystem.cpp" FORMNAME="frmListDigitalSystem" UNITNAME="uListDigitalSystem" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListDistrict.cpp" FORMNAME="frmListDistrict" UNITNAME="uListDistrict" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListEquipment.cpp" FORMNAME="frmListEquipment" UNITNAME="uListEquipment" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListLicense.cpp" FORMNAME="frmListLicense" UNITNAME="uListLicense" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListMinFieldStrength.cpp" FORMNAME="frmListMinFieldStrength" UNITNAME="uListMinFieldStrength" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListOffsetCarryFreqTVA.cpp" FORMNAME="frmListOffsetCarryFreqTVA" UNITNAME="uListOffsetCarryFreqTVA" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListOwner.cpp" FORMNAME="frmListOwner" UNITNAME="uListOwner" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListRadioService.cpp" FORMNAME="frmListRadioService" UNITNAME="uListRadioService" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListStand.cpp" FORMNAME="frmListStand" UNITNAME="uListStand" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListStreet.cpp" FORMNAME="frmListStreet" UNITNAME="uListStreet" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListSynhroNet.cpp" FORMNAME="frmListSynhroNet" UNITNAME="uListSynhroNet" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListSystemCast.cpp" FORMNAME="frmListSystemCast" UNITNAME="uListSystemCast" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListSubareas.cpp" FORMNAME="frmListDigSubareas" UNITNAME="uListSubareas" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListTelecomOrganization.cpp" FORMNAME="frmListTelecomOrganization" UNITNAME="uListTelecomOrganization" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListTPOnBorder.cpp" FORMNAME="frmListTPOnBorder" UNITNAME="uListTPOnBorder" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListTransmitters.cpp" FORMNAME="frmListTransmitters" UNITNAME="uListTransmitters" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListTypeReceive.cpp" FORMNAME="frmListTypeReceive" UNITNAME="uListTypeReceive" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListTypeSFN.cpp" FORMNAME="frmListTypeSFN" UNITNAME="uListTypeSFN" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uListUncompatibleChannels.cpp" FORMNAME="frmListUncompatibleChannels" UNITNAME="uListUncompatibleChannels" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uSelectionGridProxi.cpp" FORMNAME="" UNITNAME="uSelectionGridProxi" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uLisObjectGridForm.cpp" FORMNAME="LisObjectGridForm" UNITNAME="uLisObjectGridForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uOtherParams.pas" FORMNAME="" UNITNAME="uOtherParams" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uCoordZoneFieldStr.cpp" FORMNAME="uCoordZoneFieldStr" UNITNAME="uCoordZoneFieldStr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=1
+Release=102
+Build=180
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1058
+CodePage=1251
+
+[Version Info Keys]
+CompanyName=ООО &quot;Лаборатория информационных систем&quot;
+FileDescription=Интерфейсный модуль
+FileVersion=1.1.102.180
+InternalName=
+LegalCopyright=(с) 2003, 2012
+LegalTrademarks=
+OriginalFilename=
+ProductName=Вещание
+ProductVersion=1.1.102
+Comments=Цифровые модели местности - ООО &quot;Радиософт&quot;, (с) 2003
+
+[Excluded Packages]
+C:\Program Files\Borland\CBuilder6\Projects\Bpl\ThemeManagerC6D.bpl=Soft Gems Theme Manager
+C:\Program Files\Borland\CBuilder6\Projects\Bpl\VirtualTreesC6D.bpl=Virtual Tree (Design time)
+
+[HistoryLists\hlIncludePath]
+Count=24
+Item0=..\..\..;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item1=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item2=$(BCB)\include;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item3=C:\PROGRAM FILES\BORLAND\CBUILDER6\OBJREPOS;..\..;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\include\atl;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units;C:\Program Files\PWR4\Components
+Item4=..\..;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\include\atl;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units;C:\Program Files\PWR4\Components
+Item5=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\include\atl;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units;C:\Program Files\PWR4\Components
+Item6=..\..;..\BCTxServer;C:\Program Files\PWR4\Components;c:\program files\borland\cbuilder6\Lib;C:\Program Files\Borland\CBuilder6\Projects;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;$(BCB)\include\atl
+Item7=..\..;..\BCTxServer;C:\Program Files\PWR4\Components;c:\program files\borland\cbuilder6\Lib;C:\Program Files\Borland\CBuilder6\Projects;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components;$(BCB)\include\atl
+Item8=..\..;C:\Program Files\PWR4\Components;c:\program files\borland\cbuilder6\Lib;C:\Program Files\Borland\CBuilder6\Projects;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components;$(BCB)\include\atl
+Item9=C:\Program Files\PWR4\Components;c:\program files\borland\cbuilder6\Lib;C:\Program Files\Borland\CBuilder6\Projects;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components;$(BCB)\include\atl
+Item10=C:\Program Files\PWR4\Components;c:\program files\borland\cbuilder6\Lib;..\..;C:\Program Files\Borland\CBuilder6\Projects;..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components;$(BCB)\include\atl
+Item11=c:\program files\borland\cbuilder6\Lib;..\..;C:\Program Files\Borland\CBuilder6\Projects;..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components;$(BCB)\include\atl
+Item12=..\..;C:\Program Files\Borland\CBuilder6\Projects;..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components
+Item13=C:\Program Files\Borland\CBuilder6\Projects;..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components
+Item14=..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units;D:\Projects\Components
+Item15=..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item16=..\;..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\include;$(BCB)\include\vcl;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item17=..;C:\Program Files\Borland\CBuilder6\Imports;LISBC;$(BCB)\include;$(BCB)\include\vcl
+Item18=..\;..;C:\Program Files\Borland\CBuilder6\Imports;LISBC;$(BCB)\include;$(BCB)\include\vcl
+Item19=..\;C:\Program Files\Borland\CBuilder6\Imports;..;LISBC;$(BCB)\include;$(BCB)\include\vcl
+Item20=C:\Program Files\Borland\CBuilder6\Imports;..;LISBC;$(BCB)\include;$(BCB)\include\vcl
+Item21=C:\Program Files\Borland\CBuilder6\Imports;..\;..;LISBC;$(BCB)\include;$(BCB)\include\vcl
+Item22=..\;..;LISBC;$(BCB)\include;$(BCB)\include\vcl
+Item23=..;LISBC;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=21
+Item0=..\..\..;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units;$(BCB)\Projects\Lib;$(BCB)\lib\psdk
+Item1=..\..\..;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units;$(BCB)\Projects\Lib
+Item2=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units;$(BCB)\Projects\Lib
+Item3=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Imports;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item4=C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item5=$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item6=C:\PROGRAM FILES\BORLAND\CBUILDER6\OBJREPOS;..\..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects;$(BCB)\Projects\Lib;C:\Program Files\PWR4\Components;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item7=..\..;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects;$(BCB)\Projects\Lib;C:\Program Files\PWR4\Components;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item8=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects;$(BCB)\Projects\Lib;C:\Program Files\PWR4\Components;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item9=C:\Program Files\PWR4\Components;..\..;C:\Program Files\Borland\CBuilder6\Projects;..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item10=..\..;C:\Program Files\Borland\CBuilder6\Projects;..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item11=C:\Program Files\Borland\CBuilder6\Projects;..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item12=..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item13=..\;..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Program Files\AfalinaSoft\XL Report 4\B6units
+Item14=..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item15=..\;..;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item16=..\;c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;..;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item17=c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;..;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item18=c:\program files\borland\cbuilder6\include\vcl;C:\Program Files\Borland\CBuilder6\Imports;..\;..;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item19=..\;..;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item20=..;LISBC;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\interm
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=1
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>
