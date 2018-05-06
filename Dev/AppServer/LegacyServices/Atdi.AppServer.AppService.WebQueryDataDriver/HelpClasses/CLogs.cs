@@ -70,8 +70,6 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.Logs
       {
           string mess = string.Format("[ ELogsType:{0}; ELogsWhat:{1};  {2} Source:{3}; TargetSite:{4}; StackTrace:{5}; DateTime:{6} ]", ELogsType.Error.ToString(), who.ToString(), ex.Message, ex.Source, ex.TargetSite, ex.StackTrace, DateTime.Now.ToString());
          WriteLogTxt(mess);
-         if (!isSilent)
-             System.Windows.Forms.MessageBox.Show(mess, "", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
       }
       //=================================================================================================================================================================================================
       /// <summary>
@@ -94,8 +92,6 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.Logs
       {
           string mess = string.Format("[ ELogsType:{0}; ELogsWhat:{1}; Message:{2}; DateTime:{3} ]", ELogsType.Error.ToString(), who.ToString(), message, DateTime.Now.ToString());
           WriteLogTxt(mess);
-          if (!isSilent)
-              System.Windows.Forms.MessageBox.Show(mess, "", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
       }
       //=================================================================================================================================================================================================
       /// <summary>
@@ -146,8 +142,6 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.Logs
           ConnectDB cn = new ConnectDB();
           cn.WriteLogICSMBase(who, message, User, TableName);
           WriteLogTxt(mess);
-          if(!isSilent)
-              System.Windows.Forms.MessageBox.Show(mess, "", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
       }
 
    }

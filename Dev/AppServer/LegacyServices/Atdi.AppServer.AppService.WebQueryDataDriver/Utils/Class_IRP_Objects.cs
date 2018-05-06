@@ -121,7 +121,11 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities
 
         public string Format { get; set; }
         public OrmField ormFld { get; set; }
-    public ColumnMetaD()
+        public OrmItemExpr ormItemExpr { get; set; }
+        public bool isCustExpr { get; set; }
+
+
+        public ColumnMetaD()
         {
             Title = "";
             Description = "";
@@ -131,6 +135,7 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities
             Rank = (uint)ConnectDB.NullI;
             Show = 0;
             ormFld = new OrmField();
+            ormItemExpr = new OrmItemExpr();
         }
 
     }
@@ -148,6 +153,7 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities
         public string TableName { get; set; }
 
         public ColumnMetaD[] Columns { get; set; }
+        public SettingIRPClass settIRP { get; set; }
 
         public QueryMetaD()
         {
@@ -175,8 +181,6 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities
         public string FILTER { get; set; }
         public string TABLE_NAME { get; set; }
         public SettingIRPClass Setting_param { get; set; }
-        public List<WebConstraint> SettingConstraint { get; set; }
-        public List<WebAddParams> SettingAddParams { get; set; }
         public string FormatConstraint { get; set; }
         public TypeStatus StatusObject { get; set; }
         public List<OrmField> Fld_Orm { get; set; }
@@ -195,8 +199,6 @@ namespace Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities
             FORMAT_FLD = new List<string>();
             Val_Arr = new List<dynamic[]>();
             Setting_param = new SettingIRPClass();
-            SettingAddParams = new List<WebAddParams>();
-            SettingConstraint = new List<WebConstraint>();
             FILTER = "";
             TABLE_NAME = "";
             FLD_TYPE = new List<Type>();

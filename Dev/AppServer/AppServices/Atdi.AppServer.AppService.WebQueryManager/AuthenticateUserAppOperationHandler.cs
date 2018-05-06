@@ -7,6 +7,7 @@ using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Models.AppServices.WebQueryManager;
 using Atdi.AppServer.Contracts.WebQuery;
 using Atdi.AppServer.AppService.WebQueryDataDriver;
+using Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities;
 
 namespace Atdi.AppServer.AppServices.WebQueryManager
 {

@@ -31,14 +31,15 @@ namespace Atdi.AppServer.AppServices.WebQueryManager
             QueryResult QResult = new QueryResult();
             try { 
             string decimal_sep = System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
-            Dictionary<string, object> QueryParams = options.OtherArgs.Values;
-            ConnectDB conn = new ConnectDB();
             Class_ManageSettingInstance v_s = new Class_ManageSettingInstance();
-            List<SettingIRPClass> Las_NameCat = Class_ManageSettingInstance.GetSettingWebQuery("XWEB_QUERY");
-            string sql_params = v_s.GenerateQueryFromParams(options.OtherArgs.Values, v_s.GetQueryMetaData(Las_NameCat, options.Options.QueryRef.Id, options.OtherArgs.UserId));
-            List<string> List_Id_Users = new List<string>();
-            List_Id_Users = conn.GetRegistNum(((WebQueryManagerAppOperationOptionsBase)options).OtherArgs.UserId);
-            Class_IRP_Object Irp = v_s.ExecuteSQL("([ID]>0) " + sql_params, List_Id_Users, "XWEB_QUERY", Las_NameCat, options.Options.QueryRef.Id, ((WebQueryManagerAppOperationOptionsBase)options).OtherArgs.UserId.ToString());
+            ConnectDB conn = new ConnectDB();
+            StockItems PS = new StockItems();
+            QueryMetaD metD = new QueryMetaD();
+            List<SettingIRPClass> Las_NameCat = (List<SettingIRPClass>)PS.GetAvailableStocksSettingIRP(false);
+            List<QueryMetaD> LQD = (List<QueryMetaD>)PS.GetCacheKeyMetaData(false, options.OtherArgs.UserId);
+            if (LQD!=null) metD = LQD.Find(t => t.settIRP.ID == options.Options.QueryRef.Id);
+            string sql_params = v_s.GenerateQueryFromParams(options.OtherArgs.Values, metD);
+            Class_IRP_Object Irp = v_s.ExecuteSQL("([ID]>0) " + sql_params, ((WebQueryManagerAppOperationOptionsBase)options).OtherArgs.UserId, metD);
             QResult.TotalRowCount = (uint)Irp.Val_Arr.Count;
             QResult.ResultRowCount = (uint)Irp.Val_Arr.Count;
             QResult.QueryRef = new QueryReference();

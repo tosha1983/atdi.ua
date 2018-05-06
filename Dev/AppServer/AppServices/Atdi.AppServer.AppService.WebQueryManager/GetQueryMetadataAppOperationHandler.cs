@@ -29,9 +29,11 @@ namespace Atdi.AppServer.AppServices.WebQueryManager
             QueryMetadata metaData = new QueryMetadata();
             try { 
             ConnectDB conn = new ConnectDB();
-            Class_ManageSettingInstance v_s = new Class_ManageSettingInstance();
-            List<SettingIRPClass> Las_NameCat = Class_ManageSettingInstance.GetSettingWebQuery("XWEB_QUERY");
-            QueryMetaD QDM = v_s.GetQueryMetaData(Las_NameCat, options.QueryRef.Id, options.OtherArgs.UserId);
+            StockItems PS = new StockItems();
+            QueryMetaD QDM = new QueryMetaD();
+            List<SettingIRPClass> Las_NameCat = (List<SettingIRPClass>)PS.GetAvailableStocksSettingIRP(false);
+            List<QueryMetaD> LQD = (List<QueryMetaD>)PS.GetCacheKeyMetaData(false, options.OtherArgs.UserId);
+            if (LQD != null) QDM = LQD.Find(t => t.settIRP.ID == options.QueryRef.Id);
             List<ColumnMetadata> colMeta = new List<ColumnMetadata>();
             if (QDM != null) {
                 if (QDM.Columns != null)
@@ -59,28 +61,6 @@ namespace Atdi.AppServer.AppServices.WebQueryManager
                         colMeta.Add(metaCol);
                     }
                 }
-
-
-
-                //Описание параметров запроса (Имя поля - значение)  (НА ТЕКУЩИЙ МОМЕНТ НИЧЕГО НЕ ПЕРЕДАЮ)
-                //List<QueryParameter> Qparams = new List<QueryParameter>();
-                //QueryParameter Qpar = new QueryParameter();
-                //Qpar.Name = "";
-                //Qpar.Value = "";
-                //Qparams.Add(Qpar);
-
-
-
-                //Таблица стилей (НА ТЕКУЩИЙ МОМЕНТ НИЧЕГО НЕ ПЕРЕДАЮ)
-                /*
-                QueryTableStyle QStyle = new QueryTableStyle();
-                QStyle.BackColor = "";
-                QStyle.FontName = "";
-                QStyle.FontSize = 12;
-                QStyle.FontStyle = "";
-                QStyle.ForeColor = "";
-                */
-
 
                 metaData.Columns = colMeta.ToArray();
                 metaData.Description = QDM.Description;

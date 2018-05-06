@@ -39,8 +39,11 @@ namespace Atdi.AppServer.AppServices.WebQueryManager
             Dictionary<string, object> Params = options.OtherArgs.Values;
             int max_Val = ConnectDB.NullI;  int ID_Record = ConnectDB.NullI;
             foreach (KeyValuePair<string, object> p in Params) { if (p.Key == "ID") { ID_Record = Convert.ToInt32(p.Value); break; } }
-            List<SettingIRPClass> Las_NameCat = Class_ManageSettingInstance.GetSettingWebQuery("XWEB_QUERY");
-            QueryMetaD MD =  v_s.GetQueryMetaData(Las_NameCat, options.Changeset.QueryRef.Id, options.OtherArgs.UserId);
+            StockItems PS = new StockItems();
+            QueryMetaD MD = new QueryMetaD();
+            List<SettingIRPClass> Las_NameCat = (List<SettingIRPClass>)PS.GetAvailableStocksSettingIRP(false);
+            List<QueryMetaD> LQD = (List<QueryMetaD>)PS.GetCacheKeyMetaData(false, options.OtherArgs.UserId);
+            if (LQD != null) MD = LQD.Find(t => t.settIRP.ID == options.Changeset.QueryRef.Id);
             SettingIRPClass settIRP = Las_NameCat.Find(z => z.ID == options.Changeset.QueryRef.Id);
             if (settIRP.IS_SQL_REQUEST==false) { 
             List<BlockDataFind> obj_base = new List<BlockDataFind>();

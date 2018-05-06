@@ -42,10 +42,10 @@
       <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
     </Reference>
     <Reference Include="NetPlugins">
-      <HintPath>..\..\..\..\ATDI\ICS Manager\NetPlugins.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\icsmr\NetPlugins.dll</HintPath>
     </Reference>
     <Reference Include="OrmCs">
-      <HintPath>..\..\..\..\ATDI\ICS Manager\OrmCs.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\icsmr\OrmCs.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

@@ -49,25 +49,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LegacyServices\Atdi.AppServer.AppService.WebQueryDataDriver\Atdi.AppServer.AppService.WebQueryDataDriver.csproj">
+      <Project>{015162ec-b3ba-4e29-913b-134b4191ec10}</Project>
+      <Name>Atdi.AppServer.AppService.WebQueryDataDriver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.WebQuery\Atdi.AppServer.Contracts.WebQuery.csproj">
       <Project>{26b1dff9-1f87-4494-ad98-c3033288eceb}</Project>
       <Name>Atdi.AppServer.Contracts.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.WebQueryManager\Atdi.AppServer.Model.WebQueryManager.csproj">
-      <Project>{51732528-c056-4091-ba83-2ea2abca44ff}</Project>
-      <Name>Atdi.AppServer.Model.WebQueryManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
       <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
       <Name>Atdi.AppServer.Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.WebQueryManager\Atdi.AppServer.Model.WebQueryManager.csproj">
+      <Project>{51732528-c056-4091-ba83-2ea2abca44ff}</Project>
+      <Name>Atdi.AppServer.Model.WebQueryManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
       <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
       <Name>Atdi.AppServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LegacyServices\Atdi.AppServer.AppService.WebQueryDataDriver\Atdi.AppServer.AppService.WebQueryDataDriver.csproj">
-      <Project>{015162ec-b3ba-4e29-913b-134b4191ec10}</Project>
-      <Name>Atdi.AppServer.AppService.WebQueryDataDriver</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
