@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.Platform</RootNamespace>
+    <AssemblyName>Atdi.Platform</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppServer\ComponentBehavior.cs" />
+    <Compile Include="AppServer\ComponentType.cs" />
+    <Compile Include="AppServer\HostState.cs" />
+    <Compile Include="AppServer\IHost.cs" />
+    <Compile Include="AppServer\IComponentConfig.cs" />
+    <Compile Include="AppServer\IContext.cs" />
+    <Compile Include="AppServer\IComponent.cs" />
+    <Compile Include="AppServer\IServerConfig.cs" />
+    <Compile Include="DefaultResourceResolver.cs" />
+    <Compile Include="DependencyInjection\BaseOnMode.cs" />
+    <Compile Include="DependencyInjection\IServicesContainer.cs" />
+    <Compile Include="DependencyInjection\IServicesResolver.cs" />
+    <Compile Include="DependencyInjection\IWcfServicesResolver.cs" />
+    <Compile Include="DependencyInjection\ServiceLifetime.cs" />
+    <Compile Include="IConfigParameter.cs" />
+    <Compile Include="IConfigParameters.cs" />
+    <Compile Include="IPlatformConfigurator.cs" />
+    <Compile Include="IPlatformInstaller.cs" />
+    <Compile Include="IResourceResolver.cs" />
+    <Compile Include="ITypeResolver.cs" />
+    <Compile Include="Logging\IConsoleEventWriter.cs" />
+    <Compile Include="Logging\ILogConfig.cs" />
+    <Compile Include="Logging\IEventsConsumer.cs" />
+    <Compile Include="Logging\IEventsProducer.cs" />
+    <Compile Include="Logging\ILoggedObject.cs" />
+    <Compile Include="Logging\LogEvent\IBeginTraceEvent.cs" />
+    <Compile Include="Logging\LogEvent\ICriticalEvent.cs" />
+    <Compile Include="Logging\LogEvent\IDebugEvent.cs" />
+    <Compile Include="Logging\LogEvent\IEndTraceEvent.cs" />
+    <Compile Include="Logging\LogEvent\IErrorEvent.cs" />
+    <Compile Include="Logging\LogEvent\IExceptionEvent.cs" />
+    <Compile Include="Logging\LogEvent\IEvent.cs" />
+    <Compile Include="Logging\LogEvent\IEventDataConvertor.cs" />
+    <Compile Include="Logging\LogEvent\IExceptionData.cs" />
+    <Compile Include="Logging\LogEvent\ITraceScope.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\IEventWriter.cs" />
+    <Compile Include="Logging\EventCategory.cs" />
+    <Compile Include="Logging\EventContext.cs" />
+    <Compile Include="Logging\LogEvent\TraceScopeName.cs" />
+    <Compile Include="Logging\LogEvent\ITraceScopeData.cs" />
+    <Compile Include="Logging\LogEvent\ITraceEvent.cs" />
+    <Compile Include="Logging\EventText.cs" />
+    <Compile Include="Logging\EventLevel.cs" />
+    <Compile Include="Logging\LogEvent\TraceEventType.cs" />
+    <Compile Include="Logging\LoggedObject.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\ISecurityContext.cs" />
+    <Compile Include="Security\IUserIdentity.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
