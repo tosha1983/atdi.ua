@@ -8,21 +8,21 @@ namespace Atdi.Platform.Logging
 {
     public interface IEventWriter
     {
-        void Verbouse(EventContext context, EventCategory? category, EventText eventText);
+        void Verbouse(EventContext context, EventCategory category, EventText eventText);
 
-        void Info(EventContext context, EventCategory? category, EventText eventText);
+        void Info(EventContext context, EventCategory category, EventText eventText);
 
-        void Warning(EventContext context, EventCategory? category, EventText eventText);
+        void Warning(EventContext context, EventCategory category, EventText eventText);
 
-        void Debug(EventContext context, EventCategory? category, EventText eventText, string source, IReadOnlyDictionary<string, object> data);
+        void Debug(EventContext context, EventCategory category, EventText eventText, string source, IReadOnlyDictionary<string, object> data);
 
-        ITraceScope StartTrace(EventContext context, EventCategory? category, TraceScopeName? scopeName, string source, IReadOnlyDictionary<string, object> data);
+        ITraceScope StartTrace(EventContext context, EventCategory category, TraceScopeName scopeName, string source, IReadOnlyDictionary<string, object> data);
 
-        void Error(EventContext context, EventCategory? category, EventText eventText, string source, IReadOnlyDictionary<string, object> data);
+        void Error(EventContext context, EventCategory category, EventText eventText, string source, IReadOnlyDictionary<string, object> data);
 
-        void Exception(EventContext context, EventCategory? category, EventText? eventText, Exception e, string source, IReadOnlyDictionary<string, object> data);
+        void Exception(EventContext context, EventCategory category, EventText eventText, Exception e, string source, IReadOnlyDictionary<string, object> data);
 
-        void Critical(EventContext context, EventCategory? category, EventText? eventText, Exception e, string source, IReadOnlyDictionary<string, object> data);
+        void Critical(EventContext context, EventCategory category, EventText eventText, Exception e, string source, IReadOnlyDictionary<string, object> data);
     }
 
     public static class LogWriterExtension

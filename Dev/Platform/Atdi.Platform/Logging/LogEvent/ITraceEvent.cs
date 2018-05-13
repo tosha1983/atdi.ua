@@ -8,7 +8,7 @@ namespace Atdi.Platform.Logging
 {
     public interface ITraceEvent : IDebugEvent
     {
-        TraceEventType TraceType { get; }
+        TraceEventType EventType { get; }
 
         TimeSpan? Duration { get; }
 

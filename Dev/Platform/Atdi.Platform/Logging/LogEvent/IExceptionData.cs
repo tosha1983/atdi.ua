@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Platform.Logging
 {
-    public interface IExeption
+    public interface IExceptionData
     {
         string Type { get; }
 
@@ -16,7 +16,7 @@ namespace Atdi.Platform.Logging
 
         string TargetSite { get; }
 
-        IExeption Inner { get; }
+        IExceptionData Inner { get; }
 
         string Message { get; }
     }

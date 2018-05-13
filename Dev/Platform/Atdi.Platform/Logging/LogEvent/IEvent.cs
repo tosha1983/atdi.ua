@@ -21,9 +21,9 @@ namespace Atdi.Platform.Logging
 
         EventContext Context { get; }
 
-        EventCategory? Category { get; }
+        EventCategory Category { get; }
 
-        EventText? Text { get; }
+        EventText Text { get; }
     }
     
 }

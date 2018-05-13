@@ -19,11 +19,9 @@ namespace Atdi.Platform.Logging
         void Enable(EventLevel level);
 
         /// <summary>
-        /// Gets a value of property from a configuration by key
+        /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
-        /// <param name="defaulValue"></param>
         /// <returns></returns>
         object this[string key] { get; set; } 
     }

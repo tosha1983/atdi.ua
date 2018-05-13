@@ -8,6 +8,6 @@ namespace Atdi.Platform.Logging
 {
     public interface ICriticalEvent : IDebugEvent
     {
-        IExeption Exception { get; }
+        IExceptionData Exception { get; }
     }
 }
