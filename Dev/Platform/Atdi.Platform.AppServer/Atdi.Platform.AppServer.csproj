@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentDiscriptor.cs" />
+    <Compile Include="ComponentDescriptor.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="Installer.cs" />

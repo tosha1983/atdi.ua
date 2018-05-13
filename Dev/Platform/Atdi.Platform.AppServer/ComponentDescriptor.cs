@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.Platform.AppServer
 {
-    class ComponentDiscriptor
+    class ComponentDescriptor
     {
-        public ComponentDiscriptor(IComponent component, IComponentConfig config)
+        public ComponentDescriptor(IComponent component, IComponentConfig config)
         {
             this.Component = component;
             this.Config = config;

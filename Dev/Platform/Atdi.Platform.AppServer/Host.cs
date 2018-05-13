@@ -13,7 +13,7 @@ namespace Atdi.Platform.AppServer
     {
         private IServicesContainer _container;
         private IContext _serverContext;
-        private List<ComponentDiscriptor> _components;
+        private List<ComponentDescriptor> _components;
         private HostState _state;
         private ITypeResolver _typeResolver;
 
@@ -44,25 +44,25 @@ namespace Atdi.Platform.AppServer
 
             if (componentsConfig != null && componentsConfig.Length > 0)
             {
-                this._components = new List<ComponentDiscriptor>(componentsConfig.Length);
+                this._components = new List<ComponentDescriptor>(componentsConfig.Length);
                 for (int i = 0; i < componentsConfig.Length; i++)
                 {
-                    var discriptor = InstallComponent(componentsConfig[i]);
-                    if (discriptor != null)
+                    var descriptor = InstallComponent(componentsConfig[i]);
+                    if (descriptor != null)
                     {
-                        this._components.Add(discriptor);
+                        this._components.Add(descriptor);
                     }
                 }
             }
             else
             {
-                this._components = new List<ComponentDiscriptor>();
+                this._components = new List<ComponentDescriptor>();
             }
 
             this.Logger.Info(Contexts.AppServerHost, Categories.Initialization, Events.ServerComponentsInstalled.With(this._components.Count));
         }
 
-        private ComponentDiscriptor InstallComponent(IComponentConfig config)
+        private ComponentDescriptor InstallComponent(IComponentConfig config)
         {
             this.Logger.Verbouse(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentIsInstalling.With(config.Type, config.Instance, config.Assembly));
             IComponent component = null;
@@ -71,7 +71,7 @@ namespace Atdi.Platform.AppServer
                 component = this._typeResolver.CreateInstance<IComponent>(new AssemblyName(config.Assembly));
                 component.Install(this._container, config);
                 this.Logger.Verbouse(Contexts.AppServerHost, Categories.Initialization, Events.ServerComponentInstalled);
-                return new ComponentDiscriptor(component, config);
+                return new ComponentDescriptor(component, config);
             }
             catch(Exception e)
             {
@@ -349,11 +349,11 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerComponentsIsActivating);
             try
             {
-                foreach (var discriptor in this._components)
+                foreach (var descriptor in this._components)
                 {
-                    if ((discriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
+                    if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
                     {
-                        discriptor.Component.Activate();
+                        descriptor.Component.Activate();
                     }
                 }
 
@@ -372,11 +372,11 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerComponentsIsDeactivating);
             try
             {
-                foreach (var discriptor in this._components)
+                foreach (var descriptor in this._components)
                 {
-                    if ((discriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
+                    if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
                     {
-                        discriptor.Component.Deactivate();
+                        descriptor.Component.Deactivate();
                     }
                 }
 
@@ -394,11 +394,11 @@ namespace Atdi.Platform.AppServer
         {
             this.Logger.Info(Contexts.AppServerHost, Categories.Disposabling, Events.ServerComponentsIsUninstalling);
            
-            foreach (var discriptor in this._components)
+            foreach (var descriptor in this._components)
             {
                 try
                 {
-                    discriptor.Component.Uninstall();
+                    descriptor.Component.Uninstall();
                 }
                 catch (Exception e)
                 {
