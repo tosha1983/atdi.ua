@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppServer\ComponentBase.cs" />
     <Compile Include="AppServer\ComponentBehavior.cs" />
     <Compile Include="AppServer\ComponentType.cs" />
     <Compile Include="AppServer\HostState.cs" />
