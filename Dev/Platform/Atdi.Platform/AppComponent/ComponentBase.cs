@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
 
-namespace Atdi.Platform.AppServer
+namespace Atdi.Platform.AppComponent
 {
     public abstract class ComponentBase : IComponent
     {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Atdi.Platform.Logging;
 using Atdi.Platform.DependencyInjection;
 using System.Reflection;
+using Atdi.Platform.AppComponent;
 
 namespace Atdi.Platform.AppServer
 {
