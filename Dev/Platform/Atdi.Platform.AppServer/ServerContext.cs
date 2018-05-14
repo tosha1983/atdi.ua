@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.Platform.AppServer
 {
-    class Context : IContext
+    class ServerContext : IServerContext
     {
         private IServerConfig _serverConfig;
 
-        public Context(IServerConfig config)
+        public ServerContext(IServerConfig config)
         {
             this._serverConfig = config;
         }

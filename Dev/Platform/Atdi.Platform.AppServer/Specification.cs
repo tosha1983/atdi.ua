@@ -34,7 +34,7 @@ namespace Atdi.Platform.AppServer
         public static readonly EventText StartedInitServerHost = "The Server Host is initializing";
         public static readonly EventText CreatedServerHost = "The Server Host with name '{0}' was created successfully";
 
-        public static readonly EventText ServerComponentsIsInstalling = "The Server Components is installing";
+        public static readonly EventText ServerComponentsIsInstalling = "The Server Components are installing";
         public static readonly EventText ServerComponentsInstalled = "The Server Components installed: perfom {0} of components";
 
         public static readonly EventText ServerHostIsStarting = "The Server Host is starting";
@@ -43,16 +43,16 @@ namespace Atdi.Platform.AppServer
         public static readonly EventText ServerHostIsStoping = "The Server Host is stoping";
         public static readonly EventText ServerHostStopped = "The Server Host stopped successfully";
 
-        public static readonly EventText ServerComponentsIsActivating = "The Server Components is activating";
+        public static readonly EventText ServerComponentsIsActivating = "The Server Components are activating";
         public static readonly EventText ServerComponentsActivated = "The Server Components activated successfully";
 
-        public static readonly EventText ServerComponentsIsDeactivating = "The Server Components is deactivating";
+        public static readonly EventText ServerComponentsIsDeactivating = "The Server Components are deactivating";
         public static readonly EventText ServerComponentsDeactivated = "The Server Components deactivated successfully";
 
         public static readonly EventText ServerHostIsDisposabling = "The Server Host is disposabling";
         public static readonly EventText ServerHostDisposabled = "The Server Host disposabled";
 
-        public static readonly EventText ServerComponentsIsUninstalling = "The Server Components is uninstalling";
+        public static readonly EventText ServerComponentsIsUninstalling = "The Server Components are uninstalling";
         public static readonly EventText ServerComponentsUninstalled = "The Server Components uninstallied";
 
         public static readonly EventText ServerComponentIsInstalling = "The Server Component is installing. Type is {0}, instance '{1}', assembly {2}";

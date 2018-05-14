@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.Platform.AppServer
 {
-    public interface IHost : IDisposable
+    /// <summary>
+    /// Represent the context of the application server
+    /// </summary>
+    public interface IServerContext
     {
-        HostState State { get; }
-
-        void Start();
-
-        void Stop();
+        IServerConfig Config { get;  }
     }
 }

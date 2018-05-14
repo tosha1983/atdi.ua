@@ -9,15 +9,15 @@ using System.Reflection;
 
 namespace Atdi.Platform.AppServer
 {
-    public class Host : LoggedObject, IHost
+    public class ServerHost : LoggedObject, IServerHost
     {
         private IServicesContainer _container;
-        private IContext _serverContext;
+        private IServerContext _serverContext;
         private List<ComponentDescriptor> _components;
         private HostState _state;
         private ITypeResolver _typeResolver;
 
-        public Host(ILogger logger, IServicesContainer container, IServerConfig config, ITypeResolver typeResolver) : base(logger)
+        public ServerHost(ILogger logger, IServicesContainer container, IServerConfig config, ITypeResolver typeResolver) : base(logger)
         {
             using (this.Logger.StartTrace(Contexts.AppServerHost, Categories.Initialization, TraceScopeNames.Constructor))
             {
@@ -34,8 +34,8 @@ namespace Atdi.Platform.AppServer
 
         private void PrepareServerContext(IServerConfig config)
         {
-            this._serverContext = new Context(config);
-            this._container.RegisterInstance<IContext>(this._serverContext);
+            this._serverContext = new ServerContext(config);
+            this._container.RegisterInstance<IServerContext>(this._serverContext);
         }
 
         private void InstallComponents(IComponentConfig[] componentsConfig)

@@ -106,13 +106,13 @@ namespace Atdi.Platform
             return new AppServer.ServerConfig(this._config.AppServerSection);
         }
 
-        public static AppServer.IHost BuildHost()
+        public static AppServer.IServerHost BuildHost()
         {
             var configurator = new PlatformConfigurator();
             var container = configurator.BuildContainer();
             var serverConfig = configurator.ServerConfig();
             container.RegisterInstance<AppServer.IServerConfig>(serverConfig);
-            return container.GetResolver<IServicesResolver>().Resolve<AppServer.IHost>();
+            return container.GetResolver<IServicesResolver>().Resolve<AppServer.IServerHost>();
         }
 
 

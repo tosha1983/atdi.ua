@@ -8,7 +8,7 @@ using Atdi.Platform.DependencyInjection;
 
 namespace Atdi.Platform.AppServer
 {
-    class Installer : IPlatformInstaller
+    class ServerInstaller : IPlatformInstaller
     {
         public void Install(IServicesContainer container, IConfigParameters parameters)
         {
@@ -17,7 +17,7 @@ namespace Atdi.Platform.AppServer
 
             logger.Info(Contexts.AppServerInstaller, Categories.Installation, Events.StartedInstall);
 
-            container.Register<IHost, Host>(ServiceLifetime.Transient);
+            container.Register<IServerHost, ServerHost>(ServiceLifetime.Transient);
 
             logger.Info(Contexts.AppServerInstaller, Categories.Installation, Events.FinishedInstall);
         }

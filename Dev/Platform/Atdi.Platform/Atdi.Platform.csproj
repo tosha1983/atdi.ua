@@ -43,14 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppServer\ComponentBase.cs" />
-    <Compile Include="AppServer\ComponentBehavior.cs" />
-    <Compile Include="AppServer\ComponentType.cs" />
+    <Compile Include="AppComponent\ComponentBase.cs" />
+    <Compile Include="AppComponent\ComponentBehavior.cs" />
+    <Compile Include="AppComponent\ComponentType.cs" />
     <Compile Include="AppServer\HostState.cs" />
-    <Compile Include="AppServer\IHost.cs" />
-    <Compile Include="AppServer\IComponentConfig.cs" />
-    <Compile Include="AppServer\IContext.cs" />
-    <Compile Include="AppServer\IComponent.cs" />
+    <Compile Include="AppServer\IServerHost.cs" />
+    <Compile Include="AppComponent\IComponentConfig.cs" />
+    <Compile Include="AppServer\IServerContext.cs" />
+    <Compile Include="AppComponent\IComponent.cs" />
     <Compile Include="AppServer\IServerConfig.cs" />
     <Compile Include="DefaultResourceResolver.cs" />
     <Compile Include="DependencyInjection\BaseOnMode.cs" />
