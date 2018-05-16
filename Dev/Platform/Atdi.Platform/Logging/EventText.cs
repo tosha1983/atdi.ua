@@ -36,6 +36,10 @@ namespace Atdi.Platform.Logging
         {
             if (string.IsNullOrEmpty(this.Text))
                 return string.Empty;
+
+            if (this.Args != null && this.Args.Length > 0)
+                return string.Format(this.Text, this.Args);
+
             return this.Text;
         }
 

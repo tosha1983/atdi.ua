@@ -8,10 +8,10 @@ namespace Atdi.Platform.AppComponent
 {
     public enum ComponentType
     {
-        WcfService,
-        WebApiService,
-        AspNetService,
-        AppService,
+        WcfServices,
+        WebApiServices,
+        AspNetServices,
+        AppServices,
         CoreServices,
         LegacyServices
     }

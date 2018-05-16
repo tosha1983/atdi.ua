@@ -17,7 +17,19 @@ namespace Atdi.Platform.AppServer
             this._config = config;
         }
 
-        public object this[string paramName] => this._config.ParametersSection.GetParameter(paramName);
+        public object this[string paramName]
+        {
+            get
+            {
+                var parameter = this._config.ParametersSection.GetParameter(paramName);
+                if (parameter == null)
+                {
+                    return null;
+                }
+
+                return parameter.ValueProperty;
+            }
+        }
 
         public string Instance
         {

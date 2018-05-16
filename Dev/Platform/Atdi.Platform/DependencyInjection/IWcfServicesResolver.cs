@@ -8,7 +8,7 @@ namespace Atdi.Platform.DependencyInjection
 {
     public interface IWcfServicesResolver : IServicesResolver
     {
-        TServiceHost CreateServiceHost<TServiceHost>(string constructorString, Uri[] baseAddresses)
+        TServiceHost CreateWcfServiceHost<TServiceHost>(string constructorString, Uri[] baseAddresses)
             where TServiceHost : class;
     }
 
@@ -17,7 +17,7 @@ namespace Atdi.Platform.DependencyInjection
         public static TServiceHost CreateWcfServiceHost<TServiceHost, TContract>(this IWcfServicesResolver container)
             where TServiceHost : class
         {
-            return container.CreateServiceHost<TServiceHost>(typeof(TContract).AssemblyQualifiedName, new Uri[0]);
+            return container.CreateWcfServiceHost<TServiceHost>(typeof(TContract).AssemblyQualifiedName, new Uri[0]);
         }
     }
 }

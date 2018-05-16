@@ -36,6 +36,12 @@ namespace Atdi.Platform.ServicesContainer.Castle
                         .ImplementedBy<WindsorWcfServicesResolver>()
                         .LifeStyle.Singleton
                 );
+
+            container.Register(
+                    Component.For<IHandlerResolver>()
+                        .ImplementedBy<WindsorHandlerResolver>()
+                        .LifeStyle.Singleton
+                );
         }
     }
 }

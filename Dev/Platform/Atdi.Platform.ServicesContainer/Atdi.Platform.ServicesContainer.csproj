@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Castle\Extensions.cs" />
     <Compile Include="Castle\WindsorServicesContainer.cs" />
+    <Compile Include="Castle\WindsorHandlerResolver.cs" />
     <Compile Include="Castle\WindsorWcfServicesResolver.cs" />
     <Compile Include="Castle\WindsorServicesResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

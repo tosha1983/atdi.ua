@@ -15,6 +15,10 @@ namespace Atdi.Platform
 
         Type ResolveType<TBase>(Assembly assembly);
 
+        Type[] ResolveTypes<TBase>(Assembly assembly);
+
+        Type[] ResolveTypes(Assembly assembly, Type baseType);
+
         TBase CreateInstance<TBase>(AssemblyName name);
     }
 }

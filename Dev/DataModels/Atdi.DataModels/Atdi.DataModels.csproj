@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{506B3655-4706-42F8-87F1-FB13869AA4C1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.DataModels</RootNamespace>
+    <AssemblyName>Atdi.DataModels</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataConstraint\OrderExpression.cs" />
+    <Compile Include="DataConstraint\OrderType.cs" />
+    <Compile Include="DataConstraint\PagingInfo.cs" />
+    <Compile Include="Identity\UserIdentity.cs" />
+    <Compile Include="DataType.cs" />
+    <Compile Include="CommonOperation\OperationState.cs" />
+    <Compile Include="DataConstraint\LogicalOperator.cs" />
+    <Compile Include="DataConstraint\OperandType.cs" />
+    <Compile Include="DataConstraint\ConditionOperator.cs" />
+    <Compile Include="DataConstraint\ConditionType.cs" />
+    <Compile Include="CommonOperation\OperationArgs.cs" />
+    <Compile Include="CommonOperation\Result.cs" />
+    <Compile Include="CommonOperation\OperationResult.cs" />
+    <Compile Include="CommonSpecification.cs" />
+    <Compile Include="DataConstraint\Condition.cs" />
+    <Compile Include="DataConstraint\ColumnOperand.cs" />
+    <Compile Include="DataConstraint\ConditionExpression.cs" />
+    <Compile Include="DataConstraint\ComplexCondition.cs" />
+    <Compile Include="DataConstraint\Operand.cs" />
+    <Compile Include="DataConstraint\ValueOperand.cs" />
+    <Compile Include="DataConstraint\ValuesOperand.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Identity\UserToken.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

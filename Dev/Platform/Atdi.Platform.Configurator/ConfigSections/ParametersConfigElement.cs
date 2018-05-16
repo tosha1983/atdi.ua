@@ -20,9 +20,9 @@ namespace Atdi.Platform.ConfigElements
             return ((ParameterConfigElement)element).NameProperty;
         }
 
-        public PropertyConfigElement GetParameter(string name)
+        public ParameterConfigElement GetParameter(string name)
         {
-            return (PropertyConfigElement)BaseGet(name);
+            return (ParameterConfigElement)BaseGet(name);
         }
     }
 }

@@ -148,5 +148,35 @@ namespace Atdi.Platform
 
             return Assembly.LoadFrom(fullPath);
         }
+
+        public Type[] ResolveTypes<TBase>(Assembly assembly)
+        {
+            return this.ResolveTypes(assembly, typeof(TBase));
+        }
+
+        public Type[] ResolveTypes(Assembly assembly, Type baseType)
+        {
+            var types = assembly.GetExportedTypes();
+            var result = new List<Type>();
+            for (int i = 0; i < types.Length; i++)
+            {
+                var curType = types[i];
+                if (baseType.IsInterface)
+                {
+                    if (curType.GetInterfaces().Contains(baseType))
+                    {
+                        result.Add(curType);
+                    }
+                }
+                else if (baseType.IsClass && curType.BaseType != null && 
+                    curType.BaseType.Name == baseType.Name && 
+                    curType.BaseType.Namespace == baseType.Namespace)
+                {
+                    result.Add(curType);
+                }
+            }
+
+            return result.ToArray();
+        }
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="AppServer\IServerConfig.cs" />
     <Compile Include="DefaultResourceResolver.cs" />
     <Compile Include="DependencyInjection\BaseOnMode.cs" />
+    <Compile Include="DependencyInjection\IHandlerResolver.cs" />
     <Compile Include="DependencyInjection\IServicesContainer.cs" />
     <Compile Include="DependencyInjection\IServicesResolver.cs" />
     <Compile Include="DependencyInjection\IWcfServicesResolver.cs" />
@@ -91,8 +92,6 @@
     <Compile Include="Logging\LogEvent\TraceEventType.cs" />
     <Compile Include="Logging\LoggedObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\ISecurityContext.cs" />
-    <Compile Include="Security\IUserIdentity.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

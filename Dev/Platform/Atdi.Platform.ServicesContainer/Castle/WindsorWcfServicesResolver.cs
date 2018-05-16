@@ -17,7 +17,7 @@ namespace Atdi.Platform.ServicesContainer.Castle
         {
         }
 
-        public TServiceHost CreateServiceHost<TServiceHost>(string constructorString, Uri[] baseAddresses)
+        public TServiceHost CreateWcfServiceHost<TServiceHost>(string constructorString, Uri[] baseAddresses)
              where TServiceHost : class
         {
             if (this._wcfHostFactory == null)
