@@ -14,6 +14,12 @@ namespace Atdi.DataModels.WebQuery
     public class QueryResult
     {
         [DataMember]
+        public object[][] Rows { get; set; }
+
+        [DataMember]
+        public string[][] RowsAsString { get; set; }
+
+        [DataMember]
         public int[] ColumnIndexMap { get; set; }
 
         [DataMember]

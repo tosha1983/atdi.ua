@@ -24,7 +24,7 @@ namespace Atdi.AppServices
         {
             var contractType = typeof(TAppService);
             var implementType = CreateProxy(this.GetType().Assembly, contractType);
-            this.Container.Register(contractType, implementType);
+            this.Container.Register(contractType, implementType, ServiceLifetime.PerThread);
         }
 
         private Type CreateProxy(Assembly implementAssembly, Type source)

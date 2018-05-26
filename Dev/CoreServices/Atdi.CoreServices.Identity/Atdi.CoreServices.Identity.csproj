@@ -40,7 +40,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticationManager.cs" />
+    <Compile Include="IdentityComponent.cs" />
+    <Compile Include="Models\IcsmUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="UserTokenProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
+      <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
+      <Name>Atdi.Contracts.CoreServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
+      <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
+      <Name>Atdi.Contracts.LegacyServices.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Icsm\Atdi.DataModels.Icsm.csproj">
+      <Project>{c9a6722b-f13a-4c7a-b389-9958b2abfb27}</Project>
+      <Name>Atdi.DataModels.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Identity\Atdi.DataModels.Identity.csproj">
+      <Project>{b0a9f81c-cf24-4899-a069-cbf63c4483e6}</Project>
+      <Name>Atdi.DataModels.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

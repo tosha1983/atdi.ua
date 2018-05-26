@@ -18,14 +18,46 @@ namespace Atdi.Test.WebQuery
 
         static void Main(string[] args)
         {
+            while (true)
+            {
+
+
+                Console.WriteLine("Press any key to start testing ...");
+                Console.ReadLine();
+
+                TestAuthenticationManager("TcpAuthenticationManager");
+
+            }
+            //BlockTest();
+
+            //TestGetData();
+
+
+            Console.WriteLine("Press any key to exit");
+            Console.ReadLine();
+        }
+        static void TestGetData()
+        {
             Console.WriteLine("Press any key to start testing ...");
             Console.ReadLine();
-            var u = new Uri("net.tcp://localhost:8734/Atdi/WcfServices/AuthenticationManager/");
+
             var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
             var httpAuthManager = GetWebQueryByEndpoint("HttpWebQuery");
             var pipeAuthManager = GetWebQueryByEndpoint("PipeWebQuery");
 
-            while(true)
+            var result = tcpAuthManager.ExecuteQuery(null, null, null);
+        }
+        static void BlockTest()
+        {
+            Console.WriteLine("Press any key to start testing ...");
+            Console.ReadLine();
+
+
+            var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
+            var httpAuthManager = GetWebQueryByEndpoint("HttpWebQuery");
+            var pipeAuthManager = GetWebQueryByEndpoint("PipeWebQuery");
+
+            while (true)
             {
                 TestWebQuery(tcpAuthManager, "tcp");
                 TestWebQuery(httpAuthManager, "http");
@@ -34,10 +66,6 @@ namespace Atdi.Test.WebQuery
                 Console.ReadLine();
                 Console.WriteLine("Repeat ...");
             }
-            
-
-
-            
         }
 
         static IWebQuery GetWebQueryByEndpoint(string endpointName)
@@ -76,15 +104,53 @@ namespace Atdi.Test.WebQuery
             var changeset = new DataModels.WebQuery.Changeset();
             for (int i = 0; i < 1; i++)
             {
-                var tree = webQueryService.GetQueriesTree(userToken);
-                var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
-                var data = webQueryService.ExecuteQuery(userToken, queryToken, fetchOptions);
-                var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
+               // var tree = webQueryService.GetQueriesTree(userToken);
+              //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
+                var data = webQueryService.ExecuteQuery(null, queryToken, fetchOptions);
+                Console.WriteLine(data.Data.Rows[0][0]);
+                //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
 
 
             timer.Stop();
             Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
+
+
+            var timer2 = System.Diagnostics.Stopwatch.StartNew();
+            
+            for (int i = 0; i < 1; i++)
+            {
+                // var tree = webQueryService.GetQueriesTree(userToken);
+                //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
+                var data = webQueryService.ExecuteQuery(userToken, queryToken, fetchOptions);
+                Console.WriteLine(data.Data.RowsAsString[0][0]);
+                //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
+            }
+
+
+            timer2.Stop();
+            Console.WriteLine($"{context}: {timer2.Elapsed.TotalMilliseconds} ms");
         }
+
+        static void TestAuthenticationManager(string endpointName)
+        {
+            var authManager = GetAuthenticationManagerByEndpoint(endpointName);
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            var c = new UserCredential()
+            {
+                UserName = "Andrey",
+                Password = "P@ssw0rd"
+            };
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var userIdentity = authManager.AuthenticateUser(c);
+            }
+
+
+            timer.Stop();
+            Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
+        }
+
     }
 }

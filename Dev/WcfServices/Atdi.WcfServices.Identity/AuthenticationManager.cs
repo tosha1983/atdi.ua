@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.WcfServices.Identity;
+using CI = Atdi.Contracts.CoreServices.Identity;
 using Atdi.DataModels.CommonOperation;
 using Atdi.DataModels.Identity;
 using Atdi.Platform.Logging;
@@ -16,19 +17,23 @@ namespace Atdi.WcfServices.Identity
     public class AuthenticationManager : WcfServiceBase<IAuthenticationManager>, IAuthenticationManager
     {
         private readonly ILogger _logger;
+        private readonly CI.IAuthenticationManager _coreAuthManager;
 
-        public AuthenticationManager(ILogger logger)
+        public AuthenticationManager(CI.IAuthenticationManager coreAuthManager, ILogger logger)
         {
             this._logger = logger;
+            this._coreAuthManager = coreAuthManager;
         }
 
         public Result<UserIdentity> AuthenticateUser(UserCredential credential)
         {
             using (this._logger.StartTrace(Contexts.AuthenticationManager, Categories.OperationCall, TraceScopeNames.AuthenticationUser))
             {
+                var userToken = this._coreAuthManager.AuthenticateUser(credential);
                 return new Result<UserIdentity>
                 {
-                    State = OperationState.Success
+                    State = OperationState.Success,
+                    Data = userToken
                 };
             }
         }

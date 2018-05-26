@@ -59,6 +59,7 @@
     <Compile Include="DependencyInjection\IServicesResolver.cs" />
     <Compile Include="DependencyInjection\IWcfServicesResolver.cs" />
     <Compile Include="DependencyInjection\ServiceLifetime.cs" />
+    <Compile Include="ExceptionText.cs" />
     <Compile Include="IConfigParameter.cs" />
     <Compile Include="IConfigParameters.cs" />
     <Compile Include="IPlatformConfigurator.cs" />

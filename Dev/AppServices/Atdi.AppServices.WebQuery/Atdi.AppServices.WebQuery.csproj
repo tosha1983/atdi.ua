@@ -57,6 +57,14 @@
       <Project>{012b0214-ac04-43b0-b87f-a0c1e991ca8f}</Project>
       <Name>Atdi.Contracts.AppServices.WebQuery</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
+      <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
+      <Name>Atdi.Contracts.LegacyServices.Icsm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
       <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
       <Name>Atdi.DataModels.WebQuery</Name>
