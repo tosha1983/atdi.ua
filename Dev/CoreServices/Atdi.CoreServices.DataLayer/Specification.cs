@@ -41,7 +41,11 @@ namespace Atdi.CoreServices.DataLayer
 
     static class Exceptions
     {
-        public static readonly ExceptionText NotSupportedEngineType = "Not supported the data engine with type '{0}'";
+        public static readonly ExceptionText EngineTypeNotSupported = "The data engine with type '{0}' is not supported";
+        public static readonly ExceptionText DataLimitTypeNotSupported = "The data limit with type '{0}' is not supported";
+        public static readonly ExceptionText SortDirectionNotSupported = "The sort direction with name '{0}' is not supported";
+        public static readonly ExceptionText LogicalOperatorNotSupported = "The logical operator with name '{0}' is not supported";
+        
     }
 
     static class ConfigParameters

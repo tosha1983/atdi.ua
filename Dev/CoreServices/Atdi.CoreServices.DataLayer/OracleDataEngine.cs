@@ -20,6 +20,8 @@ namespace Atdi.CoreServices.DataLayer
 
         public IDataEngineConfig Config => this._engineConfig;
 
+        public IEngineSyntax Syntax => throw new NotImplementedException();
+
         public void Execute(EngineCommand command, Action<IDataReader> handler)
         {
             throw new NotImplementedException();

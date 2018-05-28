@@ -142,7 +142,7 @@ namespace Atdi.Test.WebQuery
                 Password = "P@ssw0rd"
             };
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var userIdentity = authManager.AuthenticateUser(c);
             }

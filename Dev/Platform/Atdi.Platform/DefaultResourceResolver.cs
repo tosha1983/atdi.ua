@@ -13,6 +13,8 @@ namespace Atdi.Platform
             Console.WriteLine("DefaultResourceResolver");
         }
 
+      
+
         public string Resolve(string name, params object[] args)
         {
             if (args == null || args.Length == 0)

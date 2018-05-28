@@ -29,4 +29,23 @@ namespace Atdi.DataModels.DataConstraint
         [EnumMember]
         Descending = 2
     }
+
+
+    // <summary>
+    /// 
+    /// </summary>
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public enum SortDirection
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        [EnumMember]
+        Ascending = 0,
+        /// <summary>
+        /// 
+        /// </summary>
+        [EnumMember]
+        Descending = 1
+    }
 }

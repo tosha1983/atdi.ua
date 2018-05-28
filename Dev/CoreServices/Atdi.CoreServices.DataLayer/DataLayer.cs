@@ -28,7 +28,7 @@ namespace Atdi.CoreServices.DataLayer
                 case DataEngineType.Oracle:
                     return new OracleDataEngine(engineConfig, this.Logger);
                 default:
-                    throw new InvalidOperationException(Exceptions.NotSupportedEngineType.With(engineConfig.Type));
+                    throw new InvalidOperationException(Exceptions.EngineTypeNotSupported.With(engineConfig.Type));
             }
 
         }

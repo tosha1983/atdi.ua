@@ -50,6 +50,7 @@
     <Compile Include="Specification.cs" />
     <Compile Include="SqlServerCommandExecuter.cs" />
     <Compile Include="SqlServerDataEngine.cs" />
+    <Compile Include="SqlServerEngineSyntax.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">

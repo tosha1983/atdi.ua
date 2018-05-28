@@ -45,12 +45,14 @@
     <Compile Include="DataOrmBase.cs" />
     <Compile Include="EngineCommand.cs" />
     <Compile Include="EngineCommandParameter.cs" />
+    <Compile Include="IConstraintSyntax.cs" />
     <Compile Include="IDataContext.cs" />
     <Compile Include="IDataEngine.cs" />
     <Compile Include="IDataEngineConfig.cs" />
     <Compile Include="IDataLayer.cs" />
     <Compile Include="IDataLayerConfig.cs" />
     <Compile Include="IDataOrm.cs" />
+    <Compile Include="IEngineSyntax.cs" />
     <Compile Include="IQueryExecutor.cs" />
     <Compile Include="IQueryBuilder.cs" />
     <Compile Include="IQuerySelectStatement.cs" />

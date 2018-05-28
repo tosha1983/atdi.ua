@@ -55,6 +55,7 @@
     <Compile Include="QueryBuilder.cs" />
     <Compile Include="QuerySelectStatement.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="ConditionParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">

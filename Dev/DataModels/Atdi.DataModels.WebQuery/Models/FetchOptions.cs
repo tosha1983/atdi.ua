@@ -35,8 +35,8 @@ namespace Atdi.DataModels.WebQuery
         /// <summary>
         /// The paging info
         /// </summary>
-        [DataMember]
-        public PagingInfo PagingInfo { get; set; }
+        //[DataMember]
+        //public PagingInfo PagingInfo { get; set; }
 
         /// <summary>
         /// The number of records to be selected.

@@ -57,10 +57,17 @@ namespace Atdi.CoreServices.Identity
                 throw new ArgumentNullException(nameof(credential.UserName));
             }
 
+            
             var query = this._dataLayer.Builder
                 .From("EMPLOYEE")
                 .Where("WEB_LOGIN", credential.UserName)
-                .Select("ID", "WEB_LOGIN", "PWD")
+                //.Where("POSTCODE", "ASD")
+                //.Where("LANG", "eu")
+                //.Where("City.Province.Names.LEGEN", "s")
+                .Select("ID", "WEB_LOGIN", "PWD", "City.NAME")
+                .OrderByDesc("APP_USER")
+                .OrderByAsc("ID")
+                .OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
                 .OnTop(1);
 
             var userData = this._queryExecutor

@@ -19,7 +19,10 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQuerySelectStatement OnTop(int count);
 
-        
+        IQuerySelectStatement OnPercentTop(int percent);
+
+        IQuerySelectStatement Distinct();
+
     }
 
     public static class QuerySelectStatementExtensions

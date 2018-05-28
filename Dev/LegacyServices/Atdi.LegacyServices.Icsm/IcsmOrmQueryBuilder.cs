@@ -71,15 +71,8 @@ namespace Atdi.LegacyServices.Icsm
             this._ormEndInitMethod.Invoke(icsmOrm, new object[] { true });
 
             var sql = new StringBuilder();
-   
-            if (!statement.IsDistinct)
-            {
-                sql.AppendLine("SELECT ");
-            }
-            else
-            {
-                sql.AppendLine("SELECT DISTINCT ");
-            }
+
+            sql.AppendLine("SELECT ");
 
             var columnsSql = new string[icsmColumns.Length];
             for (int i = 0; i < icsmColumns.Length; i++)
@@ -92,11 +85,54 @@ namespace Atdi.LegacyServices.Icsm
             sql.AppendLine(string.Join("," + Environment.NewLine, columnsSql));
 
             var tablesSql = (string)this._ormGetSQLTablesMethod.Invoke(icsmOrm, new object[] { });
-            sql.AppendLine("FROM " + tablesSql);
+            var formatedSql = FormatFromStatement(tablesSql);
+            formatedSql = Environment.NewLine + "    " + formatedSql.Replace(Environment.NewLine, Environment.NewLine + "    ");
+            sql.Append("FROM" + formatedSql);
 
             return sql.ToString();
         }
 
+        private string FormatFromStatement(string expression)
+        {
+            int ident = -1;
+            string identValue = "";
+
+            var sql = new StringBuilder();
+
+            foreach (var symbol in expression)
+            {
+                if(symbol == '(')
+                {
+                    ++ident;
+                    if (ident > 0)
+                    {
+                        //identValue += "    ";
+                        sql.Append(Environment.NewLine);
+                        sql.Append(identValue);
+                        
+                    }
+                    sql.Append(symbol);
+                    ++ident;
+                    identValue += "    ";
+                    sql.Append(Environment.NewLine);
+                    sql.Append(identValue);
+                }
+                else if (symbol == ')')
+                {
+                    --ident;
+                    identValue = identValue.Substring(0, identValue.Length - 4);
+                    sql.Append(Environment.NewLine);
+                    sql.Append(identValue);
+                    sql.Append(symbol);
+                }
+                else
+                {
+                    sql.Append(symbol);
+                }
+                
+            }
+            return sql.ToString();
+        }
         public void Dispose()
         {
             this._ormLinker.Dispose();

@@ -26,17 +26,30 @@ namespace Atdi.LegacyServices.Icsm
         internal sealed class TableDescriptor
         {
             private readonly Dictionary<string, ColumnDescriptor> _columns;
+            private readonly Dictionary<string, ColumnDescriptor> _selectColumns;
+            private readonly Dictionary<string, ColumnDescriptor> _sortColumns;
+            private readonly Dictionary<string, ColumnDescriptor> _conditionColumns;
+
             public TableDescriptor(string tableName)
             {
                 this.Name = tableName;
                 this._columns = new Dictionary<string, ColumnDescriptor>();
+                this._selectColumns = new Dictionary<string, ColumnDescriptor>();
+                this._sortColumns = new Dictionary<string, ColumnDescriptor>();
+                this._conditionColumns = new Dictionary<string, ColumnDescriptor>();
             }
 
             public string Name { get; private set; }
 
             public IReadOnlyDictionary<string, ColumnDescriptor> Columns => this._columns;
 
-            public void AppendColumns(string[] columns)
+            public IReadOnlyDictionary<string, ColumnDescriptor> SelectColumns => this._selectColumns;
+
+            public IReadOnlyDictionary<string, ColumnDescriptor> SortColumns => this._sortColumns;
+
+            public IReadOnlyDictionary<string, ColumnDescriptor> ConditionColumns => this._conditionColumns;
+
+            public void AppendSelectColumns(string[] columns)
             {
                 foreach (var column in columns)
                 {
@@ -46,11 +59,11 @@ namespace Atdi.LegacyServices.Icsm
                         Name = column
                     };
 
-                    this.AppendColumn(descriptor);
+                    this.AppendSelectColumn(descriptor);
                 }
             }
 
-            public void AppendColumn(ColumnDescriptor column)
+            public void AppendSelectColumn(ColumnDescriptor column)
             {
                 if (column.Table != this.Name)
                 {
@@ -59,25 +72,62 @@ namespace Atdi.LegacyServices.Icsm
 
                 if (this.Columns.ContainsKey(column.Name))
                 {
+                    if (!this._selectColumns.ContainsKey(column.Name))
+                    {
+                        this._selectColumns[column.Name] = column;
+                    }
                     return;
                 }
                 this._columns[column.Name] = column;
+                this._selectColumns[column.Name] = column;
             }
 
-            public ColumnDescriptor AppendColumn(string columnName)
+            public ColumnDescriptor AppendSortColumn(string columnName)
             {
-                
                 if (this.Columns.ContainsKey(columnName))
                 {
-                    return this.Columns[columnName];
+                    var descriptor = this.Columns[columnName];
+                    if (!this._sortColumns.ContainsKey(columnName))
+                    {
+                        this._sortColumns[columnName] = descriptor;
+                    }
+                    return descriptor;
                 }
-                var descriptor = new ColumnDescriptor
+                else
                 {
-                    Table = this.Name,
-                    Name = columnName
-                };
-                this._columns[columnName] = descriptor;
-                return descriptor;
+                    var descriptor = new ColumnDescriptor
+                    {
+                        Table = this.Name,
+                        Name = columnName
+                    };
+                    this._columns[columnName] = descriptor;
+                    this._sortColumns[columnName] = descriptor;
+                    return descriptor;
+                }
+            }
+
+            public ColumnDescriptor AppendConditionColumn(string columnName)
+            {
+                if (this._columns.ContainsKey(columnName))
+                {
+                    var descriptor = this._columns[columnName];
+                    if (!this._conditionColumns.ContainsKey(columnName))
+                    {
+                        this._conditionColumns[columnName] = descriptor;
+                    }
+                    return descriptor;
+                }
+                else
+                {
+                    var descriptor = new ColumnDescriptor
+                    {
+                        Table = this.Name,
+                        Name = columnName
+                    };
+                    this._columns[columnName] = descriptor;
+                    this._conditionColumns[columnName] = descriptor;
+                    return descriptor;
+                }
             }
         }
 
@@ -85,13 +135,13 @@ namespace Atdi.LegacyServices.Icsm
         {
             public ColumnDescriptor Column { get; set; }
 
-            public OrderType OrderType { get; set; }
+            public SortDirection Direction { get; set; }
         }
 
         private readonly TableDescriptor _table;
         private readonly List<Condition> _conditions;
         private readonly List<OrderByColumnDescriptor> _orderByColumns;
-        private int _onTop;
+        private DataLimit _limit;
         private bool _isDistinct;
 
         public QuerySelectStatement(string tableName, ILogger logger) : base(logger)
@@ -99,7 +149,7 @@ namespace Atdi.LegacyServices.Icsm
             this._table = new TableDescriptor(tableName);
             this._conditions = new List<Condition>();
             this._orderByColumns = new List<OrderByColumnDescriptor>();
-            this._onTop = -1;
+            this._limit = null;
             this._isDistinct = false;
         }
 
@@ -111,7 +161,7 @@ namespace Atdi.LegacyServices.Icsm
 
         public bool IsDistinct => this._isDistinct;
 
-        public int Limit => this._onTop;
+        public DataLimit Limit => this._limit;
 
         public IQuerySelectStatement OnTop(int count)
         {
@@ -120,7 +170,13 @@ namespace Atdi.LegacyServices.Icsm
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
 
-            this._onTop = count;
+            if (this._limit == null)
+            {
+                this._limit = new DataLimit();
+            }
+            this._limit.Value  = count;
+            this._limit.Type = LimitValueType.Records;
+
             return this;
         }
 
@@ -128,11 +184,11 @@ namespace Atdi.LegacyServices.Icsm
         {
             foreach (var column in columns)
             {
-                var columnDdescriptor = this._table.AppendColumn(column);
+                var columnDdescriptor = this._table.AppendSortColumn(column);
                 var orderByDscriptor = new OrderByColumnDescriptor
                 {
                     Column = columnDdescriptor,
-                    OrderType = OrderType.Ascending
+                    Direction = SortDirection.Ascending
                 };
                 this._orderByColumns.Add(orderByDscriptor);
             }
@@ -143,11 +199,11 @@ namespace Atdi.LegacyServices.Icsm
         {
             foreach (var column in columns)
             {
-                var columnDdescriptor = this._table.AppendColumn(column);
+                var columnDdescriptor = this._table.AppendSortColumn(column);
                 var orderByDscriptor = new OrderByColumnDescriptor
                 {
                     Column = columnDdescriptor,
-                    OrderType = OrderType.Descending 
+                    Direction = SortDirection.Descending 
                 };
                 this._orderByColumns.Add(orderByDscriptor);
             }
@@ -156,13 +212,79 @@ namespace Atdi.LegacyServices.Icsm
 
         public IQuerySelectStatement Select(params string[] columns)
         {
-            _table.AppendColumns(columns);
+            if (columns == null || columns.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(columns));
+            }
+
+            _table.AppendSelectColumns(columns);
             return this;
         }
 
         public IQuerySelectStatement Where(Condition condition)
         {
+            if (condition == null)
+            {
+                throw new ArgumentNullException(nameof(condition));
+            }
+
             this._conditions.Add(condition);
+            AppendColumnsFromCondition(condition);
+            return this;
+        }
+
+
+        private void AppendColumnsFromCondition(Condition condition)
+        {
+            if (condition.Type == ConditionType.Complex)
+            {
+                var complexCondition = condition as ComplexCondition;
+                var conditions = complexCondition.Conditions;
+                if (conditions != null && conditions.Length > 0)
+                {
+                    for (int i = 0; i < conditions.Length; i++)
+                    {
+                        AppendColumnsFromCondition(conditions[i]);
+                    }
+                }
+                return;
+            }
+            else if (condition.Type == ConditionType.Expression)
+            {
+                var conditionExpression = condition as ConditionExpression;
+                AppendColumnFromOperand(conditionExpression.LeftOperand);
+                AppendColumnFromOperand(conditionExpression.RightOperand);
+            }
+        }
+
+        private void AppendColumnFromOperand(Operand operand)
+        {
+            if (operand == null)
+            {
+                return;
+            }
+            if (operand.Type == OperandType.Column)
+            {
+                var columnOperand = operand as ColumnOperand;
+                this._table.AppendConditionColumn(columnOperand.ColumnName);
+            }
+        }
+
+        public IQuerySelectStatement OnPercentTop(int percent)
+        {
+            if (this._limit == null)
+            {
+                this._limit = new DataLimit();
+            }
+            this._limit.Value = percent;
+            this._limit.Type = LimitValueType.Percent;
+
+            return this;
+        }
+
+        public IQuerySelectStatement Distinct()
+        {
+            this._isDistinct = true;
             return this;
         }
     }

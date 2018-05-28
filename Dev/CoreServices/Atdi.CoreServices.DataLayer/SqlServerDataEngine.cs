@@ -14,13 +14,16 @@ namespace Atdi.CoreServices.DataLayer
     class SqlServerDataEngine : LoggedObject, IDataEngine
     {
         private readonly IDataEngineConfig _engineConfig;
-
+        private readonly IEngineSyntax _syntax;
         public SqlServerDataEngine(IDataEngineConfig engineConfig, ILogger logger) : base(logger)
         {
             this._engineConfig = engineConfig;
+            this._syntax = new SqlServerEngineSyntax();
         }
 
         public IDataEngineConfig Config => this._engineConfig;
+
+        public IEngineSyntax Syntax => this._syntax;
 
         public int Execute(EngineCommand command)
         {

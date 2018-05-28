@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataConstraint\DataLimit.cs" />
+    <Compile Include="DataConstraint\LimitValueType.cs" />
     <Compile Include="DataConstraint\OrderExpression.cs" />
     <Compile Include="DataConstraint\OrderType.cs" />
     <Compile Include="DataConstraint\PagingInfo.cs" />
