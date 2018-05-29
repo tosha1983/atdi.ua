@@ -14,5 +14,10 @@ namespace Atdi.AppServices.WebQuery
             : base("WebQueryAppServices")
         {
         }
+
+        protected override void OnInstall()
+        {
+            this.Container.Register<QueriesRepository>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+        }
     }
 }

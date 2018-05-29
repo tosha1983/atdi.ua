@@ -44,6 +44,9 @@
     <Compile Include="Handlers\ExecuteQuery.cs" />
     <Compile Include="Handlers\SaveChanges.cs" />
     <Compile Include="Handlers\GetQueriesTree.cs" />
+    <Compile Include="Repository\QueriesRepository.cs" />
+    <Compile Include="Repository\QueriesNode.cs" />
+    <Compile Include="Repository\QueryDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="WebQueryComponent.cs" />

@@ -64,6 +64,12 @@ namespace Atdi.CoreServices.Identity
                 //.Where("POSTCODE", "ASD")
                 //.Where("LANG", "eu")
                 //.Where("City.Province.Names.LEGEN", "s")
+                //.Where(new DataModels.DataConstraint.ConditionExpression
+                //{
+                //    LeftOperand = new DataModels.DataConstraint.ColumnOperand { ColumnName = "REMARK1" },
+                //    Operator = DataModels.DataConstraint.ConditionOperator.Like,
+                //    RightOperand = new DataModels.DataConstraint.StringValueOperand { Value = "Some Text" }
+                //})
                 .Select("ID", "WEB_LOGIN", "PWD", "City.NAME")
                 .OrderByDesc("APP_USER")
                 .OrderByAsc("ID")
