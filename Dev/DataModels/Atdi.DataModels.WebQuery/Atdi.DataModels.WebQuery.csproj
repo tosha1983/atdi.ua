@@ -42,7 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Changeset\ActionType.cs" />
-    <Compile Include="Extensions\QueryResultExtension.cs" />
+    <Compile Include="Changeset\TypedRowCreationAction.cs" />
+    <Compile Include="Changeset\StringRowCreationAction.cs" />
+    <Compile Include="Changeset\ObjectRowCreationAction.cs" />
+    <Compile Include="Changeset\TypedRowUpdationAction.cs" />
+    <Compile Include="Changeset\StringRowUpdationAction.cs" />
+    <Compile Include="Changeset\ObjectRowUpdationAction.cs" />
     <Compile Include="Models\ColumnMetadata.cs" />
     <Compile Include="Changeset\Changeset.cs" />
     <Compile Include="Changeset\Action.cs" />
@@ -53,7 +58,6 @@
     <Compile Include="Changeset\ChangesResult.cs" />
     <Compile Include="Models\QueryMetadata.cs" />
     <Compile Include="Models\FetchOptions.cs" />
-    <Compile Include="Models\QueryParameter.cs" />
     <Compile Include="Models\QueryToken.cs" />
     <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Tree\QueriesTree.cs" />

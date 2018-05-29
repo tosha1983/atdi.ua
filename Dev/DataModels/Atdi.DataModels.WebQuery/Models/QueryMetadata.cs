@@ -31,8 +31,5 @@ namespace Atdi.DataModels.WebQuery
         [DataMember]
         public ColumnMetadata[] Columns { get; set; }
 
-        [DataMember]
-        public QueryParameter[] Parameters { get; set; }
-
     }
 }

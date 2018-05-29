@@ -20,7 +20,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
         {
             using (this.Logger.StartTrace(Contexts.WebQueryAppServices, Categories.Handling, TraceScopeNames.GetQueriesTree))
             {
-                return new QueriesTree() { Root = new QueriesTreeNode() };
+                return new QueriesTree() { Nodes = new QueriesTreeNode[] { } };
             }
         }
     }

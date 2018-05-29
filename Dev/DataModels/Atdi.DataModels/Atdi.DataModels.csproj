@@ -46,6 +46,19 @@
     <Compile Include="DataConstraint\OrderExpression.cs" />
     <Compile Include="DataConstraint\OrderType.cs" />
     <Compile Include="DataConstraint\PagingInfo.cs" />
+    <Compile Include="DataRow\DataRowType.cs" />
+    <Compile Include="DataRow\ObjectDataRow.cs" />
+    <Compile Include="DataRow\StringDataRow.cs" />
+    <Compile Include="DataRow\TypedDataRow.cs" />
+    <Compile Include="DataSet\DataSet.cs" />
+    <Compile Include="DataSet\ObjectCellsDataSet.cs" />
+    <Compile Include="DataSet\ObjectRowsDataSet.cs" />
+    <Compile Include="DataSet\DataSetColumn.cs" />
+    <Compile Include="DataSet\DataSetStructure.cs" />
+    <Compile Include="DataSet\StringCellsDataSet.cs" />
+    <Compile Include="DataSet\StringRowsDataSet.cs" />
+    <Compile Include="DataSet\TypedCellsDataSet.cs" />
+    <Compile Include="DataSet\TypedRowsDataSet.cs" />
     <Compile Include="Identity\UserIdentity.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="CommonOperation\OperationState.cs" />
@@ -67,5 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Identity\UserToken.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -18,7 +18,7 @@ namespace Atdi.DataModels.WebQuery
         public DataType Type { get; set; }
 
         [DataMember]
-        public string Path { get; set; }
+        public string Name { get; set; }
 
         [DataMember]
         public string Title { get; set; }

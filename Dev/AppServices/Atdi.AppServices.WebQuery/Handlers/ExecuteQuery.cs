@@ -88,12 +88,12 @@ namespace Atdi.AppServices.WebQuery.Handlers
         {
             if (userToken == null)
             {
-                var result = new QueryResult() { Rows = rows };
+                var result = new QueryResult() { Token = queryToken, Dataset = new DataModels.DataSet()};
                 return result;
             }
             using (this.Logger.StartTrace(Contexts.WebQueryAppServices, Categories.Handling, TraceScopeNames.ExecuteQuery))
             {
-                var result = new QueryResult() { RowsAsString = rows2 };
+                var result = new QueryResult() { Token = queryToken, Dataset = new DataModels.DataSet()};
                 return result;
             }
         }

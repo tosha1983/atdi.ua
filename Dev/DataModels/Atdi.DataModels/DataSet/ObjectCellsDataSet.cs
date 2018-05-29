@@ -5,20 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     /// <summary>
     /// Represents the data of the result of the executed query
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
-   
-    public class QueryResult
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ObjectCellsDataSet : DataSet
     {
-        [DataMember]
-        public QueryToken Token { get; set; }
+        public ObjectCellsDataSet()
+        {
+            this.Structure = DataSetStructure.ObjectCells;
+        }
 
         [DataMember]
-        public DataSet Dataset { get; set; }
+        public object[][] Cells { get; set; }
 
     }
 }

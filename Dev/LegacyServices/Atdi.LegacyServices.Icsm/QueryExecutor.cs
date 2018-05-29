@@ -79,9 +79,6 @@ namespace Atdi.LegacyServices.Icsm
             
             // add group by
 
-            
-
-
             command.Text = this._syntax.SelectExpression(selectColumns, fromExpression, whereExpression, orderByColumns, limit);
             return command;
         }

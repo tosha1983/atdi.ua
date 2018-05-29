@@ -13,8 +13,11 @@ namespace Atdi.DataModels.WebQuery
     [DataContract(Namespace = Specification.Namespace)]
     public class QueriesTree
     {
+        /// <summary>
+        /// The nodes of the tree
+        /// </summary>
         [DataMember]
-        public QueriesTreeNode Root { get; set; }
+        public QueriesTreeNode[] Nodes { get; set; }
 
     }
 }

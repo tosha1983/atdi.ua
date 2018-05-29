@@ -107,7 +107,7 @@ namespace Atdi.Test.WebQuery
                // var tree = webQueryService.GetQueriesTree(userToken);
               //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
                 var data = webQueryService.ExecuteQuery(null, queryToken, fetchOptions);
-                Console.WriteLine(data.Data.Rows[0][0]);
+              //  Console.WriteLine(data.Data.Rows[0][0]);
                 //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
 
@@ -123,7 +123,7 @@ namespace Atdi.Test.WebQuery
                 // var tree = webQueryService.GetQueriesTree(userToken);
                 //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
                 var data = webQueryService.ExecuteQuery(userToken, queryToken, fetchOptions);
-                Console.WriteLine(data.Data.RowsAsString[0][0]);
+              //  Console.WriteLine(data.Data.RowsAsString[0][0]);
                 //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
 

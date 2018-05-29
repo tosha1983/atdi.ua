@@ -14,17 +14,17 @@ namespace Atdi.DataModels.WebQuery
     public class ActionResult
     {
         /// <summary>
+        /// The ID of the action
+        /// </summary>
+        [DataMember]
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// The type of the action
         /// </summary>
         [DataMember]
         public ActionType Type { get; set; }
-
-        /// <summary>
-        /// The id of the record
-        /// </summary>
-        [DataMember]
-        public int? RecordId { get; set; }
-
+        
         /// <summary>
         /// The status of the result
         /// </summary>

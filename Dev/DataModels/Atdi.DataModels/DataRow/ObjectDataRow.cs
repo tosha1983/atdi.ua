@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
-    // <summary>
-    /// Represents the action of delete record
+    /// <summary>
+    /// Represents the metadata to the column
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
-    public class DeleteionAction : Action
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ObjectDataRow
     {
         [DataMember]
-        public Condition Condition { get; set; }
+        public object[] Cells{ get; set; }
     }
 }

@@ -14,6 +14,9 @@ namespace Atdi.DataModels.WebQuery
     [DataContract(Namespace = Specification.Namespace)]
     public class FetchOptions
     {
+        [DataMember]
+        public DataSetStructure ResultStructure { get; set; }
+
         /// <summary>
         /// The columns to include the result.
         /// </summary>
@@ -42,6 +45,6 @@ namespace Atdi.DataModels.WebQuery
         /// The number of records to be selected.
         /// </summary>
         [DataMember]
-        public int Limit { get; set; }
+        public DataLimit Limit { get; set; }
     }
 }

@@ -9,12 +9,19 @@ using Atdi.DataModels.DataConstraint;
 namespace Atdi.DataModels.WebQuery
 {
     // <summary>
-    /// Represents the action of delete record
+    /// Represents the action of update record
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class DeleteionAction : Action
+    public class StringRowUpdationAction : UpdationAction
     {
+        public StringRowUpdationAction()
+        {
+            this.Type = ActionType.Update;
+            this.RowType = DataRowType.StringCell;
+        }
+
         [DataMember]
-        public Condition Condition { get; set; }
+        public StringDataRow Row { get; set; }
+        
     }
 }

@@ -11,12 +11,15 @@ namespace Atdi.DataModels.WebQuery
     /// Represents the action of create record
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    [KnownType(typeof(TypedRowCreationAction))]
-    [KnownType(typeof(StringRowCreationAction))]
-    [KnownType(typeof(ObjectRowCreationAction))]
-    public class CreationAction : Action
+    public class TypedRowCreationAction : CreationAction
     {
+        public TypedRowCreationAction()
+        {
+            this.Type = ActionType.Create;
+            this.RowType = DataRowType.TypedCell;
+        }
+
         [DataMember]
-        public DataRowType RowType { get; set; }
+        public TypedDataRow Row { get; set; }
     }
 }
