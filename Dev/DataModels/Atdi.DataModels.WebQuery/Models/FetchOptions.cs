@@ -14,6 +14,12 @@ namespace Atdi.DataModels.WebQuery
     [DataContract(Namespace = Specification.Namespace)]
     public class FetchOptions
     {
+        /// <summary>
+        /// The ID of the option set
+        /// </summary>
+        [DataMember]
+        public Guid Id { get; set; }
+
         [DataMember]
         public DataSetStructure ResultStructure { get; set; }
 

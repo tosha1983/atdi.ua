@@ -14,9 +14,21 @@ namespace Atdi.DataModels.WebQuery
    
     public class QueryResult
     {
+        /// <summary>
+        /// The ID of the option set
+        /// </summary>
+        [DataMember]
+        public Guid OptionId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         [DataMember]
         public QueryToken Token { get; set; }
 
+        /// <summary>
+        /// The feched data
+        /// </summary>
         [DataMember]
         public DataSet Dataset { get; set; }
 
