@@ -45,7 +45,10 @@
     <Compile Include="DataLayer.cs" />
     <Compile Include="DataLayerComponent.cs" />
     <Compile Include="DataLayerConfig.cs" />
+    <Compile Include="GlobalDbLocal.cs" />
+    <Compile Include="OracleCommandExecuter.cs" />
     <Compile Include="OracleDataEngine.cs" />
+    <Compile Include="OracleEngineSyntax.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="SqlServerCommandExecuter.cs" />

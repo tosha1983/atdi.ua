@@ -9,6 +9,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.Identity;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.CoreServices.Identity.Models;
+using System.Security.Cryptography;
 
 namespace Atdi.CoreServices.Identity
 {
@@ -64,16 +65,16 @@ namespace Atdi.CoreServices.Identity
                 //.Where("POSTCODE", "ASD")
                 //.Where("LANG", "eu")
                 //.Where("City.Province.Names.LEGEN", "s")
-                //.Where(new DataModels.DataConstraint.ConditionExpression
-                //{
-                //    LeftOperand = new DataModels.DataConstraint.ColumnOperand { ColumnName = "REMARK1" },
-                //    Operator = DataModels.DataConstraint.ConditionOperator.Like,
-                //    RightOperand = new DataModels.DataConstraint.StringValueOperand { Value = "Some Text" }
-                //})
-                .Select("ID", "WEB_LOGIN", "PWD", "City.NAME")
-                .OrderByDesc("APP_USER")
+                .Where(new DataModels.DataConstraint.ConditionExpression
+                {
+                    LeftOperand = new DataModels.DataConstraint.ColumnOperand { ColumnName = "DATE_CREATED" },
+                    Operator = DataModels.DataConstraint.ConditionOperator.LessThan,
+                    RightOperand = new DataModels.DataConstraint.DateTimeValueOperand { Value =  DateTime.Now }
+                })
+                .Select("ID", "WEB_LOGIN", "PWD","DATE_CREATED")
+                //.OrderByDesc("APP_USER")
                 .OrderByAsc("ID")
-                .OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
+                //.OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
                 .OnTop(1);
 
             var userData = this._queryExecutor
@@ -95,12 +96,21 @@ namespace Atdi.CoreServices.Identity
             {
                 throw new InvalidOperationException(Exceptions.NotFoundUser.With(credential.UserName));
             }
-            if ((string.IsNullOrEmpty(userData.Password) && string.IsNullOrEmpty(credential.Password) ) 
-                || userData.Password == credential.Password)
+
+            byte[] inputbytes = UTF8Encoding.UTF8.GetBytes(credential.Password);
+            SHA256 sha = new SHA256CryptoServiceProvider();
+            byte[] hash = sha.ComputeHash(inputbytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++) sb.Append(hash[i].ToString("X2"));
+            string pass = sb.ToString();
+
+            if ((string.IsNullOrEmpty(userData.Password) && string.IsNullOrEmpty(credential.Password))
+                || userData.Password == pass)
             {
                 var userIdentity = this.CreateUserIdentity(userData);
                 return userIdentity;
             }
+
 
             throw new InvalidOperationException(Exceptions.InvalidUserPassword.With(credential.UserName));            
         }

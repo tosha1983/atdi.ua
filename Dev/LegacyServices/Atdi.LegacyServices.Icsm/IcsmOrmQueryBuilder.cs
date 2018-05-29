@@ -35,6 +35,7 @@ namespace Atdi.LegacyServices.Icsm
             else if (dataEngine.Config.Type == DataEngineType.Oracle)
             {
                 provider = ICSM_DL.DotnetProvider.OracleClient;
+                schemaPrefix = "ICSM.";
             }
 
             this._icsmDb = ICSM_DL.ANetDb.New(provider);
@@ -79,7 +80,11 @@ namespace Atdi.LegacyServices.Icsm
             {
                 var icsmColumn = icsmColumns[i];
                 var sqlColumn = icsmColumn.GetDataName();
-                columnsSql[i] = "    " + sqlColumn + " AS [" + icsmColumn.m_alias + "]";
+
+                if (_dataEngine.Config.Type == DataEngineType.SqlServer)
+                    columnsSql[i] = "    " + sqlColumn + " AS [" + icsmColumn.m_alias + "]";
+                else if (_dataEngine.Config.Type == DataEngineType.Oracle)
+                    columnsSql[i] = "    " + sqlColumn + " AS \"" + icsmColumn.m_alias + "\"";
             }
 
             sql.AppendLine(string.Join("," + Environment.NewLine, columnsSql));
