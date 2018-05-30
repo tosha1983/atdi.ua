@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassesWebQuery.cs" />
     <Compile Include="IcsmComponent.cs" />
     <Compile Include="IcsmDataLayer.cs" />
     <Compile Include="IcsmOrmQueryBuilder.cs" />

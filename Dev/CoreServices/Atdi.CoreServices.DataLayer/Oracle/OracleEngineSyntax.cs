@@ -124,7 +124,18 @@ namespace Atdi.CoreServices.DataLayer
                 }
                 else
                 {
-
+                    if (limit.Type == LimitValueType.Records)
+                    {
+                        statement.AppendLine("WHERE");
+                        statement.AppendLine(IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT) + $" AND ROWNUM<={limit.Value}");
+                    }
+                    else if (limit.Type == LimitValueType.Percent)
+                    {
+                        throw new InvalidOperationException(Exceptions.DataLimitTypeNotSupported.With(limit.Type));
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(Exceptions.DataLimitTypeNotSupported.With(limit.Type));
                     }
                 }
             }

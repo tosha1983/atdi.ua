@@ -45,7 +45,6 @@
     <Compile Include="DataLayer.cs" />
     <Compile Include="DataLayerComponent.cs" />
     <Compile Include="DataLayerConfig.cs" />
-    <Compile Include="Oracle\GlobalDbLocal.cs" />
     <Compile Include="Oracle\OracleCommandExecuter.cs" />
     <Compile Include="Oracle\OracleDataEngine.cs" />
     <Compile Include="Oracle\OracleEngineSyntax.cs" />

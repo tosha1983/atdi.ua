@@ -7,10 +7,10 @@ using Atdi.DataModels;
 using Atdi.DataModels.WebQuery;
 
 namespace Atdi.AppServices.WebQuery
-{ 
-            /// Класс для хранения свойств запроса
+{
+        /// Класс для хранения свойств запроса
         /// </summary>
-        public class XWebConstraint
+        internal sealed class XWebConstraint
         {
             /// <summary>
             /// Идентификатор ограничения в таблице
@@ -53,7 +53,7 @@ namespace Atdi.AppServices.WebQuery
             /// т.е. если  Include = true - это эквивалентно  (column_name BETWEEN value1 AND value2)
             /// если  Include = false - это эквивалентно  (column_name NOT BETWEEN value1 AND value2)
             /// </summary>
-            public bool Include { get; set; }
+            public int Include { get; set; }
 
         }
 

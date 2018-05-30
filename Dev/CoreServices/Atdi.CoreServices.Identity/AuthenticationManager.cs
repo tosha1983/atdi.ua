@@ -77,6 +77,7 @@ namespace Atdi.CoreServices.Identity
                 //.OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
                 .OnTop(1);
 
+
             var userData = this._queryExecutor
                 .Fetch(query, reader =>
                 {

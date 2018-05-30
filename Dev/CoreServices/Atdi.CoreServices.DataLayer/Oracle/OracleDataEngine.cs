@@ -9,7 +9,7 @@ using System.Data;
 
 namespace Atdi.CoreServices.DataLayer
 {
-    class OracleDataEngine : LoggedObject, IDataEngine
+    internal sealed class OracleDataEngine : LoggedObject, IDataEngine
     {
         private readonly IDataEngineConfig _engineConfig;
         private readonly IEngineSyntax _syntax;

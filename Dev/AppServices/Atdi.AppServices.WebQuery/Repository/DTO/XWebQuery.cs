@@ -7,10 +7,10 @@ using Atdi.DataModels;
 using Atdi.DataModels.WebQuery;
 
 namespace Atdi.AppServices.WebQuery
-{ 
+{
         /// Класс для хранения свойств запроса
         /// </summary>
-        public class XWebQuery
+        internal sealed class XWebQuery
         {
             /// <summary>
             /// ID запроса
@@ -27,7 +27,7 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// Код запроса (в виде структури IRP или чистый SQL)
             /// </summary>
-            public string Query { get; set; }
+            public byte[] Query { get; set; }
             /// <summary>
             /// Комментарии к запросу
             /// </summary>
