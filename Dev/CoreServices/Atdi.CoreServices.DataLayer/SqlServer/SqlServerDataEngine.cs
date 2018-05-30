@@ -11,10 +11,11 @@ using Atdi.DataModels;
 
 namespace Atdi.CoreServices.DataLayer
 {
-    class SqlServerDataEngine : LoggedObject, IDataEngine
+    internal sealed class SqlServerDataEngine : LoggedObject, IDataEngine
     {
         private readonly IDataEngineConfig _engineConfig;
         private readonly IEngineSyntax _syntax;
+
         public SqlServerDataEngine(IDataEngineConfig engineConfig, ILogger logger) : base(logger)
         {
             this._engineConfig = engineConfig;
