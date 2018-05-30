@@ -98,6 +98,7 @@ namespace Atdi.CoreServices.DataLayer
         {
             var statement = new StringBuilder();
 
+
             statement.AppendLine("SELECT");
           
             if (selectColumns != null && selectColumns.Length > 0)
@@ -130,7 +131,7 @@ namespace Atdi.CoreServices.DataLayer
                     }
                     else if (limit.Type == LimitValueType.Percent)
                     {
-                        // ????
+                        throw new InvalidOperationException(Exceptions.DataLimitTypeNotSupported.With(limit.Type));
                     }
                     else
                     {

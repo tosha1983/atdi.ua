@@ -44,6 +44,8 @@
     <Compile Include="Handlers\ExecuteQuery.cs" />
     <Compile Include="Handlers\SaveChanges.cs" />
     <Compile Include="Handlers\GetQueriesTree.cs" />
+    <Compile Include="Repository\DTO\XWebConstraint.cs" />
+    <Compile Include="Repository\DTO\XWebQuery.cs" />
     <Compile Include="Repository\QueriesRepository.cs" />
     <Compile Include="Repository\QueriesNode.cs" />
     <Compile Include="Repository\QueryDescriptor.cs" />

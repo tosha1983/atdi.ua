@@ -42,8 +42,8 @@ namespace Atdi.LegacyServices.Icsm
             this._icsmDb.ConnectionString = dataEngine.Config.ConnectionString;
             this._icsmDb.Open();
             ICSM_ORM.OrmSchema.InitIcsmSchema(this._icsmDb, schemaPrefix, initIcsmSchemaPath);
+            string outErr = ""; ICSM_ORM.OrmSchema.ParseSchema(initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out outErr);
             this._ormLinker = new ICSM_ORM.DbLinker(this._icsmDb, schemaPrefix);
-
             var ormType = typeof(ICSM_ORM.OrmRs);
             this._ormEndInitMethod = ormType.GetMethod("EndInit", BindingFlags.NonPublic | BindingFlags.Instance);
             this._ormGetSQLTablesMethod = ormType.GetMethod("GetSQLTables", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -54,7 +54,6 @@ namespace Atdi.LegacyServices.Icsm
         {
             var icsmOrm = new ICSM_ORM.OrmRs();
             icsmOrm.Init(this._ormLinker);
-
             var sourceColumns = statement.Table.Columns.Values;
             var icsmColumns = new ICSM_ORM.OrmItem[statement.Table.Columns.Count];
             int index = 0;

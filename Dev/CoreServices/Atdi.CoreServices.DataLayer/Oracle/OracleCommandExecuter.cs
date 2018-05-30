@@ -11,20 +11,21 @@ using System.Data.SqlClient;
 using Atdi.DataModels;
 using System.Runtime.CompilerServices;
 
+
 namespace Atdi.CoreServices.DataLayer
 {
     internal sealed class OracleCommandExecuter : LoggedObject, IDisposable
     {
-        private GlobalDbLocal _DB;
         private DbConnection _connection;
         private DbCommand _command;
 
         public OracleCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger) 
             : base(logger)
         {
-            _DB = new GlobalDbLocal();
-            _DB.OpenConnection(_engineConfig.ConnectionString);
-            this._connection = _DB._dbConnection;
+            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+            this._connection =  _dbProviderFactory.CreateConnection();
+            this._connection.ConnectionString = _engineConfig.ConnectionString;
+            this._connection.Open();
             this._command = this._connection.CreateCommand();
             this._command.Connection = this._connection;
             this._command.CommandText = engineCommand.Text;
@@ -51,16 +52,13 @@ namespace Atdi.CoreServices.DataLayer
             sqlParameter.Direction = ParameterDirection.Input;
             sqlParameter.Value = parameter.Value ?? DBNull.Value;
 
-            if (parameter.DataType == DataType.String && parameter.Value != null)
-            {
+            if (parameter.DataType == DataType.String && parameter.Value != null) {
                 sqlParameter.Size = Convert.ToString(parameter.Value).Length;
             }
-            if (parameter.DataType == DataType.Bytes && parameter.Value != null)
-            {
+            if (parameter.DataType == DataType.Bytes && parameter.Value != null) {
                 sqlParameter.Size = ((byte[])parameter.Value).Length;
             }
-            if (parameter.DataType == DataType.Decimal && parameter.Value != null)
-            {
+            if (parameter.DataType == DataType.Decimal && parameter.Value != null) {
                 sqlParameter.Precision = 28;
                 sqlParameter.Scale = 10;
             }
