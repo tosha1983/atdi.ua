@@ -25,7 +25,7 @@ namespace Atdi.Test.WebQuery
                 Console.WriteLine("Press any key to start testing ...");
                 Console.ReadLine();
 
-                TestAuthenticationManager("TcpAuthenticationManager");
+                TestAuthenticationManager("HttpAuthenticationManager");
 
             }
             //BlockTest();
@@ -88,7 +88,7 @@ namespace Atdi.Test.WebQuery
             {
                 var tcpToken = authManager.AuthenticateUser(c);
             }
-
+            
 
             timer.Stop();
             Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
@@ -104,10 +104,10 @@ namespace Atdi.Test.WebQuery
             var changeset = new DataModels.WebQuery.Changeset();
             for (int i = 0; i < 1; i++)
             {
-                // var tree = webQueryService.GetQueriesTree(userToken);
-                //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
+               // var tree = webQueryService.GetQueriesTree(userToken);
+              //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
                 var data = webQueryService.ExecuteQuery(null, queryToken, fetchOptions);
-                //  Console.WriteLine(data.Data.Rows[0][0]);
+              //  Console.WriteLine(data.Data.Rows[0][0]);
                 //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
 
@@ -117,13 +117,13 @@ namespace Atdi.Test.WebQuery
 
 
             var timer2 = System.Diagnostics.Stopwatch.StartNew();
-
+            
             for (int i = 0; i < 1; i++)
             {
                 // var tree = webQueryService.GetQueriesTree(userToken);
                 //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
                 var data = webQueryService.ExecuteQuery(userToken, queryToken, fetchOptions);
-                //  Console.WriteLine(data.Data.RowsAsString[0][0]);
+              //  Console.WriteLine(data.Data.RowsAsString[0][0]);
                 //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
 
@@ -138,8 +138,8 @@ namespace Atdi.Test.WebQuery
             var timer = System.Diagnostics.Stopwatch.StartNew();
             var c = new UserCredential()
             {
-                UserName = "Andrey",
-                Password = "P@ssw0rd"
+                UserName = "ICSM",
+                Password = "ICSM"
             };
 
             for (int i = 0; i < 10; i++)
