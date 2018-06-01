@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ICSM;
+using DatalayerCs;
 
 namespace XICSM.WebQuery
 {
@@ -37,25 +38,25 @@ namespace XICSM.WebQuery
                         RsWebQueryNew.Open();
                         if (!RsWebQueryNew.IsEOF())
                         {
+                                byte[] zip = null;
+                                string sql; ANetDb d;
+                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT Query FROM %XWebQuery WHERE ID=" + RsWebQueryNew.GetI("WebQueryId"), out sql, out d);
+                                ANetRs Anet_rs = d.NewRecordset();
+                                Anet_rs.Open(sql);
+                                if (!Anet_rs.IsEOF())
+                                    zip = Anet_rs.GetBinary(0);
+                                Anet_rs.Destroy();
+                                string cipherText = "";
+                                if (zip != null)
+                                {
+                                    cipherText = UTF8Encoding.UTF8.GetString(zip);
+                                }
 
-                            IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
-                            RsWebQuery.Select("ID,Query,IsSqlRequest");
-                            RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, RsWebQueryNew.GetI("WebQueryId"));
-                            RsWebQuery.Open();
-                            if (!RsWebQuery.IsEOF())
-                            {
-                                string Q = RsWebQuery.GetS("Query");
-                                List<string> List_Path = ClassORM.GetProperties(Q, true, RsWebQueryNew.GetI("IsSqlRequest") ==1 ? true : false);
+                                    List<string> List_Path = ClassORM.GetProperties(cipherText, true);
                                 comboBox_path.Items.Clear();
                                 foreach (string item in List_Path)
                                     comboBox_path.Items.Add(item);
-                            }
-                            if (RsWebQuery.IsOpen())
-                                RsWebQuery.Close();
-                            RsWebQuery.Destroy();
                         }
-
-
                         if (RsWebQueryNew.IsOpen())
                             RsWebQueryNew.Close();
                         RsWebQueryNew.Destroy();

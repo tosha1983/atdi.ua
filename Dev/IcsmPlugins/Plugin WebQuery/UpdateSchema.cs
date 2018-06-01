@@ -58,12 +58,11 @@ namespace XICSM.WebQuery
                 s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
                 s.DeclareIndex("PK_WebQuery", "PRIMARY", "ID");
                 s.DeclareField("Name", "VARCHAR(50)", null, null, null);
-                s.DeclareField("Status", "VARCHAR(3)", null, null, null);
                 s.DeclareField("Query", "BINARY(20000)", null, null, null);
                 s.DeclareField("Comments", "VARCHAR(250)", null, null, null);
                 s.DeclareField("IdentUser", "VARCHAR(250)", null, null, null);
-                s.DeclareField("IsSqlRequest", "NUMBER(9,0)", null, null, null);
-                s.DeclareField("RightGroup", "VARCHAR(100)", null, null, null);
+                s.DeclareField("Code", "VARCHAR(50)", null, null, null);
+                s.DeclareField("TaskForceGroup", "VARCHAR(100)", null, null, null);
             }
 
 
@@ -94,12 +93,12 @@ namespace XICSM.WebQuery
         /// <returns>true</returns>
         public static bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
-            if (dbCurVersion < 20180105.0946)
+            if (dbCurVersion < 20180105.0948)
             {
                 s.CreateTables("XWebQuery,XWebConstraint");
                 s.CreateTableFields("XWebConstraint", "ID,WebQueryId,Name,Path,Min,Max,StrValue,DateValueMin,DateValueMax,Include");
-                s.CreateTableFields("XWebQuery", "ID,Name,Status,Query,Comments,IdentUser,IsSqlRequest,RightGroup");
-                s.SetDatabaseVersion(20180105.0946);
+                s.CreateTableFields("XWebQuery", "ID,Name,Query,Comments,IdentUser,Code,TaskForceGroup");
+                s.SetDatabaseVersion(20180105.0948);
             }
             return true;
         }
@@ -108,6 +107,6 @@ namespace XICSM.WebQuery
         /// <summary>
         /// Текущая версия БД плагина
         /// </summary>
-        public static readonly double schemaVersion = 20180105.0946;//20161003.0909
+        public static readonly double schemaVersion = 20180105.0948;//20161003.0909
     }
 }

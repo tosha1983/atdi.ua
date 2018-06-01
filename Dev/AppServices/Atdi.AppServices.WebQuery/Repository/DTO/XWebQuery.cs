@@ -23,7 +23,7 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// Категория запроса - стандартная или пользовательская
             /// </summary>
-            public string Status { get; set; }
+            public string Code { get; set; }
             /// <summary>
             /// Код запроса (в виде структури IRP или чистый SQL)
             /// </summary>
@@ -37,13 +37,9 @@ namespace Atdi.AppServices.WebQuery
             /// </summary>
             public string IdentUser { get; set; }
             /// <summary>
-            /// Наименование группы прав taskforce
-            /// </summary>
-            public int IsSqlRequest { get; set; }
-            /// <summary>
             /// Основная таблица запроса
             /// </summary>
-            public string RightGroup { get; set; }
+            public string TaskForceGroup { get; set; }
         }
     
 }

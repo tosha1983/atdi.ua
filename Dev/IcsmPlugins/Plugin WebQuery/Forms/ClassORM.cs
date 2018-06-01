@@ -37,79 +37,13 @@ namespace XICSM.WebQuery
             return rc;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Fld"></param>
-        /// <param name="sql_"></param>
-        /// <returns></returns>
-        public static List<object[]> ExecuteSQLCommand(ref List<string> Fld, string sql_)
-        {
-            string sql; ANetDb d;
-            List<object[]> RecordValues = new List<object[]>();
-            List<object> RecordsVal = null;
-            List<string> fld_f = new List<string>();
-            List<KeyValuePair<string, string>> L_Field = new List<KeyValuePair<string, string>>();
-            try {
-                if (!string.IsNullOrEmpty(sql_)) {
-                    if (OrmSchema.Linker != null) {
-                        ICSM.IMDbConnection conn = ICSM.IM.GetDbConnection("LICENCE");
-                        d = ANetDb.New("System.Data.SqlClient"); d.ConnectionString = string.Format(@"SERVER={0};UID={1};PWD={2};DATABASE={3};", conn.SERVER, conn.UID, conn.PWD, conn.DATABASE);
-                        ANetRs rs = d.NewRecordset(); rs.Open(sql_); DataTable dft = rs.GetSchemaTable();
-                        foreach (DataRow row in dft.Rows) {
-                            var name = row["ColumnName"];
-                            var size = row["ColumnSize"];
-                            var dataType = row["DataTypeName"];
-                            if (!L_Field.Contains(new KeyValuePair<string, string>(name.ToString(), dataType.ToString())))
-                                L_Field.Add(new KeyValuePair<string, string>(name.ToString(), dataType.ToString()));
-                        }
-                        foreach (DataRow c in dft.Rows)  {
-                            fld_f.Add(c[0].ToString());
-                        }
-
-                        if (fld_f.Count > 0) {
-                            Fld = fld_f;
-                            for (; !rs.IsEOF(); rs.MoveNext()){
-                                RecordsVal = new List<object>();
-                                int i = 0;
-                                foreach (KeyValuePair<string, string> item in L_Field) {
-                                    object value = -1;
-                                    if (item.Value == "decimal") {
-                                        value = rs.GetDouble(i);
-                                    }
-                                    else if (item.Value == "nvarchar") {
-                                        value = rs.GetString(i);
-                                    }
-                                    else if (item.Value == "datetime") {
-                                        value = rs.GetDatetime(i);
-                                    }
-                                    else  {
-                                        value = rs.GetString(i);
-                                    }
-                                    RecordsVal.Add(value);
-                                    i++;
-                                }
-                                RecordValues.Add(RecordsVal.ToArray());
-                            }
-
-                        }
-                        rs.Destroy();
-                    }
-                }
-
-            }
-            catch (Exception ex) {
-            }
-            return RecordValues;
-        }
-
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Query"></param>
         /// <returns></returns>
-        public static List<string> GetProperties(string Query, bool isDecrypt, bool isSQLMode)
+        public static List<string> GetProperties(string Query, bool isDecrypt)
         {
             List<string> str_fld = new List<string>();
             string appFolder = AppDomain.CurrentDomain.BaseDirectory;
@@ -119,21 +53,17 @@ namespace XICSM.WebQuery
             gd_name = appFolder + @"\Temp\TmpIrp" + gd_name + ".IRP";
             StreamWriter write = new StreamWriter(gd_name, false, Encoding.UTF8);
             if (isDecrypt) {
-                string cipherText = CryptorEngine.Decrypt(Query, true);
-                if (isSQLMode)
-                    ExecuteSQLCommand(ref str_fld, cipherText);
-                else
-                    write.Write(cipherText);
+                //string cipherText = UTF8Encoding.UTF8.GetString(Query);
+                //string cipherText = CryptorEngine.Decrypt(Query, true);
+                write.Write(Query);
             }
             else { write.Write(Query);
-                if (isSQLMode)
-                    ExecuteSQLCommand(ref str_fld, Query);
-                else write.Write(Query);
+                write.Write(Query);
             }
 
             write.Close();
             Class_IRP_Object hg_ = new Class_IRP_Object();
-            if (!isSQLMode) {
+            {
                 if (System.IO.File.Exists(gd_name)) {
                     string str_value = "";
                     IcsmReport ics = new IcsmReport();
@@ -190,16 +120,12 @@ namespace XICSM.WebQuery
             gd_name = appFolder + @"\Temp\TmpIrp" + gd_name + ".IRP";
             StreamWriter write = new StreamWriter(gd_name, false, Encoding.UTF8);
             if (isDecrypt) {
-                string cipherText = CryptorEngine.Decrypt(Query, true);
-                if (isSQLMode)
-                    ExecuteSQLCommand(ref str_fld, cipherText);
-                else
-                    write.Write(cipherText);
+                //string cipherText = UTF8Encoding.UTF8.GetString(Query);
+                //string cipherText = CryptorEngine.Decrypt(Query, true);
+                write.Write(Query);
             }
             else { write.Write(Query);
-                if (isSQLMode)
-                    ExecuteSQLCommand(ref str_fld, Query);
-                else write.Write(Query);
+                write.Write(Query);
             }
 
             write.Close();

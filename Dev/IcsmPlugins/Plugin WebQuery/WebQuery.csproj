@@ -128,7 +128,6 @@
     </Compile>
     <Compile Include="TablesName.cs" />
     <Compile Include="UpdateSchema.cs" />
-    <Compile Include="Utils\CryptorEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icons\calendar.png" />
