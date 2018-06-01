@@ -12,7 +12,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
 {
     public sealed class GetQueriesTree : LoggedObject
     {
-        public GetQueriesTree(ILogger logger) : base(logger)
+        public GetQueriesTree( ILogger logger) : base(logger)
         {
         }
 
