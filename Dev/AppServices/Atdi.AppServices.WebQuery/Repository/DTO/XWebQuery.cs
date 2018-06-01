@@ -21,11 +21,11 @@ namespace Atdi.AppServices.WebQuery
             /// </summary>
             public string Name { get; set; }
             /// <summary>
-            /// Категория запроса - стандартная или пользовательская
+            /// Идентификатор запроса
             /// </summary>
             public string Code { get; set; }
             /// <summary>
-            /// Код запроса (в виде структури IRP или чистый SQL)
+            /// Код запроса 
             /// </summary>
             public byte[] Query { get; set; }
             /// <summary>
@@ -37,7 +37,7 @@ namespace Atdi.AppServices.WebQuery
             /// </summary>
             public string IdentUser { get; set; }
             /// <summary>
-            /// Основная таблица запроса
+            /// Группа TaskForce
             /// </summary>
             public string TaskForceGroup { get; set; }
         }
