@@ -22,12 +22,17 @@ namespace Atdi.AppServices.WebQuery
         }
 
 
-        public QueryDescriptor GetQueryDescriptor(QueryToken token)
+        public QueryDescriptor GetQueryDescriptorByToken(UserTokenData userToken, QueryToken queryToken)
         {
             return null;
         }
 
-        public QueriesNode[] GetTreeNodesByUser(UserTokenData token)
+        public QueryDescriptor GetQueryDescriptorByCode(UserTokenData userToken, string queryCode)
+        {
+            return null;
+        }
+
+        public QueryGroup[] GetGroupsByUser(UserTokenData userToken)
         {
             _dataLayer.Builder.From<TSKF_MEMBER>()
                 .Select(c => c.ID, c => c.APP_USER, c => c.Taskforce.FULL_NAME)

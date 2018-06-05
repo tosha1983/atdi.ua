@@ -5,6 +5,7 @@ using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,21 @@ namespace Atdi.CoreServices.Identity
             };
 
             return token;
+        }
+
+        public string GetHashPassword(string password)
+        {
+            var passwordAsBytes = UTF8Encoding.UTF8.GetBytes(password);
+            var shaProvider = new SHA256CryptoServiceProvider();
+            var hash = shaProvider.ComputeHash(passwordAsBytes);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+
+            return sb.ToString();
         }
 
         public UserTokenData UnpackUserToken(UserToken userToken)

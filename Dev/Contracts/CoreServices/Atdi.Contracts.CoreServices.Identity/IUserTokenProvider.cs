@@ -12,5 +12,7 @@ namespace Atdi.Contracts.CoreServices.Identity
         UserToken CreatUserToken(UserTokenData tokenData);
 
         UserTokenData UnpackUserToken(UserToken userToken);
+
+        string GetHashPassword(string password);
     }
 }

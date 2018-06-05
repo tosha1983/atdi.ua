@@ -72,7 +72,7 @@ namespace Atdi.CoreServices.Identity
                     Operator = DataModels.DataConstraint.ConditionOperator.LessThan,
                     RightOperand = new DataModels.DataConstraint.DateTimeValueOperand { Value =  DateTime.Now }
                 })
-                .Select("ID", "WEB_LOGIN", "PWD","DATE_CREATED")
+                .Select("ID", "APP_USER",  "WEB_LOGIN", "PWD","DATE_CREATED")
                 //.OrderByDesc("APP_USER")
                 .OrderByAsc("ID")
                 //.OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
@@ -99,15 +99,10 @@ namespace Atdi.CoreServices.Identity
                 throw new InvalidOperationException(Exceptions.NotFoundUser.With(credential.UserName));
             }
 
-            byte[] inputbytes = UTF8Encoding.UTF8.GetBytes(credential.Password);
-            SHA256 sha = new SHA256CryptoServiceProvider();
-            byte[] hash = sha.ComputeHash(inputbytes);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++) sb.Append(hash[i].ToString("X2"));
-            string pass = sb.ToString();
+            
 
             if ((string.IsNullOrEmpty(userData.Password) && string.IsNullOrEmpty(credential.Password))
-                || userData.Password == pass)
+                || userData.Password == _tokenProvider.GetHashPassword(credential.Password))
             {
                 var userIdentity = this.CreateUserIdentity(userData);
                 return userIdentity;
