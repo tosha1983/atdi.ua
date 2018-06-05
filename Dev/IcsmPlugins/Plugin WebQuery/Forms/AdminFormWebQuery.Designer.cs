@@ -34,13 +34,11 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtUserIdent = new System.Windows.Forms.TextBox();
             this.labelIdentUser = new System.Windows.Forms.Label();
-            this.checkBoxSQLmode = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ButtonClose = new System.Windows.Forms.Button();
             this.ButtonSaveAllChange = new System.Windows.Forms.Button();
             this.labelLevelAccess = new System.Windows.Forms.Label();
             this.labelIRPFile = new System.Windows.Forms.Label();
-            this.comboBoxLevelAccess = new System.Windows.Forms.ComboBox();
             this.buttonOpenIRP = new System.Windows.Forms.Button();
             this.textBoxIRPFilePath = new System.Windows.Forms.TextBox();
             this.textBoxDescrQuery = new System.Windows.Forms.TextBox();
@@ -54,6 +52,7 @@
             this.textBoxQuery = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.textBox_code = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -65,14 +64,13 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.textBox_code);
             this.groupBox1.Controls.Add(this.comboBox_group);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.checkBoxSQLmode);
             this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Controls.Add(this.labelLevelAccess);
             this.groupBox1.Controls.Add(this.labelIRPFile);
-            this.groupBox1.Controls.Add(this.comboBoxLevelAccess);
             this.groupBox1.Controls.Add(this.buttonOpenIRP);
             this.groupBox1.Controls.Add(this.textBoxIRPFilePath);
             this.groupBox1.Controls.Add(this.textBoxDescrQuery);
@@ -90,9 +88,9 @@
             // 
             this.comboBox_group.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_group.FormattingEnabled = true;
-            this.comboBox_group.Location = new System.Drawing.Point(148, 175);
+            this.comboBox_group.Location = new System.Drawing.Point(110, 175);
             this.comboBox_group.Name = "comboBox_group";
-            this.comboBox_group.Size = new System.Drawing.Size(352, 21);
+            this.comboBox_group.Size = new System.Drawing.Size(390, 21);
             this.comboBox_group.TabIndex = 30;
             // 
             // label1
@@ -100,9 +98,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 178);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(98, 13);
+            this.label1.Size = new System.Drawing.Size(88, 13);
             this.label1.TabIndex = 29;
-            this.label1.Text = "Right Group Name:";
+            this.label1.Text = "Taskforce group:";
             // 
             // groupBox2
             // 
@@ -130,17 +128,6 @@
             this.labelIdentUser.Size = new System.Drawing.Size(249, 13);
             this.labelIdentUser.TabIndex = 15;
             this.labelIdentUser.Text = "Field name identifies the users (example USER_ID):";
-            // 
-            // checkBoxSQLmode
-            // 
-            this.checkBoxSQLmode.AutoSize = true;
-            this.checkBoxSQLmode.Location = new System.Drawing.Point(355, 31);
-            this.checkBoxSQLmode.Name = "checkBoxSQLmode";
-            this.checkBoxSQLmode.Size = new System.Drawing.Size(112, 17);
-            this.checkBoxSQLmode.TabIndex = 25;
-            this.checkBoxSQLmode.Text = "Enable SQL mode";
-            this.checkBoxSQLmode.UseVisualStyleBackColor = true;
-            this.checkBoxSQLmode.CheckedChanged += new System.EventHandler(this.checkBoxSQLmode_CheckedChanged);
             // 
             // panel1
             // 
@@ -175,11 +162,11 @@
             // labelLevelAccess
             // 
             this.labelLevelAccess.AutoSize = true;
-            this.labelLevelAccess.Location = new System.Drawing.Point(9, 91);
+            this.labelLevelAccess.Location = new System.Drawing.Point(9, 89);
             this.labelLevelAccess.Name = "labelLevelAccess";
-            this.labelLevelAccess.Size = new System.Drawing.Size(73, 13);
+            this.labelLevelAccess.Size = new System.Drawing.Size(35, 13);
             this.labelLevelAccess.TabIndex = 12;
-            this.labelLevelAccess.Text = "Level access:";
+            this.labelLevelAccess.Text = "Code:";
             // 
             // labelIRPFile
             // 
@@ -189,18 +176,6 @@
             this.labelIRPFile.Size = new System.Drawing.Size(95, 13);
             this.labelIRPFile.TabIndex = 10;
             this.labelIRPFile.Text = "IRP file with query:";
-            // 
-            // comboBoxLevelAccess
-            // 
-            this.comboBoxLevelAccess.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxLevelAccess.FormattingEnabled = true;
-            this.comboBoxLevelAccess.Items.AddRange(new object[] {
-            "STD",
-            "CUS"});
-            this.comboBoxLevelAccess.Location = new System.Drawing.Point(110, 88);
-            this.comboBoxLevelAccess.Name = "comboBoxLevelAccess";
-            this.comboBoxLevelAccess.Size = new System.Drawing.Size(338, 21);
-            this.comboBoxLevelAccess.TabIndex = 8;
             // 
             // buttonOpenIRP
             // 
@@ -322,6 +297,13 @@
             // 
             this.openFileDialog1.FileName = "openFileDialogIRP";
             // 
+            // textBox_code
+            // 
+            this.textBox_code.Location = new System.Drawing.Point(110, 88);
+            this.textBox_code.Name = "textBox_code";
+            this.textBox_code.Size = new System.Drawing.Size(338, 20);
+            this.textBox_code.TabIndex = 31;
+            // 
             // AdminFormWebQuery
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -363,16 +345,15 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label labelLevelAccess;
         private System.Windows.Forms.Label labelIRPFile;
-        private System.Windows.Forms.ComboBox comboBoxLevelAccess;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button ButtonClose;
         private System.Windows.Forms.Button ButtonSaveAllChange;
         private System.Windows.Forms.TextBox txtUserIdent;
         private System.Windows.Forms.Label labelIdentUser;
-        private System.Windows.Forms.CheckBox checkBoxSQLmode;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button_Constraints;
         private System.Windows.Forms.ComboBox comboBox_group;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox_code;
     }
 }

@@ -14,16 +14,14 @@ namespace OrmCs
 			public DatPtr z_id { get { return new DatPtr(this,0); } }
 		public string m_name { get { return getString(1); } set { setString(1,50,value); } }
 			public DatPtr z_name { get { return new DatPtr(this,1); } }
-		public string m_status { get { return getString(2); } set { setString(2,3,value); } }
-			public DatPtr z_status { get { return new DatPtr(this,2); } }
-		public string m_comments { get { return getString(3); } set { setString(3,250,value); } }
-			public DatPtr z_comments { get { return new DatPtr(this,3); } }
-		public string m_identuser { get { return getString(4); } set { setString(4,250,value); } }
-			public DatPtr z_identuser { get { return new DatPtr(this,4); } }
-		public int m_issqlrequest { get { return getInt(5); } set { setInt(5,value); } }
-			public DatPtr z_issqlrequest { get { return new DatPtr(this,5); } }
-		public string m_rightgroup { get { return getString(6); } set { setString(6,100,value); } }
-			public DatPtr z_rightgroup { get { return new DatPtr(this,6); } }
+		public string m_comments { get { return getString(2); } set { setString(2,250,value); } }
+			public DatPtr z_comments { get { return new DatPtr(this,2); } }
+		public string m_identuser { get { return getString(3); } set { setString(3,250,value); } }
+			public DatPtr z_identuser { get { return new DatPtr(this,3); } }
+		public string m_code { get { return getString(4); } set { setString(4,50,value); } }
+			public DatPtr z_code { get { return new DatPtr(this,4); } }
+		public string m_taskforcegroup { get { return getString(5); } set { setString(5,100,value); } }
+			public DatPtr z_taskforcegroup { get { return new DatPtr(this,5); } }
 	}
 
 	public class YXwebconstraint : Yyy

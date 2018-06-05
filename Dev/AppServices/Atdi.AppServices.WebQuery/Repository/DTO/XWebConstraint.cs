@@ -8,7 +8,7 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.AppServices.WebQuery
 {
-        /// Класс для хранения свойств запроса
+        /// Класс для хранения сведений об ограничениях на запрос
         /// </summary>
         internal sealed class XWebConstraint
         {
