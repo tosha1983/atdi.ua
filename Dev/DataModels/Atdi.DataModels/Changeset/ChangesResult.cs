@@ -5,19 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     /// <summary>
-    /// Represents the tree of the queries
+    /// 
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
-    public class QueriesTree
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ChangesResult
     {
         /// <summary>
-        /// The nodes of the tree
+        /// The ID of the changeset
         /// </summary>
         [DataMember]
-        public QueriesTreeNode[] Nodes { get; set; }
+        public Guid Id { get; set; }
 
+        [DataMember]
+        public ActionResult[] Actions { get; set; }
     }
 }

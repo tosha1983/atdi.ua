@@ -41,27 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Changeset\ActionType.cs" />
-    <Compile Include="Changeset\TypedRowCreationAction.cs" />
-    <Compile Include="Changeset\StringRowCreationAction.cs" />
-    <Compile Include="Changeset\ObjectRowCreationAction.cs" />
-    <Compile Include="Changeset\TypedRowUpdationAction.cs" />
-    <Compile Include="Changeset\StringRowUpdationAction.cs" />
-    <Compile Include="Changeset\ObjectRowUpdationAction.cs" />
     <Compile Include="Models\ColumnMetadata.cs" />
-    <Compile Include="Changeset\Changeset.cs" />
-    <Compile Include="Changeset\Action.cs" />
-    <Compile Include="Changeset\ActionResult.cs" />
-    <Compile Include="Changeset\CreationAction.cs" />
-    <Compile Include="Changeset\DeleteionAction.cs" />
-    <Compile Include="Changeset\UpdationAction.cs" />
-    <Compile Include="Changeset\ChangesResult.cs" />
     <Compile Include="Models\QueryMetadata.cs" />
     <Compile Include="Models\FetchOptions.cs" />
     <Compile Include="Models\QueryToken.cs" />
     <Compile Include="Models\QueryResult.cs" />
-    <Compile Include="Tree\QueriesTree.cs" />
-    <Compile Include="Tree\QueriesTreeNode.cs" />
+    <Compile Include="Models\QueryGroups.cs" />
+    <Compile Include="Models\QueryGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServicesSpecification.cs" />
   </ItemGroup>

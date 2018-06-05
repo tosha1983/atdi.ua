@@ -101,7 +101,7 @@ namespace Atdi.Test.WebQuery
             var userToken = new UserToken();
             var queryToken = new DataModels.WebQuery.QueryToken();
             var fetchOptions = new DataModels.WebQuery.FetchOptions();
-            var changeset = new DataModels.WebQuery.Changeset();
+            var changeset = new DataModels.Changeset();
             for (int i = 0; i < 1; i++)
             {
                 // var tree = webQueryService.GetQueriesTree(userToken);

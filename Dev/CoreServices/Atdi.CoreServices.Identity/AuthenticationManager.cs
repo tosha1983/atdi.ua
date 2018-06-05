@@ -60,8 +60,9 @@ namespace Atdi.CoreServices.Identity
 
             
             var query = this._dataLayer.Builder
+                //.From<EMPLOYEE>()
                 .From("EMPLOYEE")
-                .Where("WEB_LOGIN", credential.UserName)
+                //.Where( c => c.WEB_LOGIN == credential.UserName)
                 //.Where("POSTCODE", "ASD")
                 //.Where("LANG", "eu")
                 //.Where("City.Province.Names.LEGEN", "s")

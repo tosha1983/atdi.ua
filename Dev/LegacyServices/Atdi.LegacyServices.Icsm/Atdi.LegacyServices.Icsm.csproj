@@ -30,17 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Datalayer, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>IcsmOrm\Datalayer.dll</HintPath>
-    </Reference>
     <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>IcsmOrm\DatalayerCs.dll</HintPath>
-    </Reference>
-    <Reference Include="FormsCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>IcsmOrm\FormsCs.dll</HintPath>
     </Reference>
     <Reference Include="OrmCs">
       <HintPath>IcsmOrm\OrmCs.dll</HintPath>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -286,6 +287,466 @@ namespace Atdi.LegacyServices.Icsm
         {
             this._isDistinct = true;
             return this;
+        }
+    }
+
+    internal sealed class QuerySelectStatement<TModel> : LoggedObject, IQuerySelectStatement<TModel>
+    {
+        private static readonly Type ModelType = typeof(TModel);
+        private readonly QuerySelectStatement _statement;
+
+
+        public QuerySelectStatement Statement => _statement;
+
+        public QuerySelectStatement(ILogger logger) : base(logger)
+        {
+            this._statement = new QuerySelectStatement(ModelType.Name, logger); 
+        }
+
+        public IQuerySelectStatement<TModel> Distinct()
+        {
+            this._statement.Distinct();
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> OnPercentTop(int percent)
+        {
+            this._statement.OnPercentTop(percent);
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> OnTop(int count)
+        {
+            this._statement.OnTop(count);
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions)
+        {
+            if (columnsExpressions == null || columnsExpressions.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(columnsExpressions));
+            }
+
+            for (int i = 0; i < columnsExpressions.Length; i++)
+            {
+                var columnName = GetMemberName(columnsExpressions[i]);
+                _statement.OrderByAsc(columnName);
+            }
+
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions)
+        {
+            if (columnsExpressions == null || columnsExpressions.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(columnsExpressions));
+            }
+
+            for (int i = 0; i < columnsExpressions.Length; i++)
+            {
+                var columnName = GetMemberName(columnsExpressions[i]);
+                _statement.OrderByDesc(columnName);
+            }
+
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions)
+        {
+            if (columnsExpressions == null || columnsExpressions.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(columnsExpressions));
+            }
+
+            for (int i = 0; i < columnsExpressions.Length; i++)
+            {
+                var columnName = GetMemberName(columnsExpressions[i]);
+                _statement.Select(columnName);
+            }
+
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
+        {
+            this._statement.Where(ParseConditionExpression(expression));
+            return this;
+        }
+
+        public IQuerySelectStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
+        {
+            this._statement.Where(ParseConditionExpression(expression));
+            return this;
+        }
+
+        private static Condition ParseConditionExpression(Expression<Func<TModel, bool>> expression)
+        {
+            var body = expression.Body;
+            return ParseExpression(body);
+        }
+
+        private static Condition ParseConditionExpression(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
+        {
+            var body = expression.Body;
+            return ParseExpression(body);
+        }
+
+        private static Condition ParseExpression(Expression expression)
+        {
+            if (expression is MethodCallExpression methodCallExpression)
+            {
+                return ParseCallMethodExpression(methodCallExpression);
+            }
+
+            if (expression is BinaryExpression binaryExpression)
+            {
+                return ParseBinaryExpression(binaryExpression);
+            }
+
+            throw new InvalidOperationException("The expression is not supported");
+        }
+        private static Condition ParseCallMethodExpression(MethodCallExpression expression)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
+            if (expression.Method.Name == "Like" && expression.Arguments.Count == 2)
+            {
+                return new ConditionExpression
+                {
+                    Operator = ConditionOperator.Like,
+                    LeftOperand = ParseOperand(expression.Arguments[0]),
+                    RightOperand = ParseOperand(expression.Arguments[1])
+                };
+            }
+
+            if (expression.Method.Name == "NotLike" && expression.Arguments.Count == 2)
+            {
+                return new ConditionExpression
+                {
+                    Operator = ConditionOperator.NotLike,
+                    LeftOperand = ParseOperand(expression.Arguments[0]),
+                    RightOperand = ParseOperand(expression.Arguments[1])
+                };
+            }
+
+            if (expression.Method.Name == "Between" && expression.Arguments.Count == 3)
+            {
+                return new ConditionExpression
+                {
+                    Operator = ConditionOperator.Between,
+                    LeftOperand = ParseOperand(expression.Arguments[0]),
+                    RightOperand = ParseValuesOperand(expression.Arguments[1], expression.Arguments[2])
+                };
+            }
+            if (expression.Method.Name == "NotBetween" && expression.Arguments.Count == 3)
+            {
+                return new ConditionExpression
+                {
+                    Operator = ConditionOperator.NotBetween,
+                    LeftOperand = ParseOperand(expression.Arguments[0]),
+                    RightOperand = ParseValuesOperand(expression.Arguments[1], expression.Arguments[2])
+                };
+            }
+
+            if (expression.Method.Name == "In" && expression.Arguments.Count >= 2)
+            {
+                var args = new Expression[expression.Arguments.Count - 1];
+                for (int i = 0; i < args.Length; i++)
+                {
+                    args[i] = expression.Arguments[i + 1];
+                }
+                return new ConditionExpression
+                {
+                    Operator = ConditionOperator.In,
+                    LeftOperand = ParseOperand(expression.Arguments[0]),
+                    RightOperand = ParseValuesOperand(args)
+                };
+            }
+
+            if (expression.Method.Name == "NotIn" && expression.Arguments.Count >= 2)
+            {
+                var args = new Expression[expression.Arguments.Count - 1];
+                for (int i = 0; i < args.Length; i++)
+                {
+                    args[i] = expression.Arguments[i + 1];
+                }
+                return new ConditionExpression
+                {
+                    Operator = ConditionOperator.NotIn,
+                    LeftOperand = ParseOperand(expression.Arguments[0]),
+                    RightOperand = ParseValuesOperand(args)
+                };
+            }
+
+            throw new InvalidOperationException("The expression is not supported");
+        }
+        private static Condition ParseBinaryExpression(BinaryExpression expression)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
+            if (expression.NodeType == ExpressionType.AndAlso || expression.NodeType == ExpressionType.OrElse)
+            {
+                var condition = new ComplexCondition
+                {
+                    Operator = expression.NodeType == ExpressionType.AndAlso ? LogicalOperator.And : LogicalOperator.Or
+                };
+                var left = ParseExpression(expression.Left);
+                var right = ParseExpression(expression.Right);
+
+                condition.Conditions = new Condition[] { left, right };
+                return condition;
+            }
+
+            if (expression.NodeType == ExpressionType.Equal ||
+                expression.NodeType == ExpressionType.NotEqual ||
+                expression.NodeType == ExpressionType.GreaterThan ||
+                expression.NodeType == ExpressionType.GreaterThanOrEqual ||
+                expression.NodeType == ExpressionType.LessThan ||
+                expression.NodeType == ExpressionType.LessThanOrEqual)
+            {
+                var condition = new ConditionExpression
+                {
+                    LeftOperand = ParseOperand(expression.Left),
+                    Operator = ToConditionOperator(expression.NodeType),
+                    RightOperand = ParseOperand(expression.Right),
+                };
+
+                return condition;
+            }
+
+            throw new InvalidOperationException("The expression is not supported");
+        }
+
+        private static ConditionOperator ToConditionOperator(ExpressionType type)
+        {
+            if (type == ExpressionType.Equal )
+            {
+                return ConditionOperator.Equal;
+            }
+            if (type == ExpressionType.NotEqual )
+            {
+                return ConditionOperator.NotEqual;
+            }
+            if (type == ExpressionType.GreaterThan)
+            {
+                return ConditionOperator.GreaterThan;
+            }
+            if (type == ExpressionType.GreaterThanOrEqual)
+            {
+                return ConditionOperator.GreaterEqual;
+            }
+            if (type == ExpressionType.LessThan)
+            {
+                return ConditionOperator.LessThan;
+            }
+            if (type == ExpressionType.LessThanOrEqual)
+            {
+                return ConditionOperator.LessEqual;
+            }
+
+            throw new InvalidOperationException("The expression type {0} is not supported");
+        }
+        private static Operand ParseOperand(Expression expression)
+        {
+            if (expression.NodeType == ExpressionType.MemberAccess)
+            {
+                return new ColumnOperand
+                {
+                    ColumnName = GetMemberName(expression)
+                };
+            }
+
+            if (expression.NodeType == ExpressionType.Constant)
+            {
+                var constantExpression = expression as ConstantExpression;
+                if (constantExpression.Type == typeof(string))
+                {
+                    return new StringValueOperand
+                    {
+                        Value = (string)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(int) && constantExpression.Type == typeof(int?))
+                {
+                    return new IntegerValueOperand
+                    {
+                        Value = (int?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(bool) && constantExpression.Type == typeof(bool?))
+                {
+                    return new BooleanValueOperand
+                    {
+                        Value = (bool?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(DateTime) && constantExpression.Type == typeof(DateTime?))
+                {
+                    return new DateTimeValueOperand
+                    {
+                        Value = (DateTime?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(float) && constantExpression.Type == typeof(float?))
+                {
+                    return new FloatValueOperand
+                    {
+                        Value = (float?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(double) && constantExpression.Type == typeof(double?))
+                {
+                    return new DoubleValueOperand
+                    {
+                        Value = (double?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(decimal) && constantExpression.Type == typeof(decimal?))
+                {
+                    return new DecimalValueOperand
+                    {
+                        Value = (decimal?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(byte) && constantExpression.Type == typeof(byte?))
+                {
+                    return new ByteValueOperand
+                    {
+                        Value = (byte?)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(byte[]) && constantExpression.Type == typeof(byte?[]))
+                {
+                    return new BytesValueOperand
+                    {
+                        Value = (byte?[])constantExpression.Value
+                    };
+                }
+            }
+
+            throw new InvalidOperationException("The expression type {0} is not supported");
+        }
+
+        private static ValuesOperand ParseValuesOperand(params Expression[] expressions)
+        {
+            if (expressions == null || expressions.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(expressions));
+            }
+
+            var expression = expressions[0];
+            
+
+            if (expression.NodeType == ExpressionType.Constant)
+            {
+                var constantExpressions = expressions as ConstantExpression[];
+                var constantExpression = constantExpressions[0];
+                if (constantExpression.Type == typeof(string))
+                {
+                    return new StringValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (string)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(int) && constantExpression.Type == typeof(int?))
+                {
+                    return new IntegerValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (int?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(bool) && constantExpression.Type == typeof(bool?))
+                {
+                    return new BooleanValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (bool?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(DateTime) && constantExpression.Type == typeof(DateTime?))
+                {
+                    return new DateTimeValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (DateTime?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(float) && constantExpression.Type == typeof(float?))
+                {
+                    return new FloatValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (float?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(double) && constantExpression.Type == typeof(double?))
+                {
+                    return new DoubleValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (double?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(decimal) && constantExpression.Type == typeof(decimal?))
+                {
+                    return new DecimalValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (decimal?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(byte) && constantExpression.Type == typeof(byte?))
+                {
+                    return new ByteValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (byte?)o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(byte[]) && constantExpression.Type == typeof(byte?[]))
+                {
+                    return new BytesValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (byte?[])o.Value).ToArray()
+                    };
+                }
+            }
+
+            throw new InvalidOperationException("The expression type {0} is not supported");
+        }
+
+        private static string GetMemberName<TValue>(Expression<Func<TModel, TValue>> expression)
+        {
+            return GetMemberName(expression.Body);
+        }
+
+        private static string GetMemberName(Expression expression)
+        {
+            var memberName = string.Empty;
+
+            var currentExpression = expression;
+            while (currentExpression.NodeType == ExpressionType.MemberAccess)
+            {
+                var currentMember = currentExpression as MemberExpression;
+                if (!string.IsNullOrEmpty(memberName))
+                {
+                    memberName = currentMember.Member.Name + "." + memberName;
+                }
+                else
+                {
+                    memberName = currentMember.Member.Name;
+                }
+                currentExpression = currentMember.Expression;
+            }
+
+            if (typeof(TModel) != currentExpression.Type)
+            {
+                throw new ArgumentException(Exceptions.ExpresionRefersToMemberThatNotFromType.With(expression.ToString(), ModelType));
+            }
+
+            return memberName;
         }
     }
 }

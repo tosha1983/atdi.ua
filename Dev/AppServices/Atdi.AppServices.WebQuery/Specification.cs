@@ -27,8 +27,9 @@ namespace Atdi.AppServices.WebQuery
     }
     static class TraceScopeNames
     {
-        public static readonly TraceScopeName GetQueriesTree = "GetQueriesTree";
+        public static readonly TraceScopeName GetQueryGroups = "GetQueryGroups";
         public static readonly TraceScopeName GetQueryMetadata = "GetQueryMetadata";
+        public static readonly TraceScopeName GetQueryMetadataByCode = "GetQueryMetadataByCode";
         public static readonly TraceScopeName ExecuteQuery = "ExecuteQuery";
         public static readonly TraceScopeName SaveChanges = "SaveChanges";
     }

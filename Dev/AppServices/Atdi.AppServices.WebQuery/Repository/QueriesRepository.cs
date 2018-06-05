@@ -1,4 +1,6 @@
-﻿using Atdi.Contracts.CoreServices.DataLayer;
+﻿using Atdi.AppServices.WebQuery.DTO;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.CoreServices.Identity;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.DataModels.WebQuery;
 using Atdi.Platform.Logging;
@@ -13,6 +15,7 @@ namespace Atdi.AppServices.WebQuery
     internal sealed class QueriesRepository : LoggedObject
     {
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
+
         public QueriesRepository(ILogger logger, IDataLayer<IcsmDataOrm> dataLayer) : base(logger)
         {
             this._dataLayer = dataLayer;
@@ -24,8 +27,12 @@ namespace Atdi.AppServices.WebQuery
             return null;
         }
 
-        public QueriesNode[] GetTreeNodesByUser(int userId)
+        public QueriesNode[] GetTreeNodesByUser(UserTokenData token)
         {
+            _dataLayer.Builder.From<TSKF_MEMBER>()
+                .Select(c => c.ID, c => c.APP_USER, c => c.Taskforce.FULL_NAME)
+                .Where((c, o) => o.Like(c.APP_USER, "ss") && o.NotLike(c.Taskforce.FULL_NAME, "s"));
+
             return null;
         }
     }

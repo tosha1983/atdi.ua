@@ -5,21 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     // <summary>
     /// Represents the action of create record
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
-    public class StringRowCreationAction : CreationAction
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class TypedRowCreationAction : CreationAction
     {
-        public StringRowCreationAction()
+        public TypedRowCreationAction()
         {
             this.Type = ActionType.Create;
-            this.RowType = DataRowType.StringCell;
+            this.RowType = DataRowType.TypedCell;
         }
 
         [DataMember]
-        public StringDataRow Row { get; set; }
+        public TypedDataRow Row { get; set; }
     }
 }

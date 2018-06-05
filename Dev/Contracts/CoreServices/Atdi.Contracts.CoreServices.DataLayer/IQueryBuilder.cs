@@ -9,5 +9,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     public interface IQueryBuilder
     {
         IQuerySelectStatement From(string tableName);
+
+        IQuerySelectStatement<TModel> From<TModel>();
     }
 }

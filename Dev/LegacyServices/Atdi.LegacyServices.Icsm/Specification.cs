@@ -29,7 +29,7 @@ namespace Atdi.LegacyServices.Icsm
 
     static class Exceptions
     {
-        //public static readonly ExceptionText NotFoundUser = "Not found user with name '{0}'";
+        public static readonly ExceptionText ExpresionRefersToMemberThatNotFromType = "Expresion '{0}' refers to a member that is not from type {1}.";
         //public static readonly ExceptionText InvalidUserPassword = "Invalid password for user with name '{0}'";
     }
 

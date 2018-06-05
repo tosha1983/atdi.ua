@@ -10,5 +10,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         TResult Fetch<TResult>(IQuerySelectStatement statement, Func<System.Data.IDataReader, TResult> handler);
 
+        TResult Fetch<TResult, TModel>(IQuerySelectStatement<TModel> statement, Func<System.Data.IDataReader, TResult> handler);
+
     }
 }

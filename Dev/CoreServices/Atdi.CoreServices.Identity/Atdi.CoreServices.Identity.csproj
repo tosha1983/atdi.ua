@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AuthenticationManager.cs" />
     <Compile Include="IdentityComponent.cs" />
+    <Compile Include="Models\EMPLOYEE.cs" />
     <Compile Include="Models\IcsmUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />

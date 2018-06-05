@@ -4,22 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using Atdi.DataModels.DataConstraint;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     // <summary>
-    /// Represents the action of create record
+    /// Represents the action of update record
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
-    public class TypedRowCreationAction : CreationAction
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class TypedRowUpdationAction : UpdationAction
     {
-        public TypedRowCreationAction()
+        public TypedRowUpdationAction()
         {
-            this.Type = ActionType.Create;
+            this.Type = ActionType.Update;
             this.RowType = DataRowType.TypedCell;
         }
 
         [DataMember]
         public TypedDataRow Row { get; set; }
+        
     }
 }

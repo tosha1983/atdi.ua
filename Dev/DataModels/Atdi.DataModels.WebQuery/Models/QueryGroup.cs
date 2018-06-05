@@ -8,13 +8,13 @@ using System.Runtime.Serialization;
 namespace Atdi.DataModels.WebQuery
 {
     /// <summary>
-    /// Represents the node of the tree of the queries
+    /// Represents the group of the queries
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class QueriesTreeNode
+    public class QueryGroup
     {
         [DataMember]
-        public QueryToken QueryToken { get; set; }
+        public string Code { get; set; }
 
         [DataMember]
         public string Name { get; set; }
@@ -26,9 +26,9 @@ namespace Atdi.DataModels.WebQuery
         public string Description { get; set; }
 
         /// <summary>
-        /// The child nodes
+        /// The tokens of the available queries
         /// </summary>
         [DataMember]
-        public QueriesTreeNode[] Nodes { get; set; }
+        public QueryToken[] QueryTokens { get; set; }
     }
 }

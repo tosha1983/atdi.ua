@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     /// <summary>
     /// Represents the action result
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
+    [DataContract(Namespace = CommonSpecification.Namespace)]
     public class ActionResult
     {
         /// <summary>

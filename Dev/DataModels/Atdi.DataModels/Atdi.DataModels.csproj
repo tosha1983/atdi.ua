@@ -41,6 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Changeset\Action.cs" />
+    <Compile Include="Changeset\ActionResult.cs" />
+    <Compile Include="Changeset\ActionType.cs" />
+    <Compile Include="Changeset\Changeset.cs" />
+    <Compile Include="Changeset\ChangesResult.cs" />
+    <Compile Include="Changeset\CreationAction.cs" />
+    <Compile Include="Changeset\DeleteionAction.cs" />
+    <Compile Include="Changeset\ObjectRowCreationAction.cs" />
+    <Compile Include="Changeset\ObjectRowUpdationAction.cs" />
+    <Compile Include="Changeset\StringRowCreationAction.cs" />
+    <Compile Include="Changeset\StringRowUpdationAction.cs" />
+    <Compile Include="Changeset\TypedRowCreationAction.cs" />
+    <Compile Include="Changeset\TypedRowUpdationAction.cs" />
+    <Compile Include="Changeset\UpdationAction.cs" />
     <Compile Include="DataConstraint\DataLimit.cs" />
     <Compile Include="DataConstraint\LimitValueType.cs" />
     <Compile Include="DataConstraint\OrderExpression.cs" />

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     // <summary>
     /// Represents the action of update record
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
+    [DataContract(Namespace = CommonSpecification.Namespace)]
     [KnownType(typeof(TypedRowUpdationAction))]
     [KnownType(typeof(StringRowUpdationAction))]
     [KnownType(typeof(ObjectRowUpdationAction))]

@@ -18,5 +18,11 @@ namespace Atdi.LegacyServices.Icsm
         {
             return new QuerySelectStatement(tableName, this.Logger);
         }
+
+        IQuerySelectStatement<TModel> IQueryBuilder.From<TModel>()
+        {
+
+            return new QuerySelectStatement<TModel>(this.Logger);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.WcfServices.WebQuery;
+using Atdi.DataModels;
 using Atdi.DataModels.CommonOperation;
 using Atdi.DataModels.Identity;
 using Atdi.DataModels.WebQuery;
@@ -33,11 +34,11 @@ namespace Atdi.WcfServices.WebQuery
             };
         }
 
-        public Result<QueriesTree> GetQueriesTree(UserToken userToken)
+        public Result<QueryGroups> GetQueryGroups(UserToken userToken)
         {
-            var resultData = this._webQueryAppServices.GetQueriesTree(userToken);
+            var resultData = this._webQueryAppServices.GetQueryGroups(userToken);
 
-            return new Result<QueriesTree>
+            return new Result<QueryGroups>
             {
                 State = OperationState.Success,
                 Data = resultData
@@ -47,6 +48,17 @@ namespace Atdi.WcfServices.WebQuery
         public Result<QueryMetadata> GetQueryMetadata(UserToken userToken, QueryToken queryToken)
         {
             var resultData = this._webQueryAppServices.GetQueryMetadata(userToken, queryToken);
+
+            return new Result<QueryMetadata>
+            {
+                State = OperationState.Success,
+                Data = resultData
+            };
+        }
+
+        public Result<QueryMetadata> GetQueryMetadataByCode(UserToken userToken, string queryCode)
+        {
+            var resultData = this._webQueryAppServices.GetQueryMetadataByCode(userToken, queryCode);
 
             return new Result<QueryMetadata>
             {

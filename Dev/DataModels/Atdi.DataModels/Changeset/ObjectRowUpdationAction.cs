@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     // <summary>
     /// Represents the action of update record
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
-    public class TypedRowUpdationAction : UpdationAction
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ObjectRowUpdationAction : UpdationAction
     {
-        public TypedRowUpdationAction()
+        public ObjectRowUpdationAction()
         {
             this.Type = ActionType.Update;
-            this.RowType = DataRowType.TypedCell;
+            this.RowType = DataRowType.ObjectCell;
         }
 
         [DataMember]
-        public TypedDataRow Row { get; set; }
+        public ObjectDataRow Row { get; set; }
         
     }
 }

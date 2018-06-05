@@ -40,10 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\GetQueryMetadataByCode.cs" />
     <Compile Include="Handlers\GetQueryMetadata.cs" />
     <Compile Include="Handlers\ExecuteQuery.cs" />
     <Compile Include="Handlers\SaveChanges.cs" />
-    <Compile Include="Handlers\GetQueriesTree.cs" />
+    <Compile Include="Handlers\GetQueryGroups.cs" />
+    <Compile Include="Repository\DTO\TASKFORCE.cs" />
+    <Compile Include="Repository\DTO\TSKF_MEMBER.cs" />
     <Compile Include="Repository\DTO\XWebConstraint.cs" />
     <Compile Include="Repository\DTO\XWebQuery.cs" />
     <Compile Include="Repository\QueriesRepository.cs" />
@@ -65,6 +68,10 @@
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
       <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
+      <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
+      <Name>Atdi.Contracts.CoreServices.Identity</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
       <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>

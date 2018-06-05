@@ -17,6 +17,9 @@ namespace Atdi.DataModels.WebQuery
         public QueryToken Token { get; set; }
 
         [DataMember]
+        public string Code { get; set; }
+
+        [DataMember]
         public string Name { get; set; }
 
         [DataMember]
@@ -24,9 +27,6 @@ namespace Atdi.DataModels.WebQuery
 
         [DataMember]
         public string Description { get; set; }
-
-        [DataMember]
-        public string Techno { get; set; }
 
         [DataMember]
         public ColumnMetadata[] Columns { get; set; }

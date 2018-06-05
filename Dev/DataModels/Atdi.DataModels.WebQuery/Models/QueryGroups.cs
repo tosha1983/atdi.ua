@@ -8,16 +8,16 @@ using System.Runtime.Serialization;
 namespace Atdi.DataModels.WebQuery
 {
     /// <summary>
-    /// 
+    /// Represents the tree of the queries
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public enum  ActionType
+    public class QueryGroups
     {
-        [EnumMember]
-        Create,
-        [EnumMember]
-        Update,
-        [EnumMember]
-        Delete
+        /// <summary>
+        /// The groups of the queries
+        /// </summary>
+        [DataMember]
+        public QueryGroup[] Groups { get; set; }
+
     }
 }

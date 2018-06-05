@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,38 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQuerySelectStatement Distinct();
 
+    }
+
+    public interface IQuerySelectStatement<TModel>
+    {
+        IQuerySelectStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions);
+
+        IQuerySelectStatement<TModel> Where(Expression<Func<TModel, bool>> expression);
+
+        IQuerySelectStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression);
+
+        IQuerySelectStatement<TModel> OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions);
+
+        IQuerySelectStatement<TModel> OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions);
+
+        IQuerySelectStatement<TModel> OnTop(int count);
+
+        IQuerySelectStatement<TModel> OnPercentTop(int percent);
+
+        IQuerySelectStatement<TModel> Distinct();
+
+    }
+    public interface IQuerySelectStatementOperation
+    {
+        bool Between<TValue>(TValue testValue, TValue arg1, TValue arg2);
+
+        bool NotBetween<TValue>(TValue testValue, TValue arg1, TValue arg2);
+
+        bool Like(string testValue, string arg);
+        bool NotLike(string testValue, string arg);
+
+        bool In<TValue>(TValue testValue, params TValue[] args);
+        bool NotIn<TValue>(TValue testValue, params TValue[] args);
     }
 
     public static class QuerySelectStatementExtensions

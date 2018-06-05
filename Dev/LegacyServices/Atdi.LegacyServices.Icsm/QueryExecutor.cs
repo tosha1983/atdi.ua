@@ -41,6 +41,20 @@ namespace Atdi.LegacyServices.Icsm
             return result;
         }
 
+        public TResult Fetch<TResult, TModel>(IQuerySelectStatement<TModel> statement, Func<System.Data.IDataReader, TResult> handler)
+        {
+            var objectStatment = statement as QuerySelectStatement<TModel>;
+
+            var command = this.BuildSelectCommand(objectStatment.Statement);
+
+            var result = default(TResult);
+            _dataEngine.Execute(command, reader =>
+            {
+                result = handler(reader);
+            });
+            return result;
+        }
+
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
             var command = new EngineCommand();

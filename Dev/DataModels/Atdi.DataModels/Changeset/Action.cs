@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace Atdi.DataModels.WebQuery
+namespace Atdi.DataModels
 {
     /// <summary>
     /// Represents the action with contains into the changeset of the web query
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
+    [DataContract(Namespace = CommonSpecification.Namespace)]
     [KnownType(typeof(CreationAction))]
     [KnownType(typeof(TypedRowCreationAction))]
     [KnownType(typeof(StringRowCreationAction))]

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels;
 using Atdi.DataModels.Identity;
 using Atdi.DataModels.WebQuery;
 using Atdi.Platform.Logging;

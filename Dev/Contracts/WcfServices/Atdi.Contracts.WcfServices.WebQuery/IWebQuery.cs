@@ -23,7 +23,7 @@ namespace Atdi.Contracts.WcfServices.WebQuery
         /// <param name="userToken">The token of the authenticated user</param>
         /// <returns>The tree of the web queries</returns>
         [OperationContract]
-        Result<QueriesTree> GetQueriesTree(UserToken userToken);
+        Result<QueryGroups> GetQueryGroups(UserToken userToken);
 
         /// <summary>
         /// Gets the metadata of the result of the web query
@@ -33,6 +33,15 @@ namespace Atdi.Contracts.WcfServices.WebQuery
         /// <returns>The metadata of the result of the web query</returns>
         [OperationContract]
         Result<QueryMetadata> GetQueryMetadata(UserToken userToken, QueryToken queryToken);
+
+        /// <summary>
+        /// Gets the metadata of the result of the web query
+        /// </summary>
+        /// <param name="userToken">The token of the authenticated user</param>
+        /// <param name="queryCode">The code of the web query</param>
+        /// <returns>The metadata of the result of the web query</returns>
+        [OperationContract]
+        Result<QueryMetadata> GetQueryMetadataByCode(UserToken userToken, string queryCode);
 
         /// <summary>
         /// Executes the web query

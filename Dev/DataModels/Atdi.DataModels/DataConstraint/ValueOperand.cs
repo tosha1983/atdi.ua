@@ -121,7 +121,7 @@ namespace Atdi.DataModels.DataConstraint
         }
 
         [DataMember]
-        public byte Value { get; set; }
+        public byte? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -133,7 +133,7 @@ namespace Atdi.DataModels.DataConstraint
         }
 
         [DataMember]
-        public byte[] Value { get; set; }
+        public byte?[] Value { get; set; }
     }
 
 }
