@@ -66,9 +66,12 @@ namespace Atdi.AppServices.WebQuery
             var tokensQuery = _dataLayer.Builder
                 .From<XWebQuery>()
                 .Where(c => c.TaskForceGroup, ConditionOperator.In, result.Select(g => g.Group.Name).ToArray())
-                .Select(c => c.Id);
+                .Select(
+                    c => c.Id,
+                    c => c.Code,
+                    c => c.TaskForceGroup);
 
-            var tokensByGroup = new Dictionary<string, List<QueryToken>>();
+            var tokensByGroup = new Dictionary<string, List<QueryTokenDescriptor>>();
 
             this._queryExecutor
                 .Fetch(tokensQuery, reader =>
@@ -76,16 +79,20 @@ namespace Atdi.AppServices.WebQuery
                     while(reader.Read())
                     {
                         var group = reader.GetValue(c => c.TaskForceGroup);
-                        var token = new QueryToken
+                        var token = new QueryTokenDescriptor
                         {
-                            Id = reader.GetValue(c => c.Id),
-                            Version = "1.0.0.0",
-                            Stamp = Guid.NewGuid().ToByteArray()
+                            Code = reader.GetValue(c => c.Code),
+                            Token = new QueryToken
+                            {
+                                Id = reader.GetValue(c => c.Id),
+                                Version = "1.0.0.0",
+                                Stamp = Guid.NewGuid().ToByteArray()
+                            }
                         };
 
-                        if (!tokensByGroup.TryGetValue(group, out List<QueryToken> tokens))
+                        if (!tokensByGroup.TryGetValue(group, out List<QueryTokenDescriptor> tokens))
                         {
-                            tokens = new List<QueryToken>();
+                            tokens = new List<QueryTokenDescriptor>();
                             tokensByGroup[group] = tokens;
                         }
                         tokens.Add(token);
@@ -95,9 +102,9 @@ namespace Atdi.AppServices.WebQuery
 
             foreach (var item in result)
             {
-                if (tokensByGroup.TryGetValue(item.Group.Name, out List<QueryToken> tokens))
+                if (tokensByGroup.TryGetValue(item.Group.Name, out List<QueryTokenDescriptor> tokens))
                 {
-                    item.Group.QueryTokens = tokens.ToArray();
+                    item.Group.QueryTokens = tokens.Select(t => t.Token).ToArray();
                 }
             }
 

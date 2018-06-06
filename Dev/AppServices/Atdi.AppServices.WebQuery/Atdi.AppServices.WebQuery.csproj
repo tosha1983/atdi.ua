@@ -49,6 +49,7 @@
     <Compile Include="Repository\DTO\TSKF_MEMBER.cs" />
     <Compile Include="Repository\DTO\XWebConstraint.cs" />
     <Compile Include="Repository\DTO\XWebQuery.cs" />
+    <Compile Include="Repository\QueryTokenDescriptor.cs" />
     <Compile Include="Repository\GroupDescriptor.cs" />
     <Compile Include="Repository\QueriesRepository.cs" />
     <Compile Include="Repository\QueryDescriptor.cs" />
