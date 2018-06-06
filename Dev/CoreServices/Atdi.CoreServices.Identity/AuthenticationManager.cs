@@ -10,6 +10,7 @@ using Atdi.Contracts.CoreServices.Identity;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.CoreServices.Identity.Models;
 using System.Security.Cryptography;
+using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.CoreServices.Identity
 {
@@ -33,6 +34,7 @@ namespace Atdi.CoreServices.Identity
                 AuthDate = DateTime.Now,
                 Id = user.Id,
                 UserName = user.WebLogin,
+                UserCode = user.AppUser
             };
 
             var userToken = this._tokenProvider.CreatUserToken(tokenData);
@@ -58,24 +60,17 @@ namespace Atdi.CoreServices.Identity
                 throw new ArgumentNullException(nameof(credential.UserName));
             }
 
-            
+            var someId = Guid.NewGuid();
+
             var query = this._dataLayer.Builder
-                //.From<EMPLOYEE>()
-                .From("EMPLOYEE")
-                //.Where( c => c.WEB_LOGIN == credential.UserName)
-                //.Where("POSTCODE", "ASD")
-                //.Where("LANG", "eu")
-                //.Where("City.Province.Names.LEGEN", "s")
-                .Where(new DataModels.DataConstraint.ConditionExpression
-                {
-                    LeftOperand = new DataModels.DataConstraint.ColumnOperand { ColumnName = "DATE_CREATED" },
-                    Operator = DataModels.DataConstraint.ConditionOperator.LessThan,
-                    RightOperand = new DataModels.DataConstraint.DateTimeValueOperand { Value =  DateTime.Now }
-                })
-                .Select("ID", "APP_USER",  "WEB_LOGIN", "PWD","DATE_CREATED")
-                //.OrderByDesc("APP_USER")
-                .OrderByAsc("ID")
-                //.OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
+                .From<EMPLOYEE>()
+                .Where( c => c.WEB_LOGIN, ConditionOperator.Equal, credential.UserName)
+                .Select(
+                    c => c.ID, 
+                    c => c.APP_USER, 
+                    c => c.WEB_LOGIN, 
+                    c => c.PWD)
+                .OrderByAsc(c => c.ID)
                 .OnTop(1);
 
 
@@ -86,9 +81,10 @@ namespace Atdi.CoreServices.Identity
                     {
                         return new IcsmUser
                         {
-                            Id = Convert.ToInt32(reader.GetDecimal(reader.GetOrdinal("ID"))),
-                            WebLogin = reader.GetString(reader.GetOrdinal("WEB_LOGIN")),
-                            Password = reader.GetString(reader.GetOrdinal("PWD"))
+                            Id = reader.GetValue(c => c.ID),
+                            WebLogin = reader.GetValue(c => c.WEB_LOGIN),
+                            Password = reader.GetValue(c => c.PWD),
+                            AppUser = reader.GetValue(c => c.APP_USER),
                         };
                     }
                     return default(IcsmUser);

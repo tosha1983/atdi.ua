@@ -41,7 +41,7 @@ namespace Atdi.LegacyServices.Icsm
             return result;
         }
 
-        public TResult Fetch<TResult, TModel>(IQuerySelectStatement<TModel> statement, Func<System.Data.IDataReader, TResult> handler)
+        public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
             var objectStatment = statement as QuerySelectStatement<TModel>;
 
@@ -50,7 +50,8 @@ namespace Atdi.LegacyServices.Icsm
             var result = default(TResult);
             _dataEngine.Execute(command, reader =>
             {
-                result = handler(reader);
+                var typedReader = new QueryDataReader<TModel>(reader);
+                result = handler(typedReader);
             });
             return result;
         }

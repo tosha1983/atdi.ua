@@ -13,5 +13,7 @@ namespace Atdi.CoreServices.Identity.Models
         public string WebLogin { get; set; }
 
         public string Password { get; set; }
+
+        public string AppUser { get; set; }
     }
 }

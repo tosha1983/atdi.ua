@@ -10,6 +10,8 @@ namespace Atdi.AppServices.WebQuery.DTO
     {
         public int ID { get; set; }
 
+        public string CODE { get; set; }
+
         public string SHORT_NAME { get; set; }
 
         public string FULL_NAME { get; set; }

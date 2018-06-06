@@ -30,7 +30,12 @@ namespace Atdi.LegacyServices.Icsm
     static class Exceptions
     {
         public static readonly ExceptionText ExpresionRefersToMemberThatNotFromType = "Expresion '{0}' refers to a member that is not from type {1}.";
-        //public static readonly ExceptionText InvalidUserPassword = "Invalid password for user with name '{0}'";
+        public static readonly ExceptionText ValueTypeNotSupported = "The value type {0} is not supported.";
+        public static readonly ExceptionText ColumnValueTypeNotSupported = "The value type {0} is not supported for column with name '{1}'.";
+        public static readonly ExceptionText ExpressionNotSupported = "The expression '{0}' is not supported.";
+        public static readonly ExceptionText ExpressionTypeNotSupported = "The expression type {0} is not supported.";
+        public static readonly ExceptionText ExpressionNodeTypeNotSupported = "The expression node type {0} is not supported.";
+        public static readonly ExceptionText ExpressionCallMethodNotSupported = "The expression call method {0} is not supported.";
     }
 
 }

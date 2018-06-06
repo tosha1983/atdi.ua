@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -369,6 +370,213 @@ namespace Atdi.LegacyServices.Icsm
             return this;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsOperatorMultiValues(ConditionOperator conditionOperator)
+        {
+            return
+                conditionOperator == ConditionOperator.In ||
+                conditionOperator == ConditionOperator.NotIn ||
+                conditionOperator == ConditionOperator.Between ||
+                conditionOperator == ConditionOperator.NotBetween;
+        }
+
+        public IQuerySelectStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
+        {
+            this._statement.Where(ParseCondition(columnExpression, conditionOperator, values));
+            return this;
+        }
+
+        private static ValuesOperand ParseValuesOperand<TValue>(params TValue[] values)
+        {
+            var type = typeof(TValue);
+            if (type == typeof(string))
+            {
+                return new StringValuesOperand
+                {
+                    Values = values.Select(o => (string)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(int) && type == typeof(int?))
+            {
+                return new IntegerValuesOperand
+                {
+                    Values = values.Select(o => (int?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(bool) && type == typeof(bool?))
+            {
+                return new BooleanValuesOperand
+                {
+                    Values = values.Select(o => (bool?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTime) && type == typeof(DateTime?))
+            {
+                return new DateTimeValuesOperand
+                {
+                    Values = values.Select(o => (DateTime?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(float) && type == typeof(float?))
+            {
+                return new FloatValuesOperand
+                {
+                    Values = values.Select(o => (float?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(double) && type == typeof(double?))
+            {
+                return new DoubleValuesOperand
+                {
+                    Values = values.Select(o => (double?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(decimal) && type == typeof(decimal?))
+            {
+                return new DecimalValuesOperand
+                {
+                    Values = values.Select(o => (decimal?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(byte) && type == typeof(byte?))
+            {
+                return new ByteValuesOperand
+                {
+                    Values = values.Select(o => (byte?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(byte[]) && type == typeof(byte?[]))
+            {
+                return new BytesValuesOperand
+                {
+                    Values = values.Select(o => (byte?[])(object)o).ToArray()
+                };
+            }
+            throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
+        }
+
+        private static ValueOperand ParseValueOperand<TValue>(TValue value)
+        {
+            var type = typeof(TValue);
+            if (type == typeof(string))
+            {
+                return new StringValueOperand
+                {
+                    Value = (string)(object)value
+                };
+            }
+            if (type == typeof(int) && type == typeof(int?))
+            {
+                return new IntegerValueOperand
+                {
+                    Value = (int?)(object)value
+                };
+            }
+            if (type == typeof(bool) && type == typeof(bool?))
+            {
+                return new BooleanValueOperand
+                {
+                    Value = (bool?)(object)value
+                };
+            }
+            if (type == typeof(DateTime) && type == typeof(DateTime?))
+            {
+                return new DateTimeValueOperand
+                {
+                    Value = (DateTime?)(object)value
+                };
+            }
+            if (type == typeof(float) && type == typeof(float?))
+            {
+                return new FloatValueOperand
+                {
+                    Value = (float?)(object)value
+                };
+            }
+            if (type == typeof(double) && type == typeof(double?))
+            {
+                return new DoubleValueOperand
+                {
+                    Value = (double?)(object)value
+                };
+            }
+            if (type == typeof(decimal) && type == typeof(decimal?))
+            {
+                return new DecimalValueOperand
+                {
+                    Value = (decimal?)(object)value
+                };
+            }
+            if (type == typeof(byte) && type == typeof(byte?))
+            {
+                return new ByteValueOperand
+                {
+                    Value = (byte?)(object)value
+                };
+            }
+            if (type == typeof(byte[]) && type == typeof(byte?[]))
+            {
+                return new BytesValueOperand
+                {
+                    Value = (byte?[])(object)value
+                };
+            }
+
+            throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
+        }
+
+        private static Condition ParseCondition<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
+        {
+            var condition = new ConditionExpression
+            {
+                LeftOperand = new ColumnOperand { ColumnName = GetMemberName(columnExpression) },
+                Operator = conditionOperator
+            };
+
+            if (IsOperatorMultiValues(conditionOperator))
+            {
+                if (values == null || values.Length == 0)
+                {
+                    throw new ArgumentException(nameof(values));
+                }
+
+                if ((conditionOperator == ConditionOperator.Between || conditionOperator == ConditionOperator.NotBetween) &&  values.Length != 2)
+                {
+                    throw new ArgumentException(nameof(values));
+                }
+
+                condition.RightOperand = ParseValuesOperand<TValue>(values);
+            }
+            else
+            {
+                if (conditionOperator == ConditionOperator.IsNull || conditionOperator == ConditionOperator.IsNotNull)
+                {
+                    return condition;
+                }
+
+                if (values == null || values.Length == 0)
+                {
+                    throw new ArgumentException(nameof(values));
+                }
+
+                var value = values[0];
+
+                if (conditionOperator == ConditionOperator.Equal && value == null)
+                {
+                    condition.Operator = ConditionOperator.IsNull;
+                    return condition;
+                }
+                if (conditionOperator == ConditionOperator.NotEqual && value == null)
+                {
+                    condition.Operator = ConditionOperator.IsNotNull;
+                    return condition;
+                }
+                condition.RightOperand = ParseValueOperand<TValue>(value);
+            }
+
+            return condition;
+        }
+
         public IQuerySelectStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
         {
             this._statement.Where(ParseConditionExpression(expression));
@@ -405,7 +613,7 @@ namespace Atdi.LegacyServices.Icsm
                 return ParseBinaryExpression(binaryExpression);
             }
 
-            throw new InvalidOperationException("The expression is not supported");
+            throw new InvalidOperationException(Exceptions.ExpressionNotSupported.With(expression.ToString()));
         }
         private static Condition ParseCallMethodExpression(MethodCallExpression expression)
         {
@@ -483,7 +691,7 @@ namespace Atdi.LegacyServices.Icsm
                 };
             }
 
-            throw new InvalidOperationException("The expression is not supported");
+            throw new InvalidOperationException(Exceptions.ExpressionCallMethodNotSupported.With(expression.Method.Name));
         }
         private static Condition ParseBinaryExpression(BinaryExpression expression)
         {
@@ -522,7 +730,7 @@ namespace Atdi.LegacyServices.Icsm
                 return condition;
             }
 
-            throw new InvalidOperationException("The expression is not supported");
+            throw new InvalidOperationException(Exceptions.ExpressionNodeTypeNotSupported.With(expression.NodeType.ToString()));
         }
 
         private static ConditionOperator ToConditionOperator(ExpressionType type)
@@ -552,7 +760,7 @@ namespace Atdi.LegacyServices.Icsm
                 return ConditionOperator.LessEqual;
             }
 
-            throw new InvalidOperationException("The expression type {0} is not supported");
+            throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(type));
         }
         private static Operand ParseOperand(Expression expression)
         {
@@ -560,7 +768,7 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return new ColumnOperand
                 {
-                    ColumnName = GetMemberName(expression)
+                    ColumnName = expression.GetMemberName()
                 };
             }
 
@@ -630,9 +838,10 @@ namespace Atdi.LegacyServices.Icsm
                         Value = (byte?[])constantExpression.Value
                     };
                 }
+                throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(constantExpression.Type));
             }
 
-            throw new InvalidOperationException("The expression type {0} is not supported");
+            throw new InvalidOperationException(Exceptions.ExpressionNodeTypeNotSupported.With(expression.NodeType.ToString()));
         }
 
         private static ValuesOperand ParseValuesOperand(params Expression[] expressions)
@@ -712,41 +921,24 @@ namespace Atdi.LegacyServices.Icsm
                         Values = constantExpressions.Select(o => (byte?[])o.Value).ToArray()
                     };
                 }
+                throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(constantExpression.Type));
             }
 
-            throw new InvalidOperationException("The expression type {0} is not supported");
+            throw new InvalidOperationException(Exceptions.ExpressionNodeTypeNotSupported.With(expression.NodeType.ToString()));
         }
 
         private static string GetMemberName<TValue>(Expression<Func<TModel, TValue>> expression)
         {
-            return GetMemberName(expression.Body);
-        }
-
-        private static string GetMemberName(Expression expression)
-        {
-            var memberName = string.Empty;
-
-            var currentExpression = expression;
-            while (currentExpression.NodeType == ExpressionType.MemberAccess)
-            {
-                var currentMember = currentExpression as MemberExpression;
-                if (!string.IsNullOrEmpty(memberName))
-                {
-                    memberName = currentMember.Member.Name + "." + memberName;
-                }
-                else
-                {
-                    memberName = currentMember.Member.Name;
-                }
-                currentExpression = currentMember.Expression;
-            }
-
-            if (typeof(TModel) != currentExpression.Type)
+            if (ModelType != expression.Body.Type)
             {
                 throw new ArgumentException(Exceptions.ExpresionRefersToMemberThatNotFromType.With(expression.ToString(), ModelType));
             }
 
-            return memberName;
+            return expression.Body.GetMemberName();
         }
+
+        
+
+        
     }
 }
