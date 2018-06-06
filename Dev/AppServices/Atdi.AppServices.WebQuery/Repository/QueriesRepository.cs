@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppServices.WebQuery
 { 
-    internal sealed class QueriesRepository : LoggedObject
+    public sealed class QueriesRepository : LoggedObject
     {
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IQueryExecutor _queryExecutor;

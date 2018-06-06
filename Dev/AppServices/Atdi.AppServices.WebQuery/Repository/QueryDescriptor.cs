@@ -10,7 +10,7 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.AppServices.WebQuery
 {
-    internal sealed class QueryDescriptor
+    public sealed class QueryDescriptor
     {
         public QueryMetadata Metadata { get; set; }
        
