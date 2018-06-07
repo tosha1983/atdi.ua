@@ -8,8 +8,9 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.Contracts.CoreServices.DataLayer
 {
-    public interface IParseQuery
+    public interface IParserQuery
     {
-        ColumnMetadata[] ExecuteParseQuery(QueryToken token);
+        ColumnMetadata[] ExecuteParseQuery(byte[] value);
+     
     }
 }

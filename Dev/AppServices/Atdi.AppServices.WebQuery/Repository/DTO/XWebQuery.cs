@@ -15,7 +15,7 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// ID запроса
             /// </summary>
-            public int Id { get; set; }
+            public int ID { get; set; }
             /// <summary>
             /// Наименование запроса
             /// </summary>

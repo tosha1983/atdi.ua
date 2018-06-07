@@ -45,7 +45,6 @@
     <Compile Include="Handlers\ExecuteQuery.cs" />
     <Compile Include="Handlers\SaveChanges.cs" />
     <Compile Include="Handlers\GetQueryGroups.cs" />
-    <Compile Include="IReaderQueryDescriptor.cs" />
     <Compile Include="Repository\DTO\TASKFORCE.cs" />
     <Compile Include="Repository\DTO\TSKF_MEMBER.cs" />
     <Compile Include="Repository\DTO\XWebConstraint.cs" />

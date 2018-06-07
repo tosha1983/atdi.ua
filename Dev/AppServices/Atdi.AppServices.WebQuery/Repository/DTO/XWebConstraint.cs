@@ -15,7 +15,7 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// Идентификатор ограничения в таблице
             /// </summary>
-            public int Id { get; set; }
+            public int ID { get; set; }
             /// <summary>
             /// Ccылка на запрос 
             /// </summary>

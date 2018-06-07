@@ -56,10 +56,9 @@ namespace Atdi.LegacyServices.Icsm
             this._ormInitDoneField = ormType.GetField("initDone", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        public IParseQuery GetParserQuery()
+        public IParserQuery GetParserQuery()
         {
-            IParseQuery parse = new ParseQuery(this._icsmReport);
-            return parse;
+            return new ParseQuery(this._icsmReport);
         }
       
 

@@ -25,6 +25,10 @@ namespace Atdi.DataModels.WebQuery
         [DataMember]
         public string Description { get; set; }
 
+        [DataMember]
+        public int Cust_Chb1 { get; set; }
+        [DataMember]
+        public int Cust_Chb2 { get; set; }
         /// <summary>
         /// The tokens of the available queries
         /// </summary>

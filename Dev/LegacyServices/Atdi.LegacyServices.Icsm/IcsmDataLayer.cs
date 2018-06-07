@@ -15,7 +15,7 @@ namespace Atdi.LegacyServices.Icsm
     {
         private readonly IDataLayer _dataLayer;
         private readonly IQueryBuilder _queryBuilder;
-        public  IParseQuery _parserQuery;
+        public IParserQuery _parserQuery;
 
         private readonly Dictionary<Type, QueryExecutor> _contextExecutors;
         public IcsmDataLayer(IDataLayer dataLayer, ILogger logger) :  base(logger)
@@ -23,10 +23,11 @@ namespace Atdi.LegacyServices.Icsm
             this._dataLayer = dataLayer;
             this._queryBuilder = new QueryBuilder(logger);
             this._contextExecutors = new Dictionary<Type, QueryExecutor>();
+            
         }
 
         public IQueryBuilder Builder => _queryBuilder;
-        public IParseQuery Parser => _parserQuery;
+        public IParserQuery ParserQuery => _parserQuery;
 
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
@@ -38,20 +39,12 @@ namespace Atdi.LegacyServices.Icsm
             var engine = this._dataLayer.GetDataEngine<TContext>();
             var icsmOrm = new IcsmOrmQueryBuilder(engine, IcsmComponent.IcsmSchemaPath);
             var executor = new QueryExecutor(engine, icsmOrm, this.Logger);
-            _parserQuery = executor.GetParse();
+            this._parserQuery = executor.GetQueryParser();
             this._contextExecutors[contextType] = executor;
             return executor;
         }
 
-        public IParseQuery GetQueryParser<TContext>() where TContext : IDataContext, new()
-        {
-            var engine = this._dataLayer.GetDataEngine<TContext>();
-            var icsmOrm = new IcsmOrmQueryBuilder(engine, IcsmComponent.IcsmSchemaPath);
-            //((ParseQuery)(this._parserQuery))._report = icsmOrm._icsmReport;
-            return this._parserQuery;
-        }
-
-            public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
+        public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
         {
             return _dataLayer.GetDataEngine<TContext>();
         }
