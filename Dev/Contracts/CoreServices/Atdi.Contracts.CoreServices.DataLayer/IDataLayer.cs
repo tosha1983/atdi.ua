@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Atdi.Contracts.CoreServices.DataLayer
 {
     public interface IDataLayer
@@ -19,6 +20,6 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQueryExecutor Executor<TContext>() 
             where TContext : IDataContext, new();
-
+        
     }
 }

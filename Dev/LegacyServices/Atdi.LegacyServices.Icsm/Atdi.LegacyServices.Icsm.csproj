@@ -34,6 +34,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>IcsmOrm\DatalayerCs.dll</HintPath>
     </Reference>
+    <Reference Include="FormsCs">
+      <HintPath>IcsmOrm\FormsCs.dll</HintPath>
+    </Reference>
     <Reference Include="OrmCs">
       <HintPath>IcsmOrm\OrmCs.dll</HintPath>
     </Reference>
@@ -57,10 +60,15 @@
     <Compile Include="QueryExecutor.cs" />
     <Compile Include="QueryBuilder.cs" />
     <Compile Include="QuerySelectStatement.cs" />
+    <Compile Include="ParseQuery.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="ConditionParser.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
+      <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
+      <Name>Atdi.AppServices.WebQuery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
@@ -72,6 +80,10 @@
     <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
       <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
       <Name>Atdi.Contracts.LegacyServices.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
+      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
+      <Name>Atdi.DataModels.WebQuery</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>

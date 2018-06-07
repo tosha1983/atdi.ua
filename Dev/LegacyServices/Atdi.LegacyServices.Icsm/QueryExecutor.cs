@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.LegacyServices.Icsm;
 
 namespace Atdi.LegacyServices.Icsm
 {
@@ -15,7 +16,8 @@ namespace Atdi.LegacyServices.Icsm
         private readonly IDataEngine _dataEngine;
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
-        private readonly IcsmOrmQueryBuilder _icsmOrmQueryBuilder;
+        public readonly IcsmOrmQueryBuilder _icsmOrmQueryBuilder;
+        private readonly IParseQuery _parseQuery;
 
         public QueryExecutor(IDataEngine dataEngine, IcsmOrmQueryBuilder icsmOrmQueryBuilder, ILogger logger) : base(logger)
         {
@@ -25,8 +27,14 @@ namespace Atdi.LegacyServices.Icsm
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
 
             this._icsmOrmQueryBuilder = icsmOrmQueryBuilder;
+            this._parseQuery = icsmOrmQueryBuilder.GetParserQuery();
 
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
+        }
+
+        public IParseQuery GetParse()
+        {
+            return this._parseQuery;
         }
 
         public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)

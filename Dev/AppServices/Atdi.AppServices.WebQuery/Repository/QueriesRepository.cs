@@ -11,12 +11,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
 namespace Atdi.AppServices.WebQuery
 { 
     public sealed class QueriesRepository : LoggedObject
     {
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IQueryExecutor _queryExecutor;
+        private readonly IParseQuery _parseQuery;
+
 
         private readonly Dictionary<string, GroupDescriptor[]> _groupsCache;
 
@@ -25,6 +29,7 @@ namespace Atdi.AppServices.WebQuery
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
             this._groupsCache = new Dictionary<string, GroupDescriptor[]>();
+            
         }
 
         private GroupDescriptor[] LoadGroupsByUser(UserTokenData userToken)
@@ -116,19 +121,94 @@ namespace Atdi.AppServices.WebQuery
         /// </summary>
         /// <param name="queryId"></param>
         /// <returns></returns>
-        private QueryDescriptor LoadQueryDescriptor(int queryId)
+        public QueryDescriptor LoadQueryDescriptor(int queryId)
         {
-            return new QueryDescriptor();
+            //IParseQuery query;
+            QueryDescriptor Q = new QueryDescriptor();
+            var query_web = this._dataLayer.Builder
+            .From("XWebQuery")
+            .Where("ID", queryId)
+            .Select("ID","Name", "Code", "Query", "Comments", "IdentUser", "TaskForceGroup")
+            .OrderByAsc("ID");
+            var QueryDescriptorValue = this._queryExecutor
+           .Fetch(query_web, reader =>
+           {
+               XWebQuery xWeb = new XWebQuery();
+               if (reader.Read())
+               {
+                   xWeb.Id = (int)reader.GetValue(0);
+                   xWeb.Name = reader.GetValue(1).ToString();
+                   xWeb.Code = reader.GetValue(2).ToString();
+                   xWeb.Query = (byte[])reader.GetValue(3);
+                   xWeb.Comments = reader.GetValue(4).ToString();
+                   xWeb.IdentUser = reader.GetValue(5).ToString();
+                   xWeb.TaskForceGroup = reader.GetValue(6).ToString();
+               }
+               return xWeb;
+           });
+
+            if (QueryDescriptorValue != null)
+            {
+                Q.Metadata = new QueryMetadata();
+                Q.Metadata.Name = QueryDescriptorValue.Name;
+                Q.Metadata.Code = QueryDescriptorValue.Code;
+                Q.Metadata.Token = new QueryToken();
+                Q.Metadata.Token.Id = QueryDescriptorValue.Id;
+                Q.Metadata.Token.Stamp = QueryDescriptorValue.Query;
+                Q.Metadata.Token.Version = "1.0";
+                Q.Metadata.Description = QueryDescriptorValue.Comments;
+                Q.Metadata.Title = QueryDescriptorValue.Name;
+            }         
+            return Q;
         }
 
         public QueryDescriptor GetQueryDescriptorByToken(UserTokenData userToken, QueryToken queryToken)
         {
-            return null;
+            QueryGroup[] groups = GetGroupsByUser(userToken);
+            QueryDescriptor Q = new QueryDescriptor();
+            return LoadQueryDescriptor(queryToken.Id);
         }
 
         public QueryDescriptor GetQueryDescriptorByCode(UserTokenData userToken, string queryCode)
         {
-            return null;
+            QueryGroup[] groups = GetGroupsByUser(userToken);
+            QueryDescriptor Q = new QueryDescriptor();
+            var query_web = this._dataLayer.Builder
+            .From("XWebQuery")
+            .Where("Code", queryCode)
+            .Select("ID", "Name", "Code", "Query", "Comments", "IdentUser", "TaskForceGroup")
+            .OrderByAsc("ID");
+            var QueryDescriptorValue = this._queryExecutor
+           .Fetch(query_web, reader =>
+           {
+               XWebQuery xWeb = new XWebQuery();
+               if (reader.Read())
+               {
+                   xWeb.Id = (int)reader.GetValue(0);
+                   xWeb.Name = reader.GetValue(1).ToString();
+                   xWeb.Code = reader.GetValue(2).ToString();
+                   xWeb.Query = (byte[])reader.GetValue(3);
+                   xWeb.Comments = reader.GetValue(4).ToString();
+                   xWeb.IdentUser = reader.GetValue(5).ToString();
+                   xWeb.TaskForceGroup = reader.GetValue(6).ToString();
+
+               }
+               return xWeb;
+           });
+
+            if (QueryDescriptorValue != null)
+            {
+                Q.Metadata = new QueryMetadata();
+                Q.Metadata.Name = QueryDescriptorValue.Name;
+                Q.Metadata.Code = QueryDescriptorValue.Code;
+                Q.Metadata.Token = new QueryToken();
+                Q.Metadata.Token.Id = QueryDescriptorValue.Id;
+                Q.Metadata.Token.Stamp = QueryDescriptorValue.Query;
+                Q.Metadata.Token.Version = "1.0";
+                Q.Metadata.Description = QueryDescriptorValue.Comments;
+                Q.Metadata.Title = QueryDescriptorValue.Name;
+            }
+            return Q;
         }
 
         public QueryGroup[] GetGroupsByUser(UserTokenData userToken)

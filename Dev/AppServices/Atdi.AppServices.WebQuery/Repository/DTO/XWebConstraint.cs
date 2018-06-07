@@ -10,7 +10,7 @@ namespace Atdi.AppServices.WebQuery
 {
         /// Класс для хранения сведений об ограничениях на запрос
         /// </summary>
-        internal sealed class XWebConstraint
+        public sealed class XWebConstraint
         {
             /// <summary>
             /// Идентификатор ограничения в таблице

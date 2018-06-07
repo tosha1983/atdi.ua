@@ -933,7 +933,6 @@ namespace Atdi.LegacyServices.Icsm
             {
                 throw new ArgumentException(Exceptions.ExpresionRefersToMemberThatNotFromType.With(expression.ToString(), ModelType));
             }
-
             return expression.Body.GetMemberName();
         }
 
