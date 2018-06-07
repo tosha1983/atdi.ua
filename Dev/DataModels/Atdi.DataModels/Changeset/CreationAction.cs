@@ -17,6 +17,9 @@ namespace Atdi.DataModels
     public class CreationAction : Action
     {
         [DataMember]
+        public DataSetColumn[] Columns { get; set; }
+
+        [DataMember]
         public DataRowType RowType { get; set; }
     }
 }

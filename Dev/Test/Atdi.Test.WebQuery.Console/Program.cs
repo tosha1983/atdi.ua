@@ -22,24 +22,17 @@ namespace Atdi.Test.WebQuery
             {
 
 
-                Console.WriteLine("Press any key to start testing ...");
-                Console.ReadLine();
+                System.Console.WriteLine("Press any key to start testing ...");
+                System.Console.ReadLine();
 
                 TestAuthenticationManager("TcpAuthenticationManager");
 
             }
-            //BlockTest();
-
-            //TestGetData();
-
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadLine();
         }
         static void TestGetData()
         {
-            Console.WriteLine("Press any key to start testing ...");
-            Console.ReadLine();
+            System.Console.WriteLine("Press any key to start testing ...");
+            System.Console.ReadLine();
 
             var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
             var httpAuthManager = GetWebQueryByEndpoint("HttpWebQuery");
@@ -49,8 +42,8 @@ namespace Atdi.Test.WebQuery
         }
         static void BlockTest()
         {
-            Console.WriteLine("Press any key to start testing ...");
-            Console.ReadLine();
+            System.Console.WriteLine("Press any key to start testing ...");
+            System.Console.ReadLine();
 
 
             var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
@@ -62,9 +55,9 @@ namespace Atdi.Test.WebQuery
                 TestWebQuery(tcpAuthManager, "tcp");
                 TestWebQuery(httpAuthManager, "http");
                 TestWebQuery(pipeAuthManager, "pipe");
-                Console.WriteLine("Testing has been done.");
-                Console.ReadLine();
-                Console.WriteLine("Repeat ...");
+                System.Console.WriteLine("Testing has been done.");
+                System.Console.ReadLine();
+                System.Console.WriteLine("Repeat ...");
             }
         }
 
@@ -91,7 +84,7 @@ namespace Atdi.Test.WebQuery
 
 
             timer.Stop();
-            Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
+            System.Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
         }
 
         static void TestWebQuery(IWebQuery webQueryService, string context)
@@ -113,7 +106,7 @@ namespace Atdi.Test.WebQuery
 
 
             timer.Stop();
-            Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
+            System.Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
 
 
             var timer2 = System.Diagnostics.Stopwatch.StartNew();
@@ -129,7 +122,7 @@ namespace Atdi.Test.WebQuery
 
 
             timer2.Stop();
-            Console.WriteLine($"{context}: {timer2.Elapsed.TotalMilliseconds} ms");
+            System.Console.WriteLine($"{context}: {timer2.Elapsed.TotalMilliseconds} ms");
         }
 
         static void TestAuthenticationManager(string endpointName)
@@ -149,7 +142,7 @@ namespace Atdi.Test.WebQuery
 
 
             timer.Stop();
-            Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
+            System.Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
         }
 
     }

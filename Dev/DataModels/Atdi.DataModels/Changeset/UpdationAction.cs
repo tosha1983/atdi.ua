@@ -18,6 +18,9 @@ namespace Atdi.DataModels
     public class UpdationAction : Action
     {
         [DataMember]
+        public DataSetColumn[] Columns { get; set; }
+
+        [DataMember]
         public Condition Condition { get; set; }
 
         [DataMember]
