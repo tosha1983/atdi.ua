@@ -12,6 +12,7 @@ using Atdi.CoreServices.Identity.Models;
 using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
 
+
 namespace Atdi.CoreServices.Identity
 {
     public sealed class AuthenticationManager : LoggedObject, IAuthenticationManager
@@ -60,7 +61,6 @@ namespace Atdi.CoreServices.Identity
                 throw new ArgumentNullException(nameof(credential.UserName));
             }
 
-  
             var query = this._dataLayer.Builder
                 .From<EMPLOYEE>()
                 .Where(c => c.WEB_LOGIN, ConditionOperator.Equal, credential.UserName)
