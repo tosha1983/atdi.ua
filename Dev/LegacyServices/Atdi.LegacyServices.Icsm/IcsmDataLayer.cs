@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.AppServices.WebQuery;
 
 namespace Atdi.LegacyServices.Icsm
 {
@@ -14,15 +15,19 @@ namespace Atdi.LegacyServices.Icsm
     {
         private readonly IDataLayer _dataLayer;
         private readonly IQueryBuilder _queryBuilder;
+        public IParserQuery _parserQuery;
+
         private readonly Dictionary<Type, QueryExecutor> _contextExecutors;
         public IcsmDataLayer(IDataLayer dataLayer, ILogger logger) :  base(logger)
         {
             this._dataLayer = dataLayer;
             this._queryBuilder = new QueryBuilder(logger);
             this._contextExecutors = new Dictionary<Type, QueryExecutor>();
+            
         }
 
         public IQueryBuilder Builder => _queryBuilder;
+        public IParserQuery ParserQuery => _parserQuery;
 
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
@@ -34,6 +39,7 @@ namespace Atdi.LegacyServices.Icsm
             var engine = this._dataLayer.GetDataEngine<TContext>();
             var icsmOrm = new IcsmOrmQueryBuilder(engine, IcsmComponent.IcsmSchemaPath);
             var executor = new QueryExecutor(engine, icsmOrm, this.Logger);
+            this._parserQuery = executor.GetQueryParser();
             this._contextExecutors[contextType] = executor;
             return executor;
         }

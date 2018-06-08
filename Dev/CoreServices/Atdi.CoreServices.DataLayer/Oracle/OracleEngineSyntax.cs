@@ -41,7 +41,7 @@ namespace Atdi.CoreServices.DataLayer
                 return expression;
             }
 
-            return $"{expression} AS \"{alias}\"";
+            return $"{expression.ToUpper()} AS \"{alias.ToUpper()}\"";
         }
 
         public string EncodeFieldName(string name)

@@ -10,12 +10,12 @@ namespace Atdi.AppServices.WebQuery
 {
         /// Класс для хранения свойств запроса
         /// </summary>
-        internal sealed class XWebQuery
+        public sealed class XWebQuery
         {
             /// <summary>
             /// ID запроса
             /// </summary>
-            public int Id { get; set; }
+            public int ID { get; set; }
             /// <summary>
             /// Наименование запроса
             /// </summary>

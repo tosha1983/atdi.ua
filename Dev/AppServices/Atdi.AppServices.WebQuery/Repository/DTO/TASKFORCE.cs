@@ -17,5 +17,7 @@ namespace Atdi.AppServices.WebQuery.DTO
         public string FULL_NAME { get; set; }
 
         public string DESCRIPTION { get; set; }
+        public int CUST_CHB1 { get; set; }
+        public int CUST_CHB2 { get; set; }
     }
 }

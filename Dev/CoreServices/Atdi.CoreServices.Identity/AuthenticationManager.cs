@@ -63,11 +63,11 @@ namespace Atdi.CoreServices.Identity
   
             var query = this._dataLayer.Builder
                 .From<EMPLOYEE>()
-                .Where( c => c.WEB_LOGIN, ConditionOperator.Equal, credential.UserName)
+                .Where(c => c.WEB_LOGIN, ConditionOperator.Equal, credential.UserName)
                 .Select(
-                    c => c.ID, 
-                    c => c.APP_USER, 
-                    c => c.WEB_LOGIN, 
+                    c => c.ID,
+                    c => c.APP_USER,
+                    c => c.WEB_LOGIN,
                     c => c.PWD)
                 .OrderByAsc(c => c.ID)
                 .OnTop(1);
@@ -94,7 +94,7 @@ namespace Atdi.CoreServices.Identity
                 throw new InvalidOperationException(Exceptions.NotFoundUser.With(credential.UserName));
             }
 
-            
+
 
             if ((string.IsNullOrEmpty(userData.Password) && string.IsNullOrEmpty(credential.Password))
                 || userData.Password == _tokenProvider.GetHashPassword(credential.Password))
@@ -104,7 +104,7 @@ namespace Atdi.CoreServices.Identity
             }
 
 
-            throw new InvalidOperationException(Exceptions.InvalidUserPassword.With(credential.UserName));            
+            throw new InvalidOperationException(Exceptions.InvalidUserPassword.With(credential.UserName));
         }
     }
 }

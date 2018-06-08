@@ -53,12 +53,17 @@
     <Compile Include="IDataLayerConfig.cs" />
     <Compile Include="IDataOrm.cs" />
     <Compile Include="IEngineSyntax.cs" />
+    <Compile Include="IParseQuery.cs" />
     <Compile Include="IQueryExecutor.cs" />
     <Compile Include="IQueryBuilder.cs" />
     <Compile Include="IQuerySelectStatement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
+      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
+      <Name>Atdi.DataModels.WebQuery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>

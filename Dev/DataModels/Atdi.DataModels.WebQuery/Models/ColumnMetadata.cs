@@ -33,6 +33,9 @@ namespace Atdi.DataModels.WebQuery
         public int Width { get; set; }
 
         [DataMember]
+        public bool isCustomExpr { get; set; }
+
+        [DataMember]
         public OrderType Order { get; set; }
         
         [DataMember]
