@@ -14,6 +14,12 @@ namespace Atdi.LegacyServices.Icsm
             var memberName = string.Empty;
 
             var currentExpression = expression;
+            if (currentExpression.NodeType == ExpressionType.Convert)
+            {
+                var unaryExpression = currentExpression as UnaryExpression;
+                currentExpression = unaryExpression.Operand;
+            }
+            
             while (currentExpression.NodeType == ExpressionType.MemberAccess)
             {
                 var currentMember = currentExpression as MemberExpression;
@@ -28,6 +34,10 @@ namespace Atdi.LegacyServices.Icsm
                 currentExpression = currentMember.Expression;
             }
 
+            if (string.IsNullOrEmpty(memberName))
+            {
+                throw new InvalidOperationException(Exceptions.MemberNameIsNotDefined.With(expression));
+            }
             return memberName;
         }
     }

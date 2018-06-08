@@ -929,10 +929,11 @@ namespace Atdi.LegacyServices.Icsm
 
         private static string GetMemberName<TValue>(Expression<Func<TModel, TValue>> expression)
         {
-            if (ModelType != expression.Body.Type)
-            {
-                throw new ArgumentException(Exceptions.ExpresionRefersToMemberThatNotFromType.With(expression.ToString(), ModelType));
-            }
+            //if (ModelType != expression.Body.Type)
+            //{
+            //    throw new ArgumentException(Exceptions.ExpresionRefersToMemberThatNotFromType.With(expression.ToString(), ModelType));
+            //}
+
             return expression.Body.GetMemberName();
         }
 
