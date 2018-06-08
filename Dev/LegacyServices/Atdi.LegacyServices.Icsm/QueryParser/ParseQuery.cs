@@ -122,16 +122,16 @@ namespace Atdi.LegacyServices.Icsm
             _report.SetConfig(f);
             if (_report != null)
             {
-                ColumnMetadata metaData = new ColumnMetadata();
-                metaData.Description = _report.m_desc;
-                metaData.Title = "";
-                metaData.Name = _report.m_desc;
                 if (_report.m_dat.m_list.Count() > 0)
                 {
                     for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Count(); i++)
                     {
                         if (!_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
                         {
+                            var metaData = new ColumnMetadata();
+                            metaData.Description = _report.m_desc;
+                            metaData.Title = "";
+                            metaData.Name = _report.m_desc;
                             string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                             t = t.Replace(_report.m_dat.m_tab + ".", "");
                             metaData.Description = t;

@@ -40,7 +40,6 @@ namespace Atdi.LegacyServices.Icsm
             var icsmOrm = new IcsmOrmQueryBuilder(engine, IcsmComponent.IcsmSchemaPath);
             var executor = new QueryExecutor(engine, icsmOrm, this.Logger);
             this._contextExecutors[contextType] = executor;
-            //this._parserQuery.ExecuteParseQuery(System.IO.File.ReadAllText("C:\\Temp\\Microfonai.irp"));
             return executor;
         }
 
