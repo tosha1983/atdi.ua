@@ -31,29 +31,44 @@ namespace Atdi.LegacyServices.Icsm
 
         public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)
         {
-            var command = this.BuildSelectCommand(statement as QuerySelectStatement);
-
-            var result = default(TResult);
-            _dataEngine.Execute(command, reader => 
+            try
             {
-                result = handler(reader);
-            });
-            return result;
+                var command = this.BuildSelectCommand(statement as QuerySelectStatement);
+
+                var result = default(TResult);
+                _dataEngine.Execute(command, reader =>
+                {
+                    result = handler(reader);
+                });
+                return result;
+            }
+            catch(Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.FetchingData, e);
+                throw;
+            }
         }
 
         public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
-            var objectStatment = statement as QuerySelectStatement<TModel>;
-
-            var command = this.BuildSelectCommand(objectStatment.Statement);
-
-            var result = default(TResult);
-            _dataEngine.Execute(command, reader =>
+            try
             {
-                var typedReader = new QueryDataReader<TModel>(reader);
-                result = handler(typedReader);
-            });
-            return result;
+                var objectStatment = statement as QuerySelectStatement<TModel>;
+                var command = this.BuildSelectCommand(objectStatment.Statement);
+
+                var result = default(TResult);
+                _dataEngine.Execute(command, reader =>
+                {
+                    var typedReader = new QueryDataReader<TModel>(reader);
+                    result = handler(typedReader);
+                });
+                return result;
+            }
+            catch(Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.FetchingData, e);
+                throw;
+            }
         }
 
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)

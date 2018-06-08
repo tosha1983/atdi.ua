@@ -16,6 +16,7 @@ namespace Atdi.LegacyServices.Icsm
     static class Categories
     {
         public static readonly EventCategory CreatingInstance = "Creating instance";
+        public static readonly EventCategory FetchingData = "Fetching data";
     }
 
     static class Events
@@ -36,6 +37,7 @@ namespace Atdi.LegacyServices.Icsm
         public static readonly ExceptionText ExpressionTypeNotSupported = "The expression type {0} is not supported.";
         public static readonly ExceptionText ExpressionNodeTypeNotSupported = "The expression node type {0} is not supported.";
         public static readonly ExceptionText ExpressionCallMethodNotSupported = "The expression call method {0} is not supported.";
+        public static readonly ExceptionText MemberNameIsNotDefined = "A member name in the expression '{0}' is not defined.";
     }
 
 }

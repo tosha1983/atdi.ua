@@ -25,7 +25,7 @@ namespace Atdi.LegacyServices.Icsm
             this._dataEngine = dataEngine;
             this._initIcsmSchemaPath = initIcsmSchemaPath;
 
-            ICSM_DL.DotnetProvider provider = ICSM_DL.DotnetProvider.None;
+            var provider = ICSM_DL.DotnetProvider.None;
             string schemaPrefix = string.Empty;
             if (dataEngine.Config.Type == DataEngineType.SqlServer)
             {
@@ -41,9 +41,12 @@ namespace Atdi.LegacyServices.Icsm
             this._icsmDb = ICSM_DL.ANetDb.New(provider);
             this._icsmDb.ConnectionString = dataEngine.Config.ConnectionString;
             this._icsmDb.Open();
+
             ICSM_ORM.OrmSchema.InitIcsmSchema(this._icsmDb, schemaPrefix, initIcsmSchemaPath);
-            string outErr = ""; ICSM_ORM.OrmSchema.ParseSchema(initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out outErr);
+            ICSM_ORM.OrmSchema.ParseSchema(initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out string outErr);
+
             this._ormLinker = new ICSM_ORM.DbLinker(this._icsmDb, schemaPrefix);
+
             var ormType = typeof(ICSM_ORM.OrmRs);
             this._ormEndInitMethod = ormType.GetMethod("EndInit", BindingFlags.NonPublic | BindingFlags.Instance);
             this._ormGetSQLTablesMethod = ormType.GetMethod("GetSQLTables", BindingFlags.NonPublic | BindingFlags.Instance);
