@@ -7,6 +7,8 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.AppServices.WebQuery;
+using Atdi.LegacyServices.Icsm;
 
 namespace Atdi.Test.WebQuery
 {
@@ -22,17 +24,25 @@ namespace Atdi.Test.WebQuery
             {
 
 
-                System.Console.WriteLine("Press any key to start testing ...");
-                System.Console.ReadLine();
+                Console.WriteLine("Press any key to start testing ...");
+                Console.ReadLine();
 
-                TestAuthenticationManager("TcpAuthenticationManager");
+                TestAuthenticationManager("HttpAuthenticationManager");
+                //BlockTest();
 
             }
+            //BlockTest();
+
+            //TestGetData();
+
+
+            Console.WriteLine("Press any key to exit");
+            Console.ReadLine();
         }
         static void TestGetData()
         {
-            System.Console.WriteLine("Press any key to start testing ...");
-            System.Console.ReadLine();
+            Console.WriteLine("Press any key to start testing ...");
+            Console.ReadLine();
 
             var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
             var httpAuthManager = GetWebQueryByEndpoint("HttpWebQuery");
@@ -42,22 +52,22 @@ namespace Atdi.Test.WebQuery
         }
         static void BlockTest()
         {
-            System.Console.WriteLine("Press any key to start testing ...");
-            System.Console.ReadLine();
+            Console.WriteLine("Press any key to start testing ...");
+            Console.ReadLine();
 
 
-            var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
+            //var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
             var httpAuthManager = GetWebQueryByEndpoint("HttpWebQuery");
-            var pipeAuthManager = GetWebQueryByEndpoint("PipeWebQuery");
+            //var pipeAuthManager = GetWebQueryByEndpoint("PipeWebQuery");
 
             while (true)
             {
-                TestWebQuery(tcpAuthManager, "tcp");
+                //TestWebQuery(tcpAuthManager, "tcp");
                 TestWebQuery(httpAuthManager, "http");
-                TestWebQuery(pipeAuthManager, "pipe");
-                System.Console.WriteLine("Testing has been done.");
-                System.Console.ReadLine();
-                System.Console.WriteLine("Repeat ...");
+                //TestWebQuery(pipeAuthManager, "pipe");
+                Console.WriteLine("Testing has been done.");
+                Console.ReadLine();
+                Console.WriteLine("Repeat ...");
             }
         }
 
@@ -84,7 +94,7 @@ namespace Atdi.Test.WebQuery
 
 
             timer.Stop();
-            System.Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
+            Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
         }
 
         static void TestWebQuery(IWebQuery webQueryService, string context)
@@ -100,13 +110,32 @@ namespace Atdi.Test.WebQuery
                 // var tree = webQueryService.GetQueriesTree(userToken);
                 //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
                 var data = webQueryService.ExecuteQuery(null, queryToken, fetchOptions);
+
+
+
+                ///
+                /*
+                var authManager = GetAuthenticationManagerByEndpoint("HttpAuthenticationManager");
+                var c1 = new UserCredential()
+                {
+                    UserName = "Andrey",
+                    Password = "P@ssw0rd"
+                };
+
+             
+                var userIdentity = authManager.AuthenticateUser(c1);
+                userIdentity.Data
+                */
+
+
+                //webQueryService.GetQueryGroups(userIdentity);
                 //  Console.WriteLine(data.Data.Rows[0][0]);
                 //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
 
 
             timer.Stop();
-            System.Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
+            Console.WriteLine($"{context}: {timer.Elapsed.TotalMilliseconds} ms");
 
 
             var timer2 = System.Diagnostics.Stopwatch.StartNew();
@@ -122,27 +151,30 @@ namespace Atdi.Test.WebQuery
 
 
             timer2.Stop();
-            System.Console.WriteLine($"{context}: {timer2.Elapsed.TotalMilliseconds} ms");
+            Console.WriteLine($"{context}: {timer2.Elapsed.TotalMilliseconds} ms");
         }
 
         static void TestAuthenticationManager(string endpointName)
         {
+
+
             var authManager = GetAuthenticationManagerByEndpoint(endpointName);
             var timer = System.Diagnostics.Stopwatch.StartNew();
             var c = new UserCredential()
             {
-                UserName = "Andrey",
-                Password = "P@ssw0rd"
+                UserName = "ICSM",
+                Password = "ICSM"
             };
 
-            for (int i = 0; i < 10; i++)
-            {
-                var userIdentity = authManager.AuthenticateUser(c);
-            }
+
+           var userIdentity = authManager.AuthenticateUser(c);
+
+            //ReaderQueryDescriptor red = new ReaderQueryDescriptor();
+            //red.GetAllXWebQuery();
 
 
             timer.Stop();
-            System.Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
+            Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
         }
 
     }

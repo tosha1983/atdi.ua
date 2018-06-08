@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ICSM_DL = DatalayerCs;
 using ICSM_ORM = OrmCs;
-using ICSM_PARSER_IRP = FormsCs;
 using Atdi.Contracts.LegacyServices.Icsm;
 
 
@@ -22,13 +21,11 @@ namespace Atdi.LegacyServices.Icsm
         private readonly MethodInfo _ormEndInitMethod;
         private readonly MethodInfo _ormGetSQLTablesMethod;
         private readonly FieldInfo _ormInitDoneField;
-        private readonly ICSM_PARSER_IRP.IcsmReport _icsmReport;
 
         public IcsmOrmQueryBuilder(IDataEngine dataEngine, string initIcsmSchemaPath)
         {
             this._dataEngine = dataEngine;
             this._initIcsmSchemaPath = initIcsmSchemaPath;
-            this._icsmReport = new ICSM_PARSER_IRP.IcsmReport();
 
             ICSM_DL.DotnetProvider provider = ICSM_DL.DotnetProvider.None;
             string schemaPrefix = string.Empty;
@@ -47,20 +44,13 @@ namespace Atdi.LegacyServices.Icsm
             this._icsmDb.ConnectionString = dataEngine.Config.ConnectionString;
             this._icsmDb.Open();
             ICSM_ORM.OrmSchema.InitIcsmSchema(this._icsmDb, schemaPrefix, initIcsmSchemaPath);
-            string outErr = ""; ICSM_ORM.OrmSchema.ParseSchema(initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out outErr);
+            ICSM_ORM.OrmSchema.ParseSchema(initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out string outErr);
             this._ormLinker = new ICSM_ORM.DbLinker(this._icsmDb, schemaPrefix);
-            ICSM_ORM.OrmRs orm = new ICSM_ORM.OrmRs();  orm.Init(this._ormLinker);  orm.m_allFetched = true;  orm.AllFetched();   this._icsmReport.m_records.LinkTo(orm);
             var ormType = typeof(ICSM_ORM.OrmRs);
             this._ormEndInitMethod = ormType.GetMethod("EndInit", BindingFlags.NonPublic | BindingFlags.Instance);
             this._ormGetSQLTablesMethod = ormType.GetMethod("GetSQLTables", BindingFlags.NonPublic | BindingFlags.Instance);
             this._ormInitDoneField = ormType.GetField("initDone", BindingFlags.NonPublic | BindingFlags.Instance);
         }
-
-        public IParserQuery GetParserQuery()
-        {
-            return new ParseQuery(this._icsmReport);
-        }
-      
 
         public string BuildSelectStatement(QuerySelectStatement statement)
         {

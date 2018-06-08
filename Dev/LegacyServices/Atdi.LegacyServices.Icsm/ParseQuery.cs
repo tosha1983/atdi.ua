@@ -11,7 +11,6 @@ using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
 using Atdi.AppServices.WebQuery;
 using OrmCs;
-using FormsCs;
 using DatalayerCs;
 using Atdi.DataModels.WebQuery;
 
@@ -23,9 +22,9 @@ namespace Atdi.LegacyServices.Icsm
     {
       
         private readonly IcsmReport _report;
-        public ParseQuery(IcsmReport r) 
+        public ParseQuery() 
         {
-            _report = r;
+            _report = new IcsmReport();
         }
 
         public static OrmField GetOrmDataDesc(string fld_check, string tableName)
@@ -108,41 +107,47 @@ namespace Atdi.LegacyServices.Icsm
             return GetOrmDataDesc(recDB.NameFieldForSetValue, recDB.NameTableTo);
         }
 
-        public ColumnMetadata[] ExecuteParseQuery(byte[] value)
+
+        public ColumnMetadata[] ExecuteParseQuery(string value)
         {
-           List<ColumnMetadata> L = new List<ColumnMetadata>();
-           Frame f = new Frame();
-           string Query = UTF8Encoding.UTF8.GetString(value);
-           int x1 = Query.IndexOf("\r\n");
-           Query = Query.Remove(0, x1 + 2);
-           int x2 = Query.IndexOf("\r\n");
-           Query = Query.Remove(0, x2 + 2);
-           InChannelString strx = new InChannelString(Query);
-           f.Load(strx);
-           _report.SetConfig(f);
+            List<ColumnMetadata> L = new List<ColumnMetadata>();
+            Frame f = new Frame();
+            string Query = value;
+            int x1 = Query.IndexOf("\r\n");
+            Query = Query.Remove(0, x1 + 2);
+            int x2 = Query.IndexOf("\r\n");
+            Query = Query.Remove(0, x2 + 2);
+            InChannelString strx = new InChannelString(Query);
+            f.Load(strx);
+            _report.SetConfig(f);
             if (_report != null)
             {
                 ColumnMetadata metaData = new ColumnMetadata();
                 metaData.Description = _report.m_desc;
-                metaData.Title = ""; 
-                metaData.Name = _report.m_desc;  
-                if (_report.m_dat.m_list.Count() > 0) {
-                    for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Count(); i++) {
-                        if (!_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr) {
+                metaData.Title = "";
+                metaData.Name = _report.m_desc;
+                if (_report.m_dat.m_list.Count() > 0)
+                {
+                    for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Count(); i++)
+                    {
+                        if (!_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
+                        {
                             string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                             t = t.Replace(_report.m_dat.m_tab + ".", "");
                             metaData.Description = t;
                             metaData.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
                             if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oNone) metaData.Order = OrderType.None;
                             else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oAsc) metaData.Order = OrderType.Ascending;
-                            else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oDesc) metaData.Order =  OrderType.Descending;
+                            else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oDesc) metaData.Order = OrderType.Descending;
                             metaData.Position = 0;
-                            metaData.Title  = _report.m_dat.m_list[0].m_query.lq[i].title;
+                            metaData.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
                             metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
                             OrmField ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
-                            if (ty_p == null) {
+                            if (ty_p == null)
+                            {
                                 string FLD_STATE_FORMAT = ""; string FLD_STATE_value = "";
-                                if (t.Contains(".")) {
+                                if (t.Contains("."))
+                                {
                                     FLD_STATE_value = t;
                                     var count = t.Count(chr => chr == '.');
                                     FLD_STATE_FORMAT = t.Replace(".", "(") + "".PadRight(count, ')');
@@ -179,64 +184,15 @@ namespace Atdi.LegacyServices.Icsm
                             }
                             L.Add(metaData);
                         }
-                        else
-                        {
-                            string t = _report.m_dat.m_list[0].m_query.lq[i].path;
-                            t = t.Replace(_report.m_dat.m_tab + ".", "");
-                            ColumnMetadata metaCol = new ColumnMetadata();
-                            metaCol.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
-                            OrmItemExpr nw_ = new OrmItemExpr();
-                            nw_.m_expression = _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr;
-                            nw_.m_name = _report.m_dat.m_list[0].m_query.lq[i].title;
-                            metaCol.Description = nw_.m_name;
-                            nw_.m_sp = _report.m_dat.m_list[0].m_query.lq[i].m_typeCustExpr;
-                            nw_.m_fmt = _report.m_dat.m_list[0].m_query.lq[i].format;
-                            OrmField ty_p = GetOrmDataDesc(nw_.m_name, _report.m_dat.m_tab);
-                            if (ty_p == null)  {
-                                string FLD_STATE_FORMAT = ""; string FLD_STATE_value = "";
-                                if (t.Contains(".")) {
-                                    FLD_STATE_value = t;
-                                    var count = t.Count(chr => chr == '.');
-                                    FLD_STATE_FORMAT = t.Replace(".", "(") + "".PadRight(count, ')');
-                                }
-                                if (FLD_STATE_FORMAT != "") {
-                                    ty_p = GetFieldFromOrm(_report.m_dat.m_tab, FLD_STATE_value);
-                                }
-                            }
-                            switch (ty_p.DDesc.ClassType)
-                            {
-                                case OrmVarType.var_Bytes:
-                                    metaData.Type = DataModels.DataType.Bytes;
-                                    break;
-                                case OrmVarType.var_Flo:
-                                    metaData.Type = DataModels.DataType.Float;
-                                    break;
-                                case OrmVarType.var_Int:
-                                    metaData.Type = DataModels.DataType.Integer;
-                                    break;
-                                case OrmVarType.var_Dou:
-                                    metaData.Type = DataModels.DataType.Double;
-                                    break;
-                                case OrmVarType.var_String:
-                                    metaData.Type = DataModels.DataType.String;
-                                    break;
-                                case OrmVarType.var_Tim:
-                                    metaData.Type = DataModels.DataType.DateTime;
-                                    break;
-                                default:
-                                    metaData.Type = DataModels.DataType.String;
-                                    break;
-                            }
-                            L.Add(metaData);
-                        }
-
                     }
                 }
             }
-   
-           return L.ToArray();
-
+            return L.ToArray();
         }
 
+        public ColumnMetadata[] ExecuteParseQuery(byte[] value)
+        {
+           return ExecuteParseQuery(UTF8Encoding.UTF8.GetString(value));
+        }
     }
 }

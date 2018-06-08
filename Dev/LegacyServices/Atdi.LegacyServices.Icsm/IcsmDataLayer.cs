@@ -15,7 +15,7 @@ namespace Atdi.LegacyServices.Icsm
     {
         private readonly IDataLayer _dataLayer;
         private readonly IQueryBuilder _queryBuilder;
-        public IParserQuery _parserQuery;
+        private readonly IParserQuery _parserQuery;
 
         private readonly Dictionary<Type, QueryExecutor> _contextExecutors;
         public IcsmDataLayer(IDataLayer dataLayer, ILogger logger) :  base(logger)
@@ -23,7 +23,7 @@ namespace Atdi.LegacyServices.Icsm
             this._dataLayer = dataLayer;
             this._queryBuilder = new QueryBuilder(logger);
             this._contextExecutors = new Dictionary<Type, QueryExecutor>();
-            
+            this._parserQuery = new ParseQuery();
         }
 
         public IQueryBuilder Builder => _queryBuilder;
@@ -39,8 +39,8 @@ namespace Atdi.LegacyServices.Icsm
             var engine = this._dataLayer.GetDataEngine<TContext>();
             var icsmOrm = new IcsmOrmQueryBuilder(engine, IcsmComponent.IcsmSchemaPath);
             var executor = new QueryExecutor(engine, icsmOrm, this.Logger);
-            this._parserQuery = executor.GetQueryParser();
             this._contextExecutors[contextType] = executor;
+            //this._parserQuery.ExecuteParseQuery(System.IO.File.ReadAllText("C:\\Temp\\Microfonai.irp"));
             return executor;
         }
 
