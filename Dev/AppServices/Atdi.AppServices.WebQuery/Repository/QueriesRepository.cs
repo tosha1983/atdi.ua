@@ -69,7 +69,7 @@ namespace Atdi.AppServices.WebQuery
                                 Title = reader.GetValue(c => c.Taskforce.FULL_NAME),
                                 Description = reader.GetValue(c => c.Taskforce.DESCRIPTION),
                                 CanCreateAndModify = reader.GetValue(c => c.Taskforce.CUST_CHB1),
-                                CanDelete = reader.GetValue(c => c.Taskforce.CUST_CHB1)
+                                CanDelete = reader.GetValue(c => c.Taskforce.CUST_CHB2)
                             }
                         };
 

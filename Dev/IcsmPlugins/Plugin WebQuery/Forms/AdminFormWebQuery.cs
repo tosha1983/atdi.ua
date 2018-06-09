@@ -59,7 +59,7 @@ namespace XICSM.WebQuery
             comboBox_group.Items.AddRange(GetAllTaskForceShortName().ToArray());
             IMRecordset RsWebQuery = new IMRecordset(Lst.TableName, IMRecordset.Mode.ReadOnly);
             RsWebQuery.Select("ID,Name,Query,Comments,IdentUser,Code,TaskForceGroup");
-            if (Lst.DataList == null) return;
+            if (Lst.DataList == null) RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst.TableId);
             RsWebQuery.AddSelectionFrom(Lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
             for (RsWebQuery.Open(); !RsWebQuery.IsEOF(); RsWebQuery.MoveNext()) {
                                 textBoxName.Text = RsWebQuery.GetS("Name");
@@ -121,7 +121,8 @@ namespace XICSM.WebQuery
                 {
                     IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
                     RsWebQuery.Select("ID,Name,Query,Comments,IdentUser,Code,TaskForceGroup");
-                    RsWebQuery.AddSelectionFrom(Lst_.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
+                    if (Lst_.DataList == null) RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst_.TableId);
+                    else   RsWebQuery.AddSelectionFrom(Lst_.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
                     try {
                         RsWebQuery.Open();
                         if (!RsWebQuery.IsEOF()) {
