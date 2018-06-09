@@ -396,56 +396,56 @@ namespace Atdi.LegacyServices.Icsm
                     Values = values.Select(o => (string)(object)o).ToArray()
                 };
             }
-            if (type == typeof(int) && type == typeof(int?))
+            if (type == typeof(int) || type == typeof(int?))
             {
                 return new IntegerValuesOperand
                 {
                     Values = values.Select(o => (int?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(bool) && type == typeof(bool?))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return new BooleanValuesOperand
                 {
                     Values = values.Select(o => (bool?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(DateTime) && type == typeof(DateTime?))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
                 return new DateTimeValuesOperand
                 {
                     Values = values.Select(o => (DateTime?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(float) && type == typeof(float?))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return new FloatValuesOperand
                 {
                     Values = values.Select(o => (float?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(double) && type == typeof(double?))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return new DoubleValuesOperand
                 {
                     Values = values.Select(o => (double?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(decimal) && type == typeof(decimal?))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 return new DecimalValuesOperand
                 {
                     Values = values.Select(o => (decimal?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(byte) && type == typeof(byte?))
+            if (type == typeof(byte) || type == typeof(byte?))
             {
                 return new ByteValuesOperand
                 {
                     Values = values.Select(o => (byte?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(byte[]) && type == typeof(byte?[]))
+            if (type == typeof(byte[]) || type == typeof(byte?[]))
             {
                 return new BytesValuesOperand
                 {
@@ -465,56 +465,63 @@ namespace Atdi.LegacyServices.Icsm
                     Value = (string)(object)value
                 };
             }
-            if (type == typeof(int) && type == typeof(int?))
+            if (type == typeof(int) || type == typeof(int?))
             {
                 return new IntegerValueOperand
                 {
                     Value = (int?)(object)value
                 };
             }
-            if (type == typeof(bool) && type == typeof(bool?))
+            if (type == typeof(Int32) || type == typeof(Int32?))
+            {
+                return new IntegerValueOperand
+                {
+                    Value = (Int32?)(object)value
+                };
+            }
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 return new BooleanValueOperand
                 {
                     Value = (bool?)(object)value
                 };
             }
-            if (type == typeof(DateTime) && type == typeof(DateTime?))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
                 return new DateTimeValueOperand
                 {
                     Value = (DateTime?)(object)value
                 };
             }
-            if (type == typeof(float) && type == typeof(float?))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return new FloatValueOperand
                 {
                     Value = (float?)(object)value
                 };
             }
-            if (type == typeof(double) && type == typeof(double?))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return new DoubleValueOperand
                 {
                     Value = (double?)(object)value
                 };
             }
-            if (type == typeof(decimal) && type == typeof(decimal?))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 return new DecimalValueOperand
                 {
                     Value = (decimal?)(object)value
                 };
             }
-            if (type == typeof(byte) && type == typeof(byte?))
+            if (type == typeof(byte) || type == typeof(byte?))
             {
                 return new ByteValueOperand
                 {
                     Value = (byte?)(object)value
                 };
             }
-            if (type == typeof(byte[]) && type == typeof(byte?[]))
+            if (type == typeof(byte[]) || type == typeof(byte?[]))
             {
                 return new BytesValueOperand
                 {
@@ -782,56 +789,56 @@ namespace Atdi.LegacyServices.Icsm
                         Value = (string)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(int) && constantExpression.Type == typeof(int?))
+                if (constantExpression.Type == typeof(int) || constantExpression.Type == typeof(int?))
                 {
                     return new IntegerValueOperand
                     {
                         Value = (int?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(bool) && constantExpression.Type == typeof(bool?))
+                if (constantExpression.Type == typeof(bool) || constantExpression.Type == typeof(bool?))
                 {
                     return new BooleanValueOperand
                     {
                         Value = (bool?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(DateTime) && constantExpression.Type == typeof(DateTime?))
+                if (constantExpression.Type == typeof(DateTime) || constantExpression.Type == typeof(DateTime?))
                 {
                     return new DateTimeValueOperand
                     {
                         Value = (DateTime?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(float) && constantExpression.Type == typeof(float?))
+                if (constantExpression.Type == typeof(float) || constantExpression.Type == typeof(float?))
                 {
                     return new FloatValueOperand
                     {
                         Value = (float?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(double) && constantExpression.Type == typeof(double?))
+                if (constantExpression.Type == typeof(double) || constantExpression.Type == typeof(double?))
                 {
                     return new DoubleValueOperand
                     {
                         Value = (double?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(decimal) && constantExpression.Type == typeof(decimal?))
+                if (constantExpression.Type == typeof(decimal) || constantExpression.Type == typeof(decimal?))
                 {
                     return new DecimalValueOperand
                     {
                         Value = (decimal?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(byte) && constantExpression.Type == typeof(byte?))
+                if (constantExpression.Type == typeof(byte) || constantExpression.Type == typeof(byte?))
                 {
                     return new ByteValueOperand
                     {
                         Value = (byte?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(byte[]) && constantExpression.Type == typeof(byte?[]))
+                if (constantExpression.Type == typeof(byte[]) || constantExpression.Type == typeof(byte?[]))
                 {
                     return new BytesValueOperand
                     {
@@ -865,56 +872,56 @@ namespace Atdi.LegacyServices.Icsm
                         Values = constantExpressions.Select(o => (string)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(int) && constantExpression.Type == typeof(int?))
+                if (constantExpression.Type == typeof(int) || constantExpression.Type == typeof(int?))
                 {
                     return new IntegerValuesOperand
                     {
                         Values = constantExpressions.Select(o => (int?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(bool) && constantExpression.Type == typeof(bool?))
+                if (constantExpression.Type == typeof(bool) || constantExpression.Type == typeof(bool?))
                 {
                     return new BooleanValuesOperand
                     {
                         Values = constantExpressions.Select(o => (bool?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(DateTime) && constantExpression.Type == typeof(DateTime?))
+                if (constantExpression.Type == typeof(DateTime) || constantExpression.Type == typeof(DateTime?))
                 {
                     return new DateTimeValuesOperand
                     {
                         Values = constantExpressions.Select(o => (DateTime?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(float) && constantExpression.Type == typeof(float?))
+                if (constantExpression.Type == typeof(float) || constantExpression.Type == typeof(float?))
                 {
                     return new FloatValuesOperand
                     {
                         Values = constantExpressions.Select(o => (float?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(double) && constantExpression.Type == typeof(double?))
+                if (constantExpression.Type == typeof(double) || constantExpression.Type == typeof(double?))
                 {
                     return new DoubleValuesOperand
                     {
                         Values = constantExpressions.Select(o => (double?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(decimal) && constantExpression.Type == typeof(decimal?))
+                if (constantExpression.Type == typeof(decimal) || constantExpression.Type == typeof(decimal?))
                 {
                     return new DecimalValuesOperand
                     {
                         Values = constantExpressions.Select(o => (decimal?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(byte) && constantExpression.Type == typeof(byte?))
+                if (constantExpression.Type == typeof(byte) || constantExpression.Type == typeof(byte?))
                 {
                     return new ByteValuesOperand
                     {
                         Values = constantExpressions.Select(o => (byte?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(byte[]) && constantExpression.Type == typeof(byte?[]))
+                if (constantExpression.Type == typeof(byte[]) || constantExpression.Type == typeof(byte?[]))
                 {
                     return new BytesValuesOperand
                     {

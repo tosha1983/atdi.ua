@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.LegacyServices.Icsm
 {
-    public  class frameobject
+    public class frameobject
     {
         public frameobject next;
         public string prop;

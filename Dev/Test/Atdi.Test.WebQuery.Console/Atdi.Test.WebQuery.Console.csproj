@@ -55,6 +55,10 @@
       <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
       <Name>Atdi.AppServices.WebQuery</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
+      <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
+      <Name>Atdi.Contracts.CoreServices.Identity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Identity\Atdi.Contracts.WcfServices.Identity.csproj">
       <Project>{cae762ce-a933-426c-9e31-656eb66a0f9a}</Project>
       <Name>Atdi.Contracts.WcfServices.Identity</Name>

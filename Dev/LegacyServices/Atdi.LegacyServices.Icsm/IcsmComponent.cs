@@ -25,6 +25,7 @@ namespace Atdi.LegacyServices.Icsm
         {
             IcsmComponent.IcsmSchemaPath = Convert.ToString(this.Config["IcsmSchemaPath"]);
             this.Container.Register<IDataLayer<IcsmDataOrm>, IcsmDataLayer>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.Register<IIrpParser, QueryParser>(Platform.DependencyInjection.ServiceLifetime.PerThread);
         }
     }
 }

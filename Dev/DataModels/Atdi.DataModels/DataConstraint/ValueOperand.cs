@@ -69,7 +69,7 @@ namespace Atdi.DataModels.DataConstraint
     {
         public IntegerValueOperand()
         {
-            this.DataType = DataType.DateTime;
+            this.DataType = DataType.Integer;
         }
 
         [DataMember]
@@ -93,7 +93,7 @@ namespace Atdi.DataModels.DataConstraint
     {
         public FloatValueOperand()
         {
-            this.DataType = DataType.Double;
+            this.DataType = DataType.Float;
         }
 
         [DataMember]

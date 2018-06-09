@@ -18,11 +18,11 @@ using Atdi.DataModels.WebQuery;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    internal sealed class ParseQuery: IParserQuery
+    internal sealed class QueryParser: IIrpParser
     {
       
         private readonly IcsmReport _report;
-        public ParseQuery() 
+        public QueryParser() 
         {
             _report = new IcsmReport();
         }

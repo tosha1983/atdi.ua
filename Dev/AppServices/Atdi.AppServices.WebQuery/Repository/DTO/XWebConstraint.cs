@@ -31,11 +31,11 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// диапазон чисел от (Min)
             /// </summary>
-            public double Min { get; set; }
+            public double? Min { get; set; }
             /// <summary>
             /// диапазон чисел до (Max)
             /// </summary>
-            public double Max { get; set; }
+            public double? Max { get; set; }
             /// <summary>
             /// Строка 
             /// </summary>
@@ -43,11 +43,11 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// диапазон дат от (Date_Value_Min)
             /// </summary>
-            public DateTime DateValueMin { get; set; }
+            public DateTime? DateValueMin { get; set; }
             /// <summary>
             /// диапазон дат до (Date_Value_Max)
             /// </summary>
-            public DateTime DateValueMax { get; set; }
+            public DateTime? DateValueMax { get; set; }
             /// <summary>
             /// призак прямого или инверсного включения
             /// т.е. если  Include = true - это эквивалентно  (column_name BETWEEN value1 AND value2)

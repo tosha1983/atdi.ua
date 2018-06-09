@@ -15,7 +15,6 @@ namespace Atdi.LegacyServices.Icsm
     {
         private readonly IDataLayer _dataLayer;
         private readonly IQueryBuilder _queryBuilder;
-        private readonly IParserQuery _parserQuery;
 
         private readonly Dictionary<Type, QueryExecutor> _contextExecutors;
         public IcsmDataLayer(IDataLayer dataLayer, ILogger logger) :  base(logger)
@@ -23,11 +22,9 @@ namespace Atdi.LegacyServices.Icsm
             this._dataLayer = dataLayer;
             this._queryBuilder = new QueryBuilder(logger);
             this._contextExecutors = new Dictionary<Type, QueryExecutor>();
-            this._parserQuery = new ParseQuery();
         }
 
         public IQueryBuilder Builder => _queryBuilder;
-        public IParserQuery ParserQuery => _parserQuery;
 
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {

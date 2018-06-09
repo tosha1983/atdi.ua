@@ -37,11 +37,11 @@ namespace Atdi.AppServices.WebQuery
             bool Ret = false;
             if (_valueGroup != null)
             {
-                if ((_valueGroup.Cust_Chb1 == 1) && (actionType == ActionType.Create))
+                if ((_valueGroup.CanCreateAndModify == 1) && (actionType == ActionType.Create))
                     Ret = true;
-                if ((_valueGroup.Cust_Chb1 == 1) && (actionType == ActionType.Update))
+                if ((_valueGroup.CanCreateAndModify == 1) && (actionType == ActionType.Update))
                     Ret = true;
-                if ((_valueGroup.Cust_Chb2 == 1) && (actionType == ActionType.Delete))
+                if ((_valueGroup.CanDelete == 1) && (actionType == ActionType.Delete))
                     Ret = true;
             }
             else Ret = false;
@@ -54,17 +54,13 @@ namespace Atdi.AppServices.WebQuery
             if (_valueQuery != null) {
                 if (_valueQuery.IdentUser!="") {
                     var condition = new ConditionExpression() {
-                        LeftOperand = new StringValueOperand() {
-                            Type = OperandType.Column,
-                            DataType = DataType.String,
-                            Value = _valueQuery.IdentUser
+                        LeftOperand = new ColumnOperand() {
+                             ColumnName = _valueQuery.IdentUser
                         },
                         Operator = ConditionOperator.Equal,
                         Type = ConditionType.Expression,
                         RightOperand = new IntegerValueOperand() {
-                            Type = OperandType.Value,
-                            DataType = DataType.Integer,
-                            Value = tokenData.Id
+                          Value = tokenData.Id
                         }
                     };
                     List_Expressions.Add(condition);
@@ -80,31 +76,23 @@ namespace Atdi.AppServices.WebQuery
                             if (!string.IsNullOrEmpty(NameFldLon)) {
                                 if (cntr.Include == 1) {
                                     var condition = new ConditionExpression(){
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.GreaterEqual,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DoubleValueOperand(){
-                                            Type = OperandType.Value,
-                                            DataType = DataType.Double,
                                             Value = cntr.Min
                                         }
                                     };
                                     List_Expressions.Add(condition);
                                     condition = new ConditionExpression() {
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.LessEqual,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DoubleValueOperand() {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.Double,
                                             Value = cntr.Max
                                         }
                                     };
@@ -112,31 +100,23 @@ namespace Atdi.AppServices.WebQuery
                                 }
                                 if (cntr.Include == 0) {
                                     var condition = new ConditionExpression() {
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.LessThan,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DoubleValueOperand() {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.Double,
                                             Value = cntr.Min
                                         }
                                     };
                                     List_Expressions.Add(condition);
                                     condition = new ConditionExpression(){
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.GreaterThan,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DoubleValueOperand() {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.Double,
                                             Value = cntr.Max
                                         }
                                     };
@@ -157,16 +137,12 @@ namespace Atdi.AppServices.WebQuery
                                     if ((cntr.StrValue.EndsWith("*")) || (cntr.StrValue.StartsWith("*"))) {
                                         if (cntr.Include == 1) {
                                             var condition = new ConditionExpression() {
-                                                LeftOperand = new StringValueOperand() {
-                                                    Type = OperandType.Column,
-                                                    DataType = DataType.String,
-                                                    Value = NameFldLon
+                                                LeftOperand = new ColumnOperand() {
+                                                    ColumnName = NameFldLon
                                                 },
                                                 Operator = ConditionOperator.Like,
                                                 Type = ConditionType.Expression,
                                                 RightOperand = new StringValueOperand() {
-                                                    Type = OperandType.Value,
-                                                    DataType = DataType.String,
                                                     Value = cntr.StrValue
                                                 }
                                             };
@@ -174,16 +150,12 @@ namespace Atdi.AppServices.WebQuery
                                         }
                                         else  {
                                             var condition = new ConditionExpression() {
-                                                LeftOperand = new StringValueOperand() {
-                                                    Type = OperandType.Column,
-                                                    DataType = DataType.String,
-                                                    Value = NameFldLon
+                                                LeftOperand = new ColumnOperand() {
+                                                    ColumnName = NameFldLon
                                                 },
                                                 Operator = ConditionOperator.NotLike,
                                                 Type = ConditionType.Expression,
                                                 RightOperand = new StringValueOperand() {
-                                                    Type = OperandType.Value,
-                                                    DataType = DataType.String,
                                                     Value = cntr.StrValue
                                                 }
                                             };
@@ -193,16 +165,12 @@ namespace Atdi.AppServices.WebQuery
                                     else {
                                         if (cntr.Include == 1) {
                                             var condition = new ConditionExpression() {
-                                                LeftOperand = new StringValueOperand() {
-                                                    Type = OperandType.Column,
-                                                    DataType = DataType.String,
-                                                    Value = NameFldLon
+                                                LeftOperand = new ColumnOperand() {
+                                                    ColumnName = NameFldLon
                                                 },
                                                 Operator = ConditionOperator.Equal,
                                                 Type = ConditionType.Expression,
                                                 RightOperand = new StringValueOperand() {
-                                                    Type = OperandType.Value,
-                                                    DataType = DataType.String,
                                                     Value = cntr.StrValue
                                                 }
                                             };
@@ -210,16 +178,12 @@ namespace Atdi.AppServices.WebQuery
                                         }
                                         else {
                                             var condition = new ConditionExpression()  {
-                                                LeftOperand = new StringValueOperand() {
-                                                    Type = OperandType.Column,
-                                                    DataType = DataType.String,
-                                                    Value = NameFldLon
+                                                LeftOperand = new ColumnOperand() {
+                                                    ColumnName = NameFldLon
                                                 },
                                                 Operator = ConditionOperator.NotEqual,
                                                 Type = ConditionType.Expression,
                                                 RightOperand = new StringValueOperand() {
-                                                    Type = OperandType.Value,
-                                                    DataType = DataType.String,
                                                     Value = cntr.StrValue
                                                 }
                                             };
@@ -239,31 +203,23 @@ namespace Atdi.AppServices.WebQuery
                             if (!string.IsNullOrEmpty(NameFldLon)) {
                                 if (cntr.Include == 1) {
                                     var condition = new ConditionExpression() {
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.GreaterEqual,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DateTimeValueOperand() {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.DateTime,
                                             Value = cntr.DateValueMin
                                         }
                                     };
                                     List_Expressions.Add(condition);
                                     condition = new ConditionExpression() {
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.LessEqual,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DateTimeValueOperand() {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.DateTime,
                                             Value = cntr.DateValueMax
                                         }
                                     };
@@ -271,32 +227,24 @@ namespace Atdi.AppServices.WebQuery
                                 }
                                 if (cntr.Include == 0)  {
                                     var condition = new ConditionExpression() {
-                                        LeftOperand = new StringValueOperand()  {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand()  {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.LessThan,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DateTimeValueOperand() {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.DateTime,
                                             Value = cntr.DateValueMin
                                         }
                                     };
                                     List_Expressions.Add(condition);
                                     condition = new ConditionExpression() {
-                                        LeftOperand = new StringValueOperand() {
-                                            Type = OperandType.Column,
-                                            DataType = DataType.String,
-                                            Value = NameFldLon
+                                        LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
                                         },
                                         Operator = ConditionOperator.GreaterThan,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DateTimeValueOperand()
                                         {
-                                            Type = OperandType.Value,
-                                            DataType = DataType.DateTime,
                                             Value = cntr.DateValueMax
                                         }
                                     };

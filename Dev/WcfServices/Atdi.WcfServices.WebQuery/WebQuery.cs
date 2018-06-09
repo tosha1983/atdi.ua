@@ -44,7 +44,7 @@ namespace Atdi.WcfServices.WebQuery
                 Data = resultData
             };
         }
-
+        
         public Result<QueryMetadata> GetQueryMetadata(UserToken userToken, QueryToken queryToken)
         {
             var resultData = this._webQueryAppServices.GetQueryMetadata(userToken, queryToken);
