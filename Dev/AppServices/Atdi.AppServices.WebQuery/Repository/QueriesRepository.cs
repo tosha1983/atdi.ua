@@ -77,6 +77,11 @@ namespace Atdi.AppServices.WebQuery
                     return groups.ToArray();
                 });
 
+            if (result.Length == 0)
+            {
+                return result;
+            }
+
             // load queries token
             var tokensQuery = _dataLayer.Builder
                 .From<XWebQuery>()
