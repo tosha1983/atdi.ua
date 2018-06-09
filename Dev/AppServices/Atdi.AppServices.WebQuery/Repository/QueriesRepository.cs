@@ -19,7 +19,7 @@ namespace Atdi.AppServices.WebQuery
     {
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IQueryExecutor _queryExecutor;
-        private readonly IIrpParser _parserQuery;
+        private readonly IIrpParser _irpParser;
 
 
         private readonly Dictionary<string, GroupDescriptor[]> _groupsCache;
@@ -34,7 +34,7 @@ namespace Atdi.AppServices.WebQuery
             this._groupsCache = new Dictionary<string, GroupDescriptor[]>();
             this._CacheWebQueryById = new Dictionary<int, XWebQuery>();
             this._CacheXWebConstraint = new Dictionary<int, XWebConstraint[]>();
-            this._parserQuery = irpparser;
+            this._irpParser = irpparser;
         }
 
         private GroupDescriptor[] LoadGroupsByUser(UserTokenData userToken)
@@ -242,7 +242,7 @@ namespace Atdi.AppServices.WebQuery
                                 Q.Metadata.Token.Id = xWeb.ID;
                                 Q.Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
                                 Q.Metadata.Token.Version = "1.0";
-                                if (xWeb.Query != null) Q.Metadata.Columns = this._parserQuery.ExecuteParseQuery(xWeb.Query);
+                                if (xWeb.Query != null) Q.Metadata.Columns = this._irpParser.ExecuteParseQuery(xWeb.Query);
                                 Q.Metadata.Description = xWeb.Comments;
                                 Q.Metadata.Title = xWeb.Name;
                             }
@@ -286,7 +286,7 @@ namespace Atdi.AppServices.WebQuery
                                 Q.Metadata.Token.Id = xWeb.ID;
                                 Q.Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
                                 Q.Metadata.Token.Version = "1.0";
-                                if (xWeb.Query != null) Q.Metadata.Columns = this._parserQuery.ExecuteParseQuery(xWeb.Query);
+                                if (xWeb.Query != null) Q.Metadata.Columns = this._irpParser.ExecuteParseQuery(xWeb.Query);
                                 Q.Metadata.Description = xWeb.Comments;
                                 Q.Metadata.Title = xWeb.Name;
                                 break;

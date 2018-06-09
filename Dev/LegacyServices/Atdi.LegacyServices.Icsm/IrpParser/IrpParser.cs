@@ -18,10 +18,10 @@ using Atdi.DataModels.WebQuery;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    internal sealed class QueryParser: LoggedObject, IIrpParser
+    internal sealed class IrpParser : LoggedObject, IIrpParser
     {
         private readonly IcsmReport _report;
-        public QueryParser(ILogger logger) : base(logger)
+        public IrpParser(ILogger logger) : base(logger)
         {
             _report = new IcsmReport();
         }
