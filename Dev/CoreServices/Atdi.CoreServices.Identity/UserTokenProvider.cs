@@ -54,7 +54,16 @@ namespace Atdi.CoreServices.Identity
                 throw new ArgumentNullException(nameof(userToken.Data));
             }
 
-            return userToken.Data.Deserialize<UserTokenData>();
+            try
+            {
+                return userToken.Data.Deserialize<UserTokenData>();
+            }
+            catch(Exception e)
+            {
+                this.Logger.Exception(Contexts.IdentityCoreServices, Categories.Handling, e, this);
+                throw new InvalidOperationException("Failed to unpack the user token", e);
+            }
+            
         }
     }
 }

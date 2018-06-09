@@ -31,7 +31,9 @@ namespace Atdi.Common.Extensions
             var binaryFormatter = new BinaryFormatter();
             using (var stream = new MemoryStream(value))
             {
-                return binaryFormatter.Deserialize(stream) as T;
+                var result = binaryFormatter.Deserialize(stream);
+                
+                return result as T;
             }
         }
     }

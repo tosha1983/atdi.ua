@@ -25,7 +25,9 @@ namespace Atdi.Test.WebQuery
                 System.Console.WriteLine("Press any key to start testing ...");
                 System.Console.ReadLine();
 
-                TestAuthenticationManager("TcpAuthenticationManager");
+                //TestAuthenticationManager("TcpAuthenticationManager");
+
+                TestWebQueryAccess("TcpAuthenticationManager", "TcpWebQuery");
 
             }
         }
@@ -40,6 +42,7 @@ namespace Atdi.Test.WebQuery
 
             var result = tcpAuthManager.ExecuteQuery(null, null, null);
         }
+
         static void BlockTest()
         {
             System.Console.WriteLine("Press any key to start testing ...");
@@ -143,6 +146,35 @@ namespace Atdi.Test.WebQuery
 
             timer.Stop();
             System.Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
+        }
+
+        static void TestWebQueryAccess(string authEndpointName, string webQueryEndpointName)
+        {
+            var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
+            var userCredential = new UserCredential()
+            {
+                UserName = "Andrey",
+                Password = ""
+            };
+
+            var authResult = authManager.AuthenticateUser(userCredential);
+            if (authResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                Console.WriteLine(authResult.FaultCause);
+                return;
+            }
+
+            var userIdentity = authResult.Data;
+
+            var webQuery = GetWebQueryByEndpoint(webQueryEndpointName);
+            var groupsResult = webQuery.GetQueryGroups(userIdentity.UserToken);
+            if (groupsResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                Console.WriteLine(groupsResult.FaultCause);
+                return;
+            }
+
+            Console.WriteLine($"Count group: {groupsResult.Data.Groups.Length}");
         }
 
     }
