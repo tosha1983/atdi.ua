@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Common", "00 Common", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Platform", "01 Platform", "{7AF2EEE1-1C56-4B92-9BF6-46B625F1AE1E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99 App Server", "99 App Server", "{03FCB31A-F13F-4CE6-BF8E-5468E2B275F5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99", "99", "{03FCB31A-F13F-4CE6-BF8E-5468E2B275F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Core", "00 Core", "{77D86B37-3A76-4F02-93F1-7E432DF03D02}"
 EndProject
@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Platform.ServicesConta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Platform.Logging", "Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj", "{1389B99F-FF39-4671-9789-D2E1AA91527C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Core Services", "05 Core Services", "{FDBA4F26-82FF-4942-BAE8-DB213EBA9738}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Core Services", "06 Core Services", "{FDBA4F26-82FF-4942-BAE8-DB213EBA9738}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Contracts", "03 Contracts", "{C61148FE-6ABF-42AA-87C9-40C59D283EB6}"
 EndProject
@@ -123,7 +123,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "11 Test", "11 Test", "{BADA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.WebQuery.Console", "Test\Atdi.Test.WebQuery.Console\Atdi.Test.WebQuery.Console.csproj", "{177D0BDE-4141-47A5-8418-CF578106DBAA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 App Services", "06 App Services", "{1F8738A3-124F-4671-B5C1-8CE17B2B133C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 App Services", "07 App Services", "{1F8738A3-124F-4671-B5C1-8CE17B2B133C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServices", "AppServices\Atdi.AppServices\Atdi.AppServices.csproj", "{0EAB226D-AA8D-4671-88CF-0F1049560535}"
 EndProject
@@ -145,13 +145,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Contracts.LegacyServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Icsm", "DataModels\Atdi.DataModels.Icsm\Atdi.DataModels.Icsm.csproj", "{C9A6722B-F13A-4C7A-B389-9958B2ABFB27}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 Legacy Services", "07 Legacy Services", "{89F97BB0-6400-4A9E-A077-D195FF5BE4C5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08 Legacy Services", "08 Legacy Services", "{89F97BB0-6400-4A9E-A077-D195FF5BE4C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.LegacyServices.Icsm", "LegacyServices\Atdi.LegacyServices.Icsm\Atdi.LegacyServices.Icsm.csproj", "{B06CF99E-314F-485B-9E0D-5289147D5552}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugin WebQuery", "Plugin WebQuery", "{4932CF5A-6200-425A-94D9-2A2E230EE294}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebQuery", "IcsmPlugins\Plugin WebQuery\WebQuery.csproj", "{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 WebApi Services", "05 WebApi Services", "{92F03EAB-C3E9-4923-9A1F-EC3FDFFCBB93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.WebApiServices", "WebApiServices\Atdi.WebApiServices\Atdi.WebApiServices.csproj", "{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.WebApiServices.SelfHost", "WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj", "{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -537,6 +543,22 @@ Global
 		{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}.Release|x64.ActiveCfg = Release|x64
 		{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}.Release|x64.Build.0 = Release|x64
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Debug|x64.Build.0 = Debug|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Release|x64.ActiveCfg = Release|Any CPU
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C}.Release|x64.Build.0 = Release|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Debug|x64.Build.0 = Debug|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Release|x64.ActiveCfg = Release|Any CPU
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -605,6 +627,8 @@ Global
 		{B06CF99E-314F-485B-9E0D-5289147D5552} = {89F97BB0-6400-4A9E-A077-D195FF5BE4C5}
 		{4932CF5A-6200-425A-94D9-2A2E230EE294} = {9A3B0C37-5E19-4694-85F2-62FB877039D4}
 		{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE} = {4932CF5A-6200-425A-94D9-2A2E230EE294}
+		{4803AE0C-1A06-4FC5-9BE7-6AFFC943EE7C} = {92F03EAB-C3E9-4923-9A1F-EC3FDFFCBB93}
+		{CA3F294B-9C66-433F-84B3-D27CE3AB40F1} = {92F03EAB-C3E9-4923-9A1F-EC3FDFFCBB93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D40073F-3D0F-47FC-B9C7-D3E192D6D6DE}

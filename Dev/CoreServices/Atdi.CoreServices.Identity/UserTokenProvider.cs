@@ -19,12 +19,25 @@ namespace Atdi.CoreServices.Identity
 
         public UserToken CreatUserToken(UserTokenData tokenData)
         {
-            var token = new UserToken
+            if (tokenData == null)
             {
-                Data = tokenData.Serialize()
-            };
+                throw new ArgumentNullException(nameof(tokenData));
+            }
 
-            return token;
+            try
+            {
+                var token = new UserToken
+                {
+                    Data = tokenData.Serialize()
+                };
+
+                return token;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.IdentityCoreServices, Categories.Handling, e, this);
+                throw new InvalidOperationException("Failed to pack the user token", e);
+            }
         }
 
         public string GetHashPassword(string password)
@@ -54,7 +67,16 @@ namespace Atdi.CoreServices.Identity
                 throw new ArgumentNullException(nameof(userToken.Data));
             }
 
-            return userToken.Data.Deserialize<UserTokenData>();
+            try
+            {
+                return userToken.Data.Deserialize<UserTokenData>();
+            }
+            catch(Exception e)
+            {
+                this.Logger.Exception(Contexts.IdentityCoreServices, Categories.Handling, e, this);
+                throw new InvalidOperationException("Failed to unpack the user token", e);
+            }
+            
         }
     }
 }

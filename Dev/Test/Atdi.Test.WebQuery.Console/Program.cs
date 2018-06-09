@@ -24,8 +24,10 @@ namespace Atdi.Test.WebQuery
 
                 System.Console.WriteLine("Press any key to start testing ...");
                 System.Console.ReadLine();
-                BlockTest();
+
                 //TestAuthenticationManager("TcpAuthenticationManager");
+
+                TestWebQueryAccess("TcpAuthenticationManager", "TcpWebQuery");
 
             }
         }
@@ -40,21 +42,22 @@ namespace Atdi.Test.WebQuery
 
             var result = tcpAuthManager.ExecuteQuery(null, null, null);
         }
+
         static void BlockTest()
         {
             System.Console.WriteLine("Press any key to start testing ...");
             System.Console.ReadLine();
 
 
-            //var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
+            var tcpAuthManager = GetWebQueryByEndpoint("TcpWebQuery");
             var httpAuthManager = GetWebQueryByEndpoint("HttpWebQuery");
-            //var pipeAuthManager = GetWebQueryByEndpoint("PipeWebQuery");
+            var pipeAuthManager = GetWebQueryByEndpoint("PipeWebQuery");
 
             while (true)
             {
-                //TestWebQuery(tcpAuthManager, "tcp");
+                TestWebQuery(tcpAuthManager, "tcp");
                 TestWebQuery(httpAuthManager, "http");
-                //TestWebQuery(pipeAuthManager, "pipe");
+                TestWebQuery(pipeAuthManager, "pipe");
                 System.Console.WriteLine("Testing has been done.");
                 System.Console.ReadLine();
                 System.Console.WriteLine("Repeat ...");
@@ -90,26 +93,8 @@ namespace Atdi.Test.WebQuery
         static void TestWebQuery(IWebQuery webQueryService, string context)
         {
             var timer = System.Diagnostics.Stopwatch.StartNew();
-            byte[] Test = UTF8Encoding.UTF8.GetBytes("TEst");
-            var userToken = new UserToken()
-            {
-                Data = Test
-            };
-            
-
-            var authManager = GetAuthenticationManagerByEndpoint("HttpAuthenticationManager");
-
-            var c = new UserCredential()
-            {
-                UserName = "ICSM",
-                Password = "ICSM"
-            };
-
-
-            var userIdentity = authManager.AuthenticateUser(c);
-
-           
-
+            var c = new UserCredential();
+            var userToken = new UserToken();
             var queryToken = new DataModels.WebQuery.QueryToken();
             var fetchOptions = new DataModels.WebQuery.FetchOptions();
             var changeset = new DataModels.Changeset();
@@ -117,8 +102,7 @@ namespace Atdi.Test.WebQuery
             {
                 // var tree = webQueryService.GetQueriesTree(userToken);
                 //  var metadata = webQueryService.GetQueryMetadata(userToken, new DataModels.WebQuery.QueryToken());
-                //var data = webQueryService.ExecuteQuery(null, queryToken, fetchOptions);
-                var data = webQueryService.GetQueryGroups(userIdentity.Data.UserToken);
+                var data = webQueryService.ExecuteQuery(null, queryToken, fetchOptions);
                 //  Console.WriteLine(data.Data.Rows[0][0]);
                 //  var result = webQueryService.SaveChanges(userToken, queryToken, changeset);
             }
@@ -162,6 +146,35 @@ namespace Atdi.Test.WebQuery
 
             timer.Stop();
             System.Console.WriteLine($"AuthenticateUser: {timer.Elapsed.TotalMilliseconds} ms");
+        }
+
+        static void TestWebQueryAccess(string authEndpointName, string webQueryEndpointName)
+        {
+            var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
+            var userCredential = new UserCredential()
+            {
+                UserName = "Andrey",
+                Password = ""
+            };
+
+            var authResult = authManager.AuthenticateUser(userCredential);
+            if (authResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                Console.WriteLine(authResult.FaultCause);
+                return;
+            }
+
+            var userIdentity = authResult.Data;
+
+            var webQuery = GetWebQueryByEndpoint(webQueryEndpointName);
+            var groupsResult = webQuery.GetQueryGroups(userIdentity.UserToken);
+            if (groupsResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                Console.WriteLine(groupsResult.FaultCause);
+                return;
+            }
+
+            Console.WriteLine($"Count group: {groupsResult.Data.Groups.Length}");
         }
 
     }
