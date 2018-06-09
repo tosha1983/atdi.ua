@@ -37,8 +37,7 @@ namespace Atdi.LegacyServices.Icsm
 
         public void Wanted(string s)
         {
-            string err = string.Format("ERROR: {0} wanted.", s);
-            throw new Exception(err + "Corrupted data");
+            
         }
 
         public static bool IsIdentChar(char b, bool asFirst)
@@ -63,7 +62,7 @@ namespace Atdi.LegacyServices.Icsm
             ReadToken(); nchtot = tokType == type.tInt ? tokI : -1;
             ReadToken(); nlines = tokType == type.tInt ? tokI : -1;
 
-            if (nlines < 0 || nchtot < 0) throw new Exception("Corrupted IMMEDIATETEXT");
+            //if (nlines < 0 || nchtot < 0) throw new Exception("Corrupted IMMEDIATETEXT");
             if (nlines == 0) return true;
 
             Flush();
@@ -79,7 +78,7 @@ namespace Atdi.LegacyServices.Icsm
                     --lr; if (lr > 0 && Buffer[lr - 1] == '\r') --lr;
                 }
                 int nf = i > 0 ? 2 : 0;
-                if (buff.Length + nf + lr > buff.Capacity) throw new Exception("Corrupted ImmText");
+                //if (buff.Length + nf + lr > buff.Capacity) throw new Exception("Corrupted ImmText");
                 if (nf > 0) buff.Append("\r\n");
                 buff.Append(Buffer, 0, lr);
             }
@@ -112,13 +111,12 @@ namespace Atdi.LegacyServices.Icsm
 
         public virtual void FillBuff()
         {
-            throw new Exception("FillBuff not overriden");  // fills Buffer; empty string iff EOF
+            
         }
 
         private bool unread;
         private void readString(char sep)
         {
-            Debug.Assert(Buffer[pBuf] == sep);
             tokS = "";
             ++pBuf;
             string line = "";
@@ -139,7 +137,6 @@ namespace Atdi.LegacyServices.Icsm
                     else if (char.IsDigit(c))
                     {
                         int i = c - '0'; ++pBuf;
-                        Debug.Assert(i >= 0 && i <= 9);
                         if (pBuf < Buffer.Length && char.IsDigit(Buffer[pBuf])) i = (i << 3) + Buffer[pBuf++] - '0';
                         if (pBuf < Buffer.Length && char.IsDigit(Buffer[pBuf])) i = (i << 3) + Buffer[pBuf++] - '0';
                         line += (char)i;
@@ -180,7 +177,6 @@ namespace Atdi.LegacyServices.Icsm
         {
             int tot = 0;
             int s = pBuf;
-            Debug.Assert(char.IsDigit(Buffer[s]));
             do tot = tot * 10 + (Buffer[s++] - '0'); while (s < Buffer.Length && char.IsDigit(Buffer[s]));
             if (s < Buffer.Length && (Buffer[s] == '.' || Buffer[s] == 'e' || Buffer[s] == 'E'))
             {

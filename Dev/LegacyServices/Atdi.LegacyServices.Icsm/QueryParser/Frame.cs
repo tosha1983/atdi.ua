@@ -88,7 +88,6 @@ namespace Atdi.LegacyServices.Icsm
             if (fRoot == null) fRoot = p;
             else
             {
-                Debug.Assert(fLast != null);
                 while (fLast.next != null) fLast = fLast.next;
                 fLast.next = p;
             }
@@ -122,7 +121,6 @@ namespace Atdi.LegacyServices.Icsm
             if (fRoot == null) fLast = fRoot = p;
             else
             {
-                Debug.Assert(fLast != null);
                 while (fLast.next != null) fLast = fLast.next;
                 fLast.next = p;
             }
