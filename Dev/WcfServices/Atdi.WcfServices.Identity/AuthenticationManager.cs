@@ -33,7 +33,7 @@ namespace Atdi.WcfServices.Identity
                 return new Result<UserIdentity>
                 {
                     State = OperationState.Success,
-                    Data = userToken
+                    Data = userToken,
                 };
             }
         }

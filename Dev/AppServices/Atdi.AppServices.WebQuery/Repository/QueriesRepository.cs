@@ -264,23 +264,17 @@ namespace Atdi.AppServices.WebQuery
             QueryGroup[] groups = GetGroupsByUser(userToken);
             QueryDescriptor Q = null;
             foreach (QueryGroup qp in groups) {
-                if (qp.QueryTokens != null)
-                {
-                    foreach (QueryToken token in qp.QueryTokens)
-                    {
+                if (qp.QueryTokens != null) {
+                    foreach (QueryToken token in qp.QueryTokens) {
                         XWebQuery xWeb = new XWebQuery();
-                        if (!this._CacheWebQueryById.TryGetValue(token.Id, out xWeb))
-                        {
+                        if (!this._CacheWebQueryById.TryGetValue(token.Id, out xWeb)) {
                             xWeb = LoadXWebQueryByID(token.Id);
                             this._CacheWebQueryById[token.Id] = xWeb;
                         }
-                        if (xWeb != null)
-                        {
-                            if (xWeb.Code == queryCode)
-                            {
+                        if (xWeb != null) {
+                            if (xWeb.Code == queryCode) {
                                 XWebConstraint[] xWebConstraint = new List<XWebConstraint>().ToArray();
-                                if (!this._CacheXWebConstraint.TryGetValue(xWeb.ID, out xWebConstraint))
-                                {
+                                if (!this._CacheXWebConstraint.TryGetValue(xWeb.ID, out xWebConstraint)) {
                                     xWebConstraint = LoadXWebConstraintByQueryID(xWeb.ID);
                                     this._CacheXWebConstraint[xWeb.ID] = xWebConstraint;
                                 }

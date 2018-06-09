@@ -17,6 +17,7 @@ namespace Atdi.LegacyServices.Icsm
     {
         public static readonly EventCategory CreatingInstance = "Creating instance";
         public static readonly EventCategory FetchingData = "Fetching data";
+        public static readonly EventCategory ParseIRP = "Parsing IRP";
     }
 
     static class Events

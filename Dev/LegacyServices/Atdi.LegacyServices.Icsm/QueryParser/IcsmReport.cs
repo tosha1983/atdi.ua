@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Atdi.LegacyServices.Icsm
 { 
-    public class IcsmReport
+    public class IcsmReport 
     {
         public IcsmReport() { m_dat = new reportitem();/* m_globparam = new GlobalParameters(); */ m_records = new Query(); }
         public string m_desc;
@@ -50,27 +50,20 @@ namespace Atdi.LegacyServices.Icsm
         public bool Load(string fname)
         {
             bool res = false;
-            try
+            using (StreamReader f = new StreamReader(fname, Utils.GetFileEncoding(fname)))
             {
-                using (StreamReader f = new StreamReader(fname, Utils.GetFileEncoding(fname)))
-                {
-                    m_filepath = fname;
+                m_filepath = fname;
 
-                    string skip1 = f.ReadLine();
-                    string skip2 = f.ReadLine();
-                    InChannelFile ch = new InChannelFile(f);
-                    Frame p = new Frame();
-                    p.Load(ch);
-                    SetConfig(p);
-                    StringBuilder sb = new StringBuilder();
-                    ch.ReadText(sb);
-                    m_script = sb.ToString();
-                    res = true;
-                }
-            }
-            catch (Exception e)
-            {
-                
+                string skip1 = f.ReadLine();
+                string skip2 = f.ReadLine();
+                InChannelFile ch = new InChannelFile(f);
+                Frame p = new Frame();
+                p.Load(ch);
+                SetConfig(p);
+                StringBuilder sb = new StringBuilder();
+                ch.ReadText(sb);
+                m_script = sb.ToString();
+                res = true;
             }
             return res;
         }

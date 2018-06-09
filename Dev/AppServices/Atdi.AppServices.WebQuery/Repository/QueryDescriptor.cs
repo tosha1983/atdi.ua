@@ -13,14 +13,9 @@ namespace Atdi.AppServices.WebQuery
 {
     public sealed class QueryDescriptor
     {
-        public static int NullI = 2147483647;
-        public static double NullD = 1E-99;
-        public static DateTime NullT = new DateTime(1, 1, 1, 0, 0, 0);
-
         private readonly XWebConstraint[] _valueConstraints;
         private readonly QueryGroup _valueGroup;
         private readonly XWebQuery _valueQuery;
-
         public QueryMetadata Metadata { get; set; }
        
 
@@ -52,7 +47,7 @@ namespace Atdi.AppServices.WebQuery
         {
             List<Condition> List_Expressions = new List<Condition>();
             if (_valueQuery != null) {
-                if (_valueQuery.IdentUser!="") {
+                if (!string.IsNullOrEmpty(_valueQuery.IdentUser)) {
                     var condition = new ConditionExpression() {
                         LeftOperand = new ColumnOperand() {
                              ColumnName = _valueQuery.IdentUser
@@ -68,11 +63,11 @@ namespace Atdi.AppServices.WebQuery
             }
 
             foreach (XWebConstraint cntr in _valueConstraints) {
-                if ((cntr.Min != NullD) || (cntr.Max != NullD)) {
+                if ((cntr.Min != null) || (cntr.Max != null)) {
                     string NameFldLon = "";
                     for (int i = 0; i < Metadata.Columns.Count(); i++) {
-                        if (Metadata.Columns[i].Name == cntr.Path) {
-                            NameFldLon = Metadata.Columns[i].Name;
+                        if (Metadata.Columns[i].Description == cntr.Path) {
+                            NameFldLon = Metadata.Columns[i].Description;
                             if (!string.IsNullOrEmpty(NameFldLon)) {
                                 if (cntr.Include == 1) {
                                     var condition = new ConditionExpression(){
@@ -128,11 +123,11 @@ namespace Atdi.AppServices.WebQuery
                     }
                 }
                 else if (cntr.StrValue != null){
-                    if (cntr.StrValue != "") {
+                    if (!string.IsNullOrEmpty(cntr.StrValue)) {
                         string NameFldLon = "";
                         for (int i = 0; i < Metadata.Columns.Count(); i++) {
-                            if (Metadata.Columns[i].Name == cntr.Path) {
-                                NameFldLon = Metadata.Columns[i].Name;
+                            if (Metadata.Columns[i].Description == cntr.Path) {
+                                NameFldLon = Metadata.Columns[i].Description;
                                 if (!string.IsNullOrEmpty(NameFldLon)) {
                                     if ((cntr.StrValue.EndsWith("*")) || (cntr.StrValue.StartsWith("*"))) {
                                         if (cntr.Include == 1) {
@@ -195,11 +190,11 @@ namespace Atdi.AppServices.WebQuery
                         }
                     }
                 }
-                if ((cntr.DateValueMin != NullT) || (cntr.DateValueMin != NullT)) {
+                if ((cntr.DateValueMin != null) || (cntr.DateValueMin != null)) {
                     string NameFldLon = "";
                     for (int i = 0; i < Metadata.Columns.Count(); i++) {
-                        if (Metadata.Columns[i].Name == cntr.Path) {
-                            NameFldLon = Metadata.Columns[i].Name;
+                        if (Metadata.Columns[i].Description == cntr.Path) {
+                            NameFldLon = Metadata.Columns[i].Description;
                             if (!string.IsNullOrEmpty(NameFldLon)) {
                                 if (cntr.Include == 1) {
                                     var condition = new ConditionExpression() {

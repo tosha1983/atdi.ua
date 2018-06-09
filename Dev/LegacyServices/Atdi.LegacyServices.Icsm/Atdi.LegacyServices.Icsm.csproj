@@ -59,7 +59,7 @@
     <Compile Include="QueryParser\FrameString.cs" />
     <Compile Include="QueryParser\FrameObject.cs" />
     <Compile Include="QueryParser\IcsmReport.cs" />
-    <Compile Include="QueryParser\ParseQuery.cs" />
+    <Compile Include="QueryParser\QueryParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryParser\PropertyTable.cs" />
     <Compile Include="QueryParser\InChannel.cs" />
