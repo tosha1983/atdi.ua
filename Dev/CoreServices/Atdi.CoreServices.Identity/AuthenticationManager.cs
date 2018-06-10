@@ -62,60 +62,18 @@ namespace Atdi.CoreServices.Identity
 
             var someId = Guid.NewGuid();
 
-            /*
             var query = this._dataLayer.Builder
                 .From<EMPLOYEE>()
-                //.Where(c => c.WEB_LOGIN, ConditionOperator.Equal, credential.UserName)
+                .Where(c => c.WEB_LOGIN, ConditionOperator.Equal, credential.UserName)
                 .Select(
-                    c => c.ID, 
-                    c => c.APP_USER, 
-                    c => c.WEB_LOGIN, 
+                    c => c.ID,
+                    c => c.APP_USER,
+                    c => c.WEB_LOGIN,
                     c => c.PWD)
                 .OrderByAsc(c => c.ID)
                 .OnTop(1);
-            */
-
-            var query_web = this._dataLayer.Builder
-           .From("XWebQuery")
-           .Select("ID", "Query")
-           .OrderByAsc("ID")
-           .OnTop(1);
-
-            var userDataX = this._queryExecutor
-           .Fetch(query_web, reader =>
-           {
-               if (reader.Read())
-               {
-                   object s = reader.GetValue(0);
-                   //string Val = UTF8Encoding.UTF8.GetString((byte[])s);
-
-                   //object s = reader.GetValue(1);
-                   //string Val = UTF8Encoding.UTF8.GetString((byte[])s);
-
-               }
-               return default(IcsmUser);
-           });
 
 
-                   var query = this._dataLayer.Builder
-              .From("EMPLOYEE")
-              .Where("WEB_LOGIN", credential.UserName)
-              //.Where("POSTCODE", "ASD")
-              //.Where("LANG", "eu")
-              //.Where("City.Province.Names.LEGEN", "s")
-              .Where(new DataModels.DataConstraint.ConditionExpression
-              {
-                  LeftOperand = new DataModels.DataConstraint.ColumnOperand { ColumnName = "DATE_CREATED" },
-                  Operator = DataModels.DataConstraint.ConditionOperator.LessThan,
-                  RightOperand = new DataModels.DataConstraint.DateTimeValueOperand { Value = DateTime.Now }
-              })
-              .Select("ID", "WEB_LOGIN", "PWD", "DATE_CREATED", "APP_USER")
-              //.OrderByDesc("APP_USER")
-              .OrderByAsc("ID")
-              //.OrderByDesc("TEL_HOME", "OFFICE", "City.Province.Names.LEGEN")
-              .OnTop(1);
-
-            /*
             var userData = this._queryExecutor
                 .Fetch(query, reader =>
                 {
@@ -131,30 +89,13 @@ namespace Atdi.CoreServices.Identity
                     }
                     return default(IcsmUser);
                 });
-           */
-            var userData = this._queryExecutor
-                .Fetch(query, reader =>
-                {
-                    if (reader.Read())
-                    {
-                        return new IcsmUser
-                        {
-                            Id = Convert.ToInt32(reader.GetDecimal(reader.GetOrdinal("ID"))),
-                            WebLogin = reader.GetString(reader.GetOrdinal("WEB_LOGIN")),
-                            Password = reader.GetString(reader.GetOrdinal("PWD")),
-                            AppUser = reader.GetString(reader.GetOrdinal("APP_USER"))
-                        };
-                    }
-                    return default(IcsmUser);
-                });
-
 
             if (userData == null)
             {
                 throw new InvalidOperationException(Exceptions.NotFoundUser.With(credential.UserName));
             }
 
-            
+
 
             if ((string.IsNullOrEmpty(userData.Password) && string.IsNullOrEmpty(credential.Password))
                 || userData.Password == _tokenProvider.GetHashPassword(credential.Password))
@@ -164,7 +105,7 @@ namespace Atdi.CoreServices.Identity
             }
 
 
-            throw new InvalidOperationException(Exceptions.InvalidUserPassword.With(credential.UserName));            
+            throw new InvalidOperationException(Exceptions.InvalidUserPassword.With(credential.UserName));
         }
     }
 }
