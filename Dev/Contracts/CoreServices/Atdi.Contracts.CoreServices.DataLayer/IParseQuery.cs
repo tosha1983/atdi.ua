@@ -11,6 +11,5 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     public interface IParserQuery
     {
         ColumnMetadata[] ExecuteParseQuery(byte[] value);
-     
     }
 }

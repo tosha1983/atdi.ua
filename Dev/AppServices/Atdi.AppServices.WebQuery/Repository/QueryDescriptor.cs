@@ -17,52 +17,53 @@ namespace Atdi.AppServices.WebQuery
         public static double NullD = 1E-99;
         public static DateTime NullT = new DateTime(1, 1, 1, 0, 0, 0);
 
-        private readonly XWebConstraint[] _value_constraints;
-        private readonly QueryGroup _value_group;
-        private readonly XWebQuery _value_query;
+        private readonly XWebConstraint[] _valueConstraints;
+        private readonly QueryGroup _valueGroup;
+        private readonly XWebQuery _valueQuery;
 
         public QueryMetadata Metadata { get; set; }
        
 
 
-        public QueryDescriptor(QueryGroup value_group, XWebConstraint[] value_constraints, XWebQuery value_query)
+        public QueryDescriptor(QueryGroup valueGroup, XWebConstraint[] valueConstraints, XWebQuery valueQuery)
         {
-            _value_group = value_group;
-            _value_constraints = value_constraints;
-            _value_query = value_query;
+            _valueGroup = valueGroup;
+            _valueConstraints = valueConstraints;
+            _valueQuery = valueQuery;
         }
 
         public bool CheckActionRight(UserTokenData tokenData, ActionType actionType)
         {
-            if (_value_group != null)
+            bool Ret = false;
+            if (_valueGroup != null)
             {
-                if ((_value_group.Cust_Chb1 == 1) && (actionType == ActionType.Create))
-                    return true;
-                else if ((_value_group.Cust_Chb1 == 1) && (actionType == ActionType.Update))
-                    return true;
-                else if ((_value_group.Cust_Chb1 == 2) && (actionType == ActionType.Delete))
-                    return true;
-                else return false;
+                if ((_valueGroup.Cust_Chb1 == 1) && (actionType == ActionType.Create))
+                    Ret = true;
+                if ((_valueGroup.Cust_Chb1 == 1) && (actionType == ActionType.Update))
+                    Ret = true;
+                if ((_valueGroup.Cust_Chb2 == 1) && (actionType == ActionType.Delete))
+                    Ret = true;
             }
-            else return false;
+            else Ret = false;
+            return Ret;
         }
 
         public Condition[] GetConditions(UserTokenData tokenData, ActionType actionType)
         {
             List<Condition> List_Expressions = new List<Condition>();
-            if (_value_query != null) {
-                if (_value_query.IdentUser!="") {
+            if (_valueQuery != null) {
+                if (_valueQuery.IdentUser!="") {
                     var condition = new ConditionExpression() {
                         LeftOperand = new StringValueOperand() {
                             Type = OperandType.Column,
                             DataType = DataType.String,
-                            Value = _value_query.IdentUser
+                            Value = _valueQuery.IdentUser
                         },
                         Operator = ConditionOperator.Equal,
                         Type = ConditionType.Expression,
                         RightOperand = new IntegerValueOperand() {
                             Type = OperandType.Value,
-                            DataType = DataType.Double,
+                            DataType = DataType.Integer,
                             Value = tokenData.Id
                         }
                     };
@@ -70,7 +71,7 @@ namespace Atdi.AppServices.WebQuery
                 }
             }
 
-            foreach (XWebConstraint cntr in _value_constraints) {
+            foreach (XWebConstraint cntr in _valueConstraints) {
                 if ((cntr.Min != NullD) || (cntr.Max != NullD)) {
                     string NameFldLon = "";
                     for (int i = 0; i < Metadata.Columns.Count(); i++) {
