@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppServices.WebQuery
 {
-    public sealed class GroupsCache
+    public sealed class GroupDescriptorsCache
     {
+        public GroupDescriptor[] GetDecriptors(int[] identifiers)
+        {
+            return null;
+        }
+
     }
 }

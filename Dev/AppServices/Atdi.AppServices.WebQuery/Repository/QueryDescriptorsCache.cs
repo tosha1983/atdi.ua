@@ -8,5 +8,9 @@ namespace Atdi.AppServices.WebQuery
 {
     public sealed class QueryDescriptorsCache
     {
+        public QueryDescriptor GetDecriptor(int queryId)
+        {
+            return null;
+        }
     }
 }
