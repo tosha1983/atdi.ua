@@ -6,8 +6,8 @@
     /// </summary>
     public static class ICSMTbl
     {
-        public const string WebQuery = "XWebQuery";
-        public const string WebConstraint = "XWebConstraint";
+        public const string WebQuery = "XWEBQUERY";
+        public const string WebConstraint = "XWEBCONSTRAINT";
         public const string Tarif = "TARIFF";
         public const string Invoices = "INVOICES";
         public const string Invoice_item = "INVOICE_ELT";

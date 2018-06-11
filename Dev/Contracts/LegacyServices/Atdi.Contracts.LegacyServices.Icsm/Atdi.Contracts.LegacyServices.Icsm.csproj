@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="IcsmDataContext.cs" />
     <Compile Include="IcsmDataOrm.cs" />
+    <Compile Include="IIrpParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

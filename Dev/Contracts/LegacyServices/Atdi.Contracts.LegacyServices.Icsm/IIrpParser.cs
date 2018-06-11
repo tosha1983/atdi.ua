@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.WebQuery;
 
 
-namespace Atdi.Contracts.CoreServices.DataLayer
+namespace Atdi.Contracts.LegacyServices.Icsm
 {
     public interface IIrpParser
     {

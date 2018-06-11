@@ -23,8 +23,6 @@ namespace Atdi.AppServices.WebQuery
 
 
         private readonly Dictionary<string, GroupDescriptor[]> _groupsCache;
-        private readonly Dictionary<int, XWebQuery> _CacheWebQueryById;
-        private readonly Dictionary<int, XWebConstraint[]> _CacheXWebConstraint;
 
 
         public QueriesRepository(ILogger logger, IDataLayer<IcsmDataOrm> dataLayer, IIrpParser irpparser) : base(logger)
@@ -32,9 +30,8 @@ namespace Atdi.AppServices.WebQuery
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
             this._groupsCache = new Dictionary<string, GroupDescriptor[]>();
-            this._CacheWebQueryById = new Dictionary<int, XWebQuery>();
-            this._CacheXWebConstraint = new Dictionary<int, XWebConstraint[]>();
             this._irpParser = irpparser;
+
         }
 
         private GroupDescriptor[] LoadGroupsByUser(UserTokenData userToken)
@@ -68,7 +65,8 @@ namespace Atdi.AppServices.WebQuery
                                 Name = reader.GetValue(c => c.Taskforce.SHORT_NAME),
                                 Title = reader.GetValue(c => c.Taskforce.FULL_NAME),
                                 Description = reader.GetValue(c => c.Taskforce.DESCRIPTION),
-                                CanCreateAndModify = reader.GetValue(c => c.Taskforce.CUST_CHB1),
+                                CanCreate = reader.GetValue(c => c.Taskforce.CUST_CHB1),
+                                CanModify = reader.GetValue(c => c.Taskforce.CUST_CHB1),
                                 CanDelete = reader.GetValue(c => c.Taskforce.CUST_CHB2)
                             }
                         };
@@ -85,12 +83,12 @@ namespace Atdi.AppServices.WebQuery
 
             // load queries token
             var tokensQuery = _dataLayer.Builder
-                .From<XWebQuery>()
-                .Where(c => c.TaskForceGroup, ConditionOperator.In, result.Select(g => g.Group.Name).ToArray())
+                .From<XWEBQUERY>()
+                .Where(c => c.TASKFORCEGROUP, ConditionOperator.In, result.Select(g => g.Group.Name).ToArray())
                 .Select(
                     c => c.ID,
-                    c => c.Code,
-                    c => c.TaskForceGroup);
+                    c => c.CODE,
+                    c => c.TASKFORCEGROUP);
 
             var tokensByGroup = new Dictionary<string, List<QueryTokenDescriptor>>();
 
@@ -99,10 +97,10 @@ namespace Atdi.AppServices.WebQuery
                 {
                     while(reader.Read())
                     {
-                        var group = reader.GetValue(c => c.TaskForceGroup);
+                        var group = reader.GetValue(c => c.TASKFORCEGROUP);
                         var token = new QueryTokenDescriptor
                         {
-                            Code = reader.GetValue(c => c.Code),
+                            Code = reader.GetValue(c => c.CODE),
                             Token = new QueryToken
                             {
                                 Id = reader.GetValue(c => c.ID),
@@ -128,175 +126,100 @@ namespace Atdi.AppServices.WebQuery
                     item.Group.QueryTokens = tokens.Select(t => t.Token).ToArray();
                 }
             }
-
+            QueryDescriptor x=  LoadQueryDescriptor(2);
             return result;
-        }
-
-
-        public XWebConstraint[] LoadXWebConstraintByQueryID(int queryId)
-        {
-            var ConstraintQueryWeb = _dataLayer.Builder
-               .From<XWebConstraint>()
-               .Select(
-                   c => c.ID,
-                   c => c.WebQueryId,
-                   c => c.Name,
-                   c => c.Path,
-                   c => c.StrValue,
-                   c => c.Min,
-                   c => c.Max,
-                   c => c.Include,
-                   c => c.DateValueMin,
-                   c => c.DateValueMax
-                 )
-                .Where(c => c.WebQueryId, ConditionOperator.Equal, queryId);
-            var QueryDescriptorValue = this._queryExecutor
-           .Fetch(ConstraintQueryWeb, reader => {
-               var groups_XWebConstraint = new List<XWebConstraint>();
-               if (reader.Read()) {
-                   var token = new XWebConstraint
-                   {
-                       ID = reader.GetValue(x => x.ID),
-                       WebQueryId = reader.GetValue(x => x.WebQueryId),
-                       StrValue = reader.GetValue(x => x.StrValue),
-                       Path = reader.GetValue(x => x.Path),
-                       Name = reader.GetValue(x => x.Name),
-                       Min = reader.GetValue(x => x.Min),
-                       Max = reader.GetValue(x => x.Max),
-                       Include = reader.GetValue(x => x.Include),
-                       DateValueMin = reader.GetValue(x => x.DateValueMin),
-                       DateValueMax = reader.GetValue(x => x.DateValueMax)
-                   };
-
-                   groups_XWebConstraint.Add(token);
-               }
-               return groups_XWebConstraint.ToArray();
-           });
-            return QueryDescriptorValue;
-        }
-
-        public XWebQuery LoadXWebQueryByID(int queryId)
-        {
-            var query_web = _dataLayer.Builder
-               .From<XWebQuery>()
-               .Where(c => c.ID, ConditionOperator.Equal, queryId)
-               .Select(
-                   c => c.ID,
-                   c => c.Name,
-                   c => c.Code,
-                   c => c.Query,
-                   c => c.Comments,
-                   c => c.IdentUser,
-                   c => c.TaskForceGroup);
-                
-            var QueryDescriptorValue = this._queryExecutor
-           .Fetch(query_web, reader => {
-               var groups_XWebQuery = new List<XWebQuery>();
-               if (reader.Read())
-               {
-                   var token = new XWebQuery
-                   {
-                       ID = reader.GetValue(x => x.ID),
-                       Code = reader.GetValue(x => x.Code),
-                       Comments = reader.GetValue(x => x.Comments),
-                       IdentUser = reader.GetValue(x => x.IdentUser),
-                       Name = reader.GetValue(x => x.Name),
-                       Query = reader.GetValue(x => x.Query),
-                       TaskForceGroup = reader.GetValue(x => x.TaskForceGroup)
-                   };
-                   groups_XWebQuery.Add(token);
-               }
-               return groups_XWebQuery.ToArray();
-           });
-            if (QueryDescriptorValue.Count() > 0)
-                return QueryDescriptorValue[0];
-            else return null;
-        }
-
-
-        public QueryDescriptor GetQueryDescriptorByToken(UserTokenData userToken, QueryToken queryToken)
-        {
-            QueryGroup[] groups = GetGroupsByUser(userToken);
-            QueryDescriptor Q = null;
-            foreach (QueryGroup qp in groups) {
-                if (qp.QueryTokens != null) {
-                    foreach (QueryToken l_g in qp.QueryTokens) {
-                        if (l_g.Id == queryToken.Id)  {
-                            XWebQuery xWeb = new XWebQuery();
-                            if (!this._CacheWebQueryById.TryGetValue(queryToken.Id, out xWeb)) {
-                                xWeb = LoadXWebQueryByID(queryToken.Id);
-                                this._CacheWebQueryById[queryToken.Id] = xWeb;
-                            }
-                            if (xWeb != null) {
-                                XWebConstraint[] xWebConstraint = new List<XWebConstraint>().ToArray();
-                                if (!this._CacheXWebConstraint.TryGetValue(xWeb.ID, out xWebConstraint))
-                                {
-                                    xWebConstraint = LoadXWebConstraintByQueryID(xWeb.ID);
-                                    this._CacheXWebConstraint[xWeb.ID] = xWebConstraint;
-                                }
-                                Q = new QueryDescriptor(qp, xWebConstraint, xWeb);
-                                Q.Metadata = new QueryMetadata();
-                                Q.Metadata.Name = xWeb.Name;
-                                Q.Metadata.Code = xWeb.Code;
-                                Q.Metadata.Token = new QueryToken();
-                                Q.Metadata.Token.Id = xWeb.ID;
-                                Q.Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
-                                Q.Metadata.Token.Version = "1.0";
-                                if (xWeb.Query != null) Q.Metadata.Columns = this._irpParser.ExecuteParseQuery(xWeb.Query);
-                                Q.Metadata.Description = xWeb.Comments;
-                                Q.Metadata.Title = xWeb.Name;
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            return Q;
         }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userToken"></param>
-        /// <param name="queryCode"></param>
+        /// <param name="queryId"></param>
         /// <returns></returns>
-        public QueryDescriptor GetQueryDescriptorByCode(UserTokenData userToken, string queryCode)
+        public QueryDescriptor LoadQueryDescriptor(int queryId)
         {
-            QueryGroup[] groups = GetGroupsByUser(userToken);
-            QueryDescriptor Q = null;
-            foreach (QueryGroup qp in groups) {
-                if (qp.QueryTokens != null) {
-                    foreach (QueryToken token in qp.QueryTokens) {
-                        XWebQuery xWeb = new XWebQuery();
-                        if (!this._CacheWebQueryById.TryGetValue(token.Id, out xWeb)) {
-                            xWeb = LoadXWebQueryByID(token.Id);
-                            this._CacheWebQueryById[token.Id] = xWeb;
-                        }
-                        if (xWeb != null) {
-                            if (xWeb.Code == queryCode) {
-                                XWebConstraint[] xWebConstraint = new List<XWebConstraint>().ToArray();
-                                if (!this._CacheXWebConstraint.TryGetValue(xWeb.ID, out xWebConstraint)) {
-                                    xWebConstraint = LoadXWebConstraintByQueryID(xWeb.ID);
-                                    this._CacheXWebConstraint[xWeb.ID] = xWebConstraint;
-                                }
-                                Q = new QueryDescriptor(qp, xWebConstraint, xWeb);
-                                Q.Metadata = new QueryMetadata();
-                                Q.Metadata.Name = xWeb.Name;
-                                Q.Metadata.Code = xWeb.Code;
-                                Q.Metadata.Token = new QueryToken();
-                                Q.Metadata.Token.Id = xWeb.ID;
-                                Q.Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
-                                Q.Metadata.Token.Version = "1.0";
-                                if (xWeb.Query != null) Q.Metadata.Columns = this._irpParser.ExecuteParseQuery(xWeb.Query);
-                                Q.Metadata.Description = xWeb.Comments;
-                                Q.Metadata.Title = xWeb.Name;
-                                break;
-                            }
-                        }
-                    }
+            QueryDescriptor description = null;
+            var query_web_constraint = _dataLayer.Builder
+              .From<XWEBCONSTRAINT>()
+              .Where(c => c.WEBQUERYID, ConditionOperator.Equal, queryId)
+              .Select(
+                  c => c.ID,
+                  c => c.INCLUDE,
+                  c => c.MAX,
+                  c => c.MIN,
+                  c => c.NAME,
+                  c => c.PATH,
+                  c => c.STRVALUE,
+                  c => c.WEBQUERYID,
+                  c => c.DATEVALUEMIN,
+                  c => c.DATEVALUEMAX
+                 );
+
+            var ConstraintsValue = this._queryExecutor
+            .Fetch(query_web_constraint, reader =>
+            {
+                var groups_constr = new List<XWEBCONSTRAINT>();
+                while (reader.Read())
+                {
+                    var token = new XWEBCONSTRAINT
+                    {
+                        ID = reader.GetValue(x => x.ID),
+                        NAME = reader.GetValue(x => x.NAME),
+                        STRVALUE = reader.GetValue(x => x.STRVALUE),
+                        WEBQUERYID = reader.GetValue(x => x.WEBQUERYID),
+                        INCLUDE = reader.GetValue(x => x.INCLUDE),
+                        MIN = reader.GetValue(x => x.MIN),
+                        MAX = reader.GetValue(x => x.MAX),
+                        DATEVALUEMIN = reader.GetValue(x => x.DATEVALUEMIN),
+                        DATEVALUEMAX = reader.GetValue(x => x.DATEVALUEMAX),
+                        PATH = reader.GetValue(x => x.PATH)
+                    };
+                    groups_constr.Add(token);
                 }
-            }
-            return Q;
+                return groups_constr.ToArray();
+                });
+
+            var queryweb = _dataLayer.Builder
+               .From<XWEBQUERY>()
+               .Where(c => c.ID, ConditionOperator.Equal, queryId)
+               .Select(
+                   c => c.ID,
+                   c => c.CODE,
+                   c => c.COMMENTS,
+                   c => c.IDENTUSER,
+                   c => c.NAME,
+                   c => c.QUERY,
+                   c => c.TASKFORCEGROUP
+                  );
+
+            var QueryValue = this._queryExecutor
+           .Fetch(queryweb, reader => {
+               var Value = new XWEBQUERY();
+               if (reader.Read())
+               {
+                   Value.ID = reader.GetValue(x => x.ID);
+                   Value.CODE = reader.GetValue(x => x.CODE);
+                   Value.COMMENTS = reader.GetValue(x => x.COMMENTS);
+                   Value.IDENTUSER = reader.GetValue(x => x.IDENTUSER);
+                   Value.NAME = reader.GetValue(x => x.NAME);
+                   Value.QUERY = reader.GetValue(x => x.QUERY);
+                   Value.TASKFORCEGROUP = reader.GetValue(x => x.TASKFORCEGROUP);
+               }
+               return Value;
+           });
+            description = new QueryDescriptor(QueryValue, ConstraintsValue);
+            description.Metadata = new QueryMetadata();
+            if (QueryValue.QUERY != null) description.Metadata.Columns = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
+            description.Metadata.Name = QueryValue.NAME;
+            description.Metadata.Code = QueryValue.CODE;
+            description.Metadata.Token = new QueryToken();
+            description.Metadata.Token.Id = QueryValue.ID;
+            description.Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
+            description.Metadata.Token.Version = "1.0";
+            description.Metadata.Description = QueryValue.COMMENTS;
+            description.Metadata.Title = QueryValue.NAME;
+            return description;
         }
+
+         
 
         public QueryGroup[] GetGroupsByUser(UserTokenData userToken)
         {

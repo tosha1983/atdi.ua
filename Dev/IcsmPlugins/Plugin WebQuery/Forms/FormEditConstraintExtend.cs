@@ -16,6 +16,8 @@ namespace XICSM.WebQuery
         public int ID { get; set; }
         public bool IsNew { get; set; }
 
+        //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+        //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
         public FormEditConstraintExtend(int web_contraint, bool isnew, List<string> L_Path)
         {
             InitializeComponent();
@@ -33,14 +35,14 @@ namespace XICSM.WebQuery
                     if (!IsNew)
                     {
                         IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                        RsWebQueryNew.Select("ID,WebQueryId,Name,Path,Min,Max,StrValue,DateValueMin,DateValueMax,Include");
+                        RsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
                         RsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, ID);
                         RsWebQueryNew.Open();
                         if (!RsWebQueryNew.IsEOF())
                         {
                                 byte[] zip = null;
                                 string sql; ANetDb d;
-                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT Query FROM %XWebQuery WHERE ID=" + RsWebQueryNew.GetI("WebQueryId"), out sql, out d);
+                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT Query FROM %XWEBQUERY WHERE ID=" + RsWebQueryNew.GetI("WEBQUERYID"), out sql, out d);
                                 ANetRs Anet_rs = d.NewRecordset();
                                 Anet_rs.Open(sql);
                                 if (!Anet_rs.IsEOF())
@@ -80,7 +82,7 @@ namespace XICSM.WebQuery
         private void Init()
         {
             IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-            RsWebQueryNew.Select("ID,WebQueryId,Name,Path,Min,Max,StrValue,DateValueMin,DateValueMax,Include");
+            RsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
             if (ID != IM.NullI)
             {
                 if (!IsNew)
@@ -89,14 +91,14 @@ namespace XICSM.WebQuery
                     RsWebQueryNew.Open();
                     if (!RsWebQueryNew.IsEOF())
                     {
-                        textBox_name.Text = RsWebQueryNew.GetS("Name");
-                        textBox_str_value.Text = RsWebQueryNew.GetS("StrValue");
-                        icsDouble_from.Value = RsWebQueryNew.GetD("Min");
-                        icsDouble_to.Value = RsWebQueryNew.GetD("Max");
-                        icsDateTime_from.Value = RsWebQueryNew.GetT("DateValueMin");
-                        icsDateTime_to.Value = RsWebQueryNew.GetT("DateValueMax");
-                        if (RsWebQueryNew.GetI("Include") == 1) { checkBox_include.Checked = true; } else { checkBox_include.Checked = false; }
-                        if (comboBox_path.Items.IndexOf(RsWebQueryNew.GetS("Path")) != -1) comboBox_path.SelectedIndex = comboBox_path.Items.IndexOf(RsWebQueryNew.GetS("Path"));
+                        textBox_name.Text = RsWebQueryNew.GetS("NAME");
+                        textBox_str_value.Text = RsWebQueryNew.GetS("STRVALUE");
+                        icsDouble_from.Value = RsWebQueryNew.GetD("MIN");
+                        icsDouble_to.Value = RsWebQueryNew.GetD("MAX");
+                        icsDateTime_from.Value = RsWebQueryNew.GetT("DATEVALUEMIN");
+                        icsDateTime_to.Value = RsWebQueryNew.GetT("DATEVALUEMAX");
+                        if (RsWebQueryNew.GetI("INCLUDE") == 1) { checkBox_include.Checked = true; } else { checkBox_include.Checked = false; }
+                        if (comboBox_path.Items.IndexOf(RsWebQueryNew.GetS("PATH")) != -1) comboBox_path.SelectedIndex = comboBox_path.Items.IndexOf(RsWebQueryNew.GetS("PATH"));
 
                         if (textBox_str_value.Text != "")
                         {
@@ -170,7 +172,7 @@ namespace XICSM.WebQuery
             {
                  
                         IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                        RsWebQueryNew.Select("ID,WebQueryId,Name,Path,Min,Max,StrValue,DateValueMin,DateValueMax,Include");
+                        RsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
                         if (ID != IM.NullI)
                         {
                             if (!IsNew)
@@ -187,16 +189,16 @@ namespace XICSM.WebQuery
                                 RsWebQueryNew.AddNew();
                                 int ID_NEW = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
                                 RsWebQueryNew.Put("ID", ID_NEW);
-                                RsWebQueryNew.Put("WebQueryId", ID); 
-                                RsWebQueryNew.Put("Name", textBox_name.Text);
-                                RsWebQueryNew.Put("StrValue", textBox_str_value.Text);
-                                RsWebQueryNew.Put("Min", icsDouble_from.Value!=IM.NullD ? icsDouble_from.Value : IM.NullD);
-                                RsWebQueryNew.Put("Max", icsDouble_to.Value!=IM.NullD ? icsDouble_to.Value : IM.NullD);
-                                RsWebQueryNew.Put("DateValueMin", icsDateTime_from.Value);
-                                RsWebQueryNew.Put("DateValueMax", icsDateTime_to.Value); 
-                                if (checkBox_include.Checked) { RsWebQueryNew.Put("Include", 1); }
-                                if (!checkBox_include.Checked) { RsWebQueryNew.Put("Include", 0); }
-                                if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("Path", comboBox_path.Text); }
+                                RsWebQueryNew.Put("WEBQUERYID", ID); 
+                                RsWebQueryNew.Put("NAME", textBox_name.Text);
+                                RsWebQueryNew.Put("STRVALUE", textBox_str_value.Text);
+                                RsWebQueryNew.Put("MIN", icsDouble_from.Value!=IM.NullD ? icsDouble_from.Value : IM.NullD);
+                                RsWebQueryNew.Put("MAX", icsDouble_to.Value!=IM.NullD ? icsDouble_to.Value : IM.NullD);
+                                RsWebQueryNew.Put("DATEVALUEMIN", icsDateTime_from.Value);
+                                RsWebQueryNew.Put("DATEVALUEMAX", icsDateTime_to.Value); 
+                                if (checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 1); }
+                                if (!checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 0); }
+                                if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text); }
                                 RsWebQueryNew.Update();
                             }
                             else
@@ -204,15 +206,15 @@ namespace XICSM.WebQuery
                                 if (!IsNew)
                                 {
                                     RsWebQueryNew.Edit();
-                                    RsWebQueryNew.Put("Name", textBox_name.Text);
-                                    RsWebQueryNew.Put("StrValue", textBox_str_value.Text);
-                                    RsWebQueryNew.Put("Min", icsDouble_from.Value != IM.NullD ? icsDouble_from.Value : IM.NullD);
-                                    RsWebQueryNew.Put("Max", icsDouble_to.Value != IM.NullD ? icsDouble_to.Value : IM.NullD);
-                                    RsWebQueryNew.Put("DateValueMin", icsDateTime_from.Value);
-                                    RsWebQueryNew.Put("DateValueMax", icsDateTime_to.Value);
-                                    if (checkBox_include.Checked) { RsWebQueryNew.Put("Include", 1); }
-                                    if (!checkBox_include.Checked) { RsWebQueryNew.Put("Include", 0); }
-                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("Path", comboBox_path.Text); }
+                                    RsWebQueryNew.Put("NAME", textBox_name.Text);
+                                    RsWebQueryNew.Put("STRVALUE", textBox_str_value.Text);
+                                    RsWebQueryNew.Put("MIN", icsDouble_from.Value != IM.NullD ? icsDouble_from.Value : IM.NullD);
+                                    RsWebQueryNew.Put("MAX", icsDouble_to.Value != IM.NullD ? icsDouble_to.Value : IM.NullD);
+                                    RsWebQueryNew.Put("DATEVALUEMIN", icsDateTime_from.Value);
+                                    RsWebQueryNew.Put("DATEVALUEMAX", icsDateTime_to.Value);
+                                    if (checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 1); }
+                                    if (!checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 0); }
+                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text); }
                                     RsWebQueryNew.Update();
                                 }
                                 else
@@ -220,16 +222,16 @@ namespace XICSM.WebQuery
                                     RsWebQueryNew.AddNew();
                                     int ID_NEW = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
                                     RsWebQueryNew.Put("ID", ID_NEW);
-                                    RsWebQueryNew.Put("WebQueryId", ID);
-                                    RsWebQueryNew.Put("Name", textBox_name.Text);
-                                    RsWebQueryNew.Put("StrValue", textBox_str_value.Text);
-                                    RsWebQueryNew.Put("Min", icsDouble_from.Value != IM.NullD ? icsDouble_from.Value : IM.NullD);
-                                    RsWebQueryNew.Put("Max", icsDouble_to.Value != IM.NullD ? icsDouble_to.Value : IM.NullD);
-                                    RsWebQueryNew.Put("DateValueMin", icsDateTime_from.Value);
-                                    RsWebQueryNew.Put("DateValueMin", icsDateTime_to.Value);
-                                    if (checkBox_include.Checked) { RsWebQueryNew.Put("Include", 1); }
-                                    if (!checkBox_include.Checked) { RsWebQueryNew.Put("Include", 0); }
-                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("Path", comboBox_path.Text); }
+                                    RsWebQueryNew.Put("WEBQUERYID", ID);
+                                    RsWebQueryNew.Put("NAME", textBox_name.Text);
+                                    RsWebQueryNew.Put("STRVALUE", textBox_str_value.Text);
+                                    RsWebQueryNew.Put("MIN", icsDouble_from.Value != IM.NullD ? icsDouble_from.Value : IM.NullD);
+                                    RsWebQueryNew.Put("MAX", icsDouble_to.Value != IM.NullD ? icsDouble_to.Value : IM.NullD);
+                                    RsWebQueryNew.Put("DATEVALUEMIN", icsDateTime_from.Value);
+                                    RsWebQueryNew.Put("DATEVALUEMAX", icsDateTime_to.Value);
+                                    if (checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 1); }
+                                    if (!checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 0); }
+                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text); }
                                     RsWebQueryNew.Update();
                                 }
 

@@ -53,37 +53,38 @@ namespace XICSM.WebQuery
             //===============================================
             // TABLES
             //===============================================
-            s.DeclareTable("XWebQuery", "WEB_QUERY", plugin4);
+            s.DeclareTable("XWEBQUERY", "WEB_QUERY", plugin4);
             {
                 s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_WebQuery", "PRIMARY", "ID");
-                s.DeclareField("Name", "VARCHAR(50)", null, null, null);
-                s.DeclareField("Query", "BINARY(20000)", null, null, null);
-                s.DeclareField("Comments", "VARCHAR(250)", null, null, null);
-                s.DeclareField("IdentUser", "VARCHAR(250)", null, null, null);
-                s.DeclareField("Code", "VARCHAR(50)", null, null, null);
-                s.DeclareField("TaskForceGroup", "VARCHAR(100)", null, null, null);
+                s.DeclareIndex("PK_XWEBQUERY", "PRIMARY", "ID");
+                s.DeclareField("NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("QUERY", "BINARY(20000)", null, null, null);
+                s.DeclareField("COMMENTS", "VARCHAR(250)", null, null, null);
+                s.DeclareField("IDENTUSER", "VARCHAR(250)", null, null, null);
+                s.DeclareField("CODE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("TASKFORCEGROUP", "VARCHAR(100)", null, null, null);
             }
 
+            //ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP
 
-
-            s.DeclareTable("XWebConstraint", "Web constraints", plugin4);
+            s.DeclareTable("XWEBCONSTRAINT", "Web constraints", plugin4);
             {
                 s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XWebConstraint", "PRIMARY", "ID");
-                s.DeclareField("WebQueryId", "NUMBER(9,0)", null, null, null);
-                s.DeclareField("Name", "VARCHAR(50)", null, null, null);
-                s.DeclareField("Path", "VARCHAR(250)", null, null, null);
-                s.DeclareField("Min", "NUMBER(22,8)", null, null, null);
-                s.DeclareField("Max", "NUMBER(22,8)", null, null, null);
-                s.DeclareField("StrValue", "VARCHAR(250)", null, null, null);
-                s.DeclareField("DateValueMin", "DATE", "Date", null, null);
-                s.DeclareField("Include", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("DateValueMax", "DATE", "Date", null, null);
-                s.DeclareJoin("JoinWebQuery", "XWebQuery", null, "WebQueryId", "ID");
+                s.DeclareIndex("PK_XWEBCONSTRAINT", "PRIMARY", "ID");
+                s.DeclareField("WEBQUERYID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
+                s.DeclareField("MIN", "NUMBER(22,8)", null, null, null);
+                s.DeclareField("MAX", "NUMBER(22,8)", null, null, null);
+                s.DeclareField("STRVALUE", "VARCHAR(250)", null, null, null);
+                s.DeclareField("DATEVALUEMIN", "DATE", "Date", null, null);
+                s.DeclareField("INCLUDE", "NUMBER(1,0)", null, null, null);
+                s.DeclareField("DATEVALUEMAX", "DATE", "Date", null, null);
+                s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
             }
+            //ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX
         }
-     
+
         //=============================================================
         /// <summary>
         /// Обновление таблиц
@@ -93,12 +94,12 @@ namespace XICSM.WebQuery
         /// <returns>true</returns>
         public static bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
-            if (dbCurVersion < 20180105.0948)
+            if (dbCurVersion < 20180105.0949)
             {
-                s.CreateTables("XWebQuery,XWebConstraint");
-                s.CreateTableFields("XWebConstraint", "ID,WebQueryId,Name,Path,Min,Max,StrValue,DateValueMin,DateValueMax,Include");
-                s.CreateTableFields("XWebQuery", "ID,Name,Query,Comments,IdentUser,Code,TaskForceGroup");
-                s.SetDatabaseVersion(20180105.0948);
+                //s.CreateTables("XWEBQUERY,XWEBCONSTRAINT");
+                //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                s.SetDatabaseVersion(20180105.0949);
             }
             return true;
         }
@@ -107,6 +108,6 @@ namespace XICSM.WebQuery
         /// <summary>
         /// Текущая версия БД плагина
         /// </summary>
-        public static readonly double schemaVersion = 20180105.0948;//20161003.0909
+        public static readonly double schemaVersion = 20180105.0949;//20161003.0909
     }
 }

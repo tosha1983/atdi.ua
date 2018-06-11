@@ -26,7 +26,9 @@ namespace Atdi.DataModels.WebQuery
         public string Description { get; set; }
 
         [DataMember]
-        public int? CanCreateAndModify { get; set; }
+        public int? CanCreate { get; set; }
+        [DataMember]
+        public int? CanModify { get; set; }
         [DataMember]
         public int? CanDelete { get; set; }
         /// <summary>

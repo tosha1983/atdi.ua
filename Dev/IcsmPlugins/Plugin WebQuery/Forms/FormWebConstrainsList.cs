@@ -88,35 +88,37 @@ namespace XICSM.WebQuery
             int Num = 1; if (listView_constraints_lst.Items.Count > 0) Num = listView_constraints_lst.Items.Count + 1;
             int WEB_QUERY_ID=IM.NullI;
 
-            
-               
-                IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                RsWebQueryNew.Select("ID,WebQueryId,Name,Path,Min,Max,StrValue,DateValueMin,DateValueMax,Include");
-                RsWebQueryNew.SetWhere("WebQueryId", IMRecordset.Operation.Eq, ID_WEB);
+
+            //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+            //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+
+            IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
+                RsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                RsWebQueryNew.SetWhere("WEBQUERYID", IMRecordset.Operation.Eq, ID_WEB);
                 for (RsWebQueryNew.Open(); !RsWebQueryNew.IsEOF(); RsWebQueryNew.MoveNext())
                 {
                     ListViewItem itm;
                     arr[0] = RsWebQueryNew.GetI("ID").ToString();
                     IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
-                    RsWebQuery.Select("ID,Name");
+                    RsWebQuery.Select("ID,NAME");
                     RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, RsWebQueryNew.GetI("ID"));
                     RsWebQuery.Open();
                     if (!RsWebQuery.IsEOF())
                     {
-                        arr[1] = RsWebQuery.GetS("Name");
+                        arr[1] = RsWebQuery.GetS("NAME");
                     }
                     if (RsWebQuery.IsOpen())
                         RsWebQuery.Close();
                     RsWebQuery.Destroy();
 
-                    arr[2] = RsWebQueryNew.GetS("Name");
-                    arr[3] = RsWebQueryNew.GetS("Path");
-                    arr[4] = ((RsWebQueryNew.GetD("Min") != IM.NullD) && (RsWebQueryNew.GetD("Min") != IM.NullI)) ? RsWebQueryNew.GetD("Min").ToString() : "";
-                    arr[5] = ((RsWebQueryNew.GetD("Max") != IM.NullD) && (RsWebQueryNew.GetD("Max") != IM.NullI)) ? RsWebQueryNew.GetD("Max").ToString() : "";
-                    arr[6] = RsWebQueryNew.GetS("StrValue");
-                    arr[7] = RsWebQueryNew.GetI("Include") != IM.NullI ? RsWebQueryNew.GetI("Include").ToString() : "";
-                    arr[8] = RsWebQueryNew.GetT("DateValueMin") != IM.NullT ? RsWebQueryNew.GetT("DateValueMin").ToString() : "";
-                    arr[9] = RsWebQueryNew.GetT("DateValueMax") != IM.NullT ? RsWebQueryNew.GetT("DateValueMax").ToString() : "";
+                    arr[2] = RsWebQueryNew.GetS("NAME");
+                    arr[3] = RsWebQueryNew.GetS("PATH");
+                    arr[4] = ((RsWebQueryNew.GetD("MIN") != IM.NullD) && (RsWebQueryNew.GetD("MIN") != IM.NullI)) ? RsWebQueryNew.GetD("MIN").ToString() : "";
+                    arr[5] = ((RsWebQueryNew.GetD("MAX") != IM.NullD) && (RsWebQueryNew.GetD("MAX") != IM.NullI)) ? RsWebQueryNew.GetD("MAX").ToString() : "";
+                    arr[6] = RsWebQueryNew.GetS("STRVALUE");
+                    arr[7] = RsWebQueryNew.GetI("INCLUDE") != IM.NullI ? RsWebQueryNew.GetI("INCLUDE").ToString() : "";
+                    arr[8] = RsWebQueryNew.GetT("DATEVALUEMIN") != IM.NullT ? RsWebQueryNew.GetT("DATEVALUEMIN").ToString() : "";
+                    arr[9] = RsWebQueryNew.GetT("DATEVALUEMAX") != IM.NullT ? RsWebQueryNew.GetT("DATEVALUEMAX").ToString() : "";
                     itm = new ListViewItem(arr); listView_constraints_lst.Items.Add(itm);
                     listView_constraints_lst.FocusedItem = itm;
                     Num++;

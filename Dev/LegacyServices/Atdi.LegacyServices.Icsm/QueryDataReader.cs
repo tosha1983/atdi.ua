@@ -304,7 +304,10 @@ namespace Atdi.LegacyServices.Icsm
                 int offset = 0;
                 while (readBytes < size)
                 {
-                    readBytes += _dataReader.GetBytes(columnIndex, offset, result, offset, lehght);
+                    if (lehght<= size- readBytes)
+                        readBytes += _dataReader.GetBytes(columnIndex, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(columnIndex, offset, result, offset, (int)(size - readBytes));
+
                     offset += lehght;
                 }
 

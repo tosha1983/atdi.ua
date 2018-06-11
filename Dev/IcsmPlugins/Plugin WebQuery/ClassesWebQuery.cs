@@ -8,8 +8,8 @@ namespace OrmCs
 {
 	public class YXwebquery : Yyy
 	{
-		public YXwebquery() { construct("XWebQuery",null); }
-		public YXwebquery(OrmLinker lk) { construct("XWebQuery",lk); }
+		public YXwebquery() { construct("XWEBQUERY",null); }
+		public YXwebquery(OrmLinker lk) { construct("XWEBQUERY",lk); }
 		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
 			public DatPtr z_id { get { return new DatPtr(this,0); } }
 		public string m_name { get { return getString(1); } set { setString(1,50,value); } }
@@ -26,8 +26,8 @@ namespace OrmCs
 
 	public class YXwebconstraint : Yyy
 	{
-		public YXwebconstraint() { construct("XWebConstraint",null); }
-		public YXwebconstraint(OrmLinker lk) { construct("XWebConstraint",lk); }
+		public YXwebconstraint() { construct("XWEBCONSTRAINT",null); }
+		public YXwebconstraint(OrmLinker lk) { construct("XWEBCONSTRAINT",lk); }
 		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
 			public DatPtr z_id { get { return new DatPtr(this,0); } }
 		public int m_webqueryid { get { return getInt(1); } set { setInt(1,value); } }

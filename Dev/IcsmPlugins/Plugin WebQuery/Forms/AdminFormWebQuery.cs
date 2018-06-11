@@ -49,7 +49,8 @@ namespace XICSM.WebQuery
             return AllTaskForces;
         }
 
-     
+        //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+        //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
         /// <summary>
         /// 
         /// </summary>
@@ -58,15 +59,15 @@ namespace XICSM.WebQuery
             if (Lst.TableId == IM.NullI) isNew = true;
             comboBox_group.Items.AddRange(GetAllTaskForceShortName().ToArray());
             IMRecordset RsWebQuery = new IMRecordset(Lst.TableName, IMRecordset.Mode.ReadOnly);
-            RsWebQuery.Select("ID,Name,Query,Comments,IdentUser,Code,TaskForceGroup");
+            RsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
             if (Lst.DataList == null) RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst.TableId);
             RsWebQuery.AddSelectionFrom(Lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
             for (RsWebQuery.Open(); !RsWebQuery.IsEOF(); RsWebQuery.MoveNext()) {
-                                textBoxName.Text = RsWebQuery.GetS("Name");
-                                textBoxDescrQuery.Text = RsWebQuery.GetS("Comments");
+                                textBoxName.Text = RsWebQuery.GetS("NAME");
+                                textBoxDescrQuery.Text = RsWebQuery.GetS("COMMENTS");
                                 byte[] zip = null;
                                 string sql; ANetDb d;
-                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT Query FROM %XWebQuery WHERE ID=" + RsWebQuery.GetI("ID"), out sql, out d);
+                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + RsWebQuery.GetI("ID"), out sql, out d);
                                 ANetRs Anet_rs = d.NewRecordset();
                                 Anet_rs.Open(sql);
                                 if (!Anet_rs.IsEOF())
@@ -77,9 +78,9 @@ namespace XICSM.WebQuery
                                 string cipherText = UTF8Encoding.UTF8.GetString(zip);
                                 textBoxQuery.Text = cipherText;
                                 }
-                                txtUserIdent.Text = RsWebQuery.GetS("IdentUser").ToString();
-                                textBox_code.Text = RsWebQuery.GetS("Code");
-                                int idx = comboBox_group.FindString(RsWebQuery.GetS("TaskForceGroup"));
+                                txtUserIdent.Text = RsWebQuery.GetS("IDENTUSER").ToString();
+                                textBox_code.Text = RsWebQuery.GetS("CODE");
+                                int idx = comboBox_group.FindString(RsWebQuery.GetS("TASKFORCEGROUP"));
                                 if (idx > -1) comboBox_group.SelectedIndex = idx;
                                 ID = RsWebQuery.GetI("ID");
                                 isNew = false;
@@ -120,7 +121,7 @@ namespace XICSM.WebQuery
             if (DA == System.Windows.Forms.DialogResult.Yes){
                 {
                     IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
-                    RsWebQuery.Select("ID,Name,Query,Comments,IdentUser,Code,TaskForceGroup");
+                    RsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
                     if (Lst_.DataList == null) RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst_.TableId);
                     else   RsWebQuery.AddSelectionFrom(Lst_.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
                     try {
@@ -132,7 +133,7 @@ namespace XICSM.WebQuery
                                 //byte[] cipherText = CryptorEngine.Encrypt(textBoxQuery.Text.ToString(), true);
                                 string sql; ANetDb d; ANetNQ nq = null;
                                 IMTransaction.Begin();
-                                OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWebQuery SET Query=@p0 WHERE ID=@p1", out sql, out d);
+                                OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWEBQUERY SET QUERY=@p0 WHERE ID=@p1", out sql, out d);
                                 nq = d.NewAdapter();
                                 nq.Init(sql, "binary,int");
                                 nq.SetParamValue(0, cipherText);
@@ -165,9 +166,9 @@ namespace XICSM.WebQuery
         {
             bool isContain = false;
             IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
-            RsWebQueryNew.Select("ID,Name,Code");
-            RsWebQueryNew.SetWhere("Name", IMRecordset.Operation.Eq, Name);
-            RsWebQueryNew.SetWhere("Code", IMRecordset.Operation.Eq, Code);
+            RsWebQueryNew.Select("ID,NAME,CODE");
+            RsWebQueryNew.SetWhere("NAME", IMRecordset.Operation.Eq, Name);
+            RsWebQueryNew.SetWhere("CODE", IMRecordset.Operation.Eq, Code);
             if (ID > -1) RsWebQueryNew.SetAdditional(string.Format("[ID] <> {0}", ID_));
             for (RsWebQueryNew.Open(); !RsWebQueryNew.IsEOF(); RsWebQueryNew.MoveNext()) {
                 isContain = true;
@@ -207,7 +208,7 @@ namespace XICSM.WebQuery
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();
-                        OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWebQuery SET Query=@p0 WHERE ID=@p1", out sql, out d);
+                        OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWEBQUERY SET QUERY=@p0 WHERE ID=@p1", out sql, out d);
                         nq = d.NewAdapter();
                         nq.Init(sql, "binary,int");
                         nq.SetParamValue(0, cipherText);
@@ -236,7 +237,7 @@ namespace XICSM.WebQuery
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();
-                        OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWebQuery SET Query=@p0 WHERE Id=@p1", out sql, out d);
+                        OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWEBQUERY SET QUERY=@p0 WHERE ID=@p1", out sql, out d);
                         nq = d.NewAdapter();
                         nq.Init(sql, "binary,int");
                         nq.SetParamValue(0, cipherText);

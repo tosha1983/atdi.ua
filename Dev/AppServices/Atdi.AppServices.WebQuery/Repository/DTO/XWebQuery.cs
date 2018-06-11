@@ -10,7 +10,7 @@ namespace Atdi.AppServices.WebQuery
 {
         /// Класс для хранения свойств запроса
         /// </summary>
-        public sealed class XWebQuery
+        public sealed class XWEBQUERY
         {
             /// <summary>
             /// ID запроса
@@ -19,27 +19,28 @@ namespace Atdi.AppServices.WebQuery
             /// <summary>
             /// Наименование запроса
             /// </summary>
-            public string Name { get; set; }
+            public string NAME { get; set; }
             /// <summary>
             /// Идентификатор запроса
             /// </summary>
-            public string Code { get; set; }
+            public string CODE { get; set; }
             /// <summary>
             /// Код запроса 
             /// </summary>
-            public byte[] Query { get; set; }
+            public byte[] QUERY { get; set; }
             /// <summary>
             /// Комментарии к запросу
             /// </summary>
-            public string Comments { get; set; }
+            public string COMMENTS { get; set; }
             /// <summary>
             /// Идентификатор поля, которое содержит номер ID пользователя (для фильтрации данных конкретного пользователя)
             /// </summary>
-            public string IdentUser { get; set; }
+            public string IDENTUSER { get; set; }
             /// <summary>
             /// Группа TaskForce
             /// </summary>
-            public string TaskForceGroup { get; set; }
-        }
+           public string TASKFORCEGROUP { get; set; }
+
+    }
     
 }
