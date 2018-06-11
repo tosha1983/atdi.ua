@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppServices.WebQuery
 {
-    internal sealed class GroupDescriptor
+    public sealed class GroupDescriptor
     {
         public int Id { get; set; }
 
