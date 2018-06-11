@@ -37,5 +37,6 @@ namespace Atdi.AppServices.WebQuery
     static class Exceptions
     {
         public static readonly string ServiceHostWasNotInitialized = "The service host was not initialized";
+        public static readonly string QueryIsNotAvailable = "The query is not available";
     }
 }

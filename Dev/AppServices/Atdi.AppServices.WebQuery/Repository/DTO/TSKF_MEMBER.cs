@@ -8,7 +8,7 @@ namespace Atdi.AppServices.WebQuery.DTO
 {
     internal sealed class TSKF_MEMBER
     {
-        public int ID { get; set; }
+        public int TSKF_ID { get; set; }
 
         public string APP_USER { get; set; }
 

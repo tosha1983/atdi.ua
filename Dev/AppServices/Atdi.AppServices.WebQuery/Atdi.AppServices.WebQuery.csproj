@@ -45,17 +45,19 @@
     <Compile Include="Handlers\ExecuteQuery.cs" />
     <Compile Include="Handlers\SaveChanges.cs" />
     <Compile Include="Handlers\GetQueryGroups.cs" />
+    <Compile Include="Repository\Caches\UserGroupDescriptorsCache.cs" />
     <Compile Include="Repository\DTO\TASKFORCE.cs" />
     <Compile Include="Repository\DTO\TSKF_MEMBER.cs" />
     <Compile Include="Repository\DTO\XWEBCONSTRAINT.cs" />
     <Compile Include="Repository\DTO\XWEBQUERY.cs" />
-    <Compile Include="Repository\GroupDescriptorsCache.cs" />
-    <Compile Include="Repository\QueryDescriptorsCache.cs" />
+    <Compile Include="Repository\Caches\GroupDescriptorsCache.cs" />
+    <Compile Include="Repository\Caches\QueryDescriptorsCache.cs" />
     <Compile Include="Repository\QueryTokenDescriptor.cs" />
     <Compile Include="Repository\GroupDescriptor.cs" />
     <Compile Include="Repository\QueriesRepository.cs" />
     <Compile Include="Repository\QueryDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\UserGroupDescriptors.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="WebQueryComponent.cs" />
   </ItemGroup>

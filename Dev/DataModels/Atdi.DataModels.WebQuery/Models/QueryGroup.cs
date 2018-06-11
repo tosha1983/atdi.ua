@@ -26,11 +26,13 @@ namespace Atdi.DataModels.WebQuery
         public string Description { get; set; }
 
         [DataMember]
-        public int? CanCreate { get; set; }
+        public bool CanCreate { get; set; }
+
         [DataMember]
-        public int? CanModify { get; set; }
+        public bool CanModify { get; set; }
+
         [DataMember]
-        public int? CanDelete { get; set; }
+        public bool CanDelete { get; set; }
         /// <summary>
         /// The tokens of the available queries
         /// </summary>

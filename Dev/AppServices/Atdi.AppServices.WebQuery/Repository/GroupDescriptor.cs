@@ -12,5 +12,7 @@ namespace Atdi.AppServices.WebQuery
         public int Id { get; set; }
 
         public QueryGroup Group { get; set; }
+
+        public QueryTokenDescriptor[] QueryTokens { get; set; }
     }
 }
