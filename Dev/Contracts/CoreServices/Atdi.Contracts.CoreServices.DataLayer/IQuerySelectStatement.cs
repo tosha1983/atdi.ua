@@ -93,5 +93,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                     RightOperand = new BooleanValueOperand { Value = value }
                 });
         }
+
+        public static IQuerySelectStatement Where(this IQuerySelectStatement query, Condition[] conditions)
+        {
+            IQuerySelectStatement qSelect = null;
+            if (conditions == null)
+            {
+                throw new ArgumentNullException(nameof(conditions));
+            }
+          
+            foreach (Condition c in conditions)
+                qSelect = query.Where(c);
+
+            return qSelect;
+        }
     }
 }

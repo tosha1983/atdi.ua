@@ -114,7 +114,10 @@ namespace Atdi.AppServices.WebQuery
            });
             description = new QueryDescriptor(QueryValue, ConstraintsValue);
             description.Metadata = new QueryMetadata();
-            if (QueryValue.QUERY != null) description.Metadata.Columns = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
+            IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
+            description.Metadata.Columns = irpDescriptor.columnMetaData;
+            description.IdentUserField = QueryValue.IDENTUSER;
+            description.TableName = irpDescriptor.TableName;
             description.Metadata.Name = QueryValue.NAME;
             description.Metadata.Code = QueryValue.CODE;
             description.Metadata.Token = new QueryToken();

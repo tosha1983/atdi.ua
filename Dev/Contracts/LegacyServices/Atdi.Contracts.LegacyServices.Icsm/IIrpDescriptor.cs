@@ -8,9 +8,9 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.Contracts.LegacyServices.Icsm
 {
-    public interface IIrpParser
+    public sealed class IrpDescriptor 
     {
-        IrpDescriptor ExecuteParseQuery(byte[] value);
-        IrpDescriptor ExecuteParseQuery(string value);
+       public ColumnMetadata[] columnMetaData { get; set; }
+       public string TableName { get; set; }
     }
 }

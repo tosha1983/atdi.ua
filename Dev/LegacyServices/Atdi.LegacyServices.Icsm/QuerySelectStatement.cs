@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.LegacyServices.Icsm
 {
+
     internal sealed class QuerySelectStatement : LoggedObject, IQuerySelectStatement
     {
         internal sealed class ColumnDescriptor
@@ -234,7 +235,6 @@ namespace Atdi.LegacyServices.Icsm
             AppendColumnsFromCondition(condition);
             return this;
         }
-
 
         private void AppendColumnsFromCondition(Condition condition)
         {

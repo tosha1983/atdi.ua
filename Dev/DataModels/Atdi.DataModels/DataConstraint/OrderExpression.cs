@@ -16,11 +16,13 @@ namespace Atdi.DataModels.DataConstraint
         /// <summary>
         /// 
         /// </summary>
+        [DataMember]
         public string ColumnName { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [DataMember]
         public OrderType OrderType { get; set; }
     }
 }

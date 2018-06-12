@@ -62,11 +62,13 @@ namespace Atdi.Test.WebQuery
             {
                 throw new InvalidOperationException($"Пользователю {userIdentity.Name} не назначены запросы");
             }
-            /*
+           
+
+
             for (int i = 0; i < userQueryGroups.Groups.Length; i++)
             {
                 var group = userQueryGroups.Groups[i];
-
+                if (group.QueryTokens == null) continue;
                 for (int j = 0; j < group.QueryTokens.Length; j++)
                 {
                     var queryToken = group.QueryTokens[j];
@@ -88,12 +90,12 @@ namespace Atdi.Test.WebQuery
                     // ... 
 
                     // пример выполнения запроса и получения данных
-
                     // подготовка парамтеров и условий выполнения запроса
                     var fetchOptions = new FetchOptions
                     {
                         Id = Guid.NewGuid(), // генерируем идентификатор выборки, будет возвращен с результатом
-                        Columns = new string[] {"ID", "CODE", "TITLE"}, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
+                                             //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
+                                             Columns = new string[] { "ID" },
                         ResultStructure = DataSetStructure.StringRows,  // указываем тип возвращаемой структуры данных, в данном случии будет масив объектов строк состоящих из ячеек типа string.
                         Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
                         {
@@ -102,15 +104,15 @@ namespace Atdi.Test.WebQuery
                         }, 
                         Condition = new ConditionExpression // указываем условие выборки
                         {
-                            LeftOperand = new ColumnOperand { ColumnName = "CODE" },
+                            LeftOperand = new ColumnOperand { ColumnName = "ID" },
                             Operator = ConditionOperator.NotBetween,
                             RightOperand = new IntegerValuesOperand {  Values = new int?[] {10, 3599 } }
-                        },
+                        },  
                         Orders = new OrderExpression[] // указываем условие сортировки
                         {
-                            new OrderExpression { ColumnName = "CODE", OrderType = OrderType.Ascending },
-                            new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending },
-                            new OrderExpression { ColumnName = "TITLE", OrderType = OrderType.Descending }
+                            //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
+                            new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
+                            //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
                         }
                     };
 
@@ -234,7 +236,7 @@ namespace Atdi.Test.WebQuery
             {
                 throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
             }
-            */
+         
         }
 
         private static IAuthenticationManager GetAuthenticationManager(string endpointName)

@@ -26,9 +26,9 @@ namespace Atdi.CoreServices.DataLayer
             switch (direction)
             {
                 case SortDirection.Ascending:
-                    return expression + " ASC";
+                    return expression.ToUpper() + " ASC";
                 case SortDirection.Descending:
-                    return expression + " DESC";
+                    return expression.ToUpper() + " DESC";
                 default:
                     throw new InvalidOperationException(Exceptions.SortDirectionNotSupported.With(direction));
             }
@@ -127,7 +127,8 @@ namespace Atdi.CoreServices.DataLayer
                     if (limit.Type == LimitValueType.Records)
                     {
                         statement.AppendLine("WHERE");
-                        statement.AppendLine(IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT) + $" AND ROWNUM<={limit.Value}");
+                        if (limit.Value > 0) statement.AppendLine(IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT) + $" AND ROWNUM<={limit.Value}");
+                        else statement.AppendLine(IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
                     }
                     else if (limit.Type == LimitValueType.Percent)
                     {
@@ -141,6 +142,8 @@ namespace Atdi.CoreServices.DataLayer
             }
             if (groupByColumns != null && groupByColumns.Length > 0)
             {
+                //for (int i=0; i< groupByColumns.Count(); i++) groupByColumns[i] = groupByColumns[i].ToUpper();
+                //for (int i = 0; i < orderByColumns.Count(); i++) orderByColumns[i] = orderByColumns[i].ToUpper();
                 statement.AppendLine("GROUP BY");
                 statement.AppendLine(IDENT + string.Join("," + Environment.NewLine + IDENT, groupByColumns));
             }
