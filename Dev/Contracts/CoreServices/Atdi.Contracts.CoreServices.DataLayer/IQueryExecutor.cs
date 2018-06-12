@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,6 +14,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler);
 
+        DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure);
     }
 
     public interface IDataReader<TModel>
