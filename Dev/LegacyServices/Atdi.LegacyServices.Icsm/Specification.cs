@@ -39,6 +39,7 @@ namespace Atdi.LegacyServices.Icsm
         public static readonly ExceptionText ExpressionNodeTypeNotSupported = "The expression node type {0} is not supported.";
         public static readonly ExceptionText ExpressionCallMethodNotSupported = "The expression call method {0} is not supported.";
         public static readonly ExceptionText MemberNameIsNotDefined = "A member name in the expression '{0}' is not defined.";
+        public static readonly ExceptionText DataSetStructureNotSupported = "The data set structure '{0}' is not supported.";
     }
 
 }

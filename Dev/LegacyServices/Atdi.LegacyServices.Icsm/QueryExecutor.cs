@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.LegacyServices.Icsm;
+using Atdi.DataModels;
 
 namespace Atdi.LegacyServices.Icsm
 {
@@ -29,6 +30,92 @@ namespace Atdi.LegacyServices.Icsm
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
         }
 
+        public DataModels.DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure)
+        {
+            var dataSet =
+                this.Fetch(statement, reader =>
+                {
+                    switch (structure)
+                    {
+                        case DataSetStructure.TypedCells:
+                            return (DataModels.DataSet)ReadToTypedCellsDataSet(reader, columns);
+                        case DataSetStructure.StringCells:
+                            return (DataModels.DataSet)ReadToStringCellsDataSet(reader, columns);
+                        case DataSetStructure.ObjectCells:
+                            return (DataModels.DataSet)ReadToObjectCellsDataSet(reader, columns);
+                        case DataSetStructure.TypedRows:
+                            return (DataModels.DataSet)ReadToTypedRowsDataSet(reader, columns);
+                        case DataSetStructure.StringRows:
+                            return (DataModels.DataSet)ReadToStringRowsDataSet(reader, columns);
+                        case DataSetStructure.ObjectRows:
+                            return (DataModels.DataSet)ReadToObjectRowsDataSet(reader, columns);
+                        default:
+                            throw new InvalidOperationException(Exceptions.DataSetStructureNotSupported.With(structure));
+                    }
+                });
+
+            return dataSet;
+        }
+
+        private TypedCellsDataSet ReadToTypedCellsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        {
+            var dataSet = new DataModels.TypedCellsDataSet
+            {
+                Columns = columns
+            };
+
+            return dataSet;
+        }
+
+        private StringCellsDataSet ReadToStringCellsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        {
+            var dataSet = new DataModels.StringCellsDataSet
+            {
+                Columns = columns
+            };
+
+            return dataSet;
+        }
+
+        private ObjectCellsDataSet ReadToObjectCellsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        {
+            var dataSet = new DataModels.ObjectCellsDataSet
+            {
+                Columns = columns
+            };
+
+            return dataSet;
+        }
+
+        private TypedRowsDataSet ReadToTypedRowsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        {
+            var dataSet = new DataModels.TypedRowsDataSet
+            {
+                Columns = columns
+            };
+
+            return dataSet;
+        }
+
+        private StringRowsDataSet ReadToStringRowsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        {
+            var dataSet = new DataModels.StringRowsDataSet
+            {
+                Columns = columns
+            };
+
+            return dataSet;
+        }
+
+        private ObjectRowsDataSet ReadToObjectRowsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        {
+            var dataSet = new DataModels.ObjectRowsDataSet
+            {
+                Columns = columns
+            };
+
+            return dataSet;
+        }
 
         public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)
         {
@@ -71,6 +158,8 @@ namespace Atdi.LegacyServices.Icsm
                 throw;
             }
         }
+
+        
 
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
