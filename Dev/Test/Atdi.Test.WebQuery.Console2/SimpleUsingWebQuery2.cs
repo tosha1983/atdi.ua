@@ -126,30 +126,6 @@ namespace Atdi.Test.WebQuery
 
                     // распаковка результата
                     var queryResult = executingResult.Data;
-                    Console.WriteLine($"Result: {queryResult.OptionId}");
-                    Console.WriteLine($"Count: {queryResult.Dataset.RowCount}");
-
-
-                    // в параметрах мі заказали ResultStructure = DataSetStructure.StringRows
-                    // сервис упакует рузультат в струткуру объекта StringRowsDataSet
-                    // также достпны еще 5 других видов струткру, опи все описаны в модели DataSet
-                    // [KnownType(typeof(TypedCellsDataSet))]
-                    // [KnownType(typeof(StringCellsDataSet))]
-                    // [KnownType(typeof(ObjectCellsDataSet))]
-                    // [KnownType(typeof(TypedRowsDataSet))]
-                    // [KnownType(typeof(StringRowsDataSet))]
-                    // [KnownType(typeof(ObjectRowsDataSet))]
-                    if (queryResult.Dataset is StringRowsDataSet dataSet)
-                    {
-                        // 
-                        foreach (var row in dataSet.Rows)
-                        {
-                            foreach (var cell in row.Cells)
-                            {
-                                //
-                            }
-                        }
-                    }
 
 
                 }

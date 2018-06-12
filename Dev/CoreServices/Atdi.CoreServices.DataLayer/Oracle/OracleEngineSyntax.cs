@@ -46,7 +46,7 @@ namespace Atdi.CoreServices.DataLayer
 
         public string EncodeFieldName(string name)
         {
-            return $"{name}";
+            return $"\"{name.ToUpper()}\"";
         }
 
         public string EncodeFieldName(string alias, string name)

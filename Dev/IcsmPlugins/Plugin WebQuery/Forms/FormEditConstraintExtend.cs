@@ -57,7 +57,7 @@ namespace XICSM.WebQuery
                                     List<string> List_Path = ClassORM.GetProperties(cipherText, true);
                                 comboBox_path.Items.Clear();
                                 foreach (string item in List_Path)
-                                    comboBox_path.Items.Add(item.ToUpper());
+                                    comboBox_path.Items.Add(item);
                         }
                         if (RsWebQueryNew.IsOpen())
                             RsWebQueryNew.Close();
@@ -69,7 +69,7 @@ namespace XICSM.WebQuery
             {
                 comboBox_path.Items.Clear();
                 foreach (string item in L_Path)
-                    comboBox_path.Items.Add(item.ToUpper());
+                    comboBox_path.Items.Add(item);
             }
 
 
@@ -198,7 +198,7 @@ namespace XICSM.WebQuery
                                 RsWebQueryNew.Put("DATEVALUEMAX", icsDateTime_to.Value); 
                                 if (checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 1); }
                                 if (!checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 0); }
-                                if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text.ToUpper()); }
+                                if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text); }
                                 RsWebQueryNew.Update();
                             }
                             else
@@ -214,7 +214,7 @@ namespace XICSM.WebQuery
                                     RsWebQueryNew.Put("DATEVALUEMAX", icsDateTime_to.Value);
                                     if (checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 1); }
                                     if (!checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 0); }
-                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text.ToUpper()); }
+                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text); }
                                     RsWebQueryNew.Update();
                                 }
                                 else
@@ -231,7 +231,7 @@ namespace XICSM.WebQuery
                                     RsWebQueryNew.Put("DATEVALUEMAX", icsDateTime_to.Value);
                                     if (checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 1); }
                                     if (!checkBox_include.Checked) { RsWebQueryNew.Put("INCLUDE", 0); }
-                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text.ToUpper()); }
+                                    if (comboBox_path.Items.Count > 0) { if (comboBox_path.SelectedIndex != -1) RsWebQueryNew.Put("PATH", comboBox_path.Text); }
                                     RsWebQueryNew.Update();
                                 }
 

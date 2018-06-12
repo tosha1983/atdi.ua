@@ -13,9 +13,9 @@ namespace Atdi.DataModels.DataConstraint
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class DataLimit
     {
-
+        [DataMember]
         public int Value { get; set; }
-
+        [DataMember]
         public LimitValueType Type { get; set; }
 }
 }

@@ -38,12 +38,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 var columnsValue = new List<string>();
                 var tokenData = this._tokenProvider.UnpackUserToken(userToken);
                 var queryDescriptor = this._repository.GetQueryDescriptorByToken(tokenData, queryToken);
-                this._hashSet = new HashSet<string>(queryDescriptor.Metadata.Columns.ToList().Select(t => t.Description).ToList());
-                ColumnMetadata[] fetchColumns = null;
-                if (fetchOptions.Columns==null) { fetchColumns = queryDescriptor.Metadata.Columns; columnsValue = fetchColumns.Select(r => r.Description).ToList(); }
+                var columnMetadata = queryDescriptor.Metadata.Columns.ToList().Select(t => t.Description).ToList();
+                 this._hashSet = new HashSet<string>(columnMetadata);
+                var fetchColumns = new List<ColumnMetadata>();
+                if (fetchOptions.Columns==null) { fetchColumns = queryDescriptor.Metadata.Columns.ToList(); columnsValue = fetchColumns.Select(r => r.Description).ToList(); }
                 if (fetchOptions.Columns != null) {
                    if (fetchOptions.Columns.Count()==0){
-                        fetchColumns = queryDescriptor.Metadata.Columns;
+                        fetchColumns = queryDescriptor.Metadata.Columns.ToList();
                         columnsValue = fetchColumns.Select(r => r.Description).ToList();
                     }
                    else  {

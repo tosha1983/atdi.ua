@@ -31,7 +31,7 @@ namespace Atdi.AppServices.WebQuery
             if (_QueryValue != null) {
                 
                 if (!string.IsNullOrEmpty(_QueryValue.IDENTUSER)) {
-                    string IdentUser =  _QueryValue.IDENTUSER.ToUpper();
+                    string IdentUser =  _QueryValue.IDENTUSER;
                     var condition = new ConditionExpression() {
                         LeftOperand = new ColumnOperand() {
                             ColumnName = IdentUser
