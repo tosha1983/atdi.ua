@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppServices.WebQuery
 {
-    internal sealed class QueryTokenDescriptor
+    public sealed class QueryTokenDescriptor
     {
         public string Code { get; set; }
 
         public QueryToken Token { get; set; }
+
+        public GroupDescriptor Group { get; set; }
     }
 }

@@ -19,6 +19,9 @@ namespace Atdi.AppServices.WebQuery
         {
             base.OnInstall();
             this.Container.Register<QueriesRepository>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.Register<GroupDescriptorsCache>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.Register<QueryDescriptorsCache>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.Register<UserGroupDescriptorsCache>(Platform.DependencyInjection.ServiceLifetime.PerThread);
         }
     }
 }
