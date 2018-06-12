@@ -84,7 +84,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
                 
 
-                string[] ordersColumns = orderExpression.Select(t => t.ColumnName).ToArray();
+                var ordersColumns = orderExpression.Select(t => t.ColumnName).ToArray();
                 if (conditions.Count() > 0) {
                     statement
                    .Where(conditions);
@@ -114,7 +114,6 @@ namespace Atdi.AppServices.WebQuery.Handlers
             {
                 throw new InvalidOperationException(string.Format(Exceptions.ColumnIsNotAvailable, nameColumn));
             }
-            return false;
         }
 
         private List<string> GetValidateColumns(string[] columns)
