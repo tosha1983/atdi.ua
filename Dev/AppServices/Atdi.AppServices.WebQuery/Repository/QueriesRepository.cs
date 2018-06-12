@@ -126,7 +126,7 @@ namespace Atdi.AppServices.WebQuery
                     item.Group.QueryTokens = tokens.Select(t => t.Token).ToArray();
                 }
             }
-            QueryDescriptor x=  LoadQueryDescriptor(2);
+            QueryDescriptor x= LoadQueryDescriptor(2);
             return result;
         }
         /// <summary>
@@ -216,6 +216,7 @@ namespace Atdi.AppServices.WebQuery
             description.Metadata.Token.Version = "1.0";
             description.Metadata.Description = QueryValue.COMMENTS;
             description.Metadata.Title = QueryValue.NAME;
+            
             return description;
         }
 
