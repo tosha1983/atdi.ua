@@ -150,6 +150,8 @@ namespace Atdi.Test.WebQuery
 
         static void TestWebQueryAccess(string authEndpointName, string webQueryEndpointName)
         {
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
             var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
             var userCredential = new UserCredential()
             {
@@ -175,6 +177,9 @@ namespace Atdi.Test.WebQuery
             }
 
             Console.WriteLine($"Count group: {groupsResult.Data.Groups.Length}");
+
+            timer.Stop();
+            System.Console.WriteLine($"TestWebQueryAccess: {timer.Elapsed.TotalMilliseconds} ms");
         }
 
     }

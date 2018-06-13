@@ -14,6 +14,13 @@ namespace Atdi.LegacyServices.Icsm
 {
     internal sealed class QueryExecutor : LoggedObject, IQueryExecutor
     {
+        private sealed class DbFieldDescriptor
+        {
+            public DataSetColumn Column { get; set; }
+            public Type DbType { get; set; }
+            public int Ordinal { get; set; }
+        }
+
         private readonly IDataEngine _dataEngine;
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
@@ -64,6 +71,8 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            int rowCount = 0;
+            dataSet.RowCount = rowCount;
             return dataSet;
         }
 
@@ -74,6 +83,33 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            var fields = new DbFieldDescriptor[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var column = columns[i];
+                var dbField = new DbFieldDescriptor
+                {
+                    Column = column,
+                    Ordinal = dataReader.GetOrdinal(column.Name)
+                };
+                dbField.DbType = dataReader.GetFieldType(dbField.Ordinal);
+                fields[i] = dbField;
+                column.Index = i;
+            }
+
+            var rows = new List<string[]>();
+            while (dataReader.Read())
+            {
+                var cells = new string[fields.Length];
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    cells[i] = dataReader.GetValueAsString(field.Column.Type, field.DbType, field.Ordinal);
+                }
+                rows.Add(cells);
+            }
+            dataSet.Cells = rows.ToArray();
+            dataSet.RowCount = dataSet.Cells.Length;
             return dataSet;
         }
 
@@ -84,6 +120,33 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            var fields = new DbFieldDescriptor[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var column = columns[i];
+                var dbField = new DbFieldDescriptor
+                {
+                    Column = column,
+                    Ordinal = dataReader.GetOrdinal(column.Name)
+                };
+                dbField.DbType = dataReader.GetFieldType(dbField.Ordinal);
+                fields[i] = dbField;
+                column.Index = i;
+            }
+
+            var rows = new List<object[]>();
+            while (dataReader.Read())
+            {
+                var cells = new object[fields.Length];
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    cells[i] = dataReader.GetValueAsObject(field.Column.Type, field.DbType, field.Ordinal);
+                }
+                rows.Add(cells);
+            }
+            dataSet.Cells = rows.ToArray();
+            dataSet.RowCount = dataSet.Cells.Length;
             return dataSet;
         }
 
@@ -94,6 +157,156 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            var fields = new DbFieldDescriptor[columns.Length];
+            int indexForString = -1;
+            int indexForBoolean = -1;
+            int indexForInteger = -1;
+            int indexForDateTime = -1;
+            int indexForDouble = -1;
+            int indexForFloat = -1;
+            int indexForDecimal = -1;
+            int indexForByte = -1;
+            int indexForBytes = -1;
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var column = columns[i];
+                var dbField = new DbFieldDescriptor
+                {
+                    Column = column,
+                    Ordinal = dataReader.GetOrdinal(column.Name)
+                };
+                dbField.DbType = dataReader.GetFieldType(dbField.Ordinal);
+                fields[i] = dbField;
+
+                switch (column.Type)
+                {
+                    case DataType.String:
+                        column.Index = ++indexForString;
+                        break;
+                    case DataType.Boolean:
+                        column.Index = ++indexForBoolean;
+                        break;
+                    case DataType.Integer:
+                        column.Index = ++indexForInteger;
+                        break;
+                    case DataType.DateTime:
+                        column.Index = ++indexForDateTime;
+                        break;
+                    case DataType.Double:
+                        column.Index = ++indexForDouble;
+                        break;
+                    case DataType.Float:
+                        column.Index = ++indexForFloat;
+                        break;
+                    case DataType.Decimal:
+                        column.Index = ++indexForDecimal;
+                        break;
+                    case DataType.Byte:
+                        column.Index = ++indexForByte;
+                        break;
+                    case DataType.Bytes:
+                        column.Index = ++indexForBytes;
+                        break;
+                    default:
+                        column.Index = -1;
+                        break;
+                }
+            }
+
+            var rows = new List<TypedDataRow>();
+            while (dataReader.Read())
+            {
+                var row = new TypedDataRow();
+                if (indexForString >= 0)
+                {
+                    row.StringCells = new string[indexForString + 1];
+                }
+                if (indexForBoolean >= 0)
+                {
+                    row.BooleanCells = new bool?[indexForBoolean + 1];
+                }
+                if (indexForInteger >= 0)
+                {
+                    row.IntegerCells = new int?[indexForInteger + 1];
+                }
+                if (indexForDateTime >= 0)
+                {
+                    row.DateTimeCells = new DateTime?[indexForDateTime + 1];
+                }
+                if (indexForDouble >= 0)
+                {
+                    row.DoubleCells = new double?[indexForDouble + 1];
+                }
+                if (indexForFloat >= 0)
+                {
+                    row.FloatCells = new float?[indexForFloat + 1];
+                }
+                if (indexForDecimal >= 0)
+                {
+                    row.DecimalCells = new decimal?[indexForDecimal + 1];
+                }
+                if (indexForByte >= 0)
+                {
+                    row.ByteCells = new byte?[indexForByte + 1];
+                }
+                if (indexForBytes >= 0)
+                {
+                    row.BytesCells = new byte[indexForBytes + 1][];
+                }
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    switch (field.Column.Type)
+                    {
+                        case DataType.String:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                            {
+                                row.StringCells[field.Column.Index] = dataReader.GetValueAsString(field.DbType, field.Ordinal);
+                            }
+                            
+                            break;
+                        case DataType.Boolean:
+                            if(!dataReader.IsDBNull(field.Ordinal))
+                            row.BooleanCells[field.Column.Index] = dataReader.GetValueAsBoolean(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Integer:
+                            if(!dataReader.IsDBNull(field.Ordinal))
+                            row.IntegerCells[field.Column.Index] = dataReader.GetValueAsInt32(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.DateTime:
+                            if(!dataReader.IsDBNull(field.Ordinal))
+                            row.DateTimeCells[field.Column.Index] = dataReader.GetValueAsDateTime(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Double:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                                row.DoubleCells[field.Column.Index] = dataReader.GetValueAsDouble(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Float:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                                row.FloatCells[field.Column.Index] = dataReader.GetValueAsFloat(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Decimal:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                                row.DecimalCells[field.Column.Index] = dataReader.GetValueAsDecimal(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Byte:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                                row.ByteCells [field.Column.Index] = dataReader.GetValueAsByte(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Bytes:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                                row.BytesCells[field.Column.Index] = dataReader.GetValueAsBytes(field.DbType, field.Ordinal);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                rows.Add(row);
+            }
+
+            dataSet.Rows = rows.ToArray();
+            dataSet.RowCount = dataSet.Rows.Length;
             return dataSet;
         }
 
@@ -104,6 +317,35 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            var fields = new DbFieldDescriptor[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var column = columns[i];
+                var dbField = new DbFieldDescriptor
+                {
+                    Column = column,
+                    Ordinal = dataReader.GetOrdinal(column.Name)
+                };
+                dbField.DbType = dataReader.GetFieldType(dbField.Ordinal);
+                fields[i] = dbField;
+                column.Index = i;
+            }
+
+            var rows = new List<StringDataRow>();
+            while (dataReader.Read())
+            {
+                var row = new StringDataRow();
+                var cells = new string[fields.Length];
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    cells[i] = dataReader.GetValueAsString(field.Column.Type, field.DbType, field.Ordinal);
+                }
+                row.Cells = cells;
+                rows.Add(row);
+            }
+            dataSet.Rows = rows.ToArray();
+            dataSet.RowCount = dataSet.Rows.Length;
             return dataSet;
         }
 
@@ -114,6 +356,35 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            var fields = new DbFieldDescriptor[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var column = columns[i];
+                var dbField = new DbFieldDescriptor
+                {
+                    Column = column,
+                    Ordinal = dataReader.GetOrdinal(column.Name)
+                };
+                dbField.DbType = dataReader.GetFieldType(dbField.Ordinal);
+                fields[i] = dbField;
+                column.Index = i;
+            }
+
+            var rows = new List<ObjectDataRow>();
+            while(dataReader.Read())
+            {
+                var row = new ObjectDataRow();
+                var cells = new object[fields.Length];
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    cells[i] = dataReader.GetValueAsObject(field.Column.Type, field.DbType, field.Ordinal);
+                }
+                row.Cells = cells;
+                rows.Add(row);
+            }
+            dataSet.Rows = rows.ToArray();
+            dataSet.RowCount = dataSet.Rows.Length;
             return dataSet;
         }
 
