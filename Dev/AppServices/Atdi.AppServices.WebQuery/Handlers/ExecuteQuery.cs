@@ -37,19 +37,16 @@ namespace Atdi.AppServices.WebQuery.Handlers
             using (this.Logger.StartTrace(Contexts.WebQueryAppServices, Categories.Handling, TraceScopeNames.ExecuteQuery))
             {
                 string notAvailableColumns = "";
-                var columnsValue = new List<string>();
                 var tokenData = this._tokenProvider.UnpackUserToken(userToken);
                 var queryDescriptor = this._repository.GetQueryDescriptorByToken(tokenData, queryToken);
                 var columnMetadata = queryDescriptor.Metadata.Columns.ToList().Select(t => t.Name).ToList();
                 var allColumns = new List<ColumnMetadata>();
-                if (fetchOptions.Columns==null) { allColumns = queryDescriptor.Metadata.Columns.ToList(); columnsValue = allColumns.Select(r => r.Name).ToList();  }
+                if (fetchOptions.Columns==null) { allColumns = queryDescriptor.Metadata.Columns.ToList();  }
                 if (fetchOptions.Columns != null) {
                    if (fetchOptions.Columns.Count()==0){
                         allColumns = queryDescriptor.Metadata.Columns.ToList();
-                        columnsValue = allColumns.Select(r => r.Name).ToList();
                     }
                    else  {
-                        columnsValue.AddRange(fetchOptions.Columns);
                         for (int i=0; i< fetchOptions.Columns.Count(); i++)  {
                             ColumnMetadata metaData = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == fetchOptions.Columns[i]);
                             if (metaData !=null) {
@@ -74,19 +71,17 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
 
                 if (!string.IsNullOrEmpty(queryDescriptor.IdentUserField)) {
-                    var listColumns = columnsValue.ToList();
-                    if (!listColumns.Contains(queryDescriptor.IdentUserField)) {
-                        listColumns.Add(queryDescriptor.IdentUserField);
-                        columnsValue = listColumns;
+                    var listColumns = allColumns.ToList();
+                    if (listColumns.Find(t=>t.Name==queryDescriptor.IdentUserField)==null) {
                         ColumnMetadata metaData = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == queryDescriptor.IdentUserField);
-                        if (metaData != null)    allColumns.Add(metaData);
+                        if (metaData != null) allColumns.Add(metaData);
                     }
                 }
 
               
                 var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
-                   .Select(columnsValue.ToArray())
+                   .Select(allColumns.Select(t=>t.Name).ToArray())
                    .OnTop(limit.Value);
 
                 
@@ -103,10 +98,14 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 }
 
                 //получаем список полей, которые не прошли валидацию
-                notAvailableColumns = queryDescriptor.ValidateColumns(columnsFromOrders.ToArray());
-                notAvailableColumns += queryDescriptor.ValidateColumns(conditions);
-                notAvailableColumns += queryDescriptor.ValidateColumns(columnsValue.ToArray());
-                if (notAvailableColumns.Length > 0) notAvailableColumns = notAvailableColumns.Remove(notAvailableColumns.Length - 1, 1);
+                if (columnsFromOrders!=null) notAvailableColumns = queryDescriptor.ValidateColumns(columnsFromOrders.ToArray());
+                if (conditions!=null) notAvailableColumns += queryDescriptor.ValidateColumns(conditions);
+                if (allColumns!=null) notAvailableColumns += queryDescriptor.ValidateColumns(allColumns.Select(t => t.Name).ToArray());
+                if (fetchOptions.Columns!=null) notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns.ToArray());
+                if (notAvailableColumns.Length > 0)   {
+                    notAvailableColumns = notAvailableColumns.Remove(notAvailableColumns.Length - 1, 1);
+                    throw new InvalidOperationException(string.Format(Exceptions.ColumnIsNotAvailable, notAvailableColumns));
+                }
 
                 var dataSet = this._queryExecutor.Fetch(statement, allColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), fetchOptions.ResultStructure);
                 var result = new QueryResult();

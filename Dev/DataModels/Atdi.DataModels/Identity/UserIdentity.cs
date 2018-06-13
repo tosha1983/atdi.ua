@@ -13,7 +13,6 @@ namespace Atdi.DataModels.Identity
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class UserIdentity<TUserId, TUserToken>
     {
-        [DataMember]
         /// <summary>
         /// The id of user
         /// </summary>

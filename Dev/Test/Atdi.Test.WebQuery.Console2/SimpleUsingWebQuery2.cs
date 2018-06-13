@@ -95,7 +95,7 @@ namespace Atdi.Test.WebQuery
                     {
                         Id = Guid.NewGuid(), // генерируем идентификатор выборки, будет возвращен с результатом
                                              //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
-                                             Columns = new string[] { "ID","!" },
+                                            // Columns = new string[] { "ID","CHANNEL_SEP" },
                         ResultStructure = DataSetStructure.StringRows,  // указываем тип возвращаемой структуры данных, в данном случии будет масив объектов строк состоящих из ячеек типа string.
                         Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
                         {
