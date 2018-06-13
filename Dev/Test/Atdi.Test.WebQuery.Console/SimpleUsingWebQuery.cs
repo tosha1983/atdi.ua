@@ -247,5 +247,28 @@ namespace Atdi.Test.WebQuery
             var f = new ChannelFactory<IWebQuery>(endpointName);
             return f.CreateChannel();
         }
+
+        //private static Condition  SimpleConditions()
+        //{
+        //    var root = new ComplexCondition
+        //    {
+        //        Operator = LogicalOperator.Or,
+        //        Conditions = new Condition[]
+        //        {
+        //            new ComplexCondition
+        //            {
+        //                Operator = LogicalOperator.And,
+        //                Conditions = new Condition []
+        //                {
+        //                    new ConditionExpression { LeftOperand = "3", Operator = ConditionOperator.GreaterThan, RightOperand = "" },
+        //                    new ConditionExpression { LeftOperand = "3", Operator = ConditionOperator.GreaterThan, RightOperand = "" }
+        //                }
+        //            },
+        //            new ConditionExpression { LeftOperand = "3", Operator = ConditionOperator.GreaterThan, RightOperand = "" }
+        //        }
+
+        //}
     }
+
+    
 }
