@@ -13,16 +13,17 @@ namespace XICSM.WebQuery
 {
     public partial class FormWebConstrainsList : Form
     {
-        public int ID_WEB { get; set; }
-        public int ID_Constraint { get; set; }
-        public List<string> Path_List { get; set; }
-        public FormWebConstrainsList(int id_web_query,List<string> L_Path)
+        public int idweb { get; set; }
+        public int idconstraint { get; set; }
+        public List<string> pathlist { get; set; }
+        public FormWebConstrainsList(int idwebquery,List<string> lPath)
         {
             InitializeComponent();
-            ID_WEB = id_web_query;
-            Path_List = L_Path;
+            idweb = idwebquery;
+            pathlist = lPath;
             InitListView();
             ViewData();
+            CLocaliz.TxT(this);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -61,11 +62,11 @@ namespace XICSM.WebQuery
         /// <param name="e"></param>
         private void listView_constraints_lst_click(object sender, ColumnClickEventArgs e)
         {
-            ColHeader clickedCol = (ColHeader)this.listView_constraints_lst.Columns[e.Column];
+            var clickedCol = (ColHeader)this.listView_constraints_lst.Columns[e.Column];
             clickedCol.ascending = !clickedCol.ascending;
             int numItems = this.listView_constraints_lst.Items.Count;
             this.listView_constraints_lst.BeginUpdate();
-            ArrayList SortArray = new ArrayList();
+            var SortArray = new ArrayList();
             for (int i = 0; i < numItems; i++)
             {
                 SortArray.Add(new SortWrapper(this.listView_constraints_lst.Items[i], e.Column));
@@ -86,22 +87,17 @@ namespace XICSM.WebQuery
             listView_constraints_lst.Items.Clear();
             string[] arr = new string[10];
             int Num = 1; if (listView_constraints_lst.Items.Count > 0) Num = listView_constraints_lst.Items.Count + 1;
-            int WEB_QUERY_ID=IM.NullI;
-
-
-            //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
-            //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
-
-            IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                RsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
-                RsWebQueryNew.SetWhere("WEBQUERYID", IMRecordset.Operation.Eq, ID_WEB);
-                for (RsWebQueryNew.Open(); !RsWebQueryNew.IsEOF(); RsWebQueryNew.MoveNext())
+            int webqueryid=IM.NullI;
+                var rsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
+                rsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                rsWebQueryNew.SetWhere("WEBQUERYID", IMRecordset.Operation.Eq, idweb);
+                for (rsWebQueryNew.Open(); !rsWebQueryNew.IsEOF(); rsWebQueryNew.MoveNext())
                 {
                     ListViewItem itm;
-                    arr[0] = RsWebQueryNew.GetI("ID").ToString();
+                    arr[0] = rsWebQueryNew.GetI("ID").ToString();
                     IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
                     RsWebQuery.Select("ID,NAME");
-                    RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, RsWebQueryNew.GetI("ID"));
+                    RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, rsWebQueryNew.GetI("ID"));
                     RsWebQuery.Open();
                     if (!RsWebQuery.IsEOF())
                     {
@@ -111,28 +107,28 @@ namespace XICSM.WebQuery
                         RsWebQuery.Close();
                     RsWebQuery.Destroy();
 
-                    arr[2] = RsWebQueryNew.GetS("NAME");
-                    arr[3] = RsWebQueryNew.GetS("PATH");
-                    arr[4] = ((RsWebQueryNew.GetD("MIN") != IM.NullD) && (RsWebQueryNew.GetD("MIN") != IM.NullI)) ? RsWebQueryNew.GetD("MIN").ToString() : "";
-                    arr[5] = ((RsWebQueryNew.GetD("MAX") != IM.NullD) && (RsWebQueryNew.GetD("MAX") != IM.NullI)) ? RsWebQueryNew.GetD("MAX").ToString() : "";
-                    arr[6] = RsWebQueryNew.GetS("STRVALUE");
-                    arr[7] = RsWebQueryNew.GetI("INCLUDE") != IM.NullI ? RsWebQueryNew.GetI("INCLUDE").ToString() : "";
-                    arr[8] = RsWebQueryNew.GetT("DATEVALUEMIN") != IM.NullT ? RsWebQueryNew.GetT("DATEVALUEMIN").ToString() : "";
-                    arr[9] = RsWebQueryNew.GetT("DATEVALUEMAX") != IM.NullT ? RsWebQueryNew.GetT("DATEVALUEMAX").ToString() : "";
+                    arr[2] = rsWebQueryNew.GetS("NAME");
+                    arr[3] = rsWebQueryNew.GetS("PATH");
+                    arr[4] = ((rsWebQueryNew.GetD("MIN") != IM.NullD) && (rsWebQueryNew.GetD("MIN") != IM.NullI)) ? rsWebQueryNew.GetD("MIN").ToString() : "";
+                    arr[5] = ((rsWebQueryNew.GetD("MAX") != IM.NullD) && (rsWebQueryNew.GetD("MAX") != IM.NullI)) ? rsWebQueryNew.GetD("MAX").ToString() : "";
+                    arr[6] = rsWebQueryNew.GetS("STRVALUE");
+                    arr[7] = rsWebQueryNew.GetI("INCLUDE") != IM.NullI ? rsWebQueryNew.GetI("INCLUDE").ToString() : "";
+                    arr[8] = rsWebQueryNew.GetT("DATEVALUEMIN") != IM.NullT ? rsWebQueryNew.GetT("DATEVALUEMIN").ToString() : "";
+                    arr[9] = rsWebQueryNew.GetT("DATEVALUEMAX") != IM.NullT ? rsWebQueryNew.GetT("DATEVALUEMAX").ToString() : "";
                     itm = new ListViewItem(arr); listView_constraints_lst.Items.Add(itm);
                     listView_constraints_lst.FocusedItem = itm;
                     Num++;
                 }
-                if (RsWebQueryNew.IsOpen())
-                    RsWebQueryNew.Close();
-                RsWebQueryNew.Destroy();
+                if (rsWebQueryNew.IsOpen())
+                    rsWebQueryNew.Close();
+                rsWebQueryNew.Destroy();
           
         }
 
 
         private void button_add_new_Click(object sender, EventArgs e)
         {
-            FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(ID_WEB, true, Path_List);
+            FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(idweb, true, pathlist);
             extend_constraint.ShowDialog();
             ViewData();
         }
@@ -144,7 +140,7 @@ namespace XICSM.WebQuery
                 int ID_;
                 if (int.TryParse(listView_constraints_lst.SelectedItems[i].SubItems[0].Text, out ID_))
                 {
-                    FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(ID_, false, Path_List);
+                    FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(ID_, false, pathlist);
                     extend_constraint.ShowDialog();
                 }
             }
@@ -210,8 +206,8 @@ namespace XICSM.WebQuery
 
             public int Compare(object x, object y)
             {
-                SortWrapper xItem = (SortWrapper)x;
-                SortWrapper yItem = (SortWrapper)y;
+                var xItem = (SortWrapper)x;
+                var yItem = (SortWrapper)y;
                 string xText = xItem.sortItem.SubItems[xItem.sortColumn].Text;
                 string yText = yItem.sortItem.SubItems[yItem.sortColumn].Text;
                 return xText.CompareTo(yText) * (this.ascending ? 1 : -1);

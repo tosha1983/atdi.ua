@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox_code = new System.Windows.Forms.TextBox();
             this.comboBox_group = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -36,7 +37,6 @@
             this.labelIdentUser = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ButtonClose = new System.Windows.Forms.Button();
-            this.ButtonSaveAllChange = new System.Windows.Forms.Button();
             this.labelLevelAccess = new System.Windows.Forms.Label();
             this.labelIRPFile = new System.Windows.Forms.Label();
             this.buttonOpenIRP = new System.Windows.Forms.Button();
@@ -52,18 +52,21 @@
             this.textBoxQuery = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.textBox_code = new System.Windows.Forms.TextBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ButtonSaveAllChange = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBoxEditQuery.SuspendLayout();
             this.panelSaveChangeQuery.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.textBox_code);
             this.groupBox1.Controls.Add(this.comboBox_group);
             this.groupBox1.Controls.Add(this.label1);
@@ -77,15 +80,29 @@
             this.groupBox1.Controls.Add(this.labelDescrQuery);
             this.groupBox1.Controls.Add(this.LblName);
             this.groupBox1.Controls.Add(this.textBoxName);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(522, 753);
+            this.groupBox1.Size = new System.Drawing.Size(525, 768);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Panel Setting Web Query";
             // 
+            // textBox_code
+            // 
+            this.textBox_code.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_code.Location = new System.Drawing.Point(110, 88);
+            this.textBox_code.Name = "textBox_code";
+            this.textBox_code.Size = new System.Drawing.Size(338, 20);
+            this.textBox_code.TabIndex = 31;
+            // 
             // comboBox_group
             // 
+            this.comboBox_group.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_group.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_group.FormattingEnabled = true;
             this.comboBox_group.Location = new System.Drawing.Point(110, 175);
@@ -104,6 +121,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.txtUserIdent);
             this.groupBox2.Controls.Add(this.labelIdentUser);
             this.groupBox2.Location = new System.Drawing.Point(6, 118);
@@ -115,9 +134,12 @@
             // 
             // txtUserIdent
             // 
-            this.txtUserIdent.Location = new System.Drawing.Point(264, 13);
+            this.txtUserIdent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUserIdent.Location = new System.Drawing.Point(289, 13);
             this.txtUserIdent.Name = "txtUserIdent";
-            this.txtUserIdent.Size = new System.Drawing.Size(230, 20);
+            this.txtUserIdent.Size = new System.Drawing.Size(205, 20);
             this.txtUserIdent.TabIndex = 17;
             // 
             // labelIdentUser
@@ -125,22 +147,24 @@
             this.labelIdentUser.AutoSize = true;
             this.labelIdentUser.Location = new System.Drawing.Point(6, 16);
             this.labelIdentUser.Name = "labelIdentUser";
-            this.labelIdentUser.Size = new System.Drawing.Size(249, 13);
+            this.labelIdentUser.Size = new System.Drawing.Size(277, 13);
             this.labelIdentUser.TabIndex = 15;
-            this.labelIdentUser.Text = "Field name identifies the users (example USER_ID):";
+            this.labelIdentUser.Text = "Field name identifies the users (example EMPLOYEE_ID):";
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.ButtonClose);
             this.panel1.Controls.Add(this.ButtonSaveAllChange);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 706);
+            this.panel1.Location = new System.Drawing.Point(3, 721);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(516, 44);
+            this.panel1.Size = new System.Drawing.Size(519, 44);
             this.panel1.TabIndex = 13;
             // 
             // ButtonClose
             // 
+            this.ButtonClose.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.ButtonClose.Location = new System.Drawing.Point(276, 12);
             this.ButtonClose.Name = "ButtonClose";
             this.ButtonClose.Size = new System.Drawing.Size(193, 23);
@@ -148,16 +172,6 @@
             this.ButtonClose.Text = "Close";
             this.ButtonClose.UseVisualStyleBackColor = true;
             this.ButtonClose.Click += new System.EventHandler(this.ButtonClose_Click);
-            // 
-            // ButtonSaveAllChange
-            // 
-            this.ButtonSaveAllChange.Location = new System.Drawing.Point(58, 12);
-            this.ButtonSaveAllChange.Name = "ButtonSaveAllChange";
-            this.ButtonSaveAllChange.Size = new System.Drawing.Size(193, 23);
-            this.ButtonSaveAllChange.TabIndex = 2;
-            this.ButtonSaveAllChange.Text = "Save all changes";
-            this.ButtonSaveAllChange.UseVisualStyleBackColor = true;
-            this.ButtonSaveAllChange.Click += new System.EventHandler(this.ButtonSaveAllChange_Click);
             // 
             // labelLevelAccess
             // 
@@ -179,6 +193,7 @@
             // 
             // buttonOpenIRP
             // 
+            this.buttonOpenIRP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOpenIRP.Location = new System.Drawing.Point(458, 57);
             this.buttonOpenIRP.Name = "buttonOpenIRP";
             this.buttonOpenIRP.Size = new System.Drawing.Size(42, 23);
@@ -189,6 +204,9 @@
             // 
             // textBoxIRPFilePath
             // 
+            this.textBoxIRPFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxIRPFilePath.Location = new System.Drawing.Point(110, 58);
             this.textBoxIRPFilePath.Name = "textBoxIRPFilePath";
             this.textBoxIRPFilePath.Size = new System.Drawing.Size(338, 20);
@@ -196,6 +214,9 @@
             // 
             // textBoxDescrQuery
             // 
+            this.textBoxDescrQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxDescrQuery.Location = new System.Drawing.Point(12, 221);
             this.textBoxDescrQuery.Multiline = true;
             this.textBoxDescrQuery.Name = "textBoxDescrQuery";
@@ -223,21 +244,22 @@
             // 
             // textBoxName
             // 
+            this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxName.Location = new System.Drawing.Point(110, 32);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(225, 20);
+            this.textBoxName.Size = new System.Drawing.Size(338, 20);
             this.textBoxName.TabIndex = 0;
             // 
             // groupBoxEditQuery
             // 
-            this.groupBoxEditQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxEditQuery.Controls.Add(this.panelSaveChangeQuery);
             this.groupBoxEditQuery.Controls.Add(this.textBoxQuery);
-            this.groupBoxEditQuery.Location = new System.Drawing.Point(540, 0);
+            this.groupBoxEditQuery.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxEditQuery.Location = new System.Drawing.Point(0, 0);
             this.groupBoxEditQuery.Name = "groupBoxEditQuery";
-            this.groupBoxEditQuery.Size = new System.Drawing.Size(436, 768);
+            this.groupBoxEditQuery.Size = new System.Drawing.Size(554, 768);
             this.groupBoxEditQuery.TabIndex = 1;
             this.groupBoxEditQuery.TabStop = false;
             this.groupBoxEditQuery.Text = "Body query";
@@ -249,13 +271,14 @@
             this.panelSaveChangeQuery.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelSaveChangeQuery.Location = new System.Drawing.Point(3, 718);
             this.panelSaveChangeQuery.Name = "panelSaveChangeQuery";
-            this.panelSaveChangeQuery.Size = new System.Drawing.Size(430, 47);
+            this.panelSaveChangeQuery.Size = new System.Drawing.Size(548, 47);
             this.panelSaveChangeQuery.TabIndex = 6;
             // 
             // button_Constraints
             // 
-            this.button_Constraints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_Constraints.Location = new System.Drawing.Point(227, 13);
+            this.button_Constraints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_Constraints.Location = new System.Drawing.Point(345, 13);
             this.button_Constraints.Name = "button_Constraints";
             this.button_Constraints.Size = new System.Drawing.Size(184, 23);
             this.button_Constraints.TabIndex = 10;
@@ -265,7 +288,9 @@
             // 
             // ButtonSaveChangeQuery
             // 
-            this.ButtonSaveChangeQuery.Location = new System.Drawing.Point(25, 13);
+            this.ButtonSaveChangeQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ButtonSaveChangeQuery.Location = new System.Drawing.Point(143, 13);
             this.ButtonSaveChangeQuery.Name = "ButtonSaveChangeQuery";
             this.ButtonSaveChangeQuery.Size = new System.Drawing.Size(184, 23);
             this.ButtonSaveChangeQuery.TabIndex = 1;
@@ -282,7 +307,7 @@
             this.textBoxQuery.Multiline = true;
             this.textBoxQuery.Name = "textBoxQuery";
             this.textBoxQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxQuery.Size = new System.Drawing.Size(424, 693);
+            this.textBoxQuery.Size = new System.Drawing.Size(542, 693);
             this.textBoxQuery.TabIndex = 5;
             // 
             // splitter1
@@ -297,21 +322,42 @@
             // 
             this.openFileDialog1.FileName = "openFileDialogIRP";
             // 
-            // textBox_code
+            // splitContainer1
             // 
-            this.textBox_code.Location = new System.Drawing.Point(110, 88);
-            this.textBox_code.Name = "textBox_code";
-            this.textBox_code.Size = new System.Drawing.Size(338, 20);
-            this.textBox_code.TabIndex = 31;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.groupBoxEditQuery);
+            this.splitContainer1.Size = new System.Drawing.Size(1083, 768);
+            this.splitContainer1.SplitterDistance = 525;
+            this.splitContainer1.TabIndex = 3;
+            // 
+            // ButtonSaveAllChange
+            // 
+            this.ButtonSaveAllChange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.ButtonSaveAllChange.Location = new System.Drawing.Point(58, 12);
+            this.ButtonSaveAllChange.Name = "ButtonSaveAllChange";
+            this.ButtonSaveAllChange.Size = new System.Drawing.Size(193, 23);
+            this.ButtonSaveAllChange.TabIndex = 2;
+            this.ButtonSaveAllChange.Text = "Save all changes";
+            this.ButtonSaveAllChange.UseVisualStyleBackColor = true;
+            this.ButtonSaveAllChange.Click += new System.EventHandler(this.ButtonSaveAllChange_Click);
             // 
             // AdminFormWebQuery
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(976, 768);
+            this.ClientSize = new System.Drawing.Size(1086, 768);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.groupBoxEditQuery);
-            this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AdminFormWebQuery";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -324,6 +370,10 @@
             this.groupBoxEditQuery.ResumeLayout(false);
             this.groupBoxEditQuery.PerformLayout();
             this.panelSaveChangeQuery.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -347,7 +397,6 @@
         private System.Windows.Forms.Label labelIRPFile;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button ButtonClose;
-        private System.Windows.Forms.Button ButtonSaveAllChange;
         private System.Windows.Forms.TextBox txtUserIdent;
         private System.Windows.Forms.Label labelIdentUser;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -355,5 +404,7 @@
         private System.Windows.Forms.ComboBox comboBox_group;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_code;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button ButtonSaveAllChange;
     }
 }

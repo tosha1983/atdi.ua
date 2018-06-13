@@ -82,7 +82,6 @@ namespace XICSM.WebQuery
                 s.DeclareField("DATEVALUEMAX", "DATE", "Date", null, null);
                 s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
             }
-            //ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX
         }
 
         //=============================================================

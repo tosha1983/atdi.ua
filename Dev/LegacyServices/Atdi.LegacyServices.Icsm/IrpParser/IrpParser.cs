@@ -133,11 +133,12 @@ namespace Atdi.LegacyServices.Icsm
                                 var metaData = new ColumnMetadata();
                                 metaData.Description = _report.m_desc;
                                 metaData.Title = "";
-                                metaData.Name = _report.m_desc;
+                               
                                 irpDescr.TableName = _report.m_dat.m_tab;
                                 string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                                 t = t.Replace(_report.m_dat.m_tab + ".", "");
                                 metaData.Description = t;
+                                metaData.Name = t;
                                 metaData.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
                                 if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oNone) metaData.Order = OrderType.None;
                                 else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oAsc) metaData.Order = OrderType.Ascending;

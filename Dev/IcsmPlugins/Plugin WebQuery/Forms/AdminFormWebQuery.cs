@@ -20,22 +20,23 @@ namespace XICSM.WebQuery
     public partial class AdminFormWebQuery : Form
     {
         public bool isNew { get; set; }
-        public IMQueryMenuNode.Context Lst_ { get; set; }
-        public int ID { get; set; }
+        public IMQueryMenuNode.Context _lst { get; set; }
+        public int id { get; set; }
         /// <summary>
         /// 
         /// </summary>
         public AdminFormWebQuery(IMQueryMenuNode.Context Lst)
         {
             InitializeComponent();
-            ID = -1;
+            id = -1;
             Init(Lst);
-            Lst_ = Lst;
+            _lst = Lst;
+            CLocaliz.TxT(this);
         }
 
         public List<string> GetAllTaskForceShortName()
         {
-            List<string> AllTaskForces = new List<string>();
+            var AllTaskForces = new List<string>();
             AllTaskForces.Add("");
             YTaskforce tskf = new YTaskforce();
             tskf.Format("SHORT_NAME");
@@ -49,8 +50,6 @@ namespace XICSM.WebQuery
             return AllTaskForces;
         }
 
-        //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
-        //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
         /// <summary>
         /// 
         /// </summary>
@@ -58,31 +57,30 @@ namespace XICSM.WebQuery
         {
             if (Lst.TableId == IM.NullI) isNew = true;
             comboBox_group.Items.AddRange(GetAllTaskForceShortName().ToArray());
-            IMRecordset RsWebQuery = new IMRecordset(Lst.TableName, IMRecordset.Mode.ReadOnly);
-            RsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
-            if (Lst.DataList == null) RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst.TableId);
-            RsWebQuery.AddSelectionFrom(Lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
-            for (RsWebQuery.Open(); !RsWebQuery.IsEOF(); RsWebQuery.MoveNext()) {
-                                textBoxName.Text = RsWebQuery.GetS("NAME");
-                                textBoxDescrQuery.Text = RsWebQuery.GetS("COMMENTS");
+            var rsWebQuery = new IMRecordset(Lst.TableName, IMRecordset.Mode.ReadOnly);
+            rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+            if (Lst.DataList == null) rsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst.TableId);
+            rsWebQuery.AddSelectionFrom(Lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
+            for (rsWebQuery.Open(); !rsWebQuery.IsEOF(); rsWebQuery.MoveNext()) {
+                                textBoxName.Text = rsWebQuery.GetS("NAME");
+                                textBoxDescrQuery.Text = rsWebQuery.GetS("COMMENTS");
                                 byte[] zip = null;
                                 string sql; ANetDb d;
-                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + RsWebQuery.GetI("ID"), out sql, out d);
+                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + rsWebQuery.GetI("ID"), out sql, out d);
                                 ANetRs Anet_rs = d.NewRecordset();
                                 Anet_rs.Open(sql);
                                 if (!Anet_rs.IsEOF())
                                 zip = Anet_rs.GetBinary(0);
                                 Anet_rs.Destroy();
                                 if (zip != null)  {
-                                //string cipherText = CryptorEngine.Decrypt(zip, true);
                                 string cipherText = UTF8Encoding.UTF8.GetString(zip);
                                 textBoxQuery.Text = cipherText;
                                 }
-                                txtUserIdent.Text = RsWebQuery.GetS("IDENTUSER").ToString();
-                                textBox_code.Text = RsWebQuery.GetS("CODE");
-                                int idx = comboBox_group.FindString(RsWebQuery.GetS("TASKFORCEGROUP"));
+                                txtUserIdent.Text = rsWebQuery.GetS("IDENTUSER").ToString();
+                                textBox_code.Text = rsWebQuery.GetS("CODE");
+                                int idx = comboBox_group.FindString(rsWebQuery.GetS("TASKFORCEGROUP"));
                                 if (idx > -1) comboBox_group.SelectedIndex = idx;
-                                ID = RsWebQuery.GetI("ID");
+                                id = rsWebQuery.GetI("ID");
                                 isNew = false;
 
             }
@@ -120,24 +118,22 @@ namespace XICSM.WebQuery
             DialogResult DA = MessageBox.Show("Editable query manually may cause it to malfunction on the side of the Web portal to continue?", "Warning!", MessageBoxButtons.YesNo);
             if (DA == System.Windows.Forms.DialogResult.Yes){
                 {
-                    IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
-                    RsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
-                    if (Lst_.DataList == null) RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst_.TableId);
-                    else   RsWebQuery.AddSelectionFrom(Lst_.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
+                    var rsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
+                    rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                    if (_lst.DataList == null) rsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, _lst.TableId);
+                    else rsWebQuery.AddSelectionFrom(_lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
                     try {
-                        RsWebQuery.Open();
-                        if (!RsWebQuery.IsEOF()) {
+                        rsWebQuery.Open();
+                        if (!rsWebQuery.IsEOF()) {
                             try {
                                 byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
-                                //textBoxQuery.Text = cipherText;
-                                //byte[] cipherText = CryptorEngine.Encrypt(textBoxQuery.Text.ToString(), true);
                                 string sql; ANetDb d; ANetNQ nq = null;
                                 IMTransaction.Begin();
                                 OrmCs.OrmSchema.Linker.PrepareExecute("UPDATE %XWEBQUERY SET QUERY=@p0 WHERE ID=@p1", out sql, out d);
                                 nq = d.NewAdapter();
                                 nq.Init(sql, "binary,int");
                                 nq.SetParamValue(0, cipherText);
-                                nq.SetParamValue(1, RsWebQuery.Get("ID"));
+                                nq.SetParamValue(1, rsWebQuery.Get("ID"));
                                 if (nq.Execute() != 1) throw new Exception("Could not update binary");
                                 IMTransaction.Commit();
                             }
@@ -151,9 +147,9 @@ namespace XICSM.WebQuery
                     }
                     finally
                     {
-                        if (RsWebQuery.IsOpen())
-                            RsWebQuery.Close();
-                        RsWebQuery.Destroy();
+                        if (rsWebQuery.IsOpen())
+                            rsWebQuery.Close();
+                        rsWebQuery.Destroy();
                     }
                 }
             }
@@ -165,17 +161,17 @@ namespace XICSM.WebQuery
         private bool CheckNameWebQuery(string Name, int ID_, string Code)
         {
             bool isContain = false;
-            IMRecordset RsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
-            RsWebQueryNew.Select("ID,NAME,CODE");
-            RsWebQueryNew.SetWhere("NAME", IMRecordset.Operation.Eq, Name);
-            RsWebQueryNew.SetWhere("CODE", IMRecordset.Operation.Eq, Code);
-            if (ID > -1) RsWebQueryNew.SetAdditional(string.Format("[ID] <> {0}", ID_));
-            for (RsWebQueryNew.Open(); !RsWebQueryNew.IsEOF(); RsWebQueryNew.MoveNext()) {
+            var rsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
+            rsWebQueryNew.Select("ID,NAME,CODE");
+            rsWebQueryNew.SetWhere("NAME", IMRecordset.Operation.Eq, Name);
+            rsWebQueryNew.SetWhere("CODE", IMRecordset.Operation.Eq, Code);
+            if (id > -1) rsWebQueryNew.SetAdditional(string.Format("[ID] <> {0}", ID_));
+            for (rsWebQueryNew.Open(); !rsWebQueryNew.IsEOF(); rsWebQueryNew.MoveNext()) {
                 isContain = true;
             }
-            if (RsWebQueryNew.IsOpen())
-                RsWebQueryNew.Close();
-            RsWebQueryNew.Destroy();
+            if (rsWebQueryNew.IsOpen())
+                rsWebQueryNew.Close();
+            rsWebQueryNew.Destroy();
             return isContain;
         }
 
@@ -185,26 +181,23 @@ namespace XICSM.WebQuery
         {
             if (isNew){
                 if (!string.IsNullOrEmpty(textBoxName.Text)) {
-                    if (CheckNameWebQuery(textBoxName.Text.Replace("(", "[").Replace(")", "]"), ID, textBox_code.Text)) {
+                    if (CheckNameWebQuery(textBoxName.Text.Replace("(", "[").Replace(")", "]"), id, textBox_code.Text)) {
                         MessageBox.Show("Dublicate Name. Please input another Name!");
                         return;
                     }
-                    YXwebquery RsWebQueryNew = new YXwebquery();
-                    RsWebQueryNew.Format("*");
-                        RsWebQueryNew.New();
-                        int IDs = RsWebQueryNew.AllocID();
-                        RsWebQueryNew.m_id = IDs;
-                        RsWebQueryNew.m_name = textBoxName.Text.Replace("(", "[").Replace(")", "]");
-                        RsWebQueryNew.m_code = textBox_code.Text;
-                        RsWebQueryNew.m_taskforcegroup = comboBox_group.Text;
-                        RsWebQueryNew.m_identuser = txtUserIdent.Text;
-                        RsWebQueryNew.m_comments = textBoxDescrQuery.Text;
-                        RsWebQueryNew.Save();
-                        RsWebQueryNew.Close();
-                        RsWebQueryNew.Dispose();
-
-
-                        //byte[] cipherText = CryptorEngine.Encrypt(textBoxQuery.Text.ToString(), true);
+                        var rsWebQueryNew = new YXwebquery();
+                        rsWebQueryNew.Format("*");
+                        rsWebQueryNew.New();
+                        int IDs = rsWebQueryNew.AllocID();
+                        rsWebQueryNew.m_id = IDs;
+                        rsWebQueryNew.m_name = textBoxName.Text.Replace("(", "[").Replace(")", "]");
+                        rsWebQueryNew.m_code = textBox_code.Text;
+                        rsWebQueryNew.m_taskforcegroup = comboBox_group.Text;
+                        rsWebQueryNew.m_identuser = txtUserIdent.Text;
+                        rsWebQueryNew.m_comments = textBoxDescrQuery.Text;
+                        rsWebQueryNew.Save();
+                        rsWebQueryNew.Close();
+                         rsWebQueryNew.Dispose();
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();
@@ -221,19 +214,17 @@ namespace XICSM.WebQuery
             }
             else  {
 
-                YXwebquery RsWebQuery = new YXwebquery();
-                RsWebQuery.Format("*");
-                    if (RsWebQuery.Fetch(ID)) {
-                        RsWebQuery.m_name = textBoxName.Text.Replace("(", "[").Replace(")", "]");
-                        RsWebQuery.m_code = textBox_code.Text;
-                        RsWebQuery.m_taskforcegroup = comboBox_group.Text;
-                        RsWebQuery.m_identuser = txtUserIdent.Text;
-                        RsWebQuery.m_comments = textBoxDescrQuery.Text;
-                        RsWebQuery.Save();
-                        RsWebQuery.Close();
-                        RsWebQuery.Dispose();
-
-                        //byte[] cipherText = CryptorEngine.Encrypt(textBoxQuery.Text.ToString(), true);
+                        var rsWebQuery = new YXwebquery();
+                        rsWebQuery.Format("*");
+                        if (rsWebQuery.Fetch(id)) {
+                        rsWebQuery.m_name = textBoxName.Text.Replace("(", "[").Replace(")", "]");
+                        rsWebQuery.m_code = textBox_code.Text;
+                        rsWebQuery.m_taskforcegroup = comboBox_group.Text;
+                        rsWebQuery.m_identuser = txtUserIdent.Text;
+                        rsWebQuery.m_comments = textBoxDescrQuery.Text;
+                        rsWebQuery.Save();
+                        rsWebQuery.Close();
+                        rsWebQuery.Dispose();
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();
@@ -241,7 +232,7 @@ namespace XICSM.WebQuery
                         nq = d.NewAdapter();
                         nq.Init(sql, "binary,int");
                         nq.SetParamValue(0, cipherText);
-                        nq.SetParamValue(1, ID);
+                        nq.SetParamValue(1, id);
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
                         MessageBox.Show("Record saved successfull!", "Warning!");
@@ -254,10 +245,10 @@ namespace XICSM.WebQuery
 
         private void button_Constraints_Click(object sender, EventArgs e)
         {
-            if (ID != IM.NullI)
+            if (id != IM.NullI)
             {
                 List<string> List_Path = ClassORM.GetProperties(textBoxQuery.Text.ToString(), false);
-                FormWebConstrainsList constraintForm = new FormWebConstrainsList(ID, List_Path);
+                FormWebConstrainsList constraintForm = new FormWebConstrainsList(id, List_Path);
                 constraintForm.ShowDialog();
             }
         }

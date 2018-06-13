@@ -72,7 +72,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(385, 309);
+            this.groupBox1.Size = new System.Drawing.Size(385, 308);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -81,7 +81,7 @@
             this.groupBox6.Controls.Add(this.button_cancel);
             this.groupBox6.Controls.Add(this.button_ok);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox6.Location = new System.Drawing.Point(3, 256);
+            this.groupBox6.Location = new System.Drawing.Point(3, 255);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(379, 50);
             this.groupBox6.TabIndex = 5;
@@ -308,14 +308,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(385, 309);
+            this.ClientSize = new System.Drawing.Size(385, 308);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(401, 347);
             this.MinimumSize = new System.Drawing.Size(401, 347);
             this.Name = "FormEditConstraintExtend";
-            this.Text = "FormEditConstraintExtend";
+            this.Text = "Edit condition";
             this.groupBox1.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox_DateTime.ResumeLayout(false);

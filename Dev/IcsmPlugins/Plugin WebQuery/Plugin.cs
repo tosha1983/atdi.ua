@@ -70,15 +70,15 @@ namespace XICSM.WebQuery
 
         private void AdminFormSettingWebQuery(string checkTable, string tableName, int nbSelMin, ref List<IMQueryMenuNode> menuList)
         {
-            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode("Insert record...", null, OnNewRecWebQery, IMQueryMenuNode.ExecMode.Table), IMTableRight.Insert);
-            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode("Edit record...", null, OnEditRecWebQery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Select);
-            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode("Delete record...", null, OnDeleteRecSettingWebQuery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Delete);
+            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Insert record..."), null, OnNewRecWebQery, IMQueryMenuNode.ExecMode.Table), IMTableRight.Insert);
+            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Edit record..."), null, OnEditRecWebQery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Select);
+            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Delete record..."), null, OnDeleteRecSettingWebQuery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Delete);
 
         }
 
         private bool OnDeleteRecSettingWebQuery(IMQueryMenuNode.Context context)
         {
-            DialogResult DA = MessageBox.Show("Are you delete record?", "Question", MessageBoxButtons.YesNo);
+            DialogResult DA = MessageBox.Show(CLocaliz.TxT("Are you delete record?"), CLocaliz.TxT("Question"), MessageBoxButtons.YesNo);
             if (DA == DialogResult.Yes)
             {
                 IMRecordset RSettingWebQueryDel = new IMRecordset(context.TableName, IMRecordset.Mode.ReadWrite);
@@ -123,7 +123,7 @@ namespace XICSM.WebQuery
             UpdateSchema.RegisterSchema(s);
             string appFolder = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             string err;
-            if (!OrmCs.OrmSchema.ParseSchema(appFolder, "WebQuery", "XICSM_WebQuery.dll", out err)) MessageBox.Show("Could not load 'WebQuery.Schema' :" + err);
+            if (!OrmCs.OrmSchema.ParseSchema(appFolder, "WebQuery", "XICSM_WebQuery.dll", out err)) MessageBox.Show(CLocaliz.TxT("Could not load 'WebQuery.Schema' :") + err);
 
         }
 

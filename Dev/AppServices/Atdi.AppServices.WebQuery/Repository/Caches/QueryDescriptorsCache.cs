@@ -112,20 +112,8 @@ namespace Atdi.AppServices.WebQuery
                }
                return Value;
            });
-            description = new QueryDescriptor(QueryValue, ConstraintsValue);
-            description.Metadata = new QueryMetadata();
             IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
-            description.Metadata.Columns = irpDescriptor.columnMetaData;
-            description.IdentUserField = QueryValue.IDENTUSER;
-            description.TableName = irpDescriptor.TableName;
-            description.Metadata.Name = QueryValue.NAME;
-            description.Metadata.Code = QueryValue.CODE;
-            description.Metadata.Token = new QueryToken();
-            description.Metadata.Token.Id = QueryValue.ID;
-            description.Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
-            description.Metadata.Token.Version = "1.0";
-            description.Metadata.Description = QueryValue.COMMENTS;
-            description.Metadata.Title = QueryValue.NAME;
+            description = new QueryDescriptor(QueryValue, ConstraintsValue, irpDescriptor);
             return description;
         }
     }
