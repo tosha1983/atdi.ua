@@ -12,6 +12,8 @@ namespace Atdi.AppServices.WebQuery
 {
     public sealed class QueryDescriptor
     {
+        public string IdentUserField { get; set; }
+        public string TableName { get; set; }
         public QueryMetadata Metadata { get; set; }
         private  XWEBQUERY _QueryValue { get; set; }
         private XWEBCONSTRAINT[] _ConstraintsValue { get; set; }
@@ -23,14 +25,16 @@ namespace Atdi.AppServices.WebQuery
         }
 
 
-    public Condition[] GetConditions(UserTokenData tokenData, ActionType actionType)
+    public Condition[] GetConditions(UserTokenData tokenData)
         {
             List<Condition> List_Expressions = new List<Condition>();
             if (_QueryValue != null) {
+                
                 if (!string.IsNullOrEmpty(_QueryValue.IDENTUSER)) {
+                    string IdentUser =  _QueryValue.IDENTUSER;
                     var condition = new ConditionExpression() {
                         LeftOperand = new ColumnOperand() {
-                             ColumnName = _QueryValue.IDENTUSER
+                            ColumnName = IdentUser
                         },
                         Operator = ConditionOperator.Equal,
                         Type = ConditionType.Expression,
@@ -52,8 +56,8 @@ namespace Atdi.AppServices.WebQuery
                                 if (cntr.INCLUDE == 1) {
                                     var condition = new ConditionExpression(){
                                         LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon
-                                        },
+                                            ColumnName =  NameFldLon
+                                },
                                         Operator = ConditionOperator.GreaterEqual,
                                         Type = ConditionType.Expression,
                                         RightOperand = new DoubleValueOperand(){
@@ -63,7 +67,7 @@ namespace Atdi.AppServices.WebQuery
                                     List_Expressions.Add(condition);
                                     condition = new ConditionExpression() {
                                         LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon
+                                            ColumnName = NameFldLon 
                                         },
                                         Operator = ConditionOperator.LessEqual,
                                         Type = ConditionType.Expression,
@@ -76,7 +80,7 @@ namespace Atdi.AppServices.WebQuery
                                 if (cntr.INCLUDE == 0) {
                                     var condition = new ConditionExpression() {
                                         LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon
+                                            ColumnName =  NameFldLon 
                                         },
                                         Operator = ConditionOperator.LessThan,
                                         Type = ConditionType.Expression,
@@ -87,7 +91,7 @@ namespace Atdi.AppServices.WebQuery
                                     List_Expressions.Add(condition);
                                     condition = new ConditionExpression(){
                                         LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon
+                                            ColumnName =  NameFldLon 
                                         },
                                         Operator = ConditionOperator.GreaterThan,
                                         Type = ConditionType.Expression,
@@ -109,11 +113,11 @@ namespace Atdi.AppServices.WebQuery
                             if (Metadata.Columns[i].Description == cntr.PATH) {
                                 NameFldLon = Metadata.Columns[i].Description;
                                 if (!string.IsNullOrEmpty(NameFldLon)) {
-                                    if ((cntr.STRVALUE.EndsWith("*")) || (cntr.STRVALUE.StartsWith("*"))) {
+                                    if ((cntr.STRVALUE.EndsWith(" * ")) || (cntr.STRVALUE.StartsWith("*"))) {
                                         if (cntr.INCLUDE == 1) {
                                             var condition = new ConditionExpression() {
                                                 LeftOperand = new ColumnOperand() {
-                                                    ColumnName = NameFldLon
+                                                    ColumnName = NameFldLon 
                                                 },
                                                 Operator = ConditionOperator.Like,
                                                 Type = ConditionType.Expression,
@@ -126,7 +130,7 @@ namespace Atdi.AppServices.WebQuery
                                         else  {
                                             var condition = new ConditionExpression() {
                                                 LeftOperand = new ColumnOperand() {
-                                                    ColumnName = NameFldLon
+                                                    ColumnName =  NameFldLon 
                                                 },
                                                 Operator = ConditionOperator.NotLike,
                                                 Type = ConditionType.Expression,
@@ -141,7 +145,7 @@ namespace Atdi.AppServices.WebQuery
                                         if (cntr.INCLUDE == 1) {
                                             var condition = new ConditionExpression() {
                                                 LeftOperand = new ColumnOperand() {
-                                                    ColumnName = NameFldLon
+                                                    ColumnName =  NameFldLon 
                                                 },
                                                 Operator = ConditionOperator.Equal,
                                                 Type = ConditionType.Expression,
@@ -154,7 +158,7 @@ namespace Atdi.AppServices.WebQuery
                                         else {
                                             var condition = new ConditionExpression()  {
                                                 LeftOperand = new ColumnOperand() {
-                                                    ColumnName = NameFldLon
+                                                    ColumnName =  NameFldLon 
                                                 },
                                                 Operator = ConditionOperator.NotEqual,
                                                 Type = ConditionType.Expression,

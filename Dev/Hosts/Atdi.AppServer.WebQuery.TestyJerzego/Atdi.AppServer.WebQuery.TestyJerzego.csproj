@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DA81F383-7154-4061-9EAC-1F841AF9B277}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.Contracts.LegacyServices.Icsm</RootNamespace>
-    <AssemblyName>Atdi.Contracts.LegacyServices.Icsm</AssemblyName>
+    <ProjectGuid>{5D02BE94-3A09-41C7-9A66-B6C84CAD642A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.AppServer.WebQuery.TestyJerzego</RootNamespace>
+    <AssemblyName>Atdi.AppServer.WebQuery.TestyJerzego</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,28 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IcsmDataContext.cs" />
-    <Compile Include="IcsmDataOrm.cs" />
-    <Compile Include="IIrpDescriptor.cs" />
-    <Compile Include="IIrpParser.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Icsm\Atdi.DataModels.Icsm.csproj">
-      <Project>{c9a6722b-f13a-4c7a-b389-9958b2abfb27}</Project>
-      <Name>Atdi.DataModels.Icsm</Name>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
-      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
-      <Name>Atdi.DataModels.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
-      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
-      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

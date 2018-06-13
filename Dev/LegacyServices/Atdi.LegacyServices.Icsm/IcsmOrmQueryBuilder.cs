@@ -69,7 +69,7 @@ namespace Atdi.LegacyServices.Icsm
                 icsmColumn.m_alias = column.Alias;
                 icsmColumns[index++] = icsmColumn;
             }
-
+            
             this._ormEndInitMethod.Invoke(icsmOrm, new object[] { true });
 
             var sql = new StringBuilder();
@@ -94,7 +94,6 @@ namespace Atdi.LegacyServices.Icsm
             var formatedSql = FormatFromStatement(tablesSql);
             formatedSql = Environment.NewLine + "    " + formatedSql.Replace(Environment.NewLine, Environment.NewLine + "    ");
             sql.Append("FROM" + formatedSql);
-
             return sql.ToString();
         }
 

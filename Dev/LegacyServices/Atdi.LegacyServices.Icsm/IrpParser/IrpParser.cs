@@ -107,8 +107,9 @@ namespace Atdi.LegacyServices.Icsm
         }
 
 
-        public ColumnMetadata[] ExecuteParseQuery(string value)
+        public IrpDescriptor ExecuteParseQuery(string value)
         {
+            IrpDescriptor irpDescr = new IrpDescriptor();
             List<ColumnMetadata> L = new List<ColumnMetadata>();
             try
             {
@@ -133,6 +134,7 @@ namespace Atdi.LegacyServices.Icsm
                                 metaData.Description = _report.m_desc;
                                 metaData.Title = "";
                                 metaData.Name = _report.m_desc;
+                                irpDescr.TableName = _report.m_dat.m_tab;
                                 string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                                 t = t.Replace(_report.m_dat.m_tab + ".", "");
                                 metaData.Description = t;
@@ -188,16 +190,17 @@ namespace Atdi.LegacyServices.Icsm
                         }
                     }
                 }
+                irpDescr.columnMetaData = L.ToArray();
             }
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.ParseIRP, e, this);
-                throw new InvalidOperationException("Error while parsing the IRP file", e);
+                throw new InvalidOperationException(Exceptions.ParsingIRPFile, e);
             }
-            return L.ToArray();
+            return irpDescr;
         }
 
-        public ColumnMetadata[] ExecuteParseQuery(byte[] value)
+        public IrpDescriptor ExecuteParseQuery(byte[] value)
         {
             return ExecuteParseQuery(UTF8Encoding.UTF8.GetString(value));
         }

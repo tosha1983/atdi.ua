@@ -17,6 +17,7 @@ namespace Atdi.DataModels.Identity
         /// <summary>
         /// The id of user
         /// </summary>
+        [DataMember]
         public TUserId Id { get; set; }
 
         /// <summary>
