@@ -72,11 +72,11 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     columnsValue = listColumns;
                 }
                 //Validate columns for orders
-                GetValidateColumns(columnsFromOrders.ToArray());
+                ValidateColumns(columnsFromOrders.ToArray());
                 //Validate columns for conditions
-                GetValidateColumns(conditions);
+                ValidateColumns(conditions);
                 //Validate selection columns
-                GetValidateColumns(columnsValue.ToArray());
+                ValidateColumns(columnsValue.ToArray());
 
                 var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
@@ -103,7 +103,6 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
                 return queryExecutor;
             }
-
             return new QueryResult();
         }
 
@@ -117,39 +116,28 @@ namespace Atdi.AppServices.WebQuery.Handlers
             }
         }
 
-        private List<string> GetValidateColumns(string[] columns)
+        private void ValidateColumns(string[] columns)
         {
-            var columnsValue = new List<string>();
             if (columns != null) {
                 for (int i = 0; i < columns.Count(); i++)  {
-                    if (HasColumn(columns[i]))
-                    {
-                        if (!columnsValue.Contains(columns[i]))
-                            columnsValue.Add(columns[i]);
-                    }
+                    HasColumn(columns[i]);
                 }
             }
-            return columnsValue;
         }
 
-        private List<string> GetValidateColumns(DataModels.DataConstraint.Condition[] conditions)
+        private void ValidateColumns(DataModels.DataConstraint.Condition[] conditions)
         {
-            var columnsValue = new List<string>();
             if (conditions != null)  {
                 for (int i = 0; i < conditions.Count(); i++)  {
                     if (conditions[i] is Atdi.DataModels.DataConstraint.ConditionExpression)  {
                         DataModels.DataConstraint.Operand operand = (conditions[i] as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
                         if (operand is Atdi.DataModels.DataConstraint.ColumnOperand)  {
                             string column = (operand as Atdi.DataModels.DataConstraint.ColumnOperand).ColumnName;
-                            if (HasColumn(column))  {
-                                if (!columnsValue.Contains(column))
-                                    columnsValue.Add(column);
-                            }
+                            HasColumn(column);
                         }
                     }
                 }
             }
-            return columnsValue;
         }
 
 
