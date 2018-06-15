@@ -21,7 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,13 +47,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Netkey2\Atdi.Contracts.CoreServices.Netkey.csproj">
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Netkey2\Atdi.Contracts.CoreServices.NetKeyValidator.csproj">
       <Project>{a0f57dd8-f4b7-46f6-9d94-ffbb61d31fa6}</Project>
-      <Name>Atdi.Contracts.CoreServices.Netkey</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.CoreServices.ManagedNetKey\ManagedNetKey.vcxproj">
-      <Project>{c9d9faaf-2dc3-4a3c-8420-62098ce16e19}</Project>
-      <Name>ManagedNetKey</Name>
+      <Name>Atdi.Contracts.CoreServices.NetKeyValidator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

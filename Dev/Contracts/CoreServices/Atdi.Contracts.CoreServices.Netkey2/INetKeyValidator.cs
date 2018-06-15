@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.Netkey
 {
-    public interface INetKey
+    public interface INetKeyValidator
     {
-        int GetToken(string softname, string exedate);
+        int GetTokenValue(string softname, string exedate);
     }
 }

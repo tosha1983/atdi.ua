@@ -74,9 +74,9 @@
       <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
       <Name>Atdi.Contracts.CoreServices.Identity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Netkey2\Atdi.Contracts.CoreServices.Netkey.csproj">
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Netkey2\Atdi.Contracts.CoreServices.NetKeyValidator.csproj">
       <Project>{a0f57dd8-f4b7-46f6-9d94-ffbb61d31fa6}</Project>
-      <Name>Atdi.Contracts.CoreServices.Netkey</Name>
+      <Name>Atdi.Contracts.CoreServices.NetKeyValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
       <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
@@ -97,10 +97,6 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.CoreServices.ManagedNetKey\ManagedNetKey.vcxproj">
-      <Project>{c9d9faaf-2dc3-4a3c-8420-62098ce16e19}</Project>
-      <Name>ManagedNetKey</Name>
     </ProjectReference>
     <ProjectReference Include="..\Atdi.CoreServices.Netkey\Atdi.CoreServices.Netkey.csproj">
       <Project>{57c627f3-f667-464c-a477-9e78e4457e4c}</Project>

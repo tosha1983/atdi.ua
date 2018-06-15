@@ -3,35 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ManagedNetKey;
 using Atdi.Contracts.CoreServices.Netkey;
+using System.Runtime.InteropServices;
 
-namespace Atdi.CoreServices.Netkey
+namespace Atdi.CoreServices.NetKeyValidator
 {
-    public class NetKeyValidator : INetKey
+    public class NetKeyValidator : INetKeyValidator
     {
-        public int GetToken(string softname, string exedate)
+        [DllImport("netkey.dll", CharSet = CharSet.Unicode)]
+        public static extern int GetToken(string softname, string exedate);
+        public int GetTokenValue(string softname, string exedate)
         {
-            int value = 0;
-            NetKey net = new NetKey();
-            unsafe
-            {
-                string soft = softname;
-                string exe = exedate;
-                sbyte* result_soft = stackalloc sbyte[soft.Length + 1];
-                result_soft[soft.Length] = 0;
-                fixed (char* p = soft) {
-                    for (int i = 0; i < soft.Length; i++)
-                        result_soft[i] = (sbyte)p[i];
-                }
-                sbyte* result_exe = stackalloc sbyte[exe.Length + 1];
-                result_exe[exe.Length] = 0;
-                fixed (char* p = exe) {
-                    for (int i = 0; i < exe.Length; i++)
-                        result_exe[i] = (sbyte)p[i];
-                }
-                value = net.GetToken(result_soft, result_exe);
-            }
+            int value = GetToken(softname, exedate);
             return value;
         }
     }

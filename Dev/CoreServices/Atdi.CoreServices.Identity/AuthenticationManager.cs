@@ -21,9 +21,9 @@ namespace Atdi.CoreServices.Identity
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IUserTokenProvider _tokenProvider;
         private readonly IQueryExecutor _queryExecutor;
-        private readonly INetKey _netKey;
+        private readonly INetKeyValidator _netKey;
 
-        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, INetKey netKey, ILogger logger) : base(logger)
+        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, INetKeyValidator netKey, ILogger logger) : base(logger)
         {
             this._dataLayer = dataLayer;
             this._tokenProvider = tokenProvider;

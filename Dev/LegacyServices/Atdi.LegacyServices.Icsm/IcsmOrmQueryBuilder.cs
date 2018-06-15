@@ -39,7 +39,7 @@ namespace Atdi.LegacyServices.Icsm
                 provider = ICSM_DL.DotnetProvider.OracleClient;
                 schemaPrefix = "ICSM.";
             }
-
+           
             this._icsmDb = ICSM_DL.ANetDb.New(provider);
             this._icsmDb.ConnectionString = dataEngine.Config.ConnectionString;
             this._icsmDb.Open();
@@ -50,6 +50,7 @@ namespace Atdi.LegacyServices.Icsm
             this._ormEndInitMethod = ormType.GetMethod("EndInit", BindingFlags.NonPublic | BindingFlags.Instance);
             this._ormGetSQLTablesMethod = ormType.GetMethod("GetSQLTables", BindingFlags.NonPublic | BindingFlags.Instance);
             this._ormInitDoneField = ormType.GetField("initDone", BindingFlags.NonPublic | BindingFlags.Instance);
+           
         }
 
         public string BuildSelectStatement(QuerySelectStatement statement)
