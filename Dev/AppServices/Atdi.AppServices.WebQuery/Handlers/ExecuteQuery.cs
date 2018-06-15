@@ -115,10 +115,8 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 }
                 else
                 {
-                    var dataSet = this._queryExecutor.Fetch(statement, allColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), DataSetStructure.ObjectCells);
-                    result.Dataset = dataSet;
-                    result.OptionId = fetchOptions.Id;
-                    result.Token = queryToken;
+                    throw new InvalidOperationException(string.Format(Exceptions.FetOptionsNull));
+
                 }
                 return result;
             }
