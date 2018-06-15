@@ -96,7 +96,7 @@ namespace Atdi.Test.WebQuery
                     {
                         Id = Guid.NewGuid(), // генерируем идентификатор выборки, будет возвращен с результатом
                                              //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
-                                            // Columns = new string[] { "ID","CHANNEL_SEP" },
+                                             Columns = new string[] { "ID" },
                         ResultStructure = DataSetStructure.StringRows,  // указываем тип возвращаемой структуры данных, в данном случии будет масив объектов строк состоящих из ячеек типа string.
                         Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
                         {
@@ -109,19 +109,19 @@ namespace Atdi.Test.WebQuery
                             Operator = ConditionOperator.NotBetween,
                             RightOperand = new IntegerValuesOperand {  Values = new int?[] {10, 3599 } }
                         },  
-                        /*
+                      
                         Orders = new OrderExpression[] // указываем условие сортировки
                         {
                             //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
                             new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
                             //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
                         }
-                        */
+
                     };
 
 
                     // обащение к сервису для выполнния запроса
-                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
+                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, null);
                     // Валидация результата
                     if (executingResult.State == OperationState.Fault)
                     {

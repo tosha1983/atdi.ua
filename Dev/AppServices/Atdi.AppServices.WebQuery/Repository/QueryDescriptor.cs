@@ -67,7 +67,7 @@ namespace Atdi.AppServices.WebQuery
             return warnings;
         }
 
-        public string ValidateColumns(DataModels.DataConstraint.Condition[] conditions)
+        public string ValidateConditions(DataModels.DataConstraint.Condition[] conditions)
         {
             string warnings = "";
             if (conditions != null)
