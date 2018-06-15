@@ -72,6 +72,7 @@ namespace Atdi.LegacyServices.Icsm
             }
             
             this._ormEndInitMethod.Invoke(icsmOrm, new object[] { true });
+            //string where = icsmOrm.GetSQLFilter(true);
 
             var sql = new StringBuilder();
 
@@ -95,6 +96,8 @@ namespace Atdi.LegacyServices.Icsm
             var formatedSql = FormatFromStatement(tablesSql);
             formatedSql = Environment.NewLine + "    " + formatedSql.Replace(Environment.NewLine, Environment.NewLine + "    ");
             sql.Append("FROM" + formatedSql);
+            //if (where.Length>0) sql.Append("WHERE " + where);
+
             return sql.ToString();
         }
 
