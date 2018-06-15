@@ -37,23 +37,24 @@ namespace Atdi.AppServices.WebQuery.Handlers
             using (this.Logger.StartTrace(Contexts.WebQueryAppServices, Categories.Handling, TraceScopeNames.ExecuteQuery))
             {
                 string notAvailableColumns = "";
+                
                 var tokenData = this._tokenProvider.UnpackUserToken(userToken);
                 var queryDescriptor = this._repository.GetQueryDescriptorByToken(tokenData, queryToken);
                 var conditions = queryDescriptor.GetConditions(tokenData);
-                ColumnMetadata[] allColumns = new List<ColumnMetadata>().ToArray();
+                var allColumns = queryDescriptor.Metadata.Columns.Select(t => t.Name).ToArray();
+                var dataColumns = queryDescriptor.Metadata.Columns;
                 var orderExpression = new List<DataModels.DataConstraint.OrderExpression>();
                 DataModels.DataConstraint.DataLimit limitRecord = null;
                 if (fetchOptions != null)   {
-                    if (fetchOptions.Columns == null) { allColumns = queryDescriptor.Metadata.Columns; }
                     if (fetchOptions.Columns != null) {
-                        if (fetchOptions.Columns.Count() == 0)  {
-                            allColumns = queryDescriptor.Metadata.Columns;
-                        }
-                        else  {
-                            var tempColumns = new List<ColumnMetadata>();
-                            if (fetchOptions.Columns != null) notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns);
-                            fetchOptions.Columns.ToList().ForEach(x => { var metaTemp = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == x); if (metaTemp != null) tempColumns.Add(metaTemp); } );
-                            allColumns = tempColumns.ToArray();
+                        if (fetchOptions.Columns.Count()>0) { 
+                            if (fetchOptions.Columns != null)   {
+                                notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns);
+                                allColumns = fetchOptions.Columns;
+                            }
+                                dataColumns = new List<ColumnMetadata>().ToArray();  List<ColumnMetadata> tempMetaColumn = new List<ColumnMetadata>();
+                                fetchOptions.Columns.ToList().ForEach(x => { var metaTemp = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == x); if (metaTemp != null) tempMetaColumn.Add(metaTemp); });
+                                dataColumns = tempMetaColumn.ToArray();
                         }
                     }
                     
@@ -70,14 +71,11 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     }
                     if (fetchOptions.Limit != null) limitRecord = fetchOptions.Limit;
                 }
-                else
-                {
-                    allColumns = queryDescriptor.Metadata.Columns;
-                }
+               
 
                 var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
-                   .Select(allColumns.Select(t => t.Name).ToArray());
+                   .Select(allColumns);
    
               
                
@@ -108,7 +106,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 var result = new QueryResult();
                 if (fetchOptions != null)
                 {
-                    var dataSet = this._queryExecutor.Fetch(statement, allColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), fetchOptions.ResultStructure);
+                    var dataSet = this._queryExecutor.Fetch(statement, dataColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), fetchOptions.ResultStructure);
                     result.Dataset = dataSet;
                     result.OptionId = fetchOptions.Id;
                     result.Token = queryToken;
