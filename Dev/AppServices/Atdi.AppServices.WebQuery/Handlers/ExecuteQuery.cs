@@ -64,9 +64,12 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     }
                     if (fetchOptions.Limit!=null) limitRecord = fetchOptions.Limit;
                     var conditionsFromFetch = fetchOptions.Condition;
-                    orderExpression = fetchOptions.Orders.ToList();
-                    var columnsFromOrders = fetchOptions.Orders.ToList().Select(t => t.ColumnName);
-                    if (columnsFromOrders != null) notAvailableColumns = queryDescriptor.ValidateColumns(columnsFromOrders.ToArray());
+                    if (fetchOptions.Orders != null)  {
+                        orderExpression = fetchOptions.Orders.ToList();
+                        var columnsFromOrders = fetchOptions.Orders.ToList().Select(t => t.ColumnName);
+                        if (columnsFromOrders != null) notAvailableColumns = queryDescriptor.ValidateColumns(columnsFromOrders.ToArray());
+                    }
+
                     if (fetchOptions.Columns != null) notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns.ToArray());
                     if (conditionsFromFetch != null)
                     {

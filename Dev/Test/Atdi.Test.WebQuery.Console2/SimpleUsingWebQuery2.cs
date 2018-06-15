@@ -91,7 +91,7 @@ namespace Atdi.Test.WebQuery
 
                     // пример выполнения запроса и получения данных
                     // подготовка парамтеров и условий выполнения запроса
-                    /*
+               
                     var fetchOptions = new FetchOptions
                     {
                         Id = Guid.NewGuid(), // генерируем идентификатор выборки, будет возвращен с результатом
@@ -109,17 +109,19 @@ namespace Atdi.Test.WebQuery
                             Operator = ConditionOperator.NotBetween,
                             RightOperand = new IntegerValuesOperand {  Values = new int?[] {10, 3599 } }
                         },  
+                        /*
                         Orders = new OrderExpression[] // указываем условие сортировки
                         {
                             //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
                             new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
                             //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
                         }
+                        */
                     };
-                    */
+
 
                     // обащение к сервису для выполнния запроса
-                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, null);
+                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
                     // Валидация результата
                     if (executingResult.State == OperationState.Fault)
                     {
