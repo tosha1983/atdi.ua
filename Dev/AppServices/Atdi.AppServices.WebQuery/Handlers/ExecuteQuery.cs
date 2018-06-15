@@ -51,24 +51,19 @@ namespace Atdi.AppServices.WebQuery.Handlers
                         }
                         else  {
                             var tempColumns = new List<ColumnMetadata>();
-                            for (int i = 0; i < fetchOptions.Columns.Count(); i++)  {
-                                ColumnMetadata metaData = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == fetchOptions.Columns[i]);
-                                if (metaData != null) {
-                                    tempColumns.Add(metaData);
-                                }
-                            }
+                            if (fetchOptions.Columns != null) notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns);
+                            fetchOptions.Columns.ToList().ForEach(x => { var metaTemp = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == x); if (metaTemp != null) tempColumns.Add(metaTemp); } );
                             allColumns = tempColumns.ToArray();
                         }
                     }
-                    if (fetchOptions.Columns != null) notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns);
+                    
                     var conditionsFromFetch = fetchOptions.Condition;
                     if (conditionsFromFetch != null)  {
                         var listConditions = conditions.ToList();
                         listConditions.Add(conditionsFromFetch);
                         conditions = listConditions.ToArray();
                     }
-                    if (fetchOptions.Orders != null)
-                    {
+                    if (fetchOptions.Orders != null) {
                         orderExpression = fetchOptions.Orders.ToList();
                         var columnsFromOrders = fetchOptions.Orders.ToList().Select(t => t.ColumnName).ToArray();
                         if (columnsFromOrders != null) notAvailableColumns+= queryDescriptor.ValidateColumns(columnsFromOrders.ToArray());
@@ -120,8 +115,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 }
                 else
                 {
-                    //throw new InvalidOperationException(string.Format(Exceptions.FetOptionsNull));
-                    var dataSet = this._queryExecutor.Fetch(statement, allColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), DataSetStructure.StringCells);
+                    var dataSet = this._queryExecutor.Fetch(statement, allColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), DataSetStructure.ObjectCells);
                     result.Dataset = dataSet;
                     result.OptionId = fetchOptions.Id;
                     result.Token = queryToken;

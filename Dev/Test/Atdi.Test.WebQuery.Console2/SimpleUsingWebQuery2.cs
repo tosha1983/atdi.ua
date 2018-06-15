@@ -121,7 +121,7 @@ namespace Atdi.Test.WebQuery
 
 
                     // обащение к сервису для выполнния запроса
-                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, null);
+                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
                     // Валидация результата
                     if (executingResult.State == OperationState.Fault)
                     {
