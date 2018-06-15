@@ -20,14 +20,18 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,6 +49,11 @@
     <Compile Include="Models\EMPLOYEE.cs" />
     <Compile Include="Models\IcsmUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Specification.cs" />
     <Compile Include="UserTokenProvider.cs" />
   </ItemGroup>
@@ -64,6 +73,10 @@
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
       <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
       <Name>Atdi.Contracts.CoreServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Netkey2\Atdi.Contracts.CoreServices.Netkey.csproj">
+      <Project>{a0f57dd8-f4b7-46f6-9d94-ffbb61d31fa6}</Project>
+      <Name>Atdi.Contracts.CoreServices.Netkey</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
       <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
@@ -85,6 +98,20 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atdi.CoreServices.ManagedNetKey\ManagedNetKey.vcxproj">
+      <Project>{c9d9faaf-2dc3-4a3c-8420-62098ce16e19}</Project>
+      <Name>ManagedNetKey</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.CoreServices.Netkey\Atdi.CoreServices.Netkey.csproj">
+      <Project>{57c627f3-f667-464c-a477-9e78e4457e4c}</Project>
+      <Name>Atdi.CoreServices.Netkey</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

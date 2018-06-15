@@ -22,6 +22,7 @@ namespace XICSM.WebQuery
         public bool isNew { get; set; }
         public IMQueryMenuNode.Context _lst { get; set; }
         public int id { get; set; }
+        public string query { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -75,8 +76,15 @@ namespace XICSM.WebQuery
                                 if (zip != null)  {
                                 string cipherText = UTF8Encoding.UTF8.GetString(zip);
                                 textBoxQuery.Text = cipherText;
+                                query = cipherText;
                                 }
-                                txtUserIdent.Text = rsWebQuery.GetS("IDENTUSER").ToString();
+                                txtUserIdent.Items.Clear();
+                                List<string> List_Path = ClassORM.GetProperties(query, true);
+                                txtUserIdent.Items.Clear();
+                                foreach (string item in List_Path)
+                                    txtUserIdent.Items.Add(item);
+
+                                 if (txtUserIdent.Items.IndexOf(rsWebQuery.GetS("IDENTUSER").ToString()) != -1) txtUserIdent.SelectedIndex = txtUserIdent.Items.IndexOf(rsWebQuery.GetS("IDENTUSER").ToString());
                                 textBox_code.Text = rsWebQuery.GetS("CODE");
                                 int idx = comboBox_group.FindString(rsWebQuery.GetS("TASKFORCEGROUP"));
                                 if (idx > -1) comboBox_group.SelectedIndex = idx;
@@ -126,6 +134,7 @@ namespace XICSM.WebQuery
                         rsWebQuery.Open();
                         if (!rsWebQuery.IsEOF()) {
                             try {
+                                query = textBoxQuery.Text.ToString();
                                 byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                                 string sql; ANetDb d; ANetNQ nq = null;
                                 IMTransaction.Begin();
@@ -198,6 +207,7 @@ namespace XICSM.WebQuery
                         rsWebQueryNew.Save();
                         rsWebQueryNew.Close();
                          rsWebQueryNew.Dispose();
+                        query = textBoxQuery.Text.ToString();
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();
@@ -213,7 +223,6 @@ namespace XICSM.WebQuery
                 else MessageBox.Show("Please input data to field 'Name query'!", "Warning!");
             }
             else  {
-
                         var rsWebQuery = new YXwebquery();
                         rsWebQuery.Format("*");
                         if (rsWebQuery.Fetch(id)) {
@@ -225,6 +234,7 @@ namespace XICSM.WebQuery
                         rsWebQuery.Save();
                         rsWebQuery.Close();
                         rsWebQuery.Dispose();
+                        query = textBoxQuery.Text.ToString();
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();

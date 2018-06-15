@@ -37,8 +37,10 @@ namespace Atdi.AppServices.WebQuery
             Metadata.Token.Version = "1.0";
             Metadata.Description = QueryValue.COMMENTS;
             Metadata.Title = QueryValue.NAME;
-            for (int i = 0; i < Metadata.Columns.Count(); i++)   {
-                if (!_hashSet.ContainsKey(Metadata.Columns[i].Name))   _hashSet.Add(Metadata.Columns[i].Name, Metadata.Columns[i].Type);
+
+            var listColumns = Metadata.Columns.ToList();
+            for (int i = 0; i < listColumns.Count(); i++)   {
+                if (!_hashSet.ContainsKey(listColumns[i].Name))   _hashSet.Add(listColumns[i].Name, listColumns[i].Type);
             }
         }
 

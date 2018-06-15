@@ -8,14 +8,20 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using ManagedNetKey;
+using Atdi.CoreServices.Netkey;
 
 namespace Atdi.CoreServices.Identity
 {
-    public sealed class UserTokenProvider : LoggedObject,  IUserTokenProvider
+    
+    public sealed class  UserTokenProvider : LoggedObject,  IUserTokenProvider
     {
+     
         public UserTokenProvider(ILogger logger) : base(logger)
         {
         }
+
 
         public UserToken CreatUserToken(UserTokenData tokenData)
         {
