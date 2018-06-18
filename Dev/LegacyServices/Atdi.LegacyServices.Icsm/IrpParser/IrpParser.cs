@@ -10,8 +10,6 @@ using Atdi.Contracts.LegacyServices.Icsm;
 using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
 using Atdi.AppServices.WebQuery;
-using OrmCs;
-using DatalayerCs;
 using Atdi.DataModels.WebQuery;
 
 
@@ -20,22 +18,25 @@ namespace Atdi.LegacyServices.Icsm
 
     internal sealed class IrpParser : LoggedObject, IIrpParser
     {
+        private readonly Orm.SchemasMetadata _schemasMetadata;
         private readonly IcsmReport _report;
-        public IrpParser(ILogger logger) : base(logger)
+
+        public IrpParser(Orm.SchemasMetadata schemasMetadata, ILogger logger) : base(logger)
         {
+            this._schemasMetadata = schemasMetadata;
             _report = new IcsmReport();
         }
 
-        public static OrmField GetOrmDataDesc(string fld_check, string tableName)
+        public Orm.Field GetOrmDataDesc(string fld_check, string tableName)
         {
-            OrmField rc = null;
-            OrmTable zeta = OrmSchema.Table(tableName, false);
+            Orm.Field rc = null;
+            var zeta = this._schemasMetadata.GetTableByName(tableName);
             if (zeta != null) {
-                foreach (OrmField f1 in zeta.ClassFields) {
+                foreach (Orm.Field f1 in zeta.ClassFields) {
                     switch (f1.Nature){
-                        case OrmFieldNature.Column:
+                        case Orm.FieldNature.Column:
                             {
-                                OrmFieldF fjF = (OrmFieldF)f1;
+                                Orm.FieldF fjF = (Orm.FieldF)f1;
                                 if (fld_check == f1.Name) {
                                     if (fjF != null) {
                                         rc = fjF;
@@ -53,16 +54,16 @@ namespace Atdi.LegacyServices.Icsm
         public PropertyTable GetTableFromORM(string fld_check, string tableName)
         {
             PropertyTable rc = new PropertyTable();
-            OrmTable zeta = OrmSchema.Table(tableName, false);
+            var zeta = this._schemasMetadata.GetTableByName(tableName);
             if (zeta != null) {
-                foreach (OrmField f1 in zeta.ClassFields) {
+                foreach (var f1 in zeta.ClassFields) {
                     switch (f1.Nature) {
-                        case OrmFieldNature.Join:
+                        case Orm.FieldNature.Join:
                             {
-                                OrmFieldJ fj = (OrmFieldJ)f1;
-                                OrmJoin joi = fj.Join;
-                                OrmTable tc = joi.JoinedTable;
-                                string joinedClass = OrmSourcer.TableNameToClassName(f1.Name);
+                                var fj = (Orm.FieldJ)f1;
+                                var joi = fj.Join;
+                                var tc = joi.JoinedTable;
+                                //string joinedClass = OrmSourcer.TableNameToClassName(f1.Name);
                                 if (fld_check == f1.Name)  {
                                     rc.NameTableTo = tc.Name;
                                     rc.Name = f1.Name;
@@ -80,7 +81,7 @@ namespace Atdi.LegacyServices.Icsm
 
 
 
-        public  OrmField GetFieldFromOrm(string tableName, string fld)
+        public  Orm.Field GetFieldFromOrm(string tableName, string fld)
         {
             string TableName2 = "";
             List<int> Lst_Val_Index = new List<int>();
@@ -146,7 +147,7 @@ namespace Atdi.LegacyServices.Icsm
                                 metaData.Position = 0;
                                 metaData.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
                                 metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
-                                OrmField ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
+                                Orm.Field ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
                                 if (ty_p == null)
                                 {
                                     string FLD_STATE_FORMAT = ""; string FLD_STATE_value = "";
@@ -164,22 +165,22 @@ namespace Atdi.LegacyServices.Icsm
 
                                 switch (ty_p.DDesc.ClassType)
                                 {
-                                    case OrmVarType.var_Bytes:
+                                    case Orm.VarType.var_Bytes:
                                         metaData.Type = DataModels.DataType.Bytes;
                                         break;
-                                    case OrmVarType.var_Flo:
+                                    case Orm.VarType.var_Flo:
                                         metaData.Type = DataModels.DataType.Float;
                                         break;
-                                    case OrmVarType.var_Int:
+                                    case Orm.VarType.var_Int:
                                         metaData.Type = DataModels.DataType.Integer;
                                         break;
-                                    case OrmVarType.var_Dou:
+                                    case Orm.VarType.var_Dou:
                                         metaData.Type = DataModels.DataType.Double;
                                         break;
-                                    case OrmVarType.var_String:
+                                    case Orm.VarType.var_String:
                                         metaData.Type = DataModels.DataType.String;
                                         break;
-                                    case OrmVarType.var_Tim:
+                                    case Orm.VarType.var_Tim:
                                         metaData.Type = DataModels.DataType.DateTime;
                                         break;
                                     default:

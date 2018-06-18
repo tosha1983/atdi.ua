@@ -5,147 +5,138 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ICSM_DL = DatalayerCs;
-using ICSM_ORM = OrmCs;
 using Atdi.Contracts.LegacyServices.Icsm;
-
+using Atdi.Platform.Logging;
 
 namespace Atdi.LegacyServices.Icsm
 {
-    internal sealed class IcsmOrmQueryBuilder : IDisposable
+    internal sealed class IcsmOrmQueryBuilder : LoggedObject, IDisposable
     {
         private readonly IDataEngine _dataEngine;
-        private readonly string _initIcsmSchemaPath;
-        private readonly ICSM_DL.ANetDb _icsmDb;
-        private readonly ICSM_ORM.DbLinker _ormLinker;
-        private readonly MethodInfo _ormEndInitMethod;
-        private readonly MethodInfo _ormGetSQLTablesMethod;
-        private readonly FieldInfo _ormInitDoneField;
+        private readonly Orm.SchemasMetadata _schemasMetadata;
 
-        public IcsmOrmQueryBuilder(IDataEngine dataEngine, string initIcsmSchemaPath)
+        public IcsmOrmQueryBuilder(IDataEngine dataEngine, Orm.SchemasMetadata schemasMetadata, ILogger logger) : base(logger)
         {
             this._dataEngine = dataEngine;
-            this._initIcsmSchemaPath = initIcsmSchemaPath;
+            this._schemasMetadata = schemasMetadata;
 
-            ICSM_DL.DotnetProvider provider = ICSM_DL.DotnetProvider.None;
-            string schemaPrefix = string.Empty;
-            if (dataEngine.Config.Type == DataEngineType.SqlServer)
-            {
-                provider = ICSM_DL.DotnetProvider.SqlClient;
-                schemaPrefix = "dbo.";
-            }
-            else if (dataEngine.Config.Type == DataEngineType.Oracle)
-            {
-                provider = ICSM_DL.DotnetProvider.OracleClient;
-                schemaPrefix = "ICSM.";
-            }
-
-            this._icsmDb = ICSM_DL.ANetDb.New(provider);
-            this._icsmDb.ConnectionString = dataEngine.Config.ConnectionString;
-            this._icsmDb.Open();
-            ICSM_ORM.OrmSchema.InitIcsmSchema(this._icsmDb, schemaPrefix, initIcsmSchemaPath);
-            ICSM_ORM.OrmSchema.ParseSchema(initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out string outErr);
-            this._ormLinker = new ICSM_ORM.DbLinker(this._icsmDb, schemaPrefix);
-            var ormType = typeof(ICSM_ORM.OrmRs);
-            this._ormEndInitMethod = ormType.GetMethod("EndInit", BindingFlags.NonPublic | BindingFlags.Instance);
-            this._ormGetSQLTablesMethod = ormType.GetMethod("GetSQLTables", BindingFlags.NonPublic | BindingFlags.Instance);
-            this._ormInitDoneField = ormType.GetField("initDone", BindingFlags.NonPublic | BindingFlags.Instance);
+            logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
+
+        //private Tuple<ICSM_DL.ANetDb, ICSM_ORM.DbLinker> InitializeIcsmEnvironment()
+        //{
+        //    try
+        //    {
+        //        var provider = ICSM_DL.DotnetProvider.None;
+        //        string schemaPrefix = string.Empty;
+        //        if (_dataEngine.Config.Type == DataEngineType.SqlServer)
+        //        {
+        //            provider = ICSM_DL.DotnetProvider.SqlClient;
+        //            schemaPrefix = "dbo.";
+        //        }
+        //        else if (_dataEngine.Config.Type == DataEngineType.Oracle)
+        //        {
+        //            provider = ICSM_DL.DotnetProvider.OracleClient;
+        //            schemaPrefix = "ICSM.";
+        //        }
+
+        //        var icsmDb = ICSM_DL.ANetDb.New(provider);
+        //        icsmDb.ConnectionString = _dataEngine.Config.ConnectionString;
+        //        icsmDb.Open();
+        //        ICSM_ORM.OrmSchema.InitIcsmSchema(icsmDb, schemaPrefix, _initIcsmSchemaPath);
+        //        ICSM_ORM.OrmSchema.ParseSchema(_initIcsmSchemaPath, "WebQuery", "XICSM_WebQuery.dll", out string outErr);
+        //        var ormLinker = new ICSM_ORM.DbLinker(icsmDb, schemaPrefix);
+
+        //        return new Tuple<ICSM_DL.ANetDb, ICSM_ORM.DbLinker>(icsmDb, ormLinker);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, e, this);
+        //        throw new InvalidOperationException(Exceptions.InvalideInitializeIcsmEnvironment, e);
+        //    }
+        //}
 
         public string BuildSelectStatement(QuerySelectStatement statement)
         {
-            var icsmOrm = new ICSM_ORM.OrmRs();
-            icsmOrm.Init(this._ormLinker);
-            var sourceColumns = statement.Table.Columns.Values;
-            var icsmColumns = new ICSM_ORM.OrmItem[statement.Table.Columns.Count];
-            int index = 0;
-            foreach (var column in statement.Table.Columns.Values)
+            try
             {
-                var icsmColumn = icsmOrm.AddFld(statement.Table.Name, column.Name, null, true);
-                if (string.IsNullOrEmpty(column.Alias))
+
+                var sourceColumns = statement.Table.Columns.Values;
+                var fieldPaths = new string[statement.Table.Columns.Count];
+                int index = 0;
+                foreach (var column in sourceColumns)
                 {
-                    column.Alias = column.Name; //"col_" + index.ToString();
-                }
-                icsmColumn.m_alias = column.Alias;
-                icsmColumns[index++] = icsmColumn;
-            }
-            
-            this._ormEndInitMethod.Invoke(icsmOrm, new object[] { true });
-
-            var sql = new StringBuilder();
-
-            sql.AppendLine("SELECT ");
-
-            var columnsSql = new string[icsmColumns.Length];
-            for (int i = 0; i < icsmColumns.Length; i++)
-            {
-                var icsmColumn = icsmColumns[i];
-                var sqlColumn = icsmColumn.GetDataName();
-
-                if (_dataEngine.Config.Type == DataEngineType.SqlServer)
-                    columnsSql[i] = "    " + sqlColumn + " AS [" + icsmColumn.m_alias + "]";
-                else if (_dataEngine.Config.Type == DataEngineType.Oracle)
-                    columnsSql[i] = "    " + sqlColumn.ToUpper() + " AS \"" + icsmColumn.m_alias.ToUpper() + "\"";
-            }
-
-            sql.AppendLine(string.Join("," + Environment.NewLine, columnsSql));
-
-            var tablesSql = (string)this._ormGetSQLTablesMethod.Invoke(icsmOrm, new object[] { });
-            var formatedSql = FormatFromStatement(tablesSql);
-            formatedSql = Environment.NewLine + "    " + formatedSql.Replace(Environment.NewLine, Environment.NewLine + "    ");
-            sql.Append("FROM" + formatedSql);
-            return sql.ToString();
-        }
-
-        private string FormatFromStatement(string expression)
-        {
-            int ident = -1;
-            string identValue = "";
-
-            var sql = new StringBuilder();
-
-            foreach (var symbol in expression)
-            {
-                if(symbol == '(')
-                {
-                    ++ident;
-                    if (ident > 0)
+                    if (string.IsNullOrEmpty(column.Alias))
                     {
-                        //identValue += "    ";
-                        sql.Append(Environment.NewLine);
-                        sql.Append(identValue);
-                        
+                        column.Alias = column.Name; 
                     }
-                    sql.Append(symbol);
-                    ++ident;
-                    identValue += "    ";
-                    sql.Append(Environment.NewLine);
-                    sql.Append(identValue);
+                    fieldPaths[index++] = column.Name;
                 }
-                else if (symbol == ')')
+
+                var dbms = Orm.DBMS.MsSql;
+                var schemaPrefix = "dbo.";
+                var quoteColumn = "[]";
+
+                if (this._dataEngine.Config.Type == DataEngineType.Oracle)
                 {
-                    --ident;
-                    identValue = identValue.Substring(0, identValue.Length - 4);
-                    sql.Append(Environment.NewLine);
-                    sql.Append(identValue);
-                    sql.Append(symbol);
+                    dbms = Orm.DBMS.Oracle;
+                    schemaPrefix = "ICSM.";
+                    quoteColumn = "\"\"";
                 }
-                else
-                {
-                    sql.Append(symbol);
-                }
-                
+
+                var sql = this._schemasMetadata.BuildSelectStatement(statement.Table.Name, fieldPaths, schemaPrefix, dbms, quoteColumn);
+                return sql;
             }
-            return sql.ToString();
+            catch(Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
         }
+
+        //private string FormatFromStatement(string expression)
+        //{
+        //    int ident = -1;
+        //    string identValue = "";
+
+        //    var sql = new StringBuilder();
+
+        //    foreach (var symbol in expression)
+        //    {
+        //        if(symbol == '(')
+        //        {
+        //            ++ident;
+        //            if (ident > 0)
+        //            {
+        //                //identValue += "    ";
+        //                sql.Append(Environment.NewLine);
+        //                sql.Append(identValue);
+                        
+        //            }
+        //            sql.Append(symbol);
+        //            ++ident;
+        //            identValue += "    ";
+        //            sql.Append(Environment.NewLine);
+        //            sql.Append(identValue);
+        //        }
+        //        else if (symbol == ')')
+        //        {
+        //            --ident;
+        //            identValue = identValue.Substring(0, identValue.Length - 4);
+        //            sql.Append(Environment.NewLine);
+        //            sql.Append(identValue);
+        //            sql.Append(symbol);
+        //        }
+        //        else
+        //        {
+        //            sql.Append(symbol);
+        //        }
+                
+        //    }
+        //    return sql.ToString();
+        //}
         public void Dispose()
         {
-            this._ormLinker.Dispose();
-            if (this._icsmDb.IsOpen())
-            {
-                this._icsmDb.Close();
-            }
-            this._icsmDb.Dispose();
         }
     }
 }

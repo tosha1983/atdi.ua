@@ -30,13 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>IcsmOrm\DatalayerCs.dll</HintPath>
-    </Reference>
-    <Reference Include="OrmCs">
-      <HintPath>IcsmOrm\OrmCs.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +53,37 @@
     <Compile Include="IrpParser\FrameObject.cs" />
     <Compile Include="IrpParser\IcsmReport.cs" />
     <Compile Include="IrpParser\IrpParser.cs" />
+    <Compile Include="Orm\DataCoding.cs" />
+    <Compile Include="Orm\DataDesc.cs" />
+    <Compile Include="Orm\DbExpressionField.cs" />
+    <Compile Include="Orm\DbField.cs" />
+    <Compile Include="Orm\DbJoin.cs" />
+    <Compile Include="Orm\DBMS.cs" />
+    <Compile Include="Orm\DbTable.cs" />
+    <Compile Include="Orm\Extensitions.cs" />
+    <Compile Include="Orm\Field.cs" />
+    <Compile Include="Orm\FieldC.cs" />
+    <Compile Include="Orm\FieldE.cs" />
+    <Compile Include="Orm\FieldF.cs" />
+    <Compile Include="Orm\FieldFOption.cs" />
+    <Compile Include="Orm\FieldJ.cs" />
+    <Compile Include="Orm\FieldL.cs" />
+    <Compile Include="Orm\FieldM.cs" />
+    <Compile Include="Orm\FieldNature.cs" />
+    <Compile Include="Orm\FieldU.cs" />
+    <Compile Include="Orm\SchemasMetadata.cs" />
+    <Compile Include="Orm\Index.cs" />
+    <Compile Include="Orm\IndexType.cs" />
+    <Compile Include="Orm\Join.cs" />
+    <Compile Include="Orm\JoinType.cs" />
+    <Compile Include="Orm\Module.cs" />
+    <Compile Include="Orm\Null.cs" />
+    <Compile Include="Orm\Semant.cs" />
+    <Compile Include="Orm\Table.cs" />
+    <Compile Include="Orm\TableCat.cs" />
+    <Compile Include="Orm\TableType.cs" />
+    <Compile Include="Orm\SemantType.cs" />
+    <Compile Include="Orm\VarType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IrpParser\PropertyTable.cs" />
     <Compile Include="IrpParser\InChannel.cs" />
@@ -109,11 +133,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="IcsmOrm\DatalayerCs.dll" />
-    <Content Include="IcsmOrm\OrmCs.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="IcsmOrm\ICSM.Schema" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

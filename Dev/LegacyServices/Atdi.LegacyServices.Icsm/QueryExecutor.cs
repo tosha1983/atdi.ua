@@ -29,11 +29,11 @@ namespace Atdi.LegacyServices.Icsm
 
         public QueryExecutor(IDataEngine dataEngine, IcsmOrmQueryBuilder icsmOrmQueryBuilder, ILogger logger) : base(logger)
         {
-            
             this._dataEngine = dataEngine;
             this._syntax = dataEngine.Syntax;
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
             this._icsmOrmQueryBuilder = icsmOrmQueryBuilder;
+
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
         }
 
@@ -71,7 +71,198 @@ namespace Atdi.LegacyServices.Icsm
                 Columns = columns
             };
 
+            var fields = new DbFieldDescriptor[columns.Length];
+            int indexForString = -1;
+            int indexForBoolean = -1;
+            int indexForInteger = -1;
+            int indexForDateTime = -1;
+            int indexForDouble = -1;
+            int indexForFloat = -1;
+            int indexForDecimal = -1;
+            int indexForByte = -1;
+            int indexForBytes = -1;
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var column = columns[i];
+                var dbField = new DbFieldDescriptor
+                {
+                    Column = column,
+                    Ordinal = dataReader.GetOrdinal(column.Name)
+                };
+                dbField.DbType = dataReader.GetFieldType(dbField.Ordinal);
+                fields[i] = dbField;
+
+                switch (column.Type)
+                {
+                    case DataType.String:
+                        column.Index = ++indexForString;
+                        break;
+                    case DataType.Boolean:
+                        column.Index = ++indexForBoolean;
+                        break;
+                    case DataType.Integer:
+                        column.Index = ++indexForInteger;
+                        break;
+                    case DataType.DateTime:
+                        column.Index = ++indexForDateTime;
+                        break;
+                    case DataType.Double:
+                        column.Index = ++indexForDouble;
+                        break;
+                    case DataType.Float:
+                        column.Index = ++indexForFloat;
+                        break;
+                    case DataType.Decimal:
+                        column.Index = ++indexForDecimal;
+                        break;
+                    case DataType.Byte:
+                        column.Index = ++indexForByte;
+                        break;
+                    case DataType.Bytes:
+                        column.Index = ++indexForBytes;
+                        break;
+                    default:
+                        column.Index = -1;
+                        break;
+                }
+            }
+
+            List<string>[] columnsAsString = null;
+            if (indexForString >= 0)
+            {
+                columnsAsString = new List<string>[indexForString + 1].Select(o => new List<string>()).ToArray();
+            }
+            List<bool?>[] columnsAsBoolean = null;
+            if (indexForBoolean >= 0)
+            {
+                columnsAsBoolean = new List<bool?>[indexForBoolean + 1].Select(o => new List<bool?>()).ToArray();
+            }
+            List<int?>[] columnsAsInteger = null;
+            if (indexForInteger >= 0)
+            {
+                columnsAsInteger = new List<int?>[indexForInteger + 1].Select(o => new List<int?>()).ToArray();
+            }
+            List<DateTime?>[] columnsAsDateTime = null;
+            if (indexForDateTime >= 0)
+            {
+                columnsAsDateTime = new List<DateTime?>[indexForDateTime + 1].Select(o => new List<DateTime?>()).ToArray();
+            }
+            List<double?>[] columnsAsDouble = null;
+            if (indexForDouble >= 0)
+            {
+                columnsAsDouble = new List<double?>[indexForDouble + 1].Select(o => new List<double?>()).ToArray();
+            }
+            List<float?>[] columnsAsFloat = null;
+            if (indexForFloat >= 0)
+            {
+                columnsAsFloat = new List<float?>[indexForFloat + 1].Select(o => new List<float?>()).ToArray();
+            }
+            List<decimal?>[] columnsAsDecimal = null;
+            if (indexForDecimal >= 0)
+            {
+                columnsAsDecimal = new List<decimal?>[indexForDecimal + 1].Select(o => new List<decimal?>()).ToArray();
+            }
+            List<byte?>[] columnsAsByte = null;
+            if (indexForByte >= 0)
+            {
+                columnsAsByte = new List<byte?>[indexForByte + 1].Select(o => new List<byte?>()).ToArray();
+            }
+            List<byte[]>[] columnsAsBytes = null;
+            if (indexForBytes >= 0)
+            {
+                columnsAsBytes = new List<byte[]>[indexForBytes + 1].Select(o => new List<byte[]>()).ToArray();
+            }
             int rowCount = 0;
+            while (dataReader.Read())
+            {
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    switch (field.Column.Type)
+                    {
+                        case DataType.String:
+                            var valueAsString = dataReader.GetNullableValueAsString(field.DbType, field.Ordinal);
+                            columnsAsString[field.Column.Index].Add(valueAsString);
+                            break;
+                        case DataType.Boolean:
+                            var valueAsBoolean = dataReader.GetNullableValueAsBoolean(field.DbType, field.Ordinal);
+                            columnsAsBoolean[field.Column.Index].Add(valueAsBoolean);
+                            break;
+                        case DataType.Integer:
+                            var valueAsInteger = dataReader.GetNullableValueAsInt32(field.DbType, field.Ordinal);
+                            columnsAsInteger[field.Column.Index].Add(valueAsInteger);
+                            break;
+                        case DataType.DateTime:
+                            var valueAsDateTime = dataReader.GetNullableValueAsDateTime(field.DbType, field.Ordinal);
+                            columnsAsDateTime[field.Column.Index].Add(valueAsDateTime);
+                            break;
+                        case DataType.Double:
+                            var valueAsDouble = dataReader.GetNullableValueAsDouble(field.DbType, field.Ordinal);
+                            columnsAsDouble[field.Column.Index].Add(valueAsDouble);
+                            break;
+                        case DataType.Float:
+                            var valueAsFloat = dataReader.GetNullableValueAsFloat(field.DbType, field.Ordinal);
+                            columnsAsFloat[field.Column.Index].Add(valueAsFloat);
+                            break;
+                        case DataType.Decimal:
+                            var valueAsDecimal = dataReader.GetNullableValueAsDecimal(field.DbType, field.Ordinal);
+                            columnsAsDecimal[field.Column.Index].Add(valueAsDecimal);
+                            break;
+                        case DataType.Byte:
+                            var valueAsByte = dataReader.GetNullableValueAsByte(field.DbType, field.Ordinal);
+                            columnsAsByte[field.Column.Index].Add(valueAsByte);
+                            break;
+                        case DataType.Bytes:
+                            var valueAsBytes = dataReader.GetNullableValueAsBytes(field.DbType, field.Ordinal);
+                            columnsAsBytes[field.Column.Index].Add(valueAsBytes);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                ++rowCount;
+            }
+
+            if (indexForString >= 0)
+            {
+                dataSet.StringCells = columnsAsString.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForBoolean >= 0)
+            {
+                dataSet.BooleanCells = columnsAsBoolean.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForInteger >= 0)
+            {
+                dataSet.IntegerCells = columnsAsInteger.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForDateTime >= 0)
+            {
+                dataSet.DateTimeCells = columnsAsDateTime.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForDouble >= 0)
+            {
+                dataSet.DoubleCells = columnsAsDouble.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForFloat >= 0)
+            {
+                dataSet.FloatCells = columnsAsFloat.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForDecimal >= 0)
+            {
+                dataSet.DecimalCells = columnsAsDecimal.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForByte >= 0)
+            {
+                dataSet.ByteCells = columnsAsByte.Select(c => c.ToArray()).ToArray();
+            }
+            if (indexForBytes >= 0)
+            {
+                dataSet.BytesCells = columnsAsBytes.Select(c => c.ToArray()).ToArray();
+            }
+
+
             dataSet.RowCount = rowCount;
             return dataSet;
         }
@@ -261,22 +452,19 @@ namespace Atdi.LegacyServices.Icsm
                     {
                         case DataType.String:
                             if (!dataReader.IsDBNull(field.Ordinal))
-                            {
                                 row.StringCells[field.Column.Index] = dataReader.GetValueAsString(field.DbType, field.Ordinal);
-                            }
-                            
                             break;
                         case DataType.Boolean:
                             if(!dataReader.IsDBNull(field.Ordinal))
-                            row.BooleanCells[field.Column.Index] = dataReader.GetValueAsBoolean(field.DbType, field.Ordinal);
+                                row.BooleanCells[field.Column.Index] = dataReader.GetValueAsBoolean(field.DbType, field.Ordinal);
                             break;
                         case DataType.Integer:
                             if(!dataReader.IsDBNull(field.Ordinal))
-                            row.IntegerCells[field.Column.Index] = dataReader.GetValueAsInt32(field.DbType, field.Ordinal);
+                                row.IntegerCells[field.Column.Index] = dataReader.GetValueAsInt32(field.DbType, field.Ordinal);
                             break;
                         case DataType.DateTime:
                             if(!dataReader.IsDBNull(field.Ordinal))
-                            row.DateTimeCells[field.Column.Index] = dataReader.GetValueAsDateTime(field.DbType, field.Ordinal);
+                                row.DateTimeCells[field.Column.Index] = dataReader.GetValueAsDateTime(field.DbType, field.Ordinal);
                             break;
                         case DataType.Double:
                             if (!dataReader.IsDBNull(field.Ordinal))
@@ -307,6 +495,7 @@ namespace Atdi.LegacyServices.Icsm
 
             dataSet.Rows = rows.ToArray();
             dataSet.RowCount = dataSet.Rows.Length;
+
             return dataSet;
         }
 

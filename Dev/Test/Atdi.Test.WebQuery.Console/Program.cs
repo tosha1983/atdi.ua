@@ -2,6 +2,7 @@
 using Atdi.Contracts.WcfServices.WebQuery;
 using Atdi.DataModels.Identity;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -16,6 +17,8 @@ namespace Atdi.Test.WebQuery
         //private static ChannelFactory<IAuthenticationManager> _httpChannelFactory = null;
         //private static ChannelFactory<IAuthenticationManager> _pipeChannelFactory = null;
 
+        private static BlockingCollection<int> _count = new BlockingCollection<int>();
+
         static void Main(string[] args)
         {
             while (true)
@@ -26,9 +29,44 @@ namespace Atdi.Test.WebQuery
                 System.Console.ReadLine();
 
                 //TestAuthenticationManager("TcpAuthenticationManager");
+                _count = new BlockingCollection<int>();
+                var timer = System.Diagnostics.Stopwatch.StartNew();
 
+                var tasks = new Task[]
+                {
+                    Task.Run(() => BathTest()),
+                    Task.Run(() => BathTest()),
+                    Task.Run(() => BathTest()),
+                    Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest()),
+                    //Task.Run(() => BathTest())
+                };
+
+
+                Task.WaitAll(tasks);
+
+                System.Console.WriteLine($"Done: {timer.Elapsed.TotalMilliseconds} ms -> Called: {_count.Count}");
+
+            }
+        }
+
+        static void BathTest()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                TestWebQueryAccess("TcpAuthenticationManager", "HttpWebQuery");
                 TestWebQueryAccess("TcpAuthenticationManager", "TcpWebQuery");
-
+                TestWebQueryAccess("TcpAuthenticationManager", "PipeWebQuery");
             }
         }
         static void TestGetData()
@@ -150,36 +188,85 @@ namespace Atdi.Test.WebQuery
 
         static void TestWebQueryAccess(string authEndpointName, string webQueryEndpointName)
         {
-            var timer = System.Diagnostics.Stopwatch.StartNew();
-
-            var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
-            var userCredential = new UserCredential()
+            try
             {
-                UserName = "Andrey",
-                Password = ""
-            };
+                var recordCount = 100;
 
-            var authResult = authManager.AuthenticateUser(userCredential);
-            if (authResult.State == DataModels.CommonOperation.OperationState.Fault)
-            {
-                Console.WriteLine(authResult.FaultCause);
-                return;
+                var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
+                var userCredential = new UserCredential()
+                {
+                    UserName = "Andrey",
+                    Password = ""
+                };
+
+                var authResult = authManager.AuthenticateUser(userCredential);
+                if (authResult.State == DataModels.CommonOperation.OperationState.Fault)
+                {
+                    Console.WriteLine(authResult.FaultCause);
+                    return;
+                }
+                _count.Add(1);
+
+                var userIdentity = authResult.Data;
+
+                var webQuery = GetWebQueryByEndpoint(webQueryEndpointName);
+                var groupsResult = webQuery.GetQueryGroups(userIdentity.UserToken);
+                if (groupsResult.State == DataModels.CommonOperation.OperationState.Fault)
+                {
+                    Console.WriteLine(groupsResult.FaultCause);
+                    return;
+                }
+                _count.Add(1);
+                //      Console.Write($"Endpoint: {webQueryEndpointName}");
+                //        Console.WriteLine($"Count group: {groupsResult.Data.Groups.Length}");
+
+                var queryFristToken = groupsResult.Data.Groups[0].QueryTokens[0];
+                var qm = webQuery.GetQueryMetadata(userIdentity.UserToken, queryFristToken);
+                _count.Add(1);
+
+                //var timer = System.Diagnostics.Stopwatch.StartNew();
+                var re1 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = recordCount }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+                //timer.Stop();
+                _count.Add(1);
+                //      System.Console.WriteLine($"ObjectRows: {timer.Elapsed.TotalMilliseconds} ms - >>> {re1.Data.Dataset.RowCount}");
+
+                //timer = System.Diagnostics.Stopwatch.StartNew();
+                var re2 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = recordCount }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+                //timer.Stop();
+                _count.Add(1);
+                //       System.Console.WriteLine($"StringRows: {timer.Elapsed.TotalMilliseconds} ms - >>> {re2.Data.Dataset.RowCount}");
+
+                //timer = System.Diagnostics.Stopwatch.StartNew();
+                var re3 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = recordCount }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+                //timer.Stop();
+                _count.Add(1);
+                //       System.Console.WriteLine($"TypedRows: {timer.Elapsed.TotalMilliseconds} ms - >>> {re3.Data.Dataset.RowCount}");
+
+                //timer = System.Diagnostics.Stopwatch.StartNew();
+                var re4 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = recordCount }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+                //timer.Stop();
+                _count.Add(1);
+                //      System.Console.WriteLine($"ObjectCells: {timer.Elapsed.TotalMilliseconds} ms - >>> {re4.Data.Dataset.RowCount}");
+
+                //timer = System.Diagnostics.Stopwatch.StartNew();
+                var re5 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = recordCount }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+                //timer.Stop();
+                _count.Add(1);
+                //     System.Console.WriteLine($"StringCells: {timer.Elapsed.TotalMilliseconds} ms - >>> {re5.Data.Dataset.RowCount}");
+
+                //timer = System.Diagnostics.Stopwatch.StartNew();
+                var re6 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = recordCount }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+                //timer.Stop();
+                _count.Add(1);
+                //  System.Console.WriteLine($"TypedCells: {timer.Elapsed.TotalMilliseconds} ms - >>> {re6.Data.Dataset.RowCount}");
             }
-
-            var userIdentity = authResult.Data;
-
-            var webQuery = GetWebQueryByEndpoint(webQueryEndpointName);
-            var groupsResult = webQuery.GetQueryGroups(userIdentity.UserToken);
-            if (groupsResult.State == DataModels.CommonOperation.OperationState.Fault)
+            catch (Exception e)
             {
-                Console.WriteLine(groupsResult.FaultCause);
-                return;
+                Console.WriteLine(e.ToString());
             }
+            
 
-            Console.WriteLine($"Count group: {groupsResult.Data.Groups.Length}");
-
-            timer.Stop();
-            System.Console.WriteLine($"TestWebQueryAccess: {timer.Elapsed.TotalMilliseconds} ms");
+            
         }
 
     }

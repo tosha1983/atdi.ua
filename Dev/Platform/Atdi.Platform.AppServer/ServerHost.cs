@@ -71,7 +71,7 @@ namespace Atdi.Platform.AppServer
             {
                 component = this._typeResolver.CreateInstance<IComponent>(new AssemblyName(config.Assembly));
                 component.Install(this._container, config);
-                this.Logger.Verbouse(Contexts.AppServerHost, Categories.Initialization, Events.ServerComponentInstalled);
+                this.Logger.Verbouse(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentInstalled);
                 return new ComponentDescriptor(component, config);
             }
             catch(Exception e)

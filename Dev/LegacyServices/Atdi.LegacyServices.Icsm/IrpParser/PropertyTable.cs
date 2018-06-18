@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OrmCs;
+
 
 namespace Atdi.LegacyServices.Icsm
 {
@@ -15,7 +15,7 @@ namespace Atdi.LegacyServices.Icsm
         public string NameTableTo;
         public string NameFieldForSetValue;
         public string Name;
-        public OrmVarType TypeValue;
+        public Orm.VarType TypeValue;
         public int Precision;
     }
 }

@@ -51,10 +51,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
-      <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
-      <Name>Atdi.AppServices.WebQuery</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
       <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
       <Name>Atdi.Contracts.CoreServices.Identity</Name>
@@ -78,10 +74,6 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LegacyServices\Atdi.LegacyServices.Icsm\Atdi.LegacyServices.Icsm.csproj">
-      <Project>{b06cf99e-314f-485b-9e0d-5289147d5552}</Project>
-      <Name>Atdi.LegacyServices.Icsm</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
