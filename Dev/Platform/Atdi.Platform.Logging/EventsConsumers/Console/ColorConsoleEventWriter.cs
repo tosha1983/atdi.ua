@@ -36,12 +36,20 @@ namespace Atdi.Platform.Logging.EventsConsumers
         private void WriteEventRow(IEvent @event)
         {
             // the part of time
-            var timeFormat = "HH:mm:ss.FFFFFF";
-            var timeString = @event.Time.ToString(timeFormat).PadRight(timeFormat.Length, '0');
+            var timeFormat = "HH:mm:ss";
+            var timeString = @event.Time.ToString(timeFormat);
             this.Write($"{timeString}", ConsoleColor.White);
 
-            var ticksString = @event.Time.Ticks.ToString();
-            this.Write($" {ticksString.Substring(ticksString.Length - 12)}", ConsoleColor.Gray);
+            var timeFormat2 = "FFF";
+            var timeString2 = @event.Time.ToString(timeFormat2).PadRight(timeFormat2.Length, '0');
+            this.Write($".{timeString2}", ConsoleColor.Gray);
+
+            var timeFormat3 = "FFFFFFF";
+            var timeString3 = @event.Time.ToString(timeFormat3).PadRight(timeFormat3.Length, '0');
+            this.Write($".{timeString3.Substring(3)}", ConsoleColor.DarkGray);
+
+            //var ticksString = @event.Time.Ticks.ToString();
+            //this.Write($" {ticksString.Substring(ticksString.Length - 12)}", ConsoleColor.Gray);
 
             // the part of thread
             var treadString = $" #{@event.ManagedThread:D4}";

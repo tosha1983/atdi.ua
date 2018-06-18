@@ -36,7 +36,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToBoolean(_dataReader.GetString(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToBoolean(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -72,7 +83,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToInt32(_dataReader.GetDateTime(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToInt32(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToInt32(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToInt32(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -108,7 +130,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return (float)Convert.ToDouble(_dataReader.GetDateTime(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return (float)Convert.ToDouble(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return (float)Convert.ToDouble(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return (float)Convert.ToDouble(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -144,7 +177,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToDouble(_dataReader.GetDateTime(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToDouble(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToDouble(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToDouble(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -180,7 +224,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToDecimal(_dataReader.GetDateTime(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToDecimal(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToDecimal(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToDecimal(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -216,7 +271,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToString(_dataReader.GetDateTime(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToString(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToString(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToString(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -252,7 +318,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToDateTime(_dataReader.GetDecimal(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToDateTime(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -288,7 +365,18 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToByte(_dataReader.GetDecimal(columnIndex));
             }
-
+            if (columnType == typeof(char))
+            {
+                return Convert.ToByte(_dataReader.GetChar(columnIndex));
+            }
+            if (columnType == typeof(short))
+            {
+                return Convert.ToByte(_dataReader.GetInt16(columnIndex));
+            }
+            if (columnType == typeof(long))
+            {
+                return Convert.ToByte(_dataReader.GetInt64(columnIndex));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -342,7 +430,23 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetDecimal(columnIndex)) };
             }
-
+            if (columnType == typeof(Guid))
+            {
+                return _dataReader.GetGuid(columnIndex).ToByteArray();
+            }
+            if (columnType == typeof(char))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetChar(columnIndex)) };
+            }
+            if (columnType == typeof(short))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt16(columnIndex)) };
+            }
+            if (columnType == typeof(long))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt64(columnIndex)) };
+            }
+            
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
@@ -658,6 +762,16 @@ namespace Atdi.LegacyServices.Icsm
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool? GetNullableValueAsBoolean(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsBoolean(fieldDbType, ordinal);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool GetValueAsBoolean(this IDataReader dataReader, Type fieldDbType, int ordinal)
         {
             if (fieldDbType == typeof(bool))
@@ -672,10 +786,31 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToBoolean(dataReader.GetString(ordinal));
             }
-
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToBoolean(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToBoolean(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToBoolean(dataReader.GetInt64(ordinal));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int? GetNullableValueAsInt32(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsInt32(fieldDbType, ordinal);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetValueAsInt32(this IDataReader dataReader, Type fieldDbType, int ordinal)
@@ -708,8 +843,29 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToInt32(dataReader.GetDateTime(ordinal));
             }
-
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToInt32(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToInt32(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToInt32(dataReader.GetInt64(ordinal));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float? GetNullableValueAsFloat(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsFloat(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -743,8 +899,29 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return (float)Convert.ToDouble(dataReader.GetDateTime(ordinal));
             }
-
+            if (fieldDbType == typeof(char))
+            {
+                return (float)Convert.ToDouble(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return (float)Convert.ToDouble(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return (float)Convert.ToDouble(dataReader.GetInt64(ordinal));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double? GetNullableValueAsDouble(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsDouble(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -778,8 +955,29 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToDouble(dataReader.GetDateTime(ordinal));
             }
-
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToDouble(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToDouble(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDouble(dataReader.GetInt64(ordinal));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal? GetNullableValueAsDecimal(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsDecimal(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -813,8 +1011,30 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToDecimal(dataReader.GetDateTime(ordinal));
             }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToDecimal(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToDecimal(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDecimal(dataReader.GetInt64(ordinal));
+            }
 
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetNullableValueAsString(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsString(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -848,8 +1068,29 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToString(dataReader.GetDateTime(ordinal));
             }
-
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToString(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToString(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToString(dataReader.GetInt64(ordinal));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime? GetNullableValueAsDateTime(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsDateTime(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -883,8 +1124,30 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToDateTime(dataReader.GetDecimal(ordinal));
             }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToDateTime(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToDateTime(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDateTime(dataReader.GetInt64(ordinal));
+            }
 
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte? GetNullableValueAsByte(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsByte(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -918,8 +1181,29 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToByte(dataReader.GetDecimal(ordinal));
             }
-
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToByte(dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToByte(dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToByte(dataReader.GetInt64(ordinal));
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte[] GetNullableValueAsBytes(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsBytes(fieldDbType, ordinal);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -971,7 +1255,23 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return new byte[] { Convert.ToByte(dataReader.GetDecimal(ordinal)) };
             }
-
+            if (fieldDbType == typeof(Guid))
+            {
+                return dataReader.GetGuid(ordinal).ToByteArray();
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return new byte[] { Convert.ToByte(dataReader.GetChar(ordinal)) };
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return new byte[] { Convert.ToByte(dataReader.GetInt16(ordinal)) };
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return new byte[] { Convert.ToByte(dataReader.GetInt64(ordinal)) };
+            }
+            
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
         }
     }

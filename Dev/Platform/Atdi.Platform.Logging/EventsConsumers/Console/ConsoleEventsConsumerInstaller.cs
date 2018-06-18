@@ -24,7 +24,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             var consumer = resolver.Resolve<ConsoleEventsConsumer>();
             producer.AddConsumer(consumer);
 
-            logger.Info("Platform", "Initializing", "Initialized the console events consumer");
+            logger.Info("Platform", "Initialization", "The console events consumer was installed");
 
         }
     }

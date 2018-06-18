@@ -30,13 +30,13 @@ namespace Atdi.Platform.AppComponent
         public void Activate()
         {
             this.OnActivate();
-            _logger.Debug(this.Name, this.Type.ToString(), (EventText)"Activated");
+            _logger.Debug("AppServer Host", "Activating", (EventText)$"The component {this.Name} was activated.");
         }
 
         public void Deactivate()
         {
             this.OnDeactivate();
-            _logger.Debug(this.Name, this.Type.ToString(), (EventText)"Deactivated");
+            _logger.Debug("AppServer Host", "Deactivating", (EventText)$"The component {this.Name} was deactivated.");
         }
 
         public void Install(IServicesContainer container, IComponentConfig config)
@@ -48,13 +48,13 @@ namespace Atdi.Platform.AppComponent
 
             this.OnInstall();
 
-            _logger.Debug(this.Name, this.Type.ToString(), (EventText)"Installed");
+            _logger.Debug("AppServer Host", "Installation", (EventText)$"The component {this.Name} was installed. The component type is {this.Type.ToString()}");
         }
 
         public void Uninstall()
         {
             this.OnUninstall();
-            _logger.Debug(this.Name, this.Type.ToString(), (EventText)"Uninstalled");
+            _logger.Debug("AppServer Host", "Uninstallation", (EventText)$"The component {this.Name} was uninstalled.");
             this._config = null;
             this._container = null;
         }

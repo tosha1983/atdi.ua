@@ -13,15 +13,19 @@ namespace Atdi.LegacyServices.Icsm
 {
     public sealed class IcsmDataLayer : LoggedObject, IDataLayer<IcsmDataOrm>
     {
+        private readonly Orm.SchemasMetadata _schemasMetadata;
         private readonly IDataLayer _dataLayer;
         private readonly IQueryBuilder _queryBuilder;
+        private readonly Dictionary<string, QueryExecutor> _contextExecutors;
 
-        private readonly Dictionary<Type, QueryExecutor> _contextExecutors;
-        public IcsmDataLayer(IDataLayer dataLayer, ILogger logger) :  base(logger)
+        public IcsmDataLayer(IDataLayer dataLayer, Orm.SchemasMetadata schemasMetadata, ILogger logger) :  base(logger)
         {
             this._dataLayer = dataLayer;
+            this._schemasMetadata = schemasMetadata;
             this._queryBuilder = new QueryBuilder(logger);
-            this._contextExecutors = new Dictionary<Type, QueryExecutor>();
+            this._contextExecutors = new Dictionary<string, QueryExecutor>();
+
+            logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfDataLayer);
         }
 
         public IQueryBuilder Builder => _queryBuilder;
@@ -29,14 +33,16 @@ namespace Atdi.LegacyServices.Icsm
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
             var contextType = typeof(TContext);
-            if (this._contextExecutors.ContainsKey(contextType))
+            var key = contextType.AssemblyQualifiedName;
+            if (this._contextExecutors.ContainsKey(key))
             {
-                return this._contextExecutors[contextType];
+                return this._contextExecutors[key];
             }
+
             var engine = this._dataLayer.GetDataEngine<TContext>();
-            var icsmOrm = new IcsmOrmQueryBuilder(engine, IcsmComponent.IcsmSchemaPath);
+            var icsmOrm = new IcsmOrmQueryBuilder(engine, this._schemasMetadata, this.Logger);
             var executor = new QueryExecutor(engine, icsmOrm, this.Logger);
-            this._contextExecutors[contextType] = executor;
+            this._contextExecutors.Add(key, executor);
             return executor;
         }
 

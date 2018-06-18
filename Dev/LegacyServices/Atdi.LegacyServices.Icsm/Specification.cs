@@ -17,12 +17,15 @@ namespace Atdi.LegacyServices.Icsm
     {
         public static readonly EventCategory CreatingInstance = "Creating instance";
         public static readonly EventCategory FetchingData = "Fetching data";
+        public static readonly EventCategory BuildingStatement = "Building SQL query";
         public static readonly EventCategory ParseIRP = "Parsing IRP";
     }
 
     static class Events
     {
         public static readonly EventText CreatedInstanceOfQueryExecutor = "Created instance of the ICSM ORM Query Executor";
+        public static readonly EventText CreatedInstanceOfDataLayer = "Created instance of the ICSM ORM Data Layer";
+        public static readonly EventText CreatedInstanceOfQueryBuilder = "Created instance of the ICSM ORM Query Builder";
     }
     static class TraceScopeNames
     {
@@ -41,6 +44,17 @@ namespace Atdi.LegacyServices.Icsm
         public static readonly ExceptionText MemberNameIsNotDefined = "A member name in the expression '{0}' is not defined.";
         public static readonly ExceptionText DataSetStructureNotSupported = "The data set structure '{0}' is not supported.";
         public static readonly ExceptionText ParsingIRPFile = "Error while parsing the IRP file";
+        public static readonly ExceptionText InvalideInitializeIcsmEnvironment = "Invalide initialize the environment of ICSM ORM";
+        public static readonly ExceptionText AbortedBuildSelectStatement = "Aborted sql query building for data selection";
+        public static readonly ExceptionText NotFoundOrmField = "Not found ORM field with path '{0}' into table with name '{1}'";
+        public static readonly ExceptionText UndefinedParameter = "Undefined parameter with name '{0}'";
     }
 
+    static class Parameters
+    {
+        public static readonly string SchemasPath = "SchemasPath";
+        public static readonly string Edition = "Edition";
+        public static readonly string Schemas = "Schemas";
+        public static readonly string Modules = "Modules";
+    }
 }
