@@ -26,9 +26,9 @@ namespace Atdi.CoreServices.DataLayer
             switch (direction)
             {
                 case SortDirection.Ascending:
-                    return expression.ToUpper() + " ASC";
+                    return expression + " ASC";
                 case SortDirection.Descending:
-                    return expression.ToUpper() + " DESC";
+                    return expression + " DESC";
                 default:
                     throw new InvalidOperationException(Exceptions.SortDirectionNotSupported.With(direction));
             }
@@ -41,12 +41,12 @@ namespace Atdi.CoreServices.DataLayer
                 return expression;
             }
 
-            return $"{expression.ToUpper()} AS \"{alias.ToUpper()}\"";
+            return $"{expression} AS \"{alias}\"";
         }
 
         public string EncodeFieldName(string name)
         {
-            return $"\"{name.ToUpper()}\"";
+            return $"\"{name}\"";
         }
 
         public string EncodeFieldName(string alias, string name)
