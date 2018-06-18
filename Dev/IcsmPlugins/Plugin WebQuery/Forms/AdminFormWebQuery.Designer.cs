@@ -33,10 +33,10 @@
             this.comboBox_group = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txtUserIdent = new System.Windows.Forms.TextBox();
             this.labelIdentUser = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ButtonClose = new System.Windows.Forms.Button();
+            this.ButtonSaveAllChange = new System.Windows.Forms.Button();
             this.labelLevelAccess = new System.Windows.Forms.Label();
             this.labelIRPFile = new System.Windows.Forms.Label();
             this.buttonOpenIRP = new System.Windows.Forms.Button();
@@ -53,7 +53,7 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.ButtonSaveAllChange = new System.Windows.Forms.Button();
+            this.txtUserIdent = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -93,9 +93,9 @@
             this.textBox_code.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_code.Location = new System.Drawing.Point(110, 88);
+            this.textBox_code.Location = new System.Drawing.Point(179, 88);
             this.textBox_code.Name = "textBox_code";
-            this.textBox_code.Size = new System.Drawing.Size(338, 20);
+            this.textBox_code.Size = new System.Drawing.Size(269, 20);
             this.textBox_code.TabIndex = 31;
             // 
             // comboBox_group
@@ -105,9 +105,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_group.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_group.FormattingEnabled = true;
-            this.comboBox_group.Location = new System.Drawing.Point(110, 175);
+            this.comboBox_group.Location = new System.Drawing.Point(179, 175);
             this.comboBox_group.Name = "comboBox_group";
-            this.comboBox_group.Size = new System.Drawing.Size(390, 21);
+            this.comboBox_group.Size = new System.Drawing.Size(321, 21);
             this.comboBox_group.TabIndex = 30;
             // 
             // label1
@@ -131,16 +131,6 @@
             this.groupBox2.TabIndex = 27;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mode visible records";
-            // 
-            // txtUserIdent
-            // 
-            this.txtUserIdent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUserIdent.Location = new System.Drawing.Point(289, 13);
-            this.txtUserIdent.Name = "txtUserIdent";
-            this.txtUserIdent.Size = new System.Drawing.Size(205, 20);
-            this.txtUserIdent.TabIndex = 17;
             // 
             // labelIdentUser
             // 
@@ -172,6 +162,18 @@
             this.ButtonClose.Text = "Close";
             this.ButtonClose.UseVisualStyleBackColor = true;
             this.ButtonClose.Click += new System.EventHandler(this.ButtonClose_Click);
+            // 
+            // ButtonSaveAllChange
+            // 
+            this.ButtonSaveAllChange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.ButtonSaveAllChange.Location = new System.Drawing.Point(58, 12);
+            this.ButtonSaveAllChange.Name = "ButtonSaveAllChange";
+            this.ButtonSaveAllChange.Size = new System.Drawing.Size(193, 23);
+            this.ButtonSaveAllChange.TabIndex = 2;
+            this.ButtonSaveAllChange.Text = "Save all changes";
+            this.ButtonSaveAllChange.UseVisualStyleBackColor = true;
+            this.ButtonSaveAllChange.Click += new System.EventHandler(this.ButtonSaveAllChange_Click);
             // 
             // labelLevelAccess
             // 
@@ -207,9 +209,9 @@
             this.textBoxIRPFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxIRPFilePath.Location = new System.Drawing.Point(110, 58);
+            this.textBoxIRPFilePath.Location = new System.Drawing.Point(179, 58);
             this.textBoxIRPFilePath.Name = "textBoxIRPFilePath";
-            this.textBoxIRPFilePath.Size = new System.Drawing.Size(338, 20);
+            this.textBoxIRPFilePath.Size = new System.Drawing.Size(269, 20);
             this.textBoxIRPFilePath.TabIndex = 4;
             // 
             // textBoxDescrQuery
@@ -247,9 +249,9 @@
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.Location = new System.Drawing.Point(110, 32);
+            this.textBoxName.Location = new System.Drawing.Point(179, 32);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(338, 20);
+            this.textBoxName.Size = new System.Drawing.Size(269, 20);
             this.textBoxName.TabIndex = 0;
             // 
             // groupBoxEditQuery
@@ -339,17 +341,17 @@
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 3;
             // 
-            // ButtonSaveAllChange
+            // txtUserIdent
             // 
-            this.ButtonSaveAllChange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.ButtonSaveAllChange.Location = new System.Drawing.Point(58, 12);
-            this.ButtonSaveAllChange.Name = "ButtonSaveAllChange";
-            this.ButtonSaveAllChange.Size = new System.Drawing.Size(193, 23);
-            this.ButtonSaveAllChange.TabIndex = 2;
-            this.ButtonSaveAllChange.Text = "Save all changes";
-            this.ButtonSaveAllChange.UseVisualStyleBackColor = true;
-            this.ButtonSaveAllChange.Click += new System.EventHandler(this.ButtonSaveAllChange_Click);
+            this.txtUserIdent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUserIdent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.txtUserIdent.FormattingEnabled = true;
+            this.txtUserIdent.Location = new System.Drawing.Point(291, 13);
+            this.txtUserIdent.Name = "txtUserIdent";
+            this.txtUserIdent.Size = new System.Drawing.Size(203, 21);
+            this.txtUserIdent.TabIndex = 31;
             // 
             // AdminFormWebQuery
             // 
@@ -397,7 +399,6 @@
         private System.Windows.Forms.Label labelIRPFile;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button ButtonClose;
-        private System.Windows.Forms.TextBox txtUserIdent;
         private System.Windows.Forms.Label labelIdentUser;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button_Constraints;
@@ -406,5 +407,6 @@
         private System.Windows.Forms.TextBox textBox_code;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button ButtonSaveAllChange;
+        private System.Windows.Forms.ComboBox txtUserIdent;
     }
 }

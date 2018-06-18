@@ -91,140 +91,148 @@ namespace Atdi.Test.WebQuery
 
                     // пример выполнения запроса и получения данных
                     // подготовка парамтеров и условий выполнения запроса
+               
                     var fetchOptions = new FetchOptions
                     {
-                        Id = Guid.NewGuid(), // генерируем идентификатор выборки, будет возвращен с результатом
-                                             //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
-                                            // Columns = new string[] { "ID","CHANNEL_SEP" },
-                        ResultStructure = DataSetStructure.StringRows,  // указываем тип возвращаемой структуры данных, в данном случии будет масив объектов строк состоящих из ячеек типа string.
-                        Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
-                        {
-                            Type = LimitValueType.Records,
-                            Value = 1000
-                        }, 
-                        Condition = new ConditionExpression // указываем условие выборки
-                        {
-                            LeftOperand = new ColumnOperand { ColumnName = "ID" },
-                            Operator = ConditionOperator.NotBetween,
-                            RightOperand = new IntegerValuesOperand {  Values = new int?[] {10, 3599 } }
-                        },  
-                        Orders = new OrderExpression[] // указываем условие сортировки
-                        {
-                            //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
-                            new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
-                            //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
-                        }
-                    };
+                        Id = Guid.NewGuid(),
+                        ResultStructure = DataSetStructure.StringRows
+                        // генерируем идентификатор выборки, будет возвращен с результатом
+                        //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
+                        /*
+                        Columns = new string[] { "ID" },
+   ResultStructure = DataSetStructure.StringRows,  // указываем тип возвращаемой структуры данных, в данном случии будет масив объектов строк состоящих из ячеек типа string.
+   Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
+   {
+       Type = LimitValueType.Records,
+       Value = 1000
+   }, 
+   Condition = new ConditionExpression // указываем условие выборки
+   {
+       LeftOperand = new ColumnOperand { ColumnName = "ID" },
+       Operator = ConditionOperator.NotBetween,
+       RightOperand = new IntegerValuesOperand {  Values = new int?[] {10, 3599 } }
+   },  
 
-                    // обащение к сервису для выполнния запроса
-                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
-                    // Валидация результата
-                    if (executingResult.State == OperationState.Fault)
-                    {
-                        throw new InvalidOperationException(executingResult.FaultCause);
-                    }
+   Orders = new OrderExpression[] // указываем условие сортировки
+   {
+       //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
+       new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
+       //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
+   }
+   */
 
-                    // распаковка результата
-                    var queryResult = executingResult.Data;
+};
 
 
-                }
-            }
+// обащение к сервису для выполнния запроса
+var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
+// Валидация результата
+if (executingResult.State == OperationState.Fault)
+{
+   throw new InvalidOperationException(executingResult.FaultCause);
+}
+
+// распаковка результата
+var queryResult = executingResult.Data;
 
 
-            // Вариант выполнения запрос 2: используем преопределнное значение текстового кода запроса 
-            // обащение к сервису за метаданніми запроса
-            var defQueryMetadataByCodeResult = webQueryService.GetQueryMetadataByCode(userIdentity.UserToken, "SomeCode");
-            // Валидация результата получения метаданных
-            if (defQueryMetadataByCodeResult.State != OperationState.Fault)
-            {
-                throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
-            }
-            var queryByCode = defQueryMetadataByCodeResult.Data;
-            // подготовка параметров и выполнение запроса аналогично ка кпоказано через группы
+}
+}
 
 
-            // Вариант выполнения запрос 3: используем заранее сохраненый токен запроса
+// Вариант выполнения запрос 2: используем преопределнное значение текстового кода запроса 
+// обащение к сервису за метаданніми запроса
+var defQueryMetadataByCodeResult = webQueryService.GetQueryMetadataByCode(userIdentity.UserToken, "SomeCode");
+// Валидация результата получения метаданных
+if (defQueryMetadataByCodeResult.State != OperationState.Fault)
+{
+throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
+}
+var queryByCode = defQueryMetadataByCodeResult.Data;
+// подготовка параметров и выполнение запроса аналогично ка кпоказано через группы
 
 
-            // выполнение дейстивя модификации данных в рамках запроса
+// Вариант выполнения запрос 3: используем заранее сохраненый токен запроса
 
-            // создание записи
-            var creationAction = new TypedRowCreationAction
-            {
-                Id = Guid.NewGuid(),
-                Columns = new DataSetColumn[]
-                {
-                    new DataSetColumn{ Name = "CODE", Type = DataType.String, Index = 0}, // индекс внутри типа - с 0
-                    new DataSetColumn{ Name = "DATE_OUT", Type = DataType.DateTime, Index = 0} // индекс внутри типа - с 0
-                },
-                Row = new TypedDataRow
-                {
-                    StringCells = new string[] { "CODE1" },
-                    DateTimeCells = new DateTime?[] { DateTime.Now }
-                },
-            };
 
-            // модификация записи
-            var updationAction = new ObjectRowUpdationAction
-            {
-                Id = Guid.NewGuid(),
-                Columns = new DataSetColumn[]
-                {
-                    new DataSetColumn{ Name = "CODE", Type = DataType.String, Index = 0}, // индекс внутри массива ячеек
-                    new DataSetColumn{ Name = "DATE_OUT", Type = DataType.DateTime, Index = 1} // индекс внутри массива ячеек
-                },
-                Row = new ObjectDataRow
-                {
-                     Cells = new object[] { "CODE2", DateTime.Now.ToLocalTime() }
-                },
-                Condition = new ConditionExpression // указываем условие выборки
-                {
-                    LeftOperand = new ColumnOperand { ColumnName = "ID" },
-                    Operator = ConditionOperator.Equal ,
-                    RightOperand = new IntegerValueOperand { Value = 125}
-                }
-            };
+// выполнение дейстивя модификации данных в рамках запроса
 
-            // удаление записи
-            var deleteionAction = new DeleteionAction
-            {
-                Id = Guid.NewGuid(),
-                Condition = new ConditionExpression // указываем условие выборки
-                {
-                    LeftOperand = new ColumnOperand { ColumnName = "ID" },
-                    Operator = ConditionOperator.In,
-                    RightOperand = new IntegerValuesOperand { Values = new int?[] { 234, 3234, 599 } }
-                }
-            };
+// создание записи
+var creationAction = new TypedRowCreationAction
+{
+Id = Guid.NewGuid(),
+Columns = new DataSetColumn[]
+{
+new DataSetColumn{ Name = "CODE", Type = DataType.String, Index = 0}, // индекс внутри типа - с 0
+new DataSetColumn{ Name = "DATE_OUT", Type = DataType.DateTime, Index = 0} // индекс внутри типа - с 0
+},
+Row = new TypedDataRow
+{
+StringCells = new string[] { "CODE1" },
+DateTimeCells = new DateTime?[] { DateTime.Now }
+},
+};
 
-            // пакуем действия в ченджсет
-            var changset = new Changeset
-            {
-                Id = Guid.NewGuid(),
-                Actions = new DataModels.Action[] { creationAction, updationAction, deleteionAction }
-            };
+// модификация записи
+var updationAction = new ObjectRowUpdationAction
+{
+Id = Guid.NewGuid(),
+Columns = new DataSetColumn[]
+{
+new DataSetColumn{ Name = "CODE", Type = DataType.String, Index = 0}, // индекс внутри массива ячеек
+new DataSetColumn{ Name = "DATE_OUT", Type = DataType.DateTime, Index = 1} // индекс внутри массива ячеек
+},
+Row = new ObjectDataRow
+{
+Cells = new object[] { "CODE2", DateTime.Now.ToLocalTime() }
+},
+Condition = new ConditionExpression // указываем условие выборки
+{
+LeftOperand = new ColumnOperand { ColumnName = "ID" },
+Operator = ConditionOperator.Equal ,
+RightOperand = new IntegerValueOperand { Value = 125}
+}
+};
 
-            // обащение к сервису для внесения изменений - 3 действия будут отправлены на сервре и выполнены послеовательно
-            var saveChangeResult = webQueryService.SaveChanges(userIdentity.UserToken, queryByCode.Token,  changset);
-            // Валидация результата изменения данных
-            if (saveChangeResult.State != OperationState.Fault)
-            {
-                throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
-            }
-         
-        }
+// удаление записи
+var deleteionAction = new DeleteionAction
+{
+Id = Guid.NewGuid(),
+Condition = new ConditionExpression // указываем условие выборки
+{
+LeftOperand = new ColumnOperand { ColumnName = "ID" },
+Operator = ConditionOperator.In,
+RightOperand = new IntegerValuesOperand { Values = new int?[] { 234, 3234, 599 } }
+}
+};
 
-        private static IAuthenticationManager GetAuthenticationManager(string endpointName)
-        {
-            var f = new ChannelFactory<IAuthenticationManager>(endpointName);
-            return f.CreateChannel();
-        }
+// пакуем действия в ченджсет
+var changset = new Changeset
+{
+Id = Guid.NewGuid(),
+Actions = new DataModels.Action[] { creationAction, updationAction, deleteionAction }
+};
 
-        private static IWebQuery GetWebQuery(string endpointName)
-        {
-            var f = new ChannelFactory<IWebQuery>(endpointName);
-            return f.CreateChannel();
-        }
-    }
+// обащение к сервису для внесения изменений - 3 действия будут отправлены на сервре и выполнены послеовательно
+var saveChangeResult = webQueryService.SaveChanges(userIdentity.UserToken, queryByCode.Token,  changset);
+// Валидация результата изменения данных
+if (saveChangeResult.State != OperationState.Fault)
+{
+throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
+}
+
+}
+
+private static IAuthenticationManager GetAuthenticationManager(string endpointName)
+{
+var f = new ChannelFactory<IAuthenticationManager>(endpointName);
+return f.CreateChannel();
+}
+
+private static IWebQuery GetWebQuery(string endpointName)
+{
+var f = new ChannelFactory<IWebQuery>(endpointName);
+return f.CreateChannel();
+}
+}
 }

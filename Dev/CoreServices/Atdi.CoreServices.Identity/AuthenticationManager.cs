@@ -11,7 +11,8 @@ using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.CoreServices.Identity.Models;
 using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
-using Atdi.DataModels;
+using Atdi.Contracts.CoreServices.Netkey;
+
 
 namespace Atdi.CoreServices.Identity
 {
@@ -20,12 +21,14 @@ namespace Atdi.CoreServices.Identity
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IUserTokenProvider _tokenProvider;
         private readonly IQueryExecutor _queryExecutor;
+        private readonly INetKeyValidator _netKey;
 
-        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, ILogger logger) : base(logger)
+        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, INetKeyValidator netKey, ILogger logger) : base(logger)
         {
             this._dataLayer = dataLayer;
             this._tokenProvider = tokenProvider;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
+            this._netKey = netKey;
         }
 
         private UserIdentity CreateUserIdentity(IcsmUser user)
@@ -48,45 +51,9 @@ namespace Atdi.CoreServices.Identity
             };
         }
 
-        private void Test()
-        {
-            var query = this._dataLayer.Builder
-                .From("MOB_STATION")
-                .Select(
-                    "ID",
-                    "Antenna.ID",
-                    "Antenna.NAME",
-                    "BW", "DATE_MODIFIED");
-
-            var columns = new DataSetColumn[]
-            {
-                new DataSetColumn{ Name="ID", Type = DataType.Integer},
-                new DataSetColumn{ Name="Antenna.ID", Type = DataType.Integer},
-                new DataSetColumn{ Name="Antenna.NAME", Type = DataType.String},
-                new DataSetColumn{ Name="BW", Type = DataType.Decimal},
-                new DataSetColumn{ Name="DATE_MODIFIED", Type = DataType.DateTime},
-            };
-
-            try
-            {
-                var ds1 = this._queryExecutor.Fetch(query, columns, DataSetStructure.ObjectCells);
-                ds1 = this._queryExecutor.Fetch(query, columns, DataSetStructure.ObjectCells);
-                var ds2 = this._queryExecutor.Fetch(query, columns, DataSetStructure.StringCells);
-                var ds3 = this._queryExecutor.Fetch(query, columns, DataSetStructure.TypedRows);
-                var ds4 = this._queryExecutor.Fetch(query, columns, DataSetStructure.ObjectRows);
-                var ds5 = this._queryExecutor.Fetch(query, columns, DataSetStructure.StringRows);
-            }
-            catch(Exception e)
-            {
-                this.Logger.Exception("Test", e);
-            }
-
-        }
 
         public UserIdentity AuthenticateUser(UserCredential credential)
         {
-            //this.Test();
-
             if (credential == null)
             {
                 throw new ArgumentNullException(nameof(credential));
