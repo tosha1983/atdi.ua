@@ -53,6 +53,7 @@ namespace Atdi.LegacyServices.Icsm
     static class Parameters
     {
         public static readonly string SchemasPath = "SchemasPath";
+        public static readonly string SchemaPrefix = "SchemaPrefix";
         public static readonly string Edition = "Edition";
         public static readonly string Schemas = "Schemas";
         public static readonly string Modules = "Modules";

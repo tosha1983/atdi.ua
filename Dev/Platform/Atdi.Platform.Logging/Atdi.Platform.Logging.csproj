@@ -44,6 +44,7 @@
     <Compile Include="DataConvertors\SimpleDataConvertor.cs" />
     <Compile Include="EventsConsumers\Console\ColorConsoleEventWriter.cs" />
     <Compile Include="EventsConsumers\Console\ConsoleEventsConsumer.cs" />
+    <Compile Include="EventsConsumers\Console\ConsoleEventsConsumerConfig.cs" />
     <Compile Include="EventsConsumers\Console\ConsoleEventsConsumerInstaller.cs" />
     <Compile Include="Events\BeginTraceEvent.cs" />
     <Compile Include="Events\CriticalEvent.cs" />

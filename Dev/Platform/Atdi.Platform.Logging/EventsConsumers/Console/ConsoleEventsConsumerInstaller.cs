@@ -13,6 +13,9 @@ namespace Atdi.Platform.Logging.EventsConsumers
         {
             var resolver = container.GetResolver<IServicesResolver>();
 
+            var config = new ConsoleEventsConsumerConfig(parameters);
+
+            container.RegisterInstance(typeof(ConsoleEventsConsumerConfig), config, ServiceLifetime.Singleton);
             container.Register<IConsoleEventWriter, ColorConsoleEventWriter>(ServiceLifetime.Singleton);
             container.Register<ConsoleEventsConsumer>(ServiceLifetime.Singleton);
 
@@ -22,6 +25,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             var logger = resolver.Resolve<ILogger>();
             var producer = resolver.Resolve<IEventsProducer>();
             var consumer = resolver.Resolve<ConsoleEventsConsumer>();
+
             producer.AddConsumer(consumer);
 
             logger.Info("Platform", "Initialization", "The console events consumer was installed");
