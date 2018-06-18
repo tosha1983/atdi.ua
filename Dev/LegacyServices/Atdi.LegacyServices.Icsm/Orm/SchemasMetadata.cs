@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.Contracts.CoreServices.DataLayer;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
 {
     public sealed class SchemasMetadata
     {
+        private readonly SchemasMetadataConfig _config;
         private readonly Dictionary<string, Module> _modules;
         private readonly Dictionary<string, Semant> _dicoSemants;
         private readonly List<Semant> _specStrings;
@@ -20,22 +22,12 @@ namespace Atdi.LegacyServices.Icsm.Orm
         private bool _hasSemant = false;
         private bool _singlePosEqpAnt = false;
 
-        public string FolderPath { get; private set; }
 
-        public SchemasMetadata(string folderPath, string[] schemaNames, string[] moduleNames, string edition)
+        public SchemasMetadata(SchemasMetadataConfig config)
         {
-            if (string.IsNullOrEmpty(folderPath))
-            {
-                throw new ArgumentException("message", nameof(folderPath));
-            }
+            this._config = config ?? throw new ArgumentNullException(nameof(config));
 
-            if (schemaNames == null || schemaNames.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(schemaNames));
-            }
-
-            this.FolderPath = folderPath;
-            this._singlePosEqpAnt = (edition == "Developer1" || edition == "Standard1");
+            this._singlePosEqpAnt = (config.Edition == "Developer1" || config.Edition == "Standard1");
             this._hasSemant = false;
 
             this._tables = new Dictionary<string, Table>();
@@ -45,19 +37,19 @@ namespace Atdi.LegacyServices.Icsm.Orm
             this._specStrings = new List<Semant>();
             this._modules = new Dictionary<string, Module>();
 
-            if (moduleNames != null && moduleNames.Length > 0)
+            if (config.Modules != null && config.Modules.Length > 0)
             {
-                for (int i = 0; i < moduleNames.Length; i++)
+                for (int i = 0; i < config.Modules.Length; i++)
                 {
-                    var moduleName = moduleNames[i];
+                    var moduleName = config.Modules[i];
                     this._modules.Add(moduleName, new Module(moduleName));
                 }
             }
             
-            for (int i = 0; i < schemaNames.Length; i++)
+            for (int i = 0; i < config.Schemas.Length; i++)
             {
-                var schemaName = schemaNames[i];
-                var fileName = Path.Combine(folderPath, schemaName + ".Schema");
+                var schemaName = config.Schemas[i];
+                var fileName = Path.Combine(config.SchemasPath, schemaName + ".Schema");
                 LoadSchema(fileName, schemaName);
             }
         }
@@ -108,7 +100,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             }
             if (!isStopped)
             {
-                throw new InvalidOperationException("Invalid a struct of schema");
+                throw new InvalidOperationException($"Invalid a struct of schema '{schemaName}'");
             }
         }
 
@@ -810,8 +802,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
             }
         }
 
-        public string BuildSelectStatement(string tableName, string[] fieldPaths, string schemaPrefix, DBMS dbms, string quoteColumn)
+        public string BuildSelectStatement(IEngineSyntax engineSyntax, string tableName, string[] fieldPaths) // DBMS dbms, string quoteColumn)
         {
+            var schemaPrefix = this._config.SchemaPrefix + ".";
+
             var dbTables = new Dictionary<string, DbTable>();
             var dbJoines = new List<DbJoin>();
             var dbFields = new List<DbField>();
@@ -827,26 +821,26 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 selectedFields[i] = dbField;
             }
 
-             var joinSql = BuildJoinStatement(dbms, quoteColumn, tableName, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+             var joinSql = BuildJoinStatement(engineSyntax, tableName, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
 
             var sql = new StringBuilder();
 
             sql.AppendLine("SELECT ");
 
             
-            var leftQuote = string.Empty;
-            var rightQuote = string.Empty;
-            if (quoteColumn.Length == 2)
-            {
-                leftQuote = quoteColumn.Substring(0, 1);
-                rightQuote = quoteColumn.Substring(1, 1);
-            }
+            //var leftQuote = string.Empty;
+            //var rightQuote = string.Empty;
+            //if (quoteColumn.Length == 2)
+            //{
+            //    leftQuote = quoteColumn.Substring(0, 1);
+            //    rightQuote = quoteColumn.Substring(1, 1);
+            //}
 
             var columnsSql = new string[selectedFields.Length];
             for (int i = 0; i < selectedFields.Length; i++)
             {
                 var dbField = selectedFields[i];
-                columnsSql[i] = "    " + dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
+                columnsSql[i] = "    " + engineSyntax.ColumnExpression(dbField.m_name, dbField.Path); //(dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
             }
 
             sql.AppendLine(string.Join("," + Environment.NewLine, columnsSql));
@@ -900,20 +894,20 @@ namespace Atdi.LegacyServices.Icsm.Orm
             return sql.ToString();
         }
 
-        private string BuildJoinStatement(DBMS dbms, string quoteColumn, string tableName, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields)
+        private string BuildJoinStatement(IEngineSyntax engineSyntax, string tableName, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields)
         {
             string joinSql = string.Empty;
-            string str;
-            string str2;
-            if (quoteColumn.Length == 2)
-            {
-                str = quoteColumn.Substring(0, 1);
-                str2 = quoteColumn.Substring(1, 1);
-            }
-            else
-            {
-                str2 = (str = "");
-            }
+            //string str;
+            //string str2;
+            //if (quoteColumn.Length == 2)
+            //{
+            //    str = quoteColumn.Substring(0, 1);
+            //    str2 = quoteColumn.Substring(1, 1);
+            //}
+            //else
+            //{
+            //    str2 = (str = "");
+            //}
             List<string> list = new List<string>();
 
 
@@ -938,10 +932,6 @@ namespace Atdi.LegacyServices.Icsm.Orm
                     {
                         flag = true;
                     }
-                    else if (dbms == DBMS.Access && this.FindColumnInMappedTable(current2.logTab, current.m_realFld, false, ref text3, ref text2))
-                    {
-                        flag = true;
-                    }
                 }
                 if (!flag)
                 {
@@ -954,7 +944,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
                         }
                     }
                 }
-                string text5 = str + current.m_realFld + str2;
+                string text5 = engineSyntax.EncodeFieldName(current.m_realFld); // str + current.m_realFld + str2;
                 if (flag)
                 {
                     string str3;
@@ -987,83 +977,81 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 }
             }
 
-            if (dbms == DBMS.Access || dbms == DBMS.InterBase || dbms == DBMS.MsSql || dbms == DBMS.Oracle || dbms == DBMS.VisualFoxPro)
+            
+            if (dbJoines != null)
             {
-                if (dbJoines != null)
+                foreach (var current5 in dbJoines)
                 {
-                    foreach (var current5 in dbJoines)
+                    if (current5.outer)
                     {
-                        if (current5.outer)
+                        var dbrecordtable2 = this.GetDbTable(current5.sTab, dbTables);
+                        var dbrecordtable3 = this.GetDbTable(current5.dTab, dbTables);
+                        string text6 = (dbrecordtable2.alias != null) ? dbrecordtable2.Tcaz : dbrecordtable2.tbNameInDb;
+                        string text7 = (dbrecordtable3.alias != null) ? dbrecordtable3.Tcaz : dbrecordtable3.tbNameInDb;
+                        dbrecordtable3.tmp.cond = "";
+                        //string text8 = str; // "[";
+                        //string text9 = str2; // "]";
+                        for (int i = 0; i < current5.nequ; i++)
                         {
-                            var dbrecordtable2 = this.GetDbTable(current5.sTab, dbTables);
-                            var dbrecordtable3 = this.GetDbTable(current5.dTab, dbTables);
-                            string text6 = (dbrecordtable2.alias != null) ? dbrecordtable2.Tcaz : dbrecordtable2.tbNameInDb;
-                            string text7 = (dbrecordtable3.alias != null) ? dbrecordtable3.Tcaz : dbrecordtable3.tbNameInDb;
-                            dbrecordtable3.tmp.cond = "";
-                            string text8 = str; // "[";
-                            string text9 = str2; // "]";
-                            for (int i = 0; i < current5.nequ; i++)
+                            var ormItem = current5.sItem[i];
+                            var ormItem2 = current5.dItem[i];
+                            if (!(current5.sTab != ormItem.m_logTab))
                             {
-                                var ormItem = current5.sItem[i];
-                                var ormItem2 = current5.dItem[i];
-                                if (!(current5.sTab != ormItem.m_logTab))
+                                if (ormItem is DbExpressionField)
                                 {
-                                    if (ormItem is DbExpressionField)
+                                    TotoDBR expr_3E3 = dbrecordtable3.tmp;
+                                    expr_3E3.cond += string.Format("{0}{1} = {2}.{3}", new object[]
                                     {
-                                        TotoDBR expr_3E3 = dbrecordtable3.tmp;
-                                        expr_3E3.cond += string.Format("{0}{1}= {2}.{3}{4}{5}", new object[]
-                                        {
-                                            (i != 0) ? " AND " : "",
-                                            ormItem.GetDataName(),
-                                            text7,
-                                            text8,
-                                            ormItem2.m_realFld,
-                                            text9
-                                        });
-                                    }
-                                    else
+                                        (i != 0) ? " AND " : "",
+                                        ormItem.GetDataName(),
+                                        text7,
+                                        //text8,
+                                        engineSyntax.EncodeFieldName(ormItem2.m_realFld),
+                                        //text9
+                                    });
+                                }
+                                else
+                                {
+                                    TotoDBR expr_44C = dbrecordtable3.tmp;
+                                    expr_44C.cond += string.Format("{0}{1}.{2} = {3}.{4}", new object[]
                                     {
-                                        TotoDBR expr_44C = dbrecordtable3.tmp;
-                                        expr_44C.cond += string.Format("{0}{1}.{2}{3}{4} = {5}.{6}{7}{8}", new object[]
-                                        {
-                                            (i != 0) ? " AND " : "",
-                                            text6,
-                                            text8,
-                                            ormItem.m_realFld,
-                                            text9,
-                                            text7,
-                                            text8,
-                                            ormItem2.m_realFld,
-                                            text9
-                                        });
-                                    }
+                                        (i != 0) ? " AND " : "",
+                                        text6,
+                                        //text8,
+                                        engineSyntax.EncodeFieldName(ormItem.m_realFld),
+                                        //text9,
+                                        text7,
+                                        //text8,
+                                        engineSyntax.EncodeFieldName(ormItem2.m_realFld),
+                                        //text9
+                                    });
                                 }
                             }
-                            dbrecordtable3.tmp.outerEd = dbrecordtable2;
-                            dbrecordtable2.tmp.NbLeft++;
                         }
+                        dbrecordtable3.tmp.outerEd = dbrecordtable2;
+                        dbrecordtable2.tmp.NbLeft++;
                     }
                 }
-                bool flag2;
-                do
-                {
-                    flag2 = true;
-                    foreach (var current6 in dbTables.Values)
-                    {
-                        if (current6.tmp.outerEd != null && current6.tmp.NbLeft == 0)
-                        {
-                            var dbrecordtable2 = current6.tmp.outerEd;
-                            var dbrecordtable3 = current6;
-                            dbrecordtable2.tmp.nam = string.Format("({0} LEFT JOIN {1} ON {2})", dbrecordtable2.tmp.nam, dbrecordtable3.tmp.nam, dbrecordtable3.tmp.cond);
-                            dbrecordtable2.tmp.NbLeft--;
-                            dbrecordtable3.tmp.nam = null;
-                            dbrecordtable3.tmp.outerEd = null;
-                            flag2 = false;
-                        }
-                    }
-                }
-                while (!flag2);
             }
+            bool flag2;
+            do
+            {
+                flag2 = true;
+                foreach (var current6 in dbTables.Values)
+                {
+                    if (current6.tmp.outerEd != null && current6.tmp.NbLeft == 0)
+                    {
+                        var dbrecordtable2 = current6.tmp.outerEd;
+                        var dbrecordtable3 = current6;
+                        dbrecordtable2.tmp.nam = string.Format("({0} LEFT JOIN {1} ON {2})", dbrecordtable2.tmp.nam, dbrecordtable3.tmp.nam, dbrecordtable3.tmp.cond);
+                        dbrecordtable2.tmp.NbLeft--;
+                        dbrecordtable3.tmp.nam = null;
+                        dbrecordtable3.tmp.outerEd = null;
+                        flag2 = false;
+                    }
+                }
+            }
+            while (!flag2);
 
             string str4 = "";
             foreach (var current7 in dbTables.Values)

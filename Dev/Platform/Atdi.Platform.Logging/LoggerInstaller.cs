@@ -11,15 +11,10 @@ namespace Atdi.Platform.Logging
     {
         public void Install(IServicesContainer container, IConfigParameters parameters)
         {
-            var logConfig = new LogConfig();
-            if (parameters.Has(LogConfig.EventsCapacityConfigKey))
-            {
-                logConfig[LogConfig.EventsCapacityConfigKey] = parameters[LogConfig.EventsCapacityConfigKey];
-            }
+            var logConfig = new LogConfig(parameters);
 
             container.RegisterInstance<ILogConfig>(logConfig, ServiceLifetime.Singleton);
             container.Register<IEventDataConvertor, DataConvertors.SimpleDataConvertor>(ServiceLifetime.Singleton);
-
             container.Register<ILogger, IEventsProducer, AsyncLogger>(ServiceLifetime.Singleton);
         }
     }

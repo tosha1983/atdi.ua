@@ -79,6 +79,7 @@
     <Compile Include="Orm\JoinType.cs" />
     <Compile Include="Orm\Module.cs" />
     <Compile Include="Orm\Null.cs" />
+    <Compile Include="Orm\SchemasMetadataConfig.cs" />
     <Compile Include="Orm\Semant.cs" />
     <Compile Include="Orm\Table.cs" />
     <Compile Include="Orm\TableCat.cs" />

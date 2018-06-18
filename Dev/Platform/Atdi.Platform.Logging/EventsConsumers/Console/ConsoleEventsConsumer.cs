@@ -11,11 +11,13 @@ namespace Atdi.Platform.Logging.EventsConsumers
         public static readonly int EventsLimit = 5000;
 
         private readonly IConsoleEventWriter _consoleWriter;
+        private readonly ConsoleEventsConsumerConfig _config;
         private readonly object _locker = new object();
 
-        public ConsoleEventsConsumer(IConsoleEventWriter consoleWriter)
+        public ConsoleEventsConsumer(IConsoleEventWriter consoleWriter, ConsoleEventsConsumerConfig config)
         {
             this._consoleWriter = consoleWriter;
+            this._config = config;
         }
 
         public void Push(IEvent[] events)
@@ -27,6 +29,11 @@ namespace Atdi.Platform.Logging.EventsConsumers
             {
                 var start = 0;
                 var end = events.Length;
+
+                if (this._config.HasFilters)
+                {
+                    events = events.Where(@event => _config.Check(@event)).ToArray();
+                }
 
                 if (end > ConsoleEventsConsumer.EventsLimit)
                 {
