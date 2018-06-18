@@ -62,7 +62,7 @@ namespace Atdi.LegacyServices.Icsm
 
             this.Container.RegisterInstance(typeof(Orm.SchemasMetadata), schemasMetadata, Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<IDataLayer<IcsmDataOrm>, IcsmDataLayer>(Platform.DependencyInjection.ServiceLifetime.PerThread);
-            this.Container.Register<IIrpParser, IrpParser>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.Register<IIrpParser, IrpParser>(Platform.DependencyInjection.ServiceLifetime.Singleton);
         }
     }
 }
