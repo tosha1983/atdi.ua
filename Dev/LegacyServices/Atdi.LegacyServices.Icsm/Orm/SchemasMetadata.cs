@@ -18,6 +18,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
         private readonly Dictionary<string, Table> _tables;
         private readonly List<Table> _tablesList;
         private readonly Dictionary<string, DataDesc> _dataDescs;
+        public IDataEngine _configDataEngine = null; 
+        public List<QuerySelectStatement.ColumnDescriptor> _expressColumns;
 
         private bool _hasSemant = false;
         private bool _singlePosEqpAnt = false;
@@ -29,7 +31,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
 
             this._singlePosEqpAnt = (config.Edition == "Developer1" || config.Edition == "Standard1");
             this._hasSemant = false;
-
+            
+            this._expressColumns = new List<QuerySelectStatement.ColumnDescriptor>();
             this._tables = new Dictionary<string, Table>();
             this._tablesList = new List<Table>();
             this._dataDescs = new Dictionary<string, DataDesc>();
@@ -802,10 +805,11 @@ namespace Atdi.LegacyServices.Icsm.Orm
             }
         }
 
-        public string BuildSelectStatement(IEngineSyntax engineSyntax, string tableName, string[] fieldPaths) // DBMS dbms, string quoteColumn)
+        public string BuildSelectStatement(IDataEngine config, QuerySelectStatement statement, string[] fieldPaths) // DBMS dbms, string quoteColumn)
         {
             var schemaPrefix = this._config.SchemaPrefix + ".";
-
+            this._expressColumns = statement.Table.Columns.ToList().FindAll(z => !string.IsNullOrEmpty(z.Value.Expression)).Select(t => t.Value).ToList();
+            this._configDataEngine = config;
             var dbTables = new Dictionary<string, DbTable>();
             var dbJoines = new List<DbJoin>();
             var dbFields = new List<DbField>();
@@ -816,12 +820,12 @@ namespace Atdi.LegacyServices.Icsm.Orm
             {
                 var fieldPath = fieldPaths[i];
 
-                var dbField = this.AddField(tableName, fieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+                var dbField = this.AddField(statement.Table.Name, fieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
                 dbField.Path = fieldPath;
                 selectedFields[i] = dbField;
             }
 
-             var joinSql = BuildJoinStatement(engineSyntax, tableName, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+             var joinSql = BuildJoinStatement(config.Syntax, statement.Table.Name, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
 
             var sql = new StringBuilder();
 
@@ -840,7 +844,12 @@ namespace Atdi.LegacyServices.Icsm.Orm
             for (int i = 0; i < selectedFields.Length; i++)
             {
                 var dbField = selectedFields[i];
-                columnsSql[i] = "    " + engineSyntax.ColumnExpression(dbField.m_name, dbField.Path); //(dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
+                if (dbField is DbExpressionField)
+                {
+                    columnsSql[i] = "    " + config.Syntax.ColumnExpression((dbField as DbExpressionField).m_fmt, dbField.Path); //(dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
+
+                }
+                else columnsSql[i] = "    " + config.Syntax.ColumnExpression(dbField.m_name, dbField.Path); //(dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
             }
 
             sql.AppendLine(string.Join("," + Environment.NewLine, columnsSql));
@@ -1263,9 +1272,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 throw new ArgumentNullException(nameof(tableName));
             }
             var name = this.UnaliasTable(tableName, dbTables);
-
+            QuerySelectStatement.ColumnDescriptor descriptExpress = this._expressColumns.Find(t => t.Name == fieldPath);
             var ormTable = this.GetTableByName(name);
             var ormField = (ormTable == null) ? null : ormTable.Field(fieldPath);
+            if (descriptExpress != null) ormField = (ormTable == null) ? null : ormTable.Field("CustomExpression");
 
             bool flag = false;
             Semant sp = null;
@@ -1279,28 +1289,27 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 }
                 else if (ormField.Nature == FieldNature.Expr)
                 {
-                    sp = ormField.Special;
-                    var ormItemExpr = new DbExpressionField();
-                    ormItemExpr.logFd = ormField;
-                    if (ormField.DDesc == null)
+                    
+                    if (descriptExpress != null)
                     {
-                        ormField.DDesc = ReadDataDesc("VARCHAR(50)");
-                    }
+                        sp = ormField.Special;
 
-                    ormItemExpr.Init(ormField.DDesc, sp, FieldFOption.fld_NONE);
-                    ormItemExpr.m_expression = ((FieldE)ormField).Expr;
-                    ormItemExpr.m_fetched = fetch;
-                    //if (fetch)
-                    //{
-                    //    this.nFields++;
-                    //}
-                    dbFields.Add(ormItemExpr);
-                    dbWorldFields[tableName + "/" + fieldPath] = ormItemExpr;
-                    ormItemExpr.m_logTab = tableName;
-                    ormItemExpr.m_logFld = ormField.Name;
-                    throw new NotImplementedException("Not supported expression field");
-                    //ormItemExpr.AddFldsInExpression(this);
-                    //return ormItemExpr;
+                        var ormItemExpr = new DbExpressionField();
+                        ormItemExpr.logFd = ormField;
+                        if (ormField.DDesc == null)
+                        {
+                            ormField.DDesc = ReadDataDesc("VARCHAR(50)");
+                        }
+                        ormItemExpr.Init(ormField.DDesc, sp, FieldFOption.fld_NONE);
+                        ormItemExpr.m_expression = descriptExpress.Expression;
+                        ormItemExpr.m_name = descriptExpress.Name;
+                        ormItemExpr.m_fetched = fetch;
+                        dbFields.Add(ormItemExpr);
+                        dbWorldFields[tableName + "/" + fieldPath] = ormItemExpr;
+                        ormItemExpr.m_logTab = tableName;
+                        ormItemExpr.m_logFld = ormField.Name;
+                        ormItemExpr.AddFldsInExpression(this);
+                    }
                 }
             }
             string text = null;

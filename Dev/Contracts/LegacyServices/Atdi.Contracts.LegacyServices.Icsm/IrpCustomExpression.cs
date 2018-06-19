@@ -8,10 +8,10 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.Contracts.LegacyServices.Icsm
 {
-    public sealed class IrpDescriptor 
+    public sealed class IrpCustomExpression
     {
-       public ColumnMetadata[] columnMetaData { get; set; }
-       public string TableName { get; set; }
-       public IrpCustomExpression[] CustomExpressions { get; set; }
+       public string CustomExpression { get; set; }
+       public string Name { get; set; }
+       public string Title { get; set; }
     }
 }

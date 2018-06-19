@@ -51,7 +51,7 @@ namespace Atdi.LegacyServices.Icsm
 
         public PropertyTable GetTableFromORM(string fld_check, string tableName)
         {
-            PropertyTable rc = new PropertyTable();
+            var rc = new PropertyTable();
             var zeta = this._schemasMetadata.GetTableByName(tableName);
             if (zeta != null) {
                 foreach (var f1 in zeta.ClassFields) {
@@ -81,11 +81,11 @@ namespace Atdi.LegacyServices.Icsm
 
         public  Orm.Field GetFieldFromOrm(string tableName, string fld)
         {
-            string TableName2 = "";
-            List<int> Lst_Val_Index = new List<int>();
+            var TableName2 = "";
+            var Lst_Val_Index = new List<int>();
             TableName2 = tableName;
             string[] Spl = null;
-            PropertyTable recDB = new PropertyTable();
+            var recDB = new PropertyTable();
             recDB.NameTableTo = tableName;
             if (fld.IndexOf(".") > 0) {
                 Spl = fld.Split(new char[] { '.' });
@@ -108,94 +108,95 @@ namespace Atdi.LegacyServices.Icsm
 
         public IrpDescriptor ExecuteParseQuery(string value)
         {
-            IrpDescriptor irpDescr = new IrpDescriptor();
-            List<ColumnMetadata> L = new List<ColumnMetadata>();
+            var irpDescr = new IrpDescriptor();
+            var lColumnsMeta = new List<ColumnMetadata>();
+            var lColumnsCustomExpression = new List<IrpCustomExpression>();
             try
             {
-                Frame f = new Frame();
+                var f = new Frame();
                 string Query = value;
                 int x1 = Query.IndexOf("\r\n");
                 Query = Query.Remove(0, x1 + 2);
                 int x2 = Query.IndexOf("\r\n");
                 Query = Query.Remove(0, x2 + 2);
-                InChannelString strx = new InChannelString(Query);
+                var strx = new InChannelString(Query);
                 f.Load(strx);
-                IcsmReport _report = new IcsmReport();
+                var _report = new IcsmReport();
                 _report.SetConfig(f);
-                if (_report != null){
-                    if (_report.m_dat != null){
-                        if (_report.m_dat.m_list != null) {
-                            if (_report.m_dat.m_list.Count() > 0) {
-                                if (_report.m_dat.m_list[0].m_query != null) {
-                                    if (_report.m_dat.m_list[0].m_query.lq != null) {
-                                        for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Count(); i++) {
-                                            if (!_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr) {
-                                                var metaData = new ColumnMetadata();
-                                                metaData.Description = _report.m_desc;
-                                                metaData.Title = "";
-
-                                                irpDescr.TableName = _report.m_dat.m_tab;
-                                                string t = _report.m_dat.m_list[0].m_query.lq[i].path;
-                                                t = t.Replace(_report.m_dat.m_tab + ".", "");
-                                                metaData.Description = t;
-                                                metaData.Name = t;
-                                                metaData.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
-                                                if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oNone) metaData.Order = OrderType.None;
-                                                else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oAsc) metaData.Order = OrderType.Ascending;
-                                                else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oDesc) metaData.Order = OrderType.Descending;
-                                                metaData.Position = 0;
-                                                metaData.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
-                                                metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
-                                                Orm.Field ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
-                                                if (ty_p == null) {
-                                                    string FLD_STATE_FORMAT = ""; string FLD_STATE_value = "";
-                                                    if (t.Contains("."))
-                                                    {
-                                                        FLD_STATE_value = t;
-                                                        var count = t.Count(chr => chr == '.');
-                                                        FLD_STATE_FORMAT = t.Replace(".", "(") + "".PadRight(count, ')');
-                                                    }
-                                                    if (FLD_STATE_FORMAT != "")
-                                                    {
-                                                        ty_p = GetFieldFromOrm(_report.m_dat.m_tab, FLD_STATE_value);
-                                                    }
-                                                }
-
-                                                switch (ty_p.DDesc.ClassType)
-                                                {
-                                                    case Orm.VarType.var_Bytes:
-                                                        metaData.Type = DataModels.DataType.Bytes;
-                                                        break;
-                                                    case Orm.VarType.var_Flo:
-                                                        metaData.Type = DataModels.DataType.Float;
-                                                        break;
-                                                    case Orm.VarType.var_Int:
-                                                        metaData.Type = DataModels.DataType.Integer;
-                                                        break;
-                                                    case Orm.VarType.var_Dou:
-                                                        metaData.Type = DataModels.DataType.Double;
-                                                        break;
-                                                    case Orm.VarType.var_String:
-                                                        metaData.Type = DataModels.DataType.String;
-                                                        break;
-                                                    case Orm.VarType.var_Tim:
-                                                        metaData.Type = DataModels.DataType.DateTime;
-                                                        break;
-                                                    default:
-                                                        metaData.Type = DataModels.DataType.String;
-                                                        break;
-                                                }
-                                                L.Add(metaData);
-                                            }
-                                        }
-                                    }
-                                }
+                for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Count(); i++) {
+                    {
+                        var metaData = new ColumnMetadata();
+                        metaData.Description = _report.m_desc;
+                        metaData.Title = "";
+                        irpDescr.TableName = _report.m_dat.m_tab;
+                        string t = _report.m_dat.m_list[0].m_query.lq[i].path;
+                        t = t.Replace(_report.m_dat.m_tab + ".", "");
+                        metaData.Description = t;
+                        metaData.Name = t;
+                        metaData.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
+                        if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oNone) metaData.Order = OrderType.None;
+                        else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oAsc) metaData.Order = OrderType.Ascending;
+                        else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oDesc) metaData.Order = OrderType.Descending;
+                        metaData.Position = 0;
+                        metaData.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
+                        metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
+                        if (_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
+                        {
+                            var expr = new IrpCustomExpression();
+                            expr.CustomExpression = _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr;
+                            expr.Name = _report.m_dat.m_list[0].m_query.lq[i].title;
+                            expr.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
+                            metaData.Name = expr.Name;
+                            lColumnsCustomExpression.Add(expr);
+                        }
+                        var ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
+                        if (ty_p == null)
+                        {
+                            string FLD_STATE_FORMAT = ""; string FLD_STATE_value = "";
+                            if (t.Contains("."))
+                            {
+                                FLD_STATE_value = t;
+                                var count = t.Count(chr => chr == '.');
+                                FLD_STATE_FORMAT = t.Replace(".", "(") + "".PadRight(count, ')');
+                            }
+                            if (FLD_STATE_FORMAT != "")
+                            {
+                                ty_p = GetFieldFromOrm(_report.m_dat.m_tab, FLD_STATE_value);
                             }
                         }
+                        if (ty_p != null)
+                        {
+                            switch (ty_p.DDesc.ClassType)
+                            {
+                                case Orm.VarType.var_Bytes:
+                                    metaData.Type = DataModels.DataType.Bytes;
+                                    break;
+                                case Orm.VarType.var_Flo:
+                                    metaData.Type = DataModels.DataType.Float;
+                                    break;
+                                case Orm.VarType.var_Int:
+                                    metaData.Type = DataModels.DataType.Integer;
+                                    break;
+                                case Orm.VarType.var_Dou:
+                                    metaData.Type = DataModels.DataType.Double;
+                                    break;
+                                case Orm.VarType.var_String:
+                                    metaData.Type = DataModels.DataType.String;
+                                    break;
+                                case Orm.VarType.var_Tim:
+                                    metaData.Type = DataModels.DataType.DateTime;
+                                    break;
+                                default:
+                                    metaData.Type = DataModels.DataType.String;
+                                    break;
+                            }
+                        }
+                        lColumnsMeta.Add(metaData);
                     }
                 }
                 _report.Clear(false);
-                irpDescr.columnMetaData = L.ToArray();
+                irpDescr.columnMetaData = lColumnsMeta.ToArray();
+                irpDescr.CustomExpressions = lColumnsCustomExpression.ToArray();
             }
             catch (Exception e)
             {

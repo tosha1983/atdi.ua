@@ -37,7 +37,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
             using (this.Logger.StartTrace(Contexts.WebQueryAppServices, Categories.Handling, TraceScopeNames.ExecuteQuery))
             {
                 string notAvailableColumns = "";
-                
+                var allColumnExpression = new List<string>();
                 var tokenData = this._tokenProvider.UnpackUserToken(userToken);
                 var queryDescriptor = this._repository.GetQueryDescriptorByToken(tokenData, queryToken);
                 var conditions = queryDescriptor.GetConditions(tokenData);
@@ -47,7 +47,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 DataModels.DataConstraint.DataLimit limitRecord = null;
                 if (fetchOptions != null)   {
                     if (fetchOptions.Columns != null) {
-                        if (fetchOptions.Columns.Count()>0) { 
+                        if (fetchOptions.Columns.Any()) { 
                                 notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns);
                                 allColumns = fetchOptions.Columns;
                                 dataColumns = new List<ColumnMetadata>().ToArray();  List<ColumnMetadata> tempMetaColumn = new List<ColumnMetadata>();
@@ -69,21 +69,30 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     }
                     if (fetchOptions.Limit != null) limitRecord = fetchOptions.Limit;
                 }
-               
 
-                var statement = this._dataLayer.Builder
+                var custExpr = queryDescriptor.CustomExpressions.ToList();
+                if (custExpr != null)   {
+                    custExpr.ForEach(x => { allColumnExpression.Add("$" + x.CustomExpression + "#:" + x.Name); });
+                }
+
+
+               var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
                    .Select(allColumns);
    
-              
+              if (allColumnExpression.Any())
+                {
+                    statement
+                  .Select(allColumnExpression.ToArray());
+                }
                
-                if (conditions.Count() > 0) {
+                if (conditions.Any()) {
                     statement
                    .Where(conditions);
                 }
 
                 var ordersColumns = orderExpression.Select(t => t.ColumnName).ToArray();
-                if (ordersColumns.Count() > 0) {
+                if (ordersColumns.Any()) {
                      statement
                      .OrderByAsc(ordersColumns);
                 }

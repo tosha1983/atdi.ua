@@ -25,8 +25,10 @@ namespace Atdi.LegacyServices.Icsm
 
         public string BuildSelectStatement(QuerySelectStatement statement)
         {
+           
             try
             {
+                var expressColumnsValue = new List<QuerySelectStatement.ColumnDescriptor>();
                 var sourceColumns = statement.Table.Columns.Values;
                 var fieldPaths = new string[statement.Table.Columns.Count];
                 int index = 0;
@@ -38,8 +40,7 @@ namespace Atdi.LegacyServices.Icsm
                     }
                     fieldPaths[index++] = column.Name;
                 }
-
-                var sql = this._schemasMetadata.BuildSelectStatement(_dataEngine.Syntax, statement.Table.Name, fieldPaths);
+                var sql = this._schemasMetadata.BuildSelectStatement(_dataEngine, statement, fieldPaths);
                 return sql;
             }
             catch(Exception e)

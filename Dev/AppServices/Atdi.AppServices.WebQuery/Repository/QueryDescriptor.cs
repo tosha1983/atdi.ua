@@ -19,6 +19,7 @@ namespace Atdi.AppServices.WebQuery
         private  XWEBQUERY _QueryValue { get; set; }
         private XWEBCONSTRAINT[] _ConstraintsValue { get; set; }
         private Dictionary<string,DataType> _hashSet;
+        public IrpCustomExpression[] CustomExpressions { get; set; }
 
         public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, IrpDescriptor irpdescription)
         {
@@ -40,8 +41,10 @@ namespace Atdi.AppServices.WebQuery
 
             var listColumns = Metadata.Columns.ToList();
             for (int i = 0; i < listColumns.Count(); i++)   {
-                if (!_hashSet.ContainsKey(listColumns[i].Name))   _hashSet.Add(listColumns[i].Name, listColumns[i].Type);
+                if (!_hashSet.ContainsKey(listColumns[i].Name))
+                    _hashSet.Add(listColumns[i].Name, listColumns[i].Type);
             }
+            CustomExpressions = irpdescription.CustomExpressions;
         }
 
 

@@ -24,5 +24,9 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 return this.Module.IsInEdition;
             }
         }
+        public virtual string GetDataName()
+        {
+            return this.Name;
+        }
     }
 }

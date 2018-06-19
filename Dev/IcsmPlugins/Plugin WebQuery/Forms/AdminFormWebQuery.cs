@@ -33,6 +33,15 @@ namespace XICSM.WebQuery
             Init(Lst);
             _lst = Lst;
             CLocaliz.TxT(this);
+
+            if (id!=-1)
+            {
+                button_Constraints.Enabled = false;
+            }
+            else
+            {
+                button_Constraints.Enabled = false;
+            }
         }
 
         public List<string> GetAllTaskForceShortName()
@@ -123,6 +132,11 @@ namespace XICSM.WebQuery
 
         private void ButtonSaveChangeQuery_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(textBoxQuery.Text.ToString()))
+            {
+                MessageBox.Show("Відстуня інформація про запит!");
+                return;
+            }
             DialogResult DA = MessageBox.Show("Editable query manually may cause it to malfunction on the side of the Web portal to continue?", "Warning!", MessageBoxButtons.YesNo);
             if (DA == System.Windows.Forms.DialogResult.Yes){
                 {
@@ -188,6 +202,12 @@ namespace XICSM.WebQuery
 
         private void ButtonSaveAllChange_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(textBoxQuery.Text.ToString()))
+            {
+                MessageBox.Show("Відстуня інформація про запит!");
+                return;
+            }
+
             if (isNew){
                 if (!string.IsNullOrEmpty(textBoxName.Text)) {
                     if (CheckNameWebQuery(textBoxName.Text.Replace("(", "[").Replace(")", "]"), id, textBox_code.Text)) {
@@ -219,6 +239,8 @@ namespace XICSM.WebQuery
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
                         MessageBox.Show("Record created successfull!", "Warning!");
+                       button_Constraints.Enabled = false;
+                    
                 }
                 else MessageBox.Show("Please input data to field 'Name query'!", "Warning!");
             }
@@ -246,9 +268,10 @@ namespace XICSM.WebQuery
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
                         MessageBox.Show("Record saved successfull!", "Warning!");
-                    }
+                    button_Constraints.Enabled = false;
+                }
             }
-            Close();
+          
         }
 
     

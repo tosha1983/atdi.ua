@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    internal sealed class QuerySelectStatement : LoggedObject, IQuerySelectStatement
+    public sealed class QuerySelectStatement : LoggedObject, IQuerySelectStatement
     {
-        internal sealed class ColumnDescriptor
+        public sealed class ColumnDescriptor
         {
             public string Table { get; set; }
 
@@ -24,9 +24,11 @@ namespace Atdi.LegacyServices.Icsm
             public string Alias { get; set; }
 
             public int Ordinal { get; set; }
+
+            public string Expression { get; set; }
         }
 
-        internal sealed class TableDescriptor
+        public sealed class TableDescriptor
         {
             private readonly Dictionary<string, ColumnDescriptor> _columns;
             private readonly Dictionary<string, ColumnDescriptor> _selectColumns;
@@ -56,13 +58,31 @@ namespace Atdi.LegacyServices.Icsm
             {
                 foreach (var column in columns)
                 {
-                    var descriptor = new ColumnDescriptor
+                    if (!column.StartsWith("$"))
                     {
-                        Table = this.Name,
-                        Name = column
-                    };
+                        var descriptor = new ColumnDescriptor
+                        {
+                            Table = this.Name,
+                            Name = column,
+                            Expression = ""
+                        };
+                        this.AppendSelectColumn(descriptor);
+                    }
+                    else
+                    {
+                        int num_expr_end = column.IndexOf("#:");
+                        string expression = column.Substring(1, num_expr_end-1);
+                        string nameColumn = column.Substring(num_expr_end + 2, column.Length - (num_expr_end + 2));
 
-                    this.AppendSelectColumn(descriptor);
+                        var descriptor = new ColumnDescriptor
+                        {
+                            Table = this.Name,
+                            Name = nameColumn,
+                             Expression = expression
+                        };
+
+                        this.AppendSelectColumn(descriptor);
+                    }
                 }
             }
 
@@ -79,7 +99,10 @@ namespace Atdi.LegacyServices.Icsm
                     {
                         this._selectColumns[column.Name] = column;
                     }
-                    return;
+                    else
+                    {
+                       this._selectColumns[column.Name] = column;
+                    }
                 }
                 this._columns[column.Name] = column;
                 this._selectColumns[column.Name] = column;
@@ -134,7 +157,7 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
-        internal sealed class OrderByColumnDescriptor
+        public sealed class OrderByColumnDescriptor
         {
             public ColumnDescriptor Column { get; set; }
 
