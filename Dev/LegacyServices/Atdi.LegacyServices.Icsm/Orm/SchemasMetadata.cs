@@ -10,6 +10,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
 {
     public sealed class SchemasMetadata
     {
+        public IDataEngine _configDataEngine;
+
         private readonly SchemasMetadataConfig _config;
         private readonly Dictionary<string, Module> _modules;
         private readonly Dictionary<string, Semant> _dicoSemants;
@@ -18,11 +20,11 @@ namespace Atdi.LegacyServices.Icsm.Orm
         private readonly Dictionary<string, Table> _tables;
         private readonly List<Table> _tablesList;
         private readonly Dictionary<string, DataDesc> _dataDescs;
-        public IDataEngine _configDataEngine = null; 
-        public List<QuerySelectStatement.ColumnDescriptor> _expressColumns;
+       
 
         private bool _hasSemant = false;
         private bool _singlePosEqpAnt = false;
+        private List<QuerySelectStatement.ColumnDescriptor> _expressColumns;
 
 
         public SchemasMetadata(SchemasMetadataConfig config)

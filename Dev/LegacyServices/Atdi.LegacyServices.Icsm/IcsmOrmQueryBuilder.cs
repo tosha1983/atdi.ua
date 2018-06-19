@@ -28,7 +28,6 @@ namespace Atdi.LegacyServices.Icsm
            
             try
             {
-                var expressColumnsValue = new List<QuerySelectStatement.ColumnDescriptor>();
                 var sourceColumns = statement.Table.Columns.Values;
                 var fieldPaths = new string[statement.Table.Columns.Count];
                 int index = 0;
