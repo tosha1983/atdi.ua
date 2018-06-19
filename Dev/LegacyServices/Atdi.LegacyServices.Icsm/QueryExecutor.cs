@@ -81,6 +81,7 @@ namespace Atdi.LegacyServices.Icsm
             int indexForDecimal = -1;
             int indexForByte = -1;
             int indexForBytes = -1;
+            int indexForGuid = -1;
 
             for (int i = 0; i < columns.Length; i++)
             {
@@ -121,6 +122,9 @@ namespace Atdi.LegacyServices.Icsm
                         break;
                     case DataType.Bytes:
                         column.Index = ++indexForBytes;
+                        break;
+                    case DataType.Guid:
+                        column.Index = ++indexForGuid;
                         break;
                     default:
                         column.Index = -1;
@@ -173,6 +177,11 @@ namespace Atdi.LegacyServices.Icsm
             {
                 columnsAsBytes = new List<byte[]>[indexForBytes + 1].Select(o => new List<byte[]>()).ToArray();
             }
+            List<Guid?>[] columnsAsGuid = null;
+            if (indexForGuid >= 0)
+            {
+                columnsAsGuid = new List<byte?>[indexForGuid + 1].Select(o => new List<Guid?>()).ToArray();
+            }
             int rowCount = 0;
             while (dataReader.Read())
             {
@@ -216,6 +225,10 @@ namespace Atdi.LegacyServices.Icsm
                         case DataType.Bytes:
                             var valueAsBytes = dataReader.GetNullableValueAsBytes(field.DbType, field.Ordinal);
                             columnsAsBytes[field.Column.Index].Add(valueAsBytes);
+                            break;
+                        case DataType.Guid:
+                            var valueAsGuid = dataReader.GetNullableValueAsGuid(field.DbType, field.Ordinal);
+                            columnsAsGuid[field.Column.Index].Add(valueAsGuid);
                             break;
                         default:
                             break;
@@ -261,7 +274,10 @@ namespace Atdi.LegacyServices.Icsm
             {
                 dataSet.BytesCells = columnsAsBytes.Select(c => c.ToArray()).ToArray();
             }
-
+            if (indexForGuid >= 0)
+            {
+                dataSet.GuidCells = columnsAsGuid.Select(c => c.ToArray()).ToArray();
+            }
 
             dataSet.RowCount = rowCount;
             return dataSet;
@@ -358,6 +374,7 @@ namespace Atdi.LegacyServices.Icsm
             int indexForDecimal = -1;
             int indexForByte = -1;
             int indexForBytes = -1;
+            int indexForGuid = -1;
 
             for (int i = 0; i < columns.Length; i++)
             {
@@ -398,6 +415,9 @@ namespace Atdi.LegacyServices.Icsm
                         break;
                     case DataType.Bytes:
                         column.Index = ++indexForBytes;
+                        break;
+                    case DataType.Guid:
+                        column.Index = ++indexForGuid;
                         break;
                     default:
                         column.Index = -1;
@@ -445,6 +465,10 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     row.BytesCells = new byte[indexForBytes + 1][];
                 }
+                if (indexForGuid >= 0)
+                {
+                    row.GuidCells = new Guid?[indexForGuid + 1];
+                }
                 for (int i = 0; i < fields.Length; i++)
                 {
                     var field = fields[i];
@@ -485,6 +509,10 @@ namespace Atdi.LegacyServices.Icsm
                         case DataType.Bytes:
                             if (!dataReader.IsDBNull(field.Ordinal))
                                 row.BytesCells[field.Column.Index] = dataReader.GetValueAsBytes(field.DbType, field.Ordinal);
+                            break;
+                        case DataType.Guid:
+                            if (!dataReader.IsDBNull(field.Ordinal))
+                                row.GuidCells[field.Column.Index] = dataReader.GetValueAsGuid(field.DbType, field.Ordinal);
                             break;
                         default:
                             break;

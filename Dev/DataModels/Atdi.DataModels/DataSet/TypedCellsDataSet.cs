@@ -44,5 +44,8 @@ namespace Atdi.DataModels
 
         [DataMember]
         public byte[][][] BytesCells { get; set; }
+
+        [DataMember]
+        public Guid?[][] GuidCells { get; set; }
     }
 }

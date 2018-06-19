@@ -64,6 +64,7 @@
     <Compile Include="DataRow\ObjectDataRow.cs" />
     <Compile Include="DataRow\StringDataRow.cs" />
     <Compile Include="DataRow\TypedDataRow.cs" />
+    <Compile Include="DataSet\ColumnValue.cs" />
     <Compile Include="DataSet\DataSet.cs" />
     <Compile Include="DataSet\ObjectCellsDataSet.cs" />
     <Compile Include="DataSet\ObjectRowsDataSet.cs" />

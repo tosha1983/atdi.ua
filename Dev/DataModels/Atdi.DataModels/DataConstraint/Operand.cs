@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Atdi.DataModels.DataConstraint
 {
-    [DataContract(Namespace = CommonSpecification.Namespace)]
+    
     [KnownType(typeof(ValueOperand))]
     [KnownType(typeof(StringValueOperand))]
     [KnownType(typeof(BooleanValueOperand))]
@@ -19,6 +19,7 @@ namespace Atdi.DataModels.DataConstraint
     [KnownType(typeof(DecimalValueOperand))]
     [KnownType(typeof(ByteValueOperand))]
     [KnownType(typeof(BytesValueOperand))]
+    [KnownType(typeof(GuidValueOperand))]
     [KnownType(typeof(ColumnOperand))]
     [KnownType(typeof(ValuesOperand))]
     [KnownType(typeof(StringValuesOperand))]
@@ -30,6 +31,8 @@ namespace Atdi.DataModels.DataConstraint
     [KnownType(typeof(DecimalValuesOperand))]
     [KnownType(typeof(ByteValuesOperand))]
     [KnownType(typeof(BytesValuesOperand))]
+    [KnownType(typeof(GuidValuesOperand))]
+    [DataContract(Namespace = CommonSpecification.Namespace)]
     public class Operand
     {
         [DataMember]

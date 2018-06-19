@@ -450,6 +450,21 @@ namespace Atdi.LegacyServices.Icsm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Guid GetValueAsGuid(int columnIndex)
+        {
+            var columnType = _dataReader.GetFieldType(columnIndex);
+            if (columnType == typeof(Guid))
+            {
+                return _dataReader.GetGuid(columnIndex);
+            }
+            if (columnType == typeof(string))
+            {
+                return Guid.Parse(_dataReader.GetString(columnIndex));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+        }
+
         public bool GetValue(Expression<Func<TModel, bool>> columnExpression)
         {
             if (columnExpression == null)
@@ -669,6 +684,35 @@ namespace Atdi.LegacyServices.Icsm
             }
 
             return GetValueAsByte(columnIndex);
+        }
+
+        public Guid GetValue(Expression<Func<TModel, Guid>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(columnName);
+            return GetValueAsGuid(columnIndex);
+        }
+
+        public Guid? GetValue(Expression<Func<TModel, Guid?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(columnName);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+
+            return GetValueAsGuid(columnIndex);
         }
 
         public bool Read()
@@ -1195,6 +1239,37 @@ namespace Atdi.LegacyServices.Icsm
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
         }
+
+
+
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Guid? GetNullableValueAsGuid(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return dataReader.GetValueAsGuid(fieldDbType, ordinal);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Guid GetValueAsGuid(this IDataReader dataReader, Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(Guid))
+            {
+                return dataReader.GetGuid(ordinal);
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Guid.Parse(dataReader.GetString(ordinal));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+        }
+
+
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] GetNullableValueAsBytes(this IDataReader dataReader, Type fieldDbType, int ordinal)

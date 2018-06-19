@@ -16,6 +16,7 @@ namespace Atdi.DataModels.DataConstraint
     [KnownType(typeof(DecimalValueOperand))]
     [KnownType(typeof(ByteValueOperand))]
     [KnownType(typeof(BytesValueOperand))]
+    [KnownType(typeof(GuidValueOperand))]
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class ValueOperand : Operand
     {
@@ -133,7 +134,18 @@ namespace Atdi.DataModels.DataConstraint
         }
 
         [DataMember]
-        public byte?[] Value { get; set; }
+        public byte[] Value { get; set; }
     }
 
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class GuidValueOperand : ValueOperand
+    {
+        public GuidValueOperand()
+        {
+            this.DataType = DataType.Guid;
+        }
+
+        [DataMember]
+        public Guid? Value { get; set; }
+    }
 }

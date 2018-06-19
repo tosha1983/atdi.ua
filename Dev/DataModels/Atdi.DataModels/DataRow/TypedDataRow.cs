@@ -40,5 +40,89 @@ namespace Atdi.DataModels
 
         [DataMember]
         public byte[][] BytesCells { get; set; }
+
+        [DataMember]
+        public Guid?[] GuidCells { get; set; }
+    }
+
+    public static class TypedDataRowExtensions
+    {
+        public static ColumnValue GetColumnValue(this TypedDataRow row, DataSetColumn dataSetColumn)
+        {
+            var result = row.GetColumnValue(dataSetColumn.Type, dataSetColumn.Index);
+            result.Name = dataSetColumn.Name;
+            return result;
+        }
+
+        public static ColumnValue GetColumnValue(this TypedDataRow row, DataType dataType, int index)
+        {
+            ColumnValue result = null;
+            switch (dataType)
+            {
+                case DataType.String:
+                    result = new StringColumnValue
+                    {
+                        Value = row.StringCells[index]
+                    };
+                    break;
+                case DataType.Boolean:
+                    result = new BooleanColumnValue
+                    {
+                        Value = row.BooleanCells[index]
+                    };
+                    break;
+                case DataType.Integer:
+                    result = new IntegerColumnValue
+                    {
+                        Value = row.IntegerCells[index]
+                    };
+                    break;
+                case DataType.DateTime:
+                    result = new DateTimeColumnValue
+                    {
+                        Value = row.DateTimeCells[index]
+                    };
+                    break;
+                case DataType.Double:
+                    result = new DoubleColumnValue
+                    {
+                        Value = row.DoubleCells[index]
+                    };
+                    break;
+                case DataType.Float:
+                    result = new FloatColumnValue
+                    {
+                        Value = row.FloatCells[index]
+                    };
+                    break;
+                case DataType.Decimal:
+                    result = new DecimalColumnValue
+                    {
+                        Value = row.DecimalCells[index]
+                    };
+                    break;
+                case DataType.Byte:
+                    result = new ByteColumnValue
+                    {
+                        Value = row.ByteCells[index]
+                    };
+                    break;
+                case DataType.Bytes:
+                    result = new BytesColumnValue
+                    {
+                        Value = row.BytesCells[index]
+                    };
+                    break;
+                case DataType.Guid:
+                    result = new GuidColumnValue
+                    {
+                        Value = row.GuidCells[index]
+                    };
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
+            }
+            return result;
+        }
     }
 }

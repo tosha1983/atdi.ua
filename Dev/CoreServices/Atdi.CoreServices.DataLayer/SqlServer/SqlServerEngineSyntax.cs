@@ -49,9 +49,9 @@ namespace Atdi.CoreServices.DataLayer
             return $"[{name}]";
         }
 
-        public string EncodeFieldName(string alias, string name)
+        public string EncodeFieldName(string source, string name)
         {
-            return $"[{alias}].[{name}]";
+            return $"[{source}].[{name}]";
         }
 
         public string EncodeParameterName(string name)

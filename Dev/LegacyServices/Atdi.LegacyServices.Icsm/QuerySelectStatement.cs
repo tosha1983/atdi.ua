@@ -468,11 +468,11 @@ namespace Atdi.LegacyServices.Icsm
                     Values = values.Select(o => (byte?)(object)o).ToArray()
                 };
             }
-            if (type == typeof(byte[]) || type == typeof(byte?[]))
+            if (type == typeof(byte[]))
             {
                 return new BytesValuesOperand
                 {
-                    Values = values.Select(o => (byte?[])(object)o).ToArray()
+                    Values = values.Select(o => (byte[])(object)o).ToArray()
                 };
             }
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
@@ -544,11 +544,11 @@ namespace Atdi.LegacyServices.Icsm
                     Value = (byte?)(object)value
                 };
             }
-            if (type == typeof(byte[]) || type == typeof(byte?[]))
+            if (type == typeof(byte[]) )
             {
                 return new BytesValueOperand
                 {
-                    Value = (byte?[])(object)value
+                    Value = (byte[])(object)value
                 };
             }
 
@@ -861,11 +861,18 @@ namespace Atdi.LegacyServices.Icsm
                         Value = (byte?)constantExpression.Value
                     };
                 }
-                if (constantExpression.Type == typeof(byte[]) || constantExpression.Type == typeof(byte?[]))
+                if (constantExpression.Type == typeof(byte[]) )
                 {
                     return new BytesValueOperand
                     {
-                        Value = (byte?[])constantExpression.Value
+                        Value = (byte[])constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(Guid) || constantExpression.Type == typeof(Guid?))
+                {
+                    return new GuidValueOperand
+                    {
+                        Value = (Guid?)constantExpression.Value
                     };
                 }
                 throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(constantExpression.Type));
@@ -944,11 +951,18 @@ namespace Atdi.LegacyServices.Icsm
                         Values = constantExpressions.Select(o => (byte?)o.Value).ToArray()
                     };
                 }
-                if (constantExpression.Type == typeof(byte[]) || constantExpression.Type == typeof(byte?[]))
+                if (constantExpression.Type == typeof(byte[]) )
                 {
                     return new BytesValuesOperand
                     {
-                        Values = constantExpressions.Select(o => (byte?[])o.Value).ToArray()
+                        Values = constantExpressions.Select(o => (byte[])o.Value).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(Guid) || constantExpression.Type == typeof(Guid?))
+                {
+                    return new GuidValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (Guid?)o.Value).ToArray()
                     };
                 }
                 throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(constantExpression.Type));

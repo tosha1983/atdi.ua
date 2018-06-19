@@ -93,6 +93,9 @@
     <Compile Include="IrpParser\InChannelString.cs" />
     <Compile Include="IrpParser\Query.cs" />
     <Compile Include="QueryDataReader.cs" />
+    <Compile Include="QueryUpdateStatement.cs" />
+    <Compile Include="QueryInsertStatement.cs" />
+    <Compile Include="QueryDeleteStatement.cs" />
     <Compile Include="QueryExecutor.cs" />
     <Compile Include="QueryBuilder.cs" />
     <Compile Include="IrpParser\QueryItem.cs" />

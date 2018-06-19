@@ -65,6 +65,12 @@ namespace Atdi.DataModels
         /// The type is byte array
         /// </summary>
         [EnumMember]
-        Bytes
+        Bytes,
+
+        /// <summary>
+        /// The type is GUID
+        /// </summary>
+        [EnumMember]
+        Guid
     }
 }

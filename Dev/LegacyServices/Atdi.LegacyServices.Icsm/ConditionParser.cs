@@ -285,13 +285,13 @@ namespace Atdi.LegacyServices.Icsm
 
             var result = string.Empty;
 
-            if (string.IsNullOrEmpty(columnOperand.Alias))
+            if (string.IsNullOrEmpty(columnOperand.Source))
             {
                result = this._syntax.EncodeFieldName(columnOperand.ColumnName);
             }
             else
             {
-                result = this._syntax.EncodeFieldName(columnOperand.Alias, columnOperand.ColumnName);
+                result = this._syntax.EncodeFieldName(columnOperand.Source, columnOperand.ColumnName);
             }
 
             return result;
