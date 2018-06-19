@@ -7,145 +7,146 @@ using System.Runtime.Serialization;
 
 namespace Atdi.DataModels.DataConstraint
 {
-    [KnownType(typeof(StringValuesOperand))]
-    [KnownType(typeof(BooleanValuesOperand))]
-    [KnownType(typeof(IntegerValuesOperand))]
-    [KnownType(typeof(DateTimeValuesOperand))]
-    [KnownType(typeof(FloatValuesOperand))]
-    [KnownType(typeof(DoubleValuesOperand))]
-    [KnownType(typeof(DecimalValuesOperand))]
-    [KnownType(typeof(ByteValuesOperand))]
-    [KnownType(typeof(BytesValuesOperand))]
-    [KnownType(typeof(GuidValuesOperand))]
+    [KnownType(typeof(StringColumnValue))]
+    [KnownType(typeof(BooleanColumnValue))]
+    [KnownType(typeof(IntegerColumnValue))]
+    [KnownType(typeof(DateTimeColumnValue))]
+    [KnownType(typeof(FloatColumnValue))]
+    [KnownType(typeof(DoubleColumnValue))]
+    [KnownType(typeof(DecimalColumnValue))]
+    [KnownType(typeof(ByteColumnValue))]
+    [KnownType(typeof(BytesColumnValue))]
+    [KnownType(typeof(GuidColumnValue))]
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class ValuesOperand : Operand
+    public class ColumnValue 
     {
-        public ValuesOperand()
-        {
-            this.Type = OperandType.Values;
-        }
+        [DataMember]
+        public string Source { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
 
         [DataMember]
         public DataType DataType { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class StringValuesOperand : ValuesOperand
+    public class StringColumnValue : ColumnValue
     {
-        public StringValuesOperand()
+        public StringColumnValue()
         {
             this.DataType = DataType.String;
         }
 
         [DataMember]
-        public string[] Values { get; set; }
+        public string Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class BooleanValuesOperand : ValuesOperand
+    public class BooleanColumnValue : ColumnValue
     {
-        public BooleanValuesOperand()
+        public BooleanColumnValue()
         {
             this.DataType = DataType.Boolean;
         }
 
         [DataMember]
-        public bool?[] Values { get; set; }
+        public bool? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class DateTimeValuesOperand : ValuesOperand
+    public class DateTimeColumnValue : ColumnValue
     {
-        public DateTimeValuesOperand()
+        public DateTimeColumnValue()
         {
             this.DataType = DataType.DateTime;
         }
 
         [DataMember]
-        public DateTime?[] Values { get; set; }
+        public DateTime? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class IntegerValuesOperand : ValuesOperand
+    public class IntegerColumnValue : ColumnValue
     {
-        public IntegerValuesOperand()
+        public IntegerColumnValue()
         {
             this.DataType = DataType.Integer;
         }
 
         [DataMember]
-        public int?[] Values { get; set; }
+        public int? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class DoubleValuesOperand : ValuesOperand
+    public class DoubleColumnValue : ColumnValue
     {
-        public DoubleValuesOperand()
+        public DoubleColumnValue()
         {
             this.DataType = DataType.Double;
         }
 
         [DataMember]
-        public double?[] Values { get; set; }
+        public double? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class FloatValuesOperand : ValuesOperand
+    public class FloatColumnValue : ColumnValue
     {
-        public FloatValuesOperand()
+        public FloatColumnValue()
         {
             this.DataType = DataType.Float;
         }
 
         [DataMember]
-        public float?[] Values { get; set; }
+        public float? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class DecimalValuesOperand : ValuesOperand
+    public class DecimalColumnValue : ColumnValue
     {
-        public DecimalValuesOperand()
+        public DecimalColumnValue()
         {
             this.DataType = DataType.Decimal;
         }
 
         [DataMember]
-        public decimal?[] Values { get; set; }
+        public decimal? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class ByteValuesOperand : ValuesOperand
+    public class ByteColumnValue : ColumnValue
     {
-        public ByteValuesOperand()
+        public ByteColumnValue()
         {
             this.DataType = DataType.Byte;
         }
 
         [DataMember]
-        public byte?[] Values { get; set; }
+        public byte? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class BytesValuesOperand : ValuesOperand
+    public class BytesColumnValue : ColumnValue
     {
-        public BytesValuesOperand()
+        public BytesColumnValue()
         {
             this.DataType = DataType.Bytes;
         }
 
         [DataMember]
-        public byte[][] Values { get; set; }
+        public byte[] Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class GuidValuesOperand : ValuesOperand
+    public class GuidColumnValue : ColumnValue
     {
-        public GuidValuesOperand()
+        public GuidColumnValue()
         {
             this.DataType = DataType.Guid;
         }
 
         [DataMember]
-        public Guid?[] Values { get; set; }
+        public Guid? Value { get; set; }
     }
 }

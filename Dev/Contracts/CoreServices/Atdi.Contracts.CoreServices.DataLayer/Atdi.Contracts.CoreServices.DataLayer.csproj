@@ -53,9 +53,12 @@
     <Compile Include="IDataLayerConfig.cs" />
     <Compile Include="IDataOrm.cs" />
     <Compile Include="IEngineSyntax.cs" />
+    <Compile Include="IQueryDeleteStatement.cs" />
     <Compile Include="IQueryExecutor.cs" />
     <Compile Include="IQueryBuilder.cs" />
+    <Compile Include="IQueryInsertStatement.cs" />
     <Compile Include="IQuerySelectStatement.cs" />
+    <Compile Include="IQueryUpdateStatement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

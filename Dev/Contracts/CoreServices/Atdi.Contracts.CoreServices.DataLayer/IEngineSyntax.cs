@@ -13,7 +13,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         string EncodeParameterName(string name);
 
-        string EncodeFieldName(string alias, string name);
+        string EncodeFieldName(string source, string name);
 
         string EncodeValue(string value);
 

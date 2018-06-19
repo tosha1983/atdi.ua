@@ -46,5 +46,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         byte[] GetValue(Expression<Func<TModel, byte[]>> columnExpression);
 
+        Guid GetValue(Expression<Func<TModel, Guid>> columnExpression);
+
+        Guid? GetValue(Expression<Func<TModel, Guid?>> columnExpression);
+
     }
 }

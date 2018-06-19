@@ -11,5 +11,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         IQuerySelectStatement From(string tableName);
 
         IQuerySelectStatement<TModel> From<TModel>();
+
+        IQueryInsertStatement Insert(string tableName);
+
+        IQueryUpdateStatement Update(string tableName);
+
+        IQueryDeleteStatement Delete(string tableName);
     }
 }

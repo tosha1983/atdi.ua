@@ -16,7 +16,7 @@ namespace Atdi.DataModels.DataConstraint
         }
 
         [DataMember]
-        public string Alias { get; set; }
+        public string Source { get; set; }
 
         [DataMember]
         public string ColumnName { get; set; }
