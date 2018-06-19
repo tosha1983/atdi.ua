@@ -12,6 +12,6 @@ namespace Atdi.Contracts.LegacyServices.Icsm
     {
        public ColumnMetadata[] columnMetaData { get; set; }
        public string TableName { get; set; }
-       public IrpCustomExpression[] CustomExpressions { get; set; }
+     
     }
 }

@@ -34,13 +34,13 @@ namespace XICSM.WebQuery
             _lst = Lst;
             CLocaliz.TxT(this);
 
-            if (id!=-1)
+            if (id==-1)
             {
                 button_Constraints.Enabled = false;
             }
             else
             {
-                button_Constraints.Enabled = false;
+                button_Constraints.Enabled = true;
             }
         }
 
@@ -239,7 +239,8 @@ namespace XICSM.WebQuery
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
                         MessageBox.Show("Record created successfull!", "Warning!");
-                       button_Constraints.Enabled = false;
+                        id = IDs;
+                        button_Constraints.Enabled = true;
                     
                 }
                 else MessageBox.Show("Please input data to field 'Name query'!", "Warning!");
@@ -268,7 +269,7 @@ namespace XICSM.WebQuery
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
                         MessageBox.Show("Record saved successfull!", "Warning!");
-                    button_Constraints.Enabled = false;
+                       button_Constraints.Enabled = true;
                 }
             }
           

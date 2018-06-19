@@ -70,22 +70,10 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     if (fetchOptions.Limit != null) limitRecord = fetchOptions.Limit;
                 }
 
-                var custExpr = queryDescriptor.CustomExpressions.ToList();
-                if (custExpr != null)   {
-                    custExpr.ForEach(x => { allColumnExpression.Add("$" + x.CustomExpression + "#:" + x.Name); });
-                }
-
-
                var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
                    .Select(allColumns);
    
-              if (allColumnExpression.Any())
-                {
-                    statement
-                  .Select(allColumnExpression.ToArray());
-                }
-               
                 if (conditions.Any()) {
                     statement
                    .Where(conditions);
@@ -113,7 +101,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 var result = new QueryResult();
                 if (fetchOptions != null)
                 {
-                    var dataSet = this._queryExecutor.Fetch(statement, dataColumns.Select(c => new DataSetColumn { Name = c.Name, Type = c.Type }).ToArray(), fetchOptions.ResultStructure);
+                    var dataSet = this._queryExecutor.Fetch(statement, dataColumns.Select(c => new DataSetColumn { Name = queryDescriptor.GetNameColumn(c.Name), Type = c.Type }).ToArray(), fetchOptions.ResultStructure);
                     result.Dataset = dataSet;
                     result.OptionId = fetchOptions.Id;
                     result.Token = queryToken;
@@ -128,7 +116,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
         }
 
 
-      
+
 
 
     }

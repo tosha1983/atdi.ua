@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="IcsmDataContext.cs" />
     <Compile Include="IcsmDataOrm.cs" />
-    <Compile Include="IrpCustomExpression.cs" />
     <Compile Include="IIrpDescriptor.cs" />
     <Compile Include="IIrpParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

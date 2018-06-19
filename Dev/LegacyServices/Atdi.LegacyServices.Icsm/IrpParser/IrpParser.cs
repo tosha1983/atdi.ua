@@ -65,9 +65,9 @@ namespace Atdi.LegacyServices.Icsm
                                 if (fld_check == f1.Name)  {
                                     rc.NameTableTo = tc.Name;
                                     rc.Name = f1.Name;
-                                    if (joi.From.Count() > 0) rc.FieldJoinFrom = joi.From[0].Name;
-                                    if (joi.To.Count() > 0) rc.FieldJoinTo = joi.To[0].Name;
-                                    if (joi.To.Count() > 0) { if (joi.To[0].DDesc != null) rc.TypeValue = joi.To[0].DDesc.ClassType; rc.Precision = joi.To[0].DDesc.Precision; }
+                                    if (joi.From.Length > 0) rc.FieldJoinFrom = joi.From[0].Name;
+                                    if (joi.To.Length > 0) rc.FieldJoinTo = joi.To[0].Name;
+                                    if (joi.To.Length > 0) { if (joi.To[0].DDesc != null) rc.TypeValue = joi.To[0].DDesc.ClassType; rc.Precision = joi.To[0].DDesc.Precision; }
                                 }
                             }
                             break;
@@ -91,12 +91,12 @@ namespace Atdi.LegacyServices.Icsm
                 Spl = fld.Split(new char[] { '.' });
             }
             if (Spl != null) {
-                for (int r = 0; r < Spl.Count() - 1; r++) {
+                for (int r = 0; r < Spl.Length - 1; r++) {
                     recDB = GetTableFromORM(Spl[r], r == 0 ? TableName2 : recDB.NameTableTo);
                     recDB.NameTableFrom = (r == 0 ? TableName2 : Spl[r - 1]);
                     Spl[r] = recDB.NameTableTo;
                 }
-                if (Spl.Count() > 0) recDB.NameFieldForSetValue = Spl[Spl.Count() - 1];
+                if (Spl.Length > 0) recDB.NameFieldForSetValue = Spl[Spl.Length - 1];
             }
             else {
                 recDB.NameTableTo = tableName;
@@ -110,7 +110,6 @@ namespace Atdi.LegacyServices.Icsm
         {
             var irpDescr = new IrpDescriptor();
             var lColumnsMeta = new List<ColumnMetadata>();
-            var lColumnsCustomExpression = new List<IrpCustomExpression>();
             try
             {
                 var f = new Frame();
@@ -123,7 +122,7 @@ namespace Atdi.LegacyServices.Icsm
                 f.Load(strx);
                 var _report = new IcsmReport();
                 _report.SetConfig(f);
-                for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Count(); i++) {
+                for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
                     {
                         var metaData = new ColumnMetadata();
                         metaData.Description = _report.m_desc;
@@ -142,12 +141,7 @@ namespace Atdi.LegacyServices.Icsm
                         metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
                         if (_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
                         {
-                            var expr = new IrpCustomExpression();
-                            expr.CustomExpression = _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr;
-                            expr.Name = _report.m_dat.m_list[0].m_query.lq[i].title;
-                            expr.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
-                            metaData.Name = expr.Name;
-                            lColumnsCustomExpression.Add(expr);
+                            metaData.Name = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + _report.m_dat.m_list[0].m_query.lq[i].title;
                         }
                         var ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
                         if (ty_p == null)
@@ -196,8 +190,7 @@ namespace Atdi.LegacyServices.Icsm
                 }
                 _report.Clear(false);
                 irpDescr.columnMetaData = lColumnsMeta.ToArray();
-                irpDescr.CustomExpressions = lColumnsCustomExpression.ToArray();
-            }
+           }
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.ParseIRP, e, this);

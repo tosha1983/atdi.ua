@@ -19,8 +19,7 @@ namespace Atdi.AppServices.WebQuery
         private  XWEBQUERY _QueryValue { get; set; }
         private XWEBCONSTRAINT[] _ConstraintsValue { get; set; }
         private Dictionary<string,DataType> _hashSet;
-        public IrpCustomExpression[] CustomExpressions { get; set; }
-
+   
         public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, IrpDescriptor irpdescription)
         {
             _hashSet = new Dictionary<string, DataType>();
@@ -40,11 +39,11 @@ namespace Atdi.AppServices.WebQuery
             Metadata.Title = QueryValue.NAME;
 
             var listColumns = Metadata.Columns.ToList();
-            for (int i = 0; i < listColumns.Count(); i++)   {
+            for (int i = 0; i < listColumns.Count; i++)   {
                 if (!_hashSet.ContainsKey(listColumns[i].Name))
                     _hashSet.Add(listColumns[i].Name, listColumns[i].Type);
             }
-            CustomExpressions = irpdescription.CustomExpressions;
+            
         }
 
 
@@ -57,12 +56,22 @@ namespace Atdi.AppServices.WebQuery
             }
         }
 
+        public string GetNameColumn(string value)
+        {
+            if (value.StartsWith("$"))
+            {
+                int num_expr_end = value.IndexOf("#:");
+                return value.Substring(num_expr_end + 2, value.Length - (num_expr_end + 2));
+            }
+            else return value;
+        }
+
         public string ValidateColumns(string[] columns)
         {
             string warnings = "";
             if (columns != null)
             {
-                for (int i = 0; i < columns.Count(); i++)
+                for (int i = 0; i < columns.Length; i++)
                 {
                    if (HasColumn(columns[i]) == false) warnings +="'" + columns[i]+"',";
                 }
@@ -75,7 +84,7 @@ namespace Atdi.AppServices.WebQuery
             string warnings = "";
             if (conditions != null)
             {
-                for (int i = 0; i < conditions.Count(); i++)
+                for (int i = 0; i < conditions.Length; i++)
                 {
                     if (conditions[i] is Atdi.DataModels.DataConstraint.ConditionExpression)
                     {
@@ -117,7 +126,7 @@ namespace Atdi.AppServices.WebQuery
             foreach (XWEBCONSTRAINT cntr in _ConstraintsValue) {
                 if ((cntr.MIN != null) || (cntr.MAX != null)) {
                     string NameFldLon = "";
-                    for (int i = 0; i < Metadata.Columns.Count(); i++) {
+                    for (int i = 0; i < Metadata.Columns.Length; i++) {
                         if (Metadata.Columns[i].Name == cntr.PATH) {
                             NameFldLon = Metadata.Columns[i].Name;
                             if (!string.IsNullOrEmpty(NameFldLon)) {
@@ -177,7 +186,7 @@ namespace Atdi.AppServices.WebQuery
                 else if (cntr.STRVALUE != null){
                     if (!string.IsNullOrEmpty(cntr.STRVALUE)) {
                         string NameFldLon = "";
-                        for (int i = 0; i < Metadata.Columns.Count(); i++) {
+                        for (int i = 0; i < Metadata.Columns.Length; i++) {
                             if (Metadata.Columns[i].Name == cntr.PATH) {
                                 NameFldLon = Metadata.Columns[i].Name;
                                 if (!string.IsNullOrEmpty(NameFldLon)) {
@@ -244,7 +253,7 @@ namespace Atdi.AppServices.WebQuery
                 }
                 if ((cntr.DATEVALUEMIN != null) || (cntr.DATEVALUEMAX != null)) {
                     string NameFldLon = "";
-                    for (int i = 0; i < Metadata.Columns.Count(); i++) {
+                    for (int i = 0; i < Metadata.Columns.Length; i++) {
                         if (Metadata.Columns[i].Name == cntr.PATH) {
                             NameFldLon = Metadata.Columns[i].Name;
                             if (!string.IsNullOrEmpty(NameFldLon)) {
