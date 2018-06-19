@@ -48,10 +48,8 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 if (fetchOptions != null)   {
                     if (fetchOptions.Columns != null) {
                         if (fetchOptions.Columns.Count()>0) { 
-                            if (fetchOptions.Columns != null)   {
                                 notAvailableColumns += queryDescriptor.ValidateColumns(fetchOptions.Columns);
                                 allColumns = fetchOptions.Columns;
-                            }
                                 dataColumns = new List<ColumnMetadata>().ToArray();  List<ColumnMetadata> tempMetaColumn = new List<ColumnMetadata>();
                                 fetchOptions.Columns.ToList().ForEach(x => { var metaTemp = queryDescriptor.Metadata.Columns.ToList().Find(r => r.Name == x); if (metaTemp != null) tempMetaColumn.Add(metaTemp); });
                                 dataColumns = tempMetaColumn.ToArray();
@@ -113,7 +111,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format(Exceptions.FetOptionsNull));
+                    throw new InvalidOperationException(string.Format(Exceptions.FetchOptionsNull));
 
                 }
                 return result;

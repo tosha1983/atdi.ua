@@ -40,6 +40,6 @@ namespace Atdi.AppServices.WebQuery
         public static readonly string ServiceHostWasNotInitialized = "The service host was not initialized";
         public static readonly string QueryIsNotAvailable = "The query is not available";
         public static readonly string ColumnIsNotAvailable = "The column(s) {0} is not available";
-        public static readonly string FetOptionsNull = "Fetch options is NULL";
+        public static readonly string FetchOptionsNull = "Fetch options is NULL";
     }
 }
