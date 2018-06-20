@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.DataLayer
 {
-    public interface IQueryInsertStatement
+    public interface IQueryInsertStatement : IQueryStatement
     {
         IQueryInsertStatement SetValue(ColumnValue columnValue);
 
-        IQueryInsertStatement SetValues(ColumnValue[] columnValue);
+        IQueryInsertStatement SetValues(ColumnValue[] columnsValues);
     }
 
     public static class QueryInsertStatementExtensitons

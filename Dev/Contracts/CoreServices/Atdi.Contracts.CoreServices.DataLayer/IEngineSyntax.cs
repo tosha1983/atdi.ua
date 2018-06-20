@@ -9,6 +9,12 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 {
     public interface IEngineSyntax
     {
+        string EncodeTableName(string name);
+
+        string EncodeTableName(string schema, string name);
+
+        string SourceExpression(string sourceExpression, string alias);
+
         string EncodeFieldName(string name);
 
         string EncodeParameterName(string name);
@@ -38,5 +44,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         string FromExpression(string expression, string alias);
 
         string SelectExpression(string[] selectColumns, string fromExpression, string whereExpression = null, string[] orderByColumns = null, DataLimit limit = null, string[] groupByColumns = null);
+
+        string DeleteExpression(string sourceExpression, string fromExpression = null, string whereExpression = null);
     }
 }

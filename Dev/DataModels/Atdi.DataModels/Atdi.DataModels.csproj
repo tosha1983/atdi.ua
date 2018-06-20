@@ -47,7 +47,7 @@
     <Compile Include="Changeset\Changeset.cs" />
     <Compile Include="Changeset\ChangesResult.cs" />
     <Compile Include="Changeset\CreationAction.cs" />
-    <Compile Include="Changeset\DeleteionAction.cs" />
+    <Compile Include="Changeset\DeletionAction.cs" />
     <Compile Include="Changeset\ObjectRowCreationAction.cs" />
     <Compile Include="Changeset\ObjectRowUpdationAction.cs" />
     <Compile Include="Changeset\StringRowCreationAction.cs" />

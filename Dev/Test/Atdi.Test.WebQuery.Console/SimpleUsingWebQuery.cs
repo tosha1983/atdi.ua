@@ -209,7 +209,7 @@ namespace Atdi.Test.WebQuery
             };
 
             // удаление записи
-            var deleteionAction = new DeleteionAction
+            var deleteionAction = new DeletionAction
             {
                 Id = Guid.NewGuid(),
                 Condition = new ConditionExpression // указываем условие выборки

@@ -9,15 +9,28 @@ using System.Threading.Tasks;
 
 namespace Atdi.LegacyServices.Icsm
 {
-    internal sealed class QueryDeleteStatement : LoggedObject, IQueryDeleteStatement
+    internal sealed class QueryDeleteStatement : IQueryDeleteStatement
     {
-        public QueryDeleteStatement(ILogger logger) : base(logger)
+        private readonly List<Condition> _conditions;
+        private readonly string _tableName;
+
+        public QueryDeleteStatement(string tableName)
         {
+            this._tableName = tableName;
+            this._conditions = new List<Condition>();
         }
+        public List<Condition> Conditions => this._conditions;
+        public string TableName => this._tableName;
 
         public IQueryDeleteStatement Where(Condition condition)
         {
-            throw new NotImplementedException();
+            if (condition == null)
+            {
+                throw new ArgumentNullException(nameof(condition));
+            }
+
+            this._conditions.Add(condition);
+            return this;
         }
     }
 }

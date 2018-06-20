@@ -36,5 +36,11 @@ namespace Atdi.DataModels
         /// </summary>
         [DataMember]
         public string Message { get; set; }
+
+        /// <summary>
+        /// The number of rows changed, inserted, or deleted by execution of the action
+        /// </summary>
+        [DataMember]
+        public int RecordsAffected { get; set; }
     }
 }

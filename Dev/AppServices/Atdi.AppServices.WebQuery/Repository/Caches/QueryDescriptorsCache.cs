@@ -30,7 +30,7 @@ namespace Atdi.AppServices.WebQuery
             var queryId = queryToken.Token.Id;
             if (!this._queryDescriptors.TryGetValue(queryId, out QueryDescriptor descriptor))
             {
-                descriptor = this.LoadQueryDescriptor(queryId);
+                descriptor = this.LoadQueryDescriptor(queryToken);
                 this._queryDescriptors[queryId] = descriptor;
             }
             return descriptor;
@@ -41,8 +41,9 @@ namespace Atdi.AppServices.WebQuery
         /// </summary>
         /// <param name="queryId"></param>
         /// <returns></returns>
-        public QueryDescriptor LoadQueryDescriptor(int queryId)
+        public QueryDescriptor LoadQueryDescriptor(QueryTokenDescriptor queryToken)
         {
+            var queryId = queryToken.Token.Id;
             QueryDescriptor description = null;
             var query_web_constraint = _dataLayer.Builder
               .From<XWEBCONSTRAINT>()
@@ -113,7 +114,7 @@ namespace Atdi.AppServices.WebQuery
                return Value;
            });
             IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
-            description = new QueryDescriptor(QueryValue, ConstraintsValue, irpDescriptor);
+            description = new QueryDescriptor(QueryValue, ConstraintsValue, irpDescriptor, queryToken);
             return description;
         }
     }

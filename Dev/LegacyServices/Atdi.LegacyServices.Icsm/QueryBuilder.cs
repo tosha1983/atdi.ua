@@ -14,32 +14,29 @@ namespace Atdi.LegacyServices.Icsm
         {
         }
 
-        
-
         public IQuerySelectStatement From(string tableName)
         {
-            return new QuerySelectStatement(tableName, this.Logger);
+            return new QuerySelectStatement(tableName);
         }
 
         public IQuerySelectStatement<TModel> From<TModel>()
         {
-
-            return new QuerySelectStatement<TModel>(this.Logger);
+            return new QuerySelectStatement<TModel>();
         }
 
         public IQueryInsertStatement Insert(string tableName)
         {
-            throw new NotImplementedException();
+            return new QueryInsertStatement(tableName);
         }
 
         public IQueryUpdateStatement Update(string tableName)
         {
-            throw new NotImplementedException();
+            return new QueryUpdateStatement(tableName);
         }
 
         public IQueryDeleteStatement Delete(string tableName)
         {
-            throw new NotImplementedException();
+            return new QueryDeleteStatement(tableName);
         }
     }
 }

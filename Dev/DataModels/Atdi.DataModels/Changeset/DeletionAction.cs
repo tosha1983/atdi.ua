@@ -12,8 +12,13 @@ namespace Atdi.DataModels
     /// Represents the action of delete record
     /// </summary>
     [DataContract(Namespace = CommonSpecification.Namespace)]
-    public class DeleteionAction : Action
+    public class DeletionAction : Action
     {
+        public DeletionAction() : base()
+        {
+            this.Type = ActionType.Delete;
+        }
+
         [DataMember]
         public Condition Condition { get; set; }
     }

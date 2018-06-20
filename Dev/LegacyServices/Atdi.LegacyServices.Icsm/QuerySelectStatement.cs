@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    internal sealed class QuerySelectStatement : LoggedObject, IQuerySelectStatement
+    internal sealed class QuerySelectStatement : IQuerySelectStatement
     {
         internal sealed class ColumnDescriptor
         {
@@ -147,7 +147,7 @@ namespace Atdi.LegacyServices.Icsm
         private DataLimit _limit;
         private bool _isDistinct;
 
-        public QuerySelectStatement(string tableName, ILogger logger) : base(logger)
+        public QuerySelectStatement(string tableName)
         {
             this._table = new TableDescriptor(tableName);
             this._conditions = new List<Condition>();
@@ -291,7 +291,7 @@ namespace Atdi.LegacyServices.Icsm
         }
     }
 
-    internal sealed class QuerySelectStatement<TModel> : LoggedObject, IQuerySelectStatement<TModel>
+    internal sealed class QuerySelectStatement<TModel> : IQuerySelectStatement<TModel>
     {
         private static readonly Type ModelType = typeof(TModel);
         private readonly QuerySelectStatement _statement;
@@ -299,9 +299,9 @@ namespace Atdi.LegacyServices.Icsm
 
         public QuerySelectStatement Statement => _statement;
 
-        public QuerySelectStatement(ILogger logger) : base(logger)
+        public QuerySelectStatement()
         {
-            this._statement = new QuerySelectStatement(ModelType.Name, logger); 
+            this._statement = new QuerySelectStatement(ModelType.Name); 
         }
 
         public IQuerySelectStatement<TModel> Distinct()
@@ -452,6 +452,13 @@ namespace Atdi.LegacyServices.Icsm
                     Values = values.Select(o => (byte[])(object)o).ToArray()
                 };
             }
+            if (type == typeof(Guid) || type == typeof(Guid?))
+            {
+                return new GuidValuesOperand
+                {
+                    Values = values.Select(o => (Guid?)(object)o).ToArray()
+                };
+            }
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 
@@ -528,7 +535,13 @@ namespace Atdi.LegacyServices.Icsm
                     Value = (byte[])(object)value
                 };
             }
-
+            if (type == typeof(Guid) || type == typeof(Guid?))
+            {
+                return new GuidValueOperand
+                {
+                    Value = (Guid?)(object)value
+                };
+            }
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 

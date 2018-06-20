@@ -15,6 +15,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler);
 
         DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure);
+
+        int Execute(IQueryStatement statement);
     }
 
     public interface IDataReader<TModel>

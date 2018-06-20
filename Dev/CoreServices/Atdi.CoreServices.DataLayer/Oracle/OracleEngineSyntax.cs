@@ -260,5 +260,25 @@ namespace Atdi.CoreServices.DataLayer
         {
             return $"({leftExpression} <> {rightExpression})";
         }
+
+        public string EncodeTableName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string EncodeTableName(string schema, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string SourceExpression(string sourceExpression, string alias)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string DeleteExpression(string sourceExpression, string fromExpression = null, string whereExpression = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

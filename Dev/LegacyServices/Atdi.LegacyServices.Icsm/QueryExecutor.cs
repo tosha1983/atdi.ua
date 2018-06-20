@@ -647,62 +647,59 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
-        
+        public int Execute(IQueryStatement statement)
+        {
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
+            EngineCommand command = null;
+            if (statement is QueryInsertStatement queryInsertStatement)
+            {
+                command = this.BuildInsertCommand(queryInsertStatement);
+            }
+            else if (statement is QueryUpdateStatement queryUpdateStatement)
+            {
+                command = this.BuildUpdateCommand(queryUpdateStatement);
+            }
+            else if (statement is QueryDeleteStatement queryDeleteStatement)
+            {
+                command = this.BuildDeleteCommand(queryDeleteStatement);
+            }
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            var recordsAffected = this._dataEngine.Execute(command);
+            return recordsAffected;
+        }
 
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
             var command = new EngineCommand();
-
-            var rootStatement = this._icsmOrmQueryBuilder.BuildSelectStatement(statement);
-
-            var fromExpression = this._dataEngine.Syntax.FromExpression(rootStatement, "A");
-
-            var selectColumns = new string[statement.Table.SelectColumns.Count];
-            var index = 0;
-            foreach (var column in statement.Table.SelectColumns.Values)
-            {
-                /// todo alias
-                selectColumns[index++] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName("A", column.Name), column.Name);
-            }
-
-            // add conditions
-            var whereExpression = this.CreateWhereExpression(statement.Conditions, command.Parameters);
-
-            // add order by
-            string[] orderByColumns = null;
-            var sortColumns = statement.Orders;
-            if (sortColumns != null && sortColumns.Count > 0)
-            {
-                orderByColumns = new string[sortColumns.Count];
-                index = 0;
-                foreach (var sortColumn in sortColumns)
-                {
-                    var encodeColumn = this._syntax.EncodeFieldName("A", sortColumn.Column.Alias);
-                    orderByColumns[index++] = _syntax.SortedColumn(encodeColumn, sortColumn.Direction);
-                }
-            }
-
-            // add on top (n)
-            var limit = statement.Limit;
-            
-            // add group by
-
-            command.Text = this._syntax.SelectExpression(selectColumns, fromExpression, whereExpression, orderByColumns, limit);
+            command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
 
-        private string CreateWhereExpression(List<Condition> conditions, IDictionary<string, EngineCommandParameter> parameters)
+        private EngineCommand BuildInsertCommand(QueryInsertStatement statement)
         {
-            if (conditions == null || conditions.Count == 0)
-            {
-                return null;
-            }
-
-            var expressions = conditions.Select(condition => this._conditionParser.Parse(condition, parameters)).ToArray();
-
-            var result = this._syntax.Constraint.JoinExpressions(LogicalOperator.And, expressions);
-
-            return result;
+            return new EngineCommand();
         }
+        private EngineCommand BuildUpdateCommand(QueryUpdateStatement statement)
+        {
+            return new EngineCommand();
+        }
+
+        private EngineCommand BuildDeleteCommand(QueryDeleteStatement statement)
+        {
+            var command = new EngineCommand();
+            command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(statement, command.Parameters);
+            return command;
+        }
+
+        
     }
 }

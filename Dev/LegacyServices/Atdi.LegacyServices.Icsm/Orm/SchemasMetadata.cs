@@ -22,6 +22,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
         private bool _hasSemant = false;
         private bool _singlePosEqpAnt = false;
 
+        public string DbSchema => this._config.SchemaPrefix;
 
         public SchemasMetadata(SchemasMetadataConfig config)
         {
@@ -851,6 +852,33 @@ namespace Atdi.LegacyServices.Icsm.Orm
 
             return sql.ToString();
         }
+
+        public string BuildJoinStatement(IEngineSyntax engineSyntax, string tableName, string[] fieldPaths, out DbField[] selectedFields) // DBMS dbms, string quoteColumn)
+        {
+            var schemaPrefix = this._config.SchemaPrefix + ".";
+
+            var dbTables = new Dictionary<string, DbTable>();
+            var dbJoines = new List<DbJoin>();
+            var dbFields = new List<DbField>();
+            var dbWorldFields = new Dictionary<string, DbField>();
+
+            selectedFields = new DbField[fieldPaths.Length];
+            for (int i = 0; i < fieldPaths.Length; i++)
+            {
+                var fieldPath = fieldPaths[i];
+
+                var dbField = this.AddField(tableName, fieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+                dbField.Path = fieldPath;
+                selectedFields[i] = dbField;
+            }
+
+            var joinSql = BuildJoinStatement(engineSyntax, tableName, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+            var formatedSql = FormatJoinStatement(joinSql);
+
+            return formatedSql;
+        }
+
+        
 
         private static string FormatJoinStatement(string expression)
         {
