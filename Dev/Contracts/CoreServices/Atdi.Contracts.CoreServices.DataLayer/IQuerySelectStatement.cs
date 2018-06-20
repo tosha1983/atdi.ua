@@ -62,6 +62,25 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
     public static class QuerySelectStatementExtensions
     {
+        public static IQuerySelectStatement SetLimit(this IQuerySelectStatement query, DataLimit limit)
+        {
+            if (limit != null)
+            {
+                switch (limit.Type)
+                {
+                    case DataModels.DataConstraint.LimitValueType.Records:
+                        query.OnTop(limit.Value);
+                        break;
+                    case DataModels.DataConstraint.LimitValueType.Percent:
+                        query.OnPercentTop(limit.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return query;
+        }
+
         public static IQuerySelectStatement Where(this IQuerySelectStatement query, string column, string value)
         {
             return query.Where(

@@ -18,6 +18,7 @@ namespace Atdi.AppServices.WebQuery
         private readonly Dictionary<string, DataType> _hashSet;
         private readonly XWEBQUERY _QueryValue;
 
+
         public string IdentUserField { get; private set; }
 
         public string TableName { get; private set; }
@@ -55,9 +56,25 @@ namespace Atdi.AppServices.WebQuery
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DataSetColumn MakeDataSetColumn(string name)
+        {
+            return new DataSetColumn
+            {
+                Name = this.GetNameColumn(name),
+                Type = this.GetColumnType(name)
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasColumn(string nameColumn)
         {
             return this._hashSet.ContainsKey(nameColumn); 
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DataType GetColumnType(string name)
+        {
+            return this._hashSet[name];
         }
 
         public string GetNameColumn(string value)
@@ -92,17 +109,44 @@ namespace Atdi.AppServices.WebQuery
                 //throw new InvalidOperationException(Exceptions.AccessToActionDenied.With(type));
             } 
         }
-        public string ValidateColumns(string[] columns)
+        public void CheckColumns(string[] columns)
         {
-            string warnings = "";
-            if (columns != null)
+            for (int i = 0; i < columns.Length; i++)
             {
-                for (int i = 0; i < columns.Length; i++)
+                if (HasColumn(columns[i]) == false)
                 {
-                   if (HasColumn(columns[i]) == false) warnings +="'" + columns[i]+"',";
+                    var badCollumns = new List<string>();
+                    for (int j = 0; j < columns.Length; j++)
+                    {
+                        if (HasColumn(columns[i]) == false)
+                        {
+                            badCollumns.Add(columns[i]);
+                        }
+                    }
+                    var message = string.Join(", ", badCollumns);
+                    throw new InvalidOperationException($"Not found columns with name's {message}'");
                 }
             }
-            return warnings;
+        }
+
+        public void CheckColumns(OrderExpression[] columns)
+        {
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (HasColumn(columns[i].ColumnName) == false)
+                {
+                    var badCollumns = new List<string>();
+                    for (int j = 0; j < columns.Length; j++)
+                    {
+                        if (HasColumn(columns[i].ColumnName) == false)
+                        {
+                            badCollumns.Add(columns[i].ColumnName);
+                        }
+                    }
+                    var message = string.Join(", ", badCollumns);
+                    throw new InvalidOperationException($"Not found columns with name's {message}'");
+                }
+            }
         }
 
         public string ValidateConditions(Condition[] conditions)

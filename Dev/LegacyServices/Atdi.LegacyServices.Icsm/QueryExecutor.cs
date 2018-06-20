@@ -688,6 +688,7 @@ namespace Atdi.LegacyServices.Icsm
         {
             return new EngineCommand();
         }
+
         private EngineCommand BuildUpdateCommand(QueryUpdateStatement statement)
         {
             return new EngineCommand();
