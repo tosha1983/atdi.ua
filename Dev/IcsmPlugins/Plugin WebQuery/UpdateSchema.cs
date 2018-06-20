@@ -53,7 +53,7 @@ namespace XICSM.WebQuery
             //===============================================
             // TABLES
             //===============================================
-            s.DeclareTable("XWEBQUERY", "WEB_QUERY", plugin4);
+            s.DeclareTable("XWEBQUERY", "Web query", plugin4);
             {
                 s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
                 s.DeclareIndex("PK_XWEBQUERY", "PRIMARY", "ID");

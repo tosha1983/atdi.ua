@@ -321,5 +321,15 @@ namespace XICSM.WebQuery
             SetDisable(groupBox_DateTime);
             SetDisable(groupBox_Numerical);
         }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox_Numerical_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

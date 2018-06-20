@@ -72,9 +72,10 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(385, 308);
+            this.groupBox1.Size = new System.Drawing.Size(435, 308);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // groupBox6
             // 
@@ -83,13 +84,13 @@
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox6.Location = new System.Drawing.Point(3, 255);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(379, 50);
+            this.groupBox6.Size = new System.Drawing.Size(429, 50);
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             // 
             // button_cancel
             // 
-            this.button_cancel.Location = new System.Drawing.Point(230, 18);
+            this.button_cancel.Location = new System.Drawing.Point(310, 18);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(109, 23);
             this.button_cancel.TabIndex = 1;
@@ -116,17 +117,17 @@
             this.groupBox_DateTime.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox_DateTime.Location = new System.Drawing.Point(3, 206);
             this.groupBox_DateTime.Name = "groupBox_DateTime";
-            this.groupBox_DateTime.Size = new System.Drawing.Size(379, 50);
+            this.groupBox_DateTime.Size = new System.Drawing.Size(429, 50);
             this.groupBox_DateTime.TabIndex = 4;
             this.groupBox_DateTime.TabStop = false;
             this.groupBox_DateTime.Text = "DateTime restrictions";
             // 
             // icsDateTime_to
             // 
-            this.icsDateTime_to.Location = new System.Drawing.Point(256, 20);
+            this.icsDateTime_to.Location = new System.Drawing.Point(291, 22);
             this.icsDateTime_to.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.icsDateTime_to.Name = "icsDateTime_to";
-            this.icsDateTime_to.Size = new System.Drawing.Size(103, 18);
+            this.icsDateTime_to.Size = new System.Drawing.Size(128, 18);
             this.icsDateTime_to.TabIndex = 9;
             this.icsDateTime_to.Value = new System.DateTime(((long)(0)));
             this.icsDateTime_to.ValueChanged += new System.EventHandler(this.icsDateTime_to_ValueChanged);
@@ -136,7 +137,7 @@
             this.icsDateTime_from.Location = new System.Drawing.Point(51, 22);
             this.icsDateTime_from.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.icsDateTime_from.Name = "icsDateTime_from";
-            this.icsDateTime_from.Size = new System.Drawing.Size(103, 18);
+            this.icsDateTime_from.Size = new System.Drawing.Size(140, 18);
             this.icsDateTime_from.TabIndex = 8;
             this.icsDateTime_from.Value = new System.DateTime(((long)(0)));
             this.icsDateTime_from.ValueChanged += new System.EventHandler(this.icsDateTime_from_ValueChanged);
@@ -144,7 +145,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(227, 22);
+            this.label5.Location = new System.Drawing.Point(240, 24);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(20, 13);
             this.label5.TabIndex = 7;
@@ -166,16 +167,16 @@
             this.groupBox_String.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox_String.Location = new System.Drawing.Point(3, 156);
             this.groupBox_String.Name = "groupBox_String";
-            this.groupBox_String.Size = new System.Drawing.Size(379, 50);
+            this.groupBox_String.Size = new System.Drawing.Size(429, 50);
             this.groupBox_String.TabIndex = 3;
             this.groupBox_String.TabStop = false;
             this.groupBox_String.Text = "String restrictions";
             // 
             // textBox_str_value
             // 
-            this.textBox_str_value.Location = new System.Drawing.Point(82, 21);
+            this.textBox_str_value.Location = new System.Drawing.Point(156, 21);
             this.textBox_str_value.Name = "textBox_str_value";
-            this.textBox_str_value.Size = new System.Drawing.Size(277, 20);
+            this.textBox_str_value.Size = new System.Drawing.Size(263, 20);
             this.textBox_str_value.TabIndex = 5;
             this.textBox_str_value.TextChanged += new System.EventHandler(this.textBox_str_value_TextChanged);
             // 
@@ -197,17 +198,18 @@
             this.groupBox_Numerical.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox_Numerical.Location = new System.Drawing.Point(3, 94);
             this.groupBox_Numerical.Name = "groupBox_Numerical";
-            this.groupBox_Numerical.Size = new System.Drawing.Size(379, 62);
+            this.groupBox_Numerical.Size = new System.Drawing.Size(429, 62);
             this.groupBox_Numerical.TabIndex = 2;
             this.groupBox_Numerical.TabStop = false;
             this.groupBox_Numerical.Text = "Numerical restrictions";
+            this.groupBox_Numerical.Enter += new System.EventHandler(this.groupBox_Numerical_Enter);
             // 
             // icsDouble_to
             // 
-            this.icsDouble_to.Location = new System.Drawing.Point(256, 24);
+            this.icsDouble_to.Location = new System.Drawing.Point(291, 24);
             this.icsDouble_to.Margin = new System.Windows.Forms.Padding(0);
             this.icsDouble_to.Name = "icsDouble_to";
-            this.icsDouble_to.Size = new System.Drawing.Size(103, 18);
+            this.icsDouble_to.Size = new System.Drawing.Size(128, 18);
             this.icsDouble_to.Subtype = null;
             this.icsDouble_to.TabIndex = 7;
             this.icsDouble_to.ValueChanged += new System.EventHandler(this.icsDouble_to_ValueChanged);
@@ -217,7 +219,7 @@
             this.icsDouble_from.Location = new System.Drawing.Point(51, 24);
             this.icsDouble_from.Margin = new System.Windows.Forms.Padding(0);
             this.icsDouble_from.Name = "icsDouble_from";
-            this.icsDouble_from.Size = new System.Drawing.Size(103, 18);
+            this.icsDouble_from.Size = new System.Drawing.Size(140, 18);
             this.icsDouble_from.Subtype = null;
             this.icsDouble_from.TabIndex = 6;
             this.icsDouble_from.ValueChanged += new System.EventHandler(this.icsDouble_from_ValueChanged);
@@ -225,7 +227,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(227, 26);
+            this.label3.Location = new System.Drawing.Point(240, 27);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(20, 13);
             this.label3.TabIndex = 5;
@@ -250,7 +252,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(3, 16);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(379, 78);
+            this.groupBox2.Size = new System.Drawing.Size(429, 78);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Common parameters";
@@ -268,7 +270,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(196, 25);
+            this.label2.Location = new System.Drawing.Point(197, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 3;
@@ -280,7 +282,7 @@
             this.comboBox_path.Items.AddRange(new object[] {
             "ID",
             "POWER"});
-            this.comboBox_path.Location = new System.Drawing.Point(231, 23);
+            this.comboBox_path.Location = new System.Drawing.Point(291, 23);
             this.comboBox_path.Name = "comboBox_path";
             this.comboBox_path.Size = new System.Drawing.Size(128, 21);
             this.comboBox_path.TabIndex = 2;
@@ -308,12 +310,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(385, 308);
+            this.ClientSize = new System.Drawing.Size(435, 308);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(401, 347);
-            this.MinimumSize = new System.Drawing.Size(401, 347);
+            this.MinimumSize = new System.Drawing.Size(451, 347);
             this.Name = "FormEditConstraintExtend";
             this.Text = "Edit condition";
             this.groupBox1.ResumeLayout(false);

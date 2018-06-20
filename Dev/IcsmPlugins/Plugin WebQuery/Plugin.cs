@@ -39,7 +39,7 @@ namespace XICSM.WebQuery
                     if (inParam is RecordPtr)
                     {
                         RecordPtr recordPtrParam = (RecordPtr)inParam;
-                        if (recordPtrParam.Table == ICSMTbl.WebQuery)
+                        if ((recordPtrParam.Table == ICSMTbl.WebQuery) || (recordPtrParam.Table == ICSMTbl.WebConstraint))
                         {
                             IM.AdminDisconnect();
                             OnDblClickRecord(recordPtrParam);
@@ -64,7 +64,14 @@ namespace XICSM.WebQuery
                 AdminFormWebQuery Web = new AdminFormWebQuery(context);
                 Web.ShowDialog();
             }
-
+            if (recPtr.Table == ICSMTbl.WebConstraint)
+            {
+                IMQueryMenuNode.Context context = new IMQueryMenuNode.Context();
+                context.TableName = recPtr.Table;
+                context.TableId = recPtr.Id;
+                FormEditConstraintExtend Web = new FormEditConstraintExtend(context.TableId, false, null);
+                Web.ShowDialog();
+            }
 
         }
 
@@ -73,7 +80,12 @@ namespace XICSM.WebQuery
             AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Insert record..."), null, OnNewRecWebQery, IMQueryMenuNode.ExecMode.Table), IMTableRight.Insert);
             AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Edit record..."), null, OnEditRecWebQery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Select);
             AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Delete record..."), null, OnDeleteRecSettingWebQuery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Delete);
+        }
 
+        private void AdminFormSettingConstraintQuery(string checkTable, string tableName, int nbSelMin, ref List<IMQueryMenuNode> menuList)
+        {
+            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Edit record..."), null, OnEditRecConstraintWebQery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Select);
+            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Delete record..."), null, OnDeleteRecSettingWebQuery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Delete);
         }
 
         private bool OnDeleteRecSettingWebQuery(IMQueryMenuNode.Context context)
@@ -94,6 +106,13 @@ namespace XICSM.WebQuery
             return true;
         }
 
+
+        private bool OnEditRecConstraintWebQery(IMQueryMenuNode.Context context)
+        {
+            FormEditConstraintExtend Web = new FormEditConstraintExtend(context.TableId,false,null);
+            Web.ShowDialog();
+            return true;
+        }
 
         private bool OnEditRecWebQery(IMQueryMenuNode.Context context)
         {
@@ -131,7 +150,7 @@ namespace XICSM.WebQuery
         {
             // -- блицы ICSM --
             b.RegisterQueryMenuBuilder(ICSMTbl.WebQuery, OnGetQueryMenu);
-           
+            b.RegisterQueryMenuBuilder(ICSMTbl.WebConstraint, OnGetQueryMenu);
         }
         //=================================================
         // Запрос отображения Popup Menu
@@ -146,6 +165,9 @@ namespace XICSM.WebQuery
             {
                 case ICSMTbl.WebQuery:
                     AdminFormSettingWebQuery(tableName, tableName, nbSelMin, ref menuList);
+                    break;
+                case ICSMTbl.WebConstraint:
+                    AdminFormSettingConstraintQuery(tableName, tableName, nbSelMin, ref menuList);
                     break;
             }
             return menuList;
