@@ -19,7 +19,7 @@ namespace Atdi.DataModels
     [KnownType(typeof(TypedRowUpdationAction))]
     [KnownType(typeof(StringRowUpdationAction))]
     [KnownType(typeof(ObjectRowUpdationAction))]
-    [KnownType(typeof(DeleteionAction))]
+    [KnownType(typeof(DeletionAction))]
     public class Action
     {
         /// <summary>

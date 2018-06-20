@@ -13,6 +13,6 @@ namespace Atdi.AppServices.WebQuery
 
         public QueryToken Token { get; set; }
 
-        public GroupDescriptor Group { get; set; }
+        public GroupDescriptor GroupDescriptor { get; set; }
     }
 }

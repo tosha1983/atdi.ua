@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    public sealed class QuerySelectStatement : LoggedObject, IQuerySelectStatement
+    internal sealed class QuerySelectStatement : IQuerySelectStatement
     {
-        public sealed class ColumnDescriptor
+        internal sealed class ColumnDescriptor
         {
             public string Table { get; set; }
 
@@ -24,11 +24,9 @@ namespace Atdi.LegacyServices.Icsm
             public string Alias { get; set; }
 
             public int Ordinal { get; set; }
-
-            public string Expression { get; set; }
         }
 
-        public sealed class TableDescriptor
+        internal sealed class TableDescriptor
         {
             private readonly Dictionary<string, ColumnDescriptor> _columns;
             private readonly Dictionary<string, ColumnDescriptor> _selectColumns;
@@ -58,31 +56,13 @@ namespace Atdi.LegacyServices.Icsm
             {
                 foreach (var column in columns)
                 {
-                    if (!column.StartsWith("$"))
+                    var descriptor = new ColumnDescriptor
                     {
-                        var descriptor = new ColumnDescriptor
-                        {
-                            Table = this.Name,
-                            Name = column,
-                            Expression = ""
-                        };
-                        this.AppendSelectColumn(descriptor);
-                    }
-                    else
-                    {
-                        int num_expr_end = column.IndexOf("#:");
-                        string expression = column.Substring(1, num_expr_end-1);
-                        string nameColumn = column.Substring(num_expr_end + 2, column.Length - (num_expr_end + 2));
+                        Table = this.Name,
+                        Name = column
+                    };
 
-                        var descriptor = new ColumnDescriptor
-                        {
-                            Table = this.Name,
-                            Name = nameColumn,
-                             Expression = expression
-                        };
-
-                        this.AppendSelectColumn(descriptor);
-                    }
+                    this.AppendSelectColumn(descriptor);
                 }
             }
 
@@ -99,10 +79,7 @@ namespace Atdi.LegacyServices.Icsm
                     {
                         this._selectColumns[column.Name] = column;
                     }
-                    else
-                    {
-                       this._selectColumns[column.Name] = column;
-                    }
+                    return;
                 }
                 this._columns[column.Name] = column;
                 this._selectColumns[column.Name] = column;
@@ -157,7 +134,7 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
-        public sealed class OrderByColumnDescriptor
+        internal sealed class OrderByColumnDescriptor
         {
             public ColumnDescriptor Column { get; set; }
 
@@ -170,7 +147,7 @@ namespace Atdi.LegacyServices.Icsm
         private DataLimit _limit;
         private bool _isDistinct;
 
-        public QuerySelectStatement(string tableName, ILogger logger) : base(logger)
+        public QuerySelectStatement(string tableName)
         {
             this._table = new TableDescriptor(tableName);
             this._conditions = new List<Condition>();
@@ -314,7 +291,7 @@ namespace Atdi.LegacyServices.Icsm
         }
     }
 
-    internal sealed class QuerySelectStatement<TModel> : LoggedObject, IQuerySelectStatement<TModel>
+    internal sealed class QuerySelectStatement<TModel> : IQuerySelectStatement<TModel>
     {
         private static readonly Type ModelType = typeof(TModel);
         private readonly QuerySelectStatement _statement;
@@ -322,9 +299,9 @@ namespace Atdi.LegacyServices.Icsm
 
         public QuerySelectStatement Statement => _statement;
 
-        public QuerySelectStatement(ILogger logger) : base(logger)
+        public QuerySelectStatement()
         {
-            this._statement = new QuerySelectStatement(ModelType.Name, logger); 
+            this._statement = new QuerySelectStatement(ModelType.Name); 
         }
 
         public IQuerySelectStatement<TModel> Distinct()
@@ -475,6 +452,13 @@ namespace Atdi.LegacyServices.Icsm
                     Values = values.Select(o => (byte[])(object)o).ToArray()
                 };
             }
+            if (type == typeof(Guid) || type == typeof(Guid?))
+            {
+                return new GuidValuesOperand
+                {
+                    Values = values.Select(o => (Guid?)(object)o).ToArray()
+                };
+            }
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 
@@ -551,7 +535,13 @@ namespace Atdi.LegacyServices.Icsm
                     Value = (byte[])(object)value
                 };
             }
-
+            if (type == typeof(Guid) || type == typeof(Guid?))
+            {
+                return new GuidValueOperand
+                {
+                    Value = (Guid?)(object)value
+                };
+            }
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 

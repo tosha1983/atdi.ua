@@ -1,4 +1,5 @@
-﻿using Atdi.Platform.Logging;
+﻿using Atdi.Platform;
+using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +38,11 @@ namespace Atdi.AppServices.WebQuery
 
     static class Exceptions
     {
-        public static readonly string ServiceHostWasNotInitialized = "The service host was not initialized";
-        public static readonly string QueryIsNotAvailable = "The query is not available";
-        public static readonly string ColumnIsNotAvailable = "The column(s) {0} is not available";
-        public static readonly string FetchOptionsNull = "Fetch options is NULL";
+        public static readonly ExceptionText ServiceHostWasNotInitialized = "The service host was not initialized";
+        public static readonly ExceptionText QueryIsNotAvailable = "The query is not available";
+        public static readonly ExceptionText ColumnIsNotAvailable = "The column(s) {0} is not available";
+        public static readonly ExceptionText FetchOptionsNull = "Fetch options is NULL";
+        public static readonly ExceptionText ActionTypeNotSupported = "The action type {0} is not supported.";
+        public static readonly ExceptionText AccessToActionDenied = "Access to action '{0}' is denied";
     }
 }

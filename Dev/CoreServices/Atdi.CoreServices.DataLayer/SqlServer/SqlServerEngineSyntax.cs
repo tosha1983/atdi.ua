@@ -254,5 +254,40 @@ namespace Atdi.CoreServices.DataLayer
         {
             return $"({leftExpression} <> {rightExpression})";
         }
+
+        public string EncodeTableName(string name)
+        {
+            return $"[{name}]";
+        }
+
+        public string EncodeTableName(string schema, string name)
+        {
+            return $"[{schema}].[{name}]";
+        }
+
+        public string SourceExpression(string sourceExpression, string alias)
+        {
+            return $"{sourceExpression} AS [{alias}]";
+        }
+
+        public string DeleteExpression(string sourceExpression, string fromExpression = null, string whereExpression = null)
+        {
+            var statement = new StringBuilder();
+
+            statement.AppendLine($"DELETE {sourceExpression}");
+            
+            if (!string.IsNullOrEmpty(fromExpression))
+            {
+                statement.AppendLine("FROM");
+                statement.AppendLine(IDENT + fromExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            }
+            if (!string.IsNullOrEmpty(whereExpression))
+            {
+                statement.AppendLine("WHERE");
+                statement.AppendLine(IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            }
+            
+            return statement.ToString();
+        }
     }
 }

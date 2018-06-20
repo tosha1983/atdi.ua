@@ -16,6 +16,7 @@ namespace Atdi.DataModels
     [KnownType(typeof(ObjectRowCreationAction))]
     public class CreationAction : Action
     {
+
         [DataMember]
         public DataSetColumn[] Columns { get; set; }
 

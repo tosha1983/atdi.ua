@@ -157,7 +157,7 @@ namespace Atdi.AppServices.WebQuery
                 {
                     item.Group.QueryTokens = tokens.Select(t => t.Token).ToArray();
                     item.QueryTokens = tokens.ToArray();
-                    tokens.ForEach(t => t.Group = item);
+                    tokens.ForEach(t => t.GroupDescriptor = item);
                 }
                 else
                 {

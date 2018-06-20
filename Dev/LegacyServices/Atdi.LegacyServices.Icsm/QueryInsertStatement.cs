@@ -9,20 +9,41 @@ using System.Threading.Tasks;
 
 namespace Atdi.LegacyServices.Icsm
 {
-    internal sealed class QueryInsertStatement : LoggedObject, IQueryInsertStatement
+    internal sealed class QueryInsertStatement : IQueryInsertStatement
     {
-        public QueryInsertStatement(ILogger logger) : base(logger)
+        private readonly string _tableName;
+        private readonly List<ColumnValue> _columnsValues;
+
+        public QueryInsertStatement(string tableName)
         {
+            this._tableName = tableName;
+            this._columnsValues = new List<ColumnValue>();
         }
+
+        public string TableName => this._tableName;
+
+        public List<ColumnValue> ColumnsValues => this._columnsValues;
 
         public IQueryInsertStatement SetValue(ColumnValue columnValue)
         {
-            throw new NotImplementedException();
+            if (columnValue == null)
+            {
+                throw new ArgumentNullException(nameof(columnValue));
+            }
+
+            this._columnsValues.Add(columnValue);
+            return this;
         }
 
-        public IQueryInsertStatement SetValues(ColumnValue[] columnValue)
+        public IQueryInsertStatement SetValues(ColumnValue[] columnsValues)
         {
-            throw new NotImplementedException();
+            if (columnsValues == null)
+            {
+                throw new ArgumentNullException(nameof(columnsValues));
+            }
+
+            this._columnsValues.AddRange(columnsValues);
+            return this;
         }
 
     }

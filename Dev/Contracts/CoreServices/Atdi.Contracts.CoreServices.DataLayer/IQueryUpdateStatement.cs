@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.DataLayer
 {
-    public interface IQueryUpdateStatement
+    public interface IQueryUpdateStatement : IQueryStatement
     {
         IQueryUpdateStatement Where(Condition condition);
 
         IQueryUpdateStatement SetValue(ColumnValue columnValue);
 
-        IQueryUpdateStatement SetValues(ColumnValue[] columnValue);
+        IQueryUpdateStatement SetValues(ColumnValue[] columnsValues);
 
     }
 
@@ -101,6 +101,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                 results[i] = row.GetColumnValue(columns[i]);
             }
             return statement.SetValues(results);
+        }
+
+        public static IQueryUpdateStatement Where(this IQueryUpdateStatement query, Condition[] conditions)
+        {
+            if (conditions == null)
+            {
+                throw new ArgumentNullException(nameof(conditions));
+            }
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                query.Where(conditions[i]);
+            }
+            return query;
         }
     }
 }

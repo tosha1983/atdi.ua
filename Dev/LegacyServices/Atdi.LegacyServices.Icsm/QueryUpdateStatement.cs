@@ -9,26 +9,56 @@ using System.Threading.Tasks;
 
 namespace Atdi.LegacyServices.Icsm
 {
-    internal sealed class QueryUpdateStatement : LoggedObject, IQueryUpdateStatement
+    internal sealed class QueryUpdateStatement : IQueryUpdateStatement
     {
-        public QueryUpdateStatement(ILogger logger) : base(logger)
+        private readonly List<Condition> _conditions;
+        private readonly string _tableName;
+        private readonly List<ColumnValue> _columnsValues;
+
+        public QueryUpdateStatement(string tableName)
         {
+            this._tableName = tableName;
+            this._conditions = new List<Condition>();
+            this._columnsValues = new List<ColumnValue>();
         }
 
+        public List<Condition> Conditions => this._conditions;
+
+        public string TableName => this._tableName;
+
+        public List<ColumnValue> ColumnsValues => this._columnsValues;
         
         public IQueryUpdateStatement Where(Condition condition)
         {
-            throw new NotImplementedException();
+            if (condition == null)
+            {
+                throw new ArgumentNullException(nameof(condition));
+            }
+
+            this._conditions.Add(condition);
+            return this;
         }
 
         IQueryUpdateStatement IQueryUpdateStatement.SetValue(ColumnValue columnValue)
         {
-            throw new NotImplementedException();
+            if (columnValue == null)
+            {
+                throw new ArgumentNullException(nameof(columnValue));
+            }
+
+            this._columnsValues.Add(columnValue);
+            return this;
         }
 
-        IQueryUpdateStatement IQueryUpdateStatement.SetValues(ColumnValue[] columnValue)
+        IQueryUpdateStatement IQueryUpdateStatement.SetValues(ColumnValue[] columnsValues)
         {
-            throw new NotImplementedException();
+            if (columnsValues == null)
+            {
+                throw new ArgumentNullException(nameof(columnsValues));
+            }
+
+            this._columnsValues.AddRange(columnsValues);
+            return this;
         }
     }
 }

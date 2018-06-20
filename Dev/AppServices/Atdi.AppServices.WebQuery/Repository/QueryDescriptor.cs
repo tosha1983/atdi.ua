@@ -8,64 +8,81 @@ using Atdi.DataModels;
 using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.WebQuery;
 using Atdi.Contracts.LegacyServices.Icsm;
+using System.Runtime.CompilerServices;
 
 namespace Atdi.AppServices.WebQuery
 {
     public sealed class QueryDescriptor
     {
-        public string IdentUserField { get; set; }
-        public string TableName { get; set; }
-        public QueryMetadata Metadata { get; set; }
-        private  XWEBQUERY _QueryValue { get; set; }
-        private XWEBCONSTRAINT[] _ConstraintsValue { get; set; }
-        private Dictionary<string,DataType> _hashSet;
-   
-        public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, IrpDescriptor irpdescription)
-        {
-            _hashSet = new Dictionary<string, DataType>();
-            _QueryValue = QueryValue;
-            _ConstraintsValue = ConstraintsValue;
-            Metadata = new QueryMetadata();
-            Metadata.Columns = irpdescription.columnMetaData;
-            IdentUserField = QueryValue.IDENTUSER;
-            TableName = irpdescription.TableName;
-            Metadata.Name = QueryValue.NAME;
-            Metadata.Code = QueryValue.CODE;
-            Metadata.Token = new QueryToken();
-            Metadata.Token.Id = QueryValue.ID;
-            Metadata.Token.Stamp = Guid.NewGuid().ToByteArray();
-            Metadata.Token.Version = "1.0";
-            Metadata.Description = QueryValue.COMMENTS;
-            Metadata.Title = QueryValue.NAME;
+        private readonly XWEBCONSTRAINT[] _ConstraintsValue;
+        private readonly Dictionary<string, DataType> _hashSet;
+        private readonly XWEBQUERY _QueryValue;
 
-            var listColumns = Metadata.Columns.ToList();
-            for (int i = 0; i < listColumns.Count; i++)   {
-                if (!_hashSet.ContainsKey(listColumns[i].Name))
-                    _hashSet.Add(listColumns[i].Name, listColumns[i].Type);
+        public string IdentUserField { get; private set; }
+
+        public string TableName { get; private set; }
+
+        public QueryMetadata Metadata { get; private set; }
+
+        public QueryTokenDescriptor QueryTokenDescriptor { get; private set; }
+
+        public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
+        {
+            this._hashSet = new Dictionary<string, DataType>();
+            this._QueryValue = QueryValue;
+            this._ConstraintsValue = ConstraintsValue;
+            this.QueryTokenDescriptor = queryTokenDescriptor;
+
+            this.TableName = irpdescription.TableName;
+            this.IdentUserField = QueryValue.IDENTUSER;
+            this.Metadata = new QueryMetadata
+            {
+                Columns = irpdescription.columnMetaData,
+                Name = QueryValue.NAME,
+                Code = QueryValue.CODE,
+                Token = queryTokenDescriptor.Token,
+                Description = QueryValue.COMMENTS,
+                Title = QueryValue.NAME
+            };
+
+            var listColumns = this.Metadata.Columns;
+            for (int i = 0; i < listColumns.Length; i++)
+            {
+                var column = listColumns[i];
+                if (!_hashSet.ContainsKey(column.Name))
+                    _hashSet.Add(column.Name, column.Type);
             }
-            
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasColumn(string nameColumn)
         {
-            if (this._hashSet.ContainsKey(nameColumn)) return true;
-            else
-            {
-                return false;
-            }
+            return this._hashSet.ContainsKey(nameColumn); 
         }
 
-        public string GetNameColumn(string value)
+        public void VerifyAccessToAction(ActionType type)
         {
-            if (value.StartsWith("$"))
+            var result = false;
+            switch (type)
             {
-                int num_expr_end = value.IndexOf("#:");
-                return value.Substring(num_expr_end + 2, value.Length - (num_expr_end + 2));
+                case ActionType.Create:
+                    result = this.QueryTokenDescriptor.GroupDescriptor.Group.CanCreate;
+                    break;
+                case ActionType.Update:
+                    result = this.QueryTokenDescriptor.GroupDescriptor.Group.CanModify;
+                    break;
+                case ActionType.Delete:
+                    result = this.QueryTokenDescriptor.GroupDescriptor.Group.CanDelete;
+                    break;
+                default:
+                    result = false;
+                    break;
             }
-            else return value;
+            if (!result)
+            {
+                //throw new InvalidOperationException(Exceptions.AccessToActionDenied.With(type));
+            } 
         }
-
         public string ValidateColumns(string[] columns)
         {
             string warnings = "";
@@ -79,19 +96,19 @@ namespace Atdi.AppServices.WebQuery
             return warnings;
         }
 
-        public string ValidateConditions(DataModels.DataConstraint.Condition[] conditions)
+        public string ValidateConditions(Condition[] conditions)
         {
             string warnings = "";
             if (conditions != null)
             {
                 for (int i = 0; i < conditions.Length; i++)
                 {
-                    if (conditions[i] is Atdi.DataModels.DataConstraint.ConditionExpression)
+                    if (conditions[i] is ConditionExpression)
                     {
-                        DataModels.DataConstraint.Operand operand = (conditions[i] as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
-                        if (operand is Atdi.DataModels.DataConstraint.ColumnOperand)
+                        var operand = (conditions[i] as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
+                        if (operand is ColumnOperand)
                         {
-                            string column = (operand as Atdi.DataModels.DataConstraint.ColumnOperand).ColumnName;
+                            string column = (operand as ColumnOperand).ColumnName;
                             if ( HasColumn(column)==false) warnings += "'"+column + "',";
                         }
                     }

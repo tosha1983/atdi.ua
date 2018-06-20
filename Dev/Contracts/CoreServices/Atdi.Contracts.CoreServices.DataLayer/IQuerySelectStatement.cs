@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.DataLayer
 {
-    public interface IQuerySelectStatement
+    public interface IQuerySelectStatement : IQueryStatement
     {
         IQuerySelectStatement Select(params string[] columns);
 
@@ -107,16 +107,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         public static IQuerySelectStatement Where(this IQuerySelectStatement query, Condition[] conditions)
         {
-            IQuerySelectStatement qSelect = null;
             if (conditions == null)
             {
                 throw new ArgumentNullException(nameof(conditions));
             }
-          
-            foreach (Condition c in conditions)
-                qSelect = query.Where(c);
-
-            return qSelect;
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                query.Where(conditions[i]);
+            }
+            return query;
         }
     }
 }

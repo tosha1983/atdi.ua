@@ -32,28 +32,30 @@ namespace Atdi.Test.WebQuery
                 _count = new BlockingCollection<int>();
                 var timer = System.Diagnostics.Stopwatch.StartNew();
 
-                var tasks = new Task[]
-                {
-                    Task.Run(() => BathTest()),
-                    Task.Run(() => BathTest()),
-                    Task.Run(() => BathTest()),
-                    Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest()),
-                    //Task.Run(() => BathTest())
-                };
+                TestWebQuerySaveChanges("TcpAuthenticationManager", "TcpWebQuery");
+
+                //var tasks = new Task[]
+                //{
+                //    Task.Run(() => BathTest()),
+                //    Task.Run(() => BathTest()),
+                //    Task.Run(() => BathTest()),
+                //    Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest()),
+                //    //Task.Run(() => BathTest())
+                //};
 
 
-                Task.WaitAll(tasks);
+                //Task.WaitAll(tasks);
 
                 System.Console.WriteLine($"Done: {timer.Elapsed.TotalMilliseconds} ms -> Called: {_count.Count}");
 
@@ -269,5 +271,86 @@ namespace Atdi.Test.WebQuery
             
         }
 
+        static void TestWebQuerySaveChanges(string authEndpointName, string webQueryEndpointName)
+        {
+            try
+            {
+                var recordCount = 100;
+
+                var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
+                var userCredential = new UserCredential()
+                {
+                    UserName = "Andrey",
+                    Password = ""
+                };
+
+                var authResult = authManager.AuthenticateUser(userCredential);
+                if (authResult.State == DataModels.CommonOperation.OperationState.Fault)
+                {
+                    Console.WriteLine(authResult.FaultCause);
+                    return;
+                }
+                _count.Add(1);
+
+                var userIdentity = authResult.Data;
+
+                var webQuery = GetWebQueryByEndpoint(webQueryEndpointName);
+                var groupsResult = webQuery.GetQueryGroups(userIdentity.UserToken);
+                if (groupsResult.State == DataModels.CommonOperation.OperationState.Fault)
+                {
+                    Console.WriteLine(groupsResult.FaultCause);
+                    return;
+                }
+                _count.Add(1);
+                //      Console.Write($"Endpoint: {webQueryEndpointName}");
+                //        Console.WriteLine($"Count group: {groupsResult.Data.Groups.Length}");
+
+                var queryFristToken = groupsResult.Data.Groups[0].QueryTokens[0];
+                var qm = webQuery.GetQueryMetadata(userIdentity.UserToken, queryFristToken);
+                _count.Add(1);
+
+                var changeset = new DataModels.Changeset
+                {
+                    Id = Guid.NewGuid(),
+                    Actions = new DataModels.Action[]
+                    {
+                        new DataModels.DeletionAction
+                        {
+                            Id = Guid.NewGuid(),
+                            Condition = new DataModels.DataConstraint.ComplexCondition
+                            {
+                                Operator = DataModels.DataConstraint.LogicalOperator.Or,
+                                Conditions = new DataModels.DataConstraint.Condition[]
+                                {
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    },
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    }
+                                }
+                            }
+                                
+                        }
+                    }
+                };
+
+                var chsResult = webQuery.SaveChanges(userIdentity.UserToken, queryFristToken, changeset);
+                //  System.Console.WriteLine($"TypedCells: {timer.Elapsed.TotalMilliseconds} ms - >>> {re6.Data.Dataset.RowCount}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+
+
+        }
     }
 }
