@@ -60,6 +60,15 @@ namespace Atdi.AppServices.WebQuery
             return this._hashSet.ContainsKey(nameColumn); 
         }
 
+        public string GetNameColumn(string value)
+        {
+            if (value.StartsWith("$"))  {
+                int num_expr_end = value.IndexOf("#:");
+                return value.Substring(num_expr_end + 2, value.Length - (num_expr_end + 2));
+            }
+            else return value;
+        }
+
         public void VerifyAccessToAction(ActionType type)
         {
             var result = false;

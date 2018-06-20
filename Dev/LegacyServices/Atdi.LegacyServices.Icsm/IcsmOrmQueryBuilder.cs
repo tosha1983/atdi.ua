@@ -43,8 +43,8 @@ namespace Atdi.LegacyServices.Icsm
                     }
                     fieldPaths[index++] = column.Name;
                 }
-
-                var rootStatement = this._schemasMetadata.BuildSelectStatement(_syntax, statement.Table.Name, fieldPaths);
+               
+                var rootStatement = this._schemasMetadata.BuildSelectStatement(_dataEngine, statement, fieldPaths);
                 var fromExpression = this._dataEngine.Syntax.FromExpression(rootStatement, "A");
 
                 var selectColumns = new string[statement.Table.SelectColumns.Count];
