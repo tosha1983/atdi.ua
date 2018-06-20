@@ -81,6 +81,26 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             return query;
         }
 
+        public static IQuerySelectStatement OrderBy(this IQuerySelectStatement query, DataModels.DataConstraint.OrderExpression[] orderExpressions)
+        {
+            if (orderExpressions != null)
+            {
+                for (int i = 0; i < orderExpressions.Length; i++)
+                {
+                    var orderExpression = orderExpressions[i];
+                    if (orderExpression.OrderType == DataModels.DataConstraint.OrderType.Ascending)
+                    {
+                        query.OrderByAsc(orderExpression.ColumnName);
+                    }
+                    else if (orderExpression.OrderType == DataModels.DataConstraint.OrderType.Descending)
+                    {
+                        query.OrderByDesc(orderExpression.ColumnName);
+                    }
+                }
+            }
+            return query;
+        }
+
         public static IQuerySelectStatement Where(this IQuerySelectStatement query, string column, string value)
         {
             return query.Where(

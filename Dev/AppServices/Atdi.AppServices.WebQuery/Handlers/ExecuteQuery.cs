@@ -59,15 +59,19 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 //2
                 var allConditions = new List<DataModels.DataConstraint.Condition>(queryDescriptor.GetConditions(tokenData));
                 var optionsCondition = fetchOptions.Condition;
-                if (optionsCondition != null)  {
+                if (optionsCondition != null)
+                {
+                    queryDescriptor.CheckCondition(optionsCondition);
                     allConditions.Add(optionsCondition);
                 }
 
                 var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
                    .Select(selectedColumns);
-   
-                if (allConditions.Count > 0) {
+                   //.Select(queryDescriptor.PreperedColumnsForFetching(selectedColumns));
+
+                if (allConditions.Count > 0)
+                {
                     statement
                    .Where(allConditions.ToArray());
                 }
@@ -76,32 +80,12 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 if (fetchOptions.Orders != null && fetchOptions.Orders.Length > 0)
                 {
                     queryDescriptor.CheckColumns(fetchOptions.Orders);
-                    for (int i = 0; i < fetchOptions.Orders.Length; i++)
-                    {
-                        var orderExpression = fetchOptions.Orders[i];
-                        if (orderExpression.OrderType == DataModels.DataConstraint.OrderType.Ascending)
-                        {
-                            statement.OrderByAsc(orderExpression.ColumnName);
-                        }
-                        else if (orderExpression.OrderType == DataModels.DataConstraint.OrderType.Descending)
-                        {
-                            statement.OrderByDesc(orderExpression.ColumnName);
-                        }
-                    }
+                    statement.OrderBy(fetchOptions.Orders); 
                 }
 
                 statement.SetLimit(fetchOptions.Limit);
-
-                //if (conditions!=null) notAvailableColumns += queryDescriptor.ValidateConditions(conditions);
-              
-                //if (notAvailableColumns.Length > 0)   {
-                //    notAvailableColumns = notAvailableColumns.Remove(notAvailableColumns.Length - 1, 1);
-                //    throw new InvalidOperationException(string.Format(Exceptions.ColumnIsNotAvailable, notAvailableColumns));
-                //}
-
                 var fetchedColumns = selectedColumns.Select(c => queryDescriptor.MakeDataSetColumn(c)).ToArray();
                 var dataSet = this._queryExecutor.Fetch(statement, fetchedColumns, fetchOptions.ResultStructure);
-
                 var result = new QueryResult
                 {
                     Dataset = dataSet,

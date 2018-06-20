@@ -60,7 +60,7 @@ namespace Atdi.AppServices.WebQuery
         {
             return new DataSetColumn
             {
-                Name = this.GetNameColumn(name),
+                Name = this.ExtractNameColumnWithExpression(name),
                 Type = this.GetColumnType(name)
             };
         }
@@ -77,15 +77,7 @@ namespace Atdi.AppServices.WebQuery
             return this._hashSet[name];
         }
 
-        public string GetNameColumn(string value)
-        {
-            if (value.StartsWith("$"))  {
-                int num_expr_end = value.IndexOf("#:");
-                return value.Substring(num_expr_end + 2, value.Length - (num_expr_end + 2));
-            }
-            else return value;
-        }
-
+      
         public void VerifyAccessToAction(ActionType type)
         {
             var result = false;
@@ -149,28 +141,52 @@ namespace Atdi.AppServices.WebQuery
             }
         }
 
-        public string ValidateConditions(Condition[] conditions)
+        public void CheckCondition(Condition condition)
         {
-            string warnings = "";
-            if (conditions != null)
+            if (condition is ConditionExpression)
             {
-                for (int i = 0; i < conditions.Length; i++)
+                var operand = (condition as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
+                if (operand is ColumnOperand)
                 {
-                    if (conditions[i] is ConditionExpression)
+                    if (HasColumn((operand as ColumnOperand).ColumnName) == false)
                     {
-                        var operand = (conditions[i] as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
-                        if (operand is ColumnOperand)
-                        {
-                            string column = (operand as ColumnOperand).ColumnName;
-                            if ( HasColumn(column)==false) warnings += "'"+column + "',";
-                        }
+                        var message = string.Join(", ", (operand as ColumnOperand).ColumnName);
+                        throw new InvalidOperationException($"Not found columns with name's {message}'");
                     }
                 }
             }
-            return warnings;
         }
 
-        
+        public string ExtractNameColumnWithExpression(string value)
+        {
+            if (value.StartsWith("$"))
+            {
+                int num_expr_end = value.IndexOf("#:");
+                return value.Substring(num_expr_end + 2, value.Length - (num_expr_end + 2));
+            }
+            else return value;
+        }
+        public string ExtractExpression(string value)
+        {
+            if (value.StartsWith("$"))
+            {
+                int num_expr_end = value.IndexOf("#:");
+                return value.Substring(1, num_expr_end - 1);
+              
+            }
+            else return value;
+        }
+      
+
+        public string[] PreperedColumnsForFetching(string[] columns)
+        {
+            List<string> extractColumns = new List<string>();
+            for (int i = 0; i < columns.Length; i++) {
+                extractColumns.Add(ExtractExpression(columns[i]));
+            }
+            return extractColumns.ToArray();
+        }
+
 
         public Condition[] GetConditions(UserTokenData tokenData)
         {
