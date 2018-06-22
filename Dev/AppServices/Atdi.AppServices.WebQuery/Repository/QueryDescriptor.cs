@@ -17,6 +17,7 @@ namespace Atdi.AppServices.WebQuery
         private readonly XWEBCONSTRAINT[] _ConstraintsValue;
         private readonly Dictionary<string, DataType> _hashSet;
         private readonly XWEBQUERY _QueryValue;
+       
 
 
         public string IdentUserField { get; private set; }
@@ -24,6 +25,7 @@ namespace Atdi.AppServices.WebQuery
         public string TableName { get; private set; }
 
         public QueryMetadata Metadata { get; private set; }
+        public IrpColumn[] IrpDescrColumns { get; private set; }
 
         public QueryTokenDescriptor QueryTokenDescriptor { get; private set; }
 
@@ -36,9 +38,11 @@ namespace Atdi.AppServices.WebQuery
 
             this.TableName = irpdescription.TableName;
             this.IdentUserField = QueryValue.IDENTUSER;
+            this.IrpDescrColumns = irpdescription.columnMetaData.Select(t => t.Value).ToArray();
+
             this.Metadata = new QueryMetadata
             {
-                Columns = irpdescription.columnMetaData,
+                Columns = irpdescription.columnMetaData.Select(t => t.Key).ToArray(),
                 Name = QueryValue.NAME,
                 Code = QueryValue.CODE,
                 Token = queryTokenDescriptor.Token,
@@ -58,9 +62,10 @@ namespace Atdi.AppServices.WebQuery
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DataSetColumn MakeDataSetColumn(string name)
         {
+
             return new DataSetColumn
             {
-                Name = this.ExtractNameColumnWithExpression(name),
+                Name = name,
                 Type = this.GetColumnType(name)
             };
         }
@@ -157,35 +162,24 @@ namespace Atdi.AppServices.WebQuery
             }
         }
 
-        public string ExtractNameColumnWithExpression(string value)
-        {
-            if (value.StartsWith("$"))
-            {
-                int num_expr_end = value.IndexOf("#:");
-                return value.Substring(num_expr_end + 2, value.Length - (num_expr_end + 2));
-            }
-            else return value;
-        }
-        public string ExtractExpression(string value)
-        {
-            if (value.StartsWith("$"))
-            {
-                int num_expr_end = value.IndexOf("#:");
-                return value.Substring(1, num_expr_end - 1);
-              
-            }
-            else return value;
-        }
+      
       
 
         public string[] PreperedColumnsForFetching(string[] columns)
         {
             List<string> extractColumns = new List<string>();
-            for (int i = 0; i < columns.Length; i++) {
-                extractColumns.Add(ExtractExpression(columns[i]));
+            for (int i=0; i< columns.Length; i++)
+            {
+                var standardColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.StandardColumn && z.Name== columns[i]).Select(t => t.Name).ToList();
+                if ((standardColumns!=null) && (standardColumns.Count>0))
+                    extractColumns.AddRange(standardColumns);
+                var exprColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.Expression && z.Title == columns[i]).Select(t => t.Expr).ToList();
+                if ((exprColumns != null) && (exprColumns.Count > 0))
+                    extractColumns.AddRange(exprColumns);
             }
             return extractColumns.ToArray();
         }
+       
 
 
         public Condition[] GetConditions(UserTokenData tokenData)

@@ -108,8 +108,8 @@ namespace Atdi.LegacyServices.Icsm
 
         public IrpDescriptor ExecuteParseQuery(string value)
         {
+            List<KeyValuePair<ColumnMetadata, IrpColumn>> listDescrColumns = new List<KeyValuePair<ColumnMetadata, IrpColumn>>();
             var irpDescr = new IrpDescriptor();
-            var lColumnsMeta = new List<ColumnMetadata>();
             try
             {
                 var f = new Frame();
@@ -125,6 +125,8 @@ namespace Atdi.LegacyServices.Icsm
                 for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
                     {
                         var metaData = new ColumnMetadata();
+                        var irpColumn = new IrpColumn();
+
                         metaData.Description = _report.m_desc;
                         metaData.Title = "";
                         irpDescr.TableName = _report.m_dat.m_tab;
@@ -141,7 +143,18 @@ namespace Atdi.LegacyServices.Icsm
                         metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
                         if (_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
                         {
-                            metaData.Name = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + _report.m_dat.m_list[0].m_query.lq[i].title;
+                            irpColumn.Expr = _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr;
+                            irpColumn.TypeColumn = IrpColumnEnum.Expression;
+                            irpColumn.Name = t;
+                            irpColumn.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
+                            metaData.Name = irpColumn.Title;
+                        }
+                        else
+                        {
+                            irpColumn.Expr = "";
+                            irpColumn.TypeColumn = IrpColumnEnum.StandardColumn;
+                            irpColumn.Name = t;
+                            irpColumn.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
                         }
                         var ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
                         if (ty_p == null)
@@ -185,11 +198,12 @@ namespace Atdi.LegacyServices.Icsm
                                     break;
                             }
                         }
-                        lColumnsMeta.Add(metaData);
+                        listDescrColumns.Add(new KeyValuePair<ColumnMetadata, IrpColumn>(metaData, irpColumn));
                     }
                 }
                 _report.Clear(false);
-                irpDescr.columnMetaData = lColumnsMeta.ToArray();
+                
+                irpDescr.columnMetaData = listDescrColumns;
            }
             catch (Exception e)
             {

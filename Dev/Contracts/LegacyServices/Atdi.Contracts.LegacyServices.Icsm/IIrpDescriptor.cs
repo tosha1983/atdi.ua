@@ -10,7 +10,7 @@ namespace Atdi.Contracts.LegacyServices.Icsm
 {
     public sealed class IrpDescriptor 
     {
-       public ColumnMetadata[] columnMetaData { get; set; }
+       public List<KeyValuePair<ColumnMetadata, IrpColumn>> columnMetaData { get; set; }
        public string TableName { get; set; }
      
     }
