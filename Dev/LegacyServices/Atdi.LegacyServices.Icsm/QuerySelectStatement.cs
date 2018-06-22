@@ -25,8 +25,6 @@ namespace Atdi.LegacyServices.Icsm
 
             public int Ordinal { get; set; }
 
-            public string Expression { get; set; }
-
         }
 
         public sealed class TableDescriptor
@@ -59,31 +57,14 @@ namespace Atdi.LegacyServices.Icsm
             {
                 foreach (var column in columns)
                 {
-                    if (!column.StartsWith("$"))
-                    {
-                        var descriptor = new ColumnDescriptor
-                        {
-                            Table = this.Name,
-                            Name = column,
-                            Expression = ""
-                        };
-                        this.AppendSelectColumn(descriptor);
-                    }
-                    else
-                    {
-                        int num_expr_end = column.IndexOf("#:");
-                        string expression = column.Substring(1, num_expr_end - 1);
-                        string nameColumn = column.Substring(num_expr_end + 2, column.Length - (num_expr_end + 2));
 
-                        var descriptor = new ColumnDescriptor
-                        {
-                            Table = this.Name,
-                            Name = nameColumn,
-                            Expression = expression
-                        };
+                    var descriptor = new ColumnDescriptor
+                    {
+                        Table = this.Name,
+                        Name = column,
+                    };
+                    this.AppendSelectColumn(descriptor);
 
-                        this.AppendSelectColumn(descriptor);
-                    }
                 }
 
             }
@@ -101,10 +82,7 @@ namespace Atdi.LegacyServices.Icsm
                     {
                         this._selectColumns[column.Name] = column;
                     }
-                    else
-                    {
-                        this._selectColumns[column.Name] = column;
-                    }
+                    else return;
                 }
                 this._columns[column.Name] = column;
                 this._selectColumns[column.Name] = column;
