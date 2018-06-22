@@ -8,6 +8,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.Identity;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.DataModels;
+using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Identity;
 using Atdi.DataModels.WebQuery;
 using Atdi.Platform.Logging;
@@ -101,10 +102,48 @@ namespace Atdi.AppServices.WebQuery.Handlers
         }
         private int PerformUpdationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, UpdationAction action)
         {
-            return 0;
+            if (action.Condition != null)
+            {
+                queryDescriptor.CheckCondition(action.Condition);
+            }
+
+            var updationQuery = this._dataLayer.Builder
+                .Update(queryDescriptor.TableName)
+                .SetValues(this.UnpackUpdateValues(action))
+                .Where(action.Condition);
+
+            var queryConditions = queryDescriptor.GetConditions(userTokenData);
+            if (queryConditions != null && queryConditions.Length > 0)
+            {
+                updationQuery.Where(queryConditions);
+            }
+
+            var recordsAffected = this._queryExecutor.Execute(updationQuery);
+            return recordsAffected;
         }
+
+        private ColumnValue[] UnpackUpdateValues(UpdationAction action)
+        {
+            switch (action.RowType)
+            {
+                case DataRowType.TypedCell:
+                    return ((TypedRowUpdationAction)action).Row.GetColumnsValues(action.Columns);
+                case DataRowType.StringCell:
+                    return ((StringRowUpdationAction)action).Row.GetColumnsValues(action.Columns);
+                case DataRowType.ObjectCell:
+                    return ((ObjectRowUpdationAction)action).Row.GetColumnsValues(action.Columns);
+                default:
+                    throw new InvalidOperationException(Exceptions.DataRowTypeNotSupported.With(action.RowType));
+            }
+        }
+
         private int PerformDeleteionAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, DeletionAction action)
         {
+            if (action.Condition != null)
+            {
+                queryDescriptor.CheckCondition(action.Condition);
+            }
+
             var deletionQuery = this._dataLayer.Builder
                 .Delete(queryDescriptor.TableName)
                 .Where(action.Condition);

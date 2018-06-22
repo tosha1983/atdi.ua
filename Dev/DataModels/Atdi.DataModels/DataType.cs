@@ -14,6 +14,12 @@ namespace Atdi.DataModels
     public enum DataType
     {
         /// <summary>
+        /// The type is undefined
+        /// </summary>
+        [EnumMember]
+        Undefined,
+
+        /// <summary>
         /// The type is string
         /// </summary>
         [EnumMember]

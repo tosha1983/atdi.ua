@@ -47,6 +47,7 @@ namespace Atdi.LegacyServices.Icsm
         public static readonly ExceptionText InvalideInitializeIcsmEnvironment = "Invalide initialize the environment of ICSM ORM";
         public static readonly ExceptionText AbortedBuildSelectStatement = "Aborted sql query building for data selection";
         public static readonly ExceptionText AbortedBuildDeleteStatement = "Aborted sql query building for data deletion";
+        public static readonly ExceptionText AbortedBuildUpdateStatement = "Aborted sql query building for data updateion";
         public static readonly ExceptionText NotFoundOrmField = "Not found ORM field with path '{0}' into table with name '{1}'";
         public static readonly ExceptionText UndefinedParameter = "Undefined parameter with name '{0}'";
         public static readonly ExceptionText QueryStatementNotSupported = "The type of query statement with name '{0}' is not supported.";

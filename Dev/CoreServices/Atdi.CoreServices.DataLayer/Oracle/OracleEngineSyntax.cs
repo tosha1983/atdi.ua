@@ -280,5 +280,20 @@ namespace Atdi.CoreServices.DataLayer
         {
             throw new NotImplementedException();
         }
+
+        public string SetColumnValueExpression(string columnExpression, string valueExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UpdateExpression(string sourceExpression, string valuesExpression, string fromExpression = null, string whereExpression = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

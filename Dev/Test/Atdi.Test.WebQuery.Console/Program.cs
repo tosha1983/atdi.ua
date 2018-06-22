@@ -275,7 +275,7 @@ namespace Atdi.Test.WebQuery
         {
             try
             {
-                var recordCount = 100;
+                //var recordCount = 100;
 
                 var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
                 var userCredential = new UserCredential()
@@ -337,6 +337,142 @@ namespace Atdi.Test.WebQuery
                                 }
                             }
                                 
+                        },
+                        new DataModels.StringRowUpdationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Condition = new DataModels.DataConstraint.ComplexCondition
+                            {
+                                Operator = DataModels.DataConstraint.LogicalOperator.Or,
+                                Conditions = new DataModels.DataConstraint.Condition[]
+                                {
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    },
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    }
+                                }
+                            },
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "FEE", Type = DataModels.DataType.Integer, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "RX_EQP_NBR", Type = DataModels.DataType.Decimal, Index = 2
+                                },
+                            },
+                            Row = new DataModels.StringDataRow
+                            {
+                                Cells = new string[]
+                                {
+                                    "NETWORK_IDENT", "8111", "3917"
+                                }
+                            }
+                        },
+
+                        new DataModels.ObjectRowUpdationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Condition = new DataModels.DataConstraint.ComplexCondition
+                            {
+                                Operator = DataModels.DataConstraint.LogicalOperator.Or,
+                                Conditions = new DataModels.DataConstraint.Condition[]
+                                {
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    },
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    }
+                                }
+                            },
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "FEE", Type = DataModels.DataType.Integer, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "RX_EQP_NBR", Type = DataModels.DataType.Decimal, Index = 2
+                                },
+                            },
+                            Row = new DataModels.ObjectDataRow
+                            {
+                                Cells = new object[]
+                                {
+                                    "NETWORK_IDENT", (int)8111, (decimal)3917
+                                }
+                            }
+                        },
+
+                        new DataModels.TypedRowUpdationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Condition = new DataModels.DataConstraint.ComplexCondition
+                            {
+                                Operator = DataModels.DataConstraint.LogicalOperator.Or,
+                                Conditions = new DataModels.DataConstraint.Condition[]
+                                {
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    },
+                                    new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                    }
+                                }
+                            },
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "FEE", Type = DataModels.DataType.Integer, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "RX_EQP_NBR", Type = DataModels.DataType.Decimal, Index = 0
+                                },
+                            },
+                            Row = new DataModels.TypedDataRow
+                            {
+                                StringCells = new string[] { ""},
+                                IntegerCells = new int?[] { null},
+                                DecimalCells = new decimal? [] { (decimal?)123 }
+                            }
                         }
                     }
                 };

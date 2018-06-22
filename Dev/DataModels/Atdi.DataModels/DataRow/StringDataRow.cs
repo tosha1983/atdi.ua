@@ -17,4 +17,105 @@ namespace Atdi.DataModels
         [DataMember]
         public string[] Cells { get; set; }
     }
+
+    public static class StringDataRowExtensions
+    {
+        public static ColumnValue GetColumnValue(this StringDataRow row, DataSetColumn dataSetColumn)
+        {
+            var result = row.GetColumnValue(dataSetColumn.Type, dataSetColumn.Index);
+            result.Name = dataSetColumn.Name;
+            return result;
+        }
+
+        public static ColumnValue GetColumnValue(this StringDataRow row, DataType dataType, int index)
+        {
+            ColumnValue result = null;
+            var value = row.Cells[index];
+            switch (dataType)
+            {
+                case DataType.String:
+                    result = new StringColumnValue
+                    {
+                        Value = value ?? null
+                    };
+                    break;
+                case DataType.Boolean:
+                    result = new BooleanColumnValue
+                    {
+                        Value = (value == null) ? (bool?)null : Convert.ToBoolean(value)
+                    };
+                    break;
+                case DataType.Integer:
+                    result = new IntegerColumnValue
+                    {
+                        Value = (value == null) ? (int?)null : Convert.ToInt32(value)
+                    };
+                    break;
+                case DataType.DateTime:
+                    result = new DateTimeColumnValue
+                    {
+                        Value = (value == null) ? (DateTime?)null : value.ConvertISO8601ToDateTime()
+                    };
+                    break;
+                case DataType.Double:
+                    result = new DoubleColumnValue
+                    {
+                        Value = (value == null) ? (double?)null : Convert.ToDouble(value)
+                    };
+                    break;
+                case DataType.Float:
+                    result = new FloatColumnValue
+                    {
+                        Value = (value == null) ? (float?)null : (float)Convert.ToDouble(value)
+                    };
+                    break;
+                case DataType.Decimal:
+                    result = new DecimalColumnValue
+                    {
+                        Value = (value == null) ? (decimal?)null : Convert.ToDecimal(value)
+                    };
+                    break;
+                case DataType.Byte:
+                    result = new ByteColumnValue
+                    {
+                        Value = (value == null) ? (byte?)null : Convert.ToByte(value)
+                    };
+                    break;
+                case DataType.Bytes:
+                    result = new BytesColumnValue
+                    {
+                        Value = (value == null) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value)
+                    };
+                    break;
+                case DataType.Guid:
+                    result = new GuidColumnValue
+                    {
+                        Value = (value == null) ? (Guid?)null : new Guid(value)
+                    };
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
+            }
+            return result;
+        }
+
+        private static DateTime ConvertISO8601ToDateTime(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new System.ArgumentNullException("value");
+            }
+            return new System.DateTime(System.Convert.ToInt32(value.Substring(0, 4)), System.Convert.ToInt32(value.Substring(5, 2)), System.Convert.ToInt32(value.Substring(8, 2)), System.Convert.ToInt32(value.Substring(11, 2)), System.Convert.ToInt32(value.Substring(14, 2)), System.Convert.ToInt32(value.Substring(17, 2)), new System.Globalization.GregorianCalendar());
+        }
+
+        public static ColumnValue[] GetColumnsValues(this StringDataRow row, DataSetColumn[] dataSetColumns)
+        {
+            var resultColumns = new ColumnValue[dataSetColumns.Length];
+            for (int i = 0; i < dataSetColumns.Length; i++)
+            {
+                resultColumns[i] = row.GetColumnValue(dataSetColumns[i]);
+            }
+            return resultColumns;
+        }
+    }
 }

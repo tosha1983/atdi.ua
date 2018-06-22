@@ -41,9 +41,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         string SortedColumn(string expression, SortDirection direction);
 
+        string SetColumnValueExpression(string columnExpression, string valueExpression);
+
         string FromExpression(string expression, string alias);
 
         string SelectExpression(string[] selectColumns, string fromExpression, string whereExpression = null, string[] orderByColumns = null, DataLimit limit = null, string[] groupByColumns = null);
+
+        string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression);
+
+        string UpdateExpression(string sourceExpression, string valuesExpression, string fromExpression = null, string whereExpression = null);
 
         string DeleteExpression(string sourceExpression, string fromExpression = null, string whereExpression = null);
     }

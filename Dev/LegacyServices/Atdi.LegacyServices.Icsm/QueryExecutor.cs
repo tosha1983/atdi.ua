@@ -691,7 +691,9 @@ namespace Atdi.LegacyServices.Icsm
 
         private EngineCommand BuildUpdateCommand(QueryUpdateStatement statement)
         {
-            return new EngineCommand();
+            var command = new EngineCommand();
+            command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(statement, command.Parameters);
+            return command;
         }
 
         private EngineCommand BuildDeleteCommand(QueryDeleteStatement statement)

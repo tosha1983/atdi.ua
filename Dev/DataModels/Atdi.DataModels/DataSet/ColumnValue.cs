@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace Atdi.DataModels.DataConstraint
+namespace Atdi.DataModels
 {
     [KnownType(typeof(StringColumnValue))]
     [KnownType(typeof(BooleanColumnValue))]
@@ -148,5 +148,37 @@ namespace Atdi.DataModels.DataConstraint
 
         [DataMember]
         public Guid? Value { get; set; }
+    }
+
+    public static class ColumnValueExtensions
+    {
+        public static object GetValue(this ColumnValue column)
+        {
+            switch (column.DataType)
+            {
+                case DataType.String:
+                    return ((StringColumnValue)column).Value;
+                case DataType.Boolean:
+                    return ((BooleanColumnValue)column).Value;
+                case DataType.Integer:
+                    return ((IntegerColumnValue)column).Value;
+                case DataType.DateTime:
+                    return ((DateTimeColumnValue)column).Value;
+                case DataType.Double:
+                    return ((DoubleColumnValue)column).Value;
+                case DataType.Float:
+                    return ((FloatColumnValue)column).Value;
+                case DataType.Decimal:
+                    return ((DecimalColumnValue)column).Value;
+                case DataType.Byte:
+                    return ((ByteColumnValue)column).Value;
+                case DataType.Bytes:
+                    return ((BytesColumnValue)column).Value;
+                case DataType.Guid:
+                    return ((GuidColumnValue)column).Value;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+            }
+        }
     }
 }
