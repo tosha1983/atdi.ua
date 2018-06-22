@@ -148,6 +148,7 @@ namespace Atdi.AppServices.WebQuery
 
         public void CheckCondition(Condition condition)
         {
+            
             if (condition is ConditionExpression)
             {
                 var operand = (condition as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
@@ -159,6 +160,30 @@ namespace Atdi.AppServices.WebQuery
                         throw new InvalidOperationException($"Not found columns with name's {message}'");
                     }
                 }
+            }
+            else if (condition is ComplexCondition)
+            {
+               if (((condition as ComplexCondition).Conditions!=null) && (((condition as ComplexCondition).Conditions.Length>0)))
+                {
+                   foreach (Atdi.DataModels.DataConstraint.ConditionExpression c in ((condition as ComplexCondition).Conditions)
+                }
+
+                CheckCondition((condition as Atdi.DataModels.DataConstraint.ConditionExpression));
+                /*
+                if (condition is ConditionExpression)
+                {
+                    var operand = (condition as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
+                    if (operand is ColumnOperand)
+                    {
+                        if (HasColumn((operand as ColumnOperand).ColumnName) == false)
+                        {
+                            var message = string.Join(", ", (operand as ColumnOperand).ColumnName);
+                            throw new InvalidOperationException($"Not found columns with name's {message}'");
+                        }
+                    }
+                }
+                */
+
             }
         }
 

@@ -89,29 +89,49 @@ namespace Atdi.Test.WebQuery
 
                     // ... 
 
+                    ConditionExpression ConditionExpr1 = new ConditionExpression // указываем условие выборки
+                    {
+                        LeftOperand = new ColumnOperand { ColumnName = "ID" },
+                        Operator = ConditionOperator.Equal,
+                        RightOperand = new IntegerValuesOperand { Values = new int?[] { 2 }  }
+                    };
+
+                    ConditionExpression ConditionExpr2 = new ConditionExpression // указываем условие выборки
+                    {
+                        LeftOperand = new ColumnOperand { ColumnName = "ID" },
+                        Operator = ConditionOperator.NotBetween,
+                        RightOperand = new IntegerValuesOperand { Values = new int?[] { 10, 3599 } }
+                    };
+
                     // пример выполнения запроса и получения данных
                     // подготовка парамтеров и условий выполнения запроса
                
                     var fetchOptions = new FetchOptions
                     {
                         Id = Guid.NewGuid(),
-                        ResultStructure = DataSetStructure.StringRows
+                        ResultStructure = DataSetStructure.StringRows,
                         // генерируем идентификатор выборки, будет возвращен с результатом
                         //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
-                        /*
+                      
                         Columns = new string[] { "ID" },
-   ResultStructure = DataSetStructure.StringRows,  // указываем тип возвращаемой структуры данных, в данном случии будет масив объектов строк состоящих из ячеек типа string.
-   Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
-   {
-       Type = LimitValueType.Records,
-       Value = 1000
-   }, 
-   Condition = new ConditionExpression // указываем условие выборки
-   {
-       LeftOperand = new ColumnOperand { ColumnName = "ID" },
-       Operator = ConditionOperator.NotBetween,
-       RightOperand = new IntegerValuesOperand {  Values = new int?[] {10, 3599 } }
-   },  
+
+                      Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
+                     {
+                         Type = LimitValueType.Records,
+                        Value = 1000
+                     },
+                       
+                        Condition = new ComplexCondition 
+                        {
+                            Conditions = new Condition[2]
+                            {
+                                ConditionExpr1, ConditionExpr2
+                            },
+                            Operator = LogicalOperator.And
+                    
+                        },
+
+ 
 
    Orders = new OrderExpression[] // указываем условие сортировки
    {
@@ -119,7 +139,7 @@ namespace Atdi.Test.WebQuery
        new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
        //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
    }
-   */
+   
 
 };
 
