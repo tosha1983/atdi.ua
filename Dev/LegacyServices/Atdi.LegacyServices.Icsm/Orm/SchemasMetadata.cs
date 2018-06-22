@@ -24,7 +24,6 @@ namespace Atdi.LegacyServices.Icsm.Orm
 
         private bool _hasSemant = false;
         private bool _singlePosEqpAnt = false;
-        private List<string> _expressColumns;
 
         public string DbSchema => this._config.SchemaPrefix;
 
@@ -35,7 +34,6 @@ namespace Atdi.LegacyServices.Icsm.Orm
             this._singlePosEqpAnt = (config.Edition == "Developer1" || config.Edition == "Standard1");
             this._hasSemant = false;
             
-            this._expressColumns = new List<string>();
             this._tables = new Dictionary<string, Table>();
             this._tablesList = new List<Table>();
             this._dataDescs = new Dictionary<string, DataDesc>();
@@ -811,11 +809,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
         public string BuildSelectStatement(IDataEngine config, QuerySelectStatement statement, string[] fieldPaths) // DBMS dbms, string quoteColumn)
         {
             var schemaPrefix = this._config.SchemaPrefix + ".";
-            this._expressColumns = statement.Table.Columns.ToList().FindAll(z => !string.IsNullOrEmpty(z.Value.ToString())).Where(t=>t.Value.ToString().StartsWith("(")).Select(t => t.Value.ToString()).ToList();
-            if (this._expressColumns!=null)
-            {
-
-            }
+           
             this._configDataEngine = config;
             var dbTables = new Dictionary<string, DbTable>();
             var dbJoines = new List<DbJoin>();
@@ -1306,10 +1300,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 throw new ArgumentNullException(nameof(tableName));
             }
             var name = this.UnaliasTable(tableName, dbTables);
-            string descriptExpress = this._expressColumns.Find(t => t == fieldPath);
+            
             var ormTable = this.GetTableByName(name);
             var ormField = (ormTable == null) ? null : ormTable.Field(fieldPath);
-            if (descriptExpress != null) ormField = (ormTable == null) ? null : ormTable.Field("CustomExpression");
+            //if (descriptExpress != null) ormField = (ormTable == null) ? null : ormTable.Field("CustomExpression");
 
             bool flag = false;
             Semant sp = null;
@@ -1324,7 +1318,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 else if (ormField.Nature == FieldNature.Expr)
                 {
                     
-                    if (descriptExpress != null)
+                    //if (descriptExpress != null)
                     {
                         sp = ormField.Special;
 
@@ -1335,8 +1329,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
                             ormField.DDesc = ReadDataDesc("VARCHAR(50)");
                         }
                         ormItemExpr.Init(ormField.DDesc, sp, FieldFOption.fld_NONE);
-                        ormItemExpr.m_expression = descriptExpress;
-                        ormItemExpr.m_name = "CustomExpr";
+                        //ormItemExpr.m_expression = descriptExpress;
+                        //ormItemExpr.m_name = "CustomExpr";
                         ormItemExpr.m_fetched = fetch;
                         dbFields.Add(ormItemExpr);
                         dbWorldFields[tableName + "/" + fieldPath] = ormItemExpr;
