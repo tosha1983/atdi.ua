@@ -108,10 +108,12 @@ namespace Atdi.LegacyServices.Icsm
 
         public IrpDescriptor ExecuteParseQuery(string value)
         {
+            List<IrpColumn> listDescrColumns = new List<IrpColumn>();
             var irpDescr = new IrpDescriptor();
-            var lColumnsMeta = new List<ColumnMetadata>();
             try
             {
+                
+
                 var f = new Frame();
                 string Query = value;
                 int x1 = Query.IndexOf("\r\n");
@@ -124,24 +126,33 @@ namespace Atdi.LegacyServices.Icsm
                 _report.SetConfig(f);
                 for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
                     {
-                        var metaData = new ColumnMetadata();
-                        metaData.Description = _report.m_desc;
-                        metaData.Title = "";
+                        var metaData = new IrpColumn();
+                        metaData.columnMeta = new ColumnMetadata();
+
+                        metaData.columnMeta.Description = _report.m_desc;
+                        metaData.columnMeta.Title = "";
                         irpDescr.TableName = _report.m_dat.m_tab;
                         string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                         t = t.Replace(_report.m_dat.m_tab + ".", "");
-                        metaData.Description = t;
-                        metaData.Name = t;
-                        metaData.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
-                        if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oNone) metaData.Order = OrderType.None;
-                        else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oAsc) metaData.Order = OrderType.Ascending;
-                        else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oDesc) metaData.Order = OrderType.Descending;
-                        metaData.Position = 0;
-                        metaData.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
-                        metaData.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
+                        metaData.columnMeta.Description = t;
+                        metaData.columnMeta.Name = t;
+                        metaData.columnMeta.Format = _report.m_dat.m_list[0].m_query.lq[i].format;
+                        if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oNone) metaData.columnMeta.Order = OrderType.None;
+                        else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oAsc) metaData.columnMeta.Order = OrderType.Ascending;
+                        else if (_report.m_dat.m_list[0].m_query.lq[i].ord == Ordering.oDesc) metaData.columnMeta.Order = OrderType.Descending;
+                        metaData.columnMeta.Position = 0;
+                        metaData.columnMeta.Title = _report.m_dat.m_list[0].m_query.lq[i].title;
+                        metaData.columnMeta.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
                         if (_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
                         {
-                            metaData.Name = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + _report.m_dat.m_list[0].m_query.lq[i].title;
+                            metaData.Expr = _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr;
+                            metaData.TypeColumn = IrpColumnEnum.Expression;
+                        }
+                        else
+                        {
+                            metaData.Expr = "";
+                            metaData.TypeColumn = IrpColumnEnum.StandardColumn;
+
                         }
                         var ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
                         if (ty_p == null)
@@ -163,33 +174,34 @@ namespace Atdi.LegacyServices.Icsm
                             switch (ty_p.DDesc.ClassType)
                             {
                                 case Orm.VarType.var_Bytes:
-                                    metaData.Type = DataModels.DataType.Bytes;
+                                    metaData.columnMeta.Type = DataModels.DataType.Bytes;
                                     break;
                                 case Orm.VarType.var_Flo:
-                                    metaData.Type = DataModels.DataType.Float;
+                                    metaData.columnMeta.Type = DataModels.DataType.Float;
                                     break;
                                 case Orm.VarType.var_Int:
-                                    metaData.Type = DataModels.DataType.Integer;
+                                    metaData.columnMeta.Type = DataModels.DataType.Integer;
                                     break;
                                 case Orm.VarType.var_Dou:
-                                    metaData.Type = DataModels.DataType.Double;
+                                    metaData.columnMeta.Type = DataModels.DataType.Double;
                                     break;
                                 case Orm.VarType.var_String:
-                                    metaData.Type = DataModels.DataType.String;
+                                    metaData.columnMeta.Type = DataModels.DataType.String;
                                     break;
                                 case Orm.VarType.var_Tim:
-                                    metaData.Type = DataModels.DataType.DateTime;
+                                    metaData.columnMeta.Type = DataModels.DataType.DateTime;
                                     break;
                                 default:
-                                    metaData.Type = DataModels.DataType.String;
+                                    metaData.columnMeta.Type = DataModels.DataType.String;
                                     break;
                             }
                         }
-                        lColumnsMeta.Add(metaData);
+                        listDescrColumns.Add(metaData);
                     }
                 }
                 _report.Clear(false);
-                irpDescr.columnMetaData = lColumnsMeta.ToArray();
+                
+                irpDescr.irpColumns = listDescrColumns;
            }
             catch (Exception e)
             {

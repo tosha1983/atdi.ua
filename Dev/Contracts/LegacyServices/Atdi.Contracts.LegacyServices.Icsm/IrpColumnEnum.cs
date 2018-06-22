@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.DataModels.WebQuery;
-
 
 namespace Atdi.Contracts.LegacyServices.Icsm
 {
-    public sealed class IrpDescriptor 
+    public enum IrpColumnEnum
     {
-       public List<IrpColumn> irpColumns { get; set; }
-       public string TableName { get; set; }
-     
+        StandardColumn,
+        Expression
     }
 }

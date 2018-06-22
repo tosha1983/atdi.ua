@@ -67,8 +67,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
                 var statement = this._dataLayer.Builder
                    .From(queryDescriptor.TableName)
-                   .Select(selectedColumns);
-                   //.Select(queryDescriptor.PreperedColumnsForFetching(selectedColumns));
+                   .Select(queryDescriptor.PreperedColumnsForFetching(selectedColumns));
 
                 if (allConditions.Count > 0)
                 {

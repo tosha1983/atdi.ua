@@ -44,6 +44,8 @@
     <Compile Include="IcsmDataOrm.cs" />
     <Compile Include="IIrpDescriptor.cs" />
     <Compile Include="IIrpParser.cs" />
+    <Compile Include="IrpColumn.cs" />
+    <Compile Include="IrpColumnEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

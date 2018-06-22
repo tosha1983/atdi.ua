@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.WebQuery;
 
-
 namespace Atdi.Contracts.LegacyServices.Icsm
 {
-    public sealed class IrpDescriptor 
+    public sealed class IrpColumn
     {
-       public List<IrpColumn> irpColumns { get; set; }
-       public string TableName { get; set; }
-     
-    }
+        public string Expr { get; set; }
+        public IrpColumnEnum TypeColumn { get; set; }
+        public ColumnMetadata columnMeta { get; set; }
+}
 }
