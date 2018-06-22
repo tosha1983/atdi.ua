@@ -38,11 +38,11 @@ namespace Atdi.AppServices.WebQuery
 
             this.TableName = irpdescription.TableName;
             this.IdentUserField = QueryValue.IDENTUSER;
-            this.IrpDescrColumns = irpdescription.columnMetaData.Select(t => t.Value).ToArray();
+            this.IrpDescrColumns = irpdescription.irpColumns.ToArray();
 
             this.Metadata = new QueryMetadata
             {
-                Columns = irpdescription.columnMetaData.Select(t => t.Key).ToArray(),
+                Columns = this.IrpDescrColumns.Select(t => t.columnMeta).ToArray(),
                 Name = QueryValue.NAME,
                 Code = QueryValue.CODE,
                 Token = queryTokenDescriptor.Token,
@@ -170,10 +170,10 @@ namespace Atdi.AppServices.WebQuery
             List<string> extractColumns = new List<string>();
             for (int i=0; i< columns.Length; i++)
             {
-                var standardColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.StandardColumn && z.Name== columns[i]).Select(t => t.Name).ToList();
+                var standardColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.StandardColumn && z.columnMeta.Name == columns[i]).Select(t => t.columnMeta.Name).ToList();
                 if ((standardColumns!=null) && (standardColumns.Count>0))
                     extractColumns.AddRange(standardColumns);
-                var exprColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.Expression && z.Title == columns[i]).Select(t => t.Title).ToList();
+                var exprColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.Expression && z.columnMeta.Title == columns[i]).Select(t => t.columnMeta.Title).ToList();
                 if ((exprColumns != null) && (exprColumns.Count > 0))
                     extractColumns.AddRange(exprColumns);
             }
