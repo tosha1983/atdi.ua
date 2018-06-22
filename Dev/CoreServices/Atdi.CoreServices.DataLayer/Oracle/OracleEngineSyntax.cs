@@ -263,37 +263,117 @@ namespace Atdi.CoreServices.DataLayer
 
         public string EncodeTableName(string name)
         {
-            throw new NotImplementedException();
+            return $"{name}";
         }
 
         public string EncodeTableName(string schema, string name)
         {
-            throw new NotImplementedException();
+            return $"{schema}.{name}";
         }
 
         public string SourceExpression(string sourceExpression, string alias)
         {
-            throw new NotImplementedException();
+            return $"{sourceExpression} AS \"{alias}\"";
+            
         }
+
+        private static string GetAliasMainTable(string expression, string nameTable)
+        {
+            int ident = -1;
+            string value = expression;
+            int idx = value.IndexOf(nameTable);
+
+            if (idx!=-1)
+            {
+                value = value.Substring(idx + nameTable.Length, value.Length - (idx + nameTable.Length));
+            }
+            var sql = new StringBuilder();
+            bool start = false;
+            foreach (var symbol in value)
+            {
+                if ((start == true) && ((symbol == ' ') || (symbol == '\t')))
+                    break;
+
+                if ((symbol == ' ') ||  (symbol == '\t') && (start==false))
+                {
+                    ++ident;
+                }
+                else
+                {
+                   start = true;
+                   sql.Append(symbol);
+                }
+            }
+
+            if (sql.Length==0)
+            {
+               throw new InvalidOperationException(Exceptions.NotRecognizeAlias.With(expression));
+            }
+            return sql.ToString();
+        }
+
 
         public string DeleteExpression(string sourceExpression, string fromExpression = null, string whereExpression = null)
         {
-            throw new NotImplementedException();
+            var statement = new StringBuilder();
+
+            string aliasMainTable = GetAliasMainTable(fromExpression, sourceExpression);
+            statement.AppendLine($"DELETE FROM "+sourceExpression+Environment.NewLine);
+
+            if (!string.IsNullOrEmpty(fromExpression))
+            {
+                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 2 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
+                statement.AppendLine("WHERE rowid in (");
+
+                if (!string.IsNullOrEmpty(whereExpression))
+                {
+                    statement.AppendLine(IDENT + fromExpression_fill.Insert(fromExpression_fill.StartsWith("(") ? fromExpression_fill.Length - 1 : fromExpression_fill.Length, " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT)));
+                }
+                else statement.AppendLine(IDENT + fromExpression_fill.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+                statement.AppendLine(")" + Environment.NewLine);
+            }
+           
+
+            return statement.ToString();
         }
 
         public string SetColumnValueExpression(string columnExpression, string valueExpression)
         {
-            throw new NotImplementedException();
+            return $"{columnExpression} = {valueExpression}";
         }
 
         public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression)
         {
-            throw new NotImplementedException();
+            var statement = new StringBuilder();
+
+            statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression})");
+            statement.AppendLine($"SELECT {valuesExpression}");
+
+            return statement.ToString();
         }
 
         public string UpdateExpression(string sourceExpression, string valuesExpression, string fromExpression = null, string whereExpression = null)
         {
-            throw new NotImplementedException();
+            var statement = new StringBuilder();
+
+            string aliasMainTable = GetAliasMainTable(fromExpression, sourceExpression);
+            statement.AppendLine($"UPDATE {sourceExpression} SET");
+            statement.AppendLine(IDENT + valuesExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            if (!string.IsNullOrEmpty(fromExpression))
+            {
+                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 2 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
+                statement.AppendLine("WHERE rowid in (");
+               
+                if (!string.IsNullOrEmpty(whereExpression))
+                {
+                   statement.AppendLine(IDENT + fromExpression_fill.Insert(fromExpression_fill.StartsWith("(") ? fromExpression_fill.Length-1 : fromExpression_fill.Length, " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT)));
+                }
+                else statement.AppendLine(IDENT + fromExpression_fill.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+                statement.AppendLine(")" + Environment.NewLine);
+            }
+            
+
+            return statement.ToString();
         }
     }
 }

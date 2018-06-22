@@ -18,6 +18,70 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.Test.WebQuery
 {
+
+    /*
+                var fetchOptions = new FetchOptions
+                {
+                    Id = Guid.NewGuid(),
+                    ResultStructure = DataSetStructure.StringRows,
+                    // генерируем идентификатор выборки, будет возвращен с результатом
+                    //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
+
+                    Columns = new string[] { "ID" },
+
+                  Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
+                 {
+                     Type = LimitValueType.Records,
+                    Value = 1000
+                 },
+                    Condition = new DataModels.DataConstraint.ComplexCondition
+                    {
+                        Operator = DataModels.DataConstraint.LogicalOperator.Or,
+                        Conditions = new DataModels.DataConstraint.Condition[]
+                            {
+                                new DataModels.DataConstraint.ConditionExpression
+                                {
+                                    LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "ID" },
+                                    Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                    RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                },
+                                new DataModels.DataConstraint.ConditionExpression
+                                {
+                                    LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "ID" },
+                                    Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                    RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
+                                },
+                                ComplexCond
+                            }
+                    },
+
+
+
+                        /*
+                         Condition = new ComplexCondition 
+                         {
+                             Conditions = new Condition[3]
+                             {
+                                 ConditionExpr1, ConditionExpr2, ComplexCond
+                             },
+                             Operator = LogicalOperator.And
+
+                         },
+
+
+
+
+                        Orders = new OrderExpression[] // указываем условие сортировки
+{
+   //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
+   new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
+   //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
+}
+
+
+};
+   */
+
     public class SimpleUsingWebQuery2
     {
         public static void Run()
@@ -64,7 +128,7 @@ namespace Atdi.Test.WebQuery
             }
            
 
-
+            /*
             for (int i = 0; i < userQueryGroups.Groups.Length; i++)
             {
                 var group = userQueryGroups.Groups[i];
@@ -89,7 +153,10 @@ namespace Atdi.Test.WebQuery
 
                     // ... 
 
-                    ConditionExpression ConditionExpr1 = new ConditionExpression // указываем условие выборки
+
+                   
+
+                     ConditionExpression ConditionExpr1 = new ConditionExpression // указываем условие выборки
                     {
                         LeftOperand = new ColumnOperand { ColumnName = "ID" },
                         Operator = ConditionOperator.Equal,
@@ -103,49 +170,32 @@ namespace Atdi.Test.WebQuery
                         RightOperand = new IntegerValuesOperand { Values = new int?[] { 10, 3599 } }
                     };
 
-                    // пример выполнения запроса и получения данных
-                    // подготовка парамтеров и условий выполнения запроса
-               
-                    var fetchOptions = new FetchOptions
-                    {
-                        Id = Guid.NewGuid(),
-                        ResultStructure = DataSetStructure.StringRows,
-                        // генерируем идентификатор выборки, будет возвращен с результатом
-                        //Columns = new string[] {"ID", "StationA.Position.ADDRESS", "StationA.Position.CITY" }, // указываем ограничение по полям, при условии что нужно меньше чем может дать запрос, в случаи отсутвия такой необходимости поле оставлять пустым (null or new string [] { }) 
-                      
-                        Columns = new string[] { "ID" },
 
-                      Limit = new DataLimit // указываем лимит кол-ва возвращаемых записей
-                     {
-                         Type = LimitValueType.Records,
-                        Value = 1000
-                     },
-                       
-                        Condition = new ComplexCondition 
-                        {
-                            Conditions = new Condition[2]
+                    var ComplexCond = new ComplexCondition
+                    {
+                        Conditions = new Condition[2]
                             {
                                 ConditionExpr1, ConditionExpr2
                             },
-                            Operator = LogicalOperator.And
+                        Operator = LogicalOperator.And
+                    };
+
+                    // пример выполнения запроса и получения данных
+                    // подготовка парамтеров и условий выполнения запроса
+
+
                     
-                        },
+                    var fetchOptions = new FetchOptions
+                    {
+                        Id = Guid.NewGuid(),
+                        ResultStructure = DataSetStructure.StringRows
+                    };
 
- 
-
-   Orders = new OrderExpression[] // указываем условие сортировки
-   {
-       //new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
-       new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
-       //new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
-   }
-   
-
-};
+                
 
 
-// обащение к сервису для выполнния запроса
-var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
+                    // обащение к сервису для выполнния запроса
+                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
 // Валидация результата
 if (executingResult.State == OperationState.Fault)
 {
@@ -158,15 +208,16 @@ var queryResult = executingResult.Data;
 
 }
 }
+*/
 
 
 // Вариант выполнения запрос 2: используем преопределнное значение текстового кода запроса 
 // обащение к сервису за метаданніми запроса
-var defQueryMetadataByCodeResult = webQueryService.GetQueryMetadataByCode(userIdentity.UserToken, "SomeCode");
+var defQueryMetadataByCodeResult = webQueryService.GetQueryMetadataByCode(userIdentity.UserToken, "000");
 // Валидация результата получения метаданных
 if (defQueryMetadataByCodeResult.State != OperationState.Fault)
 {
-throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
+//throw new InvalidOperationException(defQueryMetadataByCodeResult.FaultCause);
 }
 var queryByCode = defQueryMetadataByCodeResult.Data;
 // подготовка параметров и выполнение запроса аналогично ка кпоказано через группы

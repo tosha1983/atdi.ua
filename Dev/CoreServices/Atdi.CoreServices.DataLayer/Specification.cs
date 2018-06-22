@@ -45,7 +45,7 @@ namespace Atdi.CoreServices.DataLayer
         public static readonly ExceptionText DataLimitTypeNotSupported = "The data limit with type '{0}' is not supported";
         public static readonly ExceptionText SortDirectionNotSupported = "The sort direction with name '{0}' is not supported";
         public static readonly ExceptionText LogicalOperatorNotSupported = "The logical operator with name '{0}' is not supported";
-        
+        public static readonly ExceptionText NotRecognizeAlias = "The alias of main table not found {0}";
     }
 
     static class ConfigParameters
