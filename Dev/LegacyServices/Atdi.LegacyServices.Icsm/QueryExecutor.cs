@@ -654,18 +654,18 @@ namespace Atdi.LegacyServices.Icsm
                 throw new ArgumentNullException(nameof(statement));
             }
 
-            EngineCommand command = null;
+            var command = new EngineCommand();
             if (statement is QueryInsertStatement queryInsertStatement)
             {
-                command = this.BuildInsertCommand(queryInsertStatement);
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
             }
             else if (statement is QueryUpdateStatement queryUpdateStatement)
             {
-                command = this.BuildUpdateCommand(queryUpdateStatement);
+                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
             }
             else if (statement is QueryDeleteStatement queryDeleteStatement)
             {
-                command = this.BuildDeleteCommand(queryDeleteStatement);
+                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
             }
 
             if (command == null)
@@ -684,26 +684,6 @@ namespace Atdi.LegacyServices.Icsm
             return command;
         }
 
-        private EngineCommand BuildInsertCommand(QueryInsertStatement statement)
-        {
-            return new EngineCommand();
-        }
-
-        private EngineCommand BuildUpdateCommand(QueryUpdateStatement statement)
-        {
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(statement, command.Parameters);
-            return command;
-        }
-
-        private EngineCommand BuildDeleteCommand(QueryDeleteStatement statement)
-        {
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(statement, command.Parameters);
-            return command;
-        }
-
-        
     }
 }
 

@@ -154,6 +154,42 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
+        public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            try
+            {
+                var sourceExpression = this._syntax.EncodeTableName(this._schemasMetadata.DbSchema, statement.TableName);
+                var changedColumns = new string[statement.ColumnsValues.Count];
+                var selectedParameters = new string[statement.ColumnsValues.Count];
+
+                for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                {
+                    var column = statement.ColumnsValues[i];
+                    var parameter = new EngineCommandParameter
+                    {
+                        DataType = column.DataType,
+                        Name = "v_" + column.Name,
+                        Value = column.GetValue()
+                    };
+                    parameters.Add(parameter.Name, parameter);
+                    selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
+                    changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
+                }
+
+                var columnsExpression = string.Join(", ", changedColumns);
+                var valuesExpression = string.Join(", ", selectedParameters);
+
+
+                var insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression);
+                return insertStatement;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
+        }
+
         public string BuildUpdateStatement(QueryUpdateStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try

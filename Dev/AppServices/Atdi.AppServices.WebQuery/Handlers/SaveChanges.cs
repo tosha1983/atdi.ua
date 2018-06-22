@@ -98,10 +98,20 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
         private int PerformCreationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, CreationAction action)
         {
-            return 0;
+            queryDescriptor.CheckColumns(action.Columns);
+
+            var insertQuery = this._dataLayer.Builder
+                .Insert(queryDescriptor.TableName)
+                .SetValues(this.UnpackInsertedValues(action));
+
+            var recordsAffected = this._queryExecutor.Execute(insertQuery);
+            return recordsAffected;
         }
+
         private int PerformUpdationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, UpdationAction action)
         {
+            queryDescriptor.CheckColumns(action.Columns);
+
             if (action.Condition != null)
             {
                 queryDescriptor.CheckCondition(action.Condition);
@@ -109,7 +119,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
             var updationQuery = this._dataLayer.Builder
                 .Update(queryDescriptor.TableName)
-                .SetValues(this.UnpackUpdateValues(action))
+                .SetValues(this.UnpackUpdatedValues(action))
                 .Where(action.Condition);
 
             var queryConditions = queryDescriptor.GetConditions(userTokenData);
@@ -122,7 +132,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
             return recordsAffected;
         }
 
-        private ColumnValue[] UnpackUpdateValues(UpdationAction action)
+        private ColumnValue[] UnpackUpdatedValues(UpdationAction action)
         {
             switch (action.RowType)
             {
@@ -132,6 +142,21 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     return ((StringRowUpdationAction)action).Row.GetColumnsValues(action.Columns);
                 case DataRowType.ObjectCell:
                     return ((ObjectRowUpdationAction)action).Row.GetColumnsValues(action.Columns);
+                default:
+                    throw new InvalidOperationException(Exceptions.DataRowTypeNotSupported.With(action.RowType));
+            }
+        }
+
+        private ColumnValue[] UnpackInsertedValues(CreationAction action)
+        {
+            switch (action.RowType)
+            {
+                case DataRowType.TypedCell:
+                    return ((TypedRowCreationAction)action).Row.GetColumnsValues(action.Columns);
+                case DataRowType.StringCell:
+                    return ((StringRowCreationAction)action).Row.GetColumnsValues(action.Columns);
+                case DataRowType.ObjectCell:
+                    return ((ObjectRowCreationAction)action).Row.GetColumnsValues(action.Columns);
                 default:
                     throw new InvalidOperationException(Exceptions.DataRowTypeNotSupported.With(action.RowType));
             }

@@ -262,6 +262,10 @@ namespace Atdi.LegacyServices.Icsm
                     var valueAsBytes = valueOperand as BytesValueOperand;
                     parameter.Value = valueAsBytes.Value;
                     break;
+                case DataModels.DataType.Guid:
+                    var valueAsGuid = valueOperand as GuidValueOperand;
+                    parameter.Value = valueAsGuid.Value;
+                    break;
                 default:
                     throw new InvalidOperationException($"The data type with name '{valueOperand.DataType}' is not supported in this context");
             }
@@ -343,6 +347,10 @@ namespace Atdi.LegacyServices.Icsm
                 case DataType.Bytes:
                     var valuesAsBytes = valuesOperand as BytesValuesOperand;
                     result = CreateParametersByValues(valuesAsBytes.Values, DataType.Bytes, parameters);
+                    break;
+                case DataType.Guid:
+                    var valuesAsGuid = valuesOperand as GuidValuesOperand;
+                    result = CreateParametersByValues(valuesAsGuid.Values, DataType.Guid, parameters);
                     break;
                 default:
                     throw new InvalidOperationException($"The data type with name '{valuesOperand.DataType}' is not supported in this context");
