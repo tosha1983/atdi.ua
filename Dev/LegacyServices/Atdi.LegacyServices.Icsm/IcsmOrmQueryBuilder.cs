@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.Platform.Logging;
 using Atdi.DataModels.DataConstraint;
+using Atdi.DataModels;
 
 namespace Atdi.LegacyServices.Icsm
 {
@@ -99,6 +100,30 @@ namespace Atdi.LegacyServices.Icsm
             return result;
         }
 
+        public string BuildSetValuesExpression(List<ColumnValue> columns, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            if (columns == null || columns.Count == 0)
+            {
+                return null;
+            }
+            var values = new string[columns.Count];
+            for (int i = 0; i < columns.Count; i++)
+            {
+                var column = columns[i];
+                var parameter = new EngineCommandParameter
+                {
+                    DataType = column.DataType,
+                    Name = "v_" + column.Name,
+                    Value = column.GetValue()
+                };
+                parameters.Add(parameter.Name, parameter);
+                values[i] = this._syntax.SetColumnValueExpression( this._syntax.EncodeFieldName(column.Name), this._syntax.EncodeParameterName(parameter.Name));
+            }
+
+            var result = string.Join("," + Environment.NewLine, values);
+            return result;
+        }
+
         public string BuildDeleteStatement(QueryDeleteStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try
@@ -126,6 +151,37 @@ namespace Atdi.LegacyServices.Icsm
             {
                 this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildDeleteStatement, e);
+            }
+        }
+
+        public string BuildUpdateStatement(QueryUpdateStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            try
+            {
+                var columns = new List<ColumnOperand>();
+                AppendColumnsFromConditions(statement.Conditions, columns);
+                var columnsArray = columns.ToArray();
+
+                var sourceExpression = this._syntax.EncodeTableName(this._schemasMetadata.DbSchema, statement.TableName);
+                var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
+                var fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out Orm.DbField[] dbFields);
+
+                for (int i = 0; i < columnsArray.Length; i++)
+                {
+                    var column = columnsArray[i];
+                    var dbField = dbFields[i];
+                    column.ColumnName = dbField.m_logFld;
+                    column.Source = dbField.m_idxTable.Tcaz;
+                }
+                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+
+                var updateStatement = this._syntax.UpdateExpression(sourceExpression, valuesExpression, fromStatement, whereExpression);
+                return updateStatement;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
             }
         }
 

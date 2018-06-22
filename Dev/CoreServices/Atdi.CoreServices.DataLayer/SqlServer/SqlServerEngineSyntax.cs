@@ -289,5 +289,40 @@ namespace Atdi.CoreServices.DataLayer
             
             return statement.ToString();
         }
+
+        public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression)
+        {
+            var statement = new StringBuilder();
+
+            statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression})");
+            statement.AppendLine($"SELECT {valuesExpression}");
+
+            return statement.ToString();
+        }
+
+        public string UpdateExpression(string sourceExpression, string valuesExpression, string fromExpression = null, string whereExpression = null)
+        {
+            var statement = new StringBuilder();
+
+            statement.AppendLine($"UPDATE {sourceExpression} SET");
+            statement.AppendLine(IDENT + valuesExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            if (!string.IsNullOrEmpty(fromExpression))
+            {
+                statement.AppendLine("FROM");
+                statement.AppendLine(IDENT + fromExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            }
+            if (!string.IsNullOrEmpty(whereExpression))
+            {
+                statement.AppendLine("WHERE");
+                statement.AppendLine(IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            }
+
+            return statement.ToString();
+        }
+
+        public string SetColumnValueExpression(string columnExpression, string valueExpression)
+        {
+            return $"{columnExpression} = {valueExpression}";
+        }
     }
 }

@@ -124,5 +124,15 @@ namespace Atdi.DataModels
             }
             return result;
         }
+
+        public static ColumnValue[] GetColumnsValues(this TypedDataRow row, DataSetColumn[] dataSetColumns)
+        {
+            var resultColumns = new ColumnValue[dataSetColumns.Length];
+            for (int i = 0; i < dataSetColumns.Length; i++)
+            {
+                resultColumns[i] = row.GetColumnValue(dataSetColumns[i]);
+            }
+            return resultColumns;
+        }
     }
 }

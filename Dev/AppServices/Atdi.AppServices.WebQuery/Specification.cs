@@ -44,5 +44,6 @@ namespace Atdi.AppServices.WebQuery
         public static readonly ExceptionText FetchOptionsNull = "Fetch options is NULL";
         public static readonly ExceptionText ActionTypeNotSupported = "The action type {0} is not supported.";
         public static readonly ExceptionText AccessToActionDenied = "Access to action '{0}' is denied";
+        public static readonly ExceptionText DataRowTypeNotSupported = "The data row type {0} is not supported.";
     }
 }

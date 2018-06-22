@@ -1,5 +1,5 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
-using Atdi.DataModels.DataConstraint;
+using Atdi.DataModels;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
