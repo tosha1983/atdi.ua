@@ -126,6 +126,26 @@ namespace Atdi.AppServices.WebQuery
             }
         }
 
+        public void CheckColumns(DataSetColumn[] columns)
+        {
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (HasColumn(columns[i].Name) == false)
+                {
+                    var badCollumns = new List<string>();
+                    for (int j = 0; j < columns.Length; j++)
+                    {
+                        if (HasColumn(columns[i].Name) == false)
+                        {
+                            badCollumns.Add(columns[i].Name);
+                        }
+                    }
+                    var message = string.Join(", ", badCollumns);
+                    throw new InvalidOperationException($"Not found columns with name's {message}'");
+                }
+            }
+        }
+
         public void CheckColumns(OrderExpression[] columns)
         {
             for (int i = 0; i < columns.Length; i++)
