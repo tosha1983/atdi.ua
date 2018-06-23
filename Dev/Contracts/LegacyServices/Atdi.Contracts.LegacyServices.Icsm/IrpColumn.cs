@@ -12,5 +12,5 @@ namespace Atdi.Contracts.LegacyServices.Icsm
         public string Expr { get; set; }
         public IrpColumnEnum TypeColumn { get; set; }
         public ColumnMetadata columnMeta { get; set; }
-}
+    }
 }

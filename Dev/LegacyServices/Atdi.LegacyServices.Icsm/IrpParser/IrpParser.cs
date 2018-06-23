@@ -152,7 +152,6 @@ namespace Atdi.LegacyServices.Icsm
                         {
                             metaData.Expr = "";
                             metaData.TypeColumn = IrpColumnEnum.StandardColumn;
-
                         }
                         var ty_p = GetOrmDataDesc(t, _report.m_dat.m_tab);
                         if (ty_p == null)

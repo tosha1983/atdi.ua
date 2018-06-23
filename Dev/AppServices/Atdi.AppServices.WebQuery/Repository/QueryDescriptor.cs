@@ -186,17 +186,9 @@ namespace Atdi.AppServices.WebQuery
                 {
                     for ( int i=0; i< ((condition as ComplexCondition).Conditions).Length; i++)
                     {
-                      if (((condition as ComplexCondition).Conditions)[i] is Atdi.DataModels.DataConstraint.ConditionExpression)
+                       if (((condition as ComplexCondition).Conditions)[i] is Atdi.DataModels.DataConstraint.ConditionExpression)
                         {
-                            var operand = (((condition as ComplexCondition).Conditions)[i] as Atdi.DataModels.DataConstraint.ConditionExpression).LeftOperand;
-                            if (operand is ColumnOperand)
-                            {
-                                if (HasColumn((operand as ColumnOperand).ColumnName) == false)
-                                {
-                                    var message = string.Join(", ", (operand as ColumnOperand).ColumnName);
-                                    throw new InvalidOperationException($"Not found columns with name's {message}'");
-                                }
-                            }
+                            CheckCondition(((condition as ComplexCondition).Conditions)[i] as Atdi.DataModels.DataConstraint.ConditionExpression);
                         }
                         else if (((condition as ComplexCondition).Conditions)[i] is Atdi.DataModels.DataConstraint.ComplexCondition) 
                         {
