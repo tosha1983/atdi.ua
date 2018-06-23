@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    public sealed class QuerySelectStatement : IQuerySelectStatement
+    internal sealed class QuerySelectStatement : IQuerySelectStatement
     {
-        public sealed class ColumnDescriptor
+        internal sealed class ColumnDescriptor
         {
             public string Table { get; set; }
 
@@ -27,7 +27,7 @@ namespace Atdi.LegacyServices.Icsm
 
         }
 
-        public sealed class TableDescriptor
+        internal sealed class TableDescriptor
         {
             private readonly Dictionary<string, ColumnDescriptor> _columns;
             private readonly Dictionary<string, ColumnDescriptor> _selectColumns;
@@ -137,7 +137,7 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
-        public sealed class OrderByColumnDescriptor
+        internal sealed class OrderByColumnDescriptor
         {
             public ColumnDescriptor Column { get; set; }
 
@@ -294,7 +294,7 @@ namespace Atdi.LegacyServices.Icsm
         }
     }
 
-    public sealed class QuerySelectStatement<TModel> : IQuerySelectStatement<TModel>
+    internal sealed class QuerySelectStatement<TModel> : IQuerySelectStatement<TModel>
     {
         private static readonly Type ModelType = typeof(TModel);
         private readonly QuerySelectStatement _statement;

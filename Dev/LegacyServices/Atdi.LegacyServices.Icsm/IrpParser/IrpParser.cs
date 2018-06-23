@@ -200,8 +200,8 @@ namespace Atdi.LegacyServices.Icsm
                     }
                 }
                 _report.Clear(false);
-                
                 irpDescr.irpColumns = listDescrColumns;
+                
            }
             catch (Exception e)
             {

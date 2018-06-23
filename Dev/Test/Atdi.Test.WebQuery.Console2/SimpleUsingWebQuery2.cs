@@ -128,7 +128,7 @@ namespace Atdi.Test.WebQuery
             }
            
 
-            /*
+            
             for (int i = 0; i < userQueryGroups.Groups.Length; i++)
             {
                 var group = userQueryGroups.Groups[i];
@@ -136,6 +136,7 @@ namespace Atdi.Test.WebQuery
                 for (int j = 0; j < group.QueryTokens.Length; j++)
                 {
                     var queryToken = group.QueryTokens[j];
+                    //if (queryToken.Id != 46) continue;
 
                     // обащение к сервису за метаданніми запроса
                     var defQueryMetadataResult = webQueryService.GetQueryMetadata(userIdentity.UserToken, queryToken);
@@ -208,7 +209,7 @@ var queryResult = executingResult.Data;
 
 }
 }
-*/
+
 
 
 // Вариант выполнения запрос 2: используем преопределнное значение текстового кода запроса 

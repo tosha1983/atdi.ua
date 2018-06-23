@@ -25,9 +25,9 @@ namespace Atdi.Test.WebQuery
                 System.Console.WriteLine("Press any key to start testing ...");
                 System.Console.ReadLine();
 
-                TestWebQuerySaveChanges("HttpAuthenticationManager", "HttpWebQuery");
+                //TestWebQuerySaveChanges("HttpAuthenticationManager", "HttpWebQuery");
                 //TestAuthenticationManager("TcpAuthenticationManager");
-                //SimpleUsingWebQuery2.Run();
+                SimpleUsingWebQuery2.Run();
                 //TestWebQueryAccess("HttpAuthenticationManager", "HttpWebQuery");
 
             }
@@ -404,7 +404,34 @@ namespace Atdi.Test.WebQuery
                                 IntegerCells = new int?[] { null},
                                 DecimalCells = new decimal? [] { (decimal?)123 }
                             }
+                        },
+
+                        //////Indert
+                        new DataModels.TypedRowCreationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Type = DataModels.ActionType.Create,
+                            
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "ID", Type = DataModels.DataType.Integer, Index = 0
+                                },
+
+                            },
+                            Row = new DataModels.TypedDataRow
+                            {
+                                StringCells = new string[] { "VAL"},
+                                IntegerCells = new int?[] { 12 },
+
+                            }
                         }
+
                     }
                 };
 

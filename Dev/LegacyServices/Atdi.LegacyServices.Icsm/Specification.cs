@@ -52,6 +52,7 @@ namespace Atdi.LegacyServices.Icsm
         public static readonly ExceptionText NotFoundOrmField = "Not found ORM field with path '{0}' into table with name '{1}'";
         public static readonly ExceptionText UndefinedParameter = "Undefined parameter with name '{0}'";
         public static readonly ExceptionText QueryStatementNotSupported = "The type of query statement with name '{0}' is not supported.";
+        public static readonly ExceptionText NotRecognizeAlias = "The alias of main table not found {0}";
     }
 
     static class Parameters

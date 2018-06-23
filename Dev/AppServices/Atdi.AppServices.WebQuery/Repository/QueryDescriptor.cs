@@ -219,7 +219,7 @@ namespace Atdi.AppServices.WebQuery
                 var standardColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.StandardColumn && z.columnMeta.Name == columns[i]).Select(t => t.columnMeta.Name).ToList();
                 if ((standardColumns!=null) && (standardColumns.Count>0))
                     extractColumns.AddRange(standardColumns);
-                var exprColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.Expression && z.columnMeta.Title == columns[i]).Select(t => t.columnMeta.Title).ToList();
+                var exprColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.Expression && z.columnMeta.Name == columns[i]).Select(t => t.columnMeta.Title).ToList();
                 if ((exprColumns != null) && (exprColumns.Count > 0))
                     extractColumns.AddRange(exprColumns);
             }

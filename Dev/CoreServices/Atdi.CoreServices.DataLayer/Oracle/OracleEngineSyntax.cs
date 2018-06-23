@@ -322,9 +322,8 @@ namespace Atdi.CoreServices.DataLayer
 
             if (!string.IsNullOrEmpty(fromExpression))
             {
-                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 2 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
+                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 1 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
                 statement.AppendLine("WHERE rowid in (");
-
                 if (!string.IsNullOrEmpty(whereExpression))
                 {
                     statement.AppendLine(IDENT + fromExpression_fill.Insert(fromExpression_fill.StartsWith("(") ? fromExpression_fill.Length - 1 : fromExpression_fill.Length, " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT)));
@@ -347,7 +346,7 @@ namespace Atdi.CoreServices.DataLayer
             var statement = new StringBuilder();
 
             statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression})");
-            statement.AppendLine($"SELECT {valuesExpression}");
+            statement.AppendLine($"VALUES ({valuesExpression})");
 
             return statement.ToString();
         }
@@ -361,7 +360,7 @@ namespace Atdi.CoreServices.DataLayer
             statement.AppendLine(IDENT + valuesExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
             if (!string.IsNullOrEmpty(fromExpression))
             {
-                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 2 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
+                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 1 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
                 statement.AppendLine("WHERE rowid in (");
                
                 if (!string.IsNullOrEmpty(whereExpression))
