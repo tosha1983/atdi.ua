@@ -322,16 +322,16 @@ namespace Atdi.CoreServices.DataLayer
 
             if (!string.IsNullOrEmpty(fromExpression))
             {
-                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 1 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
                 statement.AppendLine("WHERE rowid in (");
-                if (!string.IsNullOrEmpty(whereExpression))
-                {
-                    statement.AppendLine(IDENT + fromExpression_fill.Insert(fromExpression_fill.StartsWith("(") ? fromExpression_fill.Length - 1 : fromExpression_fill.Length, " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT)));
-                }
-                else statement.AppendLine(IDENT + fromExpression_fill.Replace(Environment.NewLine, Environment.NewLine + IDENT));
-                statement.AppendLine(")" + Environment.NewLine);
+                statement.AppendLine(string.Format(" SELECT {0}.rowid from ", aliasMainTable) + fromExpression + Environment.NewLine);
             }
-           
+
+            if (!string.IsNullOrEmpty(whereExpression))
+            {
+                statement.AppendLine(IDENT + " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            }
+            statement.AppendLine(")" + Environment.NewLine);
+
 
             return statement.ToString();
         }
@@ -358,20 +358,19 @@ namespace Atdi.CoreServices.DataLayer
             string aliasMainTable = GetAliasMainTable(fromExpression, sourceExpression);
             statement.AppendLine($"UPDATE {sourceExpression} SET");
             statement.AppendLine(IDENT + valuesExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+
             if (!string.IsNullOrEmpty(fromExpression))
             {
-                string fromExpression_fill = fromExpression.Insert(fromExpression.StartsWith("(") ? 1 : 0, string.Format(" SELECT {0}.rowid from ", aliasMainTable));
                 statement.AppendLine("WHERE rowid in (");
-               
-                if (!string.IsNullOrEmpty(whereExpression))
-                {
-                   statement.AppendLine(IDENT + fromExpression_fill.Insert(fromExpression_fill.StartsWith("(") ? fromExpression_fill.Length-1 : fromExpression_fill.Length, " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT)));
-                }
-                else statement.AppendLine(IDENT + fromExpression_fill.Replace(Environment.NewLine, Environment.NewLine + IDENT));
-                statement.AppendLine(")" + Environment.NewLine);
+                statement.AppendLine(string.Format(" SELECT {0}.rowid from ", aliasMainTable) + fromExpression + Environment.NewLine);
             }
-            
 
+            if (!string.IsNullOrEmpty(whereExpression))
+            {
+                statement.AppendLine(IDENT +  " WHERE " + IDENT + whereExpression.Replace(Environment.NewLine, Environment.NewLine + IDENT));
+            }
+
+            statement.AppendLine(")" + Environment.NewLine);
             return statement.ToString();
         }
     }

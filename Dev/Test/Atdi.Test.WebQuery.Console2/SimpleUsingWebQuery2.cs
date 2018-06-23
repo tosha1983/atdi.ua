@@ -136,7 +136,7 @@ namespace Atdi.Test.WebQuery
                 for (int j = 0; j < group.QueryTokens.Length; j++)
                 {
                     var queryToken = group.QueryTokens[j];
-                    if (queryToken.Id != 46) continue;
+                   // if (queryToken.Id != 46) continue;
 
                     // обащение к сервису за метаданніми запроса
                     var defQueryMetadataResult = webQueryService.GetQueryMetadata(userIdentity.UserToken, queryToken);
@@ -208,7 +208,7 @@ namespace Atdi.Test.WebQuery
 
 
 
-
+                    /*
                     var fetchOptions = new FetchOptions
              {
                  Id = Guid.NewGuid(),
@@ -248,14 +248,20 @@ new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
 
 
 };
+*/
+                    var fetchOptions = new FetchOptions
+                    {
+                        Id = Guid.NewGuid(),
+                        ResultStructure = DataSetStructure.StringRows,
+                    };
 
 
 
 
 
 
-                    // обащение к сервису для выполнния запроса
-                    var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
+                        // обащение к сервису для выполнния запроса
+                        var executingResult = webQueryService.ExecuteQuery(userIdentity.UserToken, queryMetadata.Token, fetchOptions);
 // Валидация результата
 if (executingResult.State == OperationState.Fault)
 {
