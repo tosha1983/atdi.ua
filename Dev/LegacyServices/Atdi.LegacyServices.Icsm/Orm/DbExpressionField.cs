@@ -65,7 +65,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             return sql.ToString();
         }
 
-        public void AddFldsInExpression(SchemasMetadata schemasMetadata)
+        public void AddFldsInExpression(SchemasMetadata schemasMetadata, string Tcaz)
         {
             if (schemasMetadata._configDataEngine.Config.Type == Contracts.CoreServices.DataLayer.DataEngineType.Oracle)
                 _dbms = DBMS.Oracle;
@@ -115,8 +115,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
                             this.m_items.Add(ormItem);
                             this.m_nItems++;
                             num = (i = num2 + 1);
-                            if (_dbms== DBMS.MsSql) this.m_fmt += "Tcaz_0.["+ ormItem.Name+"]";
-                            else if (_dbms == DBMS.Oracle) this.m_fmt += $"Tcaz_0.\"{ormItem.Name}\"";
+                            if (_dbms== DBMS.MsSql) this.m_fmt +=  string.Format("{0}.[", Tcaz)+ ormItem.Name+"]";
+                            else if (_dbms == DBMS.Oracle) this.m_fmt +=  string.Format("{0}.",Tcaz) + $"\"{ormItem.Name}\"";
                         }
                         else
                         {

@@ -1342,7 +1342,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
                         dbWorldFields[tableName + "/" + fieldPath] = ormItemExpr;
                         ormItemExpr.m_logTab = tableName;
                         ormItemExpr.m_logFld = ormField.Name;
-                        ormItemExpr.AddFldsInExpression(this);
+                        
+                        ormItemExpr.AddFldsInExpression(this, dbTables[tableName].Tcaz);
                     }
                 }
             }
