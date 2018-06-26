@@ -25,9 +25,9 @@ namespace Atdi.Test.WebQuery
                 System.Console.WriteLine("Press any key to start testing ...");
                 System.Console.ReadLine();
 
-                TestWebQuerySaveChanges("HttpAuthenticationManager", "HttpWebQuery");
+                //TestWebQuerySaveChanges("HttpAuthenticationManager", "HttpWebQuery");
                 //TestAuthenticationManager("TcpAuthenticationManager");
-                //SimpleUsingWebQuery2.Run();
+                SimpleUsingWebQuery2.Run();
                 //TestWebQueryAccess("HttpAuthenticationManager", "HttpWebQuery");
 
             }
