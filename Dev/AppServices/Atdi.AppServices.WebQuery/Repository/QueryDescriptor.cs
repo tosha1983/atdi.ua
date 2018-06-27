@@ -26,12 +26,14 @@ namespace Atdi.AppServices.WebQuery
 
         public QueryMetadata Metadata { get; private set; }
         public IrpColumn[] IrpDescrColumns { get; private set; }
+        public Dictionary<string,IrpColumn> IrpDictionary { get; private set; }
 
         public QueryTokenDescriptor QueryTokenDescriptor { get; private set; }
 
         public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
         {
             this._hashSet = new Dictionary<string, DataType>();
+            this.IrpDictionary = new Dictionary<string, IrpColumn>();
             this._QueryValue = QueryValue;
             this._ConstraintsValue = ConstraintsValue;
             this.QueryTokenDescriptor = queryTokenDescriptor;
@@ -50,12 +52,22 @@ namespace Atdi.AppServices.WebQuery
                 Title = QueryValue.NAME
             };
 
+            
+
             var listColumns = this.Metadata.Columns;
             for (int i = 0; i < listColumns.Length; i++)
             {
                 var column = listColumns[i];
                 if (!_hashSet.ContainsKey(column.Name))
                     _hashSet.Add(column.Name, column.Type);
+                if (!IrpDictionary.ContainsKey(column.Name))
+                {
+                    IrpColumn col = IrpDescrColumns.ToList().Find(t => t.columnMeta.Name == column.Name);
+                    if (col != null)
+                    {
+                        IrpDictionary.Add(column.Name, col);
+                    }
+                }
             }
         }
 
@@ -205,21 +217,24 @@ namespace Atdi.AppServices.WebQuery
 
         public string[] PreperedColumnsForFetching(string[] columns)
         {
-            List<string> extractColumns = new List<string>();
+            var result = new string[columns.Length];
             for (int i=0; i< columns.Length; i++)
             {
-                var standardColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.StandardColumn && z.columnMeta.Name == columns[i]).Select(t => t.columnMeta.Name).ToList();
-                if ((standardColumns != null) && (standardColumns.Count > 0))
+                var metadat = IrpDictionary[columns[i]];
+                if (metadat.TypeColumn== IrpColumnEnum.StandardColumn)
                 {
-                    extractColumns.AddRange(standardColumns);
+                    result[i] = columns[i];
                 }
-                var exprColumns = IrpDescrColumns.Where(z => z.TypeColumn == IrpColumnEnum.Expression && z.columnMeta.Name == columns[i]).Select(t => t.Expr).ToList();
-                if ((exprColumns != null) && (exprColumns.Count > 0))
+                else if (metadat.TypeColumn == IrpColumnEnum.Expression)
                 {
-                    extractColumns.AddRange(exprColumns);
+                    result[i] = metadat.Expr;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"The type was unsupported");
                 }
             }
-            return extractColumns.ToArray();
+            return result;
         }
        
 
