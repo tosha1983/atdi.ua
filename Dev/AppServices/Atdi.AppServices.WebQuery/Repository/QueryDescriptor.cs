@@ -62,7 +62,7 @@ namespace Atdi.AppServices.WebQuery
                     _hashSet.Add(column.Name, column.Type);
                 if (!IrpDictionary.ContainsKey(column.Name))
                 {
-                    IrpColumn col = IrpDescrColumns.ToList().Find(t => t.columnMeta.Name == column.Name);
+                    IrpColumn col = irpdescription.irpColumns.Find(t => t.columnMeta.Name == column.Name);
                     if (col != null)
                     {
                         IrpDictionary.Add(column.Name, col);
