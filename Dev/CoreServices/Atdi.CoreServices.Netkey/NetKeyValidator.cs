@@ -10,12 +10,15 @@ namespace Atdi.CoreServices.NetKeyValidator
 {
     public class NetKeyValidator : INetKeyValidator
     {
+
         [DllImport("netkey.dll", CharSet = CharSet.Unicode)]
-        public static extern int GetToken(string softname, string exedate);
+
+        public static extern int GetToken([MarshalAs(UnmanagedType.LPStr)]  string  softname, [MarshalAs(UnmanagedType.LPStr)] string exedate);
+    
         public int GetTokenValue(string softname, string exedate)
         {
-            int value = GetToken(softname, exedate);
-            return value;
+            return GetToken(softname, exedate);
         }
     }
+
 }

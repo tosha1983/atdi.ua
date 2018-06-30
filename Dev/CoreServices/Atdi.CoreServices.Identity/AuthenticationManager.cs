@@ -14,6 +14,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.Contracts.CoreServices.Netkey;
 
 
+
 namespace Atdi.CoreServices.Identity
 {
     public sealed class AuthenticationManager : LoggedObject, IAuthenticationManager
@@ -54,6 +55,7 @@ namespace Atdi.CoreServices.Identity
 
         public UserIdentity AuthenticateUser(UserCredential credential)
         {
+            
             if (credential == null)
             {
                 throw new ArgumentNullException(nameof(credential));
