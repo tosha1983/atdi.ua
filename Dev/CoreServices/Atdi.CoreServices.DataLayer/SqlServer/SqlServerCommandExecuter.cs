@@ -129,10 +129,10 @@ namespace Atdi.CoreServices.DataLayer
 
         
 
-        public void Execute(Action<IDataReader> handler)
+        public void Execute(Action<System.Data.IDataReader> handler)
         {
             this.OpenConnection();
-            IDataReader reader = null;
+            System.Data.IDataReader reader = null;
             try
             {
 

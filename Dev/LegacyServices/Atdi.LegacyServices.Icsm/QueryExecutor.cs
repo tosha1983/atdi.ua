@@ -1,14 +1,10 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
-using Atdi.DataModels.DataConstraint;
+using Atdi.DataModels;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atdi.Contracts.LegacyServices.Icsm;
-using Atdi.DataModels;
 
 namespace Atdi.LegacyServices.Icsm
 {
@@ -64,7 +60,7 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        private TypedCellsDataSet ReadToTypedCellsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        private TypedCellsDataSet ReadToTypedCellsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
             var dataSet = new DataModels.TypedCellsDataSet
             {
@@ -283,7 +279,7 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        private StringCellsDataSet ReadToStringCellsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        private StringCellsDataSet ReadToStringCellsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
             var dataSet = new DataModels.StringCellsDataSet
             {
@@ -320,7 +316,7 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        private ObjectCellsDataSet ReadToObjectCellsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        private ObjectCellsDataSet ReadToObjectCellsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
             var dataSet = new DataModels.ObjectCellsDataSet
             {
@@ -357,7 +353,7 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        private TypedRowsDataSet ReadToTypedRowsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        private TypedRowsDataSet ReadToTypedRowsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
             var dataSet = new DataModels.TypedRowsDataSet
             {
@@ -527,7 +523,7 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        private StringRowsDataSet ReadToStringRowsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        private StringRowsDataSet ReadToStringRowsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
             var dataSet = new DataModels.StringRowsDataSet
             {
@@ -566,7 +562,7 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        private ObjectRowsDataSet ReadToObjectRowsDataSet(IDataReader dataReader, DataSetColumn[] columns)
+        private ObjectRowsDataSet ReadToObjectRowsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
             var dataSet = new DataModels.ObjectRowsDataSet
             {
@@ -605,16 +601,19 @@ namespace Atdi.LegacyServices.Icsm
             return dataSet;
         }
 
-        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)
+        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Atdi.Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
         {
             try
             {
-                var command = this.BuildSelectCommand(statement as QuerySelectStatement);
+                var objectStatment = statement as QuerySelectStatement;
+                var command = this.BuildSelectCommand(objectStatment);
 
                 var result = default(TResult);
                 _dataEngine.Execute(command, reader =>
                 {
-                    result = handler(reader);
+                    var columnsMapper = objectStatment.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
+                    var typedReader = new QueryDataReader(reader, columnsMapper);
+                    result = handler(typedReader);
                 });
                 return result;
             }
@@ -635,7 +634,8 @@ namespace Atdi.LegacyServices.Icsm
                 var result = default(TResult);
                 _dataEngine.Execute(command, reader =>
                 {
-                    var typedReader = new QueryDataReader<TModel>(reader);
+                    var columnsMapper = objectStatment.Statement.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
+                    var typedReader = new QueryDataReader<TModel>(reader, columnsMapper);
                     result = handler(typedReader);
                 });
                 return result;

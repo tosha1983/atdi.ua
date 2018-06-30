@@ -33,44 +33,73 @@ namespace Atdi.LegacyServices.Icsm
         {
             try
             {
-                var sourceColumns = statement.Table.Columns.Values;
-                var fieldPaths = new string[statement.Table.Columns.Count];
+                var selectedColumns = statement.Table.Columns.Values.ToArray();
+
+                var conditionsColumns = new List<ColumnOperand>();
+                AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
+                var whereColumns = conditionsColumns.ToArray();
+
+                var sortColumns = statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Orders.ToArray();
+
+
+                var fieldCount = selectedColumns.Length + whereColumns.Length + sortColumns.Length;
+                var fieldPaths = new string[fieldCount];
+                
                 int index = 0;
-                foreach (var column in sourceColumns)
+                for (int i = 0; i < selectedColumns.Length; i++)
                 {
+                    var column = selectedColumns[i];
                     if (string.IsNullOrEmpty(column.Alias))
                     {
-                        column.Alias = column.Name; 
+                        column.Alias = "col_" + index.ToString();  //column.Name; 
                     }
                     fieldPaths[index++] = column.Name;
                 }
-               
-                var rootStatement = this._schemasMetadata.BuildSelectStatement(_dataEngine, statement, fieldPaths);
-                var fromExpression = this._dataEngine.Syntax.FromExpression(rootStatement, "A");
-
-                var selectColumns = new string[statement.Table.SelectColumns.Count];
-                index = 0;
-                foreach (var column in statement.Table.SelectColumns.Values)
+                for (int i = 0; i < whereColumns.Length; i++)
                 {
-                    /// todo alias
-                    selectColumns[index++] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName("A", column.Name), column.Name);
+                    var column = whereColumns[i];
+                    fieldPaths[index++] = column.ColumnName;
+                }
+                for (int i = 0; i < sortColumns.Length; i++)
+                {
+                    var column = sortColumns[i];
+                    fieldPaths[index++] = column.Column.Name;
                 }
 
-                // add conditions
+                var fromExpression = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.Table.Name, fieldPaths, out Orm.DbField[] dbFields);
+
+                //var rootStatement = this._schemasMetadata.BuildSelectStatement(_dataEngine, statement, fieldPaths);
+                //var fromExpression = this._dataEngine.Syntax.FromExpression(rootStatement, "A");
+
+                index = 0;
+
+                // to build the select columns section
+                var columnExpressions = new string[selectedColumns.Length];
+                for (int i = 0; i < selectedColumns.Length; i++)
+                {
+                    var column = selectedColumns[i];
+                    var dbField = dbFields[index++];
+                    columnExpressions[i] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, column.Name), column.Alias);
+                }
+
+                // to build the where section
+                for (int i = 0; i < whereColumns.Length; i++)
+                {
+                    var column = whereColumns[i];
+                    var dbField = dbFields[index++];
+                    column.ColumnName = dbField.m_logFld;
+                    column.Source = dbField.m_idxTable.Tcaz;
+                }
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
 
-                // add order by
-                string[] orderByColumns = null;
-                var sortColumns = statement.Orders;
-                if (sortColumns != null && sortColumns.Count > 0)
+                // to build the order by section
+                var orderByColumns = new string[sortColumns.Length];
+                for (int i = 0; i < sortColumns.Length; i++)
                 {
-                    orderByColumns = new string[sortColumns.Count];
-                    index = 0;
-                    foreach (var sortColumn in sortColumns)
-                    {
-                        var encodeColumn = this._syntax.EncodeFieldName("A", sortColumn.Column.Alias);
-                        orderByColumns[index++] = _syntax.SortedColumn(encodeColumn, sortColumn.Direction);
-                    }
+                    var column = sortColumns[i];
+                    var dbField = dbFields[index++];
+                    var encodeColumn = this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, column.Column.Name);
+                    orderByColumns[i] = _syntax.SortedColumn(encodeColumn, column.Direction);
                 }
 
                 // add on top (n)
@@ -78,7 +107,7 @@ namespace Atdi.LegacyServices.Icsm
 
                 // add group by
 
-                var selectStatement = this._syntax.SelectExpression(selectColumns, fromExpression, whereExpression, orderByColumns, limit);
+                var selectStatement = this._syntax.SelectExpression(columnExpressions, fromExpression, whereExpression, orderByColumns, limit);
                 return selectStatement;
             }
             catch(Exception e)

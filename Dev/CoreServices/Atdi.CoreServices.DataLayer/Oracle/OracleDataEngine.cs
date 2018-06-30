@@ -34,7 +34,7 @@ namespace Atdi.CoreServices.DataLayer
             }
         }
 
-        public void Execute(EngineCommand command, Action<IDataReader> handler)
+        public void Execute(EngineCommand command, Action<System.Data.IDataReader> handler)
         {
             using (var trace = this.Logger.StartTrace(Contexts.OracleEngine, Categories.DataProcessing, this))
             {

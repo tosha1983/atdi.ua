@@ -309,6 +309,8 @@ namespace Atdi.Test.WebQuery
                 var qm = webQuery.GetQueryMetadata(userIdentity.UserToken, queryFristToken);
                 _count.Add(1);
 
+                var re1 = webQuery.ExecuteQuery(userIdentity.UserToken, queryFristToken, new DataModels.WebQuery.FetchOptions { ResultStructure = DataModels.DataSetStructure.StringCells, Limit = new DataModels.DataConstraint.DataLimit { Value = 100 }, Orders = new DataModels.DataConstraint.OrderExpression[] { } });
+
                 var changeset = new DataModels.Changeset
                 {
                     Id = Guid.NewGuid(),
@@ -338,6 +340,7 @@ namespace Atdi.Test.WebQuery
                             }
                                 
                         },
+
                         new DataModels.StringRowUpdationAction
                         {
                             Id =  Guid.NewGuid(),
@@ -473,7 +476,89 @@ namespace Atdi.Test.WebQuery
                                 IntegerCells = new int?[] { null},
                                 DecimalCells = new decimal? [] { (decimal?)123 }
                             }
-                        }
+                        },
+
+                        new DataModels.StringRowCreationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "FEE", Type = DataModels.DataType.Integer, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "RX_EQP_NBR", Type = DataModels.DataType.Decimal, Index = 2
+                                },
+                            },
+                            Row = new DataModels.StringDataRow
+                            {
+                                Cells = new string[]
+                                {
+                                    "NETWORK_IDENT", "8111", "3917"
+                                }
+                            }
+                        },
+
+                        new DataModels.ObjectRowCreationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "FEE", Type = DataModels.DataType.Integer, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "RX_EQP_NBR", Type = DataModels.DataType.Decimal, Index = 2
+                                },
+                            },
+                            Row = new DataModels.ObjectDataRow
+                            {
+                                Cells = new object[]
+                                {
+                                    "NETWORK_IDENT", (int)8111, (decimal)3917
+                                }
+                            }
+                        },
+
+                        new DataModels.ObjectRowCreationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "FEE", Type = DataModels.DataType.Integer, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "RX_EQP_NBR", Type = DataModels.DataType.Decimal, Index = 2
+                                },
+                            },
+                            Row = new DataModels.ObjectDataRow
+                            {
+                                Cells = new object[]
+                                {
+                                    "NETWORK_IDENT", (int)8111, (decimal)3917
+                                }
+                            }
+                        },
                     }
                 };
 
