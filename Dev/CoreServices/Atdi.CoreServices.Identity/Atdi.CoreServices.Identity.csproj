@@ -58,10 +58,6 @@
     <Compile Include="UserTokenProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
-      <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
-      <Name>Atdi.AppServices.WebQuery</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
