@@ -17,6 +17,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         string EncodeFieldName(string name);
 
+        string EncodeFieldNameExpression(string name);
+
         string EncodeParameterName(string name);
 
         string EncodeFieldName(string source, string name);

@@ -136,7 +136,9 @@ namespace Atdi.Test.WebQuery
                 for (int j = 0; j < group.QueryTokens.Length; j++)
                 {
                     var queryToken = group.QueryTokens[j];
-                   // if (queryToken.Id != 46) continue;
+                   
+                    // if (queryToken.Id != 46) continue;
+                    //if (queryToken.Id != 23) continue;
 
                     // обащение к сервису за метаданніми запроса
                     var defQueryMetadataResult = webQueryService.GetQueryMetadata(userIdentity.UserToken, queryToken);
@@ -253,7 +255,21 @@ new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
                     {
                         Id = Guid.NewGuid(),
                         ResultStructure = DataSetStructure.StringRows,
-                    };
+                        Orders = new OrderExpression[] // указываем условие сортировки
+{
+//new OrderExpression { ColumnName = "StationA.Position.ADDRESS", OrderType = OrderType.Ascending },
+new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,
+//new OrderExpression { ColumnName = "StationA.Position.CITY", OrderType = OrderType.Descending }
+},
+                         Condition = new ConditionExpression // указываем условие выборки
+                        {
+                            LeftOperand = new ColumnOperand { ColumnName = "ID" },
+                            Operator = ConditionOperator.GreaterThan,
+                            RightOperand = new IntegerValueOperand { Value = 0 }
+                        },
+                        
+
+                };
 
 
 

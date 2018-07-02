@@ -291,11 +291,18 @@ namespace Atdi.LegacyServices.Icsm
 
             if (string.IsNullOrEmpty(columnOperand.Source))
             {
-               result = this._syntax.EncodeFieldName(columnOperand.ColumnName);
+                    result = this._syntax.EncodeFieldName(columnOperand.ColumnName);
             }
             else
             {
-                result = this._syntax.EncodeFieldName(columnOperand.Source, columnOperand.ColumnName);
+                if (columnOperand.Source != "CustomExpression")
+                {
+                    result = this._syntax.EncodeFieldName(columnOperand.Source, columnOperand.ColumnName);
+                }
+                else
+                {
+                    result = this._syntax.EncodeFieldNameExpression(columnOperand.ColumnName);
+                }
             }
 
             return result;

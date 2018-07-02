@@ -12,6 +12,7 @@ using Atdi.CoreServices.Identity.Models;
 using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
 using Atdi.Contracts.CoreServices.Netkey;
+using System.Globalization;
 
 
 
@@ -55,7 +56,14 @@ namespace Atdi.CoreServices.Identity
 
         public UserIdentity AuthenticateUser(UserCredential credential)
         {
-            
+
+            string dateFormat = DateTime.Now.ToString("MMM dd yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+            int val = _netKey.GetTokenValue("ICS Manager", dateFormat);
+            if (val == 0)
+            {
+                throw new InvalidOperationException(Exceptions.InvalidKey);
+            }
+
             if (credential == null)
             {
                 throw new ArgumentNullException(nameof(credential));

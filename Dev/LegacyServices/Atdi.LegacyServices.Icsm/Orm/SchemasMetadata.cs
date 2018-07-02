@@ -810,7 +810,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
         }
 
 
-        public string BuildSelectStatement(IDataEngine config, QuerySelectStatement statement, string[] fieldPaths) // DBMS dbms, string quoteColumn)
+        public string BuildJoinStatement(IDataEngine config, QuerySelectStatement statement, string[] fieldPaths, out DbField[] selectedFields) // DBMS dbms, string quoteColumn)
         {
             var schemaPrefix = this._config.SchemaPrefix + ".";
             this._expressColumns = statement.Table.Columns.ToList().FindAll(z => !string.IsNullOrEmpty(z.Value.Expression)).Select(t => t.Value).ToList();
@@ -820,7 +820,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             var dbFields = new List<DbField>();
             var dbWorldFields = new Dictionary<string, DbField>();
 
-            var selectedFields = new DbField[fieldPaths.Length];
+            selectedFields = new DbField[fieldPaths.Length];
             for (int i = 0; i < fieldPaths.Length; i++)
             {
                 var fieldPath = fieldPaths[i];
@@ -830,40 +830,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
                 selectedFields[i] = dbField;
             }
 
-             var joinSql = BuildJoinStatement(config.Syntax, statement.Table.Name, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
-
-            var sql = new StringBuilder();
-
-            sql.AppendLine("SELECT ");
-
-            
-            //var leftQuote = string.Empty;
-            //var rightQuote = string.Empty;
-            //if (quoteColumn.Length == 2)
-            //{
-            //    leftQuote = quoteColumn.Substring(0, 1);
-            //    rightQuote = quoteColumn.Substring(1, 1);
-            //}
-
-            var columnsSql = new string[selectedFields.Length];
-            for (int i = 0; i < selectedFields.Length; i++)
-            {
-                var dbField = selectedFields[i];
-                if (dbField is DbExpressionField)
-                {
-                    columnsSql[i] = "    " + config.Syntax.ColumnExpression((dbField as DbExpressionField).m_fmt, dbField.Path); //(dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
-
-                }
-                else columnsSql[i] = "    " + config.Syntax.ColumnExpression(dbField.m_name, dbField.Path); //(dbField.m_name + " AS " + leftQuote + dbField.Path + rightQuote;
-            }
-
-            sql.AppendLine(string.Join("," + Environment.NewLine, columnsSql));
-
+            var joinSql = BuildJoinStatement(config.Syntax, statement.Table.Name, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
             var formatedSql = FormatJoinStatement(joinSql);
-            formatedSql = Environment.NewLine + "    " + formatedSql.Replace(Environment.NewLine, Environment.NewLine + "    ");
-            sql.Append("FROM" + formatedSql);
 
-            return sql.ToString();
+            return formatedSql;
         }
 
         public string BuildJoinStatement(IEngineSyntax engineSyntax, string tableName, string[] fieldPaths, out DbField[] selectedFields) // DBMS dbms, string quoteColumn)
@@ -891,7 +861,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             return formatedSql;
         }
 
-        
+
 
         private static string FormatJoinStatement(string expression)
         {
@@ -1341,9 +1311,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
                         dbFields.Add(ormItemExpr);
                         dbWorldFields[tableName + "/" + fieldPath] = ormItemExpr;
                         ormItemExpr.m_logTab = tableName;
-                        ormItemExpr.m_logFld = ormField.Name;
+                        //ormItemExpr.m_logFld = ormField.Name;
                         
                         ormItemExpr.AddFldsInExpression(this, dbTables[tableName].Tcaz);
+                        ormItemExpr.m_logFld = ormItemExpr.m_fmt;// ormField.Name;
                     }
                 }
             }
@@ -1382,6 +1353,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
                        // this.nFields++;
                         ormItem.m_fetched = true;
                     }
+                    ormItem.m_idxTable = dbrecordtable;
                     return ormItem;
                 }
             }

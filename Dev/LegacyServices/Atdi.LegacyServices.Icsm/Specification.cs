@@ -53,6 +53,7 @@ namespace Atdi.LegacyServices.Icsm
         public static readonly ExceptionText UndefinedParameter = "Undefined parameter with name '{0}'";
         public static readonly ExceptionText QueryStatementNotSupported = "The type of query statement with name '{0}' is not supported.";
         public static readonly ExceptionText NotRecognizeAlias = "The alias of main table not found {0}";
+        public static readonly ExceptionText NotRecognizeTypeField = "The type filed {0} not found";
     }
 
     static class Parameters
