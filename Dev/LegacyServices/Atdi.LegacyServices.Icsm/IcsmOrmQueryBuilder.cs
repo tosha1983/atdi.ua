@@ -79,7 +79,7 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     var column = selectedColumns[i];
                     var dbField = dbFields[index++];
-                    columnExpressions[i] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, column.Name), column.Alias);
+                    columnExpressions[i] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, dbField.m_logFld), column.Alias);
                 }
 
                 // to build the where section
@@ -98,7 +98,7 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     var column = sortColumns[i];
                     var dbField = dbFields[index++];
-                    var encodeColumn = this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, column.Column.Name);
+                    var encodeColumn = this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, dbField.m_logFld);
                     orderByColumns[i] = _syntax.SortedColumn(encodeColumn, column.Direction);
                 }
 
