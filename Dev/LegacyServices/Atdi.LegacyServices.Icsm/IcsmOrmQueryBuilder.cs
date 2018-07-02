@@ -126,7 +126,7 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     var column = sortColumns[i];
                     var dbField = dbFields[index++];
-                    string encodeColumn = "";
+                    var encodeColumn = "";
                     if (dbField is Orm.DbExpressionField)
                     {
                         encodeColumn = this._syntax.EncodeFieldName(column.Column.Alias);
