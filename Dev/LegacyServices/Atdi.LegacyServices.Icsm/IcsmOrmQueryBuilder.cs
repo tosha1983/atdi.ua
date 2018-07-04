@@ -66,7 +66,7 @@ namespace Atdi.LegacyServices.Icsm
                     fieldPaths[index++] = column.Column.Name;
                 }
 
-                var fromExpression = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.Table.Name, fieldPaths, out Orm.DbField[] dbFields);
+                var fromExpression = this._schemasMetadata.BuildJoinStatement(this._dataEngine, statement, fieldPaths, out Orm.DbField[] dbFields);
 
                 //var rootStatement = this._schemasMetadata.BuildSelectStatement(_dataEngine, statement, fieldPaths);
                 //var fromExpression = this._dataEngine.Syntax.FromExpression(rootStatement, "A");
@@ -77,9 +77,22 @@ namespace Atdi.LegacyServices.Icsm
                 var columnExpressions = new string[selectedColumns.Length];
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
+
                     var column = selectedColumns[i];
                     var dbField = dbFields[index++];
-                    columnExpressions[i] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, dbField.m_logFld), column.Alias);
+                    
+                    if (dbField is Orm.DbExpressionField)
+                    {
+                        columnExpressions[i] = this._syntax.ColumnExpression(dbField.m_logFld, column.Alias);
+                    }
+                    else if (dbField is Orm.DbField)
+                    {
+                        columnExpressions[i] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, dbField.m_logFld), column.Alias);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format(Exceptions.NotRecognizeTypeField, dbField.GetType()));
+                    }
                 }
 
                 // to build the where section
@@ -87,8 +100,23 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     var column = whereColumns[i];
                     var dbField = dbFields[index++];
-                    column.ColumnName = dbField.m_logFld;
-                    column.Source = dbField.m_idxTable.Tcaz;
+                    
+
+                    if (dbField is Orm.DbExpressionField)
+                    {
+                        column.ColumnName = dbField.m_logFld;
+                        column.Source = "CustomExpression";
+                    }
+                    else if (dbField is Orm.DbField)
+                    {
+                        column.ColumnName = dbField.m_logFld;
+                        column.Source = dbField.m_idxTable.Tcaz;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format(Exceptions.NotRecognizeTypeField, dbField.GetType()));
+                    }
+
                 }
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
 
@@ -98,7 +126,19 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     var column = sortColumns[i];
                     var dbField = dbFields[index++];
-                    var encodeColumn = this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, dbField.m_logFld);
+                    var encodeColumn = "";
+                    if (dbField is Orm.DbExpressionField)
+                    {
+                        encodeColumn = this._syntax.EncodeFieldName(column.Column.Alias);
+                    }
+                    else if (dbField is Orm.DbField)
+                    {
+                         encodeColumn = this._syntax.EncodeFieldName(dbField.m_idxTable.Tcaz, dbField.m_logFld);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format(Exceptions.NotRecognizeTypeField, dbField.GetType()));
+                    }
                     orderByColumns[i] = _syntax.SortedColumn(encodeColumn, column.Direction);
                 }
 

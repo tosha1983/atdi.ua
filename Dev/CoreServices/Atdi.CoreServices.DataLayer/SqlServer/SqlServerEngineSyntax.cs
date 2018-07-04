@@ -49,6 +49,11 @@ namespace Atdi.CoreServices.DataLayer
             return $"[{name}]";
         }
 
+        public string EncodeFieldNameExpression(string name)
+        {
+            return $"{name}"; 
+        }
+
         public string EncodeFieldName(string source, string name)
         {
             return $"[{source}].[{name}]";

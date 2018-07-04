@@ -30,40 +30,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             return this.m_logTab;
         }
 
-        private static string GetAliasMainTable(string expression, string nameTable)
-        {
-            int ident = -1;
-            string value = expression;
-            int idx = value.IndexOf(nameTable);
 
-            if (idx != -1)
-            {
-                value = value.Substring(idx + nameTable.Length, value.Length - (idx + nameTable.Length));
-            }
-            var sql = new StringBuilder();
-            bool start = false;
-            foreach (var symbol in value)
-            {
-                if ((start == true) && ((symbol == ' ') || (symbol == '\t')))
-                    break;
-
-                if ((symbol == ' ') || (symbol == '\t') && (start == false))
-                {
-                    ++ident;
-                }
-                else
-                {
-                    start = true;
-                    sql.Append(symbol);
-                }
-            }
-
-            if (sql.Length == 0)
-            {
-                throw new InvalidOperationException(Exceptions.NotRecognizeAlias.With(expression));
-            }
-            return sql.ToString();
-        }
 
         public void AddFldsInExpression(SchemasMetadata schemasMetadata, string Tcaz)
         {
@@ -107,6 +74,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
                     }
                     else
                     {
+
                         var ormTable = schemasMetadata.GetTableByName(this.m_logTab);
                         string fldPath = this.m_expression.Substring(i + 1, num2 - i - 1);
                         Field ormItem = ormTable.Field(fldPath);

@@ -38,6 +38,7 @@ namespace Atdi.CoreServices.Identity
     {
         public static readonly ExceptionText NotFoundUser = "Not found user with name '{0}'";
         public static readonly ExceptionText InvalidUserPassword = "Invalid password for user with name '{0}'";
+        public static readonly ExceptionText InvalidKey = "The key to using the product is missing or invalid";
     }
 
 }
