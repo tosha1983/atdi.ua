@@ -20,7 +20,6 @@ namespace Atdi.LegacyServices.Icsm.Orm
         private readonly Dictionary<string, Table> _tables;
         private readonly List<Table> _tablesList;
         private readonly Dictionary<string, DataDesc> _dataDescs;
-        private List<QuerySelectStatement.ColumnDescriptor> _expressColumns;
 
 
 
@@ -32,7 +31,6 @@ namespace Atdi.LegacyServices.Icsm.Orm
         public SchemasMetadata(SchemasMetadataConfig config)
         {
             this._config = config ?? throw new ArgumentNullException(nameof(config));
-            this._expressColumns = new List<QuerySelectStatement.ColumnDescriptor>();
 
             this._singlePosEqpAnt = (config.Edition == "Developer1" || config.Edition == "Standard1");
             this._hasSemant = false;
@@ -813,7 +811,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
         public string BuildJoinStatement(IDataEngine config, QuerySelectStatement statement, string[] fieldPaths, out DbField[] selectedFields) // DBMS dbms, string quoteColumn)
         {
             var schemaPrefix = this._config.SchemaPrefix + ".";
-            this._expressColumns = statement.Table.Columns.ToList().FindAll(z => !string.IsNullOrEmpty(z.Value.Expression)).Select(t => t.Value).ToList();
+            var expressColumns = statement.Table.Columns.ToList().FindAll(z => !string.IsNullOrEmpty(z.Value.Expression)).Select(t => t.Value).ToList();
+            //this._expressColumns = statement.Table.Columns.ToList().FindAll(z => !string.IsNullOrEmpty(z.Value.Expression)).Select(t => t.Value).ToList();
             this._configDataEngine = config;
             var dbTables = new Dictionary<string, DbTable>();
             var dbJoines = new List<DbJoin>();
@@ -825,7 +824,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             {
                 var fieldPath = fieldPaths[i];
 
-                var dbField = this.AddField(statement.Table.Name, fieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+                var dbField = this.AddField(statement.Table.Name, fieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields,expressColumns);
                 dbField.Path = fieldPath;
                 selectedFields[i] = dbField;
             }
@@ -1078,7 +1077,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             return joinSql;
         }
 
-        private DbField AddField(string tableName, string fieldPath, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields)
+        private DbField AddField(string tableName, string fieldPath, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields, List<QuerySelectStatement.ColumnDescriptor> expressColumns=null)
         {
             dbTables.TryGetValue(tableName, out DbTable dbTable);
             var tableName1 = tableName;
@@ -1125,7 +1124,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             if (pos1 < fieldPath.Length)
             {
                 string nextFieldPath = fieldPath.Substring(pos1);
-                return this.AddNextField(tableName1, nextFieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields);
+                return this.AddNextField(tableName1, nextFieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields, expressColumns);
             }
 
             throw new InvalidOperationException($"Incorrect field path '{fieldPath}' for table with name '{tableName}'");
@@ -1267,15 +1266,16 @@ namespace Atdi.LegacyServices.Icsm.Orm
             }
             return false;
         }
-        private DbField AddNextField(string tableName, string fieldPath, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields)
+        private DbField AddNextField(string tableName, string fieldPath, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields, List<QuerySelectStatement.ColumnDescriptor> expressColumns=null)
         {
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
             var name = this.UnaliasTable(tableName, dbTables);
+            if (expressColumns == null) expressColumns = new List<QuerySelectStatement.ColumnDescriptor>();
 
-            QuerySelectStatement.ColumnDescriptor descriptExpress = this._expressColumns.Find(t => t.Name == fieldPath);
+            QuerySelectStatement.ColumnDescriptor descriptExpress = expressColumns.Find(t => t.Name == fieldPath);
             var ormTable = this.GetTableByName(name);
             var ormField = (ormTable == null) ? null : ormTable.Field(fieldPath);
             if (descriptExpress != null) ormField = (ormTable == null) ? null : ormTable.Field("CustomExpression");

@@ -264,8 +264,8 @@ new OrderExpression { ColumnName = "CustomExpression", OrderType = OrderType.Des
                          Condition = new ConditionExpression // указываем условие выборки
                         {
                             LeftOperand = new ColumnOperand { ColumnName = "CustomExpression" },
-                            Operator = ConditionOperator.GreaterThan,
-                            RightOperand = new IntegerValueOperand { Value = 1243 }
+                            Operator = ConditionOperator.GreaterEqual,
+                            RightOperand = new  IntegerValueOperand { Value = 122583 }
                         },
                         
 
