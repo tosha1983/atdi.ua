@@ -228,6 +228,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
                     return "Unknown";
             }
         }
+
         private void WriteEventDebugInfo(IDebugEvent @event)
         {
             if (@event.Data == null)
@@ -288,7 +289,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             if (!string.IsNullOrEmpty(exception.StackTrace))
             {
                 this.WriteLine($" -- Stack begin --", propColor);
-                this.WriteLine(exception.StackTrace);
+                this.WriteLine(exception.StackTrace.Replace(Environment.NewLine, Environment.NewLine + _offset));
                 this.WriteLine(" -- Satck end --", propColor);
             }
 

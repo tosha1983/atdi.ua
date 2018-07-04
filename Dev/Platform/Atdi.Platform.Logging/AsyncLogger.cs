@@ -24,8 +24,7 @@ namespace Atdi.Platform.Logging
 
         public AsyncLogger(ILogConfig config, IEventDataConvertor dataConvertor)
         {
-            Console.WriteLine("AsyncLogger");
-
+            
             this._config = config;
             this._dataConvertor = dataConvertor;
 

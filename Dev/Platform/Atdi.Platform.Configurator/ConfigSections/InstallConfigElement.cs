@@ -9,7 +9,7 @@ namespace Atdi.Platform.ConfigElements
 {
     public class InstallConfigElement : ConfigurationElement
     {
-        [ConfigurationProperty("type", DefaultValue = "", IsKey = true, IsRequired = true)]
+        [ConfigurationProperty("type", DefaultValue = "", IsKey = false, IsRequired = true)]
         public string TypeProperty
         {
             get => (string)base["type"];

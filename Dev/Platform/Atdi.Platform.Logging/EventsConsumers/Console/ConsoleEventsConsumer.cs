@@ -25,8 +25,8 @@ namespace Atdi.Platform.Logging.EventsConsumers
             if (events == null || events.Length == 0 || this._consoleWriter == null)
                 return;
 
-            lock (this._locker)
-            {
+            //lock (this._locker)
+            //{
                 var start = 0;
                 var end = events.Length;
 
@@ -47,7 +47,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 {
                     this._consoleWriter.Write(events[i]);
                 }
-            }
+            //}
         }
     }
 }

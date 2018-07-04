@@ -17,7 +17,9 @@ namespace Atdi.Platform.ConfigElements
 
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((InstallConfigElement)element).TypeProperty;
+            //return ((InstallConfigElement)element).TypeProperty;
+
+            return element.GetHashCode();
         }
 
     }

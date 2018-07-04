@@ -10,7 +10,7 @@ namespace Atdi.Platform
     {
         public DefaultResourceResolver()
         {
-            Console.WriteLine("DefaultResourceResolver");
+            
         }
 
       

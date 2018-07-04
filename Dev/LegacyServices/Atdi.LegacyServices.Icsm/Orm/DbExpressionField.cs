@@ -41,7 +41,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             this.m_fmt = "";
             this.m_items = new List<Field>();
             this.m_nItems = 0;
-            bool needRetrieve = false;
+           // bool needRetrieve = false;
             int i = 0;
             int num = i;
             bool flag = false;
