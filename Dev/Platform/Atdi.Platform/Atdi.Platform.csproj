@@ -66,6 +66,7 @@
     <Compile Include="IPlatformInstaller.cs" />
     <Compile Include="IResourceResolver.cs" />
     <Compile Include="ITypeResolver.cs" />
+    <Compile Include="Logging\IEventFormatter.cs" />
     <Compile Include="Logging\IConsoleEventWriter.cs" />
     <Compile Include="Logging\ILogConfig.cs" />
     <Compile Include="Logging\IEventsConsumer.cs" />

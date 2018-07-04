@@ -42,10 +42,15 @@
   <ItemGroup>
     <Compile Include="AsyncLogger.cs" />
     <Compile Include="DataConvertors\SimpleDataConvertor.cs" />
+    <Compile Include="EventsConsumers\EventsConsumerConfig.cs" />
     <Compile Include="EventsConsumers\Console\ColorConsoleEventWriter.cs" />
     <Compile Include="EventsConsumers\Console\ConsoleEventsConsumer.cs" />
     <Compile Include="EventsConsumers\Console\ConsoleEventsConsumerConfig.cs" />
     <Compile Include="EventsConsumers\Console\ConsoleEventsConsumerInstaller.cs" />
+    <Compile Include="EventsConsumers\File\FileEventFormatter.cs" />
+    <Compile Include="EventsConsumers\File\FileEventsConsumer.cs" />
+    <Compile Include="EventsConsumers\File\FileEventsConsumerConfig.cs" />
+    <Compile Include="EventsConsumers\File\FileEventsConsumerInstaller.cs" />
     <Compile Include="Events\BeginTraceEvent.cs" />
     <Compile Include="Events\CriticalEvent.cs" />
     <Compile Include="Events\DebugEvent.cs" />
