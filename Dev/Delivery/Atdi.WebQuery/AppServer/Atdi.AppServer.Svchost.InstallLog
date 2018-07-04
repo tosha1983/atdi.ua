@@ -1,0 +1,48 @@
+﻿Выполняется установка сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog
+Устанавливается служба Atdi.AppServer...
+Служба Atdi.AppServer успешно установлена.
+Создается исходный EventLog Atdi.AppServer в журнале Application...
+Выполняется фиксация сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog
+Выполняется установка сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog
+Устанавливается служба Atdi.AppServer...
+Создается исходный EventLog Atdi.AppServer в журнале Application...
+Выполняется откат для сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog
+Восстанавливается исходное состояние журнала событий для источника Atdi.AppServer.
+Выполняется удаление сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog
+Выполняется удаление источника EventLog Atdi.AppServer.
+Выполняется удаление службы Atdi.AppServer из системы...
+Служба Atdi.AppServer успешно удалена из системы.
+Попытка останова службы Atdi.AppServer.
+Выполняется установка сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog
+Устанавливается служба Atdi.AppServer...
+Служба Atdi.AppServer успешно установлена.
+Создается исходный EventLog Atdi.AppServer в журнале Application...
+Выполняется фиксация сборки 'C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.exe
+   logfile = C:\Projects\Repos\atdi.ua\Dev\Delivery\Atdi.WebQuery\AppServer\Atdi.AppServer.Svchost.InstallLog

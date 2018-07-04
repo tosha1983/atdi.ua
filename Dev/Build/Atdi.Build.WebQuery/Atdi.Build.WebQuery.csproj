@@ -122,6 +122,10 @@
       <Project>{c9d6ed82-abf9-4585-aa7c-b49fe0bf8eb9}</Project>
       <Name>Atdi.AppServer.Svchost</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\IcsmPlugins\Plugin WebQuery\WebQuery.csproj">
+      <Project>{eb0f1fd2-c50b-4c57-a669-47a6fb718cce}</Project>
+      <Name>WebQuery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\LegacyServices\Atdi.LegacyServices.Icsm\Atdi.LegacyServices.Icsm.csproj">
       <Project>{b06cf99e-314f-485b-9e0d-5289147d5552}</Project>
       <Name>Atdi.LegacyServices.Icsm</Name>
@@ -172,11 +176,15 @@
     <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)Dll\netkey.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
 
 copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
 copy "$(TargetDir)Atdi.DataModels.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
 copy "$(TargetDir)Atdi.DataModels.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
 copy "$(TargetDir)Atdi.Contracts.WcfServices.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
-copy "$(TargetDir)Atdi.Contracts.WcfServices.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"</PostBuildEvent>
+copy "$(TargetDir)Atdi.Contracts.WcfServices.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
+copy "$(TargetDir)Localization\XICSM_WebQuery_CST.txt" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
+copy "$(TargetDir)Resources\WebQuery.Schema" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
+copy "$(TargetDir)XICSM_WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"</PostBuildEvent>
   </PropertyGroup>
 </Project>
