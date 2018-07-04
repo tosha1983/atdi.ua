@@ -220,7 +220,7 @@ namespace Atdi.AppServices
             }
 
             var result = proxyType.CreateType();
-            dynGeneratorHostAssembly.Save($"{assemblyName}.dll");
+            //dynGeneratorHostAssembly.Save($"{assemblyName}.dll");
 
             return result;
         }
