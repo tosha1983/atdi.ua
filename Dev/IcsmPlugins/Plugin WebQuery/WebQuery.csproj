@@ -54,34 +54,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Datalayer">
-      <HintPath>..\..\..\..\..\..\icsmr\Datalayer.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\ATDI\ICS Manager\Datalayer.dll</HintPath>
     </Reference>
     <Reference Include="DatalayerCs">
-      <HintPath>..\..\..\..\..\..\icsmr\DatalayerCs.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\ATDI\ICS Manager\DatalayerCs.dll</HintPath>
     </Reference>
     <Reference Include="FormsCs">
-      <HintPath>..\..\..\..\..\..\icsmr\FormsCs.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Office.Interop.Outlook, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\ATDI\ICS Manager\FormsCs.dll</HintPath>
     </Reference>
     <Reference Include="NetPlugins">
-      <HintPath>..\..\..\..\..\..\icsmr\NetPlugins.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\ATDI\ICS Manager\NetPlugins.dll</HintPath>
     </Reference>
     <Reference Include="NetPlugins2">
-      <HintPath>..\..\..\..\..\..\icsmr\NetPlugins2.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\ATDI\ICS Manager\NetPlugins2.dll</HintPath>
     </Reference>
     <Reference Include="OrmCs">
-      <HintPath>..\..\..\..\..\..\icsmr\OrmCs.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\ATDI\ICS Manager\OrmCs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
