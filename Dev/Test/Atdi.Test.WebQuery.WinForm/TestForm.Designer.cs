@@ -32,13 +32,9 @@
             this.checkBox_Update = new System.Windows.Forms.CheckBox();
             this.checkBox_Delete = new System.Windows.Forms.CheckBox();
             this.checkBox_ExecuteQueryCustomExpr = new System.Windows.Forms.CheckBox();
-            this.checkBox_Authorization = new System.Windows.Forms.CheckBox();
-            this.checkBox_QueryGroups = new System.Windows.Forms.CheckBox();
-            this.checkBox_QueryMetaData = new System.Windows.Forms.CheckBox();
             this.textBox_countIteration = new System.Windows.Forms.TextBox();
             this.textBox_CountThreads = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.checkBox_ExecQuery = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -50,6 +46,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox_cnt_iteration2 = new System.Windows.Forms.TextBox();
             this.button_run_time = new System.Windows.Forms.Button();
             this.textBox_thread_end = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -57,8 +55,6 @@
             this.textBox_maxcount_record2 = new System.Windows.Forms.TextBox();
             this.textBox_start_thread = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.textBox_cnt_iteration2 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -108,38 +104,6 @@
             this.checkBox_ExecuteQueryCustomExpr.UseVisualStyleBackColor = true;
             this.checkBox_ExecuteQueryCustomExpr.CheckedChanged += new System.EventHandler(this.checkBox_ExecuteQueryCustomExpr_CheckedChanged);
             // 
-            // checkBox_Authorization
-            // 
-            this.checkBox_Authorization.AutoSize = true;
-            this.checkBox_Authorization.Location = new System.Drawing.Point(243, 147);
-            this.checkBox_Authorization.Name = "checkBox_Authorization";
-            this.checkBox_Authorization.Size = new System.Drawing.Size(87, 17);
-            this.checkBox_Authorization.TabIndex = 4;
-            this.checkBox_Authorization.Text = "Authorization";
-            this.checkBox_Authorization.UseVisualStyleBackColor = true;
-            this.checkBox_Authorization.CheckedChanged += new System.EventHandler(this.checkBox_Authorization_CheckedChanged);
-            // 
-            // checkBox_QueryGroups
-            // 
-            this.checkBox_QueryGroups.AutoSize = true;
-            this.checkBox_QueryGroups.Location = new System.Drawing.Point(242, 170);
-            this.checkBox_QueryGroups.Name = "checkBox_QueryGroups";
-            this.checkBox_QueryGroups.Size = new System.Drawing.Size(88, 17);
-            this.checkBox_QueryGroups.TabIndex = 5;
-            this.checkBox_QueryGroups.Text = "QueryGroups";
-            this.checkBox_QueryGroups.UseVisualStyleBackColor = true;
-            // 
-            // checkBox_QueryMetaData
-            // 
-            this.checkBox_QueryMetaData.AutoSize = true;
-            this.checkBox_QueryMetaData.Location = new System.Drawing.Point(242, 193);
-            this.checkBox_QueryMetaData.Name = "checkBox_QueryMetaData";
-            this.checkBox_QueryMetaData.Size = new System.Drawing.Size(101, 17);
-            this.checkBox_QueryMetaData.TabIndex = 6;
-            this.checkBox_QueryMetaData.Text = "QueryMetaData";
-            this.checkBox_QueryMetaData.UseVisualStyleBackColor = true;
-            this.checkBox_QueryMetaData.CheckedChanged += new System.EventHandler(this.checkBox_QueryMetaData_CheckedChanged);
-            // 
             // textBox_countIteration
             // 
             this.textBox_countIteration.Location = new System.Drawing.Point(97, 13);
@@ -154,26 +118,17 @@
             this.textBox_CountThreads.Name = "textBox_CountThreads";
             this.textBox_CountThreads.Size = new System.Drawing.Size(50, 20);
             this.textBox_CountThreads.TabIndex = 10;
-            this.textBox_CountThreads.Text = "16";
+            this.textBox_CountThreads.Text = "10";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(412, 13);
+            this.button1.Location = new System.Drawing.Point(649, 16);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 11;
             this.button1.Text = "Run";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(412, 51);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 12;
-            this.button2.Text = "Clear all";
-            this.button2.UseVisualStyleBackColor = true;
             // 
             // textBox3
             // 
@@ -253,7 +208,7 @@
             this.tabControl1.Location = new System.Drawing.Point(35, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(607, 123);
+            this.tabControl1.Size = new System.Drawing.Size(738, 123);
             this.tabControl1.TabIndex = 23;
             // 
             // tabPage1
@@ -261,7 +216,6 @@
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.textBox_countIteration);
-            this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.textBox_MaxCountRecords);
             this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.textBox_CountThreads);
@@ -269,7 +223,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(599, 97);
+            this.tabPage1.Size = new System.Drawing.Size(730, 97);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Iteration";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -290,14 +244,31 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(599, 97);
+            this.tabPage2.Size = new System.Drawing.Size(730, 97);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Time period";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(147, 16);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(75, 13);
+            this.label8.TabIndex = 31;
+            this.label8.Text = "Count iteration";
+            // 
+            // textBox_cnt_iteration2
+            // 
+            this.textBox_cnt_iteration2.Location = new System.Drawing.Point(238, 13);
+            this.textBox_cnt_iteration2.Name = "textBox_cnt_iteration2";
+            this.textBox_cnt_iteration2.Size = new System.Drawing.Size(100, 20);
+            this.textBox_cnt_iteration2.TabIndex = 30;
+            this.textBox_cnt_iteration2.Text = "100";
+            // 
             // button_run_time
             // 
-            this.button_run_time.Location = new System.Drawing.Point(506, 11);
+            this.button_run_time.Location = new System.Drawing.Point(640, 10);
             this.button_run_time.Name = "button_run_time";
             this.button_run_time.Size = new System.Drawing.Size(75, 23);
             this.button_run_time.TabIndex = 29;
@@ -356,23 +327,6 @@
             this.label6.TabIndex = 24;
             this.label6.Text = "Count threads per operation (Start)";
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(147, 16);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(75, 13);
-            this.label8.TabIndex = 31;
-            this.label8.Text = "Count iteration";
-            // 
-            // textBox_cnt_iteration2
-            // 
-            this.textBox_cnt_iteration2.Location = new System.Drawing.Point(238, 13);
-            this.textBox_cnt_iteration2.Name = "textBox_cnt_iteration2";
-            this.textBox_cnt_iteration2.Size = new System.Drawing.Size(100, 20);
-            this.textBox_cnt_iteration2.TabIndex = 30;
-            this.textBox_cnt_iteration2.Text = "100";
-            // 
             // TestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -381,9 +335,6 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.checkBox_ExecQuery);
             this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.checkBox_QueryMetaData);
-            this.Controls.Add(this.checkBox_QueryGroups);
-            this.Controls.Add(this.checkBox_Authorization);
             this.Controls.Add(this.checkBox_ExecuteQueryCustomExpr);
             this.Controls.Add(this.checkBox_Delete);
             this.Controls.Add(this.checkBox_Update);
@@ -406,13 +357,9 @@
         System.Windows.Forms.CheckBox checkBox_Update;
         System.Windows.Forms.CheckBox checkBox_Delete;
         System.Windows.Forms.CheckBox checkBox_ExecuteQueryCustomExpr;
-        System.Windows.Forms.CheckBox checkBox_Authorization;
-        System.Windows.Forms.CheckBox checkBox_QueryGroups;
-        System.Windows.Forms.CheckBox checkBox_QueryMetaData;
         System.Windows.Forms.TextBox textBox_countIteration;
         System.Windows.Forms.TextBox textBox_CountThreads;
         System.Windows.Forms.Button button1;
-        System.Windows.Forms.Button button2;
         System.Windows.Forms.TextBox textBox3;
         System.Windows.Forms.CheckBox checkBox_ExecQuery;
         private System.Windows.Forms.Label label1;

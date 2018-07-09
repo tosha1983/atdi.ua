@@ -130,6 +130,7 @@ namespace Atdi.Test.WebQuery.WinForm
 
             textBox3.Text += string.Format("Call method GetQueryMetaData (time in milliseconds): {0}", TimeQueryMetaData) + Environment.NewLine;
 
+            tabControl1.TabPages.Remove(tabPage2);
         }
 
 
@@ -734,9 +735,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_Insert.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isInsert = true;
             }
             else isInsert = false;
@@ -748,9 +746,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_Update.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isUpdate = true;
             }
             else isUpdate = false;
@@ -760,9 +755,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_Delete.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isDelete = true;
             }
             else isDelete = false;
@@ -772,9 +764,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_ExecuteQueryCustomExpr.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isSelectWithCustomExpr = true;
             }
             else isSelectWithCustomExpr = false;
@@ -784,9 +773,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_ExecQuery.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isSelectWithoutCustomExpr = true;
             }
             else isSelectWithoutCustomExpr = false;
@@ -808,6 +794,16 @@ namespace Atdi.Test.WebQuery.WinForm
             CntisSelectWithoutCustomExpr = 0;
             textBox3.Text = "";
             StartExecThreadsTimePeriod();
+        }
+
+        private void checkBox_QueryGroups_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
