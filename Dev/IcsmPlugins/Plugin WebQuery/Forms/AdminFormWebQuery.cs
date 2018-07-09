@@ -214,19 +214,23 @@ namespace XICSM.WebQuery
                         MessageBox.Show("Dublicate Name. Please input another Name!");
                         return;
                     }
-                        var rsWebQueryNew = new YXwebquery();
-                        rsWebQueryNew.Format("*");
-                        rsWebQueryNew.New();
-                        int IDs = rsWebQueryNew.AllocID();
-                        rsWebQueryNew.m_id = IDs;
-                        rsWebQueryNew.m_name = textBoxName.Text.Replace("(", "[").Replace(")", "]");
-                        rsWebQueryNew.m_code = textBox_code.Text;
-                        rsWebQueryNew.m_taskforcegroup = comboBox_group.Text;
-                        rsWebQueryNew.m_identuser = txtUserIdent.Text;
-                        rsWebQueryNew.m_comments = textBoxDescrQuery.Text;
-                        rsWebQueryNew.Save();
+                        IMRecordset rsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
+                        rsWebQueryNew.Select("ID,NAME,CODE,TASKFORCEGROUP,IDENTUSER,COMMENTS");
+                    rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, -1);
+                    rsWebQueryNew.Open();
+                    if (rsWebQueryNew.IsEOF())
+                    {
+                        rsWebQueryNew.AddNew();
+                        int IDs = IM.AllocID(ICSMTbl.WebQuery, 1, -1);
+                        rsWebQueryNew.Put("ID", IDs);
+                        rsWebQueryNew.Put("NAME", textBoxName.Text.Replace("(", "[").Replace(")", "]"));
+                        rsWebQueryNew.Put("CODE", textBox_code.Text);
+                        rsWebQueryNew.Put("TASKFORCEGROUP", comboBox_group.Text);
+                        rsWebQueryNew.Put("IDENTUSER", txtUserIdent.Text);
+                        rsWebQueryNew.Put("COMMENTS", textBoxDescrQuery.Text);
+                        rsWebQueryNew.Update();
                         rsWebQueryNew.Close();
-                         rsWebQueryNew.Dispose();
+                        rsWebQueryNew.Destroy();
                         query = textBoxQuery.Text.ToString();
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
@@ -241,23 +245,28 @@ namespace XICSM.WebQuery
                         MessageBox.Show("Record created successfull!", "Warning!");
                         id = IDs;
                         button_Constraints.Enabled = true;
+                    }
                     
                 }
                 else MessageBox.Show("Please input data to field 'Name query'!", "Warning!");
             }
             else  {
-                        var rsWebQuery = new YXwebquery();
-                        rsWebQuery.Format("*");
-                        if (rsWebQuery.Fetch(id)) {
-                        rsWebQuery.m_name = textBoxName.Text.Replace("(", "[").Replace(")", "]");
-                        rsWebQuery.m_code = textBox_code.Text;
-                        rsWebQuery.m_taskforcegroup = comboBox_group.Text;
-                        rsWebQuery.m_identuser = txtUserIdent.Text;
-                        rsWebQuery.m_comments = textBoxDescrQuery.Text;
-                        rsWebQuery.Save();
-                        rsWebQuery.Close();
-                        rsWebQuery.Dispose();
-                        query = textBoxQuery.Text.ToString();
+                IMRecordset rsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
+                rsWebQueryNew.Select("ID,NAME,CODE,TASKFORCEGROUP,IDENTUSER,COMMENTS");
+                rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, id);
+                rsWebQueryNew.Open();
+                if (!rsWebQueryNew.IsEOF())
+                    {
+                    rsWebQueryNew.Edit();
+                    rsWebQueryNew.Put("NAME", textBoxName.Text.Replace("(", "[").Replace(")", "]"));
+                    rsWebQueryNew.Put("CODE", textBox_code.Text);
+                    rsWebQueryNew.Put("TASKFORCEGROUP", comboBox_group.Text);
+                    rsWebQueryNew.Put("IDENTUSER", txtUserIdent.Text);
+                    rsWebQueryNew.Put("COMMENTS", textBoxDescrQuery.Text);
+                    rsWebQueryNew.Update();
+                    rsWebQueryNew.Close();
+                    rsWebQueryNew.Destroy();
+                    query = textBoxQuery.Text.ToString();
                         byte[] cipherText = UTF8Encoding.UTF8.GetBytes(textBoxQuery.Text.ToString());
                         string sql; ANetDb d; ANetNQ nq = null;
                         IMTransaction.Begin();
