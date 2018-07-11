@@ -59,7 +59,7 @@ namespace Atdi.CoreServices.Identity
 
             string dateFormat = DateTime.Now.ToString("MMM dd yyyy", CultureInfo.CreateSpecificCulture("en-US"));
             int val = _netKey.GetTokenValue("ICS Manager", dateFormat);
-            if (val == 0)
+            if (val <= 0)
             {
                 throw new InvalidOperationException(Exceptions.InvalidKey);
             }

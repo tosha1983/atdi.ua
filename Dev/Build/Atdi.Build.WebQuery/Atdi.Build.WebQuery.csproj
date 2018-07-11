@@ -177,6 +177,13 @@
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
 copy "$(TargetDir)Dll\netkey.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\System.Net.Http.Formatting.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\System.Web.Http.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\System.Web.Http.SelfHost.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
 
 copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
 copy "$(TargetDir)Atdi.DataModels.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
