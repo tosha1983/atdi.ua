@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.atdi.com/appserver/services/Indentity" elementFormDefault="qualified" targetNamespace="http://schemas.atdi.com/appserver/services/Indentity" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?xsd=xsd2" namespace="http://schemas.atdi.com/appserver/services" />
+  <xs:element name="AuthenticateUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.atdi.com/appserver/services" minOccurs="0" name="credential" nillable="true" type="q1:UserCredential" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AuthenticateUserResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.atdi.com/appserver/services" minOccurs="0" name="AuthenticateUserResult" nillable="true" type="q2:ResultOfUserIdentityPRoijPX3" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

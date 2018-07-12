@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/System" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfNullableOfboolean">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="boolean" nillable="true" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfboolean" nillable="true" type="tns:ArrayOfNullableOfboolean" />
+  <xs:complexType name="ArrayOfNullableOfint">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="int" nillable="true" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfint" nillable="true" type="tns:ArrayOfNullableOfint" />
+  <xs:complexType name="ArrayOfNullableOfdateTime">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="dateTime" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfdateTime" nillable="true" type="tns:ArrayOfNullableOfdateTime" />
+  <xs:complexType name="ArrayOfNullableOffloat">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="float" nillable="true" type="xs:float" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOffloat" nillable="true" type="tns:ArrayOfNullableOffloat" />
+  <xs:complexType name="ArrayOfNullableOfdouble">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="double" nillable="true" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfdouble" nillable="true" type="tns:ArrayOfNullableOfdouble" />
+  <xs:complexType name="ArrayOfNullableOfdecimal">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="decimal" nillable="true" type="xs:decimal" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfdecimal" nillable="true" type="tns:ArrayOfNullableOfdecimal" />
+  <xs:complexType name="ArrayOfNullableOfunsignedByte">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="unsignedByte" nillable="true" type="xs:unsignedByte" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfunsignedByte" nillable="true" type="tns:ArrayOfNullableOfunsignedByte" />
+  <xs:complexType name="ArrayOfNullableOfguid">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="guid" nillable="true" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNullableOfguid" nillable="true" type="tns:ArrayOfNullableOfguid" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfboolean">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfboolean" nillable="true" type="tns:ArrayOfNullableOfboolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfboolean" nillable="true" type="tns:ArrayOfArrayOfNullableOfboolean" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfunsignedByte">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfunsignedByte" nillable="true" type="tns:ArrayOfNullableOfunsignedByte" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfunsignedByte" nillable="true" type="tns:ArrayOfArrayOfNullableOfunsignedByte" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfdateTime">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfdateTime" nillable="true" type="tns:ArrayOfNullableOfdateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfdateTime" nillable="true" type="tns:ArrayOfArrayOfNullableOfdateTime" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfdecimal">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfdecimal" nillable="true" type="tns:ArrayOfNullableOfdecimal" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfdecimal" nillable="true" type="tns:ArrayOfArrayOfNullableOfdecimal" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfdouble">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfdouble" nillable="true" type="tns:ArrayOfNullableOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfdouble" nillable="true" type="tns:ArrayOfArrayOfNullableOfdouble" />
+  <xs:complexType name="ArrayOfArrayOfNullableOffloat">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOffloat" nillable="true" type="tns:ArrayOfNullableOffloat" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOffloat" nillable="true" type="tns:ArrayOfArrayOfNullableOffloat" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfguid">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfguid" nillable="true" type="tns:ArrayOfNullableOfguid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfguid" nillable="true" type="tns:ArrayOfArrayOfNullableOfguid" />
+  <xs:complexType name="ArrayOfArrayOfNullableOfint">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfNullableOfint" nillable="true" type="tns:ArrayOfNullableOfint" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArrayOfNullableOfint" nillable="true" type="tns:ArrayOfArrayOfNullableOfint" />
+</xs:schema>
