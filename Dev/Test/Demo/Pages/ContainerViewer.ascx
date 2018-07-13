@@ -72,7 +72,7 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
             </asp:Panel>
 
     
-        <asp:Panel ID="pnlpopup" runat="server" BackColor="White" Height="80%" GroupingText="Langų Redaguoti Įrašų"
+        <asp:Panel ID="pnlpopup" runat="server" BackColor="White" Height="80%" GroupingText="Редагування елементів вікна"
             Width="1000px" Style="z-index: 111; background-color: White; position: absolute; left: 15%; top: 12%; border: outset 2px gray; padding: 1px; display: none"
             ScrollBars="Vertical">
             <asp:Panel ID="pnlpopup_detail" runat="server" BorderStyle="Dotted" BorderWidth="1">
@@ -93,9 +93,9 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
                 <asp:Table ID="Table2" runat="server" Width="100%">
                     <asp:TableRow ID="TableRow3" runat="server">
                         <asp:TableCell ID="TableCell3" runat="server" Width="100%">
-                            <asp:Panel ID="PanelWebQuestion" runat="server" GroupingText="Jūsų komentaras" HorizontalAlign="Center" Visible="false" Width="100%">
+                            <asp:Panel ID="PanelWebQuestion" runat="server" GroupingText="Ваш коментар" HorizontalAlign="Center" Visible="false" Width="100%">
                                 <asp:TextBox runat="server" ID="WebQuestion" Width="100%" Height="200" TextMode="MultiLine"  Enabled="true"> </asp:TextBox>
-                                <asp:Button ID="SaveWebQuestion" runat="server" CommandName="UpdateQuestion" Text="Pateikti komentarą" OnClick="SaveWebQuestion_Click"/>
+                                <asp:Button ID="SaveWebQuestion" runat="server" CommandName="UpdateQuestion" Text="Надіслати коментар" OnClick="SaveWebQuestion_Click"/>
                             </asp:Panel>
                         </asp:TableCell>
                     </asp:TableRow>
@@ -106,7 +106,7 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
                 <asp:Table ID="Table3" runat="server" Width="100%">
                     <asp:TableRow ID="TableRow4" runat="server">
                         <asp:TableCell ID="TableCell2" runat="server" Width="100%">
-                            <asp:Panel ID="PanelAnswer" runat="server" GroupingText="Kiti duomenys" Width="100%" HorizontalAlign="Center" Visible="false" >
+                            <asp:Panel ID="PanelAnswer" runat="server" GroupingText="Інші деталі" Width="100%" HorizontalAlign="Center" Visible="false" >
                                 <asp:Label ID="Label1" runat="server">Klausimo data</asp:Label><br>
                                 <asp:TextBox ID="DateQuestionOut" runat="server" Width="100%"></asp:TextBox>
                                 <asp:Label ID="Label2" runat="server">Komentarą pateikęs asmuo</asp:Label><br>
@@ -129,8 +129,8 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
                 <asp:Label ID="LabelConstraints"  ForeColor="#ff661c"  runat="server"/>
             </asp:Panel>
             <asp:Panel ID="PanelSave" runat="server" BorderWidth="1">
-                <asp:Button ID="btnUpdate" CommandName="Update" runat="server" Text="Gerai" OnClick="btnUpdate_Click" ValidationGroup="FindGroupEx" />
-                <input type="button" class="btnClose" value="Atšaukti" />
+                <asp:Button ID="btnUpdate" CommandName="Update" runat="server" Text="Так" OnClick="btnUpdate_Click" ValidationGroup="FindGroupEx" />
+                <input type="button" class="btnClose" value="Скасувати" />
             </asp:Panel>
         </asp:Panel>
         
@@ -142,12 +142,12 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
             <Columns>
                 <asp:TemplateField ItemStyle-Width="1px">
                     <ItemTemplate>
-                        <asp:Button ID="ButtonLink" runat="server" ButtonType="Link" CommandName="Approval" Text="Redaguoti įrašas" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="showProgress();"  ValidationGroup="FindGroupEx" />
+                        <asp:Button ID="ButtonLink" runat="server" ButtonType="Link" CommandName="Approval" Text="Редагувати публікацію" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="showProgress();"  ValidationGroup="FindGroupEx" />
                        </ItemTemplate>
                 </asp:TemplateField>
                     <asp:TemplateField ItemStyle-Width="1px">
                         <ItemTemplate>
-                            <asp:Button ID="ButtonDelete" runat="server" ButtonType="Link" CommandName="DeleteApproval" Text="Išbraukti" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick= "javascript: ConfirmDelete(this.name);return false;"  ValidationGroup="FindGroupEx" Visible="false" />
+                            <asp:Button ID="ButtonDelete" runat="server" ButtonType="Link" CommandName="DeleteApproval" Text="Видалити" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick= "javascript: ConfirmDelete(this.name);return false;"  ValidationGroup="FindGroupEx" Visible="false" />
                         </ItemTemplate>
                     </asp:TemplateField>
             </Columns>
@@ -156,7 +156,7 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
 
             <FooterStyle BackColor="White" ForeColor="#000066" />
             <HeaderStyle BackColor="#006699" Font-Bold="True" ForeColor="White" />
-            <PagerSettings FirstPageText="Pirmas" LastPageText="Paskutinis" PageButtonCount="7" Mode="NumericFirstLast" />
+            <PagerSettings FirstPageText="Перший" LastPageText="Останній" PageButtonCount="7" Mode="NumericFirstLast" />
             <PagerStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left" />
             <RowStyle ForeColor="#000066" />
             <SelectedRowStyle BackColor="#669999" Font-Bold="True" ForeColor="White" />

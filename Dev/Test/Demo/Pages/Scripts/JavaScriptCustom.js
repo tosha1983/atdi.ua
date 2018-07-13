@@ -24,7 +24,7 @@ window.alert = function ConfirmDialog(message) {
                         width: 400,
                         modal: true,
                         buttons: {
-                            "Taip": function () {
+                            "Так": function () {
                                 $(this).dialog("close");
                             }
                         },
@@ -44,7 +44,7 @@ function ConfirmDialogDelete(message, UniqueID) {
                         width: 400,
                         modal: true,
                         buttons: {
-                            "Taip": function () {
+                            "Так": function () {
                                 var confirm_value_delete = document.createElement("INPUT");
                                 confirm_value_delete.type = "hidden";
                                 confirm_value_delete.name = "confirm_value_delete";
@@ -53,7 +53,7 @@ function ConfirmDialogDelete(message, UniqueID) {
                                 __doPostBack(UniqueID, 'OnClick');
                                 $(this).dialog("close");
                             },
-                            "Atšaukti": function () {
+                            "Скасувати": function () {
                                 $(this).dialog("close");
                             }
                         },
@@ -89,7 +89,7 @@ function ConfirmSave() {
        }
 
 function ConfirmDelete(UniqueID) {
-    ConfirmDialogDelete("Ar norite pašalinti duomenis?", UniqueID);
+    ConfirmDialogDelete("Ви хочете видалити запис?", UniqueID);
 }
 
 function ConfirmNew() {

@@ -145,10 +145,10 @@ namespace OnlinePortal
         public void UpdatePanel1_Load(object sender, EventArgs e)
         {
             if (Session["AuthUser"] != null) {
-                ButtonLogin.Text = "Išeiti";
+                ButtonLogin.Text = "Вихід";
             }
             else {
-                ButtonLogin.Text = "Prisijungti";
+                ButtonLogin.Text = "Авторизуватися";
             }
             
         }

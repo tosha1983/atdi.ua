@@ -16,7 +16,7 @@
             <asp:Table ID="Table1" runat="server" Width="100%">
                 <asp:TableRow>
                     <asp:TableCell Width="245px" >
-           <asp:Panel ID="Panel2" runat="server" GroupingText="Meniu">
+           <asp:Panel ID="Panel2" runat="server" GroupingText="Меню">
               
 
 
@@ -29,7 +29,7 @@
                 <asp:TableCell Width="100%"  HorizontalAlign="Center">
                     <asp:Panel ID="Panel3" runat="server">
                         <asp:Label ID="Label1" runat="server" Text="Label">
-                           <h1> Sveiki atvykę į Ryšių tarnybos Lietuvoje - dažnių spektro valdymo portale!  </h1>
+                           <h1>  Портал управління частотним спектром! </h1>
                         </asp:Label>
                     </asp:Panel>
                </asp:TableCell>
@@ -44,7 +44,7 @@
     </asp:Panel>
 
     <asp:Panel ID="PanelWelcome" runat="server">
-            <h1 runat="server" align="center"> Dažnių spektro valdymo portalas. Prašome leisti!</h1>
+            <h1 runat="server" align="center"> Портал управління частотним спектром</h1>
         </asp:Panel>
 
 </asp:Content>

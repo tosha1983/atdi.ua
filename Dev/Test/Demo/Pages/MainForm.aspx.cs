@@ -351,7 +351,7 @@ namespace OnlinePortal
         /// <returns></returns>
         public string GetStructTreeView(string Type_Cont)
         {
-            string Struct = "Paieškos sritis: ";
+            string Struct = "Область пошуку: ";
             List<string> LstItemTreeView = new List<string>();
             TreeNode node = TreeViewMenu.SelectedNode;
             while (node.Parent != null) {

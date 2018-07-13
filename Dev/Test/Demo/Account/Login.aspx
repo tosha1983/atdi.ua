@@ -6,9 +6,9 @@
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <h2>
-        Prisijungimas</h2>
+        Вхід</h2>
     <p>
-        Įveskite savo vartotojo vardą ir slaptažodį.
+        Введіть  ім'я користувача та пароль.
     </p>
     <asp:Login ID="LoginUser" runat="server" EnableViewState="false" 
         RenderOuterTable="false" OnAuthenticate="LoginUser_Authenticate" >
@@ -19,28 +19,28 @@
             <div class="accountInfo">
 
                 <fieldset class="login">
-                    <legend>Prisijungimo informacija</legend>
+                    <legend>Інформація для авторизації</legend>
                     <p>
-                        <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Width="120px">Vartotojo vardas:</asp:Label>
+                        <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Width="120px">Ім'я користувача:</asp:Label>
                         <asp:TextBox ID="UserName" runat="server" CssClass="textEntry"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" ControlToValidate="UserName" 
-                             CssClass="failureNotification" ErrorMessage="Lauko ''Vartotojo vardas'' yra pasirinktinai." ToolTip="Lauko ''Vartotojo vardas'' yra pasirinktinai." 
+                             CssClass="failureNotification" ErrorMessage="Поле «Ім'я користувача» обов'язкове." ToolTip="Поле «Ім'я користувача» обов'язкове." 
                              ValidationGroup="LoginUserValidationGroup">*</asp:RequiredFieldValidator>
                     </p>
                     <p>
-                        <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password">Slaptažodis:</asp:Label>
+                        <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password">Пароль:</asp:Label>
                         <asp:TextBox ID="Password" runat="server" CssClass="passwordEntry" TextMode="Password"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password" 
-                             CssClass="failureNotification" ErrorMessage="Lauko ''Slaptažodis'' yra pasirinktinai." ToolTip="Lauko ''Slaptažodis''  yra pasirinktinai." 
+                             CssClass="failureNotification" ErrorMessage="Поле «Пароль» обов'язкове." ToolTip="Поле «Пароль» обов'язкове." 
                              ValidationGroup="LoginUserValidationGroup">*</asp:RequiredFieldValidator>
                     </p>
                     <p>
                         <asp:CheckBox ID="RememberMe" runat="server"/>
-                        <asp:Label ID="RememberMeLabel" runat="server" AssociatedControlID="RememberMe" CssClass="inline">Išsaugoti prisijungimo parametrus</asp:Label>
+                        <asp:Label ID="RememberMeLabel" runat="server" AssociatedControlID="RememberMe" CssClass="inline">Зберегти параметри авторизації</asp:Label>
                     </p>
                 </fieldset>
                 <p class="submitButton">
-                    <asp:Button ID="LoginButton" runat="server" CommandName="Login" Text="Prisijungti" ValidationGroup="LoginUserValidationGroup" />
+                    <asp:Button ID="LoginButton" runat="server" CommandName="Login" Text="Вхід" ValidationGroup="LoginUserValidationGroup" />
                 </p>
             </div>
         </LayoutTemplate>

@@ -140,7 +140,7 @@ border: outset 2px gray;padding:1px;display:none" HorizontalAlign="Center" Visib
     <div style ="height:411px; width:auto; height:auto; overflow:auto;" runat="server">
 
 
-<asp:Panel ID="pnlpopup" runat="server"  BackColor="White" Height="80%" GroupingText="Įrašo redagavimo langas"
+<asp:Panel ID="pnlpopup" runat="server"  BackColor="White" Height="80%" GroupingText="Вікно редагування"
             Width="800px" Style="z-index:111;background-color: White; position: absolute; left: 15%; top: 12%; 
 border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
     <asp:Panel ID="pnlpopup_detail" runat="server"  BorderStyle="Dotted" BorderWidth="1" >
@@ -161,7 +161,7 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
 
     </asp:Panel>   
                         
-    <asp:Panel ID="PanelAdditional" runat="server"  BorderStyle="Dotted" BorderWidth="1" GroupingText="Papildomi privalomi laukai">
+    <asp:Panel ID="PanelAdditional" runat="server"  BorderStyle="Dotted" BorderWidth="1" GroupingText="Додаткові обов'язкові поля">
      <asp:Table ID="Table3" runat ="server" Width="80%">
             <asp:TableRow ID="TableRow2" runat ="server" >
                  <asp:TableCell ID="TableCell4" runat="server" Width="50%">
@@ -175,8 +175,8 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
         </asp:Panel>
 
      <asp:Panel ID="PanelSave" runat="server" BorderWidth="1" >
-         <asp:Button ID="btnUpdate" CommandName="Update" runat="server" Text="Atnaujinimas" OnClick="btnUpdate_Click" />
-                        <input type="button" class="btnClose" value="Atšaukti" />
+         <asp:Button ID="btnUpdate" CommandName="Update" runat="server" Text="Оновлення" OnClick="btnUpdate_Click" />
+                        <input type="button" class="btnClose" value="Скасувати" />
          </asp:Panel>
 
         </asp:Panel>
@@ -190,7 +190,7 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
             <asp:Table ID="Table1" runat="server" Width="100%">
                 <asp:TableRow VerticalAlign="Top">
                     <asp:TableCell Width="20%"  VerticalAlign="Top">
-           <asp:Panel ID="Panel2" runat="server" GroupingText="Meniu" ScrollBars="Auto">
+           <asp:Panel ID="Panel2" runat="server" GroupingText="Меню" ScrollBars="Auto">
         
 
                <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
@@ -211,13 +211,13 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
             </asp:TableCell>
               
                      <asp:TableCell Width="80%"  HorizontalAlign="Left" runat="server" >
-                       <asp:Label  ID="ViewFind"  Text="Rodyti paieškos langelį.(Prašome spausti ČIA)" runat="server" BackColor="#ccccff" CssClass="cpHeader" ></asp:Label>
+                       <asp:Label  ID="ViewFind"  Text="Показати вікно пошуку. (Будь-ласка, натисніть тут.)" runat="server" BackColor="#ccccff" CssClass="cpHeader" ></asp:Label>
                         <asp:Table ID="Table2" runat="server" Width="100%">
 
                                      <asp:TableRow ID="TableRow4" HorizontalAlign="Left" runat="server">
                             <asp:TableCell ID="TableCell3"  HorizontalAlign="Justify" runat="server">
                                 <asp:Panel runat="server" ID="Panel1"  GroupingText="" Visible="true" Height="95%" >
-                                    <asp:Label Width="100%" runat="server" Font-Bold="true" ID="Comments_Request1" Text="Komentarai:"></asp:Label>
+                                    <asp:Label Width="100%" runat="server" Font-Bold="true" ID="Comments_Request1" Text="Коментар:"></asp:Label>
                                     <asp:Label Width="100%" runat="server" ID="Comments_Request2" Text=""></asp:Label>
                                       
                                     </asp:Panel>
@@ -248,8 +248,8 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
                         </asp:TableRow>
                         <asp:TableRow HorizontalAlign="Center">
                             <asp:TableCell HorizontalAlign="Center">
-                                <asp:Panel runat="server" ID="PanelCreateStation" GroupingText="Naujo įrašo kūrimo skyrius" HorizontalAlign="Left" Visible="true">
-                                    <asp:Button ID="BtnCreateStation" runat="server" Text="Sukurti naują įrašą" Width="30%" OnClick="BtnCreateStation_Click" Enabled="true" OnClientClick="showProgress();" ValidationGroup="FindGroupEx"/>
+                                <asp:Panel runat="server" ID="PanelCreateStation" GroupingText="Розділ створення нової публікації" HorizontalAlign="Left" Visible="true">
+                                    <asp:Button ID="BtnCreateStation" runat="server" Text="Створити нову публікацію" Width="30%" OnClick="BtnCreateStation_Click" Enabled="true" OnClientClick="showProgress();" ValidationGroup="FindGroupEx"/>
                                     
                                 </asp:Panel>
                             </asp:TableCell>
@@ -257,7 +257,7 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
 
                        <asp:TableRow HorizontalAlign="Center">
                             <asp:TableCell HorizontalAlign="Center">
-                                <asp:Panel runat="server" ID="PanelDownloadDocs" GroupingText="Parsisiųsti skyrius dokumentai" HorizontalAlign="Left" Visible="false">
+                                <asp:Panel runat="server" ID="PanelDownloadDocs" GroupingText="Розділ завантаження документації" HorizontalAlign="Left" Visible="false">
                                     
                                 </asp:Panel>
                             </asp:TableCell>
@@ -266,7 +266,7 @@ border: outset 2px gray;padding:1px;display:none" ScrollBars="Vertical">
                             
                          <asp:TableRow HorizontalAlign="Left" runat="server">
                             <asp:TableCell  HorizontalAlign="Left" runat="server">
-                                <asp:Panel runat="server" ID="PanelViewer" GroupingText="Rodinys" Visible="true" Height="95%" >
+                                <asp:Panel runat="server" ID="PanelViewer" GroupingText="Вид" Visible="true" Height="95%" >
                                          <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1" >
                    <ProgressTemplate>
                        <img alt="" src="../Images/loading.gif" runat="server"/> 

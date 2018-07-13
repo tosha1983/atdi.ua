@@ -107,7 +107,7 @@
                                 <div>
                                     <br>
                                  </div>
-                         <asp:Button ID="ButtonLogin" runat="server"  OnClick="ButtonLogin_Click" style="margin-left: 0px" Text="Prisijungti" Width="141px" />
+                         <asp:Button ID="ButtonLogin" runat="server"  OnClick="ButtonLogin_Click" style="margin-left: 0px" Text="Вхід" Width="141px" />
                             </div>
                             </div>
                     </ContentTemplate>

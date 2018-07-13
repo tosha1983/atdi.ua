@@ -47,7 +47,7 @@
     </asp:Table>
      
 <asp:Panel ID="PanelSearch" runat="server" HorizontalAlign="Center" OnInit="PanelSearch_Init" ValidateRequestMode="Enabled">
-    <asp:Button ID="ButtonSearch" runat="server" Text="Ieškoti" Width="112px" OnClick="Button1_Click"  ValidationGroup="FindGroupEx"  />
+    <asp:Button ID="ButtonSearch" runat="server" Text="Пошук" Width="112px" OnClick="Button1_Click"  ValidationGroup="FindGroupEx"  />
 </asp:Panel>
      
             
