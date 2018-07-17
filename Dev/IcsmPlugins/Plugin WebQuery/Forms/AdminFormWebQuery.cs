@@ -208,6 +208,12 @@ namespace XICSM.WebQuery
                 return;
             }
 
+            if (string.IsNullOrEmpty(textBox_code.Text.ToString()))
+            {
+                MessageBox.Show("Відстуня інформація про код запиту!");
+                return;
+            }
+
             if (isNew){
                 if (!string.IsNullOrEmpty(textBoxName.Text)) {
                     if (CheckNameWebQuery(textBoxName.Text.Replace("(", "[").Replace(")", "]"), id, textBox_code.Text)) {

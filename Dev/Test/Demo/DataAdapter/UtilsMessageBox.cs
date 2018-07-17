@@ -37,6 +37,7 @@ namespace OnlinePortal
            
             private static void ExecutingPage_Unload(object sender, EventArgs e)
             {
+            /*
                 try {
                     Queue queue = (Queue)m_executingPages[HttpContext.Current.Handler];
                     if (queue != null) {
@@ -56,6 +57,7 @@ namespace OnlinePortal
                     }
                 }
                 catch (Exception) { }
+                */
             }
           
         }

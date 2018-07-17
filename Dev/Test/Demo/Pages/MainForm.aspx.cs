@@ -125,13 +125,13 @@ namespace OnlinePortal
                                         {
 
                                             ClassIRPObject class_irp = new ClassIRPObject();
-                                            TypeStatus stat;
+                                            string stat="";
                                             class_irp.Setting_param = new SettingIRPClass();
                                             class_irp.Setting_param.MAX_COLUMNS = meta.Data.Columns.Count();
                                             //class_irp.Setting_param.ExtendedControlRight = ExtendedControlRight.FullRight.ToString();
                                             class_irp.Setting_param.NAME = meta.Data.Name;
-                                            if (Enum.TryParse(SectionT, out stat))
-                                                class_irp.Setting_param.STATUS_ = stat;
+                                            //if (Enum.TryParse(SectionT, out stat))
+                                                class_irp.Setting_param.STATUS_ = SectionT;
                                             //class_irp.SettingConstraint = new List<WebConstraint>();
                                             class_irp.PagesIndexRange = new SettingIRPClass[1];
                                             foreach (ColumnMetadata cv in meta.Data.Columns)
@@ -149,8 +149,8 @@ namespace OnlinePortal
                                                 else if (cv.Type == DataType.String)
                                                     class_irp.FLD_TYPE.Add(typeof(string));
                                             }
-                                            if (Enum.TryParse(SectionT, out stat))
-                                                class_irp.StatusObject = stat;
+                                            //if (Enum.TryParse(SectionT, out stat))
+                                                class_irp.StatusObject = SectionT;
                                             Irp.Add(class_irp);
 
                                             break;
@@ -187,7 +187,7 @@ namespace OnlinePortal
                                         {
 
                                             ClassIRPObject class_irp = new ClassIRPObject();
-                                            TypeStatus stat;
+                                            string stat="";
 
 
 
@@ -225,8 +225,8 @@ namespace OnlinePortal
                                             class_irp.Setting_param.NAME = meta.Data.Name;
                                             class_irp.Setting_param.MAX_COLUMNS = meta.Data.Columns.Count();
                                             //class_irp.Setting_param.ExtendedControlRight = ExtendedControlRight.FullRight.ToString();
-                                            if (Enum.TryParse(SectionT, out stat))
-                                                class_irp.Setting_param.STATUS_ = stat;
+                                            //if (Enum.TryParse(SectionT, out stat))
+                                                class_irp.Setting_param.STATUS_ = SectionT;
                                             //class_irp.SettingConstraint = new List<WebConstraint>();
                                             class_irp.PagesIndexRange = new SettingIRPClass[1];
                                             foreach (ColumnMetadata cv in meta.Data.Columns)
@@ -244,8 +244,8 @@ namespace OnlinePortal
                                                 else if (cv.Type == DataType.String)
                                                     class_irp.FLD_TYPE.Add(typeof(string));
                                             }
-                                            if (Enum.TryParse(SectionT, out stat))
-                                                class_irp.StatusObject = stat;
+                                            //if (Enum.TryParse(SectionT, out stat))
+                                                class_irp.StatusObject = SectionT;
                                             Irp.Add(class_irp);
                                         }
                                     }
@@ -366,31 +366,34 @@ namespace OnlinePortal
             return Struct;
         }
         
+        
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public KeyValuePair<string, TypeStatus> GetParentItem(string Type_Cont)
+        public KeyValuePair<string, string> GetParentItem(string Type_Cont)
         {
-            KeyValuePair<string, TypeStatus> ParentItem = new KeyValuePair<string,TypeStatus>();
+            KeyValuePair<string, string> ParentItem = new KeyValuePair<string,string>();
             string FindParentItem = "";
             List<string> LstItemTreeView = new List<string>();
             TreeNode node = TreeViewMenu.SelectedNode;
+            string ParentName = "";
             while (node.Parent != null) {
+                ParentName = node.Text;
                 node = node.Parent;
                 LstItemTreeView.Add(node.Text);
             }
             if (LstItemTreeView.Count() > 0) FindParentItem = LstItemTreeView[0];
             FindParentItem = Type_Cont;
-
-            if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_URCM))
-                ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.URCM);
-            else if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_URCP))
-                ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.URCP);
-            else if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_URZP))
-                ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.URZP);
-            else if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_FILIA))
-                ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.FILIA);
+            ParentItem = new KeyValuePair<string, string>(FindParentItem, ParentName);
+            //if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_URCM))
+            //ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.URCM);
+            //else if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_URCP))
+            //ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.URCP);
+            //else if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_URZP))
+            //ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.URZP);
+            //else if (LstItemTreeView.Contains(UtilsDef.MAIN_MENU_FILIA))
+            //ParentItem = new KeyValuePair<string, TypeStatus>(FindParentItem, TypeStatus.FILIA);
             return ParentItem;
         }
         
@@ -405,7 +408,7 @@ namespace OnlinePortal
              Session["sort"] = null;
              Session["Search_container"] = null;
              string Type_Cont = TreeViewMenu.SelectedNode.Value.ToString();
-             KeyValuePair<string, TypeStatus> Type_C = new KeyValuePair<string, TypeStatus>();
+             KeyValuePair<string, string> Type_C = new KeyValuePair<string, string>();
              string NameItemPress = Type_Cont;
              Session["TYPE_CONTAINER_FINDER"] = new ClassMenu(Session["SettingIRPClass"]);
              string StructTreeView = GetStructTreeView(Type_Cont);

@@ -18,14 +18,6 @@ using LitvaPortal.ServiceReference_WebQuery;
 namespace LitvaPortal
 {
 
-    public enum TypeStatus
-    {
-        URCP,
-        URCM,
-        URZP,
-        FILIA
-    }
-
 
     public class ClassIRPObject
     {
@@ -39,7 +31,7 @@ namespace LitvaPortal
         public string TABLE_NAME { get; set; }
         public SettingIRPClass Setting_param { get; set; }
         public string FormatConstraint { get; set; }
-        public TypeStatus StatusObject { get; set; }
+        public string StatusObject { get; set; }
         public Dictionary<string, string> NameItemMenu_CUR = new Dictionary<string, string>();
         public Dictionary<string, string> NameItemMenu_EXP = new Dictionary<string, string>();
         public SettingIRPClass[] PagesIndexRange { get; set; }

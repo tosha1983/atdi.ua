@@ -139,7 +139,7 @@ namespace OnlinePortal
 
 
                                                     ClassIRPObject class_irp = new ClassIRPObject();
-                                                    TypeStatus stat;
+                                                    string stat="";
 
                                                     ResultOfQueryMetadatakoy_Sv8m5 meta = client.GetQueryMetadata(new UserToken
                                                     {
@@ -184,7 +184,7 @@ namespace OnlinePortal
                                                     class_irp.Setting_param.NAME = meta.Data.Name;
                                                     class_irp.Setting_param.MAX_COLUMNS = meta.Data.Columns.Count();
                                                     //class_irp.Setting_param.ExtendedControlRight = ExtendedControlRight.FullRight.ToString();
-                                                    if (Enum.TryParse(meta.Data.Token.Version, out stat))
+                                                    //if (Enum.TryParse(meta.Data.Token.Version, out stat))
                                                         class_irp.Setting_param.STATUS_ = stat;
                                                     //class_irp.SettingConstraint = new List<WebConstraint>();
                                                     class_irp.PagesIndexRange = new SettingIRPClass[1];
@@ -203,7 +203,7 @@ namespace OnlinePortal
                                                         else if (cv.Type == DataType.String)
                                                             class_irp.FLD_TYPE.Add(typeof(string));
                                                     }
-                                                    if (Enum.TryParse(meta.Data.Token.Version, out stat))
+                                                    //if (Enum.TryParse(meta.Data.Token.Version, out stat))
                                                         class_irp.StatusObject = stat;
                                                     Irp.Add(class_irp);
                                                 }

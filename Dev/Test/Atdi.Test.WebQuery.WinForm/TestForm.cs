@@ -370,7 +370,7 @@ namespace Atdi.Test.WebQuery.WinForm
                         System.Diagnostics.Stopwatch swo = new System.Diagnostics.Stopwatch();
                         swo.Start();
                         //if (delay > 0) System.Threading.Thread.CurrentThread.Join(delay);
-                        if (ExecuteQuery(webQueryServ, token_QueryCustExpr, GetFetchOptions(), out TimeExecQuery))
+                        if (ExecuteQuery(webQueryServ, token_Query, GetFetchOptions(), out TimeExecQuery))
                         {
                             CntisSelectWithoutCustomExpr++;
 

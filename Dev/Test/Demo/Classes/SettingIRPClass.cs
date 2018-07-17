@@ -23,7 +23,7 @@ namespace LitvaPortal
         public int ID { get; set; }
         public string NAME { get; set; }
         public int MAX_REC { get; set; }
-        public TypeStatus STATUS_ { get; set; }
+        public string STATUS_ { get; set; }
         public string DESCRIPTION { get; set; }
         public bool IS_VISIBLE { get; set; }
         public string Query { get; set; }

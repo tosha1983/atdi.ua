@@ -20,10 +20,10 @@ namespace Utils
         /// Константные наименования итемов главного меню
         /// </summary>
         public static string MAIN_MENU_ROOT = "MainMenu";
-        public static string MAIN_MENU_URZP = "УРЗП";
-        public static string MAIN_MENU_URCP = "УРЧП";
-        public static string MAIN_MENU_FILIA = "Філія";
-        public static string MAIN_MENU_URCM= "УРЧМ";
+        //public static string MAIN_MENU_URZP = "УРЗП";
+        //public static string MAIN_MENU_URCP = "УРЧП";
+        //public static string MAIN_MENU_FILIA = "Філія";
+        //public static string MAIN_MENU_URCM= "УРЧМ";
         public Menu_ global_menu {get; set;}
 
 
