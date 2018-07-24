@@ -186,8 +186,6 @@ copy "$(TargetDir)Atdi.DataModels.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQu
 copy "$(TargetDir)Atdi.DataModels.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
 copy "$(TargetDir)Atdi.Contracts.WcfServices.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
 copy "$(TargetDir)Atdi.Contracts.WcfServices.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
-copy "$(TargetDir)Localization\XICSM_WebQuery_CST.txt" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
-copy "$(TargetDir)Resources\WebQuery.Schema" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
-copy "$(TargetDir)XICSM_WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
