@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     public class Plugin : IPlugin
     {
@@ -18,7 +18,7 @@ namespace XICSM.WebQuery
         public static System.Windows.Forms.Timer time_check_status { get; set; }
         public static int CountCall = 0;
         //Версия плагина
-        public string Ident { get { return "WebQuery"; } }
+        public string Ident { get { return "Atdi.Icsm.Plugins.WebQuery"; } }
         public string Description { get { return null; } }
         public double SchemaVersion { get { return UpdateSchema.schemaVersion; } }
 
@@ -142,7 +142,7 @@ namespace XICSM.WebQuery
             UpdateSchema.RegisterSchema(s);
             string appFolder = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             string err;
-            if (!OrmCs.OrmSchema.ParseSchema(appFolder, "WebQuery", "XICSM_WebQuery.dll", out err)) MessageBox.Show(CLocaliz.TxT("Could not load 'WebQuery.Schema' :") + err);
+            if (!OrmCs.OrmSchema.ParseSchema(appFolder, "Atdi.Icsm.Plugins.WebQuery", "XICSM_Atdi.Icsm.Plugins.WebQuery.dll", out err)) MessageBox.Show(CLocaliz.TxT("Could not load 'WebQuery.Schema' :") + err);
 
         }
 

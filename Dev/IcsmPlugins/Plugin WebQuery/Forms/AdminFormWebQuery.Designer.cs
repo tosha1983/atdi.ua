@@ -1,4 +1,4 @@
-﻿namespace XICSM.WebQuery
+﻿namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     partial class AdminFormWebQuery
     {

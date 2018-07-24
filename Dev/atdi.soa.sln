@@ -151,7 +151,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.LegacyServices.Icsm", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugin WebQuery", "Plugin WebQuery", "{4932CF5A-6200-425A-94D9-2A2E230EE294}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebQuery", "IcsmPlugins\Plugin WebQuery\WebQuery.csproj", "{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Icsm.Plugins.WebQuery", "IcsmPlugins\Plugin WebQuery\Atdi.Icsm.Plugins.WebQuery.csproj", "{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 WebApi Services", "05 WebApi Services", "{92F03EAB-C3E9-4923-9A1F-EC3FDFFCBB93}"
 EndProject

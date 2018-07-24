@@ -5,7 +5,7 @@ using System.Collections;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
    public class Localization
    {
