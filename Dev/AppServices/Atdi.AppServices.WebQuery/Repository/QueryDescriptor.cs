@@ -129,7 +129,8 @@ namespace Atdi.AppServices.WebQuery
                     {
                         if (HasColumn(columns[i]) == false)
                         {
-                            badCollumns.Add(columns[i]);
+                            if (!badCollumns.Contains(columns[i]))
+                                badCollumns.Add(columns[i]);
                         }
                     }
                     var message = string.Join(", ", badCollumns);
@@ -149,7 +150,8 @@ namespace Atdi.AppServices.WebQuery
                     {
                         if (HasColumn(columns[i].Name) == false)
                         {
-                            badCollumns.Add(columns[i].Name);
+                            if (!badCollumns.Contains(columns[i].Name))
+                                badCollumns.Add(columns[i].Name);
                         }
                     }
                     var message = string.Join(", ", badCollumns);
@@ -169,7 +171,8 @@ namespace Atdi.AppServices.WebQuery
                     {
                         if (HasColumn(columns[i].ColumnName) == false)
                         {
-                            badCollumns.Add(columns[i].ColumnName);
+                            if (!badCollumns.Contains(columns[i].ColumnName))
+                                badCollumns.Add(columns[i].ColumnName);
                         }
                     }
                     var message = string.Join(", ", badCollumns);

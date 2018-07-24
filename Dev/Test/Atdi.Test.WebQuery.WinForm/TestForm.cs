@@ -687,6 +687,7 @@ namespace Atdi.Test.WebQuery.WinForm
             {
                 Id = Guid.NewGuid(),
                 ResultStructure = DataSetStructure.StringRows,
+                 Columns = new string[] {"ID","XXX"},
                 Orders = new OrderExpression[] // указываем условие сортировки
                 {
                     new OrderExpression { ColumnName = "ID", OrderType = OrderType.Descending }//,

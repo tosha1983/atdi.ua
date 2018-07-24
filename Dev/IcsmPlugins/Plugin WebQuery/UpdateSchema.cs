@@ -65,7 +65,6 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("TASKFORCEGROUP", "VARCHAR(100)", null, null, null);
             }
 
-            //ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP
 
             s.DeclareTable("XWEBCONSTRAINT", "Web constraints", plugin4);
             {
@@ -82,6 +81,14 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("DATEVALUEMAX", "DATE", "Date", null, null);
                 s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
             }
+
+            s.DeclareTable("XUPDATEOBJECTS", "Update objects", plugin4);
+            {
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XUPDATEOBJECTS", "PRIMARY", "ID");
+                s.DeclareField("OBJTABLE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("DATEMODIFIED", "DATE", "Date", null, null);
+            }
         }
 
         //=============================================================
@@ -95,9 +102,12 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         {
             if (dbCurVersion < 20180105.0949)
             {
-                //s.CreateTables("XWEBQUERY,XWEBCONSTRAINT");
+                //s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS");
                 //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
                 //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
+                //s.CreateTables("XUPDATEOBJECTS");
+                //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
                 s.SetDatabaseVersion(20180105.0949);
             }
             return true;
