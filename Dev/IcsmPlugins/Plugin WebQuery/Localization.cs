@@ -46,13 +46,16 @@ namespace XICSM.WebQuery
             try
             {
                // Загружаем список языков, поддерживаемых ICSM
-               string loadLanguage = (string)readKey.GetValue("order");
+               string loadLanguage = (string)readKey.GetValue("Order");
                if (loadLanguage != null)
                {
                   string[] splitLanguage = loadLanguage.Split(new Char[] { '.' });
-                  foreach (string lng in splitLanguage)
-                     if (lng != "")
-                        listLanguage.Add(lng);
+                        foreach (string lng in splitLanguage)
+                            if (lng != "")
+                            {
+                                listLanguage.Add(lng);
+                                return;
+                            }
                }
             }
             finally
@@ -60,20 +63,48 @@ namespace XICSM.WebQuery
                readKey.Close();
             }
          }
-         // Если языки не загружены, то будем пробовать загрузить язык текущей локализации ОС
-         //?? Пока не знаю как определить текущий язык ОС
-         listLanguage.Add("ENG");
-      }
+            // Если языки не загружены, то будем пробовать загрузить язык текущей локализации ОС
+            //?? Пока не знаю как определить текущий язык ОС
+            //listLanguage.Add("ENG");
+        }
       //===================================================
       // Перевод строки
       //===================================================
       private void LoadLanguage()
       {
-         if(tryLoadLanguage)
-            return;
-         tryLoadLanguage = true;
-         // Пытаемся загрузить язык
-         HashTransl = new Hashtable();
+            HashTransl = new Hashtable();
+            //if(tryLoadLanguage)
+            //   return;
+            //tryLoadLanguage = true;
+            // Пытаемся загрузить язык
+            listLanguage = new List<string>();
+            listLanguage.Clear();
+            // Попрбуем загрузить другие языки ICSM
+            RegistryKey readKey = Registry.CurrentUser.OpenSubKey("Software\\ATDI\\ICSM\\LANGUAGES");
+            if (readKey != null)
+            {
+                try
+                {
+                    // Загружаем список языков, поддерживаемых ICSM
+                    string loadLanguage = (string)readKey.GetValue("Order");
+                    if (loadLanguage != null)
+                    {
+                        string[] splitLanguage = loadLanguage.Split(new Char[] { '.' });
+                        foreach (string lng in splitLanguage)
+                            if (lng != "")
+                            {
+                                listLanguage.Add(lng);
+                                break;
+                            }
+                    }
+                }
+                finally
+                {
+                    readKey.Close();
+                }
+            }
+
+        
          foreach(string lng in listLanguage)
          {
             string fileName = folderPath + "\\" + filePrefix + "_" + lng + ".txt";

@@ -45,6 +45,7 @@ namespace Atdi.Platform.Logging
         {
             while (!this._events.IsCompleted)
             {
+
                 var tookEntries = new List<IEvent>(_taskCapacity);
                 IEvent blockedEntry = null;
                 try
@@ -77,15 +78,22 @@ namespace Atdi.Platform.Logging
                 if (tookEntries.Count > 0 && this._consumers != null && this._consumers.Count > 0)
                 {
                     var sortedEntries = tookEntries.OrderBy(e => e.Time.Ticks).ToArray();
-                    foreach (var consumer in this._consumers.Values)
+                    try
                     {
-                        try
+                        foreach (var consumer in this._consumers.Values)
                         {
-                            consumer.Push(sortedEntries);
+                            try
+                            {
+                                consumer.Push(sortedEntries);
+                            }
+                            catch (Exception) { }
                         }
-                        catch (Exception) { }
+                    }
+                    catch (Exception) {
+
                     }
                 }
+
             }
         }
 

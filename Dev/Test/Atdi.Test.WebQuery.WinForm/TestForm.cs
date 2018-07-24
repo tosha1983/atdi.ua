@@ -48,7 +48,12 @@ namespace Atdi.Test.WebQuery.WinForm
         public static int countIteration = 0;
         public static int countThreads = 0;
         public static int maxCountRecords = 0;
-        public static int delay = 0;
+        public static int countIteration2 = 0;
+
+        public static int TimeTest = 0;
+        public static int CountStartThreads = 0;
+        public static int CountEndThreads = 0;
+        public static int maxCountRecords2 = 0;
 
         public static bool isInsert { get; set; }
         public static bool isUpdate { get; set; }
@@ -125,6 +130,7 @@ namespace Atdi.Test.WebQuery.WinForm
 
             textBox3.Text += string.Format("Call method GetQueryMetaData (time in milliseconds): {0}", TimeQueryMetaData) + Environment.NewLine;
 
+            tabControl1.TabPages.Remove(tabPage2);
         }
 
 
@@ -133,7 +139,6 @@ namespace Atdi.Test.WebQuery.WinForm
             countIteration = Int32.Parse(textBox_countIteration.Text);
             countThreads = Int32.Parse(textBox_CountThreads.Text);
             maxCountRecords = Int32.Parse(textBox_MaxCountRecords.Text);
-            delay = Int32.Parse(textBox_delay.Text);
 
             bool is_Success;
             long result = 0;
@@ -165,18 +170,84 @@ namespace Atdi.Test.WebQuery.WinForm
             sw.Stop();
             result = (sw.ElapsedMilliseconds);
 
-            textBox3.Text += " Кол-во запросов типа 'Insert' " + CntisInsert + " (Сред. время работы потока): "+ TimeInsert + " Сред. время на операцию: " + TimeInsert/ countIteration + Environment.NewLine;
-            textBox3.Text += " Кол-во запросов типа 'Update' " + CntisUpdate + " (Сред. время работы потока): " + TimeUpdate + " Сред. время на операцию: "+ TimeUpdate/ countIteration + Environment.NewLine;
-            textBox3.Text += " Коли-во запросов типа 'Delete' " + CntisDelete + " (Сред. время работы потока): " + TimeDelete + " Сред. время на операцию: " + TimeDelete/ countIteration + Environment.NewLine;
-            textBox3.Text += " Кол-во запросов типа 'ExecuteQuery with CustExpr' " + CntisSelectWithCustomExpr + " (Среднее время работы потока): " + TimeSelectWithCustomExpr+ " Сред. время на операцию: " + TimeSelectWithCustomExpr/ countIteration + Environment.NewLine;
-            textBox3.Text += " Кол-во запросов типа 'ExecuteQuery without CustExpr' " + CntisSelectWithoutCustomExpr + " (Среднее время работы потока): " + TimeSelectWithoutCustomExpr+ " Сред. время на операцию: " + TimeSelectWithoutCustomExpr/ countIteration + Environment.NewLine;
-
+            if (countIteration > 0)
+            {
+                textBox3.Text += " Кол-во запросов типа 'Insert' " + CntisInsert + " (Сред. время работы потока): " + TimeInsert + " Сред. время на операцию: " + TimeInsert / countIteration + Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'Update' " + CntisUpdate + " (Сред. время работы потока): " + TimeUpdate + " Сред. время на операцию: " + TimeUpdate / countIteration + Environment.NewLine;
+                textBox3.Text += " Коли-во запросов типа 'Delete' " + CntisDelete + " (Сред. время работы потока): " + TimeDelete + " Сред. время на операцию: " + TimeDelete / countIteration + Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'ExecuteQuery with CustExpr' " + CntisSelectWithCustomExpr + " (Среднее время работы потока): " + TimeSelectWithCustomExpr + " Сред. время на операцию: " + TimeSelectWithCustomExpr / countIteration + Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'ExecuteQuery without CustExpr' " + CntisSelectWithoutCustomExpr + " (Среднее время работы потока): " + TimeSelectWithoutCustomExpr + " Сред. время на операцию: " + TimeSelectWithoutCustomExpr / countIteration + Environment.NewLine;
+            }
            
 
             //textBox3.Text += " Общее время, которое было затрачено на обработку запросов: "+result.ToString();
         }
 
-     
+
+        private void StartExecThreadsTimePeriod()
+        {
+            countIteration = Int32.Parse(textBox_cnt_iteration2.Text);
+            CountStartThreads = Int32.Parse(textBox_start_thread.Text);
+            CountEndThreads = Int32.Parse(textBox_thread_end.Text);
+            TimeTest = Int32.Parse(textBox_time_period.Text);
+            maxCountRecords2 = Int32.Parse(textBox_maxcount_record2.Text);
+            int iteration = 0;
+            long result = 0;
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            Task tsk = new Task(() => {
+                if (textBox_CountThreads.Text != "")
+                {
+                    List<Thread> th = new List<Thread>();
+                    int cnt_Thread = CountStartThreads;
+                    while (sw.ElapsedMilliseconds <= TimeTest)
+                    {
+
+                        cnt_Thread = (int)(sw.ElapsedMilliseconds / (TimeTest / (CountEndThreads - CountStartThreads)));
+                        if (cnt_Thread==0) cnt_Thread = CountStartThreads;
+
+                        for (int i = CountStartThreads; i <= cnt_Thread; i++)
+                        {
+                            th.Add(new Thread(StartProcessDelete)); th[th.Count - 1].Start();
+                            th.Add(new Thread(StartProcessInsert)); th[th.Count - 1].Start();
+                            th.Add(new Thread(StartProcessUpdate)); th[th.Count - 1].Start();
+                            th.Add(new Thread(StartProcessQueryCustExpr)); th[th.Count - 1].Start();
+                            th.Add(new Thread(StartProcessQueryWithoutCustExpr)); th[th.Count - 1].Start();
+                            iteration++;
+                            if (sw.ElapsedMilliseconds > TimeTest) break;
+                        }
+                        if (sw.ElapsedMilliseconds > TimeTest) break;
+
+                        for (int i = 0; i < th.Count; i++)
+                        {
+                            th[i].Join();
+                        }
+                        textBox3.Text += cnt_Thread;
+                    }
+                }
+
+            });
+            tsk.RunSynchronously();
+            tsk.Wait();
+
+            sw.Stop();
+            result = (sw.ElapsedMilliseconds);
+
+            if (countIteration > 0)
+            {
+                textBox3.Text += " Общее время теста :" + result + Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'Insert' " + CntisInsert + " (Сред. время работы потока): " + TimeInsert + Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'Update' " + CntisUpdate + " (Сред. время работы потока): " + TimeUpdate  + Environment.NewLine;
+                textBox3.Text += " Коли-во запросов типа 'Delete' " + CntisDelete + " (Сред. время работы потока): " + TimeDelete+ Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'ExecuteQuery with CustExpr' " + CntisSelectWithCustomExpr + " (Среднее время работы потока): " + TimeSelectWithCustomExpr  + Environment.NewLine;
+                textBox3.Text += " Кол-во запросов типа 'ExecuteQuery without CustExpr' " + CntisSelectWithoutCustomExpr + " (Среднее время работы потока): " + TimeSelectWithoutCustomExpr + Environment.NewLine;
+            }
+
+
+            //textBox3.Text += " Общее время, которое было затрачено на обработку запросов: "+result.ToString();
+        }
+
+
 
         private static void StartProcessInsert()
         {
@@ -299,7 +370,7 @@ namespace Atdi.Test.WebQuery.WinForm
                         System.Diagnostics.Stopwatch swo = new System.Diagnostics.Stopwatch();
                         swo.Start();
                         //if (delay > 0) System.Threading.Thread.CurrentThread.Join(delay);
-                        if (ExecuteQuery(webQueryServ, token_QueryCustExpr, GetFetchOptions(), out TimeExecQuery))
+                        if (ExecuteQuery(webQueryServ, token_Query, GetFetchOptions(), out TimeExecQuery))
                         {
                             CntisSelectWithoutCustomExpr++;
 
@@ -664,9 +735,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_Insert.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isInsert = true;
             }
             else isInsert = false;
@@ -678,9 +746,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_Update.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isUpdate = true;
             }
             else isUpdate = false;
@@ -690,9 +755,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_Delete.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isDelete = true;
             }
             else isDelete = false;
@@ -702,9 +764,6 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_ExecuteQueryCustomExpr.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isSelectWithCustomExpr = true;
             }
             else isSelectWithCustomExpr = false;
@@ -714,12 +773,37 @@ namespace Atdi.Test.WebQuery.WinForm
         {
             if (checkBox_ExecQuery.Checked)
             {
-                checkBox_Authorization.Checked = true;
-                checkBox_QueryGroups.Checked = true;
-                checkBox_QueryMetaData.Checked = true;
                 isSelectWithoutCustomExpr = true;
             }
             else isSelectWithoutCustomExpr = false;
+        }
+
+        private void button_run_time_Click(object sender, EventArgs e)
+        {
+
+            TimeInsert = 0;
+            TimeUpdate = 0;
+            TimeDelete = 0;
+            TimeSelectWithCustomExpr = 0;
+            TimeSelectWithoutCustomExpr = 0;
+
+            CntisInsert = 0;
+            CntisUpdate = 0;
+            CntisDelete = 0;
+            CntisSelectWithCustomExpr = 0;
+            CntisSelectWithoutCustomExpr = 0;
+            textBox3.Text = "";
+            StartExecThreadsTimePeriod();
+        }
+
+        private void checkBox_QueryGroups_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

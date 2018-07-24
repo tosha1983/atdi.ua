@@ -268,50 +268,65 @@ namespace Atdi.AppServices.WebQuery
                             NameFldLon = Metadata.Columns[i].Name;
                             if (!string.IsNullOrEmpty(NameFldLon)) {
                                 if (cntr.INCLUDE == 1) {
-                                    var condition = new ConditionExpression(){
-                                        LeftOperand = new ColumnOperand() {
-                                            ColumnName =  NameFldLon
-                                },
-                                        Operator = ConditionOperator.GreaterEqual,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DoubleValueOperand(){
-                                            Value = cntr.MIN
-                                        }
-                                    };
-                                    List_Expressions.Add(condition);
-                                    condition = new ConditionExpression() {
-                                        LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon 
-                                        },
-                                        Operator = ConditionOperator.LessEqual,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DoubleValueOperand() {
+                                    var condition = new ComplexCondition()
+                                    {
+                                        Operator = LogicalOperator.And,
+                                        Conditions = new Condition[]
+                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  NameFldLon
+                                             },
+                                             Operator = ConditionOperator.GreaterEqual,
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DoubleValueOperand(){
+                                             Value = cntr.MIN
+                                             }
+                                          },
+                                             new ConditionExpression() {
+                                            LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
+                                            },
+                                            Operator = ConditionOperator.LessEqual,
+                                            Type = ConditionType.Expression,
+                                            RightOperand = new DoubleValueOperand() {
                                             Value = cntr.MAX
                                         }
+                                    }
+
+                                         }
                                     };
                                     List_Expressions.Add(condition);
                                 }
                                 if (cntr.INCLUDE == 0) {
-                                    var condition = new ConditionExpression() {
-                                        LeftOperand = new ColumnOperand() {
-                                            ColumnName =  NameFldLon 
-                                        },
-                                        Operator = ConditionOperator.LessThan,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DoubleValueOperand() {
-                                            Value = cntr.MIN
-                                        }
-                                    };
-                                    List_Expressions.Add(condition);
-                                    condition = new ConditionExpression(){
-                                        LeftOperand = new ColumnOperand() {
-                                            ColumnName =  NameFldLon 
-                                        },
-                                        Operator = ConditionOperator.GreaterThan,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DoubleValueOperand() {
+
+                                    var condition = new ComplexCondition()
+                                    {
+                                        Operator = LogicalOperator.Or,
+                                        Conditions = new Condition[]
+                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  NameFldLon
+                                             },
+                                             Operator = ConditionOperator.LessThan,
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DoubleValueOperand(){
+                                             Value = cntr.MIN
+                                             }
+                                          },
+                                             new ConditionExpression() {
+                                            LeftOperand = new ColumnOperand() {
+                                            ColumnName = NameFldLon
+                                            },
+                                            Operator = ConditionOperator.GreaterThan,
+                                            Type = ConditionType.Expression,
+                                            RightOperand = new DoubleValueOperand() {
                                             Value = cntr.MAX
                                         }
+                                    }
+
+                                    }
                                     };
                                     List_Expressions.Add(condition);
 
@@ -394,54 +409,70 @@ namespace Atdi.AppServices.WebQuery
                         if (Metadata.Columns[i].Name == cntr.PATH) {
                             NameFldLon = Metadata.Columns[i].Name;
                             if (!string.IsNullOrEmpty(NameFldLon)) {
-                                if (cntr.INCLUDE == 1) {
-                                    var condition = new ConditionExpression() {
-                                        LeftOperand = new ColumnOperand() {
+                                if (cntr.INCLUDE == 1)
+                                {
+                                    var condition = new ComplexCondition()
+                                    {
+                                        Operator = LogicalOperator.And,
+                                        Conditions = new Condition[]
+                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  NameFldLon
+                                             },
+                                             Operator = ConditionOperator.GreaterEqual,
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DateTimeValueOperand(){
+                                             Value = cntr.DATEVALUEMIN
+                                             }
+                                            },
+                                             new ConditionExpression() {
+                                            LeftOperand = new ColumnOperand() {
                                             ColumnName = NameFldLon
-                                        },
-                                        Operator = ConditionOperator.GreaterEqual,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DateTimeValueOperand() {
-                                            Value = cntr.DATEVALUEMIN
-                                        }
-                                    };
-                                    List_Expressions.Add(condition);
-                                    condition = new ConditionExpression() {
-                                        LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon
-                                        },
-                                        Operator = ConditionOperator.LessEqual,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DateTimeValueOperand() {
+                                            },
+                                            Operator = ConditionOperator.LessEqual,
+                                            Type = ConditionType.Expression,
+                                            RightOperand = new DateTimeValueOperand() {
                                             Value = cntr.DATEVALUEMAX
-                                        }
+                                            }
+                                          }
+
+                                         }
                                     };
                                     List_Expressions.Add(condition);
                                 }
-                                if (cntr.INCLUDE == 0)  {
-                                    var condition = new ConditionExpression() {
-                                        LeftOperand = new ColumnOperand()  {
+                                if (cntr.INCLUDE == 0)
+                                {
+                                    var condition = new ComplexCondition()
+                                    {
+                                        Operator = LogicalOperator.Or,
+                                        Conditions = new Condition[]
+                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  NameFldLon
+                                             },
+                                             Operator = ConditionOperator.LessThan,
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DateTimeValueOperand(){
+                                             Value = cntr.DATEVALUEMIN
+                                             }
+                                          },
+                                             new ConditionExpression() {
+                                            LeftOperand = new ColumnOperand() {
                                             ColumnName = NameFldLon
-                                        },
-                                        Operator = ConditionOperator.LessThan,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DateTimeValueOperand() {
-                                            Value = cntr.DATEVALUEMIN
-                                        }
-                                    };
-                                    List_Expressions.Add(condition);
-                                    condition = new ConditionExpression() {
-                                        LeftOperand = new ColumnOperand() {
-                                            ColumnName = NameFldLon
-                                        },
-                                        Operator = ConditionOperator.GreaterThan,
-                                        Type = ConditionType.Expression,
-                                        RightOperand = new DateTimeValueOperand()
-                                        {
+                                            },
+                                            Operator = ConditionOperator.GreaterThan,
+                                            Type = ConditionType.Expression,
+                                            RightOperand = new DateTimeValueOperand() {
                                             Value = cntr.DATEVALUEMAX
                                         }
+                                    }
+
+                                    }
                                     };
                                     List_Expressions.Add(condition);
+
                                 }
                             }
                         }
