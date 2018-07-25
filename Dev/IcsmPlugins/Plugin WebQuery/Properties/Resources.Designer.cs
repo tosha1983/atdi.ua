@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace XICSM.WebQuery.Properties {
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace XICSM.WebQuery.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("XICSM.WebQuery.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("XICSM.Atdi.Icsm.Plugins.WebQuery.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

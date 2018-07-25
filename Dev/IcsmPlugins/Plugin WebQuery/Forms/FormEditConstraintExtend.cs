@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using ICSM;
 using DatalayerCs;
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     public partial class FormEditConstraintExtend : Form
     {

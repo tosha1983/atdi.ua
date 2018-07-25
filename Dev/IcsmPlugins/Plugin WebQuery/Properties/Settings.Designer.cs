@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace XICSM.WebQuery.Properties {
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

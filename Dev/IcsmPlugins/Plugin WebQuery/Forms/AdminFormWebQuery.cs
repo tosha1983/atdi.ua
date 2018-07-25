@@ -15,7 +15,7 @@ using OrmCs;
 using DatalayerCs;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     public partial class AdminFormWebQuery : Form
     {

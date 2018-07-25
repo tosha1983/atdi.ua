@@ -47,6 +47,7 @@
     <Compile Include="Handlers\SaveChanges.cs" />
     <Compile Include="Handlers\GetQueryGroups.cs" />
     <Compile Include="Repository\Caches\UserGroupDescriptorsCache.cs" />
+    <Compile Include="Repository\DTO\XUPDATEOBJECTS.cs" />
     <Compile Include="Repository\DTO\TASKFORCE.cs" />
     <Compile Include="Repository\DTO\TSKF_MEMBER.cs" />
     <Compile Include="Repository\DTO\XWEBCONSTRAINT.cs" />

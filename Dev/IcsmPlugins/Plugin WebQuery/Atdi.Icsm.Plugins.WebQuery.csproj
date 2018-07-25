@@ -7,8 +7,8 @@
     <ProjectGuid>{EB0F1FD2-C50B-4C57-A669-47A6FB718CCE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XICSM.WebQuery</RootNamespace>
-    <AssemblyName>XICSM_WebQuery</AssemblyName>
+    <RootNamespace>XICSM.Atdi.Icsm.Plugins.WebQuery</RootNamespace>
+    <AssemblyName>XICSM_Atdi.Icsm.Plugins.WebQuery</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -93,7 +93,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassesWebQuery.cs" />
+    <Compile Include="ClassesAtdi.Icsm.Plugins.WebQuery.cs" />
     <Compile Include="CLocalization.cs" />
     <Compile Include="Forms\AdminFormWebQuery.cs">
       <SubType>Form</SubType>
@@ -147,17 +147,17 @@
     <Content Include="icons\not_support.png" />
     <Content Include="icons\recognize_16_16.png" />
     <Content Include="icons\save.png" />
-    <Content Include="Localization\XICSM_WebQuery_CST.txt">
+    <Content Include="Localization\XICSM_Atdi.Icsm.Plugins.WebQuery_CST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\viewmag-24x24.png" />
-    <None Include="Resources\WebQuery.Schema">
+    <None Include="Resources\Atdi.Icsm.Plugins.WebQuery.Schema">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\viewmag-24x24.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\AdminFormWebQuery.resx">
@@ -175,6 +175,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)Localization\XICSM_Atdi.Icsm.Plugins.WebQuery_CST.txt" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
+copy "$(TargetDir)Resources\Atdi.Icsm.Plugins.WebQuery.Schema" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
+copy "$(TargetDir)XICSM_Atdi.Icsm.Plugins.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

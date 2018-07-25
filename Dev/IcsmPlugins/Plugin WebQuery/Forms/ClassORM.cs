@@ -12,7 +12,7 @@ using System.Data;
 
 
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     public class ClassORM
     {

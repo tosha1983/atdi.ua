@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using ICSM;
 using System.Collections;
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     public partial class FormWebConstrainsList : Form
     {

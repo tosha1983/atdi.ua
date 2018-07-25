@@ -51,8 +51,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxControlToolkit">
-      <HintPath>..\packages\AjaxControlToolkit.15.1.3.0\lib\net40\AjaxControlToolkit.dll</HintPath>
+    <Reference Include="AjaxControlToolkit, Version=18.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AjaxControlToolkit.18.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -133,6 +133,7 @@
     <Content Include="Properties\DataSources\Atdi.AppServer.Contracts.WebQuery.QueryMetadata.datasource" />
     <Content Include="Properties\DataSources\Atdi.AppServer.Contracts.WebQuery.QueryResult.datasource" />
     <Content Include="Properties\DataSources\Atdi.AppServer.Contracts.WebQuery.QueryTree.datasource" />
+    <None Include="packages.config" />
     <None Include="Service References\AuthenticationManager\AuthenticationManager.wsdl" />
     <None Include="Service References\AuthenticationManager\item.wsdl" />
     <None Include="Service References\AuthenticationManager\item.xsd">

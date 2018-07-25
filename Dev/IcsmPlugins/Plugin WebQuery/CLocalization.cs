@@ -3,7 +3,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace XICSM.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
    public class CLocaliz
    {
