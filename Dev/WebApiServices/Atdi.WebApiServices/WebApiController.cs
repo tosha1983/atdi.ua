@@ -12,6 +12,8 @@ namespace Atdi.WebApiServices
     {
         private readonly ILogger _logger;
 
+        protected ILogger Logger => this._logger;
+
         public WebApiController(ILogger logger)
         {
             this._logger = logger;

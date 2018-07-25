@@ -47,6 +47,8 @@
     <Compile Include="Changeset\Changeset.cs" />
     <Compile Include="Changeset\ChangesResult.cs" />
     <Compile Include="Changeset\CreationAction.cs" />
+    <Compile Include="Changeset\DataChangeAction.cs" />
+    <Compile Include="Changeset\DataChangeset.cs" />
     <Compile Include="Changeset\DeletionAction.cs" />
     <Compile Include="Changeset\ObjectRowCreationAction.cs" />
     <Compile Include="Changeset\ObjectRowUpdationAction.cs" />
@@ -56,6 +58,8 @@
     <Compile Include="Changeset\TypedRowUpdationAction.cs" />
     <Compile Include="Changeset\UpdationAction.cs" />
     <Compile Include="DataConstraint\DataLimit.cs" />
+    <Compile Include="DataConstraint\Filter.cs" />
+    <Compile Include="DataConstraint\FilterOperand.cs" />
     <Compile Include="DataConstraint\LimitValueType.cs" />
     <Compile Include="DataConstraint\OrderExpression.cs" />
     <Compile Include="DataConstraint\OrderType.cs" />

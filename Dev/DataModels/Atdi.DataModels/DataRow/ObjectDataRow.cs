@@ -48,7 +48,7 @@ namespace Atdi.DataModels
                 case DataType.Integer:
                     result = new IntegerColumnValue
                     {
-                        Value = (int?)value
+                        Value = (value == null) ? (int?)null : Convert.ToInt32(value)
                     };
                     break;
                 case DataType.DateTime:

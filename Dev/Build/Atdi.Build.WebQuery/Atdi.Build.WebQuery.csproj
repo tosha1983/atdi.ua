@@ -162,14 +162,25 @@
       <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
       <Name>Atdi.WcfServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.Identity\Atdi.WebApiServices.Identity.csproj">
+      <Project>{c61c88b0-306f-4c54-a372-80cb97124504}</Project>
+      <Name>Atdi.WebApiServices.Identity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj">
       <Project>{ca3f294b-9c66-433f-84b3-d27ce3ab40f1}</Project>
       <Name>Atdi.WebApiServices.SelfHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.WebQuery\Atdi.WebApiServices.WebQuery.csproj">
+      <Project>{a589c230-ddbe-42b2-b54e-3d0139ce853d}</Project>
+      <Name>Atdi.WebApiServices.WebQuery</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices\Atdi.WebApiServices.csproj">
       <Project>{4803ae0c-1a06-4fc5-9be7-6affc943ee7c}</Project>
       <Name>Atdi.WebApiServices</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
