@@ -15,10 +15,6 @@ using System.IO;
 using System.Drawing;
 using System.Data.SqlClient;
 using System.Configuration;
-using DocumentFormat;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Office;
-using DocumentFormat.OpenXml.Office2013;
 using Utils;
 using LitvaPortal.ServiceReference_WebQuery;
 
