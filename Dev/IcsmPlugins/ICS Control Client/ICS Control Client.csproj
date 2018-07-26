@@ -41,6 +41,9 @@
     <Reference Include="GMap.NET.WindowsPresentation, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="NetPlugins">
       <HintPath>..\..\..\..\ATDI\ICS Manager\NetPlugins.dll</HintPath>
     </Reference>
@@ -175,6 +178,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Fakes Include="Fakes\NetPlugins.fakes" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
