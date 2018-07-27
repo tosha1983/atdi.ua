@@ -54,15 +54,39 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Atdi.AppServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.AppService.WebQueryDataDriver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.AppService.WebQueryDataDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.AppService.WebQueryManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.AppService.WebQueryManager.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.Contracts.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Contracts.Sdrns.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.Model.SdrnsController, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Model.SdrnsController.dll</HintPath>
+    </Reference>
     <Reference Include="Common.Logging">
       <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging.Core">
       <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Datalayer, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Datalayer.dll</HintPath>
     </Reference>
     <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -178,6 +202,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Dll\Atdi.AppServer.AppService.SdrnsController.dll.config" />
+    <None Include="Dll\Atdi.AppServer.AppServices.SdrnsController.exe.config" />
+    <None Include="Dll\Atdi.AppServer.AppServices.SdrnsController.vshost.exe.config" />
+    <None Include="Dll\Atdi.SDNRS.AppServer.exe.config" />
+    <None Include="Dll\Atdi.SDNRS.AppServer.vshost.exe.config" />
+    <None Include="Dll\Atdi.SDR.AppServer.exe.config" />
+    <None Include="Dll\Atdi.SDR.AppServer.vshost.exe.config" />
     <None Include="Dll\ICSM.Schema" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nupkg" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nuspec" />
@@ -217,7 +248,17 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dll\Atdi.AppServer.AppService.SdrnsController.dll" />
+    <Content Include="Dll\Atdi.AppServer.AppService.WebQueryDataDriver.dll" />
+    <Content Include="Dll\Atdi.AppServer.AppService.WebQueryManager.dll" />
+    <Content Include="Dll\Atdi.AppServer.Common.dll" />
+    <Content Include="Dll\Atdi.AppServer.Contracts.dll" />
     <Content Include="Dll\Atdi.AppServer.Contracts.Sdrns.dll" />
+    <Content Include="Dll\Atdi.AppServer.Contracts.WebQuery.dll" />
+    <Content Include="Dll\Atdi.AppServer.dll" />
+    <Content Include="Dll\Atdi.AppServer.Model.SdrnsController.dll" />
+    <Content Include="Dll\Atdi.AppServer.Model.WebQueryManager.dll" />
+    <Content Include="Dll\Atdi.Common.dll" />
     <Content Include="Dll\Datalayer.dll" />
     <Content Include="Dll\DatalayerCs.dll" />
     <Content Include="Dll\FormsCs.dll" />
@@ -252,30 +293,6 @@
     <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
-      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
-      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
-      <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
-      <Name>Atdi.AppServer.Model.SdrnsController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Atdi.AppServer.Common\Atdi.AppServer.Common.csproj">
-      <Project>{fcd6ce65-f50a-4edc-89b3-d2efc2552941}</Project>
-      <Name>Atdi.AppServer.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
-      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
-      <Name>Atdi.AppServer.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
-      <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
-      <Name>Atdi.AppServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppServer.AppService.WebQueryManager\Atdi.AppServer.AppService.WebQueryManager.csproj">
-      <Project>{8f26af82-ac78-413a-85b5-5571947dc4e0}</Project>
-      <Name>Atdi.AppServer.AppService.WebQueryManager</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -89,6 +89,22 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("OBJTABLE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("DATEMODIFIED", "DATE", "Date", null, null);
             }
+
+            s.DeclareTable("XWEBTEST", "TEST table", plugin4);
+            {
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XWEBTEST", "PRIMARY", "ID");
+                s.DeclareField("STRING_TYPE", "VARCHAR(200)", null, null, null);
+                s.DeclareField("BOOLEAN_TYPE", "NUMBER(1,0)", null, null, null);
+                s.DeclareField("INTEGER_TYPE", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("DATETIME_TYPE", "DATE", "Date", null, null);
+                s.DeclareField("DOUBLE_TYPE", "NUMBER(30,8)", null, null, null);
+                s.DeclareField("FLOAT_TYPE", "NUMBER(22,5)", null, null, null);
+                s.DeclareField("DECIMAL_TYPE", "NUMBER(8,3)", null,  null, null);
+                s.DeclareField("BYTE_TYPE", "BINARY(1)", null, null, null);
+                s.DeclareField("BYTES_TYPE", "BINARY(20000)", null, null, null);
+                s.DeclareField("GUID_TYPE", "VARCHAR(40)", null, null, null);
+            }
         }
 
         //=============================================================

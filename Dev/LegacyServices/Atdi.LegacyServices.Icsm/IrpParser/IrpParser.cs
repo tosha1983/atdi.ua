@@ -30,7 +30,7 @@ namespace Atdi.LegacyServices.Icsm
             Orm.Field rc = null;
             var zeta = this._schemasMetadata.GetTableByName(tableName);
             if (zeta != null) {
-                foreach (Orm.Field f1 in zeta.ClassFields) {
+                foreach (Orm.Field f1 in zeta.Fields) {
                     switch (f1.Nature){
                         case Orm.FieldNature.Column:
                             {

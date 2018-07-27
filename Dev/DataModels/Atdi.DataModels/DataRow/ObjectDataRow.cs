@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Atdi.DataModels
 {
@@ -76,16 +78,30 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.Byte:
-                    result = new ByteColumnValue
+
+                    BinaryFormatter bf = new BinaryFormatter();
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        Value = (byte?)value
-                    };
+                        bf.Serialize(ms, value);
+                        result = new ByteColumnValue
+                        {
+                            Value = (byte?)ms.ToArray()[0]
+
+                        };
+                    }
+                 
                     break;
                 case DataType.Bytes:
-                    result = new BytesColumnValue
+                    bf = new BinaryFormatter();
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        Value = (byte[])value
-                    };
+                        bf.Serialize(ms, value);
+                        result = new BytesColumnValue
+                        {
+                            Value = ms.ToArray()
+
+                        };
+                    }
                     break;
                 case DataType.Guid:
                     result = new GuidColumnValue

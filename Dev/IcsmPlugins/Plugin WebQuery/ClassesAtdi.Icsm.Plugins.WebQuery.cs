@@ -63,4 +63,28 @@ namespace OrmCs
 			public DatPtr z_datemodified { get { return new DatPtr(this,2); } }
 	}
 
+	public class YXwebtest : Yyy
+	{
+		public YXwebtest() { construct("XWEBTEST",null); }
+		public YXwebtest(OrmLinker lk) { construct("XWEBTEST",lk); }
+		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
+			public DatPtr z_id { get { return new DatPtr(this,0); } }
+		public string m_string_type { get { return getString(1); } set { setString(1,200,value); } }
+			public DatPtr z_string_type { get { return new DatPtr(this,1); } }
+		public int m_boolean_type { get { return getInt(2); } set { setInt(2,value); } }
+			public DatPtr z_boolean_type { get { return new DatPtr(this,2); } }
+		public int m_integer_type { get { return getInt(3); } set { setInt(3,value); } }
+			public DatPtr z_integer_type { get { return new DatPtr(this,3); } }
+		public DateTime m_datetime_type { get { return getDateTime(4); } set { setDateTime(4,value); } }
+			public DatPtr z_datetime_type { get { return new DatPtr(this,4); } }
+		public double m_double_type { get { return getDouble(5); } set { setDouble(5,value); } }
+			public DatPtr z_double_type { get { return new DatPtr(this,5); } }
+		public double m_float_type { get { return getDouble(6); } set { setDouble(6,value); } }
+			public DatPtr z_float_type { get { return new DatPtr(this,6); } }
+		public double m_decimal_type { get { return getDouble(7); } set { setDouble(7,value); } }
+			public DatPtr z_decimal_type { get { return new DatPtr(this,7); } }
+		public string m_guid_type { get { return getString(8); } set { setString(8,40,value); } }
+			public DatPtr z_guid_type { get { return new DatPtr(this,8); } }
+	}
+
 }

@@ -110,7 +110,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                     else
                                     {
                                         //Отправка на SDR уведомления о приеме сообщения
-                                        //DB.SaveLocationCoordSensor((message as Sensor));
+                                        DB.SaveLocationCoordSensor((message as Sensor));
                                         busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
                                         List<Sensor> L_S = DB.LoadObjectSensor();
                                         if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
