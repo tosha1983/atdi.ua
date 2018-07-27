@@ -296,9 +296,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ManageDB\Interface\" />
     <Folder Include="Sheduler\Quartz.net\Classes\Results\" />
-    <Folder Include="Sheduler\SENSOR\ReloadStart\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

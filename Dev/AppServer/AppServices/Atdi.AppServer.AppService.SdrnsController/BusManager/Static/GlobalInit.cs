@@ -104,13 +104,6 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         #endregion
 
-        /*
-        public static  List<IDisposable> Lds_Activity_Sensor_Receiver = new List<IDisposable>();
-        public static List<IDisposable> Lds_Activity_Sensor_List = new List<IDisposable>();
-        public static List<IDisposable> Lds_Activity_MEAS_TASK_SDR_Main_List_SDR = new List<IDisposable>();
-        public static List<IDisposable> Lds_Activity_MEAS_SDR_RESULTS_Main_List_APPServer = new List<IDisposable>();
-        public static List<KeyValuePair<bool, string>> Receive_Lds_Activity_MEAS_SDR_RESULTS_Main_List_APPServer = new List<KeyValuePair<bool, string>>();
-        */
 
         public static void Initialization()
         {

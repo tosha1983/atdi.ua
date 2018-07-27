@@ -460,10 +460,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
     {
         public Sensor se { get; set; }
         public System.Timers.Timer BZ { get; set; }
-        public int Cnt_timer { get; set; }
-        public int Cnt_all_time { get; set; }
-        public int Cnt_sensor_New { get; set; }
-        public int Cnt_sensor_Old { get; set; }
+        public Int64 Cnt_timer { get; set; }
+        public Int64 Cnt_all_time { get; set; }
+        public Int64 Cnt_sensor_New { get; set; }
+        public Int64 Cnt_sensor_Old { get; set; }
         public Mdx(Sensor v)
         {
             BZ = new System.Timers.Timer();
