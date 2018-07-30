@@ -101,9 +101,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("DOUBLE_TYPE", "NUMBER(30,8)", null, null, null);
                 s.DeclareField("FLOAT_TYPE", "NUMBER(22,5)", null, null, null);
                 s.DeclareField("DECIMAL_TYPE", "NUMBER(8,3)", null,  null, null);
-                s.DeclareField("BYTE_TYPE", "BINARY(1)", null, null, null);
+                s.DeclareField("BYTE_TYPE", "NUMBER(3,0)", null, null, null);
                 s.DeclareField("BYTES_TYPE", "BINARY(20000)", null, null, null);
                 s.DeclareField("GUID_TYPE", "VARCHAR(40)", null, null, null);
+                //s.DeclareField("GUID_TYPE", "GUID", null, null, null);
             }
         }
 
@@ -121,9 +122,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 //s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS");
                 //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
                 //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                //s.CreateTables("XWEBTEST");
                 //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
-                //s.CreateTables("XUPDATEOBJECTS");
-                //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
+                //s.CreateTables("XWEBTEST");
+                //s.CreateTableFields("XWEBTEST", "ID,STRING_TYPE,BOOLEAN_TYPE,INTEGER_TYPE,DATETIME_TYPE,DOUBLE_TYPE,FLOAT_TYPE,DECIMAL_TYPE,BYTE_TYPE,BYTES_TYPE,GUID_TYPE");
                 s.SetDatabaseVersion(20180105.0949);
             }
             return true;

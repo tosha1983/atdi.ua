@@ -31,6 +31,7 @@ namespace Atdi.DataModels
         {
             ColumnValue result = null;
             var value = row.Cells[index];
+            var ci = new System.Globalization.CultureInfo("en-US");
             switch (dataType)
             {
                 case DataType.String:
@@ -40,45 +41,68 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.Boolean:
-                    result = new BooleanColumnValue
+                    try
                     {
-                        Value = (value == null) ? (bool?)null : Convert.ToBoolean(value)
-                    };
+                        result = new BooleanColumnValue
+                        {
+                            Value = (value == null) ? (bool?)null : bool.Parse(value) as bool?
+                        };
+                    }
+                    catch (Exception)
+                    {
+                        result = new BooleanColumnValue
+                        {
+                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false
+                        };
+                    }
                     break;
                 case DataType.Integer:
                     result = new IntegerColumnValue
                     {
-                        Value = (value == null) ? (int?)null : Convert.ToInt32(value)
+                         Value = (value == null) ? (int?)null : (int.Parse(value, ci) as int?)
                     };
                     break;
                 case DataType.DateTime:
-                    result = new DateTimeColumnValue
+                    try
                     {
-                        Value = (value == null) ? (DateTime?)null : value.ConvertISO8601ToDateTime()
-                    };
+                        result = new DateTimeColumnValue
+                        {
+                            Value = (value == null) ? (DateTime?)null : value.ConvertISO8601ToDateTime()
+                        };
+                    }
+                    catch (Exception)
+                    {
+                        var formats = new[] { "M-d-yyyy", "dd-MM-yyyy", "MM-dd-yyyy", "M.d.yyyy", "dd.MM.yyyy", "MM.dd.yyyy", "dd.MM.yyyy H:mm:ss" };
+                        DateTime? DT_Val_DATA_CERERE = null; try { DT_Val_DATA_CERERE = (DateTime.ParseExact(value.ToString(), formats, ci, System.Globalization.DateTimeStyles.AssumeLocal)); }
+                        catch (Exception) { }
+                        result = new DateTimeColumnValue
+                        {
+                            Value = DT_Val_DATA_CERERE
+                        };
+                    }
                     break;
                 case DataType.Double:
                     result = new DoubleColumnValue
                     {
-                        Value = (value == null) ? (double?)null : Convert.ToDouble(value)
+                        Value = (value == null) ? (double?)null : (double.Parse(value, ci) as double?)
                     };
                     break;
                 case DataType.Float:
                     result = new FloatColumnValue
                     {
-                        Value = (value == null) ? (float?)null : (float)Convert.ToDouble(value)
+                        Value = (value == null) ? (float?)null : (float.Parse(value, ci) as float?)
                     };
                     break;
                 case DataType.Decimal:
                     result = new DecimalColumnValue
                     {
-                        Value = (value == null) ? (decimal?)null : Convert.ToDecimal(value)
+                        Value = (value == null) ? (decimal?)null : (decimal.Parse(value, ci) as decimal?)
                     };
                     break;
                 case DataType.Byte:
                     result = new ByteColumnValue
                     {
-                        Value = (value == null) ? (byte?)null : Convert.ToByte(value)
+                        Value = (value == null) ? (byte?)null : UTF8Encoding.UTF8.GetBytes(value)[0] as byte?
                     };
                     break;
                 case DataType.Bytes:
@@ -90,7 +114,7 @@ namespace Atdi.DataModels
                 case DataType.Guid:
                     result = new GuidColumnValue
                     {
-                        Value = (value == null) ? (Guid?)null : new Guid(value)
+                         Value = (value == null) ? (Guid?)null : (Guid.Parse(value) as Guid?)
                     };
                     break;
                 default:

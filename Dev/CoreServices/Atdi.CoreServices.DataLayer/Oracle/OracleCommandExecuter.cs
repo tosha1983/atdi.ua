@@ -70,10 +70,12 @@ namespace Atdi.CoreServices.DataLayer
         {
             switch (dataType)
             {
+                case DataType.Guid:
+                    return DbType.String;
                 case DataType.String:
                     return DbType.String;
                 case DataType.Boolean:
-                    return DbType.Boolean;
+                    return DbType.Int32;
                 case DataType.Integer:
                     return DbType.Int32;
                 case DataType.DateTime:

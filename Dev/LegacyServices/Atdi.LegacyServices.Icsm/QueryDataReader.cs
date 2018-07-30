@@ -32,8 +32,12 @@ namespace Atdi.LegacyServices.Icsm
 
             switch (columnType)
             {
+                case DataModels.DataType.Guid:
+                    return this.GetValueAsGuid(fieldDbType, ordinal);
                 case DataModels.DataType.String:
-                    return this.GetValueAsString(fieldDbType, ordinal);
+                    if (fieldDbType == typeof(Guid))
+                         return this.GetValueAsGuid(fieldDbType, ordinal);
+                    else return this.GetValueAsString(fieldDbType, ordinal);
                 case DataModels.DataType.Boolean:
                     return this.GetValueAsBoolean(fieldDbType, ordinal);
                 case DataModels.DataType.Integer:
@@ -350,6 +354,7 @@ namespace Atdi.LegacyServices.Icsm
             }
             return this.GetValueAsString(fieldDbType, ordinal);
         }
+ 
 
         public string GetValueAsString(Type fieldDbType, int ordinal)
         {

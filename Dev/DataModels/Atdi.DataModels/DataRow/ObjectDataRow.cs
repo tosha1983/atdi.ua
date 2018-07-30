@@ -42,10 +42,20 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.Boolean:
-                    result = new BooleanColumnValue
+                    try
                     {
-                        Value = (bool?)value
-                    };
+                        result = new BooleanColumnValue
+                        {
+                            Value = bool.Parse(value.ToString()) as bool?
+                        };
+                    }
+                    catch (Exception)
+                    {
+                        result = new BooleanColumnValue
+                        {
+                            Value = value.ToString()=="1" ? (bool?)true : (bool?)false
+                        };
+                    }
                     break;
                 case DataType.Integer:
                     result = new IntegerColumnValue
@@ -54,59 +64,49 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.DateTime:
+                    var formats = new[] { "M-d-yyyy", "dd-MM-yyyy", "MM-dd-yyyy", "M.d.yyyy", "dd.MM.yyyy", "MM.dd.yyyy", "dd.MM.yyyy H:mm:ss" };
+                    var ci = new  System.Globalization.CultureInfo("en-US");
+                    DateTime? DT_Val_DATA_CERERE = null; try { DT_Val_DATA_CERERE = (DateTime.ParseExact(value.ToString(), formats, ci,  System.Globalization.DateTimeStyles.AssumeLocal)); }
+                    catch (Exception) { }
                     result = new DateTimeColumnValue
                     {
-                        Value = (DateTime?)value
+                       Value = DT_Val_DATA_CERERE
                     };
                     break;
                 case DataType.Double:
                     result = new DoubleColumnValue
                     {
-                        Value = (double?)value
+                        Value = double.Parse(value.ToString()) as double?
                     };
                     break;
                 case DataType.Float:
                     result = new FloatColumnValue
                     {
-                        Value = (float?)value
+                        Value = float.Parse(value.ToString()) as float?
                     };
                     break;
                 case DataType.Decimal:
                     result = new DecimalColumnValue
                     {
-                        Value = (decimal?)value
+                        Value = decimal.Parse(value.ToString()) as decimal?
                     };
                     break;
                 case DataType.Byte:
-
-                    BinaryFormatter bf = new BinaryFormatter();
-                    using (MemoryStream ms = new MemoryStream())
+                    result = new ByteColumnValue
                     {
-                        bf.Serialize(ms, value);
-                        result = new ByteColumnValue
-                        {
-                            Value = (byte?)ms.ToArray()[0]
-
-                        };
-                    }
-                 
+                        Value = (value == null) ? (byte?)null : UTF8Encoding.UTF8.GetBytes(value.ToString())[0] as byte?
+                    };
                     break;
                 case DataType.Bytes:
-                    bf = new BinaryFormatter();
-                    using (MemoryStream ms = new MemoryStream())
+                    result = new BytesColumnValue
                     {
-                        bf.Serialize(ms, value);
-                        result = new BytesColumnValue
-                        {
-                            Value = ms.ToArray()
-
-                        };
-                    }
+                        Value = (value == null) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value.ToString())
+                    };
                     break;
                 case DataType.Guid:
                     result = new GuidColumnValue
                     {
-                        Value = (Guid?)value
+                        Value = Guid.Parse(value.ToString()) as Guid?
                     };
                     break;
                 default:

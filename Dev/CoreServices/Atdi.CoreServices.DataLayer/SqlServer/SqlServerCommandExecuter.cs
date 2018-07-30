@@ -72,6 +72,8 @@ namespace Atdi.CoreServices.DataLayer
         {
             switch (dataType)
             {
+                case DataType.Guid:
+                    return SqlDbType.UniqueIdentifier;
                 case DataType.String:
                     return SqlDbType.NVarChar;
                 case DataType.Boolean:
