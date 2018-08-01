@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using Atdi.Common;
 
 namespace Atdi.DataModels
 {
@@ -42,18 +43,19 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.Boolean:
-                    try
+                    bool valueBool = false; int valueInt = 0;
+                    if (bool.TryParse(value.ToString(), out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = bool.Parse(value.ToString()) as bool?
+                            Value = (value == null) ? (bool?)null : valueBool as bool?
                         };
                     }
-                    catch (Exception)
+                    else if (int.TryParse(value.ToString(), out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString()=="1" ? (bool?)true : (bool?)false
+                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false
                         };
                     }
                     break;
@@ -64,13 +66,9 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.DateTime:
-                    var formats = new[] { "M-d-yyyy", "dd-MM-yyyy", "MM-dd-yyyy", "M.d.yyyy", "dd.MM.yyyy", "MM.dd.yyyy", "dd.MM.yyyy H:mm:ss" };
-                    var ci = new  System.Globalization.CultureInfo("en-US");
-                    DateTime? DT_Val_DATA_CERERE = null; try { DT_Val_DATA_CERERE = (DateTime.ParseExact(value.ToString(), formats, ci,  System.Globalization.DateTimeStyles.AssumeLocal)); }
-                    catch (Exception) { }
                     result = new DateTimeColumnValue
                     {
-                       Value = DT_Val_DATA_CERERE
+                        Value = (value == null) ? (DateTime?)null : value.ToString().ConvertISO8601ToDateTime()
                     };
                     break;
                 case DataType.Double:
@@ -114,7 +112,6 @@ namespace Atdi.DataModels
             }
             return result;
         }
-
 
 
         public static ColumnValue[] GetColumnsValues(this ObjectDataRow row, DataSetColumn[] dataSetColumns)
