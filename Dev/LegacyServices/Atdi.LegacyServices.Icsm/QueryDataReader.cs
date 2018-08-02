@@ -69,7 +69,9 @@ namespace Atdi.LegacyServices.Icsm
             switch (columnType)
             {
                 case DataModels.DataType.String:
-                    return this.GetValueAsString(fieldDbType, ordinal);
+                    if (fieldDbType == typeof(Guid))
+                        return this.GetValueAsGuid(fieldDbType, ordinal).ToString();
+                    else return this.GetValueAsString(fieldDbType, ordinal);
                 case DataModels.DataType.Boolean:
                     return this.GetValueAsBoolean(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 case DataModels.DataType.Integer:
