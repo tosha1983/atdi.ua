@@ -96,7 +96,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareIndex("PK_XWEBTEST", "PRIMARY", "ID");
                 s.DeclareField("STRING_TYPE", "VARCHAR(200)", null, null, null);
                 s.DeclareField("BOOLEAN_TYPE", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("INTEGER_TYPE", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("INTEGER_TYPE", "NUMBER(11,0)", null, null, null);
                 s.DeclareField("DATETIME_TYPE", "DATE", "Date", null, null);
                 s.DeclareField("DOUBLE_TYPE", "NUMBER(30,8)", null, null, null);
                 s.DeclareField("FLOAT_TYPE", "NUMBER(22,5)", null, null, null);
