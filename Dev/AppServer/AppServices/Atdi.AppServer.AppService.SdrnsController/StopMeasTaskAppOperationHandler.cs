@@ -35,7 +35,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override CommonOperationResult Handle(StopMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             CommonOperationResult res = new CommonOperationResult();
-            Task ge = new Task(() =>
+            System.Threading.Thread ge = new System.Threading.Thread(() =>
             {
                 try
                 {
@@ -79,7 +79,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     res.FaultCause = ex.Message;
                 }
             });
-            ge.RunSynchronously();
+            ge.Start();
+            ge.Join();
             return res;
         }
     }

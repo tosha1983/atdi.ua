@@ -133,7 +133,10 @@
     <Content Include="Properties\DataSources\Atdi.AppServer.Contracts.WebQuery.QueryMetadata.datasource" />
     <Content Include="Properties\DataSources\Atdi.AppServer.Contracts.WebQuery.QueryResult.datasource" />
     <Content Include="Properties\DataSources\Atdi.AppServer.Contracts.WebQuery.QueryTree.datasource" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Service References\AuthenticationManager\AuthenticationManager.wsdl" />
     <None Include="Service References\AuthenticationManager\item.wsdl" />
     <None Include="Service References\AuthenticationManager\item.xsd">
@@ -215,7 +218,6 @@
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
-    <None Include="Properties\PublishProfiles\OnlinePortal.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

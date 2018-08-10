@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
-using OrmCs;
+using Atdi.Oracle.DataAccess;
 using Atdi.SDNRS.AppServer.BusManager;
-using CoreICSM.Logs;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {

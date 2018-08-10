@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
-using CoreICSM.Logs;
 using Atdi.SDNRS.AppServer;
-using DAL;
+
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -51,7 +50,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message);
+            }
             return is_Success;
         }
         // метод для отправки стоп-листа в шину
@@ -87,7 +88,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObjectStop]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObjectStop]:" + ex.Message);
+            }
             return is_Success;
         }
     }
@@ -155,7 +158,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); 
+            }
             return is_Success;
         }
 
@@ -176,7 +181,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[DeleteQueue]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[DeleteQueue]:" + ex.Message); 
+            }
             return is_Success;
         }
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Models.AppServices.SdrnsController;
+using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
@@ -43,7 +43,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             int ID = tasks.Create_New_Meas_Task(mt, "New");
             md.Value = ID;
             Logger.Trace(this, options, operationContext);
-            Task tsg = new Task(() => {
+            System.Threading.Thread tsg = new System.Threading.Thread(() => {
             try {
                 List<int> SensorIds = new List<int>();
                 if (mt.Stations != null) {
@@ -64,7 +64,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             }
             });
             tsg.Start();
-            //tsg.Wait();
+            //tsg.Join();
             return md;
         }
     }

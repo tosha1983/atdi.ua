@@ -86,25 +86,25 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                                 else
                                                 {
                                                     System.Console.WriteLine(string.Format("Start save results..."));
-                                                    Task ge = new Task(() =>
+                                                    System.Threading.Thread ge = new System.Threading.Thread(() =>
                                                     {
                                                     ID = DbGetRes.SaveResultToDB(msReslts);
                                                     if (ID > 0)
                                                     {
                                                         GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                        GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                                        if (GlobalInit.MEAS_SDR_RESULTS.Count>0)    GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
                                                         System.Console.WriteLine(string.Format("Success save results..."));
                                                     }
                                                     });
                                                     ge.Start();
-                                                    ge.Wait();
+                                                    ge.Join();
                                                 }
                                             }
                                         }
                                         else
                                         {
                                             System.Console.WriteLine(string.Format("Start save results..."));
-                                            Task ge = new Task(() =>
+                                            System.Threading.Thread ge = new System.Threading.Thread(() =>
                                             {
                                             ID = DbGetRes.SaveResultToDB(msReslts);
                                             if (ID > 0)
@@ -115,7 +115,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                             }
                                             });
                                             ge.Start();
-                                            ge.Wait();
+                                            ge.Join();
                                         }
                                     }
                                 }
@@ -123,7 +123,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                 System.Console.WriteLine(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
                                 DbGetRes.Dispose();
                                 conv.Dispose();
-                            CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerReceiveStatusMeastaskSDR ");
+                            //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerReceiveStatusMeastaskSDR ");
                         }
                     }
                 }

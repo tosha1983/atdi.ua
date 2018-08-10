@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
 using XMLLibrary;
-using CoreICSM.Logs;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
 
@@ -134,7 +133,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
         {
             try
             {
-                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "CheckActivitySensor ");
+                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "CheckActivitySensor ");
                 ClassDBGetSensor gsd = new ClassDBGetSensor();
                 BusManager<Sensor> busManager = new BusManager<Sensor>();
                 ClassDBGetSensor DB = new ClassDBGetSensor();
@@ -201,7 +200,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                     ClassStaticBus.bus.Dispose();
                                     GC.SuppressFinalize(ClassStaticBus.bus);
                                     ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                    CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                                    //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                                 }
                             
                             Sensor fc = GlobalInit.SensorListSDRNS.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
@@ -248,7 +247,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                         ClassStaticBus.bus.Dispose();
                                     GC.SuppressFinalize(ClassStaticBus.bus);
                                     ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                    CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                                    //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                                 }
                                     fc.Status = AllStatusSensor.F.ToString();
                                     se.Cnt_timer = 0;
@@ -288,7 +287,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                         ClassStaticBus.bus.Dispose();
                                         GC.SuppressFinalize(ClassStaticBus.bus);
                                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                        CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                                     }
                                     if (!isCheck) busManager.DeleteQueue(GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
                                     if (!isCheck) se.Cnt_sensor_Old++;

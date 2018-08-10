@@ -23,7 +23,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         >
     {
 
-        private ShortSensorConstraintParser _constraintParser;
+        //private ShortSensorConstraintParser _constraintParser;
 
         /*
         public GetShortSensorsAppOperationHandler(IAppServerContext serverContext, ILogger logger, ShortSensorConstraintParser constraintParser) 
