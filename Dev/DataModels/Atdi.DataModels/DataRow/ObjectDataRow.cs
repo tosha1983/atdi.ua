@@ -92,7 +92,7 @@ namespace Atdi.DataModels
                 case DataType.Byte:
                     result = new ByteColumnValue
                     {
-                        Value = (value == null) ? (byte?)null : UTF8Encoding.UTF8.GetBytes(value.ToString())[0] as byte?
+                        Value = (value == null) ? (byte?)null : Convert.ToByte(value) as byte?
                     };
                     break;
                 case DataType.Bytes:
