@@ -961,9 +961,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
                     int u0 = ie;
                     do ie++; while (ie < expr.Length && (char.IsLetterOrDigit(expr[ie]) || expr[ie] == '_'));
                     string tbName = expr.Substring(u0, ie - u0);
-                    string tt = ttrans(tbName);
+                    string tt = tbName;//ttrans(tbName);
                     if (tt != null) res += tt;
-                    else { res += "%" + tbName; }
+                    else { res += "%"+ tbName; }
+                  
                     continue;
                 }
                 if (expr[ie] == '{')

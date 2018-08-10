@@ -724,7 +724,7 @@ namespace OnlinePortal
                 if (Ident_User != "")
                     index_owner = GetColumnIndexByName_(e.Row, Ident_User, out isCheckOwnerID, out Delta);
                 if (isCheckID) e.Row.Cells[index].Visible = false;
-                if ((index_owner > 0) || (index_owner != ConnectDB.NullI))
+                if ((index_owner > 0) && (index_owner != ConnectDB.NullI))
                 {
                     e.Row.Cells[index_owner].Visible = false;
                 }
@@ -735,7 +735,7 @@ namespace OnlinePortal
                 if (Ident_User!="")
                     index_owner = GetColumnIndexByName_(e.Row, Ident_User, out isCheckOwnerID, out Delta);
                 if (isCheckID) e.Row.Cells[index].Visible = false;
-                if ((index_owner>0) || (index_owner!=ConnectDB.NullI))
+                if ((index_owner>0) && (index_owner!=ConnectDB.NullI))
                 {
                     e.Row.Cells[index_owner].Visible = false;
                 }
@@ -754,13 +754,8 @@ namespace OnlinePortal
                     }
                 }
 
-
-              
-
                if (fnd_ != null)
                {
-
-
 
                 int x_b = e.Row.RowIndex;
                 if (((GridView)sender).PageIndex > 1) {
@@ -785,7 +780,7 @@ namespace OnlinePortal
                     if (index_ID>=0) {
                         int Num_ID=0;
                             for (int x=0; x< fnd_.CAPTION_FLD.Count(); x++)  {
-                                if (fnd_.CAPTION_FLD[x]=="ID") {
+                                if (fnd_.FLD[x]=="ID") {
                                     Num_ID=x;
                                     break;
                                 }
@@ -893,7 +888,7 @@ namespace OnlinePortal
                                                 int idx = 0;
                                                 for (int k = 0; k < ityu_.CAPTION_FLD.Count(); k++)
                                                 {
-                                                    if (ityu_.CAPTION_FLD[k].Trim() == "ID")
+                                                    if (ityu_.FLD[k].Trim() == "ID")
                                                         continue;
                                                     dataSetCol[idx] = new DataSetColumn();
                                                     
@@ -985,7 +980,7 @@ namespace OnlinePortal
                                                 idx = 0;
                                                 for (int k = 0; k < ityu_.CAPTION_FLD.Count(); k++)
                                                 {
-                                                    if (ityu_.CAPTION_FLD[k].Trim() == "ID")
+                                                    if (ityu_.FLD[k].Trim() == "ID")
                                                         continue;
                                                     BlockDataFind block_f = obj_base.Find(r => r.CaptionField == ityu_.CAPTION_FLD[k]);
 
@@ -1212,7 +1207,7 @@ namespace OnlinePortal
 
                                                 for (int k = 0; k < ityu_.CAPTION_FLD.Count(); k++)
                                                 {
-                                                    if (ityu_.CAPTION_FLD[k].Trim() == "ID")
+                                                    if (ityu_.FLD[k].Trim() == "ID")
                                                     {
                                                         IntegerCells.Add(null);
                                                     }
