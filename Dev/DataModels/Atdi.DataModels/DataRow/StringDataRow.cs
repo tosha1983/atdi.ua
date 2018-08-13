@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
+using Atdi.Common;
 
 namespace Atdi.DataModels
 {
@@ -20,6 +21,7 @@ namespace Atdi.DataModels
 
     public static class StringDataRowExtensions
     {
+        public static IFormatProvider CultureEnUs = new System.Globalization.CultureInfo("en-US");
         public static ColumnValue GetColumnValue(this StringDataRow row, DataSetColumn dataSetColumn)
         {
             var result = row.GetColumnValue(dataSetColumn.Type, dataSetColumn.Index);
@@ -31,7 +33,6 @@ namespace Atdi.DataModels
         {
             ColumnValue result = null;
             var value = row.Cells[index];
-            var ci = new System.Globalization.CultureInfo("en-US");
             switch (dataType)
             {
                 case DataType.String:
@@ -41,14 +42,15 @@ namespace Atdi.DataModels
                     };
                     break;
                 case DataType.Boolean:
-                    try
+                    bool valueBool = false;    int valueInt = 0;
+                    if (bool.TryParse(value, out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = (value == null) ? (bool?)null : bool.Parse(value) as bool?
+                            Value = (value == null) ? (bool?)null : valueBool as bool?
                         };
                     }
-                    catch (Exception)
+                    else if (int.TryParse(value, out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
@@ -59,50 +61,37 @@ namespace Atdi.DataModels
                 case DataType.Integer:
                     result = new IntegerColumnValue
                     {
-                         Value = (value == null) ? (int?)null : (int.Parse(value, ci) as int?)
+                         Value = (value == null) ? (int?)null : (int.Parse(value, CultureEnUs) as int?)
                     };
                     break;
                 case DataType.DateTime:
-                    try
+                    result = new DateTimeColumnValue
                     {
-                        result = new DateTimeColumnValue
-                        {
-                            Value = (value == null) ? (DateTime?)null : value.ConvertISO8601ToDateTime()
-                        };
-                    }
-                    catch (Exception)
-                    {
-                        var formats = new[] { "M-d-yyyy", "dd-MM-yyyy", "MM-dd-yyyy", "M.d.yyyy", "dd.MM.yyyy", "MM.dd.yyyy", "dd.MM.yyyy H:mm:ss" };
-                        DateTime? DT_Val_DATA_CERERE = null; try { DT_Val_DATA_CERERE = (DateTime.ParseExact(value.ToString(), formats, ci, System.Globalization.DateTimeStyles.AssumeLocal)); }
-                        catch (Exception) { }
-                        result = new DateTimeColumnValue
-                        {
-                            Value = DT_Val_DATA_CERERE
-                        };
-                    }
+                         Value = (value == null) ? (DateTime?)null : value.ConvertISO8601ToDateTime()
+                    };
                     break;
                 case DataType.Double:
                     result = new DoubleColumnValue
                     {
-                        Value = (value == null) ? (double?)null : (double.Parse(value, ci) as double?)
+                        Value = (value == null) ? (double?)null : (double.Parse(value, CultureEnUs) as double?)
                     };
                     break;
                 case DataType.Float:
                     result = new FloatColumnValue
                     {
-                        Value = (value == null) ? (float?)null : (float.Parse(value, ci) as float?)
+                        Value = (value == null) ? (float?)null : (float.Parse(value, CultureEnUs) as float?)
                     };
                     break;
                 case DataType.Decimal:
                     result = new DecimalColumnValue
                     {
-                        Value = (value == null) ? (decimal?)null : (decimal.Parse(value, ci) as decimal?)
+                        Value = (value == null) ? (decimal?)null : (decimal.Parse(value, CultureEnUs) as decimal?)
                     };
                     break;
                 case DataType.Byte:
                     result = new ByteColumnValue
                     {
-                        Value = (value == null) ? (byte?)null : UTF8Encoding.UTF8.GetBytes(value)[0] as byte?
+                        Value = (value == null) ? (byte?)null : Convert.ToByte(value) as byte ?
                     };
                     break;
                 case DataType.Bytes:
@@ -121,15 +110,6 @@ namespace Atdi.DataModels
                     throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
             }
             return result;
-        }
-
-        private static DateTime ConvertISO8601ToDateTime(this string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new System.ArgumentNullException("value");
-            }
-            return new System.DateTime(System.Convert.ToInt32(value.Substring(0, 4)), System.Convert.ToInt32(value.Substring(5, 2)), System.Convert.ToInt32(value.Substring(8, 2)), System.Convert.ToInt32(value.Substring(11, 2)), System.Convert.ToInt32(value.Substring(14, 2)), System.Convert.ToInt32(value.Substring(17, 2)), new System.Globalization.GregorianCalendar());
         }
 
         public static ColumnValue[] GetColumnsValues(this StringDataRow row, DataSetColumn[] dataSetColumns)

@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atdi.AppServer.Models;
 using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Models.AppServices.WebQueryManager;
 using Atdi.AppServer.Contracts.WebQuery;
-using Atdi.AppServer.AppService.WebQueryDataDriver.ICSMUtilities;
-using Atdi.AppServer.AppService.WebQueryDataDriver;
+using Atdi.AppServer;
 
 namespace Atdi.AppServer.AppServices.WebQueryManager
 {

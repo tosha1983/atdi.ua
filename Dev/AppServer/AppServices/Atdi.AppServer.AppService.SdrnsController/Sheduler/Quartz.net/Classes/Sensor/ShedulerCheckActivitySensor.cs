@@ -57,8 +57,8 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         {
             void IJob.Execute(IJobExecutionContext context)
             {
-                    //foreach (IDisposable d in GlobalInit.Lds_Activity_Sensor_Receiver) d.SafeDispose();
-                    Task tsk = new Task(() =>
+                //foreach (IDisposable d in GlobalInit.Lds_Activity_Sensor_Receiver) d.SafeDispose();
+                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
                     {
                     System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
                     SensorListSDRNS senLst = new SensorListSDRNS();
@@ -66,7 +66,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                     senLst.Dispose();
                     });
                     tsk.Start();
-                    //tsk.Wait();
+                    //tsk.Join();
                     System.GC.Collect();
             }
           

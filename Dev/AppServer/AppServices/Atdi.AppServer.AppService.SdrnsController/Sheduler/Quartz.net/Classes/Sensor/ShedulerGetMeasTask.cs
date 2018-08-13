@@ -121,14 +121,14 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                             ClassStaticBus.bus.Dispose();
                             GC.SuppressFinalize(ClassStaticBus.bus);
                             ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                            CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                            //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                         }
                         }
-                        CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerGetMeasTask ");
+                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerGetMeasTask ");
                     }
                     catch (Exception ex)
                     {
-                        CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerGetMeasTask " + ex.Message);
+                        //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerGetMeasTask " + ex.Message);
                     }
                     cl.Dispose();
                     //});

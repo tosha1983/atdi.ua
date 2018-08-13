@@ -55,21 +55,21 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             {
                 try
                 {
-                        Task tsk = new Task(() =>
+                        System.Threading.Thread tsk = new System.Threading.Thread(() =>
                         {
-                        CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "New check list sensors ");
+                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "New check list sensors ");
                         Console.WriteLine("--> New check list sensors");
                         ClassReceiveAllSensors rec = new ClassReceiveAllSensors();
                         rec.ReceiveAllSensorList();
                         rec.Dispose();
                         });
                         tsk.Start();
-                        //tsk.Wait();
+                        //tsk.Join();
                         System.GC.Collect();
                 }
                 catch (Exception ex)
                 {
-                    CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerCheckStart "+ex.Message);
+                    //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerCheckStart "+ex.Message);
                 }
             }
         }

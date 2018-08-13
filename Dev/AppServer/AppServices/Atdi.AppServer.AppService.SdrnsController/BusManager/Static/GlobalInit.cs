@@ -11,13 +11,12 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Threading.Tasks;
 using System.Collections;
-using DAL;
 using XMLLibrary;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
-
-
+using Atdi.Oracle.DataAccess;
+using EasyNetQ;
 
 
 namespace Atdi.SDNRS.AppServer.BusManager
@@ -27,7 +26,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
     /// </summary>
     public static class GlobalInit
     {
-        public static ConnectDB conn { get; set; }
+
         #region Lists_Global_Objects
         // List all task (for service1)
         public static List<MeasTask> LIST_MEAS_TASK = new List<MeasTask>();
@@ -80,13 +79,13 @@ namespace Atdi.SDNRS.AppServer.BusManager
         public static string Template_SENSORS_List_ = "SENSORS_List";
         public static bool BoolTemplate_SENSORS_List_ = false;
 
-        
+
 
 
 
         //Очередь для приема подтверждений об успешной отправке сенсора с координатами в SDRNS
         public static string Template_Event_Confirm_SENSORS_Send_ = "Event_Confirm_SENSORS_Send_";
-        
+
         //Очередь для отправки запросов в SDR на получение статуса сенсора
         public static string Template_Event_CheckActivitySensor_Req = "Event_CheckActivitySensor_Req_";
         //Очередь на  получение ответов от SDR о текущем состоянии сенсора
@@ -104,6 +103,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         #endregion
 
+        private const string oradb = "Data Source = (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.1.1.188)(PORT = 1522))(CONNECT_DATA = (SERVICE_NAME = ORCL2))); User Id = ICSM; Password = ICSM;";
+
 
         public static void Initialization()
         {
@@ -112,7 +113,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         static GlobalInit()
         {
-            conn = new ConnectDB();
+            BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
+            GlobalInit.Initialization();
+            Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();
+            oracleDataAccess.OpenConnection(oradb);
         }
 
     }

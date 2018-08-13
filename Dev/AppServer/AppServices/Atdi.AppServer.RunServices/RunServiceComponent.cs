@@ -50,7 +50,7 @@ namespace Atdi.AppServer.RunServices
             ///
             // Начальная инициализация (загрузка конфигурационных данных)
             /*
-            Task tt = new Task(() => {
+            System.Threading.Thread tt = new System.Threading.Thread(() => {
                 System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Normal;
                     if (GlobalInit.LST_MeasurementResults.Count == 0) {
                         MeasurementResults[] msResltConv = conv.ConvertTo_SDRObjects(DbGetRes.ReadlAllResultFromDB());
@@ -62,13 +62,18 @@ namespace Atdi.AppServer.RunServices
                     }
             });
             tt.Start();
-            tt.Wait();
+            tt.Join();
             */
 
-            Task tsg = new Task(() => {
+
+              System.Threading.Thread tsg = new System.Threading.Thread(() => {
                 ClassesDBGetTasks cl = new ClassesDBGetTasks();
+
                 ClassConvertTasks ts = new ClassConvertTasks();
-                List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
+                Task<MeasTask[]> task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
+                task.Wait();
+                List<MeasTask> mts_ = task.Result.ToList();
+                //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
                 foreach (MeasTask mtsd in mts_.ToArray()) {
                     if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mtsd.Id.Value) == null))) {
                         MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mtsd.Id.Value);

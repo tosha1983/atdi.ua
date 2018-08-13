@@ -78,10 +78,10 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                         });
                         System.GC.Collect();
                     }
-                    CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr ");
+                    //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr ");
                 }
                 catch (Exception ex) {
-                    CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr "+ex.Message);
+                    //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr "+ex.Message);
                 }
             }
         }

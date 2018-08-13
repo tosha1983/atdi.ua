@@ -1124,7 +1124,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             if (pos1 < fieldPath.Length)
             {
                 string nextFieldPath = fieldPath.Substring(pos1);
-                return this.AddNextField(tableName1, nextFieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields, expressColumns);
+                return this.AddNextField(tableName1, nextFieldPath, schemaPrefix, dbTables, dbJoines, dbFields, dbWorldFields, expressColumns, fieldPath);
             }
 
             throw new InvalidOperationException($"Incorrect field path '{fieldPath}' for table with name '{tableName}'");
@@ -1266,7 +1266,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
             }
             return false;
         }
-        private DbField AddNextField(string tableName, string fieldPath, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields, List<QuerySelectStatement.ColumnDescriptor> expressColumns=null)
+        private DbField AddNextField(string tableName, string fieldPath, string schemaPrefix, Dictionary<string, DbTable> dbTables, List<DbJoin> dbJoines, List<DbField> dbFields, Dictionary<string, DbField> dbWorldFields, List<QuerySelectStatement.ColumnDescriptor> expressColumns=null, string nameFull=null)
         {
             if (tableName == null)
             {
@@ -1274,8 +1274,11 @@ namespace Atdi.LegacyServices.Icsm.Orm
             }
             var name = this.UnaliasTable(tableName, dbTables);
             if (expressColumns == null) expressColumns = new List<QuerySelectStatement.ColumnDescriptor>();
-
-            QuerySelectStatement.ColumnDescriptor descriptExpress = expressColumns.Find(t => t.Name == fieldPath);
+            QuerySelectStatement.ColumnDescriptor descriptExpress = null;
+            if (nameFull.Contains("CustomExpression"))
+                 descriptExpress = expressColumns.Find(t => t.Name == nameFull);
+            else
+                descriptExpress = expressColumns.Find(t => t.Name == fieldPath);
             var ormTable = this.GetTableByName(name);
             var ormField = (ormTable == null) ? null : ormTable.Field(fieldPath);
             if (descriptExpress != null) ormField = (ormTable == null) ? null : ormTable.Field("CustomExpression");
@@ -1313,7 +1316,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
                         ormItemExpr.m_logTab = tableName;
                         //ormItemExpr.m_logFld = ormField.Name;
                         
-                        ormItemExpr.AddFldsInExpression(this, dbTables[tableName].Tcaz);
+                        ormItemExpr.AddFldsInExpression(this, dbTables[tableName]);
                         ormItemExpr.m_logFld = ormItemExpr.m_fmt;// ormField.Name;
                     }
                 }

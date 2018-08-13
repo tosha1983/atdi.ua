@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
-using OrmCs;
 using System.Windows.Forms;
 using Atdi.SDNRS.AppServer.BusManager;
-using CoreICSM.Logs;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
@@ -38,7 +35,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         {
             ClassConvertTasks ts = new ClassConvertTasks();
             ClassesDBGetTasks cl = new ClassesDBGetTasks();
-            List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
+            Task<MeasTask[]> task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
+            task.Wait();
+            List<MeasTask> mts_ = task.Result.ToList();
+            //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
             foreach (MeasTask FND in mts_.ToArray())
             {
                 // Удаляем данные об объекте с глобального списка
@@ -79,7 +79,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         MeasTask Data_ = s_out;
                         // создаём объект список подзадач типа MEAS_SUB_TASK и записываем в объект Data_
                         Data_.CreateAllSubTasks();
-                        CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[CreateAllSubTasks] success...");
+                        //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[CreateAllSubTasks] success...");
                         // конвертируем объекты тасков с БД в список List<MEAS_TASK>
                         //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
                         List<MeasTask> mts_ = GlobalInit.LIST_MEAS_TASK;
@@ -88,9 +88,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) == null)))
                             {
                                 Data_.UpdateStatus(ActionType);
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
+                                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
                                 NewIdMeasTask = cl.SaveTaskToDB(Data_);
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
+                                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
                                 MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
                                 if (fnd != null)
                                     GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
@@ -124,11 +124,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
 
                     }
-                    CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[Create_New_Meas_Task] success...");
+                    //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[Create_New_Meas_Task] success...");
               
             }
             catch (Exception er) {
-                CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Create_New_Meas_Task]: " + er.Message); }
+            //    CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Create_New_Meas_Task]: " + er.Message);
+            }
             cl.Dispose();
             ts.Dispose();
             return NewIdMeasTask;
@@ -155,7 +156,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Id.Value == SensorId);
                         if (fnd_s != null)
                         {
-                            Task tsk = new Task(() =>
+                            System.Threading.Thread tsk = new System.Threading.Thread(() =>
                             {
                                 Checked_L.Clear();
                                 if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
@@ -219,17 +220,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 }
                             });
                             tsk.Start();
-                            tsk.Wait();
+                            tsk.Join();
 
 
                             if (Checked_L.Count > 0)
                             {
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Start busManager send new task...");
+                                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Start busManager send new task...");
                                 BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
                                 if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
                                 {
                                     isSendSuccess = true;
-                                    CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Success send new task...");
+                                    //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Success send new task...");
                                 }
                                 else {
                                     isSendSuccess = false;
@@ -266,7 +267,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
-                CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Process_Multy_Meas]: " + ex.Message);
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Process_Multy_Meas]: " + ex.Message);
             }
             return isSendSuccess;
 

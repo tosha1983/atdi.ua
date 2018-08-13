@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
 using XMLLibrary;
-using CoreICSM.Logs;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Oracle.DataAccess;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -40,7 +40,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
         {
             BusManager<Sensor> busManager = new BusManager<Sensor>();
             //try {
-                Task tsk = new Task(() =>
+              System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     if (GlobalInit.SensorListSDRNS.Count == 0)
                     {
@@ -194,11 +194,11 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             ClassStaticBus.bus.Dispose();
                             GC.SuppressFinalize(ClassStaticBus.bus);
                             ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                            CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                            //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                         }
                 });
                 tsk.Start();
-                //tsk.Wait();
+                tsk.Join();
             //}
             //catch (Exception ex) {
             //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[ReceiveAllSensorList]:" + ex.Message);

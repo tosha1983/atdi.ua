@@ -82,7 +82,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                  }
                 catch (Exception ex)
                 {
-                    CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Up_Meas_SDR_Results " +ex.Message);
+                    //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Up_Meas_SDR_Results " +ex.Message);
                 }
             }
 

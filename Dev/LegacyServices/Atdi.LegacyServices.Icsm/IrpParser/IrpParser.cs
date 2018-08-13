@@ -146,7 +146,9 @@ namespace Atdi.LegacyServices.Icsm
                         if (_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
                         {
                             //metaData.Expr = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + _report.m_dat.m_list[0].m_query.lq[i].title;
-                            metaData.Expr = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" +t;
+                            metaData.columnMeta.Name = t + i.ToString();
+                            metaData.columnMeta.Description = t + i.ToString();
+                            metaData.Expr = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + t + i.ToString();
                             metaData.TypeColumn = IrpColumnEnum.Expression;
                             metaData.columnMeta.Type = DataModels.DataType.String;
                         }
