@@ -17,6 +17,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class WorkFlowProcessManageTasks: IDisposable
     {
+        private ILogger logger;
+
+        public WorkFlowProcessManageTasks(ILogger log)
+        {
+            logger = log;
+        }
+
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -34,7 +41,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public void UpdateListMeasTask()
         {
             ClassConvertTasks ts = new ClassConvertTasks();
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
+            ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
             Task<MeasTask[]> task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
             task.Wait();
             List<MeasTask> mts_ = task.Result.ToList();
@@ -67,7 +74,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns>количество новых объектов, добавленных в глобальный список</returns>
         public int Create_New_Meas_Task(MeasTask s_out, string ActionType)
         {
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
+            ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
             ClassConvertTasks ts = new ClassConvertTasks();
             int NewIdMeasTask = -1;
             try
@@ -139,12 +146,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <summary>
         /// 
         /// </summary>
-        public static bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline)
+        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline)
         {
             bool isSendSuccess = false;
             try
             {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks();
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
                 //Task tdf = new Task(() =>
                 //{

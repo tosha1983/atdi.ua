@@ -9,7 +9,7 @@ using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer;
-using Atdi.AppServer.AppService.SdrnsController.ConstraintParsers;
+//using Atdi.AppServer.AppService.SdrnsController.ConstraintParsers;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {

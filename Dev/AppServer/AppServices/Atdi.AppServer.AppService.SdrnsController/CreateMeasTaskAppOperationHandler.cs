@@ -21,8 +21,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             MeasTaskIdentifier
         >
     {
+        private ILogger log;
         public CreateMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+            log = logger;
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             MeasTask mt = options.Task;
             if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
             if (mt.Status == null) mt.Status = "N";
-            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks();
+            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
             System.Console.WriteLine("Start Create_New_Meas_Task ");
             int ID = tasks.Create_New_Meas_Task(mt, "New");
             md.Value = ID;
@@ -56,7 +58,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         }
                     }
                 }
-                WorkFlowProcessManageTasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+                tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
             }
             catch (Exception ex)
             {

@@ -67,7 +67,7 @@ namespace Atdi.AppServer.RunServices
 
 
               System.Threading.Thread tsg = new System.Threading.Thread(() => {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks();
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(this._logger);
 
                 ClassConvertTasks ts = new ClassConvertTasks();
                 Task<MeasTask[]> task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
@@ -99,7 +99,7 @@ namespace Atdi.AppServer.RunServices
            ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor();
            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
            
-           ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(); getMeasTask.ShedulerRepeatStart(20);
+           ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
 
 
            //Sheduler_ArchiveSDRResults arch_sdrRes = new Sheduler_ArchiveSDRResults(); arch_sdrRes.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeArchiveResult);

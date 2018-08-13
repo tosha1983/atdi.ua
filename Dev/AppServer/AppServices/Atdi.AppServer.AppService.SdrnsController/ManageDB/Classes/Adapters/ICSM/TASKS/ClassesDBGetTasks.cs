@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.Xml;
 using System.Globalization;
 using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -20,6 +21,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class ClassesDBGetTasks : IDisposable
     {
+        private ILogger logger;
+        public ClassesDBGetTasks(ILogger log)
+        {
+            logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -48,6 +54,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                    logger.Trace("Read all tasks from DB");
                     // сканирование по объектам БД
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
@@ -218,6 +225,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 #endregion
             }
             catch (Exception ex) {
+                logger.Error("Error in ReadlAllSTasksFromDB: " + ex.Message);
                 Console.WriteLine("Error in ReadlAllSTasksFromDB: " + ex.Message);
             }           
             return L_IN;
@@ -281,6 +289,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
+                logger.Error("Error in SaveStatusTaskToDB: " + ex.Message);
                 Console.WriteLine("Error in SaveStatusTaskToDB: " + ex.Message);
             }
             return isSuccess;
@@ -344,6 +353,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
+                logger.Error("Error in SaveStatusTaskToDB: " + ex.Message);
                 Console.WriteLine("Error in SaveStatusTaskToDB: " + ex.Message);
             }
             return isSuccess;
@@ -376,6 +386,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
+                logger.Error("Error in SaveIdsSdrTasks: " + ex.Message);
                 Console.WriteLine("Error in SaveIdsSdrTasks: " + ex.Message);
             }
             return isSuccess;
@@ -425,6 +436,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             catch (Exception ex)
             {
                 if (MaxIDs == -1) MaxIDs = 0;
+                logger.Error("Error in SaveIdsSdrTasks: " + ex.Message);
                 Console.WriteLine("Error in SaveIdsSdrTasks: " + ex.Message);
             }
             return MaxIDs;
@@ -460,7 +472,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
-                 Console.WriteLine("Error in GetMaXIdsSdrResults: " + ex.Message);
+                logger.Error("Error in GetMaXIdsSdrResults: " + ex.Message);
+                Console.WriteLine("Error in GetMaXIdsSdrResults: " + ex.Message);
             }
             return MaxIDs;
         }
@@ -515,6 +528,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
+                logger.Error("Error in SetHistoryStatusTasksInDB: " + ex.Message);
                 Console.WriteLine("Error in SetHistoryStatusTasksInDB: " + ex.Message);
             }
             return isSuccess;
@@ -538,6 +552,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         if (obj.Id.Value != ConnectDB.NullI)
                         {
+                            logger.Trace("Start proc save tasks ... ");
+
                             YXbsMeastask meastask = new YXbsMeastask();
                             meastask.Format("*");
                             if ((!meastask.Fetch(obj.Id.Value)) && (!meastask.Fetch(string.Format(" (ID={0}) ", obj.Id.Value))))
@@ -1172,6 +1188,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             catch (Exception ex)
             {
                 ID = ConnectDB.NullI;
+                logger.Error("Error in SetHistoryStatusTasksInDB: " + ex.Message);
                 Console.WriteLine("Error in SetHistoryStatusTasksInDB: " + ex.Message);
 
             }

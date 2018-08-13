@@ -117,6 +117,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private void buttonOpenIRP_Click(object sender, EventArgs e)
         {
+            string AllText = "";
             openFileDialog1.DefaultExt = "IRP";
             openFileDialog1.AddExtension = true;
             DialogResult DA = openFileDialog1.ShowDialog();
@@ -124,7 +125,21 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 textBoxIRPFilePath.Text = openFileDialog1.FileName;
                 using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.Default)) {
                    string cipherText = rdr.ReadToEnd();
-                   textBoxQuery.Text = cipherText;
+                    string[] word = cipherText.Split(new char[] { '\n' });
+                    if (cipherText.Contains("CustomExpression"))
+                    {
+                        for (int i=0; i< word.Count(); i++)
+                        {
+                            if (word[i].Contains("PATH") && (word[i].Contains("CustomExpression")))
+                            {
+                                word[i] = word[i].Replace("CustomExpression", "CustomExpression"+Guid.NewGuid().ToString());
+                            }
+                            AllText += word[i] + "\n";
+                        }
+                        
+                    }
+                   textBoxQuery.Text = AllText;
+                    
                 }
 
             }

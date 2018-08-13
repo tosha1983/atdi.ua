@@ -102,7 +102,6 @@
     <Compile Include="BusManager\ManageBus\ClassStaticBus.cs" />
     <Compile Include="BusManager\Utils\ClassGenericList.cs" />
     <Compile Include="BusManager\Utils\ConcurrentCollectionClass.cs" />
-    <Compile Include="ConstraintParsers\ShortSensorConstraintParser.cs" />
     <Compile Include="CreateMeasTaskAppOperationHandler.cs" />
     <Compile Include="DeleteMeasResultsAppOperationHandler.cs" />
     <Compile Include="DeleteMeasTaskAppOperationHandler.cs" />

@@ -22,8 +22,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             CommonOperationResult
         >
     {
+        private ILogger log;
         public DeleteMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+            log = logger;
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 if (options.TaskId != null) {
                     MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
                     if (mt != null) {
-                        WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks();
+                        WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
                         List<int> SensorIds = new List<int>();
                         foreach (MeasSubTask item in mt.MeasSubTasks) {
                             foreach (MeasSubTaskStation u in item.MeasSubTaskStations) {
@@ -55,8 +57,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         var mt_edit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                         if (SensorIds.Count > 0)
                         {
-                             WorkFlowProcessManageTasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", false);
-                             WorkFlowProcessManageTasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false);
+                             tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", false);
+                             tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false);
                              GlobalInit.LST_MeasurementResults.RemoveAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
                              res.State = CommonOperationState.Success;
                         }

@@ -10,11 +10,17 @@ using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
 using EasyNetQ;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
     public class ShedulerGetMeasTask: InterfaceSheduler, IDisposable
     {
+        public static ILogger logger;
+        public ShedulerGetMeasTask(ILogger log)
+        {
+            log = logger;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -54,10 +60,11 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         // здесь выполняется загрузка данных из БД о сенсорах с заданной периодичностью 1 минута
         public class SimpleJob : IJob
         {
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
+           
             //ClassConvertTasks ts = new ClassConvertTasks();
             void IJob.Execute(IJobExecutionContext context)
             {
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(ShedulerGetMeasTask.logger);
                 //foreach (IDisposable d in GlobalInit.Lds_Activity_MEAS_TASK_SDR_Main_List_SDR) d.SafeDispose();
                 //Task stx = new Task(() =>
                 //{

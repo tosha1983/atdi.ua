@@ -21,8 +21,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             CommonOperationResult
         >
     {
+        private ILogger log;
         public RunMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+            log = logger;
         }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
                         if (mt != null)
                         {
-                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks();
+                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
                             //int ID = tasks.Create_New_Meas_Task(mt, "Run");
                             List<int> SensorIds = new List<int>();
                             foreach (MeasSubTask item in mt.MeasSubTasks)
@@ -64,7 +66,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             if (SensorIds.Count > 0)
                             {
                                 bool isOnline = false;
-                                WorkFlowProcessManageTasks.Process_Multy_Meas(mt_edit, SensorIds, "Run", isOnline);
+                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Run", isOnline);
                                 res.State = CommonOperationState.Success;
                             }
                         }
