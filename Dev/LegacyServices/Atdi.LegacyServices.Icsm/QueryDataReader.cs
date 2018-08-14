@@ -513,6 +513,28 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToByte(_dataReader.GetInt64(ordinal));
             }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return result[0];
+                }
+
+                return default(byte);
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
