@@ -15,10 +15,13 @@ namespace Atdi.Oracle.DataAccess
         private int index = -1;
         private int cnt = 0;
         public List<OracleParameter> paramsOracle { get; set; }
+        public List<OracleParameter> paramsOracle2 { get; set; }
         public OracleParameter[][] params_val { get; set; }
 
         public List<string> AllFields = new List<string>();
+        public List<string> AllFields2 = new List<string>();
         public List<OracleParameter> AllPropertiesColumns = new List<OracleParameter>();
+        public List<OracleParameter> AllPropertiesColumns2 = new List<OracleParameter>();
         public string Order { get; set; }
 
 
@@ -27,11 +30,14 @@ namespace Atdi.Oracle.DataAccess
         {
             isNew = false;
             AllPropertiesColumns = new List<OracleParameter>();
+            AllPropertiesColumns2 = new List<OracleParameter>();
             params_val = null;
             index = -1;
             cnt = 0;
             AllFields = new List<string>();
+            AllFields2 = new List<string>();
             paramsOracle = new List<OracleParameter>();
+            paramsOracle2 = new List<OracleParameter>();
             yyy = new Yyy();
         }
 
@@ -258,6 +264,97 @@ namespace Atdi.Oracle.DataAccess
                 r++;
             }
             isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count);
+            return isSuccess;
+        }
+
+        public bool InsertBulkRecords(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter)
+        {
+            bool isSuccess = false;
+            string tableName1 = "";
+            List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
+            paramsOracle = new List<OracleParameter>();
+            paramsOracle2 = new List<OracleParameter>();
+            int r = 1;
+            foreach (Yyy vn in ListY1)
+            {
+                tableName1 = vn.GetTableName();
+                AllPropertiesColumns = vn.getAllFields;
+                int i = 0;
+                //paramsOracle.Clear();
+                foreach (string val in AllFields)
+                {
+                    foreach (OracleParameter x in AllPropertiesColumns)
+                    {
+                        if (x.SourceColumn == val)
+                        {
+                            if (x.SourceColumn != "\"ID\"")
+                            {
+                                if (x.Value != null)
+                                {
+                                    string valr = val.Insert(val.Length - 1, "_" + r.ToString());
+                                    paramsOracle.Add(new OracleParameter()
+                                    {
+                                        SourceColumn = val,
+                                        ParameterName = ":" + valr,
+                                        OracleDbType = x.OracleDbType,
+                                        Direction = System.Data.ParameterDirection.Input,
+                                        Value = x.Value
+                                    });
+                                }
+                                i++;
+                                break;
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
+                    }
+                }
+                r++;
+            }
+            string tableName2 = "";
+            paramsOracle2.AddRange(oracleParameter);
+            foreach (Yyy vn in ListY2)
+            {
+                tableName2 = vn.GetTableName();
+                AllPropertiesColumns2 = vn.getAllFields;
+                int i = 0;
+                //paramsOracle.Clear();
+
+                foreach (string val in AllFields2)
+                {
+                    foreach (OracleParameter x in AllPropertiesColumns2)
+                    {
+                        if (x.SourceColumn == val)
+                        {
+                            if (x.SourceColumn != "\"ID\"")
+                            {
+                                if (x.Value != null)
+                                {
+                                    string valr = val.Insert(val.Length - 1, "_" + r.ToString());
+                                    paramsOracle2.Add(new OracleParameter()
+                                    {
+                                        SourceColumn = val,
+                                        ParameterName = ":" + valr,
+                                        OracleDbType = x.OracleDbType,
+                                        Direction = System.Data.ParameterDirection.Input,
+                                        Value = x.Value
+                                    });
+                                }
+                                i++;
+                                break;
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
+                    }
+                }
+                r++;
+            }
+            isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter);
             return isSuccess;
         }
     }

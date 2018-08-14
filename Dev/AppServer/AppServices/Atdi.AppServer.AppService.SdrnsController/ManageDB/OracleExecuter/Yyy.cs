@@ -193,6 +193,19 @@ namespace Atdi.Oracle.DataAccess
             return false;
         }
 
+        public bool SaveBath(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter)
+        {
+            if (isConnection)
+            {
+                if (rs != null)
+                {
+                    if (rs.isNew)
+                        return rs.InsertBulkRecords(ListY1,ListY2, oracleParameter);
+                }
+            }
+            return false;
+        }
+
         public bool Delete()
         {
             if (isConnection)

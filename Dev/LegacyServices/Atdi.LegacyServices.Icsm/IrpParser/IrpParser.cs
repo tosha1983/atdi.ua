@@ -141,7 +141,7 @@ namespace Atdi.LegacyServices.Icsm
             var irpDescr = new IrpDescriptor();
             try
             {
-
+                
                 var f = new Frame();
                 string Query = value;
                 int x1 = Query.IndexOf("\r\n");
@@ -152,6 +152,7 @@ namespace Atdi.LegacyServices.Icsm
                 f.Load(strx);
                 var _report = new IcsmReport();
                 _report.SetConfig(f);
+                var zeta = this._schemasMetadata.GetTableByName(_report.m_dat.m_tab);
                 for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
                     {
                         var metaData = new IrpColumn();
@@ -199,10 +200,63 @@ namespace Atdi.LegacyServices.Icsm
                                 ty_p = GetFieldFromOrm(_report.m_dat.m_tab, FLD_STATE_value);
                             }
                         }
-                        if (ty_p != null)
+                        bool isDefinedRealType = false;
+                        Orm.Field d = zeta.Fields.ToList().Find(x => x.Name == t); 
+                        if (d!=null)
+                        {
+                            string substring = "DataType=";
+                            if (!string.IsNullOrEmpty(d.Info))
+                            {
+                                if (d.Info.Contains(substring))
+                                {
+                                    isDefinedRealType = true;
+                                    string typeRecognize = d.Info.Replace(substring, "");
+                                    switch (typeRecognize)
+                                    {
+                                        case "System.Int32":
+                                            metaData.columnMeta.Type = DataModels.DataType.Integer;
+                                            break;
+                                        case "System.Boolean":
+                                            metaData.columnMeta.Type = DataModels.DataType.Boolean;
+                                            break;
+                                        case "System.Byte":
+                                            metaData.columnMeta.Type = DataModels.DataType.Byte;
+                                            break;
+                                        case "System.Decimal":
+                                            metaData.columnMeta.Type = DataModels.DataType.Decimal;
+                                            break;
+                                        case "System.Double":
+                                            metaData.columnMeta.Type = DataModels.DataType.Double;
+                                            break;
+                                        case "System.String":
+                                            metaData.columnMeta.Type = DataModels.DataType.String;
+                                            break;
+                                        case "System.DateTime":
+                                            metaData.columnMeta.Type = DataModels.DataType.DateTime;
+                                            break;
+                                        case "System.Byte[]":
+                                            metaData.columnMeta.Type = DataModels.DataType.Bytes;
+                                            break;
+                                        case "System.Guid":
+                                            metaData.columnMeta.Type = DataModels.DataType.Guid;
+                                            break;
+                                        case "System.Single":
+                                            metaData.columnMeta.Type = DataModels.DataType.Float;
+                                            break;
+                                        default:
+                                            metaData.columnMeta.Type = DataModels.DataType.Undefined;
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        if ((ty_p != null) && (isDefinedRealType==false))
                         {
                             switch (ty_p.DDesc.ClassType)
                             {
+                                case Orm.VarType.var_Guid:
+                                    metaData.columnMeta.Type = DataModels.DataType.Guid;
+                                    break;
                                 case Orm.VarType.var_Bytes:
                                     metaData.columnMeta.Type = DataModels.DataType.Bytes;
                                     break;
@@ -222,7 +276,7 @@ namespace Atdi.LegacyServices.Icsm
                                     metaData.columnMeta.Type = DataModels.DataType.DateTime;
                                     break;
                                 default:
-                                    metaData.columnMeta.Type = DataModels.DataType.String;
+                                    metaData.columnMeta.Type = DataModels.DataType.Undefined;
                                     break;
                             }
                         }

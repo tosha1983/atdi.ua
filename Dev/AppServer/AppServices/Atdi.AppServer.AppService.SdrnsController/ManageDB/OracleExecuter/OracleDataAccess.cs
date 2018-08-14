@@ -467,8 +467,97 @@ namespace Atdi.Oracle.DataAccess
                     allSql = allSql.Insert(0, "INSERT ALL" + Environment.NewLine);
                     Temp_Count = 0;
                 }
+                command.CommandText = allSql;
+                command.ExecuteNonQuery();
+                //transaction.Commit();
+                isSuccess = true;
+                command.Dispose();
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                //transaction.Rollback();
+                Console.WriteLine(e.ToString());
+                Console.WriteLine("Neither record was written to database.");
+            }
+            return true;
+        }
 
-                //allSql += " SELECT * FROM dual";
+        public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, int Cnt1, List<OracleParameter> OraParametr_Level2, string TableName_Level2, int Cnt2, OracleParameter[] oracleParameterRefId)
+        {
+            bool isSuccess = false;
+            const int CountInsertRecordInOneBlock = 200;
+            int Temp_Count = 0;
+            List<string> SQL_PART = new List<string>();
+            string SQL = ""; string SQL_INSERT = "";
+            string allSql = "";//"INSERT ALL ";
+            OracleCommand command = connection.CreateCommand();
+            try
+            {
+                command.Parameters.Clear();
+                foreach (OracleParameter p in OraParametr_Level1)
+                    command.Parameters.Add(p);
+                string AllColumns_level1 = ""; string AllValues_level1 = "";
+                List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
+                for (int z = 1; z <= Cnt1; z++)
+                {
+                    AllColumns_level1 = ""; AllValues_level1 = "";
+                    foreach (OracleParameter p in OraParametr_Level1.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
+                    {
+                        if (p.OracleDbType != OracleDbType.Object)
+                            AllValues_level1 += p.ParameterName + ",";
+                        else
+                        {
+                            AllValues_level1 += p.Value.ToString() + ",";
+                            DelObj_Level1.Add(p);
+                        }
+
+                        AllColumns_level1 += p.SourceColumn + ",";
+                    }
+                    while (DelObj_Level1.Count > 0)
+                    {
+                        command.Parameters.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
+                        DelObj_Level1.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
+                    }
+                    if (AllValues_level1.Length > 0) AllValues_level1 = AllValues_level1.Remove(AllValues_level1.Length - 1, 1);
+                    if (AllColumns_level1.Length > 0) AllColumns_level1 = AllColumns_level1.Remove(AllColumns_level1.Length - 1, 1);
+                    allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level1, AllColumns_level1, AllValues_level1) + Environment.NewLine;
+
+                }
+
+                string AllColumns_level2 = ""; string AllValues_level2 = "";
+                List<OracleParameter> DelObj_Level2 = new List<OracleParameter>();
+                for (int z = 1; z <= Cnt2; z++)
+                {
+                    AllColumns_level2 = ""; AllValues_level2 = "";
+                    foreach (OracleParameter p in OraParametr_Level2.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
+                    {
+                        if (p.OracleDbType != OracleDbType.Object)
+                            AllValues_level2 += p.ParameterName + ",";
+                        else
+                        {
+                            AllValues_level2 += p.Value.ToString() + ",";
+                            DelObj_Level2.Add(p);
+                        }
+
+                        AllColumns_level2 += p.SourceColumn + ",";
+                    }
+                    while (DelObj_Level2.Count > 0)
+                    {
+                        command.Parameters.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
+                        DelObj_Level2.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
+                    }
+                    if (AllValues_level2.Length > 0) AllValues_level2 = AllValues_level2.Remove(AllValues_level2.Length - 1, 1);
+                    if (AllColumns_level2.Length > 0) AllColumns_level2 = AllColumns_level2.Remove(AllColumns_level2.Length - 1, 1);
+                    allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level2, AllColumns_level2, AllValues_level2) + Environment.NewLine;
+
+                }
+                if (allSql.Length > 0)
+                {
+                    allSql += "SELECT 1 FROM DUAL" + Environment.NewLine;
+                    allSql += "COMMIT";
+                    allSql = allSql.Insert(0, "INSERT ALL" + Environment.NewLine);
+                }
                 command.CommandText = allSql;
                 command.ExecuteNonQuery();
                 //transaction.Commit();

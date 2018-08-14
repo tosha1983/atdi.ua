@@ -1,5 +1,6 @@
 ﻿using ICSM;
 using OrmCs;
+using System;
 
 namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
@@ -92,18 +93,18 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
             s.DeclareTable("XWEBTEST", "TEST table", plugin4);
             {
-                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XWEBTEST", "PRIMARY", "ID");
-                s.DeclareField("STRING_TYPE", "VARCHAR(200)", null, null, null);
-                s.DeclareField("BOOLEAN_TYPE", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("INTEGER_TYPE", "NUMBER(11,0)", null, null, null);
-                s.DeclareField("DATETIME_TYPE", "DATE", "Date", null, null);
-                s.DeclareField("DOUBLE_TYPE", "NUMBER(38,29)", null, null, null);
-                s.DeclareField("FLOAT_TYPE", "NUMBER(38,29)", null, null, null);
-                s.DeclareField("DECIMAL_TYPE", "NUMBER(38,29)", null,  null, null);
-                s.DeclareField("BYTE_TYPE", "NUMBER(3,0)", null, null, null);
-                s.DeclareField("BYTES_TYPE", "BINARY(20000)", null, null, null);
-                s.DeclareField("GUID_TYPE", "VARCHAR(40)", null, null, null);
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null); s.Info(string.Format("DataType={0}", typeof(int)));
+                s.DeclareIndex("PK_XWEBTEST", "PRIMARY", "ID"); 
+                s.DeclareField("STRING_TYPE", "VARCHAR(200)", null, null, null); s.Info(string.Format("DataType={0}", typeof(string)));
+                s.DeclareField("BOOLEAN_TYPE", "NUMBER(1,0)", null, null, null); s.Info(string.Format("DataType={0}",typeof(bool)));
+                s.DeclareField("INTEGER_TYPE", "NUMBER(11,0)", null, null, null); s.Info(string.Format("DataType={0}", typeof(int)));
+                s.DeclareField("DATETIME_TYPE", "DATE", "Date", null, null); s.Info(string.Format("DataType={0}", typeof(DateTime)));
+                s.DeclareField("DOUBLE_TYPE", "NUMBER(38,29)", null, null, null); s.Info(string.Format("DataType={0}", typeof(double)));
+                s.DeclareField("FLOAT_TYPE", "NUMBER(38,29)", null, null, null); s.Info(string.Format("DataType={0}", typeof(float)));
+                s.DeclareField("DECIMAL_TYPE", "NUMBER(38,29)", null,  null, null); s.Info(string.Format("DataType={0}", typeof(decimal)));
+                s.DeclareField("BYTE_TYPE", "NUMBER(3,0)", null, null, null); s.Info(string.Format("DataType={0}", typeof(byte)));
+                s.DeclareField("BYTES_TYPE", "BINARY(20000)", null, null, null); s.Info("DataType=System.Byte[]");
+                s.DeclareField("GUID_TYPE", "VARCHAR(40)", null, null, null); s.Info(string.Format("DataType={0}", typeof(Guid)));
                 //s.DeclareField("GUID_TYPE", "GUID", null, null, null);
             }
         }
