@@ -162,6 +162,10 @@ namespace Atdi.LegacyServices.Icsm
             {
                 return Convert.ToInt32(_dataReader.GetFloat(ordinal));
             }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToInt32(_dataReader.GetBoolean(ordinal));
+            }
             if (fieldDbType == typeof(byte))
             {
                 return Convert.ToInt32(_dataReader.GetByte(ordinal));
