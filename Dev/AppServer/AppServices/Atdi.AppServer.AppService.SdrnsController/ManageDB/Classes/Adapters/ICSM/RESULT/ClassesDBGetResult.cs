@@ -683,8 +683,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
                                     int idx_cnt = 0;
                                     YXbsLevelmeasres d_ = new YXbsLevelmeasres();
+                                    d_.Format("*");
                                     int? indexerYXbsLevelmeasres = d_.GetMaxId(d_.GetTableName());
                                     YXbsLevelmeasres dx_ = new YXbsLevelmeasres();
+                                    dx_.Format("*");
                                     int? indexerYXbsSpectoccupmeas = dx_.GetMaxId(dx_.GetTableName());
                                     foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
                                     {

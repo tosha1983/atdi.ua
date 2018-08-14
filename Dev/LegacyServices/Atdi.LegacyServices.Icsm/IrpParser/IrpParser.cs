@@ -210,7 +210,9 @@ namespace Atdi.LegacyServices.Icsm
                                 if (d.Info.Contains(substring))
                                 {
                                     isDefinedRealType = true;
-                                    string typeRecognize = d.Info.Replace(substring, "");
+                                    int indexStart = d.Info.IndexOf(substring);
+                                    string typeRecognizeDel = d.Info.Substring(0, indexStart);
+                                    string typeRecognize =  d.Info.Replace(typeRecognizeDel,"").Replace(substring, "");
                                     switch (typeRecognize)
                                     {
                                         case "System.Int32":

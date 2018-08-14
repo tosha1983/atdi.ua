@@ -83,7 +83,7 @@ namespace OrmCs
 			public DatPtr z_float_type { get { return new DatPtr(this,6); } }
 		public double m_decimal_type { get { return getDouble(7); } set { setDouble(7,value); } }
 			public DatPtr z_decimal_type { get { return new DatPtr(this,7); } }
-		public int m_byte_type { get { return getInt(8); } set { setInt(8,value); } }
+		public string m_byte_type { get { return getString(8); } set { setString(8,4,value); } }
 			public DatPtr z_byte_type { get { return new DatPtr(this,8); } }
 		public string m_guid_type { get { return getString(9); } set { setString(9,40,value); } }
 			public DatPtr z_guid_type { get { return new DatPtr(this,9); } }

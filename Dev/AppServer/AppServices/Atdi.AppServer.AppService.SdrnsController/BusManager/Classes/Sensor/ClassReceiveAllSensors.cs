@@ -48,7 +48,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
             BusManager<Sensor> busManager = new BusManager<Sensor>();
               System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    logger.Error("Start procedure ReceiveAllSensorList...");
+                    logger.Trace("Start procedure ReceiveAllSensorList...");
                     if (GlobalInit.SensorListSDRNS.Count == 0)
                     {
                         ClassDBGetSensor DB = new ClassDBGetSensor(logger);
@@ -140,7 +140,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             GC.SuppressFinalize(ClassStaticBus.bus);
                             ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                         }
-                    logger.Error("End procedure ReceiveAllSensorList.");
+                    logger.Trace("End procedure ReceiveAllSensorList.");
                 });
                 tsk.Start();
                 tsk.Join();
