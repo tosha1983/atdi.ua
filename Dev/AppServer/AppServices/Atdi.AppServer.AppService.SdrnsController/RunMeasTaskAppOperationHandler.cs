@@ -21,10 +21,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             CommonOperationResult
         >
     {
-        private ILogger log;
         public RunMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
-            log = logger;
+
         }
 
         /// <summary>
@@ -45,7 +44,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
                         if (mt != null)
                         {
-                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
+                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                             //int ID = tasks.Create_New_Meas_Task(mt, "Run");
                             List<int> SensorIds = new List<int>();
                             foreach (MeasSubTask item in mt.MeasSubTasks)
@@ -77,10 +76,12 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 {
                     res.State = CommonOperationState.Fault;
                     res.FaultCause = ex.Message;
+                    Logger.Trace("Error in procedure RunMeasTaskAppOperationHandler: " + ex.Message);
                 }
             });
             ge.Start();
             ge.Join();
+
             return res;
 
         }

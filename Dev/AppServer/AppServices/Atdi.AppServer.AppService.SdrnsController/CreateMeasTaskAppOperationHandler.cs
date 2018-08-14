@@ -21,10 +21,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             MeasTaskIdentifier
         >
     {
-        private ILogger log;
         public CreateMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
-            log = logger;
+
         }
 
         /// <summary>
@@ -36,18 +35,15 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override MeasTaskIdentifier Handle(CreateMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             MeasTaskIdentifier md = new MeasTaskIdentifier();
-            System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
             MeasTask mt = options.Task;
             if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
             if (mt.Status == null) mt.Status = "N";
-            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
-            System.Console.WriteLine("Start Create_New_Meas_Task ");
+            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
+            Logger.Trace("Start Create_New_Meas_Task... ");
             int ID = tasks.Create_New_Meas_Task(mt, "New");
             md.Value = ID;
             Logger.Trace(this, options, operationContext);
-            System.Threading.Thread tsg = new System.Threading.Thread(() => {
-            try {
-                List<int> SensorIds = new List<int>();
+             List<int> SensorIds = new List<int>();
                 if (mt.Stations != null) {
                     foreach (MeasStation ts in mt.Stations) {
                         if (ts.StationId != null) {
@@ -59,14 +55,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     }
                 }
                 tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("CreateMeasTaskAppOperationHandler "+ex.Message);
-            }
-            });
-            tsg.Start();
-            //tsg.Join();
             return md;
         }
     }

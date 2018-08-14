@@ -9,7 +9,7 @@ using System.Collections;
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
 
-    public class ConnectDB
+    public class Constants
     {
         public static int NullI = 2147483647;
         public static double NullD = 1E-99;

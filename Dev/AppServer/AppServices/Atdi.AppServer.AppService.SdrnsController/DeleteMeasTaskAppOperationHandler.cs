@@ -22,10 +22,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             CommonOperationResult
         >
     {
-        private ILogger log;
+
         public DeleteMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
-            log = logger;
+            
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 if (options.TaskId != null) {
                     MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
                     if (mt != null) {
-                        WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
+                        WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                         List<int> SensorIds = new List<int>();
                         foreach (MeasSubTask item in mt.MeasSubTasks) {
                             foreach (MeasSubTaskStation u in item.MeasSubTaskStations) {

@@ -23,6 +23,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
     {
         public DeleteMeasResultsAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 lock (GlobalInit.LST_MeasurementResults) {
                     MeasurementResults resd = GlobalInit.LST_MeasurementResults.Find(t => t.Id.MeasTaskId.Value == (int)ca_MeasTaskId.Value && t.StationMeasurements.StationId.Value == (int)ca_StationId.Value && t.Id.SubMeasTaskId == (int)ca_SubMeasTaskId.Value && t.Id.SubMeasTaskStationId == (int)ca_SubMeasTaskStationId.Value && (t.MeasurementsResults.ToList().Find(y=>y.Id.Value==(int)ca_N.Value)!=null));
                     if (resd!=null) {
-                        ClassesDBGetResult resDb = new ClassesDBGetResult();
+                        ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
                         if (resd.Status=="O") {
                             GlobalInit.LST_MeasurementResults.RemoveAll(t => t.Id.MeasTaskId.Value == (int)ca_MeasTaskId.Value && t.StationMeasurements.StationId.Value == (int)ca_StationId.Value && t.Id.SubMeasTaskId == (int)ca_SubMeasTaskId.Value && t.Id.SubMeasTaskStationId == (int)ca_SubMeasTaskStationId.Value && (t.MeasurementsResults.ToList().Find(y => y.Id.Value == (int)ca_N.Value) != null));
                         }
@@ -66,7 +67,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     MeasurementResults resd = GlobalInit.LST_MeasurementResults.Find(t => t.Id.MeasTaskId.Value == (int)ca_MeasTaskId.Value);
                     resd.StationMeasurements = null;
                     if (resd != null) {
-                        ClassesDBGetResult resDb = new ClassesDBGetResult();
+                        ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
                         if (resd.Status == "O") {
                             GlobalInit.LST_MeasurementResults.RemoveAll(t => t.Id.MeasTaskId.Value == (int)ca_MeasTaskId.Value);
                         }

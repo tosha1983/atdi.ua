@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Oracle.DataAccess;
 using Atdi.SDNRS.AppServer.BusManager;
+using Atdi.AppServer;
 
 using Atdi.AppServer.Contracts.Sdrns;
 
@@ -12,6 +13,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
     public class ClassConvertToSDRResults : IDisposable
     {
+        public static ILogger logger;
+        public ClassConvertToSDRResults(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -30,6 +36,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             List<MeasurementResults> L_OUT = new List<MeasurementResults>();
             try
             {
+                logger.Trace("Start procedure ConvertTo_SDRObjects...");
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     foreach (ClassSDRResults obj in objs.ToArray())
@@ -133,11 +140,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
+                logger.Trace("End procedure ConvertTo_SDRObjects...");
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("ConvertTo_SDRObjects"+ex.Message);
+                logger.Error("Error in procedure ConvertTo_SDRObjects..." + ex.Message);
             }
             return L_OUT.ToArray();
         }

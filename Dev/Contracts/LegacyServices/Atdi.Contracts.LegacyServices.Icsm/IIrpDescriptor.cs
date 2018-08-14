@@ -12,6 +12,7 @@ namespace Atdi.Contracts.LegacyServices.Icsm
     {
        public List<IrpColumn> irpColumns { get; set; }
        public string TableName { get; set; }
-     
+       public string[] PrimaryKey { get; set; }
+
     }
 }

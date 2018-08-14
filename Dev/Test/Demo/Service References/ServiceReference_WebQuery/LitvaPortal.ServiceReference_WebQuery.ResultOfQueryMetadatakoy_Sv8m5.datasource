@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="ResultOfQueryMetadatakoy_Sv8m5" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>LitvaPortal.ServiceReference_WebQuery.ResultOfQueryMetadatakoy_Sv8m5</TypeInfo>
+   <TypeInfo>LitvaPortal.ServiceReference_WebQuery.ResultOfQueryMetadatakoy_Sv8m5, Service References.ServiceReference_WebQuery.Reference.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

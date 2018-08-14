@@ -25,6 +25,36 @@ namespace Atdi.LegacyServices.Icsm
             this._schemasMetadata = schemasMetadata;
         }
 
+        public string[] GetPrimaryKeys(string tableName)
+        {
+            List<string> allPrimaryKeys = new List<string>();
+            var zeta = this._schemasMetadata.GetTableByName(tableName);
+            if (zeta != null)
+            {
+                foreach (Orm.Field f1 in zeta.ClassFields)
+                {
+                    switch (f1.Nature)
+                    {
+                        case Orm.FieldNature.Column:
+                            {
+                                Orm.FieldF fjF = (Orm.FieldF)f1;
+                                if (fjF != null)
+                                {
+                                    if ((fjF.Options == (Orm.FieldFOption.fld_NOTNULL | Orm.FieldFOption.fld_PRIMARY | Orm.FieldFOption.fld_FKEY)) || ((fjF.Options == (Orm.FieldFOption.fld_NOTNULL | Orm.FieldFOption.fld_PRIMARY)) && (fjF.Index == 0)))
+                                    {
+                                        allPrimaryKeys.Add(f1.Name);
+                                    }
+                                }
+                            }
+                            break;
+
+                    }
+                }
+            }
+            return allPrimaryKeys.ToArray();
+        }
+
+
         public Orm.Field GetOrmDataDesc(string fld_check, string tableName)
         {
             Orm.Field rc = null;
@@ -61,7 +91,6 @@ namespace Atdi.LegacyServices.Icsm
                                 var fj = (Orm.FieldJ)f1;
                                 var joi = fj.Join;
                                 var tc = joi.JoinedTable;
-                                //string joinedClass = OrmSourcer.TableNameToClassName(f1.Name);
                                 if (fld_check == f1.Name)  {
                                     rc.NameTableTo = tc.Name;
                                     rc.Name = f1.Name;
@@ -112,7 +141,6 @@ namespace Atdi.LegacyServices.Icsm
             var irpDescr = new IrpDescriptor();
             try
             {
-                
 
                 var f = new Frame();
                 string Query = value;
@@ -128,9 +156,9 @@ namespace Atdi.LegacyServices.Icsm
                     {
                         var metaData = new IrpColumn();
                         metaData.columnMeta = new ColumnMetadata();
-
                         metaData.columnMeta.Description = _report.m_desc;
                         metaData.columnMeta.Title = "";
+                        irpDescr.PrimaryKey = GetPrimaryKeys(_report.m_dat.m_tab);
                         irpDescr.TableName = _report.m_dat.m_tab;
                         string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                         t = t.Replace(_report.m_dat.m_tab + ".", "");

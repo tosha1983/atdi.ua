@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Oracle.DataAccess;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -14,6 +15,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class ClassConvertTasks : IDisposable
     {
+        public static ILogger logger;
+        public ClassConvertTasks(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -41,6 +47,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 await Task.Run(() =>
                 {
+                    logger.Trace("Start procedure ConvertTo_MEAS_TASKObjects...");
                     #region Convert to MeasTask
                     foreach (CLASS_TASKS obj in objs.ToArray())
                     {
@@ -345,15 +352,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
 
                         L_OUT.Add(s_out);
-                        Console.WriteLine("Convert to MEAS_TASK Objects ...");
+                        logger.Trace("Convert to MEAS_TASK Objects ...");
                     }
+                    logger.Trace("End procedure ConvertTo_MEAS_TASKObjects...");
                 }).ConfigureAwait(false);
                 
                 #endregion
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in ConvertTo_MEAS_TASKObjects: " + ex.Message);
+                logger.Error("Error in procedure ConvertTo_MEAS_TASKObjects..." + ex.Message);
             }
             return L_OUT.ToArray();
         }

@@ -30,8 +30,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         public override MeasurementResults Handle(GetMeasResultsByIdAppOperationOptions options, IAppOperationContext operationContext)
         {
-            MeasurementResults res = new MeasurementResults();
             Logger.Trace(this, options, operationContext);
+            MeasurementResults res = new MeasurementResults();
             if (options.MeasResultsId != null) {
                 if (options.MeasResultsId.MeasTaskId != null) {
                     res = GlobalInit.LST_MeasurementResults.Find(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId && t.Id.MeasTaskId.Value == options.MeasResultsId.MeasTaskId.Value && t.Id.SubMeasTaskId == options.MeasResultsId.SubMeasTaskId && t.Id.SubMeasTaskStationId == options.MeasResultsId.SubMeasTaskStationId);

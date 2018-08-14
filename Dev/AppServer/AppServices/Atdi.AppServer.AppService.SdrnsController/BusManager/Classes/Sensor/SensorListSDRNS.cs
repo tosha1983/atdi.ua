@@ -7,6 +7,7 @@ using EasyNetQ;
 using XMLLibrary;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -26,6 +27,11 @@ namespace Atdi.SDNRS.AppServer.BusManager
     }
     public class SensorListSDRNS : IDisposable
     {
+        public static ILogger logger;
+        public SensorListSDRNS(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -46,6 +52,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
         /// <returns></returns>
         public List<ShortSensor> CreateShortSensorList()
         {
+            logger.Trace("Start procedure CreateShortSensorList...");
             List<ShortSensor> val = new List<ShortSensor>();
             List<Sensor> val_all_s = new List<Sensor>();
             {
@@ -82,6 +89,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     }
                 }
             }
+            logger.Trace("End procedure CreateShortSensorList.");
             return val;
         }
         /// <summary>
@@ -91,6 +99,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
         /// <returns></returns>
         public ShortSensor CreateShortSensorListBySensorId(int Id)
         {
+            logger.Trace("Start procedure CreateShortSensorListBySensorId...");
             ShortSensor val = new ShortSensor();
             {
                 Sensor sd = GlobalInit.SensorListSDRNS.Find(t=>t.Id.Value == Id);
@@ -124,6 +133,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     val =sh;
                 }
             }
+            logger.Trace("End procedure CreateShortSensorListBySensorId.");
             return val;
         }
         /// <summary>
@@ -133,10 +143,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
         {
             try
             {
-                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "CheckActivitySensor ");
-                ClassDBGetSensor gsd = new ClassDBGetSensor();
+                logger.Trace("Start procedure CheckActivitySensor...");
+                ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
                 BusManager<Sensor> busManager = new BusManager<Sensor>();
-                ClassDBGetSensor DB = new ClassDBGetSensor();
+                ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                     List<Sensor> L_S = DB.LoadObjectAllSensor();
                     DB.Dispose();
                     if (L_S != null) {
@@ -309,147 +319,15 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             }
                         }
                     }
-                gsd.Dispose();  
+                gsd.Dispose();
+                logger.Trace("End procedure CheckActivitySensor.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("--> Error execute proc CheckActivitySensor " + ex.Message);
+                logger.Trace("Error in procedure CheckActivitySensor.");
             }
         }
-        /*
-        /// <summary>
-        /// Проверка активности заданного сенсора
-        /// </summary>
-        /// <param name="Id"></param>
-        public bool CheckActivitySensor(int Id)
-        {
-            bool isActive = false;
-            try
-            {
-                BusManager<Sensor> busManager = new BusManager<Sensor>();
-                //lock (GlobalInit.SensorListSDRNS)
-                {
-                    Sensor FndSens = GlobalInit.SensorListSDRNS.Find(t => t.Id.Value == Id);
-                    if (FndSens != null)  {
-                        busManager.SendDataObject(FndSens, GlobalInit.Template_Event_CheckActivitySensor_Req + FndSens.Name + FndSens.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                        Mdx RW = new Mdx(FndSens);
-                        //lock (GlobalInit.Lst_timers)
-                        {
-                            if (GlobalInit.Lst_timers.Find(t => t.se.Name == FndSens.Name && t.se.Equipment.TechId == FndSens.Equipment.TechId) == null)
-                                GlobalInit.Lst_timers.Add(RW);
-
-                            List<Mdx> FndMdx = GlobalInit.Lst_timers.FindAll(e => e.se.Name == FndSens.Name && e.se.Equipment.TechId == FndSens.Equipment.TechId);
-                            if (FndMdx != null)
-                            {
-                                foreach (Mdx se in GlobalInit.Lst_timers.ToArray())
-                                {
-                                    if (ClassStaticBus.bus.IsConnected)
-                                    {
-                                        GlobalInit.Lds_Activity_Sensor_Receiver.Add(ClassStaticBus.bus.Receive(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId, x => x
-                                        .Add<Sensor>(message_x =>
-                                        {
-                                            if (message_x.Name == se.se.Name && message_x.Equipment.TechId == se.se.Equipment.TechId)
-                                            {
-                                                se.Cnt_sensor_New++; se.Cnt_timer = 0; se.Cnt_all_time = 0;
-                                                Sensor f = GlobalInit.SensorListSDRNS.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
-                                                if (f != null)
-                                                {
-                                                    ClassDBGetSensor gsd = new ClassDBGetSensor();
-                                                    se.Cnt_sensor_New++; f.Status = message_x.Status; se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_Old = 0; se.BZ.Start(); gsd.UpdateStatusSensor(f);
-                                                }
-                                                else {
-                                                    se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_New = 0;
-                                                }
-                                            }
-                                        })));
-                                    }
-                                    else
-                                    {
-                                        ClassStaticBus.bus.Dispose();
-                                        GC.SuppressFinalize(ClassStaticBus.bus);
-                                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                    }
-                                    Sensor fc = GlobalInit.SensorListSDRNS.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
-                                    if (fc != null)
-                                    {
-                                        if ((se.Cnt_timer >= BaseXMLConfiguration.xml_conf._CheckActivitySensor) && (se.Cnt_timer < BaseXMLConfiguration.xml_conf._MaxTimeNotActivateStatusSensor))
-                                        {
-                                            if (ClassStaticBus.bus.IsConnected)
-                                            {
-                                                busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                                                GlobalInit.Lds_Activity_Sensor_Receiver.Add(ClassStaticBus.bus.Receive(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId, x => x
-                                                        .Add<Sensor>(message_x =>
-                                                        {
-                                                            if (message_x.Name == se.se.Name && message_x.Equipment.TechId == se.se.Equipment.TechId)
-                                                            {
-                                                                se.Cnt_sensor_New++;
-                                                                se.Cnt_timer = 0;
-                                                                se.Cnt_all_time = 0;
-                                                                se.Cnt_sensor_Old = 0;
-                                                                se.BZ.Start();
-
-                                                            }
-                                                        })));
-                                            }
-                                            else
-                                            {
-                                                ClassStaticBus.bus.Dispose();
-                                                GC.SuppressFinalize(ClassStaticBus.bus);
-                                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                            }
-                                            fc.Status = AllStatusSensor.F.ToString();
-                                            se.Cnt_timer = 0;
-                                            se.Cnt_sensor_New = 0;
-                                            ClassDBGetSensor gsd = new ClassDBGetSensor();
-                                            gsd.UpdateStatusSensor(fc);
-                                        }
-                                        else if ((se.Cnt_all_time >= BaseXMLConfiguration.xml_conf._MaxTimeNotActivateStatusSensor))
-                                        {
-                                            bool isCheck = false;
-                                            if (ClassStaticBus.bus.IsConnected)
-                                            {
-                                                busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                                                GlobalInit.Lds_Activity_Sensor_Receiver.Add(ClassStaticBus.bus.Receive(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId, x => x
-                                                    .Add<Sensor>(message_x =>
-                                                    {
-                                                        if (message_x.Name == se.se.Name && message_x.Equipment.TechId == se.se.Equipment.TechId)
-                                                        {
-                                                            se.Cnt_sensor_New++; se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_Old = 0; se.BZ.Start();
-                                                            isCheck = true;
-                                                        }
-                                                    })));
-                                            }
-                                            else
-                                            {
-                                                ClassStaticBus.bus.Dispose();
-                                                GC.SuppressFinalize(ClassStaticBus.bus);
-                                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                            }
-                                            if (!isCheck) se.Cnt_sensor_Old++;
-
-                                            if ((se.Cnt_sensor_New == 0) || (se.Cnt_sensor_Old > 2))
-                                            {
-                                                fc.Status = AllStatusSensor.Z.ToString(); se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_New = 0; se.Cnt_sensor_Old = 0;
-                                                ClassDBGetSensor gsd = new ClassDBGetSensor();
-                                                gsd.UpdateStatusSensor(fc);
-                                                GlobalInit.SensorListSDRNS.RemoveAll(t => t.Name == fc.Name && t.Equipment.TechId == fc.Equipment.TechId);
-                                                se.BZ.Stop();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("--> Error execute proc CheckActivitySensor(ID) " + ex.Message);
-            }
-            return isActive;
-        }
-        */
+     
     }
 
     /// <summary>

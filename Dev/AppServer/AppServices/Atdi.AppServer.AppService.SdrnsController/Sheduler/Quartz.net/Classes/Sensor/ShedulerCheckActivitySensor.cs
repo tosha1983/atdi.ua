@@ -12,12 +12,17 @@ using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using XMLLibrary;
-
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
     public class ShedulerCheckActivitySensor : InterfaceSheduler, IDisposable
     {
+        public static ILogger logger;
+        public ShedulerCheckActivitySensor(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -58,16 +63,19 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             void IJob.Execute(IJobExecutionContext context)
             {
                 //foreach (IDisposable d in GlobalInit.Lds_Activity_Sensor_Receiver) d.SafeDispose();
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                logger.Trace("Start job ShedulerCheckActivitySensor...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
                     System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
-                    SensorListSDRNS senLst = new SensorListSDRNS();
+                    SensorListSDRNS senLst = new SensorListSDRNS(logger);
                     senLst.CheckActivitySensor();
                     senLst.Dispose();
-                    });
-                    tsk.Start();
-                    //tsk.Join();
-                    System.GC.Collect();
+                });
+                tsk.Start();
+                //tsk.Join();
+
+                System.GC.Collect();
+                logger.Trace("End job ShedulerCheckActivitySensor.");
             }
           
         }

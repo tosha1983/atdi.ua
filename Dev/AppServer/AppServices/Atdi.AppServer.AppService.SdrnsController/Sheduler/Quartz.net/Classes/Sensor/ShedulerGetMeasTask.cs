@@ -19,8 +19,9 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         public static ILogger logger;
         public ShedulerGetMeasTask(ILogger log)
         {
-            log = logger;
+            if (logger == null) logger = log;
         }
+
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -64,13 +65,11 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             //ClassConvertTasks ts = new ClassConvertTasks();
             void IJob.Execute(IJobExecutionContext context)
             {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks(ShedulerGetMeasTask.logger);
-                //foreach (IDisposable d in GlobalInit.Lds_Activity_MEAS_TASK_SDR_Main_List_SDR) d.SafeDispose();
-                //Task stx = new Task(() =>
-                //{
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
                 try
                 {
-                     BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                    logger.Trace("Start job ShedulerGetMeasTask... ");
+                    BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
                       foreach (Sensor s in GlobalInit.SensorListSDRNS.ToArray())
                         {
                             if (ClassStaticBus.bus.Advanced.IsConnected)
@@ -100,28 +99,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                     }
                                 else break;
                             }
-                                /*
-                                    GlobalInit.Lds_Activity_MEAS_TASK_SDR_Main_List_SDR.Add(ClassStaticBus.bus.Receive(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId, x => x
-                                    .Add<List<MeasSdrTask>>(message =>
-                                    {
-                                        List<MeasSdrTask> fnd_s = message;
-                                        if (fnd_s != null)
-                                        {
-                                            foreach (MeasSdrTask h in fnd_s)
-                                            {
-                                                if (h.MeasTaskId != null)
-                                                {
-                                                    MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Id.Value == h.MeasTaskId.Value);
-                                                    if (tsk != null)
-                                                    {
-                                                        tsk.Status = h.status;
-                                                        cl.SaveStatusTaskToDB(tsk);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    })));
-                                   */
+                               
                             }
                             else
                             {
@@ -131,16 +109,13 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                             //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                         }
                         }
-                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerGetMeasTask ");
-                    }
+                      logger.Trace("End job ShedulerGetMeasTask.");
+                     }
                     catch (Exception ex)
                     {
-                        //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerGetMeasTask " + ex.Message);
+                      logger.Error("Error in job ShedulerGetMeasTask: "+ex.Message);
                     }
                     cl.Dispose();
-                    //});
-                    //stx.Start();
-                    //stx.Wait();
                     System.GC.Collect();
             }
         }

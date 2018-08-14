@@ -21,10 +21,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class ClassesDBGetTasks : IDisposable
     {
-        private ILogger logger;
+        public static ILogger logger;
         public ClassesDBGetTasks(ILogger log)
         {
-            logger = log;
+            if (logger==null) logger = log;
         }
         /// <summary>
         /// Деструктор.
@@ -54,7 +54,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                    logger.Trace("Read all tasks from DB");
+                    logger.Trace("Start procedure ReadlAllSTasksFromDB...");
                     // сканирование по объектам БД
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
@@ -219,14 +219,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     task.Close();
                     task.Dispose();
+                    logger.Trace("End procedure ReadlAllSTasksFromDB.");
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
                 #endregion
             }
             catch (Exception ex) {
                 logger.Error("Error in ReadlAllSTasksFromDB: " + ex.Message);
-                Console.WriteLine("Error in ReadlAllSTasksFromDB: " + ex.Message);
             }           
             return L_IN;
         }
@@ -243,6 +244,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                logger.Trace("Start procedure SaveStatusTaskToDB...");
                 //подключение к БД
                 YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
@@ -283,14 +285,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 }
                 task.Close();
                 task.Dispose();
+                logger.Trace("End procedure SaveStatusTaskToDB.");
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
             {
                 logger.Error("Error in SaveStatusTaskToDB: " + ex.Message);
-                Console.WriteLine("Error in SaveStatusTaskToDB: " + ex.Message);
             }
             return isSuccess;
         }
@@ -307,6 +310,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
+                    logger.Trace("Start procedure SaveStatusTaskToDB...");
                     //подключение к БД
                     YXbsMeastask task = new YXbsMeastask();
                     task.Format("*");
@@ -347,14 +351,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     task.Close();
                     task.Dispose();
+                    logger.Trace("End procedure SaveStatusTaskToDB.");
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
+
             }
             catch (Exception ex)
             {
                 logger.Error("Error in SaveStatusTaskToDB: " + ex.Message);
-                Console.WriteLine("Error in SaveStatusTaskToDB: " + ex.Message);
             }
             return isSuccess;
         }
@@ -369,9 +375,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() => { 
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                logger.Trace("Start procedure SaveIdsSdrTasks...");
                 //подключение к БД
-                YXbsMeastask task = new YXbsMeastask();
+                 YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
                 if (task.Fetch(obj.Id.Value)) {
                     task.m_id_start = ids;
@@ -380,14 +387,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 }
                 task.Close();
                 task.Dispose();
-            });
+                logger.Trace("End procedure SaveIdsSdrTasks.");
+                });
             tsk.Start();
-            tsk.Join();
+                tsk.IsBackground = true;
+                tsk.Join();
             }
             catch (Exception ex)
             {
                 logger.Error("Error in SaveIdsSdrTasks: " + ex.Message);
-                Console.WriteLine("Error in SaveIdsSdrTasks: " + ex.Message);
             }
             return isSuccess;
         }
@@ -403,6 +411,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 string ids = "";
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                logger.Trace("Start procedure GetMaXIdsSdrTasks...");
                 YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
                 task.Filter = "(ID>0)";
@@ -429,15 +438,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 }
                 if (MaxIDs == -1) MaxIDs = 0;
+                logger.Trace("End procedure GetMaXIdsSdrTasks.");
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
             {
                 if (MaxIDs == -1) MaxIDs = 0;
                 logger.Error("Error in SaveIdsSdrTasks: " + ex.Message);
-                Console.WriteLine("Error in SaveIdsSdrTasks: " + ex.Message);
             }
             return MaxIDs;
         }
@@ -453,6 +463,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 string ids = "";
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                logger.Trace("Start procedure GetMaXIdsSdrResults...");
                 YXbsMeasurementres res = new YXbsMeasurementres();
                 res.Format("*");
                 res.Filter = "(ID>0)";
@@ -466,14 +477,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 }
                 if (MaxIDs == -1) MaxIDs = 0;
+                logger.Trace("End procedure GetMaXIdsSdrResults.");
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
             {
                 logger.Error("Error in GetMaXIdsSdrResults: " + ex.Message);
-                Console.WriteLine("Error in GetMaXIdsSdrResults: " + ex.Message);
             }
             return MaxIDs;
         }
@@ -489,7 +501,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                //подключение к БД 
+               logger.Trace("Start procedure SetHistoryStatusTasksInDB...");
+               //подключение к БД 
                 YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
                 // выбирать только сенсоры, для которых STATUS не NULL
@@ -522,14 +535,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 }
                 task.Close();
                 task.Dispose();
-                });
+                logger.Trace("End procedure SetHistoryStatusTasksInDB.");
+               });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
             {
                 logger.Error("Error in SetHistoryStatusTasksInDB: " + ex.Message);
-                Console.WriteLine("Error in SetHistoryStatusTasksInDB: " + ex.Message);
             }
             return isSuccess;
         }
@@ -539,21 +553,20 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public int SaveTaskToDB(MeasTask obj)
+        public async Task<int> SaveTaskToDB(MeasTask obj)
         {
-            int ID = ConnectDB.NullI;
+            int ID = Constants.NullI;
             try
             {
                 #region Save Task
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                await Task.Run(() =>
                 {
+                    logger.Trace("Start procedure SaveTaskToDB...");
                     /// Create new record in YXbsMeastask
                     if (obj.Id != null)
                     {
-                        if (obj.Id.Value != ConnectDB.NullI)
+                        if (obj.Id.Value != Constants.NullI)
                         {
-                            logger.Trace("Start proc save tasks ... ");
-
                             YXbsMeastask meastask = new YXbsMeastask();
                             meastask.Format("*");
                             if ((!meastask.Fetch(obj.Id.Value)) && (!meastask.Fetch(string.Format(" (ID={0}) ", obj.Id.Value))))
@@ -575,14 +588,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 ID = (int)meastask.Save();
                                 obj.Id.Value = ID;
                             }
-                            else {
+                            else
+                            {
                                 ID = (int)meastask.m_id;
                                 obj.Id.Value = ID;
                             }
                             meastask.Close();
                             meastask.Dispose();
                         }
-                        if (ID != ConnectDB.NullI)
+                        if (ID != Constants.NullI)
                         {
                             //// create YXbMeasDtParam
                             if (obj.MeasDtParam != null)
@@ -652,7 +666,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     if (loc_param.Id != null)
                                     {
-                                        if (loc_param.Id.Value != ConnectDB.NullI)
+                                        if (loc_param.Id.Value != Constants.NullI)
                                         {
                                             YXbsMeaslocparam prm_loc = new YXbsMeaslocparam();
                                             prm_loc.Format("*");
@@ -783,10 +797,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             {
                                 foreach (MeasSubTask sub_task in obj.MeasSubTasks.ToArray())
                                 {
-                                    int ID_sub_task = ConnectDB.NullI;
+                                    int ID_sub_task = Constants.NullI;
                                     if (sub_task.Id != null)
                                     {
-                                        if (sub_task.Id.Value != ConnectDB.NullI)
+                                        if (sub_task.Id.Value != Constants.NullI)
                                         {
                                             YXbsMeassubtask prm_sub_task = new YXbsMeassubtask();
                                             prm_sub_task.Format("*");
@@ -816,7 +830,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         foreach (MeasSubTaskStation sub_task_st in sub_task.MeasSubTaskStations.ToArray())
                                         {
-                                            if (sub_task_st.Id != ConnectDB.NullI)
+                                            if (sub_task_st.Id != Constants.NullI)
                                             {
                                                 YXbsMeassubtasksta prm_sub_task_st = new YXbsMeassubtasksta();
                                                 prm_sub_task_st.Format("*");
@@ -849,7 +863,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                 foreach (MeasFreqParam freq_param in new List<MeasFreqParam> { obj.MeasFreqParam })
                                 {
-                                    int ID_MeasFreqParam = ConnectDB.NullI;
+                                    int ID_MeasFreqParam = Constants.NullI;
                                     if (freq_param != null)
                                     {
                                         YXbsMeasfreqparam prm_MeasFreqParam = new YXbsMeasfreqparam();
@@ -1180,17 +1194,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ///
                         }
                     }
+                    logger.Trace("End procedure SaveTaskToDB.");
                     #endregion
-                });
-                tsk.Start();
-                tsk.Join();
+                }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                ID = ConnectDB.NullI;
-                logger.Error("Error in SetHistoryStatusTasksInDB: " + ex.Message);
-                Console.WriteLine("Error in SetHistoryStatusTasksInDB: " + ex.Message);
-
+                ID = Constants.NullI;
+                logger.Error("Error in SaveTaskToDB: " + ex.Message);
             }
             return ID;
         }

@@ -54,6 +54,10 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="EasyNetQ, Version=0.26.2.194, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
@@ -121,7 +125,7 @@
     <Compile Include="GetShortSensorsAppOperationHandler.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\RESULT\ClassesDBGetResult.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\SENSOR\ClassDBGetSensor.cs" />
-    <Compile Include="ManageDB\Classes\Adapters\ICSM\SENSOR\ORM\ConnectDB.cs" />
+    <Compile Include="ManageDB\Classes\Adapters\ICSM\Constants.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\ClassesDBGetTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\ConvertToUniversalObject\ClassConvertTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\ConvertToUniversalObject\ClassConvertToSDRResults.cs" />

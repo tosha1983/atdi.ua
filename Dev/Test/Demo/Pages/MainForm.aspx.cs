@@ -188,8 +188,6 @@ namespace OnlinePortal
 
                                             ClassIRPObject class_irp = new ClassIRPObject();
                                             string stat="";
-
-
                                             try
                                             {
                                                 var res = client.ExecuteQuery(new UserToken
@@ -206,7 +204,7 @@ namespace OnlinePortal
                                                              {
                                                                  new OrderExpression
                                                                  {
-                                                                  ColumnName = "ID",
+                                                                  ColumnName = meta.Data.PrimaryKey[0],
                                                                   OrderType = OrderType.Descending
                                                                  }
                                                              }

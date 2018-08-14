@@ -159,7 +159,7 @@ namespace OnlinePortal
                                                              {
                                                                  new OrderExpression
                                                                  {
-                                                                  ColumnName = "ID",
+                                                                  ColumnName = meta.Data.PrimaryKey[0],
                                                                   OrderType = OrderType.Descending
                                                                  }
                                                              }
@@ -668,6 +668,7 @@ namespace OnlinePortal
              }
 
             int Delta = 0;
+            string PrizNakIdentField = "";
             bool isRedactFull = false;
             bool isCheckID = false;
             bool isCheckOwnerID = false;
@@ -686,18 +687,28 @@ namespace OnlinePortal
             string Ident_User = "";
 
 
-            if (((Request.QueryString["TypeContainer"] != null)))
-            {
-                fnd_ = LIrp.Find(r => r.Setting_param.NAME == (string.IsNullOrEmpty(NTypeContainer) ? Cont : NTypeContainer) && r.StatusObject.ToString() == SectionT);
-                for (int k = 0; k < fnd_.FLD.Count(); k++)
+                if (((Request.QueryString["TypeContainer"] != null)))
                 {
-                    if (fnd_.FLD[k] == fnd_.Setting_param.Ident_User)
+                    fnd_ = LIrp.Find(r => r.Setting_param.NAME == (string.IsNullOrEmpty(NTypeContainer) ? Cont : NTypeContainer) && r.StatusObject.ToString() == SectionT);
+                    for (int k = 0; k < fnd_.FLD.Count(); k++)
                     {
-                        Caption_Fld = fnd_.CAPTION_FLD[k];
-                        break;
+                        if (fnd_.FLD[k] == "ID")
+                        {
+                            PrizNakIdentField = fnd_.CAPTION_FLD[k];
+                            break;
+                        }
+                    }
+
+                   
+                    for (int k = 0; k < fnd_.FLD.Count(); k++)
+                    {
+                        if (fnd_.FLD[k] == fnd_.Setting_param.Ident_User)
+                        {
+                            Caption_Fld = fnd_.CAPTION_FLD[k];
+                            break;
+                        }
                     }
                 }
-            }
             if (fnd_ != null)
             {
                 if (fnd_.Setting_param.Ident_User != "")
@@ -720,7 +731,7 @@ namespace OnlinePortal
             int index_owner = ConnectDB.NullI;
 
             if (e.Row.RowType == DataControlRowType.Footer){
-                int index = GetColumnIndexByName_(e.Row, "ID", out isCheckID, out Delta);
+                int index = GetColumnIndexByName_(e.Row, PrizNakIdentField, out isCheckID, out Delta);
                 if (Ident_User != "")
                     index_owner = GetColumnIndexByName_(e.Row, Ident_User, out isCheckOwnerID, out Delta);
                 if (isCheckID) e.Row.Cells[index].Visible = false;
@@ -731,7 +742,7 @@ namespace OnlinePortal
             }
 
             if (e.Row.RowType == DataControlRowType.Header) {
-                int index = GetColumnIndexByName_(e.Row, "ID", out isCheckID, out Delta);
+                int index = GetColumnIndexByName_(e.Row, PrizNakIdentField, out isCheckID, out Delta);
                 if (Ident_User!="")
                     index_owner = GetColumnIndexByName_(e.Row, Ident_User, out isCheckOwnerID, out Delta);
                 if (isCheckID) e.Row.Cells[index].Visible = false;
@@ -743,13 +754,13 @@ namespace OnlinePortal
 
             }
             if (e.Row.RowType == DataControlRowType.DataRow) {
-                int index_ID = GetColumnIndexByName_(e.Row, "ID", out isCheckID, out Delta);
+                int index_ID = GetColumnIndexByName_(e.Row, PrizNakIdentField, out isCheckID, out Delta);
                 if (Ident_User != "")
                     index_owner = GetColumnIndexByName_(e.Row, Ident_User, out isCheckOwnerID, out Delta);
                 if (isCheckID) e.Row.Cells[index_ID].Visible = false;
                 if (isCheckOwnerID) e.Row.Cells[index_owner].Visible = false;
                 for (int i = 0; i < e.Row.Cells.Count; i++)  {
-                    if (e.Row.Cells[i].Text == "ID")  {
+                    if (e.Row.Cells[i].Text == PrizNakIdentField)  {
                         e.Row.Cells[i].Visible = false;
                     }
                 }
@@ -780,7 +791,7 @@ namespace OnlinePortal
                     if (index_ID>=0) {
                         int Num_ID=0;
                             for (int x=0; x< fnd_.CAPTION_FLD.Count(); x++)  {
-                                if (fnd_.FLD[x]=="ID") {
+                                if (fnd_.CAPTION_FLD[x]== PrizNakIdentField) {
                                     Num_ID=x;
                                     break;
                                 }
@@ -798,7 +809,7 @@ namespace OnlinePortal
                         if (Num_ID >= 0)  {
                             //int index_ident = GetColumnIndexByName_(e.Row, Caption_Fld, out isCheckID, out Delta);
                             bool is_check_ident_id = false;
-                            int index_ident_ID = GetColumnIndexByName_(e.Row, "ID", out is_check_ident_id, out Delta);
+                            int index_ident_ID = GetColumnIndexByName_(e.Row, PrizNakIdentField, out is_check_ident_id, out Delta);
 
                                     Button myButton_del_ext = default(Button);
                                     myButton_del_ext = (Button)e.Row.Cells[1].FindControl("ButtonDelete");

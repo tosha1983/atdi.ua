@@ -8,12 +8,17 @@ using System.Windows.Forms;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
 using System.IO;
-
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
     public class ClassDBGetSensor : IDisposable
     {
+        public static ILogger logger;
+        public ClassDBGetSensor(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
 
         /// <summary>
         /// Деструктор.
@@ -35,6 +40,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 try
                 {
+                    logger.Trace("Start procedure LoadObjectAllSensor...");
                     System.Threading.Thread tsk = new System.Threading.Thread(() =>
                     {
                         YXbsSensor s_l_sensor = new YXbsSensor();
@@ -180,10 +186,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_l_sensor.Dispose();
                     });
                     tsk.Start();
+                    tsk.IsBackground = true;
                     tsk.Join();
+                    logger.Trace("End procedure LoadObjectAllSensor.");
                 }
                 catch (Exception ex) {
-                    System.Console.WriteLine("LoadObjectAllSensor: " + ex.Message);
+                    logger.Error("Error in procedure LoadObjectAllSensor: " + ex.Message);
                 }
 
             }
@@ -196,6 +204,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 try
                 {
+                    logger.Trace("Start procedure LoadObjectSensor...");
                     System.Threading.Thread tsk = new System.Threading.Thread(() =>
                     {
                         YXbsSensor s_l_sensor = new YXbsSensor();
@@ -341,10 +350,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_l_sensor.Dispose();
                     });
                     tsk.Start();
+                    tsk.IsBackground = true;
                     tsk.Join();
+                    
+                    logger.Trace("End procedure LoadObjectSensor.");
                 }
                 catch (Exception ex) {
-                    System.Console.WriteLine("LoadObjectSensor: " + ex.Message);
+                    logger.Error("Error in procedure LoadObjectSensor: " + ex.Message);
                 }
 
             }
@@ -357,8 +369,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public List<Sensor> LoadObjectSensor()
         {
-             var val = new List<Sensor>();
-             System.Threading.Thread tsk = new System.Threading.Thread(() =>
+            var val = new List<Sensor>();
+            logger.Trace("Start procedure LoadObjectSensor...");
+            System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     try
                     {
@@ -520,12 +533,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_l_sensor.Dispose();
                     }
                     catch (Exception ex) {
-                        System.Console.WriteLine("LoadObjectSensor: " + ex.Message);
+                        logger.Error("Error in procedure LoadObjectSensor." + ex.Message);
                     }
-
                 });
             tsk.Start();
+            tsk.IsBackground = true;
             tsk.Join();
+            
+            logger.Trace("End procedure LoadObjectSensor.");
             return val;
         }
 
@@ -534,66 +549,75 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         {
             try
             {
+                logger.Trace("Start procedure SaveLocationCoordSensor...");
                 if (sens != null)
                 {
-                    System.Threading.Thread tsk = new System.Threading.Thread(()=> { 
-                    double? val = null;
-                    int m_ID_Sensor = -1;
-                    List<Sensor> R_s_find = LoadObjectSensor();
-                    Sensor Fnd = R_s_find.Find(t => t.Name == sens.Name && t.Equipment.TechId == sens.Equipment.TechId);
-                    YXbsSensor se = new YXbsSensor();
-                    se.Format("*");
-                    if (Fnd != null)
+                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
                     {
-                        se.Fetch(Fnd.Id.Value); m_ID_Sensor = Fnd.Id.Value;
-
-                        if (sens.Locations != null)
+                        double? val = null;
+                        int m_ID_Sensor = -1;
+                        List<Sensor> R_s_find = LoadObjectSensor();
+                        Sensor Fnd = R_s_find.Find(t => t.Name == sens.Name && t.Equipment.TechId == sens.Equipment.TechId);
+                        YXbsSensor se = new YXbsSensor();
+                        se.Format("*");
+                        if (Fnd != null)
                         {
-                            foreach (SensorLocation sens_Locations in sens.Locations.ToArray())
+                            se.Fetch(Fnd.Id.Value); m_ID_Sensor = Fnd.Id.Value;
+
+                            if (sens.Locations != null)
                             {
-                                YXbsSensorlocation NH_sens_location_old = new YXbsSensorlocation();
-                                NH_sens_location_old.Format("*");
-                                NH_sens_location_old.Filter = string.Format("(SENSORID={0}) and (STATUS='A')", m_ID_Sensor);
-                                for (NH_sens_location_old.OpenRs(); !NH_sens_location_old.IsEOF(); NH_sens_location_old.MoveNext())
+                                foreach (SensorLocation sens_Locations in sens.Locations.ToArray())
                                 {
-                                    NH_sens_location_old.m_status = "Z";
-                                    NH_sens_location_old.Save();
-                                }
-                                NH_sens_location_old.Close();
-                                NH_sens_location_old.Dispose();
+                                    YXbsSensorlocation NH_sens_location_old = new YXbsSensorlocation();
+                                    NH_sens_location_old.Format("*");
+                                    NH_sens_location_old.Filter = string.Format("(SENSORID={0}) and (STATUS='A')", m_ID_Sensor);
+                                    for (NH_sens_location_old.OpenRs(); !NH_sens_location_old.IsEOF(); NH_sens_location_old.MoveNext())
+                                    {
+                                        NH_sens_location_old.m_status = "Z";
+                                        NH_sens_location_old.Save();
+                                    }
+                                    NH_sens_location_old.Close();
+                                    NH_sens_location_old.Dispose();
 
-                                Console.WriteLine(string.Format("Format SaveLocationCoordSensor: {0}", string.Format("(SENSORID={0}) and (ASL{1}) and (LAT{2}) and (LON{3})", m_ID_Sensor, sens_Locations.ASL.HasValue ? "=" + sens_Locations.ASL.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lat.HasValue ? "=" + sens_Locations.Lat.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lon.HasValue ? "=" + sens_Locations.Lon.ToString().Replace(",", ".") : " IS NULL")));
-                                YXbsSensorlocation NH_sens_location = new YXbsSensorlocation();
-                                NH_sens_location.Format("*");
-                                if (!NH_sens_location.Fetch(string.Format("(SENSORID={0}) and (ASL{1}) and (LAT{2}) and (LON{3})", m_ID_Sensor, sens_Locations.ASL.HasValue ? "=" + sens_Locations.ASL.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lat.HasValue ? "=" + sens_Locations.Lat.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lon.HasValue ? "=" + sens_Locations.Lon.ToString().Replace(",", ".") : " IS NULL")))
-                                {
-                                    NH_sens_location.New();
-                                    //NH_sens_location.AllocID();
+                                    logger.Trace(string.Format("Format SaveLocationCoordSensor: {0}", string.Format("(SENSORID={0}) and (ASL{1}) and (LAT{2}) and (LON{3})", m_ID_Sensor, sens_Locations.ASL.HasValue ? "=" + sens_Locations.ASL.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lat.HasValue ? "=" + sens_Locations.Lat.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lon.HasValue ? "=" + sens_Locations.Lon.ToString().Replace(",", ".") : " IS NULL")));
+                                    
+                                    YXbsSensorlocation NH_sens_location = new YXbsSensorlocation();
+                                    NH_sens_location.Format("*");
+                                    if (!NH_sens_location.Fetch(string.Format("(SENSORID={0}) and (ASL{1}) and (LAT{2}) and (LON{3})", m_ID_Sensor, sens_Locations.ASL.HasValue ? "=" + sens_Locations.ASL.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lat.HasValue ? "=" + sens_Locations.Lat.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lon.HasValue ? "=" + sens_Locations.Lon.ToString().Replace(",", ".") : " IS NULL")))
+                                    {
+                                        NH_sens_location.New();
+                                        //NH_sens_location.AllocID();
+                                    }
+                                    if (sens_Locations.ASL != null) NH_sens_location.m_asl = sens_Locations.ASL.GetValueOrDefault();
+                                    if (sens_Locations.DataCreated != null) NH_sens_location.m_datacreated = sens_Locations.DataCreated.GetValueOrDefault();
+                                    if (sens_Locations.DataFrom != null) NH_sens_location.m_datafrom = sens_Locations.DataFrom.GetValueOrDefault();
+                                    if (sens_Locations.DataTo != null) NH_sens_location.m_datato = sens_Locations.DataTo.GetValueOrDefault();
+                                    if (sens_Locations.Lat != null) NH_sens_location.m_lat = sens_Locations.Lat.GetValueOrDefault();
+                                    if (sens_Locations.Lon != null) NH_sens_location.m_lon = sens_Locations.Lon.GetValueOrDefault();
+                                    NH_sens_location.m_status = sens_Locations.Status;
+                                    NH_sens_location.m_sensorid = m_ID_Sensor;
+                                    NH_sens_location.Save();
+                                    NH_sens_location.Close();
+                                    NH_sens_location.Dispose();
                                 }
-                                if (sens_Locations.ASL != null) NH_sens_location.m_asl = sens_Locations.ASL.GetValueOrDefault();
-                                if (sens_Locations.DataCreated != null) NH_sens_location.m_datacreated = sens_Locations.DataCreated.GetValueOrDefault();
-                                if (sens_Locations.DataFrom != null) NH_sens_location.m_datafrom = sens_Locations.DataFrom.GetValueOrDefault();
-                                if (sens_Locations.DataTo != null) NH_sens_location.m_datato = sens_Locations.DataTo.GetValueOrDefault();
-                                if (sens_Locations.Lat != null) NH_sens_location.m_lat = sens_Locations.Lat.GetValueOrDefault();
-                                if (sens_Locations.Lon != null) NH_sens_location.m_lon = sens_Locations.Lon.GetValueOrDefault();
-                                NH_sens_location.m_status = sens_Locations.Status;
-                                NH_sens_location.m_sensorid = m_ID_Sensor;
-                                NH_sens_location.Save();
-                                NH_sens_location.Close();
-                                NH_sens_location.Dispose();
                             }
-                        }
 
-                    }
-                    se.Close();
-                    se.Dispose();
-                    LoadObjectSensor();
-                });
-                tsk.Start();
-                tsk.Join();
+                        }
+                        se.Close();
+                        se.Dispose();
+                        LoadObjectSensor();
+                    });
+                    tsk.Start();
+                    tsk.IsBackground = true;
+                    tsk.Join();
+                    
+                    logger.Trace("End procedure SaveLocationCoordSensor.");
+                }
             }
+            catch (Exception ex)
+            {
+                logger.Error("End procedure SaveLocationCoordSensor: " + ex.Message);
             }
-            catch (Exception ex) { Console.WriteLine("Error in SaveLocationCoordSensor: " + ex.Message); }
             return true;
         }
 
@@ -606,6 +630,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         {
             try
             {
+                logger.Trace("Start procedure CreateNewObjectSensor...");
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     if (sens != null)
                     {
@@ -700,7 +725,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     YXbsAntennapattern NH_ant_patt = new YXbsAntennapattern();
                                     NH_ant_patt.Format("*");
-                                    if (!NH_ant_patt.Fetch(string.Format("(SENSORANTENNA_ID={0}) and (FREQ{1}) and (GAIN{2}) ", ID_sensor_ant, patt_a.Freq != ConnectDB.NullD ? "=" + patt_a.Freq.ToString().Replace(",", ".") : " IS NULL", patt_a.Gain != ConnectDB.NullI ? "=" + patt_a.Gain.ToString().Replace(",", ".") : " IS NULL")))
+                                    if (!NH_ant_patt.Fetch(string.Format("(SENSORANTENNA_ID={0}) and (FREQ{1}) and (GAIN{2}) ", ID_sensor_ant, patt_a.Freq != Constants.NullD ? "=" + patt_a.Freq.ToString().Replace(",", ".") : " IS NULL", patt_a.Gain != Constants.NullI ? "=" + patt_a.Gain.ToString().Replace(",", ".") : " IS NULL")))
                                     {
                                         NH_ant_patt.New();
                                         //NH_ant_patt.AllocID();
@@ -765,7 +790,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     YXbsSensorequipsens NH_SensorEquipSensitivity_ = new YXbsSensorequipsens();
                                     NH_SensorEquipSensitivity_.Format("*");
-                                    if (!NH_SensorEquipSensitivity_.Fetch(string.Format("(SENSOREQUIP_ID={0}) and (ADDLOSS{1}) and (FREQ{2}) and (FREQSTABILITY{3}) and (KTBF{4}) and (NOISEF{5})", ID_NH_sens_eqp, sens_eqp_s.AddLoss.HasValue ? "=" + sens_eqp_s.AddLoss.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.Freq != ConnectDB.NullD ? "=" + sens_eqp_s.Freq.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.FreqStability.HasValue ? "=" + sens_eqp_s.FreqStability.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.KTBF.HasValue ? "=" + sens_eqp_s.KTBF.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.NoiseF.HasValue ? "=" + sens_eqp_s.NoiseF.ToString().Replace(",", ".") : " IS NULL")))
+                                    if (!NH_SensorEquipSensitivity_.Fetch(string.Format("(SENSOREQUIP_ID={0}) and (ADDLOSS{1}) and (FREQ{2}) and (FREQSTABILITY{3}) and (KTBF{4}) and (NOISEF{5})", ID_NH_sens_eqp, sens_eqp_s.AddLoss.HasValue ? "=" + sens_eqp_s.AddLoss.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.Freq != Constants.NullD ? "=" + sens_eqp_s.Freq.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.FreqStability.HasValue ? "=" + sens_eqp_s.FreqStability.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.KTBF.HasValue ? "=" + sens_eqp_s.KTBF.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.NoiseF.HasValue ? "=" + sens_eqp_s.NoiseF.ToString().Replace(",", ".") : " IS NULL")))
                                     {
                                         NH_SensorEquipSensitivity_.New();
                                         //NH_SensorEquipSensitivity_.AllocID();
@@ -781,7 +806,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     NH_SensorEquipSensitivity_.Dispose();
                                 }
                             }
-                              catch (Exception ex) { Console.WriteLine("Error in SensorEquipSensitivity: " + ex.Message); }
+                              catch (Exception ex) {
+                                    logger.Error("Error in SensorEquipSensitivity: " + ex.Message);
+                                }
                             }
                             if (sens.Locations != null)
                             {
@@ -820,7 +847,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     NH_sens_location.Dispose();
                                 }
                             }
-                                catch (Exception ex) { Console.WriteLine("Error in SensorLocation: " + ex.Message); }
+                                catch (Exception ex) {
+                                    logger.Error("Error in SensorLocation: " + ex.Message); }
                             }
                             if (sens.Poligon != null)
                             {
@@ -840,10 +868,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         NH_sens_location.Save();
                                         NH_sens_location.Close();
                                         NH_sens_location.Dispose();
-                                        Console.WriteLine("Success created record for table: YXbsSensorpolig");
+                                        logger.Trace("Success created record for table: YXbsSensorpolig");
                                     }
                                 }
-                                catch (Exception ex) { Console.WriteLine("Error in SensorPoligonPoint: " + ex.Message); }
+                                catch (Exception ex) {
+                                    logger.Error("Error in SensorPoligonPoint: " + ex.Message); }
                             }
                         }
                     
@@ -851,9 +880,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 LoadObjectSensor();
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
+                
+                logger.Trace("End procedure CreateNewObjectSensor.");
             }
-            catch (Exception ex) { Console.WriteLine("Error in CreateNewObjectSensor: " + ex.Message); }
+            catch (Exception ex) {
+                logger.Error("Error in  procedure CreateNewObjectSensor: "+ex.Message);
+            }
             return true;
         }
 
@@ -867,6 +901,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSaved = false;
             try
             {
+                logger.Trace("Start procedure UpdateStatusSensor.");
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     if (sens != null)
@@ -894,11 +929,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
+                
+                logger.Trace("End procedure UpdateStatusSensor.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in UpdateStatusSensor: " + ex.Message);
+                logger.Error("Error in procedure UpdateStatusSensor:" + ex.Message);
             }
             return isSaved;
         }
@@ -908,6 +946,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSaved = false;
             try
             {
+                logger.Trace("Start procedure UpdateStatusSensorWithArchive...");
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     if (sens != null)
                     {
@@ -927,11 +966,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
+                tsk.IsBackground = true;
                 tsk.Join();
+                
+                logger.Trace("End  procedure UpdateStatusSensorWithArchive...");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in UpdateStatusSensorWithArchive: " + ex.Message);
+                logger.Error("Error in procedure UpdateStatusSensorWithArchive..." + ex.Message);
             }
             return isSaved;
         }

@@ -23,20 +23,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         >
     {
 
-        //private ShortSensorConstraintParser _constraintParser;
-
-        /*
-        public GetShortSensorsAppOperationHandler(IAppServerContext serverContext, ILogger logger, ShortSensorConstraintParser constraintParser) 
-            : base(serverContext, logger)
-        {
-            this._constraintParser = constraintParser;
-        }
-        */
-
         public GetShortSensorsAppOperationHandler(IAppServerContext serverContext, ILogger logger)
             : base(serverContext, logger)
         {
-         
+
         }
 
         /// <summary>
@@ -48,7 +38,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override ShortSensor[] Handle(GetShortSensorsAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
-            SensorListSDRNS senLst = new SensorListSDRNS();
+            SensorListSDRNS senLst = new SensorListSDRNS(Logger);
             List<ShortSensor> LstS = new List<ShortSensor>();
             LstS = senLst.CreateShortSensorList();
             return LstS.ToArray();

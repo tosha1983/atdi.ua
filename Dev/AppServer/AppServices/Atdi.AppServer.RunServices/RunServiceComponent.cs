@@ -45,8 +45,8 @@ namespace Atdi.AppServer.RunServices
         {
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
-            ClassesDBGetResult DbGetRes = new ClassesDBGetResult();
-            ClassConvertToSDRResults conv = new ClassConvertToSDRResults();
+            ClassesDBGetResult DbGetRes = new ClassesDBGetResult(_logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(_logger);
             ///
             // Начальная инициализация (загрузка конфигурационных данных)
             /*
@@ -69,7 +69,7 @@ namespace Atdi.AppServer.RunServices
               System.Threading.Thread tsg = new System.Threading.Thread(() => {
                 ClassesDBGetTasks cl = new ClassesDBGetTasks(this._logger);
 
-                ClassConvertTasks ts = new ClassConvertTasks();
+                ClassConvertTasks ts = new ClassConvertTasks(_logger);
                 Task<MeasTask[]> task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
                 task.Wait();
                 List<MeasTask> mts_ = task.Result.ToList();
@@ -90,21 +90,14 @@ namespace Atdi.AppServer.RunServices
             
            
 
-           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(); Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-            
-           ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR();
+           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(_logger); Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+           ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR(this._logger);
            sc.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasTaskStatus);
-           
-
-           ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor();
+           ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-           
            ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
-
-
            //Sheduler_ArchiveSDRResults arch_sdrRes = new Sheduler_ArchiveSDRResults(); arch_sdrRes.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeArchiveResult);
-           
-           ShedulerCheckStart Quartz = new ShedulerCheckStart();
+           ShedulerCheckStart Quartz = new ShedulerCheckStart(this._logger);
            Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
            
 

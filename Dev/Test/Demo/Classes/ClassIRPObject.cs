@@ -92,7 +92,8 @@ namespace LitvaPortal
                     Grid.AutoGenerateColumns = true;
                     Grid.DataSourceID = null;
                     Grid.DataSource = tbl;
-                    if (fnd_.FLD.Contains("ID")) { Grid.DataKeyNames = new string[] { "ID" }; Grid.DataBind(); } else { Grid.DataKeyNames = null; Grid.DataBind(); }
+                    string PriznakIdentField = "";
+                    if (fnd_.FLD.Contains("ID")) { for (int i = 0; i < fnd_.FLD.Count; i++) { if (fnd_.FLD[i] == "ID") { PriznakIdentField = fnd_.CAPTION_FLD[i]; break; } }   Grid.DataKeyNames = new string[] { PriznakIdentField }; Grid.DataBind(); } else { Grid.DataKeyNames = null; Grid.DataBind(); }
                     if (fnd_.Setting_param.index_group_field > 0) DataAdapterClass.GroupGridView(Grid.Rows, fnd_.Setting_param.index_group_field, fnd_.Setting_param.TOTAL_COUNT_GROUP);
                 }
             }

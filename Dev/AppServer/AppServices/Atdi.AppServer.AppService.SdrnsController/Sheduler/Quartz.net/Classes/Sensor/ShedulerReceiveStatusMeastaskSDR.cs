@@ -12,11 +12,17 @@ using Atdi.SDNRS.AppServer.ManageDB;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.SDR.Server.Utils;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
     public class ShedulerReceiveStatusMeastaskSDR : InterfaceSheduler, IDisposable
     {
+        public static ILogger logger;
+        public ShedulerReceiveStatusMeastaskSDR(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -58,13 +64,14 @@ namespace Atdi.SDNRS.AppServer.Sheduler
            void IJob.Execute(IJobExecutionContext context)  {
                 try
                 {
+                    logger.Trace("Start job ShedulerReceiveStatusMeastaskSDR...");
                     if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
                     {
                         for (int i = 0; i < GlobalInit.MEAS_SDR_RESULTS.Count; i++)
                         {
                            
-                                ClassesDBGetResult DbGetRes = new ClassesDBGetResult();
-                                ClassConvertToSDRResults conv = new ClassConvertToSDRResults();
+                                ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
+                                ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
                                 if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
                                 {
                                     if (GlobalInit.MEAS_SDR_RESULTS[0] != null)
@@ -85,7 +92,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                                 }
                                                 else
                                                 {
-                                                    System.Console.WriteLine(string.Format("Start save results..."));
+                                                logger.Trace(string.Format("Start save results..."));
                                                     System.Threading.Thread ge = new System.Threading.Thread(() =>
                                                     {
                                                     ID = DbGetRes.SaveResultToDB(msReslts);
@@ -93,17 +100,20 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                                     {
                                                         GlobalInit.LST_MeasurementResults.Add(msReslts);
                                                         if (GlobalInit.MEAS_SDR_RESULTS.Count>0)    GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                                        System.Console.WriteLine(string.Format("Success save results..."));
+                                                            logger.Trace(string.Format("Success save results..."));
                                                     }
                                                     });
                                                     ge.Start();
-                                                    ge.Join();
-                                                }
+                                                ge.IsBackground = true;
+                                                ge.Join();
+                                                    
+
                                             }
+                                        }
                                         }
                                         else
                                         {
-                                            System.Console.WriteLine(string.Format("Start save results..."));
+                                        logger.Trace(string.Format("Start save results..."));
                                             System.Threading.Thread ge = new System.Threading.Thread(() =>
                                             {
                                             ID = DbGetRes.SaveResultToDB(msReslts);
@@ -111,25 +121,28 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                             {
                                                 GlobalInit.LST_MeasurementResults.Add(msReslts);
                                                 GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                                System.Console.WriteLine(string.Format("Success save results..."));
+                                                    logger.Trace(string.Format("Success save results..."));
                                             }
                                             });
                                             ge.Start();
-                                            ge.Join();
-                                        }
+                                        ge.IsBackground = true;
+                                        ge.Join();
+
                                     }
                                 }
-                                System.Console.WriteLine(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
-                                System.Console.WriteLine(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
+                                }
+                                logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
+                                logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
                                 DbGetRes.Dispose();
                                 conv.Dispose();
                             //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerReceiveStatusMeastaskSDR ");
                         }
                     }
+                    logger.Trace("End job ShedulerReceiveStatusMeastaskSDR.");
                 }
                 catch (Exception ex)
                 {
-                    System.Console.WriteLine("[ShedulerReceiveStatusMeastaskSDR]:" + ex.Message);
+                    logger.Error("Error in job ShedulerReceiveStatusMeastaskSDR: "+ex.Message);
                 }
             }
         }

@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using OrmCs;
 using DatalayerCs;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 
 namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
@@ -115,33 +116,30 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             Close();
         }
 
+
         private void buttonOpenIRP_Click(object sender, EventArgs e)
         {
+            Regex reGuid = new Regex(@"^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$",  RegexOptions.Compiled);
             string AllText = "";
             openFileDialog1.DefaultExt = "IRP";
             openFileDialog1.AddExtension = true;
             DialogResult DA = openFileDialog1.ShowDialog();
             if (DA == System.Windows.Forms.DialogResult.OK) {
                 textBoxIRPFilePath.Text = openFileDialog1.FileName;
-                using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.Default)) {
-                   string cipherText = rdr.ReadToEnd();
-                    string[] word = cipherText.Split(new char[] { '\n' });
-                    if (cipherText.Contains("CustomExpression"))
+                using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.Default))
+                {
+                    string cipherText = rdr.ReadToEnd();
+                    string[] wordString = cipherText.Split(new char[] { '\n' });
+                    for (int i = 0; i < wordString.Count(); i++)
                     {
-                        for (int i=0; i< word.Count(); i++)
+                        if (wordString[i].Contains("PATH") && (wordString[i].Contains("CustomExpression")) && (!reGuid.IsMatch(wordString[i])))
                         {
-                            if (word[i].Contains("PATH") && (word[i].Contains("CustomExpression")))
-                            {
-                                word[i] = word[i].Replace("CustomExpression", "CustomExpression"+Guid.NewGuid().ToString());
-                            }
-                            AllText += word[i] + "\n";
+                            wordString[i] = wordString[i].Replace("CustomExpression", "CustomExpression_" + Guid.NewGuid().ToString());
                         }
-                        
+                        AllText += wordString[i] + "\n";
                     }
-                   textBoxQuery.Text = AllText;
-                    
+                    textBoxQuery.Text = AllText;
                 }
-
             }
         }
 

@@ -49,7 +49,8 @@ namespace Atdi.AppServices.WebQuery
                 Code = QueryValue.CODE,
                 Token = queryTokenDescriptor.Token,
                 Description = QueryValue.COMMENTS,
-                Title = QueryValue.NAME
+                Title = QueryValue.NAME,
+                PrimaryKey = irpdescription.PrimaryKey
             };
 
             
