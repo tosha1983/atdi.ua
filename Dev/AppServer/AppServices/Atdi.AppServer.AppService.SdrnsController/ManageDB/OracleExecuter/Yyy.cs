@@ -70,7 +70,8 @@ namespace Atdi.Oracle.DataAccess
         {
             if (isConnection)
             {
-                if (rs == null) rs = new OrmRsOracle();
+                if (rs == null)
+                    rs = new OrmRsOracle();
                 rs.Init(this);
                 rs.OpenRs();
             }
@@ -103,6 +104,7 @@ namespace Atdi.Oracle.DataAccess
                 {
                     return rs.GetCount();
                 }
+                else return 0;
             }
             return null;
         }

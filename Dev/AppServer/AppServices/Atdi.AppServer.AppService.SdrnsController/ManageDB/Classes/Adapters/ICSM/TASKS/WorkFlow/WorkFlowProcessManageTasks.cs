@@ -98,12 +98,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) == null)))
                             {
                                 Data_.UpdateStatus(ActionType);
-                                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
-                                Task<int> tsk = cl.SaveTaskToDB(Data_);
-                                tsk.Wait();
-                                NewIdMeasTask = tsk.Result;
-                                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
-                                MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
+                            //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
+                            //Task<int> tsk = cl.SaveTaskToDB(Data_);
+                            //tsk.Wait();
+                            //NewIdMeasTask = tsk.Result;
+                            NewIdMeasTask = cl.SaveTaskToDB(Data_);
+                            //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
+                            MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
                                 if (fnd != null)
                                     GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
                                 else GlobalInit.LIST_MEAS_TASK.Add(Data_);
@@ -264,8 +265,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 Checked_L.Clear();
                             });
                             tsk.Start();
-                            tsk.IsBackground = true;
-                            tsk.Join();
+                           tsk.Join();
                         }
                     }
                 }

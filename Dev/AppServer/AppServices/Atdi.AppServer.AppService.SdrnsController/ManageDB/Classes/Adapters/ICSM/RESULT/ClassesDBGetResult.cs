@@ -194,7 +194,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     res_val.Dispose();
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 //tsk.Join();
                 logger.Trace("End procedure ReadlResultFromDB.");
             }
@@ -363,8 +362,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 res_val.Dispose();
             });
             tsk.Start();
-                tsk.IsBackground = true;
-                tsk.Join();
+            tsk.Join();
             logger.Trace("End procedure ReadlAllResultFromDB.");
             }
             catch (Exception ex)
@@ -416,7 +414,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 logger.Trace("End procedure DeleteResultFromDB.");
             }
@@ -592,7 +589,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 logger.Trace("End procedure DeleteResultFromDB.");
             }
@@ -614,6 +610,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     try
                     {
                         logger.Trace("Start procedure SaveResultToDB.");
+                        List<Yyy> BlockInsert_FrequencyMeasurement2 = new List<Yyy>();
+                        List<Yyy> BlockInsert_YXbsLevelmeasres1 = new List<Yyy>();
+                        List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
                         /// Create new record in YXbsMeastask
                         if (obj != null)
                         {
@@ -677,10 +676,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 }
                                 if (obj.MeasurementsResults != null)
                                 {
+                                    int AllIdx = 0;
                                     YXbsLevelmeasres dtr_ = new YXbsLevelmeasres();
-                                    List<Yyy> BlockInsert_FrequencyMeasurement2 = new List<Yyy>();
-                                    List<Yyy> BlockInsert_YXbsLevelmeasres1 = new List<Yyy>();
-                                    List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
                                     int idx_cnt = 0;
                                     YXbsLevelmeasres d_ = new YXbsLevelmeasres();
                                     d_.Format("*");
@@ -738,7 +735,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                                 {
                                                                     if (dt_param_freq != null)
                                                                     {
-
                                                                         YXbsFrequencymeas dtr_freq = new YXbsFrequencymeas();
                                                                         dtr_freq.Format("*");
                                                                         dtr_freq.Filter = "ID=-1";
@@ -755,6 +751,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                                         BlockInsert_FrequencyMeasurement2.Add(dtr_freq);
                                                                         dtr_freq.Close();
                                                                         dtr_freq.Dispose();
+                                                                        AllIdx++;
                                                                     }
                                                                 }
                                                             }
@@ -862,6 +859,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                     if (BlockInsert_YXbsLevelmeasres1.Count > 0)
                                     {
+                                        int iu = AllIdx;
                                         YXbsLevelmeasres YXbsLevelmeasres11 = new YXbsLevelmeasres();
                                         YXbsLevelmeasres11.Format("*");
                                         YXbsLevelmeasres11.New();

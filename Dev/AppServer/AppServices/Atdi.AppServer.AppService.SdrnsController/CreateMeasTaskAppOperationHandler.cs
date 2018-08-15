@@ -35,19 +35,25 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override MeasTaskIdentifier Handle(CreateMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             MeasTaskIdentifier md = new MeasTaskIdentifier();
-            MeasTask mt = options.Task;
-            if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
-            if (mt.Status == null) mt.Status = "N";
-            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
-            Logger.Trace("Start Create_New_Meas_Task... ");
-            int ID = tasks.Create_New_Meas_Task(mt, "New");
-            md.Value = ID;
-            Logger.Trace(this, options, operationContext);
-             List<int> SensorIds = new List<int>();
-                if (mt.Stations != null) {
-                    foreach (MeasStation ts in mt.Stations) {
-                        if (ts.StationId != null) {
-                            if (ts.StationId!= null) {
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                MeasTask mt = options.Task;
+                if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
+                if (mt.Status == null) mt.Status = "N";
+                WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
+                Logger.Trace("Start Create_New_Meas_Task... ");
+                int ID = tasks.Create_New_Meas_Task(mt, "New");
+                md.Value = ID;
+                Logger.Trace(this, options, operationContext);
+                List<int> SensorIds = new List<int>();
+                if (mt.Stations != null)
+                {
+                    foreach (MeasStation ts in mt.Stations)
+                    {
+                        if (ts.StationId != null)
+                        {
+                            if (ts.StationId != null)
+                            {
                                 if (!SensorIds.Contains(ts.StationId.Value))
                                     SensorIds.Add(ts.StationId.Value);
                             }
@@ -55,6 +61,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     }
                 }
                 tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+            });
+            th.Start();
+            th.Join();
             return md;
         }
     }
