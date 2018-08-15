@@ -57,12 +57,12 @@ namespace Atdi.CoreServices.Identity
         public UserIdentity AuthenticateUser(UserCredential credential)
         {
 
-            //string dateFormat = DateTime.Now.ToString("MMM dd yyyy", CultureInfo.CreateSpecificCulture("en-US"));
-            //int val = _netKey.GetTokenValue("ICS Manager", dateFormat);
-            //if (val <= 0)
-            //{
-            //    throw new InvalidOperationException(Exceptions.InvalidKey);
-            //}
+            string dateFormat = DateTime.Now.ToString("MMM dd yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+            int val = _netKey.GetTokenValue("ICS Manager", dateFormat);
+            if (val <= 0)
+            {
+                throw new InvalidOperationException(Exceptions.InvalidKey);
+            }
 
             if (credential == null)
             {
