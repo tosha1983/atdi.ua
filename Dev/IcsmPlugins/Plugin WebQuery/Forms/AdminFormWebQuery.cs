@@ -91,6 +91,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                 txtUserIdent.Items.Clear();
                                 List<string> List_Path = ClassORM.GetProperties(query, true);
                                 txtUserIdent.Items.Clear();
+                                txtUserIdent.Items.Add("");
                                 foreach (string item in List_Path)
                                     txtUserIdent.Items.Add(item);
 
@@ -172,6 +173,14 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                 nq.SetParamValue(1, rsWebQuery.Get("ID"));
                                 if (nq.Execute() != 1) throw new Exception("Could not update binary");
                                 IMTransaction.Commit();
+                                if (txtUserIdent.Items.Count == 0)
+                                {
+                                    txtUserIdent.Items.Clear();
+                                    txtUserIdent.Items.Add("");
+                                    List<string> List_Path = ClassORM.GetProperties(query, true);
+                                    foreach (string item in List_Path)
+                                        txtUserIdent.Items.Add(item);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -261,9 +270,18 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         nq.SetParamValue(1, IDs);
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
+                        if (txtUserIdent.Items.Count == 0)
+                        {
+                            txtUserIdent.Items.Clear();
+                            txtUserIdent.Items.Add("");
+                            List<string> List_Path = ClassORM.GetProperties(query, true);
+                            foreach (string item in List_Path)
+                                txtUserIdent.Items.Add(item);
+                        }
                         MessageBox.Show("Record created successfull!", "Warning!");
                         id = IDs;
                         button_Constraints.Enabled = true;
+                        isNew = false;
                     }
                     
                 }
