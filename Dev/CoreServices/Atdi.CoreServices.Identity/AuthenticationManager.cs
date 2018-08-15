@@ -40,7 +40,8 @@ namespace Atdi.CoreServices.Identity
                 AuthDate = DateTime.Now,
                 Id = user.Id,
                 UserName = user.WebLogin,
-                UserCode = user.AppUser
+                UserCode = user.AppUser,
+                UserId = user.UserId
             };
 
             var userToken = this._tokenProvider.CreatUserToken(tokenData);
@@ -81,7 +82,8 @@ namespace Atdi.CoreServices.Identity
                     c => c.ID,
                     c => c.APP_USER,
                     c => c.WEB_LOGIN,
-                    c => c.PWD)
+                    c => c.PWD,
+                    c => c.USER_ID)
                 .OrderByAsc(c => c.ID)
                 .OnTop(1);
 
@@ -97,6 +99,7 @@ namespace Atdi.CoreServices.Identity
                             WebLogin = reader.GetValue(c => c.WEB_LOGIN),
                             Password = reader.GetValue(c => c.PWD),
                             AppUser = reader.GetValue(c => c.APP_USER),
+                            UserId = reader.GetValue(c => c.USER_ID)
                         };
                     }
                     return default(IcsmUser);

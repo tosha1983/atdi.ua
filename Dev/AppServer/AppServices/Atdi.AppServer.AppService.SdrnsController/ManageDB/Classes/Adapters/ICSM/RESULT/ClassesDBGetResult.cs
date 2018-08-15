@@ -12,6 +12,7 @@ using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
 using Oracle.DataAccess.Client;
+using Atdi.SDNRS.AppServer.BusManager;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -600,13 +601,83 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return isSuccess;
         }
 
+        public void SaveAllResultsToDB()
+        {
+            logger.Trace("Start job ShedulerReceiveStatusMeastaskSDR...");
+            if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
+            {
+                ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
+                ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
+                System.Threading.Thread ge = new System.Threading.Thread(() =>
+                {
+                    for (int i = 0; i < GlobalInit.MEAS_SDR_RESULTS.Count; i++)
+                    {
+
+                        if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
+                        {
+                            if (GlobalInit.MEAS_SDR_RESULTS[0] != null)
+                            {
+                                int ID = -1;
+                                string Status_Original = GlobalInit.MEAS_SDR_RESULTS[0].status;
+                                MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
+                                if (msReslts.MeasurementsResults != null)
+                                {
+                                    if (msReslts.MeasurementsResults.Count() > 0)
+                                    {
+                                        if (msReslts.MeasurementsResults[0] is LevelMeasurementOnlineResult)
+                                        {
+                                            // Здесь в базу ничего не пишем (только в память)
+                                            msReslts.Status = "O";
+                                            GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                        }
+                                        else
+                                        {
+                                            logger.Trace(string.Format("Start save results..."));
+                                            ID = DbGetRes.SaveResultToDB(msReslts);
+                                            if (ID > 0)
+                                            {
+                                                GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                                if (GlobalInit.MEAS_SDR_RESULTS.Count > 0) GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                                logger.Trace(string.Format("Success save results..."));
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    logger.Trace(string.Format("Start save results..."));
+                                    ID = DbGetRes.SaveResultToDB(msReslts);
+                                    if (ID > 0)
+                                    {
+                                        GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                        GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                        logger.Trace(string.Format("Success save results..."));
+                                    }
+                                }
+                            }
+                        }
+
+                        logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
+                        logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
+                        DbGetRes.Dispose();
+                        conv.Dispose();
+                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerReceiveStatusMeastaskSDR ");
+                    }
+                });
+                ge.Start();
+                ge.Join();
+            }
+            logger.Trace("End job ShedulerReceiveStatusMeastaskSDR.");
+        }
+
 
         public int SaveResultToDB(MeasurementResults obj)
         {
             int ID = Constants.NullI;
             if (((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) && (obj.Status == "C")) || (obj.TypeMeasurements != MeasurementType.SpectrumOccupation))
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     try
                     {
                         logger.Trace("Start procedure SaveResultToDB.");
@@ -674,9 +745,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         YXbsLocationsensorm11.Dispose();
                                     }
                                 }
+                                int AllIdx = 0;
                                 if (obj.MeasurementsResults != null)
                                 {
-                                    int AllIdx = 0;
                                     YXbsLevelmeasres dtr_ = new YXbsLevelmeasres();
                                     int idx_cnt = 0;
                                     YXbsLevelmeasres d_ = new YXbsLevelmeasres();
@@ -835,7 +906,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 }
                                             }
                                             //else 
-                                            {
+                                           
                                                 if (dt_param != null)
                                                 {
                                                     if (dt_param is LevelMeasurementOnlineResult)
@@ -853,40 +924,40 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         dtr.Dispose();
                                                     }
                                                 }
-                                            }
+                                          
                                             idx_cnt++;
                                         }
                                     }
-                                    if (BlockInsert_YXbsLevelmeasres1.Count > 0)
-                                    {
-                                        int iu = AllIdx;
-                                        YXbsLevelmeasres YXbsLevelmeasres11 = new YXbsLevelmeasres();
-                                        YXbsLevelmeasres11.Format("*");
-                                        YXbsLevelmeasres11.New();
-                                        YXbsLevelmeasres11.SaveBath(BlockInsert_YXbsLevelmeasres1);
-                                        YXbsLevelmeasres11.Close();
-                                        YXbsLevelmeasres11.Dispose();
-                                    }
+                                }
+                                if (BlockInsert_YXbsLevelmeasres1.Count > 0)
+                                {
+                                    int iu = AllIdx;
+                                    YXbsLevelmeasres YXbsLevelmeasres11 = new YXbsLevelmeasres();
+                                    YXbsLevelmeasres11.Format("*");
+                                    YXbsLevelmeasres11.New();
+                                    YXbsLevelmeasres11.SaveBath(BlockInsert_YXbsLevelmeasres1);
+                                    YXbsLevelmeasres11.Close();
+                                    YXbsLevelmeasres11.Dispose();
+                                }
 
-                                    if (BlockInsert_YXbsSpectoccupmeas1.Count > 0)
-                                    {
-                                        YXbsSpectoccupmeas YXbsSpectoccupmeas11 = new YXbsSpectoccupmeas();
-                                        YXbsSpectoccupmeas11.Format("*");
-                                        YXbsSpectoccupmeas11.New();
-                                        YXbsSpectoccupmeas11.SaveBath(BlockInsert_YXbsSpectoccupmeas1);
-                                        YXbsSpectoccupmeas11.Close();
-                                        YXbsSpectoccupmeas11.Dispose();
-                                    }
+                                if (BlockInsert_YXbsSpectoccupmeas1.Count > 0)
+                                {
+                                    YXbsSpectoccupmeas YXbsSpectoccupmeas11 = new YXbsSpectoccupmeas();
+                                    YXbsSpectoccupmeas11.Format("*");
+                                    YXbsSpectoccupmeas11.New();
+                                    YXbsSpectoccupmeas11.SaveBath(BlockInsert_YXbsSpectoccupmeas1);
+                                    YXbsSpectoccupmeas11.Close();
+                                    YXbsSpectoccupmeas11.Dispose();
+                                }
 
-                                    if (BlockInsert_FrequencyMeasurement2.Count > 0)
-                                    {
-                                        YXbsFrequencymeas YXbsFrequencymeas11 = new YXbsFrequencymeas();
-                                        YXbsFrequencymeas11.Format("*");
-                                        YXbsFrequencymeas11.New();
-                                        YXbsFrequencymeas11.SaveBath(BlockInsert_FrequencyMeasurement2);
-                                        YXbsFrequencymeas11.Close();
-                                        YXbsFrequencymeas11.Dispose();
-                                    }
+                                if (BlockInsert_FrequencyMeasurement2.Count > 0)
+                                {
+                                    YXbsFrequencymeas YXbsFrequencymeas11 = new YXbsFrequencymeas();
+                                    YXbsFrequencymeas11.Format("*");
+                                    YXbsFrequencymeas11.New();
+                                    YXbsFrequencymeas11.SaveBath(BlockInsert_FrequencyMeasurement2);
+                                    YXbsFrequencymeas11.Close();
+                                    YXbsFrequencymeas11.Dispose();
                                 }
                             }
                         }
@@ -896,9 +967,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         logger.Error("Error in procedure SaveResultToDB: "+ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             return ID;
         }

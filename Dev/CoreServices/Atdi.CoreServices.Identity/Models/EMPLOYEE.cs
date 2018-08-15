@@ -10,6 +10,8 @@ namespace Atdi.CoreServices.Identity
     {
         public int ID { get; set; }
 
+        public int USER_ID { get; set; }
+
         public string APP_USER { get; set; }
 
         public string WEB_LOGIN { get; set; }

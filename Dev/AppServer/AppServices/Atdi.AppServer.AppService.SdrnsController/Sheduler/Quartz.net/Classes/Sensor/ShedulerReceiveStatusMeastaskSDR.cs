@@ -64,14 +64,18 @@ namespace Atdi.SDNRS.AppServer.Sheduler
            void IJob.Execute(IJobExecutionContext context)  {
                 try
                 {
+                    ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
+                    /*
                     logger.Trace("Start job ShedulerReceiveStatusMeastaskSDR...");
                     if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
                     {
+                        ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
+                        ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
+                        System.Threading.Thread ge = new System.Threading.Thread(() =>
+                        {
                         for (int i = 0; i < GlobalInit.MEAS_SDR_RESULTS.Count; i++)
                         {
                            
-                                ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
-                                ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
                                 if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
                                 {
                                     if (GlobalInit.MEAS_SDR_RESULTS[0] != null)
@@ -92,51 +96,48 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                                 }
                                                 else
                                                 {
-                                                logger.Trace(string.Format("Start save results..."));
-                                                    System.Threading.Thread ge = new System.Threading.Thread(() =>
-                                                    {
+                                                    logger.Trace(string.Format("Start save results..."));
                                                     ID = DbGetRes.SaveResultToDB(msReslts);
                                                     if (ID > 0)
                                                     {
                                                         GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                        if (GlobalInit.MEAS_SDR_RESULTS.Count>0)    GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                                            logger.Trace(string.Format("Success save results..."));
+                                                        if (GlobalInit.MEAS_SDR_RESULTS.Count > 0) GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                                        logger.Trace(string.Format("Success save results..."));
                                                     }
-                                                    });
-                                                ge.Start();
-                                                ge.Join();
-                                                    
-
+                                                }
                                             }
-                                        }
                                         }
                                         else
                                         {
-                                        logger.Trace(string.Format("Start save results..."));
-                                            System.Threading.Thread ge = new System.Threading.Thread(() =>
-                                            {
+                                            logger.Trace(string.Format("Start save results..."));
                                             ID = DbGetRes.SaveResultToDB(msReslts);
                                             if (ID > 0)
                                             {
                                                 GlobalInit.LST_MeasurementResults.Add(msReslts);
                                                 GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                                    logger.Trace(string.Format("Success save results..."));
+                                                logger.Trace(string.Format("Success save results..."));
                                             }
-                                            });
-                                        ge.Start();
-                                        ge.Join();
-
+                                        }
                                     }
                                 }
-                                }
-                                logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
-                                logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
-                                DbGetRes.Dispose();
-                                conv.Dispose();
+                          
+                            logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
+                            logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
+                            DbGetRes.Dispose();
+                            conv.Dispose();
                             //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerReceiveStatusMeastaskSDR ");
                         }
+                        });
+                        ge.Start();
+                        ge.Join();
                     }
                     logger.Trace("End job ShedulerReceiveStatusMeastaskSDR.");
+                    */
+                    context.Scheduler.PauseTrigger(context.Trigger.Key);
+                    context.Scheduler.PauseJob(context.JobDetail.Key);
+                    context.Scheduler.PauseAll();
+                    DbGetRes.SaveAllResultsToDB();
+                    //context.Scheduler.ResumeAll();
                 }
                 catch (Exception ex)
                 {

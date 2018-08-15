@@ -66,7 +66,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                     rec.Dispose();
                 });
                 tsk.Start();
-                //tsk.Join();
+                tsk.Join();
                 System.GC.Collect();
                 logger.Trace("End job ShedulerCheckStart.");
             }    
