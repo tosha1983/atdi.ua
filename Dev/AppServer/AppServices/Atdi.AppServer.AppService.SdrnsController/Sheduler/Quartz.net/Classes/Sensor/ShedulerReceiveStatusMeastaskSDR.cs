@@ -103,8 +103,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                                             logger.Trace(string.Format("Success save results..."));
                                                     }
                                                     });
-                                                    ge.Start();
-                                                ge.IsBackground = true;
+                                                ge.Start();
                                                 ge.Join();
                                                     
 
@@ -124,8 +123,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                                     logger.Trace(string.Format("Success save results..."));
                                             }
                                             });
-                                            ge.Start();
-                                        ge.IsBackground = true;
+                                        ge.Start();
                                         ge.Join();
 
                                     }

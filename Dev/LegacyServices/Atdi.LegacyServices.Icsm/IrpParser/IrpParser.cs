@@ -153,7 +153,23 @@ namespace Atdi.LegacyServices.Icsm
                 var _report = new IcsmReport();
                 _report.SetConfig(f);
                 var zeta = this._schemasMetadata.GetTableByName(_report.m_dat.m_tab);
-                for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
+                List<KeyValuePair<string,string>> listColumnsFromSchema = new List<KeyValuePair<string, string>>();
+                if (!string.IsNullOrEmpty(zeta.ShortDesc))
+                {
+                    string[] blocks = zeta.ShortDesc.Split(new char[] { '|' });
+                    for (int i = 0; i < blocks.Length; i++)
+                    {
+                        if (!string.IsNullOrEmpty(blocks[i]))
+                        {
+                            string[] wrds = blocks[i].Split(new char[] { ';' });
+                            if (wrds.Length > 1)
+                            {
+                                listColumnsFromSchema.Add(new KeyValuePair<string, string>(wrds[0], wrds[1]));
+                            }
+                        }
+                    }
+                }
+                    for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
                     {
                         var metaData = new IrpColumn();
                         metaData.columnMeta = new ColumnMetadata();
@@ -201,18 +217,14 @@ namespace Atdi.LegacyServices.Icsm
                             }
                         }
                         bool isDefinedRealType = false;
-                        Orm.Field d = zeta.Fields.ToList().Find(x => x.Name == t); 
-                        if (d!=null)
                         {
-                            string substring = "DataType=";
-                            if (!string.IsNullOrEmpty(d.Info))
+                            if (listColumnsFromSchema.Count>0)
                             {
-                                if (d.Info.Contains(substring))
+                                KeyValuePair<string,string> fndColumn = listColumnsFromSchema.Find(z => z.Key == t);
+                                if (!string.IsNullOrEmpty(fndColumn.Value))
                                 {
                                     isDefinedRealType = true;
-                                    int indexStart = d.Info.IndexOf(substring);
-                                    string typeRecognizeDel = d.Info.Substring(0, indexStart);
-                                    string typeRecognize =  d.Info.Replace(typeRecognizeDel,"").Replace(substring, "");
+                                    string typeRecognize = fndColumn.Value.Trim();
                                     switch (typeRecognize)
                                     {
                                         case "System.Int32":

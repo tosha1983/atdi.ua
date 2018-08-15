@@ -186,7 +186,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_l_sensor.Dispose();
                     });
                     tsk.Start();
-                    tsk.IsBackground = true;
                     tsk.Join();
                     logger.Trace("End procedure LoadObjectAllSensor.");
                 }
@@ -350,7 +349,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_l_sensor.Dispose();
                     });
                     tsk.Start();
-                    tsk.IsBackground = true;
                     tsk.Join();
                     
                     logger.Trace("End procedure LoadObjectSensor.");
@@ -537,7 +535,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
             tsk.Start();
-            tsk.IsBackground = true;
             tsk.Join();
             
             logger.Trace("End procedure LoadObjectSensor.");
@@ -608,7 +605,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         LoadObjectSensor();
                     });
                     tsk.Start();
-                    tsk.IsBackground = true;
                     tsk.Join();
                     
                     logger.Trace("End procedure SaveLocationCoordSensor.");
@@ -880,7 +876,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 LoadObjectSensor();
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 
                 logger.Trace("End procedure CreateNewObjectSensor.");
@@ -929,7 +924,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 
                 logger.Trace("End procedure UpdateStatusSensor.");
@@ -966,7 +960,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 
                 logger.Trace("End  procedure UpdateStatusSensorWithArchive...");

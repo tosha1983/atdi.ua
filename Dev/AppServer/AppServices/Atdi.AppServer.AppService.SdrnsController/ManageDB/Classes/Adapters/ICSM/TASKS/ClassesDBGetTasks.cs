@@ -222,7 +222,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     logger.Trace("End procedure ReadlAllSTasksFromDB.");
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 #endregion
             }
@@ -288,7 +287,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure SaveStatusTaskToDB.");
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
@@ -354,7 +352,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     logger.Trace("End procedure SaveStatusTaskToDB.");
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
 
             }
@@ -390,7 +387,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure SaveIdsSdrTasks.");
                 });
             tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
@@ -441,7 +437,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure GetMaXIdsSdrTasks.");
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
@@ -480,7 +475,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure GetMaXIdsSdrResults.");
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
@@ -538,7 +532,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure SetHistoryStatusTasksInDB.");
                });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
             }
             catch (Exception ex)
@@ -553,13 +546,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public async Task<int> SaveTaskToDB(MeasTask obj)
+        public int SaveTaskToDB(MeasTask obj)
         {
             int ID = Constants.NullI;
             try
             {
                 #region Save Task
-                await Task.Run(() =>
+                //await Task.Run(() =>
                 {
                     logger.Trace("Start procedure SaveTaskToDB...");
                     /// Create new record in YXbsMeastask
@@ -569,7 +562,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             YXbsMeastask meastask = new YXbsMeastask();
                             meastask.Format("*");
-                            if ((!meastask.Fetch(obj.Id.Value)) && (!meastask.Fetch(string.Format(" (ID={0}) ", obj.Id.Value))))
+                            if ((!meastask.Fetch(string.Format("ID={0}", obj.Id.Value))) || (obj.Id.Value==-1))
                             {
                                 meastask.New();
                                 if (obj.MaxTimeBs != null) meastask.m_maxtimebs = obj.MaxTimeBs.GetValueOrDefault();
@@ -1074,7 +1067,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     logger.Trace("End procedure SaveTaskToDB.");
                     #endregion
-                }).ConfigureAwait(false);
+                }
+                //).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

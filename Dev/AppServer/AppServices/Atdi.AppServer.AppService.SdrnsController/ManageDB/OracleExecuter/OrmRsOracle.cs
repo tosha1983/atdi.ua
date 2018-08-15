@@ -79,6 +79,24 @@ namespace Atdi.Oracle.DataAccess
             }
         }
 
+        public void OpenRs(OracleDataAccess oracleData)
+        {
+            isNew = false;
+            index = 0;
+            cnt = 0;
+            params_val = oracleData.GetValues(AllFields, yyy.TableName, yyy.Filter, Order);
+            List<object[]> AllObjLObj = new List<object[]>();
+            List<object> LObj = new List<object>();
+            foreach (OracleParameter[] v in params_val.ToList())
+            {
+                LObj = new List<object>();
+                foreach (OracleParameter x in v) LObj.Add(x.Value);
+                AllObjLObj.Add(LObj.ToArray());
+            }
+            yyy.allvalc = AllObjLObj.ToArray();
+            if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
+        }
+
         public void OpenRs()
         {
             isNew = false;

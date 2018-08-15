@@ -140,7 +140,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                 });
                 tsk.Start();
-                tsk.IsBackground = true;
                 tsk.Join();
                 logger.Trace("End procedure ConvertTo_SDRObjects...");
             }
