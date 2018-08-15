@@ -1,4 +1,5 @@
-﻿using Atdi.Contracts.CoreServices.DataLayer;
+﻿using Atdi.AppServices.WebQuery.DTO;
+using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.WebQuery;
@@ -15,10 +16,12 @@ namespace Atdi.AppServices.WebQuery
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IQueryExecutor _queryExecutor;
         private readonly IIrpParser _irpParser;
-        private readonly Dictionary<int, QueryDescriptor> _queryDescriptors;
+        private Dictionary<int, QueryDescriptor> _queryDescriptors;
+        private DateTime? _actualyCacheDataDate;
 
         public QueryDescriptorsCache(IDataLayer<IcsmDataOrm> dataLayer, IIrpParser irpParser)
         {
+            this._actualyCacheDataDate = DateTime.Now;
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
             this._irpParser = irpParser;
@@ -27,6 +30,8 @@ namespace Atdi.AppServices.WebQuery
 
         public QueryDescriptor GetDecriptor(QueryTokenDescriptor queryToken)
         {
+            this.TryToReloadCache();
+
             var queryId = queryToken.Token.Id;
             if (!this._queryDescriptors.TryGetValue(queryId, out QueryDescriptor descriptor))
             {
@@ -34,6 +39,39 @@ namespace Atdi.AppServices.WebQuery
                 this._queryDescriptors[queryId] = descriptor;
             }
             return descriptor;
+        }
+
+        private void TryToReloadCache()
+        {
+            var checkQuery = _dataLayer.Builder
+                .From<XUPDATEOBJECTS>()
+                .Select(
+                        c => c.DATEMODIFIED
+                    )
+                .Where(c => c.OBJTABLE, ConditionOperator.In, "XWEBQUERY", "XWEBCONSTRAINT")
+                .Where(c => c.DATEMODIFIED, ConditionOperator.GreaterThan, this._actualyCacheDataDate)
+                .OnTop(1);
+
+            var isDirty = this._queryExecutor
+                .Fetch(checkQuery, reader =>
+                {
+                    var result = false;
+                    while (reader.Read())
+                    {
+                        var modifiedDate = reader.GetValue(c => c.DATEMODIFIED);
+                        if (modifiedDate > this._actualyCacheDataDate)
+                        {
+                            this._actualyCacheDataDate = modifiedDate;
+                        }
+                        result = true;
+                    }
+                    return result;
+                });
+
+            if (isDirty)
+            {
+                this._queryDescriptors = new Dictionary<int, QueryDescriptor>();
+            }
         }
 
         /// <summary>

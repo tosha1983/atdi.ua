@@ -15,10 +15,16 @@ namespace Atdi.AppServices.WebQuery
     {
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IQueryExecutor _queryExecutor;
-        private readonly Dictionary<int, GroupDescriptor> _descriptorsCache;
+        private Dictionary<int, GroupDescriptor> _descriptorsCache;
+        private DateTime? _actualyCacheDataDate;
+        private int _queryTokenVersion;
+        private int _threadId;
 
         public GroupDescriptorsCache(IDataLayer<IcsmDataOrm> dataLayer)
         {
+            this._actualyCacheDataDate = DateTime.Now;
+            this._queryTokenVersion = 0;
+            this._threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
             this._descriptorsCache = new Dictionary<int, GroupDescriptor>();
@@ -30,6 +36,8 @@ namespace Atdi.AppServices.WebQuery
             {
                 throw new ArgumentNullException(nameof(identifiers));
             }
+
+            this.TryToReloadCache();
 
             var loading = new List<int>();
             var result = new List<GroupDescriptor>();
@@ -54,6 +62,40 @@ namespace Atdi.AppServices.WebQuery
             }
 
             return result.ToArray();
+        }
+
+        private void TryToReloadCache()
+        {
+            var checkQuery = _dataLayer.Builder
+                .From<XUPDATEOBJECTS>()
+                .Select(
+                        c => c.DATEMODIFIED
+                    )
+                .Where(c => c.OBJTABLE, ConditionOperator.In, "TASKFORCE", "XWEBQUERY", "XWEBCONSTRAINT")
+                .Where(c => c.DATEMODIFIED, ConditionOperator.GreaterThan, this._actualyCacheDataDate)
+                .OnTop(1);
+
+            var isDirty = this._queryExecutor
+                .Fetch(checkQuery, reader =>
+                {
+                    var result = false;
+                    while (reader.Read())
+                    {
+                        var modifiedDate = reader.GetValue(c => c.DATEMODIFIED);
+                        if (modifiedDate > this._actualyCacheDataDate)
+                        {
+                            this._actualyCacheDataDate = modifiedDate;
+                        }
+                        result = true;
+                    }
+                    return result;
+                });
+
+            if (isDirty)
+            {
+                this._descriptorsCache = new Dictionary<int, GroupDescriptor>();
+                ++this._queryTokenVersion;
+            }
         }
 
         private static bool ToBool(int? value)
@@ -136,7 +178,7 @@ namespace Atdi.AppServices.WebQuery
                             Token = new QueryToken
                             {
                                 Id = reader.GetValue(c => c.ID),
-                                Version = "1.0.0.0",
+                                Version = $"1.0.{this._threadId.ToString()}.{this._queryTokenVersion.ToString()}",
                                 Stamp = Guid.NewGuid().ToByteArray()
                             }
                         };
