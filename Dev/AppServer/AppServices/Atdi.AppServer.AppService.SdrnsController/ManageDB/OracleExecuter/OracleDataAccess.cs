@@ -276,7 +276,15 @@ namespace Atdi.Oracle.DataAccess
                 object o = command.ExecuteScalar();
                 if (o != null)
                 {
-                    Id = Int32.Parse(o.ToString());
+                    if (o != DBNull.Value)
+                    {
+                        Id = Int32.Parse(o.ToString());
+                    }
+                    else Id = 1;
+                }
+                else
+                {
+                    Id = 1;
                 }
                 //transaction.Commit();
                 command.Dispose();

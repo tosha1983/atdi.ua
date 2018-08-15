@@ -683,8 +683,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
                                     int idx_cnt = 0;
                                     YXbsLevelmeasres d_ = new YXbsLevelmeasres();
+                                    d_.Format("*");
                                     int? indexerYXbsLevelmeasres = d_.GetMaxId(d_.GetTableName());
                                     YXbsLevelmeasres dx_ = new YXbsLevelmeasres();
+                                    dx_.Format("*");
                                     int? indexerYXbsSpectoccupmeas = dx_.GetMaxId(dx_.GetTableName());
                                     foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
                                     {
@@ -856,8 +858,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 }
                                             }
                                             idx_cnt++;
-
-
                                         }
                                     }
                                     if (BlockInsert_YXbsLevelmeasres1.Count > 0)
@@ -868,6 +868,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         YXbsLevelmeasres11.SaveBath(BlockInsert_YXbsLevelmeasres1);
                                         YXbsLevelmeasres11.Close();
                                         YXbsLevelmeasres11.Dispose();
+                                    }
+
+                                    if (BlockInsert_YXbsSpectoccupmeas1.Count > 0)
+                                    {
+                                        YXbsSpectoccupmeas YXbsSpectoccupmeas11 = new YXbsSpectoccupmeas();
+                                        YXbsSpectoccupmeas11.Format("*");
+                                        YXbsSpectoccupmeas11.New();
+                                        YXbsSpectoccupmeas11.SaveBath(BlockInsert_YXbsSpectoccupmeas1);
+                                        YXbsSpectoccupmeas11.Close();
+                                        YXbsSpectoccupmeas11.Dispose();
                                     }
 
                                     if (BlockInsert_FrequencyMeasurement2.Count > 0)
