@@ -28,7 +28,11 @@ namespace Atdi.AppServices.WebQuery
                 {
                     var queryToken = queryTokens[j];
                     this._tokensById.Add(queryToken.Token.Id, queryToken);
-                    this._tokensByCode.Add(queryToken.Code, queryToken);
+
+                    if (!string.IsNullOrEmpty(queryToken.Code))
+                    {
+                        this._tokensByCode.Add(queryToken.Code, queryToken);
+                    }
                 }
             }
         }
