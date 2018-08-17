@@ -22,4 +22,5 @@ namespace Atdi.AppServer.Contracts.Sdrns
         [DataMember]
         public bool? СorrectnessEstimations; //коректность проведеннного измерения
     }
+
 }
