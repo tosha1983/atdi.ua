@@ -59,9 +59,9 @@
     <Compile Include="Enums\AntennaDirectional.cs" />
     <Compile Include="ISdrnsController.cs" />
     <Compile Include="Models\Devices\BB60C\FSemples.cs" />
+    <Compile Include="Models\Devices\BB60C\MeasSdrBandWidthResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrLoc.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrParam.cs" />
-    <Compile Include="Models\Devices\BB60C\MeasSdrBandwidthResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrSOParam.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrTask.cs" />
