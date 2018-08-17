@@ -188,13 +188,12 @@ namespace OnlinePortal
 
                                             ClassIRPObject class_irp = new ClassIRPObject();
                                             string stat="";
-
-
-
-                                            var res = client.ExecuteQuery(new UserToken
+                                            try
                                             {
-                                                Data = ((LitvaPortal.AuthenticationManager.UserToken)Session["AuthUser"]).Data
-                                            },
+                                                var res = client.ExecuteQuery(new UserToken
+                                                {
+                                                    Data = ((LitvaPortal.AuthenticationManager.UserToken)Session["AuthUser"]).Data
+                                                },
                                             t,
                                             new FetchOptions
                                             {
@@ -205,22 +204,27 @@ namespace OnlinePortal
                                                              {
                                                                  new OrderExpression
                                                                  {
-                                                                  ColumnName = "ID",
+                                                                  ColumnName = meta.Data.PrimaryKey[0],
                                                                   OrderType = OrderType.Descending
                                                                  }
                                                              }
                                             });
-                                            if (res != null)
-                                            {
-                                                List<object[]> ResD = new List<object[]>();
-     
-                                                string[][] row = (res.Data.Dataset as StringCellsDataSet).Cells;
-                                                foreach (string[] r in row)
-                                                  ResD.Add(r.ToArray());
 
-                                                class_irp.Val_Arr = ResD;
+                                                if (res != null)
+                                                {
+                                                    List<object[]> ResD = new List<object[]>();
+
+                                                    string[][] row = (res.Data.Dataset as StringCellsDataSet).Cells;
+                                                    foreach (string[] r in row)
+                                                        ResD.Add(r.ToArray());
+
+                                                    class_irp.Val_Arr = ResD;
+                                                }
                                             }
-
+                                            catch (Exception ex)
+                                            {
+                                                MessageBox.Show(ex.Message);
+                                            }
                                             class_irp.Setting_param = new SettingIRPClass();
                                             class_irp.Setting_param.NAME = meta.Data.Name;
                                             class_irp.Setting_param.MAX_COLUMNS = meta.Data.Columns.Count();

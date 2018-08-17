@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
-using OrmCs;
-using DatalayerCs;
 using System.Windows.Forms;
 using System.IO;
 using System.IO.Compression;
 using System.Xml;
 using System.Globalization;
-using CoreICSM.Logs;
 using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Oracle.DataAccess;
+using Atdi.AppServer;
+using Oracle.DataAccess.Client;
+using Atdi.SDNRS.AppServer.BusManager;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
 
     public class ClassesDBGetResult : IDisposable
     {
+        public static ILogger logger;
+        public ClassesDBGetResult(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -36,12 +41,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public List<ClassSDRResults> ReadlResultFromDB(int ID)
         {
+            const int MaxExecuteParameters = 200;
             // Список объектов в рамках конкретного адаптера ICSM
             List<ClassSDRResults> L_IN = new List<ClassSDRResults>();
             try
             {
-                Task tsk = new Task(() => {
-                    YXbsMeasurementres res_val = new YXbsMeasurementres(ConnectDB.Connect_Main_);
+                logger.Trace("Start procedure ReadlResultFromDB...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                    YXbsMeasurementres res_val = new YXbsMeasurementres();
                     res_val.Format("*");
                     // выбирать только таски, для которых STATUS не NULL
                     res_val.Filter = string.Format("(ID={0})", ID);
@@ -53,75 +60,63 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.loc_sensorM = new List<YXbsLocationsensorm>();
                         ICSM_T.meas_res = new YXbsMeasurementres();
                         ICSM_T.spect_occup_meas = new List<YXbsSpectoccupmeas>();
-
                         ICSM_T.meas_res = new YXbsMeasurementres();
-                        var m_fr = new YXbsMeasurementres(ConnectDB.Connect_Main_);
+                        var m_fr = new YXbsMeasurementres();
                         m_fr.CopyDataFrom(res_val);
                         ICSM_T.meas_res = m_fr;
 
-                        /*
-                        YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                        XbsYXbsFrequencymeas_.Format("*");
-                        XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                        for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
-                        {
-                            var m_fr_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                            m_fr_.CopyDataFrom(XbsYXbsFrequencymeas_);
-                            ICSM_T.freq_meas.Add(m_fr_);
-                            m_fr_.Close();
-                            m_fr_.Dispose();
-                        }
-                        XbsYXbsFrequencymeas_.Close();
-                        XbsYXbsFrequencymeas_.Dispose();
-                        */
-
-                        YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
+                        List<string> sqlFreqs = new List<string>();
+                        YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres();
                         XbsYXbsLevelmeasres_.Format("*");
-                        XbsYXbsLevelmeasres_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
+                        XbsYXbsLevelmeasres_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
                         for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
                         {
-                            var m_fr_ = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
+                            var m_fr_ = new YXbsLevelmeasres();
                             m_fr_.CopyDataFrom(XbsYXbsLevelmeasres_);
                             ICSM_T.level_meas_res.Add(m_fr_);
-
-                            //////// получить частоты
-                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                            XbsYXbsFrequencymeas_.Format("*");
-                            XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0}) and (Num={1})", res_val.m_id, m_fr_.m_id);
-                            for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
-                            {
-                                var m_fr_f = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                                m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
-                                ICSM_T.freq_meas.Add(m_fr_f);
-                                m_fr_f.Close();
-                                m_fr_f.Dispose();
-                            }
-                            XbsYXbsFrequencymeas_.Close();
-                            XbsYXbsFrequencymeas_.Dispose();
-                            /////////
-
+                            sqlFreqs.Add(string.Format("((ID_XBS_MEASUREMENTRES={0}) and (NUM={1}))", res_val.m_id, m_fr_.m_id));
                             m_fr_.Close();
                             m_fr_.Dispose();
                         }
                         XbsYXbsLevelmeasres_.Close();
                         XbsYXbsLevelmeasres_.Dispose();
 
-                        YXbsLevelmeasonlres XbsYXbsLevelmeasonlres_ = new YXbsLevelmeasonlres(ConnectDB.Connect_Main_);
-                        XbsYXbsLevelmeasonlres_.Format("*");
-                        XbsYXbsLevelmeasonlres_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                        for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
+                        string allFreq = "";
+                        int tempCnt = 0;
+                        foreach (string v in sqlFreqs)
                         {
-                            var m_fr_ = new YXbsLevelmeasonlres(ConnectDB.Connect_Main_);
-                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
-                            ICSM_T.level_meas_onl_res.Add(m_fr_);
+                            allFreq += v + " OR ";
+                            if (tempCnt== MaxExecuteParameters)
+                            {
+                                allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                                YXbsFrequencymeas XbsYXbsFrequencymeas__ = new YXbsFrequencymeas();
+                                XbsYXbsFrequencymeas__.Format("*");
+                                XbsYXbsFrequencymeas__.Filter = allFreq;
+                                for (XbsYXbsFrequencymeas__.OpenRs(); !XbsYXbsFrequencymeas__.IsEOF(); XbsYXbsFrequencymeas__.MoveNext())
+                                {
+                                    var m_fr_f = new YXbsFrequencymeas();
+                                    m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas__);
+                                    ICSM_T.freq_meas.Add(m_fr_f);
+                                    m_fr_f.Close();
+                                    m_fr_f.Dispose();
+                                }
+                                XbsYXbsFrequencymeas__.Close();
+                                XbsYXbsFrequencymeas__.Dispose();
+                                allFreq = "";
+                                tempCnt = 0;
+                            }
+                            tempCnt++;
+                        }
 
-                            //////// получить частоты
-                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                        if (allFreq.Length > 0)
+                        {
+                            allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
                             XbsYXbsFrequencymeas_.Format("*");
-                            XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0}) and (Num={1})", res_val.m_id, m_fr_.m_id);
+                            XbsYXbsFrequencymeas_.Filter = allFreq;
                             for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
                             {
-                                var m_fr_f = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                                var m_fr_f = new YXbsFrequencymeas();
                                 m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
                                 ICSM_T.freq_meas.Add(m_fr_f);
                                 m_fr_f.Close();
@@ -129,30 +124,61 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                             XbsYXbsFrequencymeas_.Close();
                             XbsYXbsFrequencymeas_.Dispose();
-                            /////////
+                        }
 
+
+                        sqlFreqs = new List<string>();
+                        YXbsLevelmeasonlres XbsYXbsLevelmeasonlres_ = new YXbsLevelmeasonlres();
+                        XbsYXbsLevelmeasonlres_.Format("*");
+                        XbsYXbsLevelmeasonlres_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsLevelmeasonlres();
+                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
+                            ICSM_T.level_meas_onl_res.Add(m_fr_);
+                            sqlFreqs.Add(string.Format("(ID_XBS_MEASUREMENTRES={0}) and (NUM={1})", res_val.m_id, m_fr_.m_id));
                             m_fr_.Close();
                             m_fr_.Dispose();
                         }
                         XbsYXbsLevelmeasonlres_.Close();
                         XbsYXbsLevelmeasonlres_.Dispose();
 
-                        YXbsSpectoccupmeas XbsYXbsSpectoccupmeas_ = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
-                        XbsYXbsSpectoccupmeas_.Format("*");
-                        XbsYXbsSpectoccupmeas_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                        for (XbsYXbsSpectoccupmeas_.OpenRs(); !XbsYXbsSpectoccupmeas_.IsEOF(); XbsYXbsSpectoccupmeas_.MoveNext())
+                        allFreq = "";
+                        tempCnt = 0;
+                        foreach (string v in sqlFreqs)
                         {
-                            var m_fr_ = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
-                            m_fr_.CopyDataFrom(XbsYXbsSpectoccupmeas_);
-                            ICSM_T.spect_occup_meas.Add(m_fr_);
+                            allFreq += v + " OR ";
+                            if (tempCnt == MaxExecuteParameters)
+                            {
+                                allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                                YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                                XbsYXbsFrequencymeas_.Format("*");
+                                XbsYXbsFrequencymeas_.Filter = allFreq;
+                                for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                                {
+                                    var m_fr_f = new YXbsFrequencymeas();
+                                    m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                    ICSM_T.freq_meas.Add(m_fr_f);
+                                    m_fr_f.Close();
+                                    m_fr_f.Dispose();
+                                }
+                                XbsYXbsFrequencymeas_.Close();
+                                XbsYXbsFrequencymeas_.Dispose();
+                                allFreq = "";
+                                tempCnt = 0;
+                            }
+                            tempCnt++;
+                        }
 
-                            //////// получить частоты
-                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                        if (allFreq.Length > 0)
+                        {
+                            allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
                             XbsYXbsFrequencymeas_.Format("*");
-                            XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0}) and (Num={1})", res_val.m_id, m_fr_.m_id);
+                            XbsYXbsFrequencymeas_.Filter = allFreq;
                             for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
                             {
-                                var m_fr_f = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                                var m_fr_f = new YXbsFrequencymeas();
                                 m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
                                 ICSM_T.freq_meas.Add(m_fr_f);
                                 m_fr_f.Close();
@@ -160,20 +186,79 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                             XbsYXbsFrequencymeas_.Close();
                             XbsYXbsFrequencymeas_.Dispose();
-                            /////////
+                        }
 
+
+                        sqlFreqs = new List<string>();
+                        YXbsSpectoccupmeas XbsYXbsSpectoccupmeas_ = new YXbsSpectoccupmeas();
+                        XbsYXbsSpectoccupmeas_.Format("*");
+                        XbsYXbsSpectoccupmeas_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsSpectoccupmeas_.OpenRs(); !XbsYXbsSpectoccupmeas_.IsEOF(); XbsYXbsSpectoccupmeas_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsSpectoccupmeas();
+                            m_fr_.CopyDataFrom(XbsYXbsSpectoccupmeas_);
+                            ICSM_T.spect_occup_meas.Add(m_fr_);
+                            sqlFreqs.Add(string.Format("(ID_XBS_MEASUREMENTRES={0}) and (NUM={1})", res_val.m_id, m_fr_.m_id));
                             m_fr_.Close();
                             m_fr_.Dispose();
                         }
                         XbsYXbsSpectoccupmeas_.Close();
                         XbsYXbsSpectoccupmeas_.Dispose();
 
-                        YXbsLocationsensorm XbsYXbsLocationsensorm_ = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
+
+                        allFreq = "";
+                        tempCnt = 0;
+                        foreach (string v in sqlFreqs)
+                        {
+                            allFreq += v + " OR ";
+                            if (tempCnt == MaxExecuteParameters)
+                            {
+                                allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                                YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                                XbsYXbsFrequencymeas_.Format("*");
+                                XbsYXbsFrequencymeas_.Filter = allFreq;
+                                for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                                {
+                                    var m_fr_f = new YXbsFrequencymeas();
+                                    m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                    ICSM_T.freq_meas.Add(m_fr_f);
+                                    m_fr_f.Close();
+                                    m_fr_f.Dispose();
+                                }
+                                XbsYXbsFrequencymeas_.Close();
+                                XbsYXbsFrequencymeas_.Dispose();
+                                allFreq = "";
+                                tempCnt = 0;
+                            }
+                            tempCnt++;
+                        }
+
+                        if (allFreq.Length > 0)
+                        {
+                            allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                            XbsYXbsFrequencymeas_.Format("*");
+                            XbsYXbsFrequencymeas_.Filter = allFreq;
+                            for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                            {
+                                var m_fr_f = new YXbsFrequencymeas();
+                                m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                ICSM_T.freq_meas.Add(m_fr_f);
+                                m_fr_f.Close();
+                                m_fr_f.Dispose();
+                            }
+                            XbsYXbsFrequencymeas_.Close();
+                            XbsYXbsFrequencymeas_.Dispose();
+                        }
+
+
+
+                        YXbsLocationsensorm XbsYXbsLocationsensorm_ = new YXbsLocationsensorm();
                         XbsYXbsLocationsensorm_.Format("*");
-                        XbsYXbsLocationsensorm_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
+                        XbsYXbsLocationsensorm_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
                         for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                         {
-                            var m_fr_ = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
+                            var m_fr_ = new YXbsLocationsensorm();
                             m_fr_.CopyDataFrom(XbsYXbsLocationsensorm_);
                             ICSM_T.loc_sensorM.Add(m_fr_);
                             m_fr_.Close();
@@ -189,24 +274,26 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     res_val.Dispose();
                 });
                 tsk.Start();
-                //tsk.Wait();
-                Console.WriteLine("Readl Result From DB Objects ...");
+                tsk.Join();
+                logger.Trace("End procedure ReadlResultFromDB.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error("Error in procedure ReadlResultFromDB: "+ex.Message);
             }
             return L_IN;
         }
 
         public List<ClassSDRResults> ReadlAllResultFromDB()
         {
+            const int MaxExecuteParameters = 200;
             // Список объектов в рамках конкретного адаптера ICSM
             List<ClassSDRResults> L_IN = new List<ClassSDRResults>();
             try
             {
-                Task tsk = new Task(() => {
-                YXbsMeasurementres res_val = new YXbsMeasurementres(ConnectDB.Connect_Main_);
+                logger.Trace("Start procedure ReadlAllResultFromDB...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                YXbsMeasurementres res_val = new YXbsMeasurementres();
                 res_val.Format("*");
                 // выбирать только таски, для которых STATUS не NULL
                 res_val.Filter = "(ID>0) AND (STATUS<>'Z')";
@@ -220,74 +307,64 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     ICSM_T.spect_occup_meas = new List<YXbsSpectoccupmeas>();
 
                     ICSM_T.meas_res = new YXbsMeasurementres();
-                    var m_fr = new YXbsMeasurementres(ConnectDB.Connect_Main_);
+                    var m_fr = new YXbsMeasurementres();
                     m_fr.CopyDataFrom(res_val);
                     ICSM_T.meas_res = m_fr;
 
-                    /*
-                    YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                    XbsYXbsFrequencymeas_.Format("*");
-                    XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                    for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
-                    {
-                        var m_fr_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                        m_fr_.CopyDataFrom(XbsYXbsFrequencymeas_);
-                        ICSM_T.freq_meas.Add(m_fr_);
-                        m_fr_.Close();
-                        m_fr_.Dispose();
-                    }
-                    XbsYXbsFrequencymeas_.Close();
-                    XbsYXbsFrequencymeas_.Dispose();
-                    */
 
-                    YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
+                    List<string> sqlFreqs = new List<string>();
+                    YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres();
                     XbsYXbsLevelmeasres_.Format("*");
-                    XbsYXbsLevelmeasres_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                    for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
-                    {
-                        var m_fr_ = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
-                        m_fr_.CopyDataFrom(XbsYXbsLevelmeasres_);
-                        ICSM_T.level_meas_res.Add(m_fr_);
-                            //////// получить частоты
-                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                            XbsYXbsFrequencymeas_.Format("*");
-                            XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0}) and (Num={1})", res_val.m_id, m_fr_.m_id);
-                            for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
-                            {
-                                var m_fr_f = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                                m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
-                                ICSM_T.freq_meas.Add(m_fr_f);
-                                m_fr_f.Close();
-                                m_fr_f.Dispose();
-                            }
-                            XbsYXbsFrequencymeas_.Close();
-                            XbsYXbsFrequencymeas_.Dispose();
-                            /////////
-
+                    XbsYXbsLevelmeasres_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsLevelmeasres();
+                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasres_);
+                            ICSM_T.level_meas_res.Add(m_fr_);
+                            sqlFreqs.Add(string.Format("((ID_XBS_MEASUREMENTRES={0}) and (NUM={1}))", res_val.m_id, m_fr_.m_id));
                             m_fr_.Close();
                             m_fr_.Dispose();
 
                         }
-                    XbsYXbsLevelmeasres_.Close();
-                    XbsYXbsLevelmeasres_.Dispose();
+                        XbsYXbsLevelmeasres_.Close();
+                        XbsYXbsLevelmeasres_.Dispose();
 
-                    YXbsLevelmeasonlres XbsYXbsLevelmeasonlres_ = new YXbsLevelmeasonlres(ConnectDB.Connect_Main_);
-                    XbsYXbsLevelmeasonlres_.Format("*");
-                    XbsYXbsLevelmeasonlres_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                    for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
-                     {
-                            var m_fr_ = new YXbsLevelmeasonlres(ConnectDB.Connect_Main_);
-                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
-                            ICSM_T.level_meas_onl_res.Add(m_fr_);
+                        string allFreq = "";
+                        int tempCnt = 0;
+                        foreach (string v in sqlFreqs)
+                        {
+                            allFreq += v + " OR ";
+                            if (tempCnt == MaxExecuteParameters)
+                            {
+                                allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                                YXbsFrequencymeas XbsYXbsFrequencymeas__ = new YXbsFrequencymeas();
+                                XbsYXbsFrequencymeas__.Format("*");
+                                XbsYXbsFrequencymeas__.Filter = allFreq;
+                                for (XbsYXbsFrequencymeas__.OpenRs(); !XbsYXbsFrequencymeas__.IsEOF(); XbsYXbsFrequencymeas__.MoveNext())
+                                {
+                                    var m_fr_f = new YXbsFrequencymeas();
+                                    m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas__);
+                                    ICSM_T.freq_meas.Add(m_fr_f);
+                                    m_fr_f.Close();
+                                    m_fr_f.Dispose();
+                                }
+                                XbsYXbsFrequencymeas__.Close();
+                                XbsYXbsFrequencymeas__.Dispose();
+                                allFreq = "";
+                                tempCnt = 0;
+                            }
+                            tempCnt++;
+                        }
 
-
-                            //////// получить частоты
-                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                        if (allFreq.Length > 0)
+                        {
+                            allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
                             XbsYXbsFrequencymeas_.Format("*");
-                            XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0}) and (Num={1})", res_val.m_id, m_fr_.m_id);
+                            XbsYXbsFrequencymeas_.Filter = allFreq;
                             for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
                             {
-                                var m_fr_f = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                                var m_fr_f = new YXbsFrequencymeas();
                                 m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
                                 ICSM_T.freq_meas.Add(m_fr_f);
                                 m_fr_f.Close();
@@ -295,31 +372,76 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                             XbsYXbsFrequencymeas_.Close();
                             XbsYXbsFrequencymeas_.Dispose();
-                            /////////
+                        }
 
 
+                        sqlFreqs = new List<string>();
+                        YXbsLevelmeasonlres XbsYXbsLevelmeasonlres_ = new YXbsLevelmeasonlres();
+                        XbsYXbsLevelmeasonlres_.Format("*");
+                        XbsYXbsLevelmeasonlres_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsLevelmeasonlres();
+                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
+                            ICSM_T.level_meas_onl_res.Add(m_fr_);
+                            sqlFreqs.Add(string.Format("(ID_XBS_MEASUREMENTRES={0}) and (NUM={1})", res_val.m_id, m_fr_.m_id));
+                            /*
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                            XbsYXbsFrequencymeas_.Format("*");
+                            XbsYXbsFrequencymeas_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0}) and (NUM={1})", res_val.m_id, m_fr_.m_id);
+                            for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                            {
+                                var m_fr_f = new YXbsFrequencymeas();
+                                m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                ICSM_T.freq_meas.Add(m_fr_f);
+                                m_fr_f.Close();
+                                m_fr_f.Dispose();
+                            }
+                            XbsYXbsFrequencymeas_.Close();
+                            XbsYXbsFrequencymeas_.Dispose();
+                            */
                             m_fr_.Close();
                             m_fr_.Dispose();
                      }
                     XbsYXbsLevelmeasonlres_.Close();
                     XbsYXbsLevelmeasonlres_.Dispose();
 
-                    YXbsSpectoccupmeas XbsYXbsSpectoccupmeas_ = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
-                    XbsYXbsSpectoccupmeas_.Format("*");
-                    XbsYXbsSpectoccupmeas_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
-                    for (XbsYXbsSpectoccupmeas_.OpenRs(); !XbsYXbsSpectoccupmeas_.IsEOF(); XbsYXbsSpectoccupmeas_.MoveNext())
-                    {
-                        var m_fr_ = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
-                        m_fr_.CopyDataFrom(XbsYXbsSpectoccupmeas_);
-                        ICSM_T.spect_occup_meas.Add(m_fr_);
+                        allFreq = "";
+                        tempCnt = 0;
+                        foreach (string v in sqlFreqs)
+                        {
+                            allFreq += v + " OR ";
+                            if (tempCnt == MaxExecuteParameters)
+                            {
+                                allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                                YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                                XbsYXbsFrequencymeas_.Format("*");
+                                XbsYXbsFrequencymeas_.Filter = allFreq;
+                                for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                                {
+                                    var m_fr_f = new YXbsFrequencymeas();
+                                    m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                    ICSM_T.freq_meas.Add(m_fr_f);
+                                    m_fr_f.Close();
+                                    m_fr_f.Dispose();
+                                }
+                                XbsYXbsFrequencymeas_.Close();
+                                XbsYXbsFrequencymeas_.Dispose();
+                                allFreq = "";
+                                tempCnt = 0;
+                            }
+                            tempCnt++;
+                        }
 
-                            //////// получить частоты
-                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                        if (allFreq.Length > 0)
+                        {
+                            allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
                             XbsYXbsFrequencymeas_.Format("*");
-                            XbsYXbsFrequencymeas_.Filter = string.Format("(id_xbs_measurementres={0}) and (Num={1})", res_val.m_id, m_fr_.m_id);
+                            XbsYXbsFrequencymeas_.Filter = allFreq;
                             for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
                             {
-                                var m_fr_f = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                                var m_fr_f = new YXbsFrequencymeas();
                                 m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
                                 ICSM_T.freq_meas.Add(m_fr_f);
                                 m_fr_f.Close();
@@ -327,20 +449,94 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                             XbsYXbsFrequencymeas_.Close();
                             XbsYXbsFrequencymeas_.Dispose();
-                            /////////
+                        }
 
-                            m_fr_.Close();
+
+                        sqlFreqs = new List<string>();
+                    YXbsSpectoccupmeas XbsYXbsSpectoccupmeas_ = new YXbsSpectoccupmeas();
+                    XbsYXbsSpectoccupmeas_.Format("*");
+                    XbsYXbsSpectoccupmeas_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
+                    for (XbsYXbsSpectoccupmeas_.OpenRs(); !XbsYXbsSpectoccupmeas_.IsEOF(); XbsYXbsSpectoccupmeas_.MoveNext())
+                    {
+                        var m_fr_ = new YXbsSpectoccupmeas();
+                        m_fr_.CopyDataFrom(XbsYXbsSpectoccupmeas_);
+                        ICSM_T.spect_occup_meas.Add(m_fr_);
+                        sqlFreqs.Add(string.Format("(ID_XBS_MEASUREMENTRES={0}) and (NUM={1})", res_val.m_id, m_fr_.m_id));
+                            /*
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                            XbsYXbsFrequencymeas_.Format("*");
+                            XbsYXbsFrequencymeas_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0}) and (NUM={1})", res_val.m_id, m_fr_.m_id);
+                            for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                            {
+                                var m_fr_f = new YXbsFrequencymeas();
+                                m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                ICSM_T.freq_meas.Add(m_fr_f);
+                                m_fr_f.Close();
+                                m_fr_f.Dispose();
+                            }
+                            XbsYXbsFrequencymeas_.Close();
+                            XbsYXbsFrequencymeas_.Dispose();
+                            */
+
+                        m_fr_.Close();
                         m_fr_.Dispose();
-                    }
-                    XbsYXbsSpectoccupmeas_.Close();
-                    XbsYXbsSpectoccupmeas_.Dispose();
+                        }
+                        XbsYXbsSpectoccupmeas_.Close();
+                        XbsYXbsSpectoccupmeas_.Dispose();
 
-                    YXbsLocationsensorm XbsYXbsLocationsensorm_ = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
+                        //////////////////////////////
+                        allFreq = "";
+                        tempCnt = 0;
+                        foreach (string v in sqlFreqs)
+                        {
+                            allFreq += v + " OR ";
+                            if (tempCnt == MaxExecuteParameters)
+                            {
+                                allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                                YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                                XbsYXbsFrequencymeas_.Format("*");
+                                XbsYXbsFrequencymeas_.Filter = allFreq;
+                                for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                                {
+                                    var m_fr_f = new YXbsFrequencymeas();
+                                    m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                    ICSM_T.freq_meas.Add(m_fr_f);
+                                    m_fr_f.Close();
+                                    m_fr_f.Dispose();
+                                }
+                                XbsYXbsFrequencymeas_.Close();
+                                XbsYXbsFrequencymeas_.Dispose();
+                                allFreq = "";
+                                tempCnt = 0;
+                            }
+                            tempCnt++;
+                        }
+
+                        if (allFreq.Length > 0)
+                        {
+                            allFreq = allFreq.Remove(allFreq.Length - 4, 4);
+                            YXbsFrequencymeas XbsYXbsFrequencymeas_ = new YXbsFrequencymeas();
+                            XbsYXbsFrequencymeas_.Format("*");
+                            XbsYXbsFrequencymeas_.Filter = allFreq;
+                            for (XbsYXbsFrequencymeas_.OpenRs(); !XbsYXbsFrequencymeas_.IsEOF(); XbsYXbsFrequencymeas_.MoveNext())
+                            {
+                                var m_fr_f = new YXbsFrequencymeas();
+                                m_fr_f.CopyDataFrom(XbsYXbsFrequencymeas_);
+                                ICSM_T.freq_meas.Add(m_fr_f);
+                                m_fr_f.Close();
+                                m_fr_f.Dispose();
+                            }
+                            XbsYXbsFrequencymeas_.Close();
+                            XbsYXbsFrequencymeas_.Dispose();
+                        }
+
+
+                        YXbsLocationsensorm XbsYXbsLocationsensorm_ = new YXbsLocationsensorm();
                     XbsYXbsLocationsensorm_.Format("*");
-                    XbsYXbsLocationsensorm_.Filter = string.Format("(id_xbs_measurementres={0})", res_val.m_id);
+                    XbsYXbsLocationsensorm_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
                     for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                     {
-                        var m_fr_ = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
+                        var m_fr_ = new YXbsLocationsensorm();
                         m_fr_.CopyDataFrom(XbsYXbsLocationsensorm_);
                         ICSM_T.loc_sensorM.Add(m_fr_);
                         m_fr_.Close();
@@ -356,13 +552,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 res_val.Dispose();
             });
             tsk.Start();
-            //tsk.Wait();
+            tsk.Join();
+            logger.Trace("End procedure ReadlAllResultFromDB.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error("Error in procedure ReadlAllResultFromDB: "+ex.Message);
             }
-            Console.WriteLine("Read All Result From DB Objects ...");
             return L_IN;
         }
 
@@ -371,41 +567,51 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = false;
             try
             {
+                logger.Trace("Start procedure DeleteResultFromDB...");
                 /// Create new record in YXbsMeastask
-                YXbsMeasurementres measRes = new YXbsMeasurementres(ConnectDB.Connect_Main_);
-                measRes.Format("*");
-                if (obj != null)
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != ConnectDB.NullI) && (obj.Id.SubMeasTaskStationId != ConnectDB.NullI))
+                    YXbsMeasurementres measRes = new YXbsMeasurementres();
+                    measRes.Format("*");
+                    if (obj != null)
                     {
-                        if (obj.StationMeasurements.StationId != null)
+                        if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                         {
-                            if (measRes.Fetch(string.Format(" (meastaskid={0}) and (sensorid={1}) and (submeastaskid={2}) and (submeastaskstationid={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
+                            if (obj.StationMeasurements.StationId != null)
                             {
-                                isSuccess = true;
-                                measRes.m_status = Status;
-                                measRes.Save();
+                                if (measRes.Fetch(string.Format(" (MEASTASKID={0}) and (SENSORID={1}) and (SUBMEASTASKID={2}) and (SUBMEASTASKSTATIONID={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
+                                {
+                                    isSuccess = true;
+                                    measRes.m_status = Status;
+                                    measRes.Save();
+                                }
                             }
                         }
-                    }
-                    else if (obj.Id.MeasTaskId != null)
-                    {
+                        else if (obj.Id.MeasTaskId != null)
                         {
-                            measRes.Filter = string.Format(" (meastaskid={0}) ", obj.Id.MeasTaskId.Value);
-                            for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
                             {
-                                isSuccess = true;
-                                measRes.m_status = Status;
-                                measRes.Save();
+                                measRes.Filter = string.Format(" (MEASTASKID={0}) ", obj.Id.MeasTaskId.Value);
+                                for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
+                                {
+                                    isSuccess = true;
+                                    measRes.m_status = Status;
+                                    measRes.Save();
+                                }
                             }
                         }
+                        measRes.Close();
+                        measRes.Dispose();
                     }
-                    measRes.Close();
-                    measRes.Dispose();
-                }
+                });
+                tsk.Start();
+                tsk.Join();
+                logger.Trace("End procedure DeleteResultFromDB.");
             }
-            catch (Exception)
-            { isSuccess = false; }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                logger.Error("Error in procedure DeleteResultFromDB: "+ex.Message);
+            }
             return isSuccess;
         }
         public bool DeleteResultFromDB(MeasurementResults obj)
@@ -413,159 +619,270 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = false;
             try
             {
-                /// Create new record in YXbsMeastask
-                YXbsMeasurementres measRes = new YXbsMeasurementres(ConnectDB.Connect_Main_);
-                measRes.Format("*");
-                if (obj != null) {
-                    if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != ConnectDB.NullI) && (obj.Id.SubMeasTaskStationId != ConnectDB.NullI)) {
-                        if (obj.StationMeasurements.StationId != null) {
-                            if (measRes.Fetch(string.Format(" (meastaskid={0}) and (sensorid={1}) and (submeastaskid={2}) and (submeastaskstationid={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId))) {
-                                foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray()) {
-                                    YXbsFrequencymeas dtr = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                                    dtr.Format("*");
-                                    if (dt_param != null) {
-                                        if (dtr.Fetch(string.Format("id_xbs_measurementres={0}", measRes.m_id))) {
-                                            dtr.Delete();
-                                        }
-                                    }
-                                    dtr.Close();
-                                    dtr.Dispose();
-                                }
-                                foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray()) {
-                                    YXbsLocationsensorm dtr = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
-                                    dtr.Format("*");
-                                    if (dt_param != null) {
-                                        if (dtr.Fetch(string.Format("id_xbs_measurementres={0}", measRes.m_id))) {
-                                            dtr.Delete();
-                                        }
-                                    }
-                                    dtr.Close();
-                                    dtr.Dispose();
-                                }
-                                foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray()) {
-                                    if (obj.TypeMeasurements == MeasurementType.Level) {
-                                        YXbsLevelmeasres dtr = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
-                                        dtr.Format("*");
-                                        if (dt_param != null) {
-                                            if (dtr.Fetch(string.Format("id_xbs_measurementres={0}", measRes.m_id))) {
-                                                dtr.Delete();
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-
-                                    }
-                                    else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation) {
-                                        YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
-                                        dtr.Format("*");
-                                        if (dt_param != null) {
-                                            if (dtr.Fetch(string.Format("id_xbs_measurementres={0}", measRes.m_id))) {
-                                                dtr.Delete();
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-                                    }
-                                }
-                                isSuccess = true;
-                                measRes.Delete();
-                            }
-                        }
-                    }
-                    else if (obj.Id.MeasTaskId != null) {
+                logger.Trace("Start procedure DeleteResultFromDB...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
+                    YXbsMeasurementres measRes = new YXbsMeasurementres();
+                    measRes.Format("*");
+                    if (obj != null)
+                    {
+                        if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                         {
-                            measRes.Filter = string.Format(" (meastaskid={0}) ", obj.Id.MeasTaskId.Value);
-                            for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext()) {
-                                foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray()) {
-                                    YXbsFrequencymeas dtr = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                                    dtr.Format("*");
-                                    if (dt_param != null) {
-                                        dtr.Filter = string.Format("id_xbs_measurementres={0}", measRes.m_id);
-                                        for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext()) {
-                                            dtr.Delete();
-                                        }
-                                    }
-                                    dtr.Close();
-                                    dtr.Dispose();
-                                }
-
-                                foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray()) {
-                                    YXbsLocationsensorm dtr = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
-                                    dtr.Format("*");
-                                    if (dt_param != null)  {
-                                        dtr.Filter = string.Format("id_xbs_measurementres={0}", measRes.m_id);
-                                        for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext()) {
-                                            dtr.Delete();
-                                        }
-                                    }
-                                    dtr.Close();
-                                    dtr.Dispose();
-                                }
-
-                                foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray()) {
-                                    if (obj.TypeMeasurements == MeasurementType.Level) {
-                                        YXbsLevelmeasres dtr = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
+                            if (obj.StationMeasurements.StationId != null)
+                            {
+                                if (measRes.Fetch(string.Format(" (MEASTASKID={0}) and (SENSORID={1}) and (SUBMEASTASKID={2}) and (SUBMEASTASKSTATIONID={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
+                                {
+                                    foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
+                                    {
+                                        YXbsFrequencymeas dtr = new YXbsFrequencymeas();
                                         dtr.Format("*");
-                                        if (dt_param != null) {
-                                            dtr.Filter = string.Format("id_xbs_measurementres={0}", measRes.m_id);
-                                            for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext()) {
-                                                dtr.Delete();
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-
-                                    }
-                                    else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation) {
-                                        YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
-                                        dtr.Format("*");
-                                        if (dt_param != null) {
-                                            dtr.Filter = string.Format("id_xbs_measurementres={0}", measRes.m_id);
-                                            for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext()) {
+                                        if (dt_param != null)
+                                        {
+                                            if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                            {
                                                 dtr.Delete();
                                             }
                                         }
                                         dtr.Close();
                                         dtr.Dispose();
                                     }
+                                    foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
+                                    {
+                                        YXbsLocationsensorm dtr = new YXbsLocationsensorm();
+                                        dtr.Format("*");
+                                        if (dt_param != null)
+                                        {
+                                            if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                            {
+                                                dtr.Delete();
+                                            }
+                                        }
+                                        dtr.Close();
+                                        dtr.Dispose();
+                                    }
+                                    foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
+                                    {
+                                        if (obj.TypeMeasurements == MeasurementType.Level)
+                                        {
+                                            YXbsLevelmeasres dtr = new YXbsLevelmeasres();
+                                            dtr.Format("*");
+                                            if (dt_param != null)
+                                            {
+                                                if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                                {
+                                                    dtr.Delete();
+                                                }
+                                            }
+                                            dtr.Close();
+                                            dtr.Dispose();
+
+                                        }
+                                        else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation)
+                                        {
+                                            YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
+                                            dtr.Format("*");
+                                            if (dt_param != null)
+                                            {
+                                                if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                                {
+                                                    dtr.Delete();
+                                                }
+                                            }
+                                            dtr.Close();
+                                            dtr.Dispose();
+                                        }
+                                    }
+                                    isSuccess = true;
+                                    measRes.Delete();
                                 }
-                                isSuccess = true;
-                                measRes.Delete();
                             }
                         }
+                        else if (obj.Id.MeasTaskId != null)
+                        {
+                            {
+                                measRes.Filter = string.Format(" (MEASTASKID={0}) ", obj.Id.MeasTaskId.Value);
+                                for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
+                                {
+                                    foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
+                                    {
+                                        YXbsFrequencymeas dtr = new YXbsFrequencymeas();
+                                        dtr.Format("*");
+                                        if (dt_param != null)
+                                        {
+                                            dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                            for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                            {
+                                                dtr.Delete();
+                                            }
+                                        }
+                                        dtr.Close();
+                                        dtr.Dispose();
+                                    }
+
+                                    foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
+                                    {
+                                        YXbsLocationsensorm dtr = new YXbsLocationsensorm();
+                                        dtr.Format("*");
+                                        if (dt_param != null)
+                                        {
+                                            dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                            for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                            {
+                                                dtr.Delete();
+                                            }
+                                        }
+                                        dtr.Close();
+                                        dtr.Dispose();
+                                    }
+
+                                    foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
+                                    {
+                                        if (obj.TypeMeasurements == MeasurementType.Level)
+                                        {
+                                            YXbsLevelmeasres dtr = new YXbsLevelmeasres();
+                                            dtr.Format("*");
+                                            if (dt_param != null)
+                                            {
+                                                dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                                for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                                {
+                                                    dtr.Delete();
+                                                }
+                                            }
+                                            dtr.Close();
+                                            dtr.Dispose();
+
+                                        }
+                                        else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation)
+                                        {
+                                            YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
+                                            dtr.Format("*");
+                                            if (dt_param != null)
+                                            {
+                                                dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                                for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                                {
+                                                    dtr.Delete();
+                                                }
+                                            }
+                                            dtr.Close();
+                                            dtr.Dispose();
+                                        }
+                                    }
+                                    isSuccess = true;
+                                    measRes.Delete();
+                                }
+                            }
+                        }
+                        measRes.Close();
+                        measRes.Dispose();
                     }
-                    measRes.Close();
-                    measRes.Dispose();
-                }
+                });
+                tsk.Start();
+                tsk.Join();
+                logger.Trace("End procedure DeleteResultFromDB.");
             }
-            catch (Exception)
-            { isSuccess = false; }
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                logger.Error("Error in procedure DeleteResultFromDB:" +ex.Message);
+            }
             return isSuccess;
+        }
+
+        public void SaveAllResultsToDB()
+        {
+            logger.Trace("Start job ShedulerReceiveStatusMeastaskSDR...");
+            if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
+            {
+                ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
+                ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
+                System.Threading.Thread ge = new System.Threading.Thread(() =>
+                {
+                    for (int i = 0; i < GlobalInit.MEAS_SDR_RESULTS.Count; i++)
+                    {
+
+                        if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
+                        {
+                            if (GlobalInit.MEAS_SDR_RESULTS[0] != null)
+                            {
+                                int ID = -1;
+                                string Status_Original = GlobalInit.MEAS_SDR_RESULTS[0].status;
+                                MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
+                                if (msReslts.MeasurementsResults != null)
+                                {
+                                    if (msReslts.MeasurementsResults.Count() > 0)
+                                    {
+                                        if (msReslts.MeasurementsResults[0] is LevelMeasurementOnlineResult)
+                                        {
+                                            // Здесь в базу ничего не пишем (только в память)
+                                            msReslts.Status = "O";
+                                            GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                        }
+                                        else
+                                        {
+                                            logger.Trace(string.Format("Start save results..."));
+                                            ID = DbGetRes.SaveResultToDB(msReslts);
+                                            if (ID > 0)
+                                            {
+                                                GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                                if (GlobalInit.MEAS_SDR_RESULTS.Count > 0) GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                                logger.Trace(string.Format("Success save results..."));
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    logger.Trace(string.Format("Start save results..."));
+                                    ID = DbGetRes.SaveResultToDB(msReslts);
+                                    if (ID > 0)
+                                    {
+                                        GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                        GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
+                                        logger.Trace(string.Format("Success save results..."));
+                                    }
+                                }
+                            }
+                        }
+
+                        logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
+                        logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
+                        DbGetRes.Dispose();
+                        conv.Dispose();
+                    }
+                });
+                ge.Start();
+                ge.Join();
+            }
+            logger.Trace("End job ShedulerReceiveStatusMeastaskSDR.");
         }
 
 
         public int SaveResultToDB(MeasurementResults obj)
         {
-            int ID = ConnectDB.NullI;
+            int ID = Constants.NullI;
             if (((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) && (obj.Status == "C")) || (obj.TypeMeasurements != MeasurementType.SpectrumOccupation))
             {
-                //Task tsk = new Task(() =>
-                //{
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     try
                     {
+                        logger.Trace("Start procedure SaveResultToDB.");
+                        List<Yyy> BlockInsert_FrequencyMeasurement2 = new List<Yyy>();
+                        List<Yyy> BlockInsert_YXbsLevelmeasres1 = new List<Yyy>();
+                        List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
                         /// Create new record in YXbsMeastask
                         if (obj != null)
                         {
-                            if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != ConnectDB.NullI) && (obj.Id.SubMeasTaskStationId != ConnectDB.NullI))
+                            if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                             {
                             if (obj.StationMeasurements.StationId != null)
                             {
-                                YXbsMeasurementres measRes = new YXbsMeasurementres(ConnectDB.Connect_Main_);
+                                YXbsMeasurementres measRes = new YXbsMeasurementres();
                                 measRes.Format("*");
-                                measRes.Filter = "[ID]=-1";
+                                measRes.Filter = "ID=-1";
                                 measRes.New();
-                                ID = measRes.AllocID();
-                                obj.Id.MeasSdrResultsId = ID;
                                 if (obj.AntVal != null) measRes.m_antval = obj.AntVal.GetValueOrDefault();
                                 if (obj.DataRank != null) measRes.m_datarank = obj.DataRank.GetValueOrDefault();
                                 measRes.m_status = obj.Status;
@@ -576,89 +893,137 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 measRes.m_submeastaskstationid = obj.Id.SubMeasTaskStationId;
                                 measRes.m_timemeas = obj.TimeMeas;
                                 measRes.m_typemeasurements = obj.TypeMeasurements.ToString();
-                                measRes.Save();
+                                ID = (int)measRes.Save();
+                                obj.Id.MeasSdrResultsId = ID;
                                 measRes.Close();
                                 measRes.Dispose();
                             }
                             }
-                            if (ID != ConnectDB.NullI)
+                            if (ID != Constants.NullI)
                             {
-
                                 if (obj.LocationSensorMeasurement != null)
                                 {
+                                    List<Yyy> BlockInsert_LocationSensorMeasurement = new List<Yyy>();
                                     foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
                                     {
                                         if (dt_param != null)
                                         {
-                                                YXbsLocationsensorm dtr = new YXbsLocationsensorm(ConnectDB.Connect_Main_);
-                                                dtr.Format("*");
-                                                dtr.Filter = "[ID]=-1";
-                                                dtr.New();
-                                                int ID_DT_params = dtr.AllocID();
-                                                if (dt_param.ASL != null) dtr.m_asl = dt_param.ASL.GetValueOrDefault();
-                                                if (dt_param.Lon != null) dtr.m_lon = dt_param.Lon.GetValueOrDefault();
-                                                if (dt_param.Lat != null) dtr.m_lat = dt_param.Lat.GetValueOrDefault();
-                                                dtr.m_id_xbs_measurementres = ID;
-                                                dtr.Save();
-                                                dtr.Close();
-                                                dtr.Dispose();
+                                            YXbsLocationsensorm dtr = new YXbsLocationsensorm();
+                                            dtr.Format("*");
+                                            dtr.Filter = "ID=-1";
+                                            dtr.New();
+                                            if (dt_param.ASL != null) dtr.m_asl = dt_param.ASL.GetValueOrDefault();
+                                            if (dt_param.Lon != null) dtr.m_lon = dt_param.Lon.GetValueOrDefault();
+                                            if (dt_param.Lat != null) dtr.m_lat = dt_param.Lat.GetValueOrDefault();
+                                            dtr.m_id_xbs_measurementres = ID;
+                                            for (int i = 0; i < dtr.getAllFields.Count; i++)
+                                                dtr.getAllFields[i].Value = dtr.valc[i];
+                                            BlockInsert_LocationSensorMeasurement.Add(dtr);
+                                            dtr.Close();
+                                            dtr.Dispose();
                                         }
                                     }
+                                    if (BlockInsert_LocationSensorMeasurement.Count > 0)
+                                    {
+                                        YXbsLocationsensorm YXbsLocationsensorm11 = new YXbsLocationsensorm();
+                                        YXbsLocationsensorm11.Format("*");
+                                        YXbsLocationsensorm11.New();
+                                        YXbsLocationsensorm11.SaveBath(BlockInsert_LocationSensorMeasurement);
+                                        YXbsLocationsensorm11.Close();
+                                        YXbsLocationsensorm11.Dispose();
+                                    }
                                 }
+                                int AllIdx = 0;
                                 if (obj.MeasurementsResults != null)
                                 {
+                                    YXbsLevelmeasres dtr_ = new YXbsLevelmeasres();
                                     int idx_cnt = 0;
+                                    YXbsLevelmeasres d_level = new YXbsLevelmeasres();
+                                    d_level.Format("*");
+                                    int? indexerYXbsLevelmeasres = d_level.GetNextId(d_level.GetTableName()+"_SEQ");
+                                    YXbsSpectoccupmeas dx_spectrum = new YXbsSpectoccupmeas();
+                                    dx_spectrum.Format("*");
+                                    int? indexerYXbsSpectoccupmeas = dx_spectrum.GetNextId(dx_spectrum.GetTableName() + "_SEQ");
                                     foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
                                     {
                                         if ((obj.TypeMeasurements == MeasurementType.Level) && (obj.Status != "O"))
                                         {
-                                            if (dt_param != null)
+                                        if (dt_param != null)
+                                        {
+                                            if (dt_param is LevelMeasurementResult)
                                             {
-                                                if (dt_param is LevelMeasurementResult)
-                                                {
-                                                    YXbsLevelmeasres dtrR = new YXbsLevelmeasres(ConnectDB.Connect_Main_);
-                                                    dtrR.Format("*");
-                                                    dtrR.Filter = "[ID]=-1";
-                                                    dtrR.New();
-                                                    int ID_DT_params = dtrR.AllocID();
-                                                    if ((dt_param as LevelMeasurementResult).Value != null) dtrR.m_value = (dt_param as LevelMeasurementResult).Value.GetValueOrDefault();
-                                                    if ((dt_param as LevelMeasurementResult).PMax != null) dtrR.m_pmax = (dt_param as LevelMeasurementResult).PMax.GetValueOrDefault();
-                                                    if ((dt_param as LevelMeasurementResult).PMin != null) dtrR.m_pmin = (dt_param as LevelMeasurementResult).PMin.GetValueOrDefault();
-                                                    dtrR.m_id_xbs_measurementres = ID;
-                                                    dtrR.Save();
-                                                    dtrR.Close();
-                                                    dtrR.Dispose();
+                                                YXbsLevelmeasres dtrR = new YXbsLevelmeasres();
+                                                dtrR.Format("*");
+                                                dtrR.Filter = "ID=-1";
+                                                dtrR.New();
+                                                if ((dt_param as LevelMeasurementResult).Value != null) dtrR.m_value = (dt_param as LevelMeasurementResult).Value.GetValueOrDefault();
+                                                if ((dt_param as LevelMeasurementResult).PMax != null) dtrR.m_pmax = (dt_param as LevelMeasurementResult).PMax.GetValueOrDefault();
+                                                if ((dt_param as LevelMeasurementResult).PMin != null) dtrR.m_pmin = (dt_param as LevelMeasurementResult).PMin.GetValueOrDefault();
+                                                dtrR.m_id_xbs_measurementres = ID;
+                                                for (int i = 0; i < dtrR.getAllFields.Count; i++)
+                                                    dtrR.getAllFields[i].Value = dtrR.valc[i];
+                                                BlockInsert_YXbsLevelmeasres1.Add(dtrR);
+                                                dtrR.Close();
+                                                dtrR.Dispose();
 
-                                                    if (obj.FrequenciesMeasurements != null)
-                                                    {
-                                                        List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
+                                                ++indexerYXbsLevelmeasres;
+
+                                                /*
+                                                 YXbsLevelmeasres dtrR = new YXbsLevelmeasres();
+                                                 dtrR.Format("*");
+                                                 dtrR.Filter = "ID=-1";
+                                                 dtrR.New();
+                                                 if ((dt_param as LevelMeasurementResult).Value != null) dtrR.m_value = (dt_param as LevelMeasurementResult).Value.GetValueOrDefault();
+                                                 if ((dt_param as LevelMeasurementResult).PMax != null) dtrR.m_pmax = (dt_param as LevelMeasurementResult).PMax.GetValueOrDefault();
+                                                 if ((dt_param as LevelMeasurementResult).PMin != null) dtrR.m_pmin = (dt_param as LevelMeasurementResult).PMin.GetValueOrDefault();
+                                                 dtrR.m_id_xbs_measurementres = ID;
+                                                 int? ID_DT_params = dtrR.Save();
+                                                 dtrR.Close();
+                                                 dtrR.Dispose();
+                                                 */
+
+
+
+                                                if (obj.FrequenciesMeasurements != null)
+                                                {
+                                                    List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
                                                     if (Fr_e != null)
                                                     {
                                                         if (Fr_e.Count > 0)
                                                         {
+                                                            if (Fr_e.Count > 1)
+                                                            {
+                                                                int ddddd = Fr_e.Count;
+                                                            }
+
                                                             foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
                                                             {
                                                                 if (dt_param_freq != null)
                                                                 {
-                                                                    YXbsFrequencymeas dtr_freq = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
+                                                                    YXbsFrequencymeas dtr_freq = new YXbsFrequencymeas();
                                                                     dtr_freq.Format("*");
-                                                                    dtr_freq.Filter = "[ID]=-1";
+                                                                    dtr_freq.Filter = "ID=-1";
                                                                     dtr_freq.New();
-                                                                    int ID_DT_params_freq = dtr_freq.AllocID();
                                                                     dtr_freq.m_freq = dt_param_freq.Freq;
                                                                     dtr_freq.m_id_xbs_measurementres = ID;
-                                                                    dtr_freq.m_num = ID_DT_params;
-                                                                    dtr_freq.Save();
-                                                                    dt_param_freq.Id = ID_DT_params;
+                                                                    //dtr_freq.m_num = ID_DT_params;
+                                                                    //dt_param_freq.Id = (int)ID_DT_params;
+                                                                    dtr_freq.m_num = indexerYXbsLevelmeasres;
+                                                                    //dt_param_freq.Id = (int)indexerYXbsLevelmeasres;
+
+                                                                    for (int i = 0; i < dtr_freq.getAllFields.Count; i++)
+                                                                        dtr_freq.getAllFields[i].Value = dtr_freq.valc[i];
+                                                                    BlockInsert_FrequencyMeasurement2.Add(dtr_freq);
                                                                     dtr_freq.Close();
                                                                     dtr_freq.Dispose();
+                                                                    AllIdx++;
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                    }
-                                                    dt_param.Id = new MeasurementResultIdentifier();
-                                                    dt_param.Id.Value = ID_DT_params;
+                                                    //dt_param.Id = new MeasurementResultIdentifier();
+                                                    //dt_param.Id.Value = (int)ID_DT_params;
+                                                    //dt_param.Id.Value = (int)indexerYXbsLevelmeasres;
                                                 }
                                             }
                                         }
@@ -668,86 +1033,137 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             {
                                                 if (dt_param is SpectrumOccupationMeasurementResult)
                                                 {
-                                                    YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas(ConnectDB.Connect_Main_);
+                                                    YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
                                                     dtr.Format("*");
-                                                    dtr.Filter = "[ID]=-1";
+                                                    dtr.Filter = "ID=-1";
                                                     dtr.New();
-                                                    int ID_DT_params = dtr.AllocID();
                                                     if ((dt_param as SpectrumOccupationMeasurementResult).Value != null) dtr.m_value = (dt_param as SpectrumOccupationMeasurementResult).Value.GetValueOrDefault();
                                                     if ((dt_param as SpectrumOccupationMeasurementResult).Occupancy != null) dtr.m_occupancy = (dt_param as SpectrumOccupationMeasurementResult).Occupancy.GetValueOrDefault();
                                                     dtr.m_id_xbs_measurementres = ID;
-                                                    dtr.Save();
+                                                    for (int i = 0; i < dtr.getAllFields.Count; i++)
+                                                        dtr.getAllFields[i].Value = dtr.valc[i];
+                                                    BlockInsert_YXbsSpectoccupmeas1.Add(dtr);
+                                                    //int? ID_DT_params = dtr.Save();
                                                     dtr.Close();
                                                     dtr.Dispose();
 
+                                                    ++indexerYXbsSpectoccupmeas;
+                                                    /*
+                                                    YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
+                                                    dtr.Format("*");
+                                                    dtr.Filter = "ID=-1";
+                                                    dtr.New();
+                                                    if ((dt_param as SpectrumOccupationMeasurementResult).Value != null) dtr.m_value = (dt_param as SpectrumOccupationMeasurementResult).Value.GetValueOrDefault();
+                                                    if ((dt_param as SpectrumOccupationMeasurementResult).Occupancy != null) dtr.m_occupancy = (dt_param as SpectrumOccupationMeasurementResult).Occupancy.GetValueOrDefault();
+                                                    dtr.m_id_xbs_measurementres = ID;
+                                                    int? ID_DT_params = dtr.Save();
+                                                    dtr.Close();
+                                                    dtr.Dispose();
+                                                    */
 
                                                     if (obj.FrequenciesMeasurements != null)
                                                     {
                                                         List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
-                                                    if (Fr_e != null)
-                                                    {
-                                                        if (Fr_e.Count > 0)
+                                                        if (Fr_e != null)
                                                         {
-                                                            foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
+                                                            if (Fr_e.Count > 0)
                                                             {
-                                                                if (dt_param_freq != null)
+                                                                foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
                                                                 {
-                                                                    YXbsFrequencymeas dtr_freq = new YXbsFrequencymeas(ConnectDB.Connect_Main_);
-                                                                    dtr_freq.Format("*");
-                                                                    dtr_freq.Filter = "[ID]=-1";
-                                                                    dtr_freq.New();
-                                                                    int ID_DT_params_freq = dtr_freq.AllocID();
-                                                                    dtr_freq.m_freq = dt_param_freq.Freq;
-                                                                    dtr_freq.m_id_xbs_measurementres = ID;
-                                                                    dtr_freq.m_num = ID_DT_params;
-                                                                    dtr_freq.Save();
-                                                                    dt_param_freq.Id = ID_DT_params;
-                                                                    dtr_freq.Close();
-                                                                    dtr_freq.Dispose();
+                                                                    if (dt_param_freq != null)
+                                                                    {
+                                                                        YXbsFrequencymeas dtr_freq = new YXbsFrequencymeas();
+                                                                        dtr_freq.Format("*");
+                                                                        dtr_freq.Filter = "ID=-1";
+                                                                        dtr_freq.New();
+                                                                        dtr_freq.m_freq = dt_param_freq.Freq;
+                                                                        dtr_freq.m_id_xbs_measurementres = ID;
+                                                                        //dtr_freq.m_num = ID_DT_params;
+                                                                        dtr_freq.m_num = indexerYXbsSpectoccupmeas;
+                                                                        for (int i = 0; i < dtr_freq.getAllFields.Count; i++)
+                                                                            dtr_freq.getAllFields[i].Value = dtr_freq.valc[i];
+                                                                        BlockInsert_FrequencyMeasurement2.Add(dtr_freq);
+                                                                        //dt_param_freq.Id = (int)indexerYXbsSpectoccupmeas;
+                                                                        dtr_freq.Close();
+                                                                        dtr_freq.Dispose();
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                    }
-                                                    dt_param.Id = new MeasurementResultIdentifier();
-                                                    dt_param.Id.Value = ID_DT_params;
+                                                    //dt_param.Id = new MeasurementResultIdentifier();
+                                                    //dt_param.Id.Value = (int)ID_DT_params;
+                                                    //dt_param.Id.Value = (int)indexerYXbsSpectoccupmeas;
+                                                    
                                                 }
+                                                
                                             }
                                         }
-                                        //else 
-                                        {
-                                            if (dt_param != null)
-                                            {
-                                                if (dt_param is LevelMeasurementOnlineResult)
+                                            //else 
+                                           
+                                                if (dt_param != null)
                                                 {
-                                                    YXbsLevelmeasonlres dtr = new YXbsLevelmeasonlres(ConnectDB.Connect_Main_);
-                                                    dtr.Format("*");
-                                                    dtr.Filter = "[ID]=-1";
-                                                    dtr.New();
-                                                    int ID_DT_params = dtr.AllocID();
-                                                    if ((dt_param as LevelMeasurementOnlineResult).Value != ConnectDB.NullD) dtr.m_value = (dt_param as LevelMeasurementOnlineResult).Value;
-                                                    dtr.m_id_xbs_measurementres = ID;
-                                                    dtr.Save();
-                                                    dt_param.Id = new MeasurementResultIdentifier();
-                                                    dt_param.Id.Value = ID_DT_params;
-                                                    dtr.Close();
-                                                    dtr.Dispose();
+                                                    if (dt_param is LevelMeasurementOnlineResult)
+                                                    {
+                                                        YXbsLevelmeasonlres dtr = new YXbsLevelmeasonlres();
+                                                        dtr.Format("*");
+                                                        dtr.Filter = "ID=-1";
+                                                        dtr.New();
+                                                        if ((dt_param as LevelMeasurementOnlineResult).Value != Constants.NullD) dtr.m_value = (dt_param as LevelMeasurementOnlineResult).Value;
+                                                        dtr.m_id_xbs_measurementres = ID;
+                                                        int? ID_DT_params = dtr.Save();
+                                                        dt_param.Id = new MeasurementResultIdentifier();
+                                                        dt_param.Id.Value = (int)ID_DT_params;
+                                                        dtr.Close();
+                                                        dtr.Dispose();
+                                                    }
                                                 }
-                                            }
+                                          
+                                            idx_cnt++;
                                         }
-                                        idx_cnt++;
                                     }
+                                }
+                                if (BlockInsert_YXbsLevelmeasres1.Count > 0)
+                                {
+                                    int iu = AllIdx;
+                                    YXbsLevelmeasres YXbsLevelmeasres11 = new YXbsLevelmeasres();
+                                    YXbsLevelmeasres11.Format("*");
+                                    YXbsLevelmeasres11.New();
+                                    YXbsLevelmeasres11.SaveBath(BlockInsert_YXbsLevelmeasres1);
+                                    YXbsLevelmeasres11.Close();
+                                    YXbsLevelmeasres11.Dispose();
+                                }
+
+                                if (BlockInsert_YXbsSpectoccupmeas1.Count > 0)
+                                {
+                                    YXbsSpectoccupmeas YXbsSpectoccupmeas11 = new YXbsSpectoccupmeas();
+                                    YXbsSpectoccupmeas11.Format("*");
+                                    YXbsSpectoccupmeas11.New();
+                                    YXbsSpectoccupmeas11.SaveBath(BlockInsert_YXbsSpectoccupmeas1);
+                                    YXbsSpectoccupmeas11.Close();
+                                    YXbsSpectoccupmeas11.Dispose();
+                                }
+
+                                if (BlockInsert_FrequencyMeasurement2.Count > 0)
+                                {
+                                    YXbsFrequencymeas YXbsFrequencymeas11 = new YXbsFrequencymeas();
+                                    YXbsFrequencymeas11.Format("*");
+                                    YXbsFrequencymeas11.New();
+                                    YXbsFrequencymeas11.SaveBath(BlockInsert_FrequencyMeasurement2);
+                                    YXbsFrequencymeas11.Close();
+                                    YXbsFrequencymeas11.Dispose();
                                 }
                             }
                         }
+                        logger.Trace("End procedure SaveResultToDB.");
                     }
                     catch (Exception ex)
                     {
-                        System.Console.WriteLine("SaveResultToDB: " + ex.Message);
+                        logger.Error("Error in procedure SaveResultToDB: "+ex.Message);
                     }
-                //});
-                //tsk.Start();
-                //tsk.Wait(30000);
+                });
+                tsk.Start();
+                tsk.Join();
             }
             return ID;
         }

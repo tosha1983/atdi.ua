@@ -54,68 +54,34 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atdi.AppServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.AppService.WebQueryDataDriver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.AppService.WebQueryDataDriver.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.AppService.WebQueryManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.AppService.WebQueryManager.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.Contracts.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.Contracts.Sdrns.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.Model.SdrnsController, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.Model.SdrnsController.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging">
-      <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Core">
-      <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\DatalayerCs.dll</HintPath>
+      <HintPath>..\..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="EasyNetQ, Version=0.26.2.194, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
-    </Reference>
-    <Reference Include="FormsCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\FormsCs.dll</HintPath>
+      <HintPath>..\..\..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OrmCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NLog">
+      <HintPath>..\..\..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.112.3.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\OrmCs.dll</HintPath>
+      <HintPath>Dll\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Quartz">
-      <HintPath>..\packages\Quartz.2.6.0\lib\net40\Quartz.dll</HintPath>
+      <HintPath>..\..\..\packages\Quartz.2.6.0\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=3.1.5.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\packages\RabbitMQ.Client.3.1.5\lib\net30\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\..\..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
@@ -141,7 +107,6 @@
     <Compile Include="BusManager\ManageBus\ClassStaticBus.cs" />
     <Compile Include="BusManager\Utils\ClassGenericList.cs" />
     <Compile Include="BusManager\Utils\ConcurrentCollectionClass.cs" />
-    <Compile Include="ConstraintParsers\ShortSensorConstraintParser.cs" />
     <Compile Include="CreateMeasTaskAppOperationHandler.cs" />
     <Compile Include="DeleteMeasResultsAppOperationHandler.cs" />
     <Compile Include="DeleteMeasTaskAppOperationHandler.cs" />
@@ -161,11 +126,7 @@
     <Compile Include="GetShortSensorsAppOperationHandler.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\RESULT\ClassesDBGetResult.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\SENSOR\ClassDBGetSensor.cs" />
-    <Compile Include="ManageDB\Classes\Adapters\ICSM\SENSOR\ORM\ClassesSensorPlugin.cs" />
-    <Compile Include="ManageDB\Classes\Adapters\ICSM\Core\ConnectDB.cs" />
-    <Compile Include="ManageDB\Classes\Adapters\ICSM\Core\HelpClasses\CLogs.cs" />
-    <Compile Include="ManageDB\Classes\Adapters\ICSM\Core\HelpClasses\XMLDirect.cs" />
-    <Compile Include="ManageDB\Classes\Adapters\ICSM\StaticClassICSM.cs" />
+    <Compile Include="ManageDB\Classes\Adapters\ICSM\Constants.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\ClassesDBGetTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\ConvertToUniversalObject\ClassConvertTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\ConvertToUniversalObject\ClassConvertToSDRResults.cs" />
@@ -176,6 +137,10 @@
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\WorkFlow\MeasTaskSDRExtend.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\WorkFlow\WorkFlowProcessManageTasks.cs" />
     <Compile Include="BusManager\Static\GlobalInit.cs" />
+    <Compile Include="ManageDB\OracleExecuter\ModelsTables.cs" />
+    <Compile Include="ManageDB\OracleExecuter\OracleDataAccess.cs" />
+    <Compile Include="ManageDB\OracleExecuter\OrmRsOracle.cs" />
+    <Compile Include="ManageDB\OracleExecuter\Yyy.cs" />
     <Compile Include="MeasSdrResultsExtend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunMeasTaskAppOperationHandler.cs" />
@@ -202,18 +167,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Dll\Atdi.AppServer.AppService.SdrnsController.dll.config" />
-    <None Include="Dll\Atdi.AppServer.AppServices.SdrnsController.exe.config" />
-    <None Include="Dll\Atdi.AppServer.AppServices.SdrnsController.vshost.exe.config" />
-    <None Include="Dll\Atdi.SDNRS.AppServer.exe.config" />
-    <None Include="Dll\Atdi.SDNRS.AppServer.vshost.exe.config" />
-    <None Include="Dll\Atdi.SDR.AppServer.exe.config" />
-    <None Include="Dll\Atdi.SDR.AppServer.vshost.exe.config" />
-    <None Include="Dll\ICSM.Schema" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nupkg" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nuspec" />
     <None Include="Dll\packages\repositories.config" />
-    <None Include="Dll\SensorPlugin.Schema" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -248,21 +204,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dll\Atdi.AppServer.AppService.SdrnsController.dll" />
-    <Content Include="Dll\Atdi.AppServer.AppService.WebQueryDataDriver.dll" />
-    <Content Include="Dll\Atdi.AppServer.AppService.WebQueryManager.dll" />
-    <Content Include="Dll\Atdi.AppServer.Common.dll" />
-    <Content Include="Dll\Atdi.AppServer.Contracts.dll" />
-    <Content Include="Dll\Atdi.AppServer.Contracts.Sdrns.dll" />
-    <Content Include="Dll\Atdi.AppServer.Contracts.WebQuery.dll" />
-    <Content Include="Dll\Atdi.AppServer.dll" />
-    <Content Include="Dll\Atdi.AppServer.Model.SdrnsController.dll" />
-    <Content Include="Dll\Atdi.AppServer.Model.WebQueryManager.dll" />
-    <Content Include="Dll\Atdi.Common.dll" />
-    <Content Include="Dll\Datalayer.dll" />
-    <Content Include="Dll\DatalayerCs.dll" />
-    <Content Include="Dll\FormsCs.dll" />
-    <Content Include="Dll\OrmCs.dll" />
+    <Content Include="Dll\Oracle.DataAccess.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net20\Newtonsoft.Json.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net20\Newtonsoft.Json.xml" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net35\Newtonsoft.Json.dll" />
@@ -279,25 +221,34 @@
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\sl4\Newtonsoft.Json.xml" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\winrt45\Newtonsoft.Json.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\winrt45\Newtonsoft.Json.xml" />
-    <Content Include="Dll\SettingDataDriver.xml" />
-    <Content Include="Dll\XICSM_SensorPlugin.dll" />
-    <Content Include="Dll\zlib.net.dll" />
-    <Content Include="ManageDB\Classes\Adapters\ICSM\SENSOR\SQL\XBS_SensorLocation.txt" />
-    <Content Include="ManageDB\Classes\Adapters\ICSM\SENSOR\SQL\XBS_SensorEquip.txt" />
-    <Content Include="ManageDB\Classes\Adapters\ICSM\SENSOR\SQL\XBS_SensorEquipSensitivity.txt" />
-    <Content Include="ManageDB\Classes\Adapters\ICSM\SENSOR\SQL\XBS_SensorAntenna.txt" />
-    <Content Include="ManageDB\Classes\Adapters\ICSM\SENSOR\SQL\XBS_AntennaPattern.txt" />
-    <Content Include="ManageDB\Classes\Adapters\ICSM\SENSOR\SQL\XBS_Sensor.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
+      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
+      <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
+      <Name>Atdi.AppServer.Model.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
+      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
+      <Name>Atdi.AppServer.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
+      <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
+      <Name>Atdi.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.AppServer.Services.Sdrns\Atdi.AppServer.Services.Sdrns.csproj">
+      <Project>{2c0d02fc-9d02-4a5b-af1b-8ad2e9a37403}</Project>
+      <Name>Atdi.AppServer.Services.Sdrns</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sheduler\Quartz.net\Classes\Results\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

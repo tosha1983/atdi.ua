@@ -17,11 +17,12 @@ namespace Atdi.AppServices.WebQuery
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IQueryExecutor _queryExecutor;
         private readonly GroupDescriptorsCache _groupDescriptorsCache;
-        private readonly Dictionary<string, UserGroupDescriptors> _descriptorsCache;
-
+        private Dictionary<string, UserGroupDescriptors> _descriptorsCache;
+        private DateTime? _actualyCacheDataDate;
 
         public UserGroupDescriptorsCache(IDataLayer<IcsmDataOrm> dataLayer, GroupDescriptorsCache groupDescriptorsCache)
         {
+            this._actualyCacheDataDate = DateTime.Now;
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
             this._descriptorsCache = new Dictionary<string, UserGroupDescriptors>();
@@ -30,6 +31,8 @@ namespace Atdi.AppServices.WebQuery
         }
         public UserGroupDescriptors GetDecriptors(UserTokenData userToken)
         {
+            this.TryToReloadCache();
+
             if (!this._descriptorsCache.TryGetValue(userToken.UserCode, out UserGroupDescriptors descriptors))
             {
                 descriptors = this.LoadGroupsByUser(userToken);
@@ -37,6 +40,38 @@ namespace Atdi.AppServices.WebQuery
             }
 
             return descriptors;
+        }
+
+        private void TryToReloadCache()
+        {
+            var checkQuery = _dataLayer.Builder
+                .From<XUPDATEOBJECTS>()
+                .Select(
+                        c => c.DATEMODIFIED
+                    )
+                .Where(c => c.OBJTABLE, ConditionOperator.In, "TSKF_MEMBER", "TASKFORCE", "XWEBQUERY")
+                .Where(c => c.DATEMODIFIED, ConditionOperator.GreaterThan, this._actualyCacheDataDate);
+
+            var isDirty = this._queryExecutor
+                .Fetch(checkQuery, reader =>
+                {
+                    var result = false;
+                    while(reader.Read())
+                    {
+                        var modifiedDate = reader.GetValue(c => c.DATEMODIFIED);
+                        if (modifiedDate > this._actualyCacheDataDate)
+                        {
+                            this._actualyCacheDataDate = modifiedDate;
+                        }
+                        result = true;
+                    }
+                    return result;
+                });
+
+            if (isDirty)
+            {
+                this._descriptorsCache = new Dictionary<string, UserGroupDescriptors>();
+            }
         }
 
         private UserGroupDescriptors LoadGroupsByUser(UserTokenData userToken)

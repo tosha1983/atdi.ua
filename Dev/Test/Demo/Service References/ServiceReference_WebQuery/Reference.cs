@@ -305,6 +305,9 @@ namespace LitvaPortal.ServiceReference_WebQuery {
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] PrimaryKeyField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TitleField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -368,6 +371,19 @@ namespace LitvaPortal.ServiceReference_WebQuery {
                 if ((object.ReferenceEquals(this.NameField, value) != true)) {
                     this.NameField = value;
                     this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] PrimaryKey {
+            get {
+                return this.PrimaryKeyField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PrimaryKeyField, value) != true)) {
+                    this.PrimaryKeyField = value;
+                    this.RaisePropertyChanged("PrimaryKey");
                 }
             }
         }

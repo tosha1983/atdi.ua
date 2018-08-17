@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 namespace Atdi.AppServer.Contracts.Sdrns
 {
     [DataContract(Namespace = ServicesSpecification.Namespace)]
+
     public class MeasSdrBandwidthResults
     {
         [DataMember]

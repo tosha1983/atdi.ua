@@ -87,7 +87,7 @@ namespace Atdi.CoreServices.DataLayer
                 case DataType.Decimal:
                     return DbType.Decimal;
                 case DataType.Byte:
-                    return DbType.Byte;
+                    return DbType.String;
                 case DataType.Bytes:
                     return DbType.Binary;
                 default:

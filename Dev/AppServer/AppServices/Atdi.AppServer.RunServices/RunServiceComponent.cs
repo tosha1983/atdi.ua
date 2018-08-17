@@ -23,7 +23,10 @@ using Atdi.AppServer.AppService.SdrnsController;
 using Atdi.SDNRS.AppServer.ManageDB;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.SDR.Server.Utils;
-
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Platform.AppComponent;
+using System.Configuration;
+using Atdi.CoreServices.DataLayer;
 
 namespace Atdi.AppServer.RunServices
 { 
@@ -31,6 +34,8 @@ namespace Atdi.AppServer.RunServices
     {
         private readonly string _name;
         private ILogger _logger;
+
+
 
         public RunServiceComponent()
         {
@@ -40,17 +45,19 @@ namespace Atdi.AppServer.RunServices
         AppServerComponentType IAppServerComponent.Type => AppServerComponentType.AppService;
 
         string IAppServerComponent.Name => this._name;
-
+        
         void IAppServerComponent.Activate()
         {
+            Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
-            ClassesDBGetResult DbGetRes = new ClassesDBGetResult();
-            ClassConvertToSDRResults conv = new ClassConvertToSDRResults();
+            ClassesDBGetResult DbGetRes = new ClassesDBGetResult(_logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(_logger);
             ///
             // Начальная инициализация (загрузка конфигурационных данных)
-            /*
-            Task tt = new Task(() => {
+            
+            System.Threading.Thread tt = new System.Threading.Thread(() => {
                 System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Normal;
                     if (GlobalInit.LST_MeasurementResults.Count == 0) {
                         MeasurementResults[] msResltConv = conv.ConvertTo_SDRObjects(DbGetRes.ReadlAllResultFromDB());
@@ -62,13 +69,17 @@ namespace Atdi.AppServer.RunServices
                     }
             });
             tt.Start();
-            tt.Wait();
-            */
+            tt.Join();
+            
 
-            Task tsg = new Task(() => {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks();
-                ClassConvertTasks ts = new ClassConvertTasks();
-                List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
+
+              System.Threading.Thread tsg = new System.Threading.Thread(() => {
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(this._logger);
+
+                ClassConvertTasks ts = new ClassConvertTasks(_logger);
+                MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
+                List<MeasTask> mts_ = task.ToList();
+                //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
                 foreach (MeasTask mtsd in mts_.ToArray()) {
                     if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mtsd.Id.Value) == null))) {
                         MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mtsd.Id.Value);
@@ -82,24 +93,18 @@ namespace Atdi.AppServer.RunServices
                 ts.Dispose();
             });
             tsg.Start();
-            
-           
+            tsg.Join();
 
-           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(); Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-            
-           ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR();
+
+
+           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(_logger); Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+           ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR(this._logger);
            sc.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasTaskStatus);
-           
-
-           ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor();
+           ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-           
-           ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(); getMeasTask.ShedulerRepeatStart(20);
-
-
+           ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
            //Sheduler_ArchiveSDRResults arch_sdrRes = new Sheduler_ArchiveSDRResults(); arch_sdrRes.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeArchiveResult);
-           
-           ShedulerCheckStart Quartz = new ShedulerCheckStart();
+           ShedulerCheckStart Quartz = new ShedulerCheckStart(this._logger);
            Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
            
 
@@ -119,6 +124,8 @@ namespace Atdi.AppServer.RunServices
         void IAppServerComponent.Uninstall(IWindsorContainer container, IAppServerContext serverContext)
         {
             _logger.Trace("Component RunServiceComponent: Uninstalled");
+
         }
+
     }
 }

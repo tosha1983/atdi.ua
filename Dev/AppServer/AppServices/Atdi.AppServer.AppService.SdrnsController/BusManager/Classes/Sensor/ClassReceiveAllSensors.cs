@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
 using XMLLibrary;
-using CoreICSM.Logs;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Oracle.DataAccess;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -17,6 +18,11 @@ namespace Atdi.SDNRS.AppServer.BusManager
     /// </summary>
     public class ClassReceiveAllSensors : IDisposable
     {
+        public static ILogger logger;
+        public ClassReceiveAllSensors(ILogger log)
+        {
+            if(logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -38,13 +44,14 @@ namespace Atdi.SDNRS.AppServer.BusManager
         /// </summary>
         public void ReceiveAllSensorList()
         {
+            try{ 
             BusManager<Sensor> busManager = new BusManager<Sensor>();
-            //try {
-                Task tsk = new Task(() =>
+              System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
+                    logger.Trace("Start procedure ReceiveAllSensorList...");
                     if (GlobalInit.SensorListSDRNS.Count == 0)
                     {
-                        ClassDBGetSensor DB = new ClassDBGetSensor();
+                        ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                         List<Sensor> L_S = DB.LoadObjectSensor();
                         DB.Dispose();
                         if (L_S != null)
@@ -67,7 +74,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                 var message = busManager.GetDataObject(GlobalInit.Template_SENSORS_List_);
                                 if (message != null)
                                 {
-                                    ClassDBGetSensor DB = new ClassDBGetSensor();
+                                    ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                                     Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
                                     if (fnd_s == null)
                                     {
@@ -127,82 +134,20 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                 else break;
                                 }
                             }
-                            /*
-                            GlobalInit.Lds_Activity_Sensor_List.Add(ClassStaticBus.bus.Receive<Sensor>(GlobalInit.Template_SENSORS_List_,
-                            message =>
-                            {
-                                ClassDBGetSensor DB = new ClassDBGetSensor();
-                                Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId);
-                                if (fnd_s == null)
-                                {
-                                    bool isFindInDB = false;
-                                    List<Sensor> L_S = DB.LoadObjectSensor(message.Name, message.Equipment.TechId, "Z");
-                                    if (L_S != null)
-                                    {
-                                        if (L_S.Count > 0)
-                                        {
-                                            if (L_S[0].Name == message.Name)
-                                            {
-                                                if (L_S[0].Equipment != null)
-                                                {
-                                                    if (L_S[0].Equipment.TechId == message.Equipment.TechId)
-                                                    {
-                                                        isFindInDB = true;
-                                                        GlobalInit.SensorListSDRNS.Add(L_S[0]);
-                                                        L_S[0].Status = "A";
-                                                        DB.UpdateStatusSensorWithArchive(L_S[0]);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (isFindInDB == false)
-                                    {
-                                        DB.CreateNewObjectSensor(message);
-                                        //Отправка на SDR уведомления о приеме сообщения
-                                        BusManager<Sensor> busManager = new BusManager<Sensor>();
-                                        busManager.SendDataObject(message, GlobalInit.Template_Event_Confirm_SENSORS_Send_ + message.Name + message.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                                        L_S = DB.LoadObjectSensor();
-                                        if (L_S.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId) != null)
-                                        {
-                                            Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId);
-                                            if (fnd != null)
-                                                GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId));
-                                            else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId));
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    //Отправка на SDR уведомления о приеме сообщения
-                                    DB.SaveLocationCoordSensor(message);
-                                    BusManager<Sensor> busManager = new BusManager<Sensor>();
-                                    busManager.SendDataObject(message, GlobalInit.Template_Event_Confirm_SENSORS_Send_ + message.Name + message.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                                    List<Sensor> L_S = DB.LoadObjectSensor();
-                                    if (L_S.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId) != null)
-                                    {
-                                        Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId);
-                                        if (fnd != null)
-                                            GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId));
-                                        else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == message.Name && t.Equipment.TechId == message.Equipment.TechId));
-                                    }
-                                }
-                                DB.Dispose();
-                            }));
-                            */
+                           
                         else {
                             ClassStaticBus.bus.Dispose();
                             GC.SuppressFinalize(ClassStaticBus.bus);
                             ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                            CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                         }
+                    logger.Trace("End procedure ReceiveAllSensorList.");
                 });
                 tsk.Start();
-                //tsk.Wait();
-            //}
-            //catch (Exception ex) {
-            //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[ReceiveAllSensorList]:" + ex.Message);
-            //}
+                tsk.Join();
+            }
+            catch (Exception ex) {
+                logger.Error("Error in ReceiveAllSensorList:" + ex.Message);
+            }
 
         }
     }   

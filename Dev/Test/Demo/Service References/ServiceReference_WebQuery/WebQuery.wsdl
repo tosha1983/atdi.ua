@@ -215,7 +215,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://localhost:8737/Atdi/WcfServices/WebQuery/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Spn>host/GTR-1</Spn>
+          <Upn>GTR-1\Grisha</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>
@@ -224,7 +224,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.pipe://localhost/Atdi/WcfServices/WebQuery/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Spn>host/GTR-1</Spn>
+          <Upn>GTR-1\Grisha</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

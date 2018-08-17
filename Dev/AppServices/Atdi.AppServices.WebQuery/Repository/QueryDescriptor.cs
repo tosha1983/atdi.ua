@@ -49,7 +49,8 @@ namespace Atdi.AppServices.WebQuery
                 Code = QueryValue.CODE,
                 Token = queryTokenDescriptor.Token,
                 Description = QueryValue.COMMENTS,
-                Title = QueryValue.NAME
+                Title = QueryValue.NAME,
+                PrimaryKey = irpdescription.PrimaryKey
             };
 
             
@@ -256,7 +257,7 @@ namespace Atdi.AppServices.WebQuery
                         Operator = ConditionOperator.Equal,
                         Type = ConditionType.Expression,
                         RightOperand = new IntegerValueOperand() {
-                          Value = tokenData.Id
+                          Value = tokenData.UserId
                         }
                     };
                     List_Expressions.Add(condition);
@@ -345,7 +346,7 @@ namespace Atdi.AppServices.WebQuery
                             if (Metadata.Columns[i].Name == cntr.PATH) {
                                 NameFldLon = Metadata.Columns[i].Name;
                                 if (!string.IsNullOrEmpty(NameFldLon)) {
-                                    if ((cntr.STRVALUE.EndsWith(" * ")) || (cntr.STRVALUE.StartsWith("*"))) {
+                                    if ((cntr.STRVALUE.EndsWith("*")) || (cntr.STRVALUE.StartsWith("*"))) {
                                         if (cntr.INCLUDE == 1) {
                                             var condition = new ConditionExpression() {
                                                 LeftOperand = new ColumnOperand() {
@@ -354,7 +355,7 @@ namespace Atdi.AppServices.WebQuery
                                                 Operator = ConditionOperator.Like,
                                                 Type = ConditionType.Expression,
                                                 RightOperand = new StringValueOperand() {
-                                                    Value = cntr.STRVALUE
+                                                    Value = cntr.STRVALUE.Replace("*","%")
                                                 }
                                             };
                                             List_Expressions.Add(condition);
@@ -367,7 +368,7 @@ namespace Atdi.AppServices.WebQuery
                                                 Operator = ConditionOperator.NotLike,
                                                 Type = ConditionType.Expression,
                                                 RightOperand = new StringValueOperand() {
-                                                    Value = cntr.STRVALUE
+                                                    Value = cntr.STRVALUE.Replace("*", "%")
                                                 }
                                             };
                                             List_Expressions.Add(condition);

@@ -73,7 +73,7 @@ namespace OrmCs
 			public DatPtr z_string_type { get { return new DatPtr(this,1); } }
 		public int m_boolean_type { get { return getInt(2); } set { setInt(2,value); } }
 			public DatPtr z_boolean_type { get { return new DatPtr(this,2); } }
-		public int m_integer_type { get { return getInt(3); } set { setInt(3,value); } }
+		public double m_integer_type { get { return getDouble(3); } set { setDouble(3,value); } }
 			public DatPtr z_integer_type { get { return new DatPtr(this,3); } }
 		public DateTime m_datetime_type { get { return getDateTime(4); } set { setDateTime(4,value); } }
 			public DatPtr z_datetime_type { get { return new DatPtr(this,4); } }
@@ -83,9 +83,9 @@ namespace OrmCs
 			public DatPtr z_float_type { get { return new DatPtr(this,6); } }
 		public double m_decimal_type { get { return getDouble(7); } set { setDouble(7,value); } }
 			public DatPtr z_decimal_type { get { return new DatPtr(this,7); } }
-		public int m_byte_type { get { return getInt(8); } set { setInt(8,value); } }
+		public string m_byte_type { get { return getString(8); } set { setString(8,4,value); } }
 			public DatPtr z_byte_type { get { return new DatPtr(this,8); } }
-		public Guid m_guid_type { get { return getGuid(9); } set { setGuid(9,value); } }
+		public string m_guid_type { get { return getString(9); } set { setString(9,40,value); } }
 			public DatPtr z_guid_type { get { return new DatPtr(this,9); } }
 	}
 

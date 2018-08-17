@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
-using OrmCs;
 using System.Windows.Forms;
 using Atdi.SDNRS.AppServer.BusManager;
-using CoreICSM.Logs;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
@@ -20,6 +17,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class WorkFlowProcessManageTasks: IDisposable
     {
+       public static ILogger logger;
+
+        public WorkFlowProcessManageTasks(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
+
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -36,9 +40,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public void UpdateListMeasTask()
         {
-            ClassConvertTasks ts = new ClassConvertTasks();
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
-            List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
+            logger.Trace("Start procedure UpdateListMeasTask...");
+            ClassConvertTasks ts = new ClassConvertTasks(logger);
+            ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+            MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
+            List<MeasTask> mts_ = task.ToList();
+            //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
             foreach (MeasTask FND in mts_.ToArray())
             {
                 // Удаляем данные об объекте с глобального списка
@@ -58,6 +65,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             ts.Dispose();
             cl.Dispose();
+            logger.Trace("End procedure UpdateListMeasTask.");
         }
 
         /// <summary>
@@ -67,8 +75,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns>количество новых объектов, добавленных в глобальный список</returns>
         public int Create_New_Meas_Task(MeasTask s_out, string ActionType)
         {
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
-            ClassConvertTasks ts = new ClassConvertTasks();
+            logger.Trace("Start procedure Create_New_Meas_Task...");
+            ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+            ClassConvertTasks ts = new ClassConvertTasks(logger);
             int NewIdMeasTask = -1;
             try
             {
@@ -79,7 +88,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         MeasTask Data_ = s_out;
                         // создаём объект список подзадач типа MEAS_SUB_TASK и записываем в объект Data_
                         Data_.CreateAllSubTasks();
-                        CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[CreateAllSubTasks] success...");
+                        //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[CreateAllSubTasks] success...");
                         // конвертируем объекты тасков с БД в список List<MEAS_TASK>
                         //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
                         List<MeasTask> mts_ = GlobalInit.LIST_MEAS_TASK;
@@ -88,10 +97,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) == null)))
                             {
                                 Data_.UpdateStatus(ActionType);
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
-                                NewIdMeasTask = cl.SaveTaskToDB(Data_);
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
-                                MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
+                            //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
+                            //Task<int> tsk = cl.SaveTaskToDB(Data_);
+                            //tsk.Wait();
+                            //NewIdMeasTask = tsk.Result;
+                            NewIdMeasTask = cl.SaveTaskToDB(Data_);
+                            //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
+                            MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
                                 if (fnd != null)
                                     GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
                                 else GlobalInit.LIST_MEAS_TASK.Add(Data_);
@@ -124,13 +136,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
 
                     }
-                    CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[Create_New_Meas_Task] success...");
               
             }
             catch (Exception er) {
-                CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Create_New_Meas_Task]: " + er.Message); }
+                logger.Error("Error in procedure Create_New_Meas_Task: "+er.Message);
+            }
             cl.Dispose();
             ts.Dispose();
+            logger.Trace("End procedure Create_New_Meas_Task.");
             return NewIdMeasTask;
         }
 
@@ -138,12 +151,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <summary>
         /// 
         /// </summary>
-        public static bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline)
+        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline)
         {
             bool isSendSuccess = false;
             try
             {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks();
+                logger.Trace("Start procedure Process_Multy_Meas...");
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
                 //Task tdf = new Task(() =>
                 //{
@@ -155,7 +169,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Id.Value == SensorId);
                         if (fnd_s != null)
                         {
-                            Task tsk = new Task(() =>
+                            System.Threading.Thread tsk = new System.Threading.Thread(() =>
                             {
                                 Checked_L.Clear();
                                 if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
@@ -217,56 +231,48 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
                                     }
                                 }
-                            });
-                            tsk.Start();
-                            tsk.Wait();
 
-
-                            if (Checked_L.Count > 0)
-                            {
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Start busManager send new task...");
-                                BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                                if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                if (Checked_L.Count > 0)
                                 {
-                                    isSendSuccess = true;
-                                    CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Success send new task...");
-                                }
-                                else {
-                                    isSendSuccess = false;
-                                    //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
-                                    //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
-                                    //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
-                                }
-
-                                // Отправка сообщения в СТОП-ЛИСТ
-                                if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
-                                {
-                                    if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                    BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                                    if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
                                     {
                                         isSendSuccess = true;
+                                        //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Success send new task...");
+                                    }
+                                    else
+                                    {
+                                        isSendSuccess = false;
+                                        //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
+                                        //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
+                                        //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
+                                    }
+
+                                    // Отправка сообщения в СТОП-ЛИСТ
+                                    if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
+                                    {
+                                        if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                        {
+                                            isSendSuccess = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //busManager.DeleteQueue(GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString());
                                     }
                                 }
-                                else {
-                                    //busManager.DeleteQueue(GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString());
-                                }
-                            }
-                            Checked_L.Clear();
+                                Checked_L.Clear();
+                            });
+                            tsk.Start();
+                           tsk.Join();
                         }
                     }
-                    //});
-                    //tsk.Start();
-                    //tsk.Wait();
                 }
-                       
-                   
-                //cl.Dispose();
-               //});
-               //tdf.Start();
-               //tdf.Wait();
+                logger.Trace("End procedure Process_Multy_Meas.");
             }
             catch (Exception ex)
             {
-                CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Process_Multy_Meas]: " + ex.Message);
+                logger.Error("Error procedure Process_Multy_Meas: " + ex.Message);
             }
             return isSendSuccess;
 

@@ -11,10 +11,11 @@ using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using EasyNetQ.Consumer;
 using EasyNetQ;
 using Atdi.AppServer.Contracts.Sdrns;
-
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
+    /*
     public class Sheduler_Send_MeasSdr : InterfaceShedulerMeasTask, IDisposable
     {
         /// <summary>
@@ -62,6 +63,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             {
                 try
                 {
+                    WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(log);
                     bool isScuccess = false;
                     object val_MeasTask = context.Scheduler.Context["val_MeasTask"];
                     object SensorIDS = context.Scheduler.Context["val_SensorIds"];
@@ -71,17 +73,17 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                     {
                         Task tsk = new Task(() =>
                         {
-                            isScuccess = WorkFlowProcessManageTasks.Process_Multy_Meas((MeasTask)val_MeasTask, (List<int>)SensorIDS, (string)val_ActionType, (bool)val_isOnline);
+                            isScuccess = tasks.Process_Multy_Meas((MeasTask)val_MeasTask, (List<int>)SensorIDS, (string)val_ActionType, (bool)val_isOnline);
                         }).ContinueWith(x=>
                         {
                             if (isScuccess) DisposeSheduler();
                         });
                         System.GC.Collect();
                     }
-                    CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr ");
+                    //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr ");
                 }
                 catch (Exception ex) {
-                    CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr "+ex.Message);
+                    //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Send_MeasSdr "+ex.Message);
                 }
             }
         }
@@ -100,4 +102,5 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         }
 
     }
+    */
 }

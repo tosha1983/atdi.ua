@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using OrmCs;
 using DatalayerCs;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 
 namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
@@ -90,6 +91,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                 txtUserIdent.Items.Clear();
                                 List<string> List_Path = ClassORM.GetProperties(query, true);
                                 txtUserIdent.Items.Clear();
+                                txtUserIdent.Items.Add("");
                                 foreach (string item in List_Path)
                                     txtUserIdent.Items.Add(item);
 
@@ -115,18 +117,30 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             Close();
         }
 
+
         private void buttonOpenIRP_Click(object sender, EventArgs e)
         {
+            Regex reGuid = new Regex(@"^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$",  RegexOptions.Compiled);
+            string AllText = "";
             openFileDialog1.DefaultExt = "IRP";
             openFileDialog1.AddExtension = true;
             DialogResult DA = openFileDialog1.ShowDialog();
             if (DA == System.Windows.Forms.DialogResult.OK) {
                 textBoxIRPFilePath.Text = openFileDialog1.FileName;
-                using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.Default)) {
-                   string cipherText = rdr.ReadToEnd();
-                   textBoxQuery.Text = cipherText;
+                using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.Default))
+                {
+                    string cipherText = rdr.ReadToEnd();
+                    string[] wordString = cipherText.Split(new char[] { '\n' });
+                    for (int i = 0; i < wordString.Count(); i++)
+                    {
+                        if (wordString[i].Contains("PATH") && (wordString[i].Contains("CustomExpression")) && (!reGuid.IsMatch(wordString[i])))
+                        {
+                            wordString[i] = wordString[i].Replace("CustomExpression", "CustomExpression_" + Guid.NewGuid().ToString());
+                        }
+                        AllText += wordString[i] + "\n";
+                    }
+                    textBoxQuery.Text = AllText;
                 }
-
             }
         }
 
@@ -159,6 +173,14 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                 nq.SetParamValue(1, rsWebQuery.Get("ID"));
                                 if (nq.Execute() != 1) throw new Exception("Could not update binary");
                                 IMTransaction.Commit();
+                                if (txtUserIdent.Items.Count == 0)
+                                {
+                                    txtUserIdent.Items.Clear();
+                                    txtUserIdent.Items.Add("");
+                                    List<string> List_Path = ClassORM.GetProperties(query, true);
+                                    foreach (string item in List_Path)
+                                        txtUserIdent.Items.Add(item);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -248,9 +270,18 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         nq.SetParamValue(1, IDs);
                         if (nq.Execute() != 1) throw new Exception("Could not update binary");
                         IMTransaction.Commit();
+                        if (txtUserIdent.Items.Count == 0)
+                        {
+                            txtUserIdent.Items.Clear();
+                            txtUserIdent.Items.Add("");
+                            List<string> List_Path = ClassORM.GetProperties(query, true);
+                            foreach (string item in List_Path)
+                                txtUserIdent.Items.Add(item);
+                        }
                         MessageBox.Show("Record created successfull!", "Warning!");
                         id = IDs;
                         button_Constraints.Enabled = true;
+                        isNew = false;
                     }
                     
                 }

@@ -28,6 +28,41 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         }
 
+        /*
+        public void CheckCondition(DataConstraint constraint)
+        {
+            if (constraint is DataConstraintExpression)
+            {
+                var operand = (constraint as DataConstraintExpression).LeftOperand;
+                if (operand is DataConstraintColumnOperand)
+                {
+                    
+                }
+                if (operand is DataConstraintValueOperand)
+                {
+
+                }
+            }
+            else if (constraint is DataConstraintGroup)
+            {
+                if (((constraint as DataConstraintGroup).Constraints != null) && (((constraint as DataConstraintGroup).Constraints.Length > 0)))
+                {
+                    for (int i = 0; i < ((constraint as DataConstraintGroup).Constraints).Length; i++)
+                    {
+                        if (((constraint as DataConstraintGroup).Constraints)[i] is DataConstraintExpression)
+                        {
+                            CheckCondition(((constraint as DataConstraintGroup).Constraints)[i] as DataConstraintExpression);
+                        }
+                        else if (((constraint as DataConstraintGroup).Constraints)[i] is DataConstraintGroup)
+                        {
+                            CheckCondition(((constraint as DataConstraintGroup).Constraints)[i]);
+                        }
+                    }
+                }
+
+            }
+        }
+        */
 
         public override Sensor[] Handle(GetSensorsAppOperationOptions options, IAppOperationContext operationContext)
         {

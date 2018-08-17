@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Models.AppServices.SdrnsController;
+using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
@@ -23,6 +23,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
     {
         public CreateMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+
         }
 
         /// <summary>
@@ -34,37 +35,35 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override MeasTaskIdentifier Handle(CreateMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             MeasTaskIdentifier md = new MeasTaskIdentifier();
-            System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
-            MeasTask mt = options.Task;
-            if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
-            if (mt.Status == null) mt.Status = "N";
-            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks();
-            System.Console.WriteLine("Start Create_New_Meas_Task ");
-            int ID = tasks.Create_New_Meas_Task(mt, "New");
-            md.Value = ID;
-            Logger.Trace(this, options, operationContext);
-            Task tsg = new Task(() => {
-            try {
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                MeasTask mt = options.Task;
+                if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
+                if (mt.Status == null) mt.Status = "N";
+                WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
+                Logger.Trace("Start Create_New_Meas_Task... ");
+                int ID = tasks.Create_New_Meas_Task(mt, "New");
+                md.Value = ID;
+                Logger.Trace(this, options, operationContext);
                 List<int> SensorIds = new List<int>();
-                if (mt.Stations != null) {
-                    foreach (MeasStation ts in mt.Stations) {
-                        if (ts.StationId != null) {
-                            if (ts.StationId!= null) {
+                if (mt.Stations != null)
+                {
+                    foreach (MeasStation ts in mt.Stations)
+                    {
+                        if (ts.StationId != null)
+                        {
+                            if (ts.StationId != null)
+                            {
                                 if (!SensorIds.Contains(ts.StationId.Value))
                                     SensorIds.Add(ts.StationId.Value);
                             }
                         }
                     }
                 }
-                WorkFlowProcessManageTasks.Process_Multy_Meas(mt, SensorIds, "New", false);
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("CreateMeasTaskAppOperationHandler "+ex.Message);
-            }
+                tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
             });
-            tsg.Start();
-            //tsg.Wait();
+            th.Start();
+            th.Join();
             return md;
         }
     }

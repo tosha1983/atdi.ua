@@ -12,11 +12,17 @@ using EasyNetQ.Consumer;
 using EasyNetQ;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDR.Server.Utils;
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
     public class Sheduler_Up_Meas_SDR_Results : InterfaceSheduler, IDisposable
     {
+        public static ILogger logger;
+        public Sheduler_Up_Meas_SDR_Results(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -57,6 +63,8 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             public static List<MeasSdrResults> ConfirmRes = new List<MeasSdrResults>();
             void IJob.Execute(IJobExecutionContext context)
             {
+                logger.Trace("Start job Sheduler_Up_Meas_SDR_Results... ");
+                context.Scheduler.PauseAll();
                 try
                 {
                     BusManager<List<MeasSdrResults>> BS = new BusManager<List<MeasSdrResults>>();
@@ -79,11 +87,14 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                         }
 
                     }
+                    
                  }
                 catch (Exception ex)
                 {
-                    CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Up_Meas_SDR_Results " +ex.Message);
+                    logger.Error("Error in job  Sheduler_Up_Meas_SDR_Results: "+ex.Message);
                 }
+                logger.Trace("End job Sheduler_Up_Meas_SDR_Results.");
+                context.Scheduler.ResumeAll();
             }
 
         }

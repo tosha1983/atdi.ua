@@ -25,6 +25,36 @@ namespace Atdi.LegacyServices.Icsm
             this._schemasMetadata = schemasMetadata;
         }
 
+        public string[] GetPrimaryKeys(string tableName)
+        {
+            List<string> allPrimaryKeys = new List<string>();
+            var zeta = this._schemasMetadata.GetTableByName(tableName);
+            if (zeta != null)
+            {
+                foreach (Orm.Field f1 in zeta.ClassFields)
+                {
+                    switch (f1.Nature)
+                    {
+                        case Orm.FieldNature.Column:
+                            {
+                                Orm.FieldF fjF = (Orm.FieldF)f1;
+                                if (fjF != null)
+                                {
+                                    if ((fjF.Options == (Orm.FieldFOption.fld_NOTNULL | Orm.FieldFOption.fld_PRIMARY | Orm.FieldFOption.fld_FKEY)) || ((fjF.Options == (Orm.FieldFOption.fld_NOTNULL | Orm.FieldFOption.fld_PRIMARY)) && (fjF.Index == 0)))
+                                    {
+                                        allPrimaryKeys.Add(f1.Name);
+                                    }
+                                }
+                            }
+                            break;
+
+                    }
+                }
+            }
+            return allPrimaryKeys.ToArray();
+        }
+
+
         public Orm.Field GetOrmDataDesc(string fld_check, string tableName)
         {
             Orm.Field rc = null;
@@ -61,7 +91,6 @@ namespace Atdi.LegacyServices.Icsm
                                 var fj = (Orm.FieldJ)f1;
                                 var joi = fj.Join;
                                 var tc = joi.JoinedTable;
-                                //string joinedClass = OrmSourcer.TableNameToClassName(f1.Name);
                                 if (fld_check == f1.Name)  {
                                     rc.NameTableTo = tc.Name;
                                     rc.Name = f1.Name;
@@ -113,7 +142,6 @@ namespace Atdi.LegacyServices.Icsm
             try
             {
                 
-
                 var f = new Frame();
                 string Query = value;
                 int x1 = Query.IndexOf("\r\n");
@@ -124,13 +152,30 @@ namespace Atdi.LegacyServices.Icsm
                 f.Load(strx);
                 var _report = new IcsmReport();
                 _report.SetConfig(f);
-                for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
+                var zeta = this._schemasMetadata.GetTableByName(_report.m_dat.m_tab);
+                List<KeyValuePair<string,string>> listColumnsFromSchema = new List<KeyValuePair<string, string>>();
+                if (!string.IsNullOrEmpty(zeta.ShortDesc))
+                {
+                    string[] blocks = zeta.ShortDesc.Split(new char[] { '|' });
+                    for (int i = 0; i < blocks.Length; i++)
+                    {
+                        if (!string.IsNullOrEmpty(blocks[i]))
+                        {
+                            string[] wrds = blocks[i].Split(new char[] { ';' });
+                            if (wrds.Length > 1)
+                            {
+                                listColumnsFromSchema.Add(new KeyValuePair<string, string>(wrds[0], wrds[1]));
+                            }
+                        }
+                    }
+                }
+                    for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
                     {
                         var metaData = new IrpColumn();
                         metaData.columnMeta = new ColumnMetadata();
-
                         metaData.columnMeta.Description = _report.m_desc;
                         metaData.columnMeta.Title = "";
+                        irpDescr.PrimaryKey = GetPrimaryKeys(_report.m_dat.m_tab);
                         irpDescr.TableName = _report.m_dat.m_tab;
                         string t = _report.m_dat.m_list[0].m_query.lq[i].path;
                         t = t.Replace(_report.m_dat.m_tab + ".", "");
@@ -145,8 +190,9 @@ namespace Atdi.LegacyServices.Icsm
                         metaData.columnMeta.Width = _report.m_dat.m_list[0].m_query.lq[i].colWidth;
                         if (_report.m_dat.m_list[0].m_query.lq[i].m_isCustExpr)
                         {
-                            //metaData.Expr = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + _report.m_dat.m_list[0].m_query.lq[i].title;
-                            metaData.Expr = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" +t;
+                            metaData.columnMeta.Name = t;
+                            metaData.columnMeta.Description = t;
+                            metaData.Expr = "$" + _report.m_dat.m_list[0].m_query.lq[i].m_CustExpr + "#:" + t;
                             metaData.TypeColumn = IrpColumnEnum.Expression;
                             metaData.columnMeta.Type = DataModels.DataType.String;
                         }
@@ -170,10 +216,61 @@ namespace Atdi.LegacyServices.Icsm
                                 ty_p = GetFieldFromOrm(_report.m_dat.m_tab, FLD_STATE_value);
                             }
                         }
-                        if (ty_p != null)
+                        bool isDefinedRealType = false;
+                        {
+                            if (listColumnsFromSchema.Count>0)
+                            {
+                                KeyValuePair<string,string> fndColumn = listColumnsFromSchema.Find(z => z.Key == t);
+                                if (!string.IsNullOrEmpty(fndColumn.Value))
+                                {
+                                    isDefinedRealType = true;
+                                    string typeRecognize = fndColumn.Value.Trim();
+                                    switch (typeRecognize)
+                                    {
+                                        case "System.Int32":
+                                            metaData.columnMeta.Type = DataModels.DataType.Integer;
+                                            break;
+                                        case "System.Boolean":
+                                            metaData.columnMeta.Type = DataModels.DataType.Boolean;
+                                            break;
+                                        case "System.Byte":
+                                            metaData.columnMeta.Type = DataModels.DataType.Byte;
+                                            break;
+                                        case "System.Decimal":
+                                            metaData.columnMeta.Type = DataModels.DataType.Decimal;
+                                            break;
+                                        case "System.Double":
+                                            metaData.columnMeta.Type = DataModels.DataType.Double;
+                                            break;
+                                        case "System.String":
+                                            metaData.columnMeta.Type = DataModels.DataType.String;
+                                            break;
+                                        case "System.DateTime":
+                                            metaData.columnMeta.Type = DataModels.DataType.DateTime;
+                                            break;
+                                        case "System.Byte[]":
+                                            metaData.columnMeta.Type = DataModels.DataType.Bytes;
+                                            break;
+                                        case "System.Guid":
+                                            metaData.columnMeta.Type = DataModels.DataType.Guid;
+                                            break;
+                                        case "System.Single":
+                                            metaData.columnMeta.Type = DataModels.DataType.Float;
+                                            break;
+                                        default:
+                                            metaData.columnMeta.Type = DataModels.DataType.Undefined;
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        if ((ty_p != null) && (isDefinedRealType==false))
                         {
                             switch (ty_p.DDesc.ClassType)
                             {
+                                case Orm.VarType.var_Guid:
+                                    metaData.columnMeta.Type = DataModels.DataType.Guid;
+                                    break;
                                 case Orm.VarType.var_Bytes:
                                     metaData.columnMeta.Type = DataModels.DataType.Bytes;
                                     break;
@@ -193,7 +290,7 @@ namespace Atdi.LegacyServices.Icsm
                                     metaData.columnMeta.Type = DataModels.DataType.DateTime;
                                     break;
                                 default:
-                                    metaData.columnMeta.Type = DataModels.DataType.String;
+                                    metaData.columnMeta.Type = DataModels.DataType.Undefined;
                                     break;
                             }
                         }

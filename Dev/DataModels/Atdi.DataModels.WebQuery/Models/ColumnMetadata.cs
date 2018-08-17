@@ -37,5 +37,7 @@ namespace Atdi.DataModels.WebQuery
         
         [DataMember]
         public string Format { get; set; }
+
+       
     }
 }

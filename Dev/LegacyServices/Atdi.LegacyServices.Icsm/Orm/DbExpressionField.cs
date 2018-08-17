@@ -11,6 +11,7 @@ namespace Atdi.LegacyServices.Icsm.Orm
         public  DBMS _dbms = DBMS.Unknown;
         public string m_expression;
         private List<Field> m_items;
+        private string tableName = "";
         private int m_nItems;
         public string m_fmt;
         public string IdPrefix, IdSuffix;
@@ -27,13 +28,12 @@ namespace Atdi.LegacyServices.Icsm.Orm
 
         private string GetTableName(string val)
         {
-            return this.m_logTab;
+            return tableName;
         }
 
-
-
-        public void AddFldsInExpression(SchemasMetadata schemasMetadata, string Tcaz)
+        public void AddFldsInExpression(SchemasMetadata schemasMetadata, DbTable dbTable)
         {
+            tableName = "";
             if (schemasMetadata._configDataEngine.Config.Type == Contracts.CoreServices.DataLayer.DataEngineType.Oracle)
                 _dbms = DBMS.Oracle;
             if (schemasMetadata._configDataEngine.Config.Type == Contracts.CoreServices.DataLayer.DataEngineType.SqlServer)
@@ -74,8 +74,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
                     }
                     else
                     {
-
-                        var ormTable = schemasMetadata.GetTableByName(this.m_logTab);
+                        tableName = dbTable.logTab;
+                        var ormTable = schemasMetadata.GetTableByName(dbTable.logTab);
                         string fldPath = this.m_expression.Substring(i + 1, num2 - i - 1);
                         Field ormItem = ormTable.Field(fldPath);
                         if (ormItem != null)
@@ -83,8 +83,8 @@ namespace Atdi.LegacyServices.Icsm.Orm
                             this.m_items.Add(ormItem);
                             this.m_nItems++;
                             num = (i = num2 + 1);
-                            if (_dbms== DBMS.MsSql) this.m_fmt +=  string.Format("{0}.[", Tcaz)+ ormItem.Name+"]";
-                            else if (_dbms == DBMS.Oracle) this.m_fmt +=  string.Format("{0}.",Tcaz) + $"\"{ormItem.Name}\"";
+                            if (_dbms== DBMS.MsSql) this.m_fmt +=  string.Format("{0}.[", dbTable.Tcaz)+ ormItem.Name+"]";
+                            else if (_dbms == DBMS.Oracle) this.m_fmt +=  string.Format("{0}.",dbTable.Tcaz) + $"\"{ormItem.Name}\"";
                         }
                         else
                         {
@@ -961,9 +961,10 @@ namespace Atdi.LegacyServices.Icsm.Orm
                     int u0 = ie;
                     do ie++; while (ie < expr.Length && (char.IsLetterOrDigit(expr[ie]) || expr[ie] == '_'));
                     string tbName = expr.Substring(u0, ie - u0);
-                    string tt = ttrans(tbName);
+                    string tt = tbName;//ttrans(tbName);
                     if (tt != null) res += tt;
-                    else { res += "%" + tbName; }
+                    else { res += "%"+ tbName; }
+                  
                     continue;
                 }
                 if (expr[ie] == '{')

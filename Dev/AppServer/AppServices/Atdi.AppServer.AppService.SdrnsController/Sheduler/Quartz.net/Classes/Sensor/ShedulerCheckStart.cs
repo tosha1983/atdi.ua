@@ -8,12 +8,17 @@ using Quartz.Impl;
 using EasyNetQ.Consumer;
 using EasyNetQ;
 using Atdi.SDNRS.AppServer.BusManager;
-
+using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
     public class ShedulerCheckStart : InterfaceSheduler, IDisposable
     {
+        public static ILogger logger;
+        public ShedulerCheckStart(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -53,25 +58,22 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         {
             void IJob.Execute(IJobExecutionContext context)
             {
+                logger.Trace("Start job ShedulerCheckStart...");
+                context.Scheduler.PauseAll();
                 try
                 {
-                        Task tsk = new Task(() =>
-                        {
-                        CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "New check list sensors ");
-                        Console.WriteLine("--> New check list sensors");
-                        ClassReceiveAllSensors rec = new ClassReceiveAllSensors();
-                        rec.ReceiveAllSensorList();
-                        rec.Dispose();
-                        });
-                        tsk.Start();
-                        //tsk.Wait();
-                        System.GC.Collect();
+                    ClassReceiveAllSensors rec = new ClassReceiveAllSensors(logger);
+                    rec.ReceiveAllSensorList();
+                    rec.Dispose();
+                    System.GC.Collect();
                 }
                 catch (Exception ex)
                 {
-                    CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerCheckStart "+ex.Message);
+                    logger.Error("Error in job ShedulerCheckStart: " + ex.Message);
                 }
-            }
+                context.Scheduler.ResumeAll();
+                logger.Trace("End job ShedulerCheckStart.");
+            }    
         }
         /// <summary>
         /// Dispose sheduler

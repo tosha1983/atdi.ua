@@ -1,5 +1,6 @@
 ﻿using ICSM;
 using OrmCs;
+using System;
 
 namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
@@ -92,19 +93,19 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
             s.DeclareTable("XWEBTEST", "TEST table", plugin4);
             {
-                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XWEBTEST", "PRIMARY", "ID");
-                s.DeclareField("STRING_TYPE", "VARCHAR(200)", null, null, null);
-                s.DeclareField("BOOLEAN_TYPE", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("INTEGER_TYPE", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null); 
+                s.DeclareIndex("PK_XWEBTEST", "PRIMARY", "ID"); 
+                s.DeclareField("STRING_TYPE", "VARCHAR(200)", null, null, null);  
+                s.DeclareField("BOOLEAN_TYPE", "NUMBER(1,0)", null, null, null); 
+                s.DeclareField("INTEGER_TYPE", "NUMBER(11,0)", null, null, null);
                 s.DeclareField("DATETIME_TYPE", "DATE", "Date", null, null);
-                s.DeclareField("DOUBLE_TYPE", "NUMBER(30,8)", null, null, null);
-                s.DeclareField("FLOAT_TYPE", "NUMBER(22,5)", null, null, null);
-                s.DeclareField("DECIMAL_TYPE", "NUMBER(8,3)", null,  null, null);
-                s.DeclareField("BYTE_TYPE", "NUMBER(3,0)", null, null, null);
-                s.DeclareField("BYTES_TYPE", "BINARY(20000)", null, null, null);
+                s.DeclareField("DOUBLE_TYPE", "NUMBER(38,29)", null, null, null); 
+                s.DeclareField("FLOAT_TYPE", "NUMBER(38,29)", null, null, null); 
+                s.DeclareField("DECIMAL_TYPE", "NUMBER(38,29)", null,  null, null); 
+                s.DeclareField("BYTE_TYPE", "VARCHAR(4)", null, null, null); 
+                s.DeclareField("BYTES_TYPE", "BINARY(20000)", null, null, null); 
                 s.DeclareField("GUID_TYPE", "VARCHAR(40)", null, null, null);
-                //s.DeclareField("GUID_TYPE", "GUID", null, null, null);
+                s.DeclareShortDesc("ID;System.Int32|STRING_TYPE;System.String|BOOLEAN_TYPE;System.Boolean|INTEGER_TYPE;System.Int32|DATETIME_TYPE;System.DateTime|DOUBLE_TYPE;System.Double|FLOAT_TYPE;System.Single|DECIMAL_TYPE;System.Decimal|BYTE_TYPE;System.Byte|BYTES_TYPE;System.Byte[]|GUID_TYPE;System.Guid");
             }
         }
 
