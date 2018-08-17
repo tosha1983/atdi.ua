@@ -42,10 +42,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     foreach (ClassSDRResults obj in objs.ToArray())
                     {
                         MeasurementResults s_out = new MeasurementResults();
+                        s_out.Id = new MeasurementResultsIdentifier();
                         s_out.AntVal = obj.meas_res.m_antval;
                         s_out.DataRank = obj.meas_res.m_datarank;
                         s_out.Id.MeasTaskId = new MeasTaskIdentifier();
                         s_out.Id.MeasTaskId.Value = (int)obj.meas_res.m_meastaskid;
+                        s_out.Id.MeasSdrResultsId = (int)obj.meas_res.m_id;
                         s_out.N = obj.meas_res.m_n;
                         s_out.StationMeasurements = new StationMeasurements();
                         s_out.StationMeasurements.StationId = new SensorIdentifier();

@@ -61,62 +61,62 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         // здесь выполняется загрузка данных из БД о сенсорах с заданной периодичностью 1 минута
         public class SimpleJob : IJob
         {
-           
-            //ClassConvertTasks ts = new ClassConvertTasks();
+
             void IJob.Execute(IJobExecutionContext context)
             {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+                logger.Trace("Start job ShedulerGetMeasTask... ");
+                context.Scheduler.PauseAll();
                 try
                 {
-                    logger.Trace("Start job ShedulerGetMeasTask... ");
+                    ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
                     BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                      foreach (Sensor s in GlobalInit.SensorListSDRNS.ToArray())
+                    foreach (Sensor s in GlobalInit.SensorListSDRNS.ToArray())
+                    {
+                        if (ClassStaticBus.bus.Advanced.IsConnected)
                         {
-                            if (ClassStaticBus.bus.Advanced.IsConnected)
-                            {
                             uint cnt = busManager.GetMessageCount(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
                             for (int i = 0; i < cnt; i++)
                             {
                                 var message = busManager.GetDataObject(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
                                 if (message != null)
                                 {
-                                        List<MeasSdrTask> fnd_s = message as List<MeasSdrTask>;
-                                        if (fnd_s != null)
+                                    List<MeasSdrTask> fnd_s = message as List<MeasSdrTask>;
+                                    if (fnd_s != null)
+                                    {
+                                        foreach (MeasSdrTask h in fnd_s)
                                         {
-                                            foreach (MeasSdrTask h in fnd_s)
+                                            if (h.MeasTaskId != null)
                                             {
-                                                if (h.MeasTaskId != null)
+                                                MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Id.Value == h.MeasTaskId.Value);
+                                                if (tsk != null)
                                                 {
-                                                    MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Id.Value == h.MeasTaskId.Value);
-                                                    if (tsk != null)
-                                                    {
-                                                        tsk.Status = h.status;
-                                                        cl.SaveStatusTaskToDB(tsk);
-                                                    }
+                                                    tsk.Status = h.status;
+                                                    cl.SaveStatusTaskToDB(tsk);
                                                 }
                                             }
                                         }
                                     }
+                                }
                                 else break;
                             }
-                               
-                            }
-                            else
-                            {
+
+                        }
+                        else
+                        {
                             ClassStaticBus.bus.Dispose();
                             GC.SuppressFinalize(ClassStaticBus.bus);
                             ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                            //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                         }
-                        }
-                      logger.Trace("End job ShedulerGetMeasTask.");
-                     }
-                    catch (Exception ex)
-                    {
-                      logger.Error("Error in job ShedulerGetMeasTask: "+ex.Message);
                     }
                     cl.Dispose();
                     System.GC.Collect();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Error in job ShedulerGetMeasTask: " + ex.Message);
+                }
+                context.Scheduler.ResumeAll();
+                logger.Trace("End job ShedulerGetMeasTask.");
             }
         }
 

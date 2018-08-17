@@ -552,7 +552,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 #region Save Task
-                //await Task.Run(() =>
+                System.Threading.Thread thread = new System.Threading.Thread(() =>
                 {
                     logger.Trace("Start procedure SaveTaskToDB...");
                     /// Create new record in YXbsMeastask
@@ -562,7 +562,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             YXbsMeastask meastask = new YXbsMeastask();
                             meastask.Format("*");
-                            if ((!meastask.Fetch(string.Format("ID={0}", obj.Id.Value))) || (obj.Id.Value==-1))
+                            if ((!meastask.Fetch(string.Format("ID={0}", obj.Id.Value))) || (obj.Id.Value == -1))
                             {
                                 meastask.New();
                                 if (obj.MaxTimeBs != null) meastask.m_maxtimebs = obj.MaxTimeBs.GetValueOrDefault();
@@ -885,7 +885,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         prm_XbsMeasstation.m_id_xbs_meastask = ID;
                                         prm_XbsMeasstation.m_stationid = s_st.StationId.Value;
                                         prm_XbsMeasstation.m_stationtype = s_st.StationType;
-                                      
+
                                     }
                                     else
                                     {
@@ -911,7 +911,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
 
                             /// Проверка сохранения StationsForMeasurements
-                           
+
                             if (obj.StationsForMeasurements != null)
                             {
                                 foreach (StationDataForMeasurements StationData_param in obj.StationsForMeasurements.ToArray())
@@ -920,13 +920,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsStationdatform prm_loc = new YXbsStationdatform();
                                     prm_loc.Format("*");
 
-                                                prm_loc.New();
-                                                if (StationData_param.GlobalSID != null) prm_loc.m_globalsid = StationData_param.GlobalSID;
-                                                if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
-                                                if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
-                                                prm_loc.m_id_xbs_meastask = ID;
-                                                ID_loc_params = (int)prm_loc.Save();
-                                                StationData_param.IdStation = ID_loc_params;
+                                    prm_loc.New();
+                                    if (StationData_param.GlobalSID != null) prm_loc.m_globalsid = StationData_param.GlobalSID;
+                                    if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
+                                    if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
+                                    prm_loc.m_id_xbs_meastask = ID;
+                                    ID_loc_params = (int)prm_loc.Save();
+                                    StationData_param.IdStation = ID_loc_params;
 
 
 
@@ -1007,12 +1007,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     YXbsFreqforsectics freq_formeas = new YXbsFreqforsectics();
                                                     freq_formeas.Format("*");
                                                     freq_formeas.New();
-                                                  
+
                                                     if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
                                                     if (F.Frequency != null) freq_formeas.m_frequency = (double)F.Frequency;
                                                     if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
                                                     freq_formeas.m_id_sectstformeas = ID_secformeas;
-                                                    for (int i=0;i< freq_formeas.getAllFields.Count; i++)
+                                                    for (int i = 0; i < freq_formeas.getAllFields.Count; i++)
                                                         freq_formeas.getAllFields[i].Value = freq_formeas.valc[i];
                                                     BlockInsert.Add(freq_formeas);
                                                     freq_formeas.Close();
@@ -1061,14 +1061,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                 }
                             }
-                           
-                            ///
                         }
                     }
                     logger.Trace("End procedure SaveTaskToDB.");
                     #endregion
-                }
-                //).ConfigureAwait(false);
+                });
+                thread.Start();
+                thread.Join();
             }
             catch (Exception ex)
             {

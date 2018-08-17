@@ -297,6 +297,40 @@ namespace Atdi.Oracle.DataAccess
             }
             return Id;
         }
+
+        public int? GetNextId(string sequenceName)
+        {
+            int? Id = null;
+            //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+            OracleCommand command = connection.CreateCommand();
+            try
+            {
+                //command.Transaction = transaction;
+                command.CommandText = string.Format("SELECT {0}.nextval from dual", sequenceName);
+                object o = command.ExecuteScalar();
+                if (o != null)
+                {
+                    if (o != DBNull.Value)
+                    {
+                        Id = Int32.Parse(o.ToString());
+                    }
+                    else Id = 1;
+                }
+                else
+                {
+                    Id = 1;
+                }
+                //transaction.Commit();
+                command.Dispose();
+            }
+            catch (Exception e)
+            {
+                //transaction.Rollback();
+                Console.WriteLine(e.ToString());
+                Console.WriteLine("Neither record was written to database.");
+            }
+            return Id;
+        }
         /// <summary>
         /// Get Value from one record
         /// </summary>

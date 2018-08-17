@@ -59,15 +59,19 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             void IJob.Execute(IJobExecutionContext context)
             {
                 logger.Trace("Start job ShedulerCheckStart...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                context.Scheduler.PauseAll();
+                try
                 {
                     ClassReceiveAllSensors rec = new ClassReceiveAllSensors(logger);
                     rec.ReceiveAllSensorList();
                     rec.Dispose();
-                });
-                tsk.Start();
-                tsk.Join();
-                System.GC.Collect();
+                    System.GC.Collect();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Error in job ShedulerCheckStart: " + ex.Message);
+                }
+                context.Scheduler.ResumeAll();
                 logger.Trace("End job ShedulerCheckStart.");
             }    
         }

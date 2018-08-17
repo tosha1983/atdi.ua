@@ -62,7 +62,10 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             void IJob.Execute(IJobExecutionContext context)
             {
                 logger.Trace("Start job ShedulerCheckStatusF...");
-                object val = context.Scheduler.Context["val_check"];
+                context.Scheduler.PauseAll();
+                try
+                {
+                    object val = context.Scheduler.Context["val_check"];
                     if (val != null)
                     {
                         if ((val as Sensor).Status == AllStatusSensor.F.ToString())
@@ -73,9 +76,8 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                 if (fnd != null)
                                     GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, (val as Sensor));
                                 else GlobalInit.SensorListSDRNS.Add((val as Sensor));
-                                //GlobalInit.SensorListSDRNS.RemoveAll(t => t.Name == (val as Sensor).Name && t.Equipment.TechId == (val as Sensor).Equipment.TechId);
+
                                 (val as Sensor).Status = AllStatusSensor.Z.ToString();
-                                //GlobalInit.SensorListSDRNS.Add((val as Sensor));
                                 ClassDBGetSensor sens_db = new ClassDBGetSensor(logger);
                                 sens_db.CreateNewObjectSensor((val as Sensor));
                                 sens_db.Dispose();
@@ -83,6 +85,12 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                         }
                     }
                     System.GC.Collect();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Error in job ShedulerCheckStatusF: " + ex.Message);
+                }
+                context.Scheduler.ResumeAll();
                 logger.Trace("End job ShedulerCheckStatusF.");
             }
             /// <summary>

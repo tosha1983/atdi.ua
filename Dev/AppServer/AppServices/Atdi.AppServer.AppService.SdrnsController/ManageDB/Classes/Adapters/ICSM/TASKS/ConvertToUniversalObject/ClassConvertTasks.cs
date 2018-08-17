@@ -40,13 +40,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="objs"></param>
         /// <returns></returns>
-        public async Task<MeasTask[]> ConvertTo_MEAS_TASKObjects(List<CLASS_TASKS> objs)
+        public MeasTask[] ConvertTo_MEAS_TASKObjects(List<CLASS_TASKS> objs)
         {
             List<MeasTask> L_OUT = new List<MeasTask>();
             try
             {
-                await Task.Run(() =>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(()=>
+                //{
                     logger.Trace("Start procedure ConvertTo_MEAS_TASKObjects...");
                     #region Convert to MeasTask
                     foreach (CLASS_TASKS obj in objs.ToArray())
@@ -355,8 +355,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Convert to MEAS_TASK Objects ...");
                     }
                     logger.Trace("End procedure ConvertTo_MEAS_TASKObjects...");
-                }).ConfigureAwait(false);
-                
+                //});
+                //thread.Start();
+                //thread.Join();
                 #endregion
             }
             catch (Exception ex)
