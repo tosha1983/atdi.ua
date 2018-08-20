@@ -70,18 +70,16 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                     {
                         if ((val as Sensor).Status == AllStatusSensor.F.ToString())
                         {
-                            if (GlobalInit.SensorListSDRNS.Count > 0)
+                            ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
+                            List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
+                            if (SensorListSDRNS.Count > 0)
                             {
-                                Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == (val as Sensor).Name && t.Equipment.TechId == (val as Sensor).Equipment.TechId);
-                                if (fnd != null)
-                                    GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, (val as Sensor));
-                                else GlobalInit.SensorListSDRNS.Add((val as Sensor));
-
                                 (val as Sensor).Status = AllStatusSensor.Z.ToString();
                                 ClassDBGetSensor sens_db = new ClassDBGetSensor(logger);
                                 sens_db.CreateNewObjectSensor((val as Sensor));
                                 sens_db.Dispose();
                             }
+                            gsd.Dispose();
                         }
                     }
                     System.GC.Collect();

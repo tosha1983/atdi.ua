@@ -197,6 +197,170 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return val;
         }
 
+        public Sensor LoadObjectSensor(int Id)
+        {
+            var val = new Sensor();
+            {
+                try
+                {
+                    logger.Trace("Start procedure LoadObjectAllSensor...");
+                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    {
+                        YXbsSensor s_l_sensor = new YXbsSensor();
+                        s_l_sensor.Format("*");
+                        // выбирать только сенсоры, для которых STATUS не NULL
+                        s_l_sensor.Filter = string.Format("(ID={0})", Id);
+                        s_l_sensor.Order = "[ID] DESC";
+                        for (s_l_sensor.OpenRs(); !s_l_sensor.IsEOF(); s_l_sensor.MoveNext())
+                        {
+                            Sensor it_out = new Sensor();
+                            it_out.Id = new SensorIdentifier();
+                            it_out.Administration = s_l_sensor.m_administration;
+                            it_out.AGL = s_l_sensor.m_agl;
+                            it_out.Azimuth = s_l_sensor.m_azimuth;
+                            it_out.BiuseDate = s_l_sensor.m_biusedate;
+                            it_out.CreatedBy = s_l_sensor.m_createdby;
+                            it_out.CustData1 = s_l_sensor.m_custdata1;
+                            it_out.CustNbr1 = s_l_sensor.m_custnbr1;
+                            it_out.CustTxt1 = s_l_sensor.m_custtxt1;
+                            it_out.DateCreated = s_l_sensor.m_datecreated;
+                            it_out.Elevation = s_l_sensor.m_elevation;
+                            it_out.EouseDate = s_l_sensor.m_eousedate;
+                            it_out.IdSysARGUS = s_l_sensor.m_idsysargus;
+                            it_out.Id.Value = (int)s_l_sensor.m_id;
+                            it_out.Name = s_l_sensor.m_name;
+                            it_out.NetworkId = s_l_sensor.m_networkid;
+                            it_out.OpDays = s_l_sensor.m_opdays;
+                            it_out.OpHHFr = s_l_sensor.m_ophhfr;
+                            it_out.OpHHTo = s_l_sensor.m_ophhto;
+                            it_out.Remark = s_l_sensor.m_remark;
+                            it_out.RxLoss = s_l_sensor.m_rxloss;
+                            it_out.Status = s_l_sensor.m_status;
+                            it_out.StepMeasTime = s_l_sensor.m_stepmeastime;
+                            it_out.TypeSensor = s_l_sensor.m_typesensor;
+                            it_out.Antenna = new SensorAntenna();
+
+                            //Antenna
+                            YXbsSensorantenna mpt = new YXbsSensorantenna();
+                            mpt.Format("*");
+                            mpt.Filter = string.Format("SENSORID={0}", it_out.Id.Value);
+                            for (mpt.OpenRs(); !mpt.IsEOF(); mpt.MoveNext())
+                            {
+                                List<AntennaPattern> L_ant_patt = new List<AntennaPattern>();
+                                YXbsAntennapattern itr = new YXbsAntennapattern();
+                                itr.Format("*");
+                                itr.Filter = string.Format("SENSORANTENNA_ID={0}", mpt.m_id);
+                                for (itr.OpenRs(); !itr.IsEOF(); itr.MoveNext())
+                                {
+                                    AntennaPattern ptu = new AntennaPattern();
+                                    ptu.DiagA = itr.m_diaga;
+                                    ptu.DiagH = itr.m_diagh;
+                                    ptu.DiagV = itr.m_diagv;
+                                    ptu.Freq = (double)itr.m_freq;
+                                    ptu.Gain = (double)itr.m_gain;
+                                    L_ant_patt.Add(ptu);
+                                }
+                                itr.Close();
+                                itr.Dispose();
+                                it_out.Antenna.AntennaPatterns = L_ant_patt.ToArray();
+                            }
+                            mpt.Close();
+                            mpt.Dispose();
+
+                            // Equipments
+                            it_out.Equipment = new SensorEquip();
+                            {
+                                YXbsSensorequip mpt_ = new YXbsSensorequip();
+                                mpt_.Format("*");
+                                mpt_.Filter = string.Format("(SENSORID={0})", it_out.Id.Value);
+                                for (mpt_.OpenRs(); !mpt_.IsEOF(); mpt_.MoveNext())
+                                {
+                                    it_out.Equipment.Category = mpt_.m_category;
+                                    it_out.Equipment.Code = mpt_.m_code;
+                                    it_out.Equipment.CustData1 = mpt_.m_custdata1;
+                                    it_out.Equipment.CustNbr1 = mpt_.m_custnbr1;
+                                    it_out.Equipment.CustTxt1 = mpt_.m_custtxt1;
+                                    it_out.Equipment.EquipClass = mpt_.m_equipclass;
+                                    it_out.Equipment.Family = mpt_.m_family;
+                                    it_out.Equipment.FFTPointMax = mpt_.m_fftpointmax;
+                                    it_out.Equipment.LowerFreq = mpt_.m_lowerfreq;
+                                    it_out.Equipment.Manufacturer = mpt_.m_manufacturer;
+                                    it_out.Equipment.Mobility = mpt_.m_mobility == 1 ? true : false;
+                                    it_out.Equipment.Name = mpt_.m_name;
+                                    it_out.Equipment.OperationMode = mpt_.m_operationmode;
+                                    it_out.Equipment.RBWMax = mpt_.m_rbwmax;
+                                    it_out.Equipment.RBWMin = mpt_.m_rbwmin;
+                                    it_out.Equipment.RefLeveldBm = mpt_.m_refleveldbm;
+                                    it_out.Equipment.Remark = mpt_.m_remark;
+                                    it_out.Equipment.TechId = mpt_.m_techid;
+                                    it_out.Equipment.TuningStep = mpt_.m_tuningstep;
+                                    it_out.Equipment.Type = mpt_.m_type;
+                                    it_out.Equipment.UpperFreq = mpt_.m_upperfreq;
+                                    it_out.Equipment.UseType = mpt_.m_usetype;
+                                    it_out.Equipment.VBWMax = mpt_.m_vbwmax;
+                                    it_out.Equipment.VBWMin = mpt_.m_vbwmin;
+                                    it_out.Equipment.Version = mpt_.m_version;
+
+                                    List<SensorEquipSensitivity> L_sens = new List<SensorEquipSensitivity>();
+                                    YXbsSensorequipsens itr = new YXbsSensorequipsens();
+                                    itr.Format("*");
+                                    itr.Filter = string.Format("SENSOREQUIP_ID={0}", mpt_.m_id);
+                                    for (itr.OpenRs(); !itr.IsEOF(); itr.MoveNext())
+                                    {
+                                        SensorEquipSensitivity ptu = new SensorEquipSensitivity();
+                                        ptu.AddLoss = itr.m_addloss;
+                                        ptu.Freq = (double)itr.m_freq;
+                                        ptu.FreqStability = itr.m_freqstability;
+                                        ptu.KTBF = itr.m_ktbf;
+                                        ptu.NoiseF = itr.m_noisef;
+                                        L_sens.Add(ptu);
+                                    }
+                                    itr.Close();
+                                    itr.Dispose();
+                                    it_out.Equipment.SensorEquipSensitivities = L_sens.ToArray();
+                                }
+                                mpt_.Close();
+                                mpt_.Dispose();
+                            }
+
+                            List<SensorLocation> L_Sens_loc = new List<SensorLocation>();
+                            YXbsSensorlocation mpt_loc = new YXbsSensorlocation();
+                            mpt_loc.Format("*");
+                            mpt_loc.Filter = string.Format("(SENSORID={0})", it_out.Id.Value);
+                            for (mpt_loc.OpenRs(); !mpt_loc.IsEOF(); mpt_loc.MoveNext())
+                            {
+                                SensorLocation s_l = new SensorLocation();
+                                s_l.ASL = mpt_loc.m_asl;
+                                s_l.DataCreated = mpt_loc.m_datacreated;
+                                s_l.DataFrom = mpt_loc.m_datafrom;
+                                s_l.DataTo = mpt_loc.m_datato;
+                                s_l.Lat = mpt_loc.m_lat;
+                                s_l.Lon = mpt_loc.m_lon;
+                                s_l.Status = mpt_loc.m_status;
+                                L_Sens_loc.Add(s_l);
+                            }
+                            mpt_loc.Close();
+                            mpt_loc.Dispose();
+                            it_out.Locations = L_Sens_loc.ToArray();
+                            val = it_out;
+                            break;
+                        }
+                        s_l_sensor.Close();
+                        s_l_sensor.Dispose();
+                    });
+                    tsk.Start();
+                    tsk.Join();
+                    logger.Trace("End procedure LoadObjectAllSensor.");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Error in procedure LoadObjectAllSensor: " + ex.Message);
+                }
+
+            }
+            return val;
+        }
+
         public List<Sensor> LoadObjectSensor(string Name, string TechId, string status)
         {
             var val = new List<Sensor>();
@@ -606,7 +770,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     });
                     tsk.Start();
                     tsk.Join();
-                    
                     logger.Trace("End procedure SaveLocationCoordSensor.");
                 }
             }
@@ -624,10 +787,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public bool CreateNewObjectSensor(Sensor sens)
         {
+            Yyy transaction = new Yyy();
             try
             {
                 logger.Trace("Start procedure CreateNewObjectSensor...");
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                    transaction.BeginTransaction();
                     if (sens != null)
                     {
                         double? val = null;
@@ -873,6 +1038,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                     
                 }
+                transaction.CommitTransaction();
                 LoadObjectSensor();
                 });
                 tsk.Start();
@@ -881,6 +1047,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure CreateNewObjectSensor.");
             }
             catch (Exception ex) {
+                transaction.RollbackTransaction();
                 logger.Error("Error in  procedure CreateNewObjectSensor: "+ex.Message);
             }
             return true;
@@ -925,7 +1092,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 });
                 tsk.Start();
                 tsk.Join();
-                
                 logger.Trace("End procedure UpdateStatusSensor.");
             }
             catch (Exception ex)
@@ -961,7 +1127,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 });
                 tsk.Start();
                 tsk.Join();
-                
                 logger.Trace("End  procedure UpdateStatusSensorWithArchive...");
             }
             catch (Exception ex)

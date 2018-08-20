@@ -56,9 +56,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
             List<ShortSensor> val = new List<ShortSensor>();
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
-                List<Sensor> val_all_s = new List<Sensor>();
+                ClassDBGetSensor DB = new ClassDBGetSensor(logger);
+                List<Sensor> val_all_s = DB.LoadObjectSensor();
                 {
-                    val_all_s = GlobalInit.SensorListSDRNS;
                     if (val_all_s != null)
                     {
                         foreach (Sensor sd in val_all_s.ToArray())
@@ -110,7 +110,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
             ShortSensor val = new ShortSensor();
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
-                Sensor sd = GlobalInit.SensorListSDRNS.Find(t => t.Id.Value == Id);
+                ClassDBGetSensor DB = new ClassDBGetSensor(logger);
+                Sensor sd = DB.LoadObjectSensor(Id);
                 if (sd != null)
                 {
                     ShortSensor sh = new ShortSensor();
@@ -158,9 +159,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
                 {
                     ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
                     BusManager<Sensor> busManager = new BusManager<Sensor>();
-                    ClassDBGetSensor DB = new ClassDBGetSensor(logger);
-                    List<Sensor> L_S = DB.LoadObjectAllSensor();
-                    DB.Dispose();
+                    List<Sensor> L_S = gsd.LoadObjectAllSensor();
+                    gsd.Dispose();
                     if (L_S != null)
                     {
                         if (L_S.Count > 0)
@@ -168,9 +168,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             foreach (Sensor message in L_S.ToArray())
                                 busManager.SendDataObject(message, GlobalInit.Template_Event_CheckActivitySensor_Req + message.Name + message.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTemp.ToString());
                         }
-                    }
-                    {
-                        foreach (Sensor message in GlobalInit.SensorListSDRNS.ToArray())
+
+
+                        foreach (Sensor message in L_S.ToArray())
                         {
                             if (GlobalInit.Lst_timers.Find(t => t.se.Name == message.Name && t.se.Equipment.TechId == message.Equipment.TechId) == null)
                             {
@@ -191,7 +191,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                         if ((message_x as Sensor).Name == se.se.Name && (message_x as Sensor).Equipment.TechId == se.se.Equipment.TechId)
                                         {
                                             se.Cnt_sensor_New++; se.Cnt_timer = 0; se.Cnt_all_time = 0;
-                                            Sensor f = GlobalInit.SensorListSDRNS.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
+                                            Sensor f = L_S.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
                                             if (f != null)
                                             {
                                                 se.Cnt_sensor_New++; f.Status = "A"; se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_Old = 0; se.BZ.Close(); se.BZ.Start(); gsd.UpdateStatusSensor(f);
@@ -214,7 +214,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                 //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
                             }
 
-                            Sensor fc = GlobalInit.SensorListSDRNS.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
+                            Sensor fc = L_S.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
                             if (fc != null)
                             {
                                 if ((se.Cnt_timer >= BaseXMLConfiguration.xml_conf._CheckActivitySensor) && (se.Cnt_all_time < BaseXMLConfiguration.xml_conf._MaxTimeNotActivateStatusSensor))
