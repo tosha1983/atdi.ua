@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-using Atdi.Common;
+
 
 namespace Atdi.DataModels
 {
@@ -68,7 +68,7 @@ namespace Atdi.DataModels
                 case DataType.DateTime:
                     result = new DateTimeColumnValue
                     {
-                        Value = (value == null) ? (DateTime?)null : value.ToString().ConvertISO8601ToDateTime()
+                        Value = (value == null) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind)
                     };
                     break;
                 case DataType.Double:

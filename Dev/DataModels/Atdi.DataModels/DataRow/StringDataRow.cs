@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using Atdi.DataModels.DataConstraint;
-using Atdi.Common;
 
 namespace Atdi.DataModels
 {
@@ -67,7 +66,7 @@ namespace Atdi.DataModels
                 case DataType.DateTime:
                     result = new DateTimeColumnValue
                     {
-                         Value = (value == null) ? (DateTime?)null : value.ConvertISO8601ToDateTime()
+                         Value = (value == null) ? (DateTime?)null : DateTime.Parse(value, null, System.Globalization.DateTimeStyles.RoundtripKind)
                     };
                     break;
                 case DataType.Double:
