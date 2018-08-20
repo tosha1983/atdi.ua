@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDRN Server", "SDRN Server", "{21E7E276-6012-498E-A58D-B5A0D0286465}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 DataModels", "00 DataModels", "{A7B201AE-3748-4946-BFC8-4F86AC1FE72C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Device", "DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj", "{4670DA92-06CF-4CE4-BBF8-67353A907BD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels", "DataModels\Atdi.DataModels\Atdi.DataModels.csproj", "{506B3655-4706-42F8-87F1-FB13869AA4C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{506B3655-4706-42F8-87F1-FB13869AA4C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{506B3655-4706-42F8-87F1-FB13869AA4C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{506B3655-4706-42F8-87F1-FB13869AA4C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{506B3655-4706-42F8-87F1-FB13869AA4C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A7B201AE-3748-4946-BFC8-4F86AC1FE72C} = {21E7E276-6012-498E-A58D-B5A0D0286465}
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0} = {A7B201AE-3748-4946-BFC8-4F86AC1FE72C}
+		{506B3655-4706-42F8-87F1-FB13869AA4C1} = {A7B201AE-3748-4946-BFC8-4F86AC1FE72C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
+	EndGlobalSection
+EndGlobal
