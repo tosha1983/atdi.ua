@@ -8,23 +8,23 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents sensor for measurement. Includes administrative and technical data.
+    /// Represents equipment of sensor for measurement. Includes administrative and technical data.
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
 
-    public class Sensor
+    public class SensorEquipment
     {
         /// <summary>
-        /// Id
+        /// code of equipment
         /// </summary>
         [DataMember]
-        public int? Id { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
-        /// Status
+        /// Manufacturer
         /// </summary>
         [DataMember]
-        public string Status { get; set; }
+        public string Manufacturer { get; set; }
 
         /// <summary>
         /// Name
@@ -33,16 +33,112 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Name { get; set; }
 
         /// <summary>
-        /// Administration
+        /// Family
         /// </summary>
         [DataMember]
-        public string Administration { get; set; }
+        public string Family { get; set; }
 
         /// <summary>
-        /// NetworkId
+        /// Technical ID
         /// </summary>
         [DataMember]
-        public string NetworkId { get; set; }
+        public string TechId { get; set; }
+
+        /// <summary>
+        /// Version
+        /// </summary>
+        [DataMember]
+        public string Version { get; set; }
+
+        /// <summary>
+        /// LowerFreq, MHz
+        /// </summary>
+        [DataMember]
+        public double? LowerFreq { get; set; }
+
+        /// <summary>
+        /// UpperFreq, MHz 
+        /// </summary>
+        [DataMember]
+        public double? UpperFreq { get; set; }
+
+        /// <summary>
+        /// RBWMin, kHz
+        /// </summary>
+        [DataMember]
+        public double? RBWMin { get; set; }
+
+        /// <summary>
+        /// RBWMax, kHz
+        /// </summary>
+        [DataMember]
+        public double? RBWMax { get; set; }
+
+        /// <summary>
+        /// VBWMin, kHz
+        /// </summary>
+        [DataMember]
+        public double? VBWMin { get; set; }
+
+        /// <summary>
+        /// VBWMax, kHz
+        /// </summary>
+        [DataMember]
+        public double? VBWMax { get; set; }
+
+        /// <summary>
+        /// Mobility - true - can be mobile, false cannot be mobile
+        /// </summary>
+        [DataMember]
+        public bool? Mobility { get; set; }
+
+        /// <summary>
+        /// Maximum of points for Fast Fourier Transform
+        /// </summary>
+        [DataMember]
+        public double? FFTPointMax { get; set; }
+
+        /// <summary>
+        /// Reference level in dBm
+        /// </summary>
+        [DataMember]
+        public double? RefLeveldBm { get; set; }
+
+        /// <summary>
+        /// OperationMode
+        /// </summary>
+        [DataMember]
+        public string OperationMode { get; set; }
+
+        /// <summary>
+        /// Type
+        /// </summary>
+        [DataMember]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// EquipClass
+        /// </summary>
+        [DataMember]
+        public string Class { get; set; }
+
+        /// <summary>
+        /// TuningStep, Hz
+        /// </summary>
+        [DataMember]
+        public double? TuningStep { get; set; }
+
+        /// <summary>
+        /// UseType
+        /// </summary>
+        [DataMember]
+        public string UseType { get; set; }
+
+        /// <summary>
+        /// Category
+        /// </summary>
+        [DataMember]
+        public string Category { get; set; }
 
         /// <summary>
         /// Remark
@@ -51,82 +147,11 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Remark { get; set; }
 
         /// <summary>
-        /// Bring into use date 
-        /// </summary>
-        [DataMember]
-        public DateTime? BiuseDate { get; set; }
-
-        /// <summary>
-        /// End of use date
-        /// </summary>
-        [DataMember]
-        public DateTime? EouseDate { get; set; }
-
-        /// <summary>
-        /// Azimuth, degree
-        /// </summary>
-        [DataMember]
-        public double? Azimuth { get; set; }
-
-        /// <summary>
-        /// Elevation, degree 
-        /// </summary>
-        [DataMember]
-        public double? Elevation { get; set; }
-
-        /// <summary>
-        /// Altitude above ground level, m
-        /// </summary>
-        [DataMember]
-        public double? AGL { get; set; }
-
-        /// <summary>
-        /// IdSysARGUS
-        /// </summary>
-        [DataMember]
-        public string SysArgusId { get; set; }
-
-        /// <summary>
-        /// TypeSensor
-        /// </summary>
-        [DataMember]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// StepMeasTime
-        /// </summary>
-        [DataMember]
-        public double? StepMeasTime { get; set; }
-
-        /// <summary>
-        /// RxLoss, dB 
-        /// </summary>
-        [DataMember]
-        public double? RxLoss { get; set; }
-
-        /// <summary>
-        /// Operation HH From
-        /// </summary>
-        [DataMember]
-        public double? OpHHFr { get; set; }
-
-        /// <summary>
-        /// Operation HH To
-        /// </summary>
-        [DataMember]
-        public double? OpHHTo { get; set; }
-
-        /// <summary>
-        /// Operation Days
-        /// </summary>
-        [DataMember]
-        public string OpDays { get; set; }
-
-        /// <summary>
         /// 
         /// </summary>
         [DataMember]
         public string CustTxt1 { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -137,42 +162,12 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public Double? CustNbr1 { get; set; }
+        public double? CustNbr1 { get; set; }
 
         /// <summary>
-        /// DateCreated
+        /// Sensitivities of equpment of sensor
         /// </summary>
         [DataMember]
-        public DateTime? Created { get; set; }
-
-        /// <summary>
-        /// CreatedBy
-        /// </summary>
-        [DataMember]
-        public string CreatedBy { get; set; }
-
-        /// <summary>
-        /// Equipment of sensor
-        /// </summary>
-        [DataMember]
-        public SensorEquipment Equipment { get; set; }
-
-        /// <summary>
-        /// Antenna of sensor
-        /// </summary>
-        [DataMember]
-        public SensorAntenna Antenna { get; set; }
-
-        /// <summary>
-        /// Locations of sensor
-        /// </summary>
-        [DataMember]
-        public SensorLocation[] Locations { get; set; }
-
-        /// <summary>
-        /// Point of poligon of sensor
-        /// </summary>
-        [DataMember]
-        public SensorPoligon Poligon { get; set; }
+        public EquipmentSensitivity[] Sensitivities { get; set; }
     }
 }
