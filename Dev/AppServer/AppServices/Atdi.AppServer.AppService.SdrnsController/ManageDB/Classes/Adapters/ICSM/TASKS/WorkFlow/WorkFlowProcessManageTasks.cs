@@ -43,9 +43,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             logger.Trace("Start procedure UpdateListMeasTask...");
             ClassConvertTasks ts = new ClassConvertTasks(logger);
             ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
-            Task<MeasTask[]> task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
-            task.Wait();
-            List<MeasTask> mts_ = task.Result.ToList();
+            MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
+            List<MeasTask> mts_ = task.ToList();
             //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
             foreach (MeasTask FND in mts_.ToArray())
             {

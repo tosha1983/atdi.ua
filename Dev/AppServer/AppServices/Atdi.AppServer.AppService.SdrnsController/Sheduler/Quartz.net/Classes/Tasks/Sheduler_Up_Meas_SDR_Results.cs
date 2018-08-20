@@ -63,9 +63,10 @@ namespace Atdi.SDNRS.AppServer.Sheduler
             public static List<MeasSdrResults> ConfirmRes = new List<MeasSdrResults>();
             void IJob.Execute(IJobExecutionContext context)
             {
+                logger.Trace("Start job Sheduler_Up_Meas_SDR_Results... ");
+                context.Scheduler.PauseAll();
                 try
                 {
-                    logger.Trace("Start job Sheduler_Up_Meas_SDR_Results...");
                     BusManager<List<MeasSdrResults>> BS = new BusManager<List<MeasSdrResults>>();
                     foreach (Sensor s in GlobalInit.SensorListSDRNS.ToArray()) {
                         if (ClassStaticBus.bus.Advanced.IsConnected) {
@@ -86,13 +87,14 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                         }
 
                     }
-                    logger.Trace("End job Sheduler_Up_Meas_SDR_Results.");
+                    
                  }
                 catch (Exception ex)
                 {
                     logger.Error("Error in job  Sheduler_Up_Meas_SDR_Results: "+ex.Message);
-                    //CoreICSM.Logs.CLogs.WriteError(CoreICSM.Logs.ELogsWhat.Unknown, "Sheduler_Up_Meas_SDR_Results " +ex.Message);
                 }
+                logger.Trace("End job Sheduler_Up_Meas_SDR_Results.");
+                context.Scheduler.ResumeAll();
             }
 
         }

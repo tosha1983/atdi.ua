@@ -41,6 +41,7 @@
       <HintPath>..\..\..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,6 +58,18 @@
     <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
+      <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
+      <Name>Atdi.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>

@@ -116,6 +116,18 @@ namespace Atdi.Oracle.DataAccess
             }
         }
 
+
+        public int? GetNextId(string sequenceName)
+        {
+            if (isConnection)
+            {
+                if (rs == null) rs = new OrmRsOracle();
+                return rs.GetNextId(sequenceName);
+            }
+            return null;
+            
+        }
+
         public void Dispose()
         {
             if (isConnection)

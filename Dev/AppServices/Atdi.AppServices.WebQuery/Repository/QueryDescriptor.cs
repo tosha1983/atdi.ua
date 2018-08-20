@@ -257,7 +257,7 @@ namespace Atdi.AppServices.WebQuery
                         Operator = ConditionOperator.Equal,
                         Type = ConditionType.Expression,
                         RightOperand = new IntegerValueOperand() {
-                          Value = tokenData.Id
+                          Value = tokenData.UserId
                         }
                     };
                     List_Expressions.Add(condition);

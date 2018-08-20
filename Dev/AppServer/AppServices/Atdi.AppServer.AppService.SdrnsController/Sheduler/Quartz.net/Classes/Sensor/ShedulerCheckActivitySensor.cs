@@ -62,19 +62,19 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         {
             void IJob.Execute(IJobExecutionContext context)
             {
-                //foreach (IDisposable d in GlobalInit.Lds_Activity_Sensor_Receiver) d.SafeDispose();
                 logger.Trace("Start job ShedulerCheckActivitySensor...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                context.Scheduler.PauseAll();
+                try
                 {
-                    System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
                     SensorListSDRNS senLst = new SensorListSDRNS(logger);
                     senLst.CheckActivitySensor();
-                    senLst.Dispose();
-                });
-                tsk.Start();
-                //tsk.Join();
-
-                System.GC.Collect();
+                    System.GC.Collect();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Error in job ShedulerCheckActivitySensor: " + ex.Message);
+                }
+                context.Scheduler.ResumeAll();
                 logger.Trace("End job ShedulerCheckActivitySensor.");
             }
           

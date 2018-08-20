@@ -47,6 +47,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
         public float[] Level;
         [DataMember]
         public ResultsMeasurementsStation[] ResultsMeasStation;
-       
+        [DataMember]
+        public MeasSdrBandwidthResults ResultsBandwidth;
     }
 }

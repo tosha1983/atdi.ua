@@ -61,87 +61,26 @@ namespace Atdi.SDNRS.AppServer.Sheduler
         // здесь выполняется загрузка данных из БД о сенсорах с заданной периодичностью 1 минута
         public class SimpleJob : IJob
         {
-           void IJob.Execute(IJobExecutionContext context)  {
+            ISchedulerFactory schedFact = new StdSchedulerFactory();
+            void IJob.Execute(IJobExecutionContext context)  {
+                logger.Trace("Start job ShedulerReceiveStatusMeastaskSDR... ");
+                context.Scheduler.PauseAll();
                 try
                 {
-                    logger.Trace("Start job ShedulerReceiveStatusMeastaskSDR...");
+                    ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
                     if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
                     {
-                        for (int i = 0; i < GlobalInit.MEAS_SDR_RESULTS.Count; i++)
-                        {
-                           
-                                ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
-                                ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
-                                if (GlobalInit.MEAS_SDR_RESULTS.Count > 0)
-                                {
-                                    if (GlobalInit.MEAS_SDR_RESULTS[0] != null)
-                                    {
-                                        int ID = -1;
-                                        string Status_Original = GlobalInit.MEAS_SDR_RESULTS[0].status;
-                                        MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                        if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
-                                        if (msReslts.MeasurementsResults != null)
-                                        {
-                                            if (msReslts.MeasurementsResults.Count() > 0)
-                                            {
-                                                if (msReslts.MeasurementsResults[0] is LevelMeasurementOnlineResult)
-                                                {
-                                                    // Здесь в базу ничего не пишем (только в память)
-                                                    msReslts.Status = "O";
-                                                    GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                }
-                                                else
-                                                {
-                                                logger.Trace(string.Format("Start save results..."));
-                                                    System.Threading.Thread ge = new System.Threading.Thread(() =>
-                                                    {
-                                                    ID = DbGetRes.SaveResultToDB(msReslts);
-                                                    if (ID > 0)
-                                                    {
-                                                        GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                        if (GlobalInit.MEAS_SDR_RESULTS.Count>0)    GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                                            logger.Trace(string.Format("Success save results..."));
-                                                    }
-                                                    });
-                                                ge.Start();
-                                                ge.Join();
-                                                    
-
-                                            }
-                                        }
-                                        }
-                                        else
-                                        {
-                                        logger.Trace(string.Format("Start save results..."));
-                                            System.Threading.Thread ge = new System.Threading.Thread(() =>
-                                            {
-                                            ID = DbGetRes.SaveResultToDB(msReslts);
-                                            if (ID > 0)
-                                            {
-                                                GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                GlobalInit.MEAS_SDR_RESULTS.Remove(GlobalInit.MEAS_SDR_RESULTS[0]);
-                                                    logger.Trace(string.Format("Success save results..."));
-                                            }
-                                            });
-                                        ge.Start();
-                                        ge.Join();
-
-                                    }
-                                }
-                                }
-                                logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
-                                logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", GlobalInit.MEAS_SDR_RESULTS.Count()));
-                                DbGetRes.Dispose();
-                                conv.Dispose();
-                            //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "ShedulerReceiveStatusMeastaskSDR ");
-                        }
+                        context.Scheduler.PauseAll();
+                        DbGetRes.SaveAllResultsToDB();
+                        context.Scheduler.ResumeAll();
                     }
-                    logger.Trace("End job ShedulerReceiveStatusMeastaskSDR.");
                 }
                 catch (Exception ex)
                 {
-                    logger.Error("Error in job ShedulerReceiveStatusMeastaskSDR: "+ex.Message);
+                    logger.Error("Error in job ShedulerReceiveStatusMeastaskSDR: " + ex.Message);
                 }
+                context.Scheduler.ResumeAll();
+                logger.Trace("End job ShedulerReceiveStatusMeastaskSDR.");
             }
         }
         /// <summary>

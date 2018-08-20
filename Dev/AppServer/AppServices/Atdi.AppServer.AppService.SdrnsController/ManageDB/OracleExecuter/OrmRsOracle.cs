@@ -160,6 +160,12 @@ namespace Atdi.Oracle.DataAccess
             return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE);
         }
 
+        public int? GetNextId(string sequenceName)
+        {
+            oracleData = new OracleDataAccess();
+            return oracleData.GetNextId(sequenceName);
+        }
+
         public int? UpdateRecord()
         {
             int ID_VALUE = -1;
