@@ -14,16 +14,16 @@ namespace Atdi.DataModels.Sdrns.Device
     public class StationSector
     {
         /// <summary>
+        /// В ICSM
+        /// </summary>
+        [DataMember]
+        public string SectorId { get; set; }
+
+        /// <summary>
         /// м, высота над уровнем земли
         /// </summary>
         [DataMember]
         public double? AGL { get; set; }
-
-        /// <summary>
-        /// В ICSM
-        /// </summary>
-        [DataMember]
-        public int IcsmSid { get; set; }
 
         /// <summary>
         /// дБм
@@ -59,6 +59,6 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public MaskElements[] MaskBW { get; set; }
+        public ElementsMask[] BWMask { get; set; }
     }
 }

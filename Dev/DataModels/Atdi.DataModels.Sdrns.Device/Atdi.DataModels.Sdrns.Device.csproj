@@ -41,9 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\DeviceCommandResult.cs" />
+    <Compile Include="Command\DeviceCommand.cs" />
+    <Compile Include="Results\BandwidthMeasResult.cs" />
+    <Compile Include="Results\FrequencySample.cs" />
+    <Compile Include="Results\GeneralMeasResult.cs" />
+    <Compile Include="Results\LevelMeasResult.cs" />
+    <Compile Include="Results\MeasResults.cs" />
+    <Compile Include="Results\StationMeasResult.cs" />
     <Compile Include="Sensors\RegisteredSensor.cs" />
     <Compile Include="Stations\StationLicenseInfo.cs" />
-    <Compile Include="Stations\MaskElements.cs" />
+    <Compile Include="Stations\ElementsMask.cs" />
     <Compile Include="Stations\MeasuredStation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensors\AntennaPattern.cs" />

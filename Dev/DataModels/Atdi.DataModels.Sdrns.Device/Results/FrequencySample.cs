@@ -8,57 +8,51 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class MeasuredStation
+    public class FrequencySample
     {
         /// <summary>
-        /// Идентификатор станции
+        /// 
         /// </summary>
         [DataMember]
-        public string StationId { get; set; }
+        public int Id { get; set; }
+
+        /// <summary>
+        /// MHz
+        /// </summary>
+        [DataMember]
+        public float Freq { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DataMember]
-        public string GlobalSid { get; set; }
+        public float LeveldBm { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DataMember]
-        public StationOwner Owner { get; set; }
+        public float LeveldBmkVm { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DataMember]
-        public StationSite Site { get; set; }
+        public float LevelMindBm { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DataMember]
-        public StationSector[] Sectors { get; set; }
+        public float LevelMaxdBm { get; set; }
 
         /// <summary>
-        /// 
+        /// в процентах степень занятости канала
         /// </summary>
         [DataMember]
-        public string Status { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember]
-        public string Standart { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember]
-        public StationLicenseInfo License { get; set; }
+        public float OccupationPt { get; set; }
     }
 }

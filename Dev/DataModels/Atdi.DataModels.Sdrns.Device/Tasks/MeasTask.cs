@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public int Id { get; set; }
+        public string TaskId { get; set; }
 
         /// <summary>
         /// The instance name of the SDRN Server that puts the task on measurement

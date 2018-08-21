@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     [DataContract(Namespace = Specification.Namespace)]
-    public class MaskElements
+    public class ElementsMask
     {
         /// <summary>
         /// dB, например -3, - 30, -60

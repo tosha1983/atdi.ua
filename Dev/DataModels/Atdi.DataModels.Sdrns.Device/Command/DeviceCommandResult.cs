@@ -11,37 +11,25 @@ namespace Atdi.DataModels.Sdrns.Device
     /// 
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class MeasuredStation
+    public class DeviceCommandResult
     {
         /// <summary>
-        /// Идентификатор станции
-        /// </summary>
-        [DataMember]
-        public string StationId { get; set; }
-
-        /// <summary>
         /// 
         /// </summary>
         [DataMember]
-        public string GlobalSid { get; set; }
+        public string CommandId { get; set; }
 
         /// <summary>
-        /// 
+        /// Name
         /// </summary>
         [DataMember]
-        public StationOwner Owner { get; set; }
+        public string SensorName { get; set; }
 
         /// <summary>
-        /// 
+        /// Technical ID
         /// </summary>
         [DataMember]
-        public StationSite Site { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember]
-        public StationSector[] Sectors { get; set; }
+        public string EquipmentTechId { get; set; }
 
         /// <summary>
         /// 
@@ -53,12 +41,17 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public string Standart { get; set; }
+        public string CustTxt1 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public DateTime? CustData1 { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DataMember]
-        public StationLicenseInfo License { get; set; }
+        public double? CustNbr1 { get; set; }
     }
 }
