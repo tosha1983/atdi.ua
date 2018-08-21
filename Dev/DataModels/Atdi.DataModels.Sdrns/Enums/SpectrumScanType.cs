@@ -5,24 +5,24 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Device
+namespace Atdi.DataModels.Sdrns
 {
     /// <summary>
-    /// Directional of antenna
+    /// Type of spectrum
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public enum AntennaDirectional
+    public enum SpectrumScanType
     {
         /// <summary>
         /// 
         /// </summary>
         [EnumMember]
-        Directional,
+        RealTime,
 
         /// <summary>
         /// 
         /// </summary>
         [EnumMember]
-        NotDirectional
+        Sweep
     }
 }
