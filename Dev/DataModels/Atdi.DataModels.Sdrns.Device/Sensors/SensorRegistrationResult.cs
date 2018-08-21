@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device.Sensors
     /// Represents sensor for measurement. Includes administrative and technical data.
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class RegisteredSensor
+    public class SensorRegistrationResult
     {
         /// <summary>
         /// Id
@@ -36,5 +36,17 @@ namespace Atdi.DataModels.Sdrns.Device.Sensors
         /// </summary>
         [DataMember]
         public string EquipmentTechId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public string Status { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public string Message { get; set; }
     }
 }

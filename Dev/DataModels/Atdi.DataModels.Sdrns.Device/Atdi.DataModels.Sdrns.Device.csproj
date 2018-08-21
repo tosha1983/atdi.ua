@@ -49,7 +49,8 @@
     <Compile Include="Results\LevelMeasResult.cs" />
     <Compile Include="Results\MeasResults.cs" />
     <Compile Include="Results\StationMeasResult.cs" />
-    <Compile Include="Sensors\RegisteredSensor.cs" />
+    <Compile Include="Sensors\SensorUpdateResult.cs" />
+    <Compile Include="Sensors\SensorRegistrationResult.cs" />
     <Compile Include="Stations\StationLicenseInfo.cs" />
     <Compile Include="Stations\ElementsMask.cs" />
     <Compile Include="Stations\MeasuredStation.cs" />
