@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrns.Device.Sensors
         /// Id
         /// </summary>
         [DataMember]
-        public int Id { get; set; }
+        public int SensorId { get; set; }
 
         /// <summary>
         /// The instance name of the SDRN Server that puts the task on measurement
@@ -29,7 +29,7 @@ namespace Atdi.DataModels.Sdrns.Device.Sensors
         /// Name
         /// </summary>
         [DataMember]
-        public string Name { get; set; }
+        public string SensorName { get; set; }
 
         /// <summary>
         /// Technical ID
