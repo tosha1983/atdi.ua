@@ -38,6 +38,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             GC.SuppressFinalize(this);
         }
 
+        /*
         public void UpdateListMeasTask()
         {
             logger.Trace("Start procedure UpdateListMeasTask...");
@@ -67,6 +68,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             cl.Dispose();
             logger.Trace("End procedure UpdateListMeasTask.");
         }
+        */
 
         /// <summary>
         /// Добавление в очередь новых тасков
@@ -81,65 +83,28 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             int NewIdMeasTask = -1;
             try
             {
-                    if (s_out != null)
+                if (s_out != null)
+                {
+                    MeasTask Data_ = s_out;
+                    Data_.CreateAllSubTasks();
+                    List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(Data_.Id.Value)).ToList();
+                    if (mts_.Count() == 0)
                     {
-                        //lock (GlobalInit.LIST_MEAS_TASK)
-                        //UpdateListMeasTask();
-                        MeasTask Data_ = s_out;
-                        // создаём объект список подзадач типа MEAS_SUB_TASK и записываем в объект Data_
-                        Data_.CreateAllSubTasks();
-                        //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[CreateAllSubTasks] success...");
-                        // конвертируем объекты тасков с БД в список List<MEAS_TASK>
-                        //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
-                        List<MeasTask> mts_ = GlobalInit.LIST_MEAS_TASK;
-                        if (mts_.Find(r => r.Id.Value == Data_.Id.Value) == null)
-                        {
-                            if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) == null)))
-                            {
-                                Data_.UpdateStatus(ActionType);
-                            //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
-                            //Task<int> tsk = cl.SaveTaskToDB(Data_);
-                            //tsk.Wait();
-                            //NewIdMeasTask = tsk.Result;
-                            NewIdMeasTask = cl.SaveTaskToDB(Data_);
-                            //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
-                            MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                if (fnd != null)
-                                    GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
-                                else GlobalInit.LIST_MEAS_TASK.Add(Data_);
-
-                            }
-                            else {
-                                if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) != null)
-                                {
-                                    Data_ = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                    Data_.UpdateStatus(ActionType);
-                                    //cl.SaveStatusTaskToDB(Data_);
-                                    MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                    if (fnd != null)
-                                        GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
-                                    else GlobalInit.LIST_MEAS_TASK.Add(Data_);
-                                }
-                            }
-                        }
-                        else {
-                            if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) != null)
-                            {
-                                Data_ = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                Data_.UpdateStatus();
-                                //cl.SaveStatusTaskToDB(Data_);
-                                MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                if (fnd != null)
-                                    GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
-                                else GlobalInit.LIST_MEAS_TASK.Add(Data_);
-                            }
-                        }
-
+                        Data_.UpdateStatus(ActionType);
+                        NewIdMeasTask = cl.SaveTaskToDB(Data_);
                     }
-              
+                    else
+                    {
+                        Data_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(Data_.Id.Value)).ToList()[0];
+                        Data_.UpdateStatus(ActionType);
+                        cl.SaveStatusTaskToDB(Data_);
+                    }
+                }
+
             }
-            catch (Exception er) {
-                logger.Error("Error in procedure Create_New_Meas_Task: "+er.Message);
+            catch (Exception er)
+            {
+                logger.Error("Error in procedure Create_New_Meas_Task: " + er.Message);
             }
             cl.Dispose();
             ts.Dispose();
@@ -157,7 +122,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 logger.Trace("Start procedure Process_Multy_Meas...");
+                ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
                 ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+                ClassConvertTasks ts = new ClassConvertTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
                 //Task tdf = new Task(() =>
                 //{
@@ -166,15 +133,18 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
                     foreach (int SensorId in SensorIds.ToArray())
                     {
-                        Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Id.Value == SensorId);
+                        Sensor fnd_s = gsd.LoadObjectSensor(SensorId); 
                         if (fnd_s != null)
                         {
                             System.Threading.Thread tsk = new System.Threading.Thread(() =>
                             {
                                 Checked_L.Clear();
-                                if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
+                                MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
+                                //if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
+                                if ((Res != null) && (Res.Length > 0))
                                 {
-                                    MeasTask M = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
+                                    //MeasTask M = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
+                                    MeasTask M = Res[0]; //GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
                                     int Id_Old = M.Id.Value;
                                     MeasSubTask[] msbd_old = M.MeasSubTasks;
                                     M = mt;
@@ -222,13 +192,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
 
                                     M.MeasSubTasks = msbd_old;
-                                    MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
-                                    if (fnd != null)
-                                        GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
-                                    else GlobalInit.LIST_MEAS_TASK.Add(M);
+                                    //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
+                                    //if (fnd != null)
+                                        //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
+                                    //else GlobalInit.LIST_MEAS_TASK.Add(M);
                                     if (ActionType == "Del")
                                     {
-                                        GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
+                                        cl.SetHistoryStatusTasksInDB(M,"Z");
+                                        //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
                                     }
                                 }
 

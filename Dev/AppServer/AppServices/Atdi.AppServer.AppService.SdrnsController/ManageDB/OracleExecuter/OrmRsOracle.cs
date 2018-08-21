@@ -43,76 +43,88 @@ namespace Atdi.Oracle.DataAccess
 
         public void Init(OracleDataAccess rs)
         {
-            isNew = false;
-            AllPropertiesColumns = new List<OracleParameter>();
-            params_val = null;
-            Clear(); oracleData = rs;
-            if (oracleData == null) throw new Exception("Recordset cannot be opened without OracleDataAccess");
-            paramsOracle = new List<OracleParameter>();
-            yyy = (Yyy)rs;
-            AllPropertiesColumns = yyy.getAllFields;
-            AllFields = new List<string>();
-            if (yyy.FormatValue == "*")
+            try
             {
-                AllFields = AllPropertiesColumns.Select(t => t.SourceColumn).ToList();
-            }
-            else
-            {
-                if (yyy.FormatValue == null) { yyy.FormatValue = "*"; AllFields = AllPropertiesColumns.Select(t => t.SourceColumn).ToList(); }
+                isNew = false;
+                AllPropertiesColumns = new List<OracleParameter>();
+                params_val = null;
+                Clear(); oracleData = rs;
+                if (oracleData == null) throw new Exception("Recordset cannot be opened without OracleDataAccess");
+                paramsOracle = new List<OracleParameter>();
+                yyy = (Yyy)rs;
+                AllPropertiesColumns = yyy.getAllFields;
+                AllFields = new List<string>();
+                if (yyy.FormatValue == "*")
+                {
+                    AllFields = AllPropertiesColumns.Select(t => t.SourceColumn).ToList();
+                }
                 else
                 {
-                    // в таком варианте на данный момент не работает,
-                    // необходимо разобраться с индексами
-                    string[] val = yyy.FormatValue.Split(new char[] { ',' });
-                    AllFields = val.ToList();
+                    if (yyy.FormatValue == null) { yyy.FormatValue = "*"; AllFields = AllPropertiesColumns.Select(t => t.SourceColumn).ToList(); }
+                    else
+                    {
+                        // в таком варианте на данный момент не работает,
+                        // необходимо разобраться с индексами
+                        string[] val = yyy.FormatValue.Split(new char[] { ',' });
+                        AllFields = val.ToList();
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(yyy.Order))
+                {
+                    string temp = yyy.Order;
+                    int idx_start = temp.IndexOf("[");
+                    int idx_end = temp.IndexOf("]");
+                    string NameColumnOrder = temp.Substring(idx_start + 1, idx_end - idx_start - 1);
+                    if (yyy.Order.Contains("DESC")) Order = NameColumnOrder + " DESC";
+                    if (yyy.Order.Contains("ASC")) Order = NameColumnOrder + " ASC";
                 }
             }
-
-            if (!string.IsNullOrEmpty(yyy.Order))
-            {
-                string temp = yyy.Order;
-                int idx_start = temp.IndexOf("[");
-                int idx_end = temp.IndexOf("]");
-                string NameColumnOrder = temp.Substring(idx_start + 1, idx_end - idx_start - 1);
-                if (yyy.Order.Contains("DESC")) Order = NameColumnOrder + " DESC";
-                if (yyy.Order.Contains("ASC")) Order = NameColumnOrder + " ASC";
-            }
+            catch (Exception) { }
         }
 
         public void OpenRs(OracleDataAccess oracleData)
         {
-            isNew = false;
-            index = 0;
-            cnt = 0;
-            params_val = oracleData.GetValues(AllFields, yyy.TableName, yyy.Filter, Order);
-            List<object[]> AllObjLObj = new List<object[]>();
-            List<object> LObj = new List<object>();
-            foreach (OracleParameter[] v in params_val.ToList())
+            try
             {
-                LObj = new List<object>();
-                foreach (OracleParameter x in v) LObj.Add(x.Value);
-                AllObjLObj.Add(LObj.ToArray());
+                isNew = false;
+                index = 0;
+                cnt = 0;
+                params_val = oracleData.GetValues(AllFields, yyy.TableName, yyy.Filter, Order);
+                List<object[]> AllObjLObj = new List<object[]>();
+                List<object> LObj = new List<object>();
+                foreach (OracleParameter[] v in params_val.ToList())
+                {
+                    LObj = new List<object>();
+                    foreach (OracleParameter x in v) LObj.Add(x.Value);
+                    AllObjLObj.Add(LObj.ToArray());
+                }
+                yyy.allvalc = AllObjLObj.ToArray();
+                if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
             }
-            yyy.allvalc = AllObjLObj.ToArray();
-            if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
+            catch (Exception) { }
         }
 
         public void OpenRs()
         {
-            isNew = false;
-            index = 0;
-            cnt = 0;
-            params_val = oracleData.GetValues(AllFields, yyy.TableName, yyy.Filter, Order);
-            List<object[]> AllObjLObj = new List<object[]>();
-            List<object> LObj = new List<object>();
-            foreach (OracleParameter[] v in params_val.ToList())
+            try
             {
-                LObj = new List<object>();
-                foreach (OracleParameter x in v) LObj.Add(x.Value);
-                AllObjLObj.Add(LObj.ToArray());
+                isNew = false;
+                index = 0;
+                cnt = 0;
+                params_val = oracleData.GetValues(AllFields, yyy.TableName, yyy.Filter, Order);
+                List<object[]> AllObjLObj = new List<object[]>();
+                List<object> LObj = new List<object>();
+                foreach (OracleParameter[] v in params_val.ToList())
+                {
+                    LObj = new List<object>();
+                    foreach (OracleParameter x in v) LObj.Add(x.Value);
+                    AllObjLObj.Add(LObj.ToArray());
+                }
+                yyy.allvalc = AllObjLObj.ToArray();
+                if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
             }
-            yyy.allvalc = AllObjLObj.ToArray();
-            if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
+            catch (Exception) { }
         }
 
         public bool IsEOF()
@@ -123,8 +135,12 @@ namespace Atdi.Oracle.DataAccess
 
         public void MoveNext()
         {
-            ++index;
-            if ((index >= 0) && (index < cnt)) yyy.valc = yyy.allvalc[index];
+            try
+            {
+                ++index;
+                if ((index >= 0) && (index < cnt)) yyy.valc = yyy.allvalc[index];
+            }
+            catch (Exception) { }
         }
 
         public int GetCount()
@@ -134,251 +150,291 @@ namespace Atdi.Oracle.DataAccess
 
         public void New()
         {
-            isNew = true;
-            yyy.valc = new object[AllPropertiesColumns.Count];
+            try
+            {
+                isNew = true;
+                yyy.valc = new object[AllPropertiesColumns.Count];
+            }
+            catch (Exception) { }
         }
 
         public bool DeleteRecord()
         {
-            int ID_VALUE = -1;
-            int i = 0;
-            foreach (string val in AllFields)
+            try
             {
-                foreach (OracleParameter x in AllPropertiesColumns)
+                int ID_VALUE = -1;
+                int i = 0;
+                foreach (string val in AllFields)
                 {
-                    if (x.SourceColumn == val)
+                    foreach (OracleParameter x in AllPropertiesColumns)
                     {
-                        if (x.SourceColumn == "\"ID\"")
+                        if (x.SourceColumn == val)
                         {
-                            ID_VALUE = (int)yyy.valc[i];
-                            break;
+                            if (x.SourceColumn == "\"ID\"")
+                            {
+                                ID_VALUE = (int)yyy.valc[i];
+                                break;
+                            }
                         }
                     }
+                    if (ID_VALUE > -1) break;
                 }
-                if (ID_VALUE > -1) break;
+                return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE);
             }
-            return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE);
-        }
+            catch (Exception)
+            {
+                return false;
+            }
+}
 
         public int? GetNextId(string sequenceName)
         {
-            oracleData = new OracleDataAccess();
-            return oracleData.GetNextId(sequenceName);
+            try
+            {
+                oracleData = new OracleDataAccess();
+                return oracleData.GetNextId(sequenceName);
+            }
+            catch (Exception) { return null;  }
+        }
+
+        public void BeginTransaction()
+        {
+            oracleData.BeginTransaction();
+        }
+
+        public void CloseTransaction()
+        {
+            oracleData.CloseTransaction();
         }
 
         public int? UpdateRecord()
         {
-            int ID_VALUE = -1;
-            int i = 0;
-            paramsOracle.Clear();
-            foreach (string val in AllFields)
+            try
             {
-                foreach (OracleParameter x in AllPropertiesColumns)
+                int ID_VALUE = -1;
+                int i = 0;
+                paramsOracle.Clear();
+                foreach (string val in AllFields)
                 {
-                    if (x.SourceColumn == val)
+                    foreach (OracleParameter x in AllPropertiesColumns)
                     {
-                        if (x.SourceColumn != "\"ID\"")
+                        if (x.SourceColumn == val)
                         {
-                            if (yyy.valc[i] != null)
+                            if (x.SourceColumn != "\"ID\"")
                             {
-                                paramsOracle.Add(new OracleParameter()
+                                if (yyy.valc[i] != null)
                                 {
-                                    SourceColumn = val,
-                                    ParameterName = ":" + val,
-                                    OracleDbType = x.OracleDbType,
-                                    Direction = System.Data.ParameterDirection.Input,
-                                    Value = yyy.valc[i]
-                                });
+                                    paramsOracle.Add(new OracleParameter()
+                                    {
+                                        SourceColumn = val,
+                                        ParameterName = ":" + val,
+                                        OracleDbType = x.OracleDbType,
+                                        Direction = System.Data.ParameterDirection.Input,
+                                        Value = yyy.valc[i]
+                                    });
+                                }
+                                i++;
+                                break;
                             }
-                            i++;
-                            break;
-                        }
-                        else
-                        {
-                            ID_VALUE = (int)yyy.valc[i];
-                            i++;
+                            else
+                            {
+                                ID_VALUE = (int)yyy.valc[i];
+                                i++;
+                            }
                         }
                     }
                 }
+                return oracleData.UpdateRecord(paramsOracle, yyy.GetTableName(), ID_VALUE);
             }
-            return oracleData.UpdateRecord(paramsOracle, yyy.GetTableName(), ID_VALUE);
+            catch (Exception) { return null; }
         }
 
         public int? InsertRecord()
         {
             int? ID = null;
-            int i = 0;
-            paramsOracle.Clear();
-            foreach (string val in AllFields)
+            try
             {
-                foreach (OracleParameter x in AllPropertiesColumns)
+                int i = 0;
+                paramsOracle.Clear();
+                foreach (string val in AllFields)
                 {
-                    if (x.SourceColumn == val)
+                    foreach (OracleParameter x in AllPropertiesColumns)
                     {
-                        if (x.SourceColumn != "\"ID\"")
+                        if (x.SourceColumn == val)
                         {
-                            if (yyy.valc[i] != null)
+                            if (x.SourceColumn != "\"ID\"")
                             {
-                                paramsOracle.Add(new OracleParameter()
+                                if (yyy.valc[i] != null)
                                 {
-                                    SourceColumn = val,
-                                    ParameterName = ":" + val,
-                                    OracleDbType = x.OracleDbType,
-                                    Direction = System.Data.ParameterDirection.Input,
-                                    Value = yyy.valc[i]
-                                });
+                                    paramsOracle.Add(new OracleParameter()
+                                    {
+                                        SourceColumn = val,
+                                        ParameterName = ":" + val,
+                                        OracleDbType = x.OracleDbType,
+                                        Direction = System.Data.ParameterDirection.Input,
+                                        Value = yyy.valc[i]
+                                    });
+                                }
+                                i++;
+                                break;
                             }
-                            i++;
-                            break;
-                        }
-                        else
-                        {
-                            i++;
+                            else
+                            {
+                                i++;
+                            }
                         }
                     }
                 }
+                ID = oracleData.InsertRecord(paramsOracle, yyy.GetTableName());
             }
-
-            ID = oracleData.InsertRecord(paramsOracle, yyy.GetTableName());
+            catch (Exception) { return null; }
             return ID;
         }
 
         public bool InsertBulkRecords(List<Yyy> ListY)
         {
             bool isSuccess = false;
-
-            List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
-            paramsOracle = new List<OracleParameter>();
-            int r = 1;
-            foreach (Yyy vn in ListY)
+            try
             {
-                AllPropertiesColumns = vn.getAllFields;
-                int i = 0;
-                //paramsOracle.Clear();
-                foreach (string val in AllFields)
+                List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
+                paramsOracle = new List<OracleParameter>();
+                int r = 1;
+                foreach (Yyy vn in ListY)
                 {
-                    foreach (OracleParameter x in AllPropertiesColumns)
+                    AllPropertiesColumns = vn.getAllFields;
+                    int i = 0;
+                    //paramsOracle.Clear();
+                    foreach (string val in AllFields)
                     {
-                        if (x.SourceColumn == val)
+                        foreach (OracleParameter x in AllPropertiesColumns)
                         {
-                            if (x.SourceColumn != "\"ID\"")
+                            if (x.SourceColumn == val)
                             {
-                                if (x.Value != null)
+                                if (x.SourceColumn != "\"ID\"")
                                 {
-                                   string valr = val.Insert(val.Length - 1, "_" + r.ToString());
-                                    paramsOracle.Add(new OracleParameter()
+                                    if (x.Value != null)
                                     {
-                                        SourceColumn = val,
-                                        ParameterName = ":" + valr,
-                                        OracleDbType = x.OracleDbType,
-                                        Direction = System.Data.ParameterDirection.Input,
-                                        Value = x.Value
-                                    });
+                                        string valr = val.Insert(val.Length - 1, "_" + r.ToString());
+                                        paramsOracle.Add(new OracleParameter()
+                                        {
+                                            SourceColumn = val,
+                                            ParameterName = ":" + valr,
+                                            OracleDbType = x.OracleDbType,
+                                            Direction = System.Data.ParameterDirection.Input,
+                                            Value = x.Value
+                                        });
+                                    }
+                                    i++;
+                                    break;
                                 }
-                                i++;
-                                break;
-                            }
-                            else
-                            {
-                                i++;
+                                else
+                                {
+                                    i++;
+                                }
                             }
                         }
                     }
+                    r++;
                 }
-                r++;
+                isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count);
             }
-            isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count);
+            catch (Exception) { }
             return isSuccess;
         }
 
         public bool InsertBulkRecords(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter)
         {
             bool isSuccess = false;
-            string tableName1 = "";
-            List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
-            paramsOracle = new List<OracleParameter>();
-            paramsOracle2 = new List<OracleParameter>();
-            int r = 1;
-            foreach (Yyy vn in ListY1)
+            try
             {
-                tableName1 = vn.GetTableName();
-                AllPropertiesColumns = vn.getAllFields;
-                int i = 0;
-                //paramsOracle.Clear();
-                foreach (string val in AllFields)
-                {
-                    foreach (OracleParameter x in AllPropertiesColumns)
-                    {
-                        if (x.SourceColumn == val)
-                        {
-                            if (x.SourceColumn != "\"ID\"")
-                            {
-                                if (x.Value != null)
-                                {
-                                    string valr = val.Insert(val.Length - 1, "_" + r.ToString());
-                                    paramsOracle.Add(new OracleParameter()
-                                    {
-                                        SourceColumn = val,
-                                        ParameterName = ":" + valr,
-                                        OracleDbType = x.OracleDbType,
-                                        Direction = System.Data.ParameterDirection.Input,
-                                        Value = x.Value
-                                    });
-                                }
-                                i++;
-                                break;
-                            }
-                            else
-                            {
-                                i++;
-                            }
-                        }
-                    }
-                }
-                r++;
-            }
-            string tableName2 = "";
-            paramsOracle2.AddRange(oracleParameter);
-            foreach (Yyy vn in ListY2)
-            {
-                tableName2 = vn.GetTableName();
-                AllPropertiesColumns2 = vn.getAllFields;
-                int i = 0;
-                //paramsOracle.Clear();
 
-                foreach (string val in AllFields2)
+                string tableName1 = "";
+                List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
+                paramsOracle = new List<OracleParameter>();
+                paramsOracle2 = new List<OracleParameter>();
+                int r = 1;
+                foreach (Yyy vn in ListY1)
                 {
-                    foreach (OracleParameter x in AllPropertiesColumns2)
+                    tableName1 = vn.GetTableName();
+                    AllPropertiesColumns = vn.getAllFields;
+                    int i = 0;
+                    //paramsOracle.Clear();
+                    foreach (string val in AllFields)
                     {
-                        if (x.SourceColumn == val)
+                        foreach (OracleParameter x in AllPropertiesColumns)
                         {
-                            if (x.SourceColumn != "\"ID\"")
+                            if (x.SourceColumn == val)
                             {
-                                if (x.Value != null)
+                                if (x.SourceColumn != "\"ID\"")
                                 {
-                                    string valr = val.Insert(val.Length - 1, "_" + r.ToString());
-                                    paramsOracle2.Add(new OracleParameter()
+                                    if (x.Value != null)
                                     {
-                                        SourceColumn = val,
-                                        ParameterName = ":" + valr,
-                                        OracleDbType = x.OracleDbType,
-                                        Direction = System.Data.ParameterDirection.Input,
-                                        Value = x.Value
-                                    });
+                                        string valr = val.Insert(val.Length - 1, "_" + r.ToString());
+                                        paramsOracle.Add(new OracleParameter()
+                                        {
+                                            SourceColumn = val,
+                                            ParameterName = ":" + valr,
+                                            OracleDbType = x.OracleDbType,
+                                            Direction = System.Data.ParameterDirection.Input,
+                                            Value = x.Value
+                                        });
+                                    }
+                                    i++;
+                                    break;
                                 }
-                                i++;
-                                break;
-                            }
-                            else
-                            {
-                                i++;
+                                else
+                                {
+                                    i++;
+                                }
                             }
                         }
                     }
+                    r++;
                 }
-                r++;
+                string tableName2 = "";
+                paramsOracle2.AddRange(oracleParameter);
+                foreach (Yyy vn in ListY2)
+                {
+                    tableName2 = vn.GetTableName();
+                    AllPropertiesColumns2 = vn.getAllFields;
+                    int i = 0;
+                    //paramsOracle.Clear();
+
+                    foreach (string val in AllFields2)
+                    {
+                        foreach (OracleParameter x in AllPropertiesColumns2)
+                        {
+                            if (x.SourceColumn == val)
+                            {
+                                if (x.SourceColumn != "\"ID\"")
+                                {
+                                    if (x.Value != null)
+                                    {
+                                        string valr = val.Insert(val.Length - 1, "_" + r.ToString());
+                                        paramsOracle2.Add(new OracleParameter()
+                                        {
+                                            SourceColumn = val,
+                                            ParameterName = ":" + valr,
+                                            OracleDbType = x.OracleDbType,
+                                            Direction = System.Data.ParameterDirection.Input,
+                                            Value = x.Value
+                                        });
+                                    }
+                                    i++;
+                                    break;
+                                }
+                                else
+                                {
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                    r++;
+                }
+                isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter);
             }
-            isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter);
+            catch (Exception) { }
             return isSuccess;
         }
     }

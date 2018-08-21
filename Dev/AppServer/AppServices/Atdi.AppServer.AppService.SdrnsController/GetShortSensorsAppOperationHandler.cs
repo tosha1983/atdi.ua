@@ -40,7 +40,13 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             Logger.Trace(this, options, operationContext);
             SensorListSDRNS senLst = new SensorListSDRNS(Logger);
             List<ShortSensor> LstS = new List<ShortSensor>();
-            LstS = senLst.CreateShortSensorList();
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                LstS = senLst.CreateShortSensorList();
+            });
+            th.Start();
+            th.IsBackground = true;
+            th.Join();
             return LstS.ToArray();
         }
     }

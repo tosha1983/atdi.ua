@@ -8,6 +8,8 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
+
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -30,7 +32,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override Sensor Handle(GetSensorAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
-            Sensor sens = GlobalInit.SensorListSDRNS.Find(t=>t.Id.Value==options.SensorId.Value);
+            ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
+            Sensor sens = gsd.LoadObjectSensor(options.SensorId.Value);
             return sens;
         }
     }

@@ -8,7 +8,7 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
-
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -30,10 +30,15 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         public override ShortMeasTask Handle(GetShortMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
+            ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
+            ClassConvertTasks ts = new ClassConvertTasks(Logger);
             ShortMeasTask Res = new ShortMeasTask();
-            if (GlobalInit.LIST_MEAS_TASK != null) {
-                if (GlobalInit.LIST_MEAS_TASK.Count() > 0) {
-                    MeasTask mts = GlobalInit.LIST_MEAS_TASK.Find(t => t.Status != "Z" && t.Id.Value == options.TaskId.Value);
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                MeasTask[] ResMeasTasks = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(options.TaskId.Value));
+                if (ResMeasTasks != null) {
+                if (ResMeasTasks.Length > 0) {
+                    MeasTask mts = ResMeasTasks.ToList().Find(t => t.Status != "Z" && t.Id.Value == options.TaskId.Value);
                     if (mts != null) {
                             var SMT = new ShortMeasTask { CreatedBy = mts.CreatedBy, DateCreated = mts.DateCreated, ExecutionMode = mts.ExecutionMode, Id = mts.Id, MaxTimeBs = mts.MaxTimeBs, Name = mts.Name, OrderId = mts.OrderId.GetValueOrDefault(), Prio = mts.Prio, ResultType = mts.ResultType, Status = mts.Status, Task = mts.Task, Type = mts.Type };
                             if (mts.MeasDtParam != null) SMT.TypeMeasurements = mts.MeasDtParam.TypeMeasurements;
@@ -43,6 +48,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         Res = null;
                 }
             }
+            });
+            th.Start();
+            th.IsBackground = true;
+            th.Join();
             return Res;
         }
     }

@@ -22,7 +22,6 @@ using XMLLibrary;
 using Atdi.AppServer.AppService.SdrnsController;
 using Atdi.SDNRS.AppServer.ManageDB;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
-using Atdi.SDR.Server.Utils;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Platform.AppComponent;
 using System.Configuration;
@@ -57,6 +56,7 @@ namespace Atdi.AppServer.RunServices
             ///
             // Начальная инициализация (загрузка конфигурационных данных)
             
+            /*
             System.Threading.Thread tt = new System.Threading.Thread(() => {
                 System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Normal;
                     if (GlobalInit.LST_MeasurementResults.Count == 0) {
@@ -70,36 +70,26 @@ namespace Atdi.AppServer.RunServices
             });
             tt.Start();
             tt.Join();
-            
+            */
 
-
+            /*
               System.Threading.Thread tsg = new System.Threading.Thread(() => {
                 ClassesDBGetTasks cl = new ClassesDBGetTasks(this._logger);
-
                 ClassConvertTasks ts = new ClassConvertTasks(_logger);
                 MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
                 List<MeasTask> mts_ = task.ToList();
-                //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
-                foreach (MeasTask mtsd in mts_.ToArray()) {
-                    if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mtsd.Id.Value) == null))) {
-                        MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mtsd.Id.Value);
-                        if (fnd != null)
-                            GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, mtsd);
-                        else GlobalInit.LIST_MEAS_TASK.Add(mtsd);
-
-                    }
-                }
                 cl.Dispose();
                 ts.Dispose();
             });
             tsg.Start();
             tsg.Join();
+            */
 
 
-
-           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(_logger); Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-           ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR(this._logger);
-           sc.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasTaskStatus);
+           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(_logger);
+           Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+           //ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR(this._logger);
+           //sc.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasTaskStatus);
            ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
            ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
