@@ -30,9 +30,16 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         public override ShortSensor Handle(GetShortSensorAppOperationOptions options, IAppOperationContext operationContext)
         {
+            ShortSensor LstS = new ShortSensor();
             SensorListSDRNS senLst = new SensorListSDRNS(Logger);
-            ShortSensor LstS = senLst.CreateShortSensorListBySensorId(options.SensorId.Value);
-            Logger.Trace(this, options, operationContext);
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+               LstS = senLst.CreateShortSensorListBySensorId(options.SensorId.Value);
+               Logger.Trace(this, options, operationContext);
+            });
+            th.Start();
+            th.IsBackground = true;
+            th.Join();
             return LstS;
         }
     }

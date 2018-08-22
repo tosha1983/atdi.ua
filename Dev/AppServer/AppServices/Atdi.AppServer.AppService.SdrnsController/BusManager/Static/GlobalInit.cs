@@ -28,23 +28,13 @@ namespace Atdi.SDNRS.AppServer.BusManager
     public static class GlobalInit
     {
         #region Lists_Global_Objects
-        // List all task (for service1)
-        public static List<MeasTask> LIST_MEAS_TASK = new List<MeasTask>();
-        // List all task (for service5)
-        public static List<MeasSdrResults> MEAS_SDR_RESULTS = new List<MeasSdrResults>();
-        // List all MeasurementResults
-        public static List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
-        // List all results
-        // Список активных объектов SENSOR
-        public static List<Sensor> SensorListSDRNS = new List<Sensor>();
-        // Перечень всех доступных устройств SDR
-        // имя очереди для отправки списка наименований устройств в AppServer
-        public static string DevicesAllList = "";
-        // Список объектов, содержащих сведения о текущем состоянии активности каждого сенсора
-        public static List<Mdx> Lst_timers = new List<Mdx>();
+        //public static List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
         #endregion
 
 
+        
+        // Список объектов, содержащих сведения о текущем состоянии активности каждого сенсора
+        public static List<Mdx> Lst_timers = new List<Mdx>();
         public static string MainRabbitMQServices = BaseXMLConfiguration.xml_conf._MainRabbitMQServices;
         // Значение по умолчанию для значения из XML (MEAS_TIME_PARAM_LIST.PER_INTERVAL = 300 сек)
         // Данное значение использувется если MEAS_TIME_PARAM_LIST.PER_INTERVAL = 0 !!!
@@ -53,6 +43,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
 
         #region Template_name_queue
+        public static string DevicesAllList = "";
         public static string Template_SENSORS_Main_List_APPServer = "";
         public static string Template_SENSORS_Main_List_SDR = "";
         public static string Template_SENSORS_Main_List_Status_APPServer = "";
@@ -141,7 +132,11 @@ namespace Atdi.SDNRS.AppServer.BusManager
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
             Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();
-            oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+            try
+            {
+                oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+            }
+            catch (Exception) { }
         }
 
     }

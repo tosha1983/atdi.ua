@@ -8,6 +8,7 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 
 namespace Atdi.AppServer.AppServices.SdrnsController
@@ -33,18 +34,45 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <returns></returns>
         public override MeasTask Handle(GetMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
-            MeasTask Res = null;
-            if (GlobalInit.LIST_MEAS_TASK != null) {
-                if (GlobalInit.LIST_MEAS_TASK.Count() > 0) {
-                    MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Status != "Z" && t.Id.Value== options.TaskId.Value);
-                    if (tsk != null)
-                        Res = tsk;
-                    else
-                        Res = null;
+            MeasTask val = null;
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
+                ClassConvertTasks ts = new ClassConvertTasks(Logger);
+                MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(options.TaskId.Value));
+                if (Res != null)
+                {
+                    if (Res.Count() > 0)
+                    {
+                        List<MeasTask> tsk = Res.ToList().FindAll(t => t.Status != "Z");
+                        if (tsk != null)
+                            val = tsk[0];
+                        else
+                            val = null;
+                        if (tsk != null)
+                        {
+                            if (tsk.Count == 0) val = null;
+                        }
+                    }
                 }
-            }
-            Logger.Trace(this, options, operationContext);
-            return Res;
+                /*
+                MeasTask Res = null;
+                if (GlobalInit.LIST_MEAS_TASK != null) {
+                    if (GlobalInit.LIST_MEAS_TASK.Count() > 0) {
+                        MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Status != "Z" && t.Id.Value== options.TaskId.Value);
+                        if (tsk != null)
+                            Res = tsk;
+                        else
+                            Res = null;
+                    }
+                }
+                */
+                Logger.Trace(this, options, operationContext);
+            });
+            thread.Start();
+            thread.IsBackground = true;
+            thread.Join();
+            return val;
         }
     }
 }

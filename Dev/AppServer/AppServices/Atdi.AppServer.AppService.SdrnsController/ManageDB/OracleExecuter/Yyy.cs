@@ -13,52 +13,66 @@ namespace Atdi.Oracle.DataAccess
         public object[] valc;
         public string TableName = "";
         public List<OracleParameter> getAllFields = new List<OracleParameter>();
-        public Yyy getYyy(int idx) { return (Yyy)valc[idx]; }
-        public string getString(int idx) { return valc[idx] as string; }
+        public Yyy getYyy(int idx) { try { return (Yyy)valc[idx]; } catch (Exception) { return new Yyy(); } }
+        public string getString(int idx) { try { return valc[idx] as string; } catch (Exception) { return ""; }}
         public int? getInt(int idx) {
             int? val = null;
-            if ((valc[idx] != null) && (valc[idx] != DBNull.Value)) val = Convert.ToInt32(valc[idx]); 
+            try
+            { 
+             if ((valc[idx] != null) && (valc[idx] != DBNull.Value)) val = Convert.ToInt32(valc[idx]);
+            } catch (Exception) { return null; }
             return val;
         }
         public double? getDouble(int idx) {
             double? val = null;
-            if ((valc[idx] != null) && (valc[idx] != DBNull.Value)) val = Convert.ToDouble(valc[idx]); 
+            try
+            {
+               if ((valc[idx] != null) && (valc[idx] != DBNull.Value)) val = Convert.ToDouble(valc[idx]);
+            } catch (Exception) { return null; }
             return val;
         }
         public DateTime? getDateTime(int idx)
         {
             DateTime? val = new DateTime?();
-            object o = valc[idx];
-            if ((o == null) || (o== DBNull.Value))
+            try
             {
-                val = new DateTime?();
+                object o = valc[idx];
+                if ((o == null) || (o == DBNull.Value))
+                {
+                    val = new DateTime?();
+                }
+                else
+                {
+                    val = valc[idx] as DateTime?;
+                }
             }
-            else
-            {
-                val = valc[idx] as DateTime?;
-            }
+            catch (Exception) { return null; }
             return val;
         }
-        public Guid? getGuid(int idx) { return valc[idx] as Guid?; }
-        public object getObject(int idx) { return valc[idx] as object; }
-        public void setYyy(int idx, Yyy value) { valc[idx] = value; }
+        public Guid? getGuid(int idx) { try { return valc[idx] as Guid?; } catch (Exception) { return null; } }
+        public object getObject(int idx) { try { return valc[idx] as object; } catch (Exception) { return null; } }
+        public void setYyy(int idx, Yyy value) { try { valc[idx] = value; } catch (Exception) {  } }
 
         public void setString(int idx, int maxlen, string value)
         {
-            if (value == null) valc[idx] = "";
-            else
+            try
             {
-                int i = value.IndexOf('\0');
-                if (i >= 0) value = value.Substring(0, i);
-                if (value.Length > maxlen) { valc[idx] = value.Substring(0, maxlen); }
-                else valc[idx] = value;
+                if (value == null) valc[idx] = "";
+                else
+                {
+                    int i = value.IndexOf('\0');
+                    if (i >= 0) value = value.Substring(0, i);
+                    if (value.Length > maxlen) { valc[idx] = value.Substring(0, maxlen); }
+                    else valc[idx] = value;
+                }
             }
+            catch (Exception) { }
         }
-        public void setInt(int idx, int? value) { valc[idx] = value; }
-        public void setDouble(int idx, double? value) { valc[idx] = value; }
-        public void setDateTime(int idx, DateTime? value) { valc[idx] = value; }
-        public void setGuid(int idx, Guid? value) { valc[idx] = value; }
-        public void setObject(int idx, object ob) { valc[idx] = ob; }
+        public void setInt(int idx, int? value) { try { valc[idx] = value; } catch (Exception) { } }
+        public void setDouble(int idx, double? value) { try { valc[idx] = value; } catch (Exception) { } }
+        public void setDateTime(int idx, DateTime? value) { try { valc[idx] = value; } catch (Exception) { } }
+        public void setGuid(int idx, Guid? value) { try { valc[idx] = value; } catch (Exception) { } }
+        public void setObject(int idx, object ob) { try { valc[idx] = ob; } catch (Exception) { } }
 
 
         public string Filter;
@@ -87,12 +101,26 @@ namespace Atdi.Oracle.DataAccess
         {
             FormatValue = value;
         }
-        public bool IsEOF() { return rs.IsEOF(); }
+        public bool IsEOF()
+        {
+            if (isConnection)
+            {
+                if (rs != null)
+                {
+                    return rs.IsEOF();
+                }
+                else return false;
+            }
+            else return false;
+        }
         public void MoveNext()
         {
             if (isConnection)
             {
-                rs.MoveNext();
+                if (rs!=null)
+                {
+                    rs.MoveNext();
+                }
             }
         }
 
@@ -191,7 +219,13 @@ namespace Atdi.Oracle.DataAccess
 
         public void SetUpdateMode()
         {
-            rs.isNew = false;
+            if (isConnection)
+            {
+                if (rs != null)
+                {
+                    rs.isNew = false;
+                }
+            }
         }
 
         public bool SaveBath(List<Yyy> ListY)
@@ -224,7 +258,10 @@ namespace Atdi.Oracle.DataAccess
         {
             if (isConnection)
             {
-                return rs.DeleteRecord();
+                if (rs != null)
+                {
+                    return rs.DeleteRecord();
+                }
             }
             return false;
         }
@@ -257,6 +294,7 @@ namespace Atdi.Oracle.DataAccess
         {
             if (isConnection)
             {
+                
                 New();
                 rs.yyy.valc = y.valc;
             }

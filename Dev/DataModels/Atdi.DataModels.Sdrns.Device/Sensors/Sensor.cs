@@ -15,22 +15,16 @@ namespace Atdi.DataModels.Sdrns.Device
     public class Sensor
     {
         /// <summary>
-        /// Id
+        /// Name
         /// </summary>
         [DataMember]
-        public int? Id { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Status
         /// </summary>
         [DataMember]
         public string Status { get; set; }
-
-        /// <summary>
-        /// Name
-        /// </summary>
-        [DataMember]
-        public string Name { get; set; }
 
         /// <summary>
         /// Administration
@@ -137,7 +131,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public Double? CustNbr1 { get; set; }
+        public double? CustNbr1 { get; set; }
 
         /// <summary>
         /// DateCreated

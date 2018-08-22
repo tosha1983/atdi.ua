@@ -9,6 +9,7 @@ using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
+using Atdi.SDNRS.AppServer.Sheduler;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -49,6 +50,11 @@ namespace Atdi.SDNRS.AppServer.BusManager
               System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     logger.Trace("Start procedure ReceiveAllSensorList...");
+                    //Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(logger);
+                    //Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+                    ClassDBGetSensor DB = new ClassDBGetSensor(logger);
+                    List<Sensor> SensorListSDRNS = DB.LoadObjectSensor();
+                    /*
                     if (GlobalInit.SensorListSDRNS.Count == 0)
                     {
                         ClassDBGetSensor DB = new ClassDBGetSensor(logger);
@@ -65,17 +71,30 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             }
                         }
                     }
-                    
-                        if (ClassStaticBus.bus.Advanced.IsConnected)
+                    */
+
+                    if (ClassStaticBus.bus.Advanced.IsConnected)
                         {
                             uint cnt = busManager.GetMessageCount(GlobalInit.Template_SENSORS_List_);
-                            for (int i=0; i< cnt; i++)
+                            List<Sensor> distinctSensors = new List<Sensor>();
+                            for (int i = 0; i < cnt; i++)
                             {
                                 var message = busManager.GetDataObject(GlobalInit.Template_SENSORS_List_);
                                 if (message != null)
                                 {
-                                    ClassDBGetSensor DB = new ClassDBGetSensor(logger);
-                                    Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
+                                    Sensor fnd_s = distinctSensors.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
+                                    if (fnd_s == null)
+                                    {
+                                        distinctSensors.Add((message as Sensor));
+                                    }
+                                }
+                            }
+                            for (int i=0; i< distinctSensors.Count; i++)
+                            {
+                                var message = distinctSensors[i];
+                                if (message != null)
+                                {
+                                    Sensor fnd_s = SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
                                     if (fnd_s == null)
                                     {
                                         bool isFindInDB = false;
@@ -91,7 +110,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                                         if (L_S[0].Equipment.TechId == (message as Sensor).Equipment.TechId)
                                                         {
                                                             isFindInDB = true;
-                                                            GlobalInit.SensorListSDRNS.Add(L_S[0]);
+                                                            //SensorListSDRNS.Add(L_S[0]);
                                                             L_S[0].Status = "A";
                                                             DB.UpdateStatusSensorWithArchive(L_S[0]);
                                                         }
@@ -107,10 +126,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                             L_S = DB.LoadObjectSensor();
                                             if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
                                             {
-                                                Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
-                                                if (fnd != null)
-                                                    GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                                else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
+                                                //Sensor fnd = SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
+                                                //if (fnd != null)
+                                                    //GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
+                                                //else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
                                             }
                                         }
                                     }
@@ -122,10 +141,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                         List<Sensor> L_S = DB.LoadObjectSensor();
                                         if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
                                         {
-                                            Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
-                                            if (fnd != null)
-                                                GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                            else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
+                                            //Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
+                                            //if (fnd != null)
+                                                //GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
+                                            //else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
                                         }
                                     }
                                     DB.Dispose();
@@ -140,6 +159,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             GC.SuppressFinalize(ClassStaticBus.bus);
                             ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                         }
+
+                 
                     logger.Trace("End procedure ReceiveAllSensorList.");
                 });
                 tsk.Start();

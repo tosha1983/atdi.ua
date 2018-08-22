@@ -8,6 +8,8 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
+
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -33,10 +35,13 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override ShortMeasurementResults[] Handle(GetShortMeasResultsAppOperationOptions options, IAppOperationContext operationContext)
         {
             List<ShortMeasurementResults> ShortMeas = new List<ShortMeasurementResults>();
+            ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
             Logger.Trace(this, options, operationContext);
-            //lock (GlobalInit.LST_MeasurementResults)
+            System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                foreach (MeasurementResults msrt in GlobalInit.LST_MeasurementResults) {
+                List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB()).ToList();
+                foreach (MeasurementResults msrt in LST_MeasurementResults) {
                     ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank,  Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
                     if (msrt.LocationSensorMeasurement!=null) {
                         if (msrt.LocationSensorMeasurement.Count()>0) {
@@ -46,7 +51,11 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     }
                     ShortMeas.Add(ShMsrt);
                 }
-            }
+            
+            });
+            th.Start();
+            th.IsBackground = true;
+            th.Join();
             return ShortMeas.ToArray();
         }
     }

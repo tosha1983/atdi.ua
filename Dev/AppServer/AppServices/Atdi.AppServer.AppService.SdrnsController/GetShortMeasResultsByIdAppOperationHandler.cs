@@ -8,7 +8,7 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
-
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -31,14 +31,17 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override ShortMeasurementResults Handle(GetShortMeasResultsByIdAppOperationOptions options, IAppOperationContext operationContext)
         {
             ShortMeasurementResults ShortMeas = new ShortMeasurementResults();
+            ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
             Logger.Trace(this, options, operationContext);
-            //lock (GlobalInit.LST_MeasurementResults)
+            System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 if (options.MeasResultsId != null)
                 {
                     if (options.MeasResultsId.MeasTaskId != null)
                     {
-                        MeasurementResults msrt = GlobalInit.LST_MeasurementResults.Find(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId && t.Id.MeasTaskId.Value== options.MeasResultsId.MeasTaskId.Value && t.Id.SubMeasTaskId == options.MeasResultsId.SubMeasTaskId && t.Id.SubMeasTaskStationId == options.MeasResultsId.SubMeasTaskStationId);
+                        List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDBTask(options.MeasResultsId.MeasTaskId.Value)).ToList();
+                        MeasurementResults msrt = LST_MeasurementResults.Find(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId && t.Id.MeasTaskId.Value== options.MeasResultsId.MeasTaskId.Value && t.Id.SubMeasTaskId == options.MeasResultsId.SubMeasTaskId && t.Id.SubMeasTaskStationId == options.MeasResultsId.SubMeasTaskStationId);
                         if (msrt != null)
                         {
                             ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
@@ -54,7 +57,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         }
                     }
                 }
-            }
+            });
+            th.Start();
+            th.IsBackground = true;
+            th.Join();
             return ShortMeas;
         }
     }

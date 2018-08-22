@@ -23,8 +23,6 @@ using XMLLibrary;
 using Atdi.AppServer.AppService.SdrnsController;
 using Atdi.SDNRS.AppServer.ManageDB;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
-using Atdi.SDR.Server.Utils;
-
 using Atdi.AppServer.CoreServices;
 using Atdi.AppServer.CoreServices.DataLayer;
 using Atdi.AppServer.CoreServices.DataLayer.MsSql;

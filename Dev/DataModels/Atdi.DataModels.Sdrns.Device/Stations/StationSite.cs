@@ -8,27 +8,21 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Polarization of antenna
+    /// 
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public enum AntennaPolarization
+    public class StationSite : GeoPoint
     {
         /// <summary>
         /// 
         /// </summary>
-        [EnumMember]
-        V,
+        [DataMember]
+        public string Adress { get; set; }
 
         /// <summary>
-        /// 
+        /// Район (часть области)
         /// </summary>
-        [EnumMember]
-        H,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [EnumMember]
-        M
+        [DataMember]
+        public string Region { get; set; }
     }
 }

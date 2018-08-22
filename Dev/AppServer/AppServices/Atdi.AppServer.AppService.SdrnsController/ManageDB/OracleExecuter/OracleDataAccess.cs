@@ -7,14 +7,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.DataAccess.Client;
+using System.Data.Common;
+
 
 namespace Atdi.Oracle.DataAccess
 {
+    public class FooEnlistment : System.Transactions.IEnlistmentNotification
+    {
+
+
+        public FooEnlistment()
+        {
+          
+        }
+
+        public void Prepare(System.Transactions.PreparingEnlistment preparingEnlistment)
+        {
+            preparingEnlistment.Prepared();
+        }
+
+        public void Commit(System.Transactions.Enlistment enlistment)
+        {
+
+            enlistment.Done();
+        }
+
+        public void Rollback(System.Transactions.Enlistment enlistment)
+        {
+
+            enlistment.Done();
+        }
+
+        public void InDoubt(System.Transactions.Enlistment enlistment)
+        {
+            enlistment.Done();
+        }
+    }
     public class OracleDataAccess
     {
         public static bool isConnection = false;
-        public static OracleConnection connection = null;
+        //public static OracleConnection connection = null;
+        public static DbConnection connection = null;
+        public static List<DbConnection> lConnection = new List<DbConnection>();
+        public static System.Transactions.CommittableTransaction transaction;
+        public System.Transactions.TransactionScope transactionScope;
+        //public OracleTransaction transaction = null;
+        public static string connectionStringValue { get; set; }
 
+     
         /// <summary>
         /// Dispose connect
         /// </summary>
@@ -36,14 +76,19 @@ namespace Atdi.Oracle.DataAccess
         public bool OpenConnection(string connectionString)
         {
             bool isSucess = false;
+            connectionStringValue = connectionString;
             try
             {
                 if (connection == null)
                 {
                     if (isConnection == false)
                     {
-                        connection = new OracleConnection(connectionString);
+                        //connection = new  OracleConnection(connectionString);
+                        DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+                        connection = factory.CreateConnection();
+                        connection.ConnectionString = connectionStringValue;
                         connection.Open();
+                        lConnection.Add(connection);
                         isConnection = true;
                         isSucess = true;
                     }
@@ -58,6 +103,71 @@ namespace Atdi.Oracle.DataAccess
             return isSucess;
         }
 
+        public void BeginTransaction()
+        {
+            if (connection != null)
+            {
+                try
+                {
+
+                    System.Transactions.TransactionOptions opt = new System.Transactions.TransactionOptions();
+                    opt.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+                    transaction = new System.Transactions.CommittableTransaction(opt);
+
+                    //System.Transactions.TransactionOptions opt = new System.Transactions.TransactionOptions();
+                    //opt.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+                    //transaction = new System.Transactions.CommittableTransaction(opt);
+                    //connection.EnlistTransaction(transaction);
+
+                    //System.Transactions.TransactionOptions opt = new System.Transactions.TransactionOptions();
+                    //opt.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+                    //transaction = new System.Transactions.CommittableTransaction(opt);
+                    //transactionScope = new System.Transactions.TransactionScope(transaction);
+                    //transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+            }
+        }
+
+        public void CommitTransaction()
+        {
+            if (transaction != null)
+            {
+                //var enlistment = new FooEnlistment(new Action(() => { CommitTransaction(); }), new Action(() => { RollbackTransaction(); }));
+                //transaction.
+                //Transaction.Current.EnlistVolatile(enlistment, EnlistmentOptions.EnlistDuringPrepareRequired);
+                connection.EnlistTransaction(transaction);
+                transaction.Commit();
+                CloseTransaction();
+            }
+        }
+
+        public void RollbackTransaction()
+        {
+            if (transaction != null)
+            {
+                //var enlistment = new FooEnlistment();
+                //System.Transactions.Transaction.Current = new System.Transactions.CommittableTransaction();
+                //System.Transactions.Transaction.Current.EnlistVolatile(enlistment, System.Transactions.EnlistmentOptions.EnlistDuringPrepareRequired);
+                connection.EnlistTransaction(transaction);
+                transaction.Rollback();
+                CloseTransaction();
+            }
+        }
+
+        public void CloseTransaction()
+        {
+            if (transaction != null)
+            {
+                //transaction.Dispose();
+                //transaction = null;
+            }
+        }
+
 
         /// <summary>
         /// Insert one record
@@ -68,13 +178,14 @@ namespace Atdi.Oracle.DataAccess
         public int? InsertRecord(List<OracleParameter> OraParametr, string TableName)
         {
             int? ID = null;
+            //if (!isConnection) { OpenConnection(connectionStringValue); return ID; }
             System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
-            //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
             try
             {
-                //command.Transaction = transaction;
+
+               DbCommand command = connection.CreateCommand();
+               //if (transaction!=null) command.Transaction = transaction;
                 command.Parameters.Clear();
                 foreach (OracleParameter p in OraParametr)
                     command.Parameters.Add(p);
@@ -101,11 +212,8 @@ namespace Atdi.Oracle.DataAccess
 
                 command.CommandText = string.Format("INSERT INTO {0}({1}) VALUES ({2}) RETURNING ID INTO :id", TableName, AllColumns, AllValues);
                 command.ExecuteNonQuery();
-                //transaction.Commit();
                 object o = command.Parameters[":id"].Value;
-                //try
-                //{
-                //Console.WriteLine(o.ToString());
+                //if (transaction != null) transaction.Commit();
                 if ((o != null) && (o != DBNull.Value))
                 {
                     char[] xx = o.ToString().ToCharArray();
@@ -121,15 +229,10 @@ namespace Atdi.Oracle.DataAccess
                         throw new Exception("Error value: "+o);
                     }
                 }
-                //}
-                //catch (Exception e)
-                //{
-                    //Console.WriteLine(command.CommandText+" ->"+ vby+" "+ e.ToString());
-                //}
             }
             catch (Exception e)
             {
-                //transaction.Rollback();
+                //if (transaction != null) transaction.Rollback();
                 Console.WriteLine(e.ToString());
                 Console.WriteLine("Neither record was written to database.");
             }
@@ -148,13 +251,14 @@ namespace Atdi.Oracle.DataAccess
         public int? UpdateRecord(List<OracleParameter> OraParametr, string TableName, int ID)
         {
             int? ID_VALUE = null;
+            //if (!isConnection) { OpenConnection(connectionStringValue); return ID_VALUE; }
             System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
                 //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-                OracleCommand command = connection.CreateCommand();
+                DbCommand command = connection.CreateCommand();
                 try
                 {
-                    //command.Transaction = transaction;
+                    //if (transaction != null) command.Transaction = transaction;
                     command.Parameters.Clear();
                     foreach (OracleParameter p in OraParametr)
                         command.Parameters.Add(p);
@@ -195,13 +299,14 @@ namespace Atdi.Oracle.DataAccess
         public bool UpdateRecord(List<OracleParameter> OraParametr, string TableName, string sql)
         {
             bool isSuccess = false;
+            //if (!isConnection) { OpenConnection(connectionStringValue); return false; }
             System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
                 //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-                OracleCommand command = connection.CreateCommand();
+                DbCommand command = connection.CreateCommand();
                 try
                 {
-                    //command.Transaction = transaction;
+                    //if (transaction != null) command.Transaction = transaction;
                     command.Parameters.Clear();
                     foreach (OracleParameter p in OraParametr)
                         command.Parameters.Add(p);
@@ -241,10 +346,11 @@ namespace Atdi.Oracle.DataAccess
         {
             bool isSuccess = false;
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return false; }
             try
             {
-                //command.Transaction = transaction;
+                DbCommand command = connection.CreateCommand();
+                //if (transaction != null) command.Transaction = transaction;
                 command.CommandText = string.Format("DELETE {0} WHERE ID = {1}", TableName, ID);
                 command.ExecuteNonQuery();
                 //transaction.Commit();
@@ -268,9 +374,10 @@ namespace Atdi.Oracle.DataAccess
         {
             int? Id = null;
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return Id; }
             try
             {
+                DbCommand command = connection.CreateCommand();
                 //command.Transaction = transaction;
                 command.CommandText = string.Format("SELECT MAX(ID) FROM {0}", TableName);
                 object o = command.ExecuteScalar();
@@ -302,9 +409,10 @@ namespace Atdi.Oracle.DataAccess
         {
             int? Id = null;
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return Id; }
             try
             {
+                DbCommand command = connection.CreateCommand();
                 //command.Transaction = transaction;
                 command.CommandText = string.Format("SELECT {0}.nextval from dual", sequenceName);
                 object o = command.ExecuteScalar();
@@ -341,11 +449,12 @@ namespace Atdi.Oracle.DataAccess
         public object[] GetValues(List<string> Columns, string TableName, int ID, string OrderBy)
         {
             List<object> LObj = new List<object>();
-            OracleDataReader reader = null;
+            DbDataReader reader = null;
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); LObj.ToArray(); }
             try
             {
+                DbCommand command = connection.CreateCommand();
                 //command.Transaction = transaction;
                 string AllColumns = "";
                 foreach (string p in Columns)
@@ -388,11 +497,12 @@ namespace Atdi.Oracle.DataAccess
         public OracleParameter[][] GetValues(List<string> Columns, string TableName, string sql, string OrderBy)
         {
             List<OracleParameter[]> LObj = new List<OracleParameter[]>();
-            OracleDataReader reader = null;
+            DbDataReader reader = null;
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); LObj.ToArray(); }
             try
             {
+                DbCommand command = connection.CreateCommand();
                 //command.Transaction = transaction;
                 string AllColumns = "";
                 foreach (string p in Columns)
@@ -448,16 +558,17 @@ namespace Atdi.Oracle.DataAccess
         public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, int Cnt)
         {
             bool isSuccess = false;
-            const int CountInsertRecordInOneBlock = 200; 
+            const int CountInsertRecordInOneBlock = 800; 
             int Temp_Count = 0;
             List<string> SQL_PART = new List<string>();
             string SQL = ""; string SQL_INSERT = "";
             string allSql = "";//"INSERT ALL ";
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return false; }
             try
             {
-                //command.Transaction = transaction;
+                DbCommand command = connection.CreateCommand();
+                //if (transaction != null) command.Transaction =  transactionScope;
                 command.Parameters.Clear();
                 foreach (OracleParameter p in OraParametr_Level1)
                     command.Parameters.Add(p);
@@ -528,14 +639,16 @@ namespace Atdi.Oracle.DataAccess
         public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, int Cnt1, List<OracleParameter> OraParametr_Level2, string TableName_Level2, int Cnt2, OracleParameter[] oracleParameterRefId)
         {
             bool isSuccess = false;
-            const int CountInsertRecordInOneBlock = 200;
+            const int CountInsertRecordInOneBlock = 800;
             int Temp_Count = 0;
             List<string> SQL_PART = new List<string>();
             string SQL = ""; string SQL_INSERT = "";
             string allSql = "";//"INSERT ALL ";
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return false; }
             try
             {
+                DbCommand command = connection.CreateCommand();
+                //if (transaction != null) command.Transaction = transaction;
                 command.Parameters.Clear();
                 foreach (OracleParameter p in OraParametr_Level1)
                     command.Parameters.Add(p);
@@ -608,6 +721,10 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                //if (e is OracleException)
+                //{
+                    //if (e as OracleException).ErrorCode=
+                //}
                 isSuccess = false;
                 //transaction.Rollback();
                 Console.WriteLine(e.ToString());
@@ -629,10 +746,11 @@ namespace Atdi.Oracle.DataAccess
             bool isSuccess = false;
             string allSql = "INSERT ALL ";
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return false; }
             try
             {
-                //command.Transaction = transaction;
+                DbCommand command = connection.CreateCommand();
+                //if (transaction != null) command.Transaction = transaction;
                 command.Parameters.Clear();
                 foreach (OracleParameter p in OraParametr_Level1)
                     command.Parameters.Add(p);
@@ -732,10 +850,11 @@ namespace Atdi.Oracle.DataAccess
             bool isSuccess = false;
             string allSql = "INSERT ALL ";
             //OracleTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-            OracleCommand command = connection.CreateCommand();
+            //if (!isConnection) { OpenConnection(connectionStringValue); return false; } 
             try
             {
-                //command.Transaction = transaction;
+                DbCommand command = connection.CreateCommand();
+                //if (transaction != null) command.Transaction = transaction;
                 command.Parameters.Clear();
                 foreach (OracleParameter p in OraParametr_Level1)
                     command.Parameters.Add(p);

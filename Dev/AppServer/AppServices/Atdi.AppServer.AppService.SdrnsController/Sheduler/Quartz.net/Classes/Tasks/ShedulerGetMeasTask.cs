@@ -11,6 +11,7 @@ using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
 using EasyNetQ;
 using Atdi.AppServer;
+using XMLLibrary;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
@@ -70,7 +71,10 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                 {
                     ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
                     BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                    foreach (Sensor s in GlobalInit.SensorListSDRNS.ToArray())
+                    ClassConvertTasks ts = new ClassConvertTasks(logger);
+                    ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
+                    List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
+                    foreach (Sensor s in SensorListSDRNS.ToArray())
                     {
                         if (ClassStaticBus.bus.Advanced.IsConnected)
                         {
@@ -87,7 +91,8 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                         {
                                             if (h.MeasTaskId != null)
                                             {
-                                                MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Id.Value == h.MeasTaskId.Value);
+                                                MeasTask[] ResMeasTasks = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(h.MeasTaskId.Value));
+                                                MeasTask tsk = ResMeasTasks.ToList().Find(t => t.Id.Value == h.MeasTaskId.Value);
                                                 if (tsk != null)
                                                 {
                                                     tsk.Status = h.status;

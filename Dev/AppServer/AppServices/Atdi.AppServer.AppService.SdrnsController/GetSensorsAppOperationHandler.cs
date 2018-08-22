@@ -9,7 +9,7 @@ using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer;
-
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -28,47 +28,13 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         }
 
-        /*
-        public void CheckCondition(DataConstraint constraint)
-        {
-            if (constraint is DataConstraintExpression)
-            {
-                var operand = (constraint as DataConstraintExpression).LeftOperand;
-                if (operand is DataConstraintColumnOperand)
-                {
-                    
-                }
-                if (operand is DataConstraintValueOperand)
-                {
-
-                }
-            }
-            else if (constraint is DataConstraintGroup)
-            {
-                if (((constraint as DataConstraintGroup).Constraints != null) && (((constraint as DataConstraintGroup).Constraints.Length > 0)))
-                {
-                    for (int i = 0; i < ((constraint as DataConstraintGroup).Constraints).Length; i++)
-                    {
-                        if (((constraint as DataConstraintGroup).Constraints)[i] is DataConstraintExpression)
-                        {
-                            CheckCondition(((constraint as DataConstraintGroup).Constraints)[i] as DataConstraintExpression);
-                        }
-                        else if (((constraint as DataConstraintGroup).Constraints)[i] is DataConstraintGroup)
-                        {
-                            CheckCondition(((constraint as DataConstraintGroup).Constraints)[i]);
-                        }
-                    }
-                }
-
-            }
-        }
-        */
-
+      
         public override Sensor[] Handle(GetSensorsAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
             List<Sensor> val = new List<Sensor>();
-            val = GlobalInit.SensorListSDRNS;
+            ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
+            val = gsd.LoadObjectAllSensor();
             return val.ToArray();
         }
     }

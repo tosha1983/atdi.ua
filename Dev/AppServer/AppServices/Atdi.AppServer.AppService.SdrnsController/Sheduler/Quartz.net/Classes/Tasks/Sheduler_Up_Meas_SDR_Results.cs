@@ -11,7 +11,6 @@ using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using EasyNetQ.Consumer;
 using EasyNetQ;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDR.Server.Utils;
 using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
@@ -60,39 +59,104 @@ namespace Atdi.SDNRS.AppServer.Sheduler
 
         public class SimpleJob : IJob
         {
-            public static List<MeasSdrResults> ConfirmRes = new List<MeasSdrResults>();
             void IJob.Execute(IJobExecutionContext context)
             {
+               
                 logger.Trace("Start job Sheduler_Up_Meas_SDR_Results... ");
                 context.Scheduler.PauseAll();
-                try
+                System.Threading.Thread thread = new System.Threading.Thread(() =>
                 {
-                    BusManager<List<MeasSdrResults>> BS = new BusManager<List<MeasSdrResults>>();
-                    foreach (Sensor s in GlobalInit.SensorListSDRNS.ToArray()) {
-                        if (ClassStaticBus.bus.Advanced.IsConnected) {
-                            uint MessCount = BS.GetMessageCount(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
-                            for (int i=0; i< MessCount; i++) {
-                                var rs = BS.GetDataObject(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
-                                if (rs != null)
-                                    GlobalInit.MEAS_SDR_RESULTS.AddRange(rs as List<MeasSdrResults>);
-                                else {
-                                    break;
+                    try
+                    {
+                        BusManager<List<MeasSdrResults>> BS = new BusManager<List<MeasSdrResults>>();
+                        ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
+                        List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
+                        foreach (Sensor s in SensorListSDRNS.ToArray())
+                        {
+                            if (ClassStaticBus.bus.Advanced.IsConnected)
+                            {
+                                uint MessCount = BS.GetMessageCount(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
+                                for (int j = 0; j < MessCount; j++)
+                                {
+                                    var rs = BS.GetDataObject(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
+                                    if (rs != null)
+                                    {
+                                        List<MeasSdrResults> MEAS_SDR_RESULTS = rs as List<MeasSdrResults>;
+                                        ClassesDBGetResult DbGetRes = new ClassesDBGetResult(logger);
+                                        ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
+                                        for (int i = 0; i < MEAS_SDR_RESULTS.Count; i++)
+                                        {
+                                                if (MEAS_SDR_RESULTS.Count > 0)
+                                                {
+                                                    if (MEAS_SDR_RESULTS[0] != null)
+                                                    {
+                                                        int ID = -1;
+                                                        string Status_Original = MEAS_SDR_RESULTS[0].status;
+                                                        MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(MEAS_SDR_RESULTS[0]);
+                                                        if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
+                                                        if (msReslts.MeasurementsResults != null)
+                                                        {
+                                                            if (msReslts.MeasurementsResults.Count() > 0)
+                                                            {
+                                                                if (msReslts.MeasurementsResults[0] is LevelMeasurementOnlineResult)
+                                                                {
+                                                                    // Здесь в базу ничего не пишем (только в память)
+                                                                    msReslts.Status = "O";
+                                                                    //GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                                                }
+                                                                else
+                                                                {
+                                                                    logger.Trace(string.Format("Start save results..."));
+                                                                    ID = DbGetRes.SaveResultToDB(msReslts);
+                                                                    if (ID > 0)
+                                                                    {
+                                                                        //GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                                                        //if (MEAS_SDR_RESULTS.Count > 0) MEAS_SDR_RESULTS.Remove(MEAS_SDR_RESULTS[0]);
+                                                                        logger.Trace(string.Format("Success save results..."));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            logger.Trace(string.Format("Start save results..."));
+                                                            ID = DbGetRes.SaveResultToDB(msReslts);
+                                                            if (ID > 0)
+                                                            {
+                                                                //GlobalInit.LST_MeasurementResults.Add(msReslts);
+                                                                //MEAS_SDR_RESULTS.Remove(MEAS_SDR_RESULTS[0]);
+                                                                logger.Trace(string.Format("Success save results..."));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                //logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
+                                                //logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", MEAS_SDR_RESULTS.Count()));
+                                                DbGetRes.Dispose();
+                                                conv.Dispose();
+                                            }
+                                    }
+                                   
                                 }
                             }
-                        }
-                        else {
-                            ClassStaticBus.bus.Dispose();
-                            GC.SuppressFinalize(ClassStaticBus.bus);
-                            ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
+                            else
+                            {
+                                ClassStaticBus.bus.Dispose();
+                                GC.SuppressFinalize(ClassStaticBus.bus);
+                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
+                            }
+
                         }
 
                     }
-                    
-                 }
-                catch (Exception ex)
-                {
-                    logger.Error("Error in job  Sheduler_Up_Meas_SDR_Results: "+ex.Message);
-                }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Error in job  Sheduler_Up_Meas_SDR_Results: " + ex.Message);
+                    }
+                });
+                thread.Start();
+                thread.Join();
                 logger.Trace("End job Sheduler_Up_Meas_SDR_Results.");
                 context.Scheduler.ResumeAll();
             }
