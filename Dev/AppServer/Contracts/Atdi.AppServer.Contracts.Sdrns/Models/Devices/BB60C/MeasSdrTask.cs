@@ -58,8 +58,6 @@ namespace Atdi.AppServer.Contracts.Sdrns
         [DataMember]
         public MeasurementType[] GroupeTypeMeasForMobEquipment;
         [DataMember]
-        public StationDataForMeasurements[] StationsForMeasurements;// список станций для проведения измерения
-        //[DataMember]
-        //public BandwidthEstimation//
+        public StationDataForMeasurements[] StationsForMeasurements;// список станций для проведения измерения 
     }
 }
