@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Содержит результат измерения уровня сигнала в одной точки от некого передатчика.
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class LevelMeasResult
@@ -23,13 +23,13 @@ namespace Atdi.DataModels.Sdrns.Device
         /// уровень измеренного сигнала в полосе канала
         /// </summary>
         [DataMember]
-        public double? LeveldBm { get; set; }
+        public double? Level_dBm { get; set; }
 
         /// <summary>
         /// уровень измеренного сигнала в полосе канала 
         /// </summary>
         [DataMember]
-        public double? LeveldBmkVm { get; set; }
+        public double? Level_dBmkVm { get; set; }
 
         /// <summary>
         /// время когда был получен результат 
@@ -41,31 +41,6 @@ namespace Atdi.DataModels.Sdrns.Device
         /// наносекунды 10^-9 Разсинхронизация с GPS
         /// </summary>
         [DataMember]
-        public double? DifferenceTimestamp { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [DataMember]
-        public decimal? CentralFrequency { get; set; }
-
-        /// <summary>
-        /// кГц;
-        /// </summary>
-        [DataMember]
-        public double? BW { get; set; }
-
-        /// <summary>
-        /// кГц;
-        /// </summary>
-        [DataMember]
-        public double? RBW { get; set; }
-
-        /// <summary>
-        /// кГц;
-        /// </summary>
-        [DataMember]
-        public double? VBW { get; set; }
-
+        public double? DifferenceTimestamp_ns { get; set; }
     }
 }

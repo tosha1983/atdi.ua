@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Параметры станции 
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class MeasuredStation
@@ -24,6 +24,12 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public string GlobalSid { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public string LastRealGlobalSid { get; set; }
 
         /// <summary>
         /// 
@@ -53,7 +59,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public string Standart { get; set; }
+        public string Standard { get; set; }
 
         /// <summary>
         /// 

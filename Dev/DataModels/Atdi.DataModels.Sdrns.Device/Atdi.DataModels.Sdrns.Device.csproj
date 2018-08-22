@@ -51,6 +51,8 @@
     <Compile Include="Results\StationMeasResult.cs" />
     <Compile Include="Sensors\SensorUpdateResult.cs" />
     <Compile Include="Sensors\SensorRegistrationResult.cs" />
+    <Compile Include="Results\StationSysInfo.cs" />
+    <Compile Include="Stations\StandarScantParameter.cs" />
     <Compile Include="Stations\StationLicenseInfo.cs" />
     <Compile Include="Stations\ElementsMask.cs" />
     <Compile Include="Stations\MeasuredStation.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="Stations\StationSector.cs" />
     <Compile Include="Stations\StationOwner.cs" />
     <Compile Include="Stations\StationSite.cs" />
+    <Compile Include="Results\StationSysInfoBlock.cs" />
     <Compile Include="Tasks\DeviceMeasParam.cs" />
     <Compile Include="Tasks\LocationMeasParam.cs" />
     <Compile Include="Tasks\SpectrumOccupationMeasParam.cs" />

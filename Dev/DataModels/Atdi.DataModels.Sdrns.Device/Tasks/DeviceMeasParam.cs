@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    ///
+    /// Параметры приемника для проведения измерений
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class DeviceMeasParam
@@ -17,42 +17,48 @@ namespace Atdi.DataModels.Sdrns.Device
         /// kHz
         /// </summary>
         [DataMember]
-        public double RBW { get; set; }
+        public double RBW_kHz { get; set; }
 
         /// <summary>
         /// kHz
         /// </summary>
         [DataMember]
-        public double VBW { get; set; }
+        public double? VBW_kHz { get; set; }
+
+        /// <summary>
+        /// kHz
+        /// </summary>
+        [DataMember]
+        public double? ScanBW_kHz { get; set; }
 
         /// <summary>
         /// sec
         /// </summary>
         [DataMember]
-        public double MeasTime { get; set; }
+        public double? MeasTime_sec { get; set; }
 
         /// <summary>
         /// dBm
         /// </summary>
         [DataMember]
-        public double RefLeveldBm { get; set; }
+        public double? RefLevel_dBm { get; set; }
 
         /// <summary>
         /// Average -> bb_api.BB_AVERAGE;  othre -> bb_api.BB_MIN_AND_MAX
         /// </summary>
         [DataMember]
-        public DetectingType DetectTypeSDR { get; set; }
+        public DetectingType DetectType { get; set; }
 
         /// <summary>
         /// 0, 10, 20, ..., dB
         /// </summary>
         [DataMember]
-        public int PreamplificationSDR { get; set; }
+        public int? Preamplification_dB { get; set; }
 
         /// <summary>
         /// 0, 10, 20, 30, ...,  dB 
         /// </summary>
         [DataMember]
-        public int RfAttenuationSDR { get; set; }
+        public int? RfAttenuation_dB { get; set; }
     }
 }

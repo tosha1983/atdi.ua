@@ -7,44 +7,59 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    /// <summary>
+    /// Содержит результаты измерений передатчика.
+    /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class GeneralMeasResult
     {
         /// <summary>
+        /// кГц;
+        /// </summary>
+        [DataMember]
+        public double? RBW_kHz { get; set; }
+
+        /// <summary>
+        /// кГц;
+        /// </summary>
+        [DataMember]
+        public double? VBW_kHz { get; set; }
+
+        /// <summary>
         /// МГц частота согласно плану
         /// </summary>
         [DataMember]
-        public double? CentralFrequency { get; set; }
+        public double? CentralFrequency_MHz { get; set; }
 
         /// <summary>
         /// МГц измеренный результат
         /// </summary>
         [DataMember]
-        public double? CentralFrequencyMeas { get; set; }
+        public double? CentralFrequencyMeas_MHz { get; set; }
 
         /// <summary>
         /// Относительно центральной частоты 10^-6
         /// </summary>
         [DataMember]
-        public double? OffsetFrequency { get; set; }
+        public double? OffsetFrequency_mk { get; set; }
 
         /// <summary>
         /// МГц  первая частота спетра
         /// </summary>
         [DataMember]
-        public decimal? SpectrumStartFreq { get; set; }
+        public decimal? SpectrumStartFreq_MHz { get; set; }
 
         /// <summary>
         /// кГц  шаг у спектра
         /// </summary>
         [DataMember]
-        public decimal? SpectrumSteps { get; set; }
+        public decimal? SpectrumSteps_kHz { get; set; }
 
         /// <summary>
         /// отсчеты спектра сигнала 
         /// </summary>
         [DataMember]
-        public float[] LevelsSpectrum { get; set; }
+        public float[] LevelsSpectrum_dBm { get; set; }
 
         /// <summary>
         /// маска сигнала 
@@ -53,7 +68,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public ElementsMask[] BWMask { get; set; }
 
         /// <summary>
-        /// 
+        /// Результаты измерения полосы частот сигнала 
         /// </summary>
         [DataMember]
         public BandwidthMeasResult BandwidthResult { get; set; }
@@ -62,7 +77,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// сек, Длительность измерения частота согласно плану
         /// </summary>
         [DataMember]
-        public double? MeasDuration { get; set; }
+        public double? MeasDuration_sec { get; set; }
 
         /// <summary>
         /// время начала измерения
@@ -75,5 +90,13 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public DateTime? MeasFinishTime { get; set; }
+
+        /// <summary>
+        /// Системная информация станции
+        /// </summary>
+        [DataMember]
+        public StationSysInfo StationSysInfo { get; set; }
+
+
     }
 }

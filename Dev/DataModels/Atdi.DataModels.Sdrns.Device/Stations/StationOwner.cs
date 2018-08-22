@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Данные овнера станции
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationOwner

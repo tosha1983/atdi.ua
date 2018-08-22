@@ -32,6 +32,11 @@ namespace Atdi.DataModels.Sdrns
         /// 
         /// </summary>
         [EnumMember]
-        MinPeak
+        MinPeak,
+        /// <summary>
+        /// 
+        /// </summary>
+        [EnumMember]
+        RMS
     }
 }

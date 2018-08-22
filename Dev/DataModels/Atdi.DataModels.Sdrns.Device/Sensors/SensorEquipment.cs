@@ -54,37 +54,37 @@ namespace Atdi.DataModels.Sdrns.Device
         /// LowerFreq, MHz
         /// </summary>
         [DataMember]
-        public double? LowerFreq { get; set; }
+        public double? LowerFreq_MHz { get; set; }
 
         /// <summary>
         /// UpperFreq, MHz 
         /// </summary>
         [DataMember]
-        public double? UpperFreq { get; set; }
+        public double? UpperFreq_MHz { get; set; }
 
         /// <summary>
         /// RBWMin, kHz
         /// </summary>
         [DataMember]
-        public double? RBWMin { get; set; }
+        public double? RBWMin_kHz { get; set; }
 
         /// <summary>
         /// RBWMax, kHz
         /// </summary>
         [DataMember]
-        public double? RBWMax { get; set; }
+        public double? RBWMax_kHz { get; set; }
 
         /// <summary>
         /// VBWMin, kHz
         /// </summary>
         [DataMember]
-        public double? VBWMin { get; set; }
+        public double? VBWMin_kHz { get; set; }
 
         /// <summary>
         /// VBWMax, kHz
         /// </summary>
         [DataMember]
-        public double? VBWMax { get; set; }
+        public double? VBWMax_kHz { get; set; }
 
         /// <summary>
         /// Mobility - true - can be mobile, false cannot be mobile
@@ -102,7 +102,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// Reference level in dBm
         /// </summary>
         [DataMember]
-        public double? RefLeveldBm { get; set; }
+        public double? RefLevel_dBm { get; set; }
 
         /// <summary>
         /// OperationMode
@@ -126,7 +126,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// TuningStep, Hz
         /// </summary>
         [DataMember]
-        public double? TuningStep { get; set; }
+        public double? TuningStep_Hz { get; set; }
 
         /// <summary>
         /// UseType

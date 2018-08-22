@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Параметры сетора станции
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationSector
@@ -29,7 +29,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// дБм
         /// </summary>
         [DataMember]
-        public double? EIRP { get; set; }
+        public double? EIRP_dBm { get; set; }
 
         /// <summary>
         /// град
@@ -41,7 +41,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// kHz
         /// </summary>
         [DataMember]
-        public double? BW { get; set; }
+        public double? BW_kHz { get; set; }
 
         /// <summary>
         /// 

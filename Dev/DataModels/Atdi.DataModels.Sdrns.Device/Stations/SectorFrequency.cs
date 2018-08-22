@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Параметры частоты сектора станции 
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SectorFrequency
@@ -35,6 +35,6 @@ namespace Atdi.DataModels.Sdrns.Device
         /// 
         /// </summary>
         [DataMember]
-        public decimal? Frequency; //МГц;
+        public decimal? Frequency_MHz; //МГц;
     }
 }

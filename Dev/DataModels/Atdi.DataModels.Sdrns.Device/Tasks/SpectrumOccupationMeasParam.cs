@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// spectrum occupation
+    /// параметря для измерения spectrum occupation
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SpectrumOccupationMeasParam
@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// dBm
         /// </summary>
         [DataMember]
-        public double LevelMinOccup { get; set; }
+        public double LevelMinOccup_dBm { get; set; }
 
         /// <summary>
         /// FBO - freq bandwidth occupation , FCO - freq channel occupation.

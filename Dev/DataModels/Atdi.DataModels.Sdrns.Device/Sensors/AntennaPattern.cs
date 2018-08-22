@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// Frequency of pattren, MHz
         /// </summary>
         [DataMember]
-        public double Freq { get; set; }
+        public double Freq_MHz { get; set; }
 
         /// <summary>
         /// Gain of Antenna, dB

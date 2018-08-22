@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Общий результат измерений
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class MeasResults
     {
+        
         /// <summary>
-        /// 
+        /// Идентификатор таска
         /// </summary>
         [DataMember]
         public string TaskId { get; set; }
@@ -44,7 +45,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public int SwNumber { get; set; }
 
         /// <summary>
-        /// 
+        /// Координаты измерения
         /// </summary>
         [DataMember]
         public GeoLocation Location { get; set; }
@@ -56,31 +57,31 @@ namespace Atdi.DataModels.Sdrns.Device
         public MeasurementType Measurement { get; set; }
 
         /// <summary>
-        /// 
+        /// Частотные отсчеты
         /// </summary>
         [DataMember]
         public FrequencySample[] FrequencySamples { get; set; }
 
         /// <summary>
-        /// 
+        /// Частоты
         /// </summary>
         [DataMember]
         public float[] Frequencies { get; set; }
 
         /// <summary>
-        /// 
+        /// Уровни
         /// </summary>
         [DataMember]
-        public float[] Levels { get; set; }
+        public float[] Levels_dBm { get; set; }
 
         /// <summary>
-        /// 
+        /// Результат измерения станций
         /// </summary>
         [DataMember]
         public StationMeasResult[] StationResults { get; set; }
 
         /// <summary>
-        /// 
+        /// Результат измерения полосы частот
         /// </summary>
         [DataMember]
         public BandwidthMeasResult BandwidthResult { get; set; }

@@ -18,13 +18,13 @@ namespace Atdi.DataModels.Sdrns.Device
         /// Freq, MHz
         /// </summary>
         [DataMember]
-        public double Freq { get; set; }
+        public double Freq_MHz { get; set; }
 
         /// <summary>
         /// own noise level, dBm
         /// </summary>
         [DataMember]
-        public double? KTBF { get; set; }
+        public double? KTBF_dBm { get; set; }
 
         /// <summary>
         /// noise figure, dB

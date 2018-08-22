@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Параметры сайта станции
+    /// Блок системной информации
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class StationSite : GeoPoint
+    public class StationSysInfoBlock
     {
         /// <summary>
-        /// 
+        /// Тип блока системной информации
         /// </summary>
         [DataMember]
-        public string Adress { get; set; }
-
+        public string Type { get; set; }
         /// <summary>
-        /// Район (часть области)
+        /// Данные блока системной информации
         /// </summary>
         [DataMember]
-        public string Region { get; set; }
+        public string Data { get; set; }
     }
 }

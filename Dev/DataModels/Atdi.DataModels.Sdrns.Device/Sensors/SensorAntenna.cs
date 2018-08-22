@@ -96,13 +96,13 @@ namespace Atdi.DataModels.Sdrns.Device
         /// Lower Frequency, MHz
         /// </summary>
         [DataMember]
-        public double? LowerFreq { get; set; }
+        public double? LowerFreq_MHz { get; set; }
 
         /// <summary>
         /// Upper Frequency, MHz
         /// </summary>
         [DataMember]
-        public double? UpperFreq { get; set; }
+        public double? UpperFreq_MHz { get; set; }
 
         /// <summary>
         /// Additional loss, dB

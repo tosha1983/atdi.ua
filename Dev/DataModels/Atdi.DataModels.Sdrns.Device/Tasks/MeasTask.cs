@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Таск на измерение
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class MeasTask
     {
         /// <summary>
-        /// 
+        /// Идентификатор таска
         /// </summary>
         [DataMember]
         public string TaskId { get; set; }
@@ -53,7 +53,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// длительность измерений
         /// </summary>
         [DataMember]
-        public double Interval { get; set; }
+        public double Interval_sec { get; set; }
 
         /// <summary>
         /// Дата конца сканирования
@@ -62,37 +62,37 @@ namespace Atdi.DataModels.Sdrns.Device
         public DateTime StopTime { get; set; }
 
         /// <summary>
-        /// 
+        /// Приоритет при исполнении
         /// </summary>
         [DataMember]
         public int Priority { get; set; }
 
         /// <summary>
-        /// 
+        /// Статус таска
         /// </summary>
         [DataMember]
         public string Status { get; set; }
 
         /// <summary>
-        /// 
+        /// Частоты для сканирования
         /// </summary>
         [DataMember]
         public MeasuredFrequencies Frequencies { get; set; }
 
         /// <summary>
-        /// 
+        /// Параметры оборудования для сканирования
         /// </summary>
         [DataMember]
         public DeviceMeasParam DeviceParam { get; set; }
 
         /// <summary>
-        /// 
+        /// Параметры для проведения оценки занятости спектра
         /// </summary>
         [DataMember]
         public SpectrumOccupationMeasParam SOParam { get; set; }
 
         /// <summary>
-        /// 
+        /// Параметры координат для проведения измерений
         /// </summary>
         [DataMember]
         public LocationMeasParam[] LocationParams { get; set; }
@@ -104,7 +104,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public int ScanPerTaskNumber { get; set; }
 
         /// <summary>
-        /// 
+        /// типы измерений для мобильного оборудования
         /// </summary>
         [DataMember]
         public MeasurementType[] MobEqipmentMeasurements { get; set; }
@@ -114,5 +114,10 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public MeasuredStation[] Stations { get; set; }
+        /// <summary>
+        /// параметры настройки приемнкаи для измерения станций различных стандартов
+        /// </summary>
+        [DataMember]
+        public StandarScantParameter[] ScantParameters { get; set; }
     }
 }

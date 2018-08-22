@@ -23,24 +23,24 @@ namespace Atdi.DataModels.Sdrns.Device
         /// Start freq, MHz
         /// </summary>
         [DataMember]
-        public double? RgL { get; set; }
+        public double? RgL_MHz { get; set; }
 
         /// <summary>
         /// Stop freq, MHz
         /// </summary>
         [DataMember]
-        public double? RgU { get; set; }
+        public double? RgU_MHz { get; set; }
 
         /// <summary>
         /// Step whith, kHz
         /// </summary>
         [DataMember]
-        public double? Step { get; set; }
+        public double? Step_kHz { get; set; }
 
         /// <summary>
         /// Array (List) of the values of the frequencies 
         /// </summary>
         [DataMember]
-        public double[] Values { get; set; }
+        public double[] Values_MHz { get; set; }
     }
 }
