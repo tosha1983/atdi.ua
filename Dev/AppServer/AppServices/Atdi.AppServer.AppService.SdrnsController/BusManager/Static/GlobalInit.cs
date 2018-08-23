@@ -18,7 +18,7 @@ using Atdi.AppServer;
 using Atdi.Oracle.DataAccess;
 using EasyNetQ;
 using System.Configuration;
-
+using System.Collections.Concurrent;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -28,11 +28,12 @@ namespace Atdi.SDNRS.AppServer.BusManager
     public static class GlobalInit
     {
         #region Lists_Global_Objects
-        //public static List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
+        //public static ConcurrentDictionary<int,MeasTask> blockingCollectionMeasTask = new ConcurrentDictionary<int, MeasTask>();
+        //public static BlockingCollection<MeasurementResults> blockingCollectionMeasurementResults = new BlockingCollection<MeasurementResults>();
         #endregion
 
 
-        
+
         // Список объектов, содержащих сведения о текущем состоянии активности каждого сенсора
         public static List<Mdx> Lst_timers = new List<Mdx>();
         public static string MainRabbitMQServices = BaseXMLConfiguration.xml_conf._MainRabbitMQServices;

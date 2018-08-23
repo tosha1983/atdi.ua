@@ -207,11 +207,7 @@ namespace Atdi.Oracle.DataAccess
         public string m_status { get { return getString(2); } set { setString(2, 20, value); } }
         public string m_standart { get { return getString(3); } set { setString(3, 50, value); } }
         public int? m_id_xbs_meastask { get { return getInt(4); } set { setInt(4, value); } }
-        //public YXbsMeastask m_XBS_MeasTask { get { return (YXbsMeastask)getYyy(5); } set { setYyy(5, value); } }
-        //public YXbsOwnerdata m_XBS_OwnerData { get { return (YXbsOwnerdata)getYyy(6); } set { setYyy(6, value); } }
-        //public YXbsSitestformeas m_XBS_SiteStForMeas { get { return (YXbsSitestformeas)getYyy(7); } set { setYyy(7, value); } }
-        //public YXbsSectstformeas m_XBS_SectStForMeas { get { return (YXbsSectstformeas)getYyy(8); } set { setYyy(8, value); } }
-        //public YXbsPermassign m_XBS_PermAssign { get { return (YXbsPermassign)getYyy(9); } set { setYyy(9, value); } }
+
     }
 
     public class YXbsMeassubtask : Yyy
@@ -380,7 +376,6 @@ namespace Atdi.Oracle.DataAccess
         public string m_code { get { return getString(4); } set { setString(4, 50, value); } }
         public string m_addres { get { return getString(5); } set { setString(5, 2000, value); } }
         public int? m_id_stationdatform { get { return getInt(6); } set { setInt(6, value); } }
-        //public YXbsStationdatform m_XBS_StationDatForM { get { return (YXbsStationdatform)getYyy(7); } set { setYyy(7, value); } }
     }
 
     public class YXbsSitestformeas : Yyy
@@ -397,7 +392,6 @@ namespace Atdi.Oracle.DataAccess
         public string m_addres { get { return getString(3); } set { setString(3, 2000, value); } }
         public string m_region { get { return getString(4); } set { setString(4, 50, value); } }
         public int?  m_id_stationdatform { get { return getInt(5); } set { setInt(5, value); } }
-        //public YXbsStationdatform m_XBS_StationDatForM { get { return (YXbsStationdatform)getYyy(6); } set { setYyy(6, value); } }
     }
 
     public class YXbsSectstformeas : Yyy
@@ -417,9 +411,6 @@ namespace Atdi.Oracle.DataAccess
         public double? m_bw { get { return getDouble(4); } set { setDouble(4, value); } }
         public string m_classemission { get { return getString(5); } set { setString(5, 20, value); } }
         public int? m_id_stationdatform { get { return getInt(6); } set { setInt(6, value); } }
-        //public YXbsStationdatform m_XBS_StationDatForM { get { return (YXbsStationdatform)getYyy(7); } set { setYyy(7, value); } }
-        //public YXbsMaskelements m_XBS_MaskElements { get { return (YXbsMaskelements)getYyy(8); } set { setYyy(8, value); } }
-        //public YXbsFreqforsectics m_XBS_FreqForSectICS { get { return (YXbsFreqforsectics)getYyy(9); } set { setYyy(9, value); } }
     }
 
     public class YXbsPermassign : Yyy
@@ -438,7 +429,7 @@ namespace Atdi.Oracle.DataAccess
         public DateTime? m_closedate { get { return getDateTime(3); } set { setDateTime(3, value); } }
         public string m_dozvilname { get { return getString(4); } set { setString(4, 100, value); } }
         public int? m_id_stationdatform { get { return getInt(5); } set { setInt(5, value); } }
-        //public YXbsStationdatform m_XBS_StationDatForM { get { return (YXbsStationdatform)getYyy(6); } set { setYyy(6, value); } }
+
     }
 
     public class YXbsMaskelements : Yyy
@@ -448,12 +439,10 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_MASKELEMENTS";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsMaskelements)));
         }
-
         public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
         public double? m_level { get { return getDouble(1); } set { setDouble(1, value); } }
         public double? m_bw { get { return getDouble(2); } set { setDouble(2, value); } }
         public int? m_id_sectstformeas { get { return getInt(3); } set { setInt(3, value); } }
-        //public YXbsSectstformeas m_XBS_SectStForMeas { get { return (YXbsSectstformeas)getYyy(4); } set { setYyy(4, value); } }
     }
 
     public class YXbsFreqforsectics : Yyy
@@ -469,7 +458,6 @@ namespace Atdi.Oracle.DataAccess
         public int? m_channalnumber { get { return getInt(2); } set { setInt(2, value); } }
         public double? m_frequency { get { return getDouble(3); } set { setDouble(3, value); } }
         public int? m_id_sectstformeas { get { return getInt(4); } set { setInt(4, value); } }
-        //public YXbsSectstformeas m_XBS_SectStForMeas { get { return (YXbsSectstformeas)getYyy(5); } set { setYyy(5, value); } }
     }
 
     public class YXbsMeasurementres : Yyy
@@ -604,23 +592,23 @@ namespace Atdi.Oracle.DataAccess
     {
         public static List<OracleParameter> GetAllProps(Type tp)
         {
-            List<OracleParameter> value = new List<OracleParameter> ();
+            List<OracleParameter> value = new List<OracleParameter>();
             PropertyInfo[] memberInfo;
             memberInfo = tp.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo f in memberInfo)
             {
                 OracleDbType oracleDbType = OracleDbType.Object;
                 string tps = "";
-                if (f.PropertyType.GetGenericArguments().Length>0)
-                       tps = f.PropertyType.GetGenericArguments()[0].ToString();
+                if (f.PropertyType.GetGenericArguments().Length > 0)
+                    tps = f.PropertyType.GetGenericArguments()[0].ToString();
                 else tps = f.PropertyType.Name.ToString();
-                
+
                 switch (tps)
                 {
                     case "System.String":
                     case "String":
                         oracleDbType = OracleDbType.Varchar2;
-                    break;
+                        break;
                     case "System.Int32":
                     case "Int32":
                         oracleDbType = OracleDbType.Int32;
@@ -649,10 +637,9 @@ namespace Atdi.Oracle.DataAccess
                         throw new Exception();
                         break;
                 }
-                 
                 value.Add(new OracleParameter()
                 {
-                    SourceColumn = "\""+f.Name.Replace("m_", "").ToUpper()+"\"",
+                    SourceColumn = "\"" + f.Name.Replace("m_", "").ToUpper() + "\"",
                     ParameterName = ":" + f.Name.Replace("m_", "").ToUpper(),
                     OracleDbType = oracleDbType,
                     Direction = System.Data.ParameterDirection.Input,

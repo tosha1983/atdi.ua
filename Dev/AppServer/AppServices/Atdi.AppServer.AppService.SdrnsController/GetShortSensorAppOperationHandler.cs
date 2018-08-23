@@ -38,7 +38,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                Logger.Trace(this, options, operationContext);
             });
             th.Start();
-            th.IsBackground = true;
             th.Join();
             return LstS;
         }

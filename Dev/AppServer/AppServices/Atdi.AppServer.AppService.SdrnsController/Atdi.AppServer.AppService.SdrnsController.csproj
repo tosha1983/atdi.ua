@@ -56,6 +56,18 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Atdi.AppServer.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.Contracts.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Contracts.Sdrns.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.AppServer.Model.SdrnsController, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Atdi.AppServer.Model.SdrnsController.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
@@ -108,10 +120,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\zlib.net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusManager\Classes\Sensor\SensorListSDRNS.cs" />
@@ -148,6 +156,7 @@
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\WorkFlow\MeasTaskSDRExtend.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\WorkFlow\WorkFlowProcessManageTasks.cs" />
     <Compile Include="BusManager\Static\GlobalInit.cs" />
+    <Compile Include="ManageDB\OracleExecuter\IDataAccess.cs" />
     <Compile Include="ManageDB\OracleExecuter\ModelsTables.cs" />
     <Compile Include="ManageDB\OracleExecuter\OracleDataAccess.cs" />
     <Compile Include="ManageDB\OracleExecuter\OrmRsOracle.cs" />
@@ -159,7 +168,7 @@
     <Compile Include="Sheduler\Quartz.net\Classes\Tasks\ShedulerCheckStatusF.cs" />
     <Compile Include="Sheduler\Quartz.net\Classes\Sensor\ShedulerCheckStart.cs" />
     <Compile Include="Sheduler\Quartz.net\Classes\Tasks\ShedulerGetMeasTask.cs" />
-    <Compile Include="Sheduler\Quartz.net\Classes\Tasks\Sheduler_Up_Meas_SDR_Results.cs" />
+    <Compile Include="Sheduler\Quartz.net\Classes\Tasks\ShedulerUpMeasSDRResults.cs" />
     <Compile Include="Sheduler\Quartz.net\Interface\InterfaceSheduler.cs" />
     <Compile Include="Sheduler\Quartz.net\Classes\ShedulerStatic.cs" />
     <Compile Include="StopMeasTaskAppOperationHandler.cs" />
@@ -189,8 +198,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="_EventRegisterUsersGuide.docx" />
-    <None Include="_EventSourceUsersGuide.docx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -213,6 +220,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dll\Atdi.AppServer.Contracts.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dll\Atdi.AppServer.Contracts.Sdrns.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Dll\Oracle.DataAccess.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net20\Newtonsoft.Json.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net20\Newtonsoft.Json.xml" />
@@ -236,25 +249,9 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
-      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
-      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
-      <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
-      <Name>Atdi.AppServer.Model.SdrnsController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
-      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
-      <Name>Atdi.AppServer.Contracts</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
       <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
       <Name>Atdi.AppServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WcfServices\Atdi.AppServer.Services.Sdrns\Atdi.AppServer.Services.Sdrns.csproj">
-      <Project>{2c0d02fc-9d02-4a5b-af1b-8ad2e9a37403}</Project>
-      <Name>Atdi.AppServer.Services.Sdrns</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -63,7 +63,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
             });
             th.Start();
-            th.IsBackground = true;
             th.Join();
             return md;
         }

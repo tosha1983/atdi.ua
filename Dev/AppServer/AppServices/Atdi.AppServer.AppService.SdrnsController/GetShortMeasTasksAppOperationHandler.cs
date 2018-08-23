@@ -35,12 +35,18 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         {
             ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
             ClassConvertTasks ts = new ClassConvertTasks(Logger);
-            MeasTask[] ResMeasTasks = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
+
+            List<MeasTask> ResMeasTasks = new List<MeasTask>();
+            //List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList();
+            //foreach (KeyValuePair<int, MeasTask> v in mtsk)
+                //ResMeasTasks.Add(v.Value);
+
+            ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ReadlAllSTasksFromDB()).ToList();
             List<ShortMeasTask> Res = new List<ShortMeasTask>();
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 if (ResMeasTasks != null) {
-                if (ResMeasTasks.Count() > 0) {
+                if (ResMeasTasks.Count > 0) {
                     List<MeasTask> tsk = ResMeasTasks.ToList().FindAll(t => t.Status != "Z");
                     if (tsk != null) {
                         foreach (MeasTask mts in tsk) {
@@ -59,7 +65,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             }
             });
             th.Start();
-            th.IsBackground = true;
             th.Join();
             Logger.Trace(this, options, operationContext);
             return Res.ToArray();

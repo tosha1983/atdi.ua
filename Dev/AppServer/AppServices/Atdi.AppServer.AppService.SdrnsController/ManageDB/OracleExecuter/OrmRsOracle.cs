@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.DataAccess.Client;
+using System.Data.Common;
 
 namespace Atdi.Oracle.DataAccess
 {
@@ -28,17 +29,21 @@ namespace Atdi.Oracle.DataAccess
         public void Dispose() { Clear(); }
         public void Clear()
         {
-            isNew = false;
-            AllPropertiesColumns = new List<OracleParameter>();
-            AllPropertiesColumns2 = new List<OracleParameter>();
-            params_val = null;
-            index = -1;
-            cnt = 0;
-            AllFields = new List<string>();
-            AllFields2 = new List<string>();
-            paramsOracle = new List<OracleParameter>();
-            paramsOracle2 = new List<OracleParameter>();
-            yyy = new Yyy();
+            try
+            {
+                isNew = false;
+                AllPropertiesColumns = new List<OracleParameter>();
+                AllPropertiesColumns2 = new List<OracleParameter>();
+                params_val = null;
+                index = -1;
+                cnt = 0;
+                AllFields = new List<string>();
+                AllFields2 = new List<string>();
+                paramsOracle = new List<OracleParameter>();
+                paramsOracle2 = new List<OracleParameter>();
+                yyy = new Yyy();
+            }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
         public void Init(OracleDataAccess rs)
@@ -80,7 +85,7 @@ namespace Atdi.Oracle.DataAccess
                     if (yyy.Order.Contains("ASC")) Order = NameColumnOrder + " ASC";
                 }
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
         public void OpenRs(OracleDataAccess oracleData)
@@ -102,7 +107,7 @@ namespace Atdi.Oracle.DataAccess
                 yyy.allvalc = AllObjLObj.ToArray();
                 if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
         public void OpenRs()
@@ -124,7 +129,7 @@ namespace Atdi.Oracle.DataAccess
                 yyy.allvalc = AllObjLObj.ToArray();
                 if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
         public bool IsEOF()
@@ -140,7 +145,7 @@ namespace Atdi.Oracle.DataAccess
                 ++index;
                 if ((index >= 0) && (index < cnt)) yyy.valc = yyy.allvalc[index];
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
         public int GetCount()
@@ -155,10 +160,10 @@ namespace Atdi.Oracle.DataAccess
                 isNew = true;
                 yyy.valc = new object[AllPropertiesColumns.Count];
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
-        public bool DeleteRecord()
+        public bool DeleteRecord(DbConnection dbConnection, DbTransaction dbTransaction)
         {
             try
             {
@@ -179,10 +184,11 @@ namespace Atdi.Oracle.DataAccess
                     }
                     if (ID_VALUE > -1) break;
                 }
-                return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE);
+                return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE, dbConnection,dbTransaction);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                throw new Exception(e.ToString());
                 return false;
             }
 }
@@ -194,20 +200,11 @@ namespace Atdi.Oracle.DataAccess
                 oracleData = new OracleDataAccess();
                 return oracleData.GetNextId(sequenceName);
             }
-            catch (Exception) { return null;  }
+            catch (Exception e) { throw new Exception(e.ToString()); return null;  }
         }
 
-        public void BeginTransaction()
-        {
-            oracleData.BeginTransaction();
-        }
-
-        public void CloseTransaction()
-        {
-            oracleData.CloseTransaction();
-        }
-
-        public int? UpdateRecord()
+     
+        public int? UpdateRecord(DbConnection dbConnection, DbTransaction dbTransaction)
         {
             try
             {
@@ -244,12 +241,12 @@ namespace Atdi.Oracle.DataAccess
                         }
                     }
                 }
-                return oracleData.UpdateRecord(paramsOracle, yyy.GetTableName(), ID_VALUE);
+                return oracleData.UpdateRecord(paramsOracle, yyy.GetTableName(), ID_VALUE, dbConnection, dbTransaction);
             }
-            catch (Exception) { return null; }
+            catch (Exception e) { throw new Exception(e.ToString()); return null; }
         }
 
-        public int? InsertRecord()
+        public int? InsertRecord(DbConnection dbConnection, DbTransaction dbTransaction)
         {
             int? ID = null;
             try
@@ -285,13 +282,13 @@ namespace Atdi.Oracle.DataAccess
                         }
                     }
                 }
-                ID = oracleData.InsertRecord(paramsOracle, yyy.GetTableName());
+                ID = oracleData.InsertRecord(paramsOracle, yyy.GetTableName(), dbConnection, dbTransaction);
             }
-            catch (Exception) { return null; }
+            catch (Exception e) { throw new Exception(e.ToString()); return null; }
             return ID;
         }
 
-        public bool InsertBulkRecords(List<Yyy> ListY)
+        public bool InsertBulkRecords(List<Yyy> ListY, DbConnection dbConnection, DbTransaction dbTransaction)
         {
             bool isSuccess = false;
             try
@@ -303,7 +300,6 @@ namespace Atdi.Oracle.DataAccess
                 {
                     AllPropertiesColumns = vn.getAllFields;
                     int i = 0;
-                    //paramsOracle.Clear();
                     foreach (string val in AllFields)
                     {
                         foreach (OracleParameter x in AllPropertiesColumns)
@@ -336,13 +332,13 @@ namespace Atdi.Oracle.DataAccess
                     }
                     r++;
                 }
-                isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count);
+                isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count, dbConnection, dbTransaction);
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
             return isSuccess;
         }
 
-        public bool InsertBulkRecords(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter)
+        public bool InsertBulkRecords(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter, DbConnection dbConnection, DbTransaction dbTransaction)
         {
             bool isSuccess = false;
             try
@@ -358,7 +354,6 @@ namespace Atdi.Oracle.DataAccess
                     tableName1 = vn.GetTableName();
                     AllPropertiesColumns = vn.getAllFields;
                     int i = 0;
-                    //paramsOracle.Clear();
                     foreach (string val in AllFields)
                     {
                         foreach (OracleParameter x in AllPropertiesColumns)
@@ -398,8 +393,6 @@ namespace Atdi.Oracle.DataAccess
                     tableName2 = vn.GetTableName();
                     AllPropertiesColumns2 = vn.getAllFields;
                     int i = 0;
-                    //paramsOracle.Clear();
-
                     foreach (string val in AllFields2)
                     {
                         foreach (OracleParameter x in AllPropertiesColumns2)
@@ -432,9 +425,9 @@ namespace Atdi.Oracle.DataAccess
                     }
                     r++;
                 }
-                isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter);
+                isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter, dbConnection, dbTransaction);
             }
-            catch (Exception) { }
+            catch (Exception e) { throw new Exception(e.ToString()); }
             return isSuccess;
         }
     }

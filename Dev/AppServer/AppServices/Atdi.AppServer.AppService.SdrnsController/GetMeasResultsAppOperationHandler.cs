@@ -34,9 +34,16 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override MeasurementResults[] Handle(GetMeasResultsAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
+            MeasurementResults[] LST_MeasurementResults = null;
             ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
-            MeasurementResults[] LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB());
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                //MeasurementResults[] LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToArray();
+                LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB());
+            });
+            th.Start();
+            th.Join();
             return LST_MeasurementResults;
         }
     }

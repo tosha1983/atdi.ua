@@ -37,7 +37,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override CommonOperationResult Handle(DeleteMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             CommonOperationResult res = new CommonOperationResult();
-            List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 try {
@@ -46,11 +45,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
                     ClassConvertTasks ts = new ClassConvertTasks(Logger);
                     ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
-                    MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(options.TaskId.Value));
-                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB((int)options.TaskId.Value)).ToList();
-
-                        //MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
-                        MeasTask mt = null;
+                    MeasTask[] Res = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value));
+                    //MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
+                    MeasTask mt = null;
                     if (Res.Length > 0) mt = Res[0];
                     if (mt != null) {
                         WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
@@ -70,7 +67,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         {
                              tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", false);
                              tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false);
-                             LST_MeasurementResults.RemoveAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
                              res.State = CommonOperationState.Success;
                         }
                     }
@@ -83,7 +79,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             }
             });
             th.Start();
-            th.IsBackground = true;
             th.Join();
             return res;
         }

@@ -45,7 +45,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     {
                         ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
                         ClassConvertTasks ts = new ClassConvertTasks(Logger);
-                        MeasTask[] ResMeasTasks = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(options.TaskId.Value));
+                        MeasTask[] ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value));
                         MeasTask mt = ResMeasTasks.ToList().Find(z => z.Id.Value == options.TaskId.Value);
                         if (mt != null)
                         {
@@ -85,7 +85,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 }
             });
             ge.Start();
-            ge.IsBackground = true;
             ge.Join();
             return res;
         }

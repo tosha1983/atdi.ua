@@ -3,16 +3,15 @@ using Atdi.Oracle.DataAccess;
 using Oracle.DataAccess.Client;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 
 namespace Atdi.Oracle.DataAccess
 {
     public class Yyy : OracleDataAccess
     {
-        OrmRsOracle rs;
         public object[][] allvalc;
         public object[] valc;
         public string TableName = "";
-        public List<OracleParameter> getAllFields = new List<OracleParameter>();
         public Yyy getYyy(int idx) { try { return (Yyy)valc[idx]; } catch (Exception) { return new Yyy(); } }
         public string getString(int idx) { try { return valc[idx] as string; } catch (Exception) { return ""; }}
         public int? getInt(int idx) {
@@ -82,13 +81,17 @@ namespace Atdi.Oracle.DataAccess
 
         public void OpenRs()
         {
-            if (isConnection)
+            try
             {
-                if (rs == null)
-                    rs = new OrmRsOracle();
-                rs.Init(this);
-                rs.OpenRs();
+                if (isConnection)
+                {
+                    if (rs == null)
+                        rs = new OrmRsOracle();
+                    rs.Init(this);
+                    rs.OpenRs();
+                }
             }
+            catch (Exception e) { throw new Exception(e.ToString()); }
         }
 
 
@@ -147,13 +150,8 @@ namespace Atdi.Oracle.DataAccess
 
         public int? GetNextId(string sequenceName)
         {
-            if (isConnection)
-            {
-                if (rs == null) rs = new OrmRsOracle();
-                return rs.GetNextId(sequenceName);
-            }
-            return null;
-            
+            if (rs == null) rs = new OrmRsOracle();
+            return rs.GetNextId(sequenceName);
         }
 
         public void Dispose()
@@ -177,91 +175,76 @@ namespace Atdi.Oracle.DataAccess
             }
         }
 
-        public int? SaveUpdate()
+        public int? SaveUpdate(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (isConnection)
+            if (rs != null)
             {
-                if (rs != null)
-                {
-                    if (!rs.isNew)
-                        return rs.UpdateRecord();
-                }
+                if (!rs.isNew)
+                    return rs.UpdateRecord(dbConnection, dbTransaction);
             }
             return null;
         }
 
-        public int? SaveCreateNew()
+        public int? SaveCreateNew(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (isConnection)
+            if (rs != null)
             {
-                if (rs != null)
-                {
-                    if (rs.isNew)
-                        return rs.InsertRecord();
-                }
+                if (rs.isNew)
+                    return rs.InsertRecord(dbConnection, dbTransaction);
             }
             return null;
         }
 
-        public int? Save()
+        public int? Save(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (isConnection)
+            if (rs != null)
             {
-                if (rs != null)
-                {
-                    if (rs.isNew)
-                        return rs.InsertRecord();
-                    else return rs.UpdateRecord();
-                }
+                if (rs.isNew)
+                    return rs.InsertRecord(dbConnection, dbTransaction);
+                else return rs.UpdateRecord(dbConnection, dbTransaction);
             }
             return null;
         }
 
         public void SetUpdateMode()
         {
-            if (isConnection)
+            if (rs != null)
             {
-                if (rs != null)
-                {
-                    rs.isNew = false;
-                }
+                rs.isNew = false;
             }
         }
 
-        public bool SaveBath(List<Yyy> ListY)
+        public bool SaveBath(List<Yyy> ListY, DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (isConnection)
+            if (dbConnection != null)
             {
                 if (rs != null)
                 {
                     if (rs.isNew)
-                        return rs.InsertBulkRecords(ListY);
+                        return rs.InsertBulkRecords(ListY, dbConnection, dbTransaction);
                 }
             }
             return false;
         }
 
-        public bool SaveBath(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter)
+        public bool SaveBath(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter, DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (isConnection)
+            if (dbConnection != null)
             {
                 if (rs != null)
                 {
                     if (rs.isNew)
-                        return rs.InsertBulkRecords(ListY1,ListY2, oracleParameter);
+                        return rs.InsertBulkRecords(ListY1,ListY2, oracleParameter, dbConnection, dbTransaction);
                 }
             }
             return false;
         }
 
-        public bool Delete()
+        public bool Delete(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (isConnection)
+            if (rs != null)
             {
-                if (rs != null)
-                {
-                    return rs.DeleteRecord();
-                }
+                return rs.DeleteRecord(dbConnection, dbTransaction);
             }
             return false;
         }

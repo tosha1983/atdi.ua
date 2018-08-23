@@ -185,8 +185,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public static void UpdateStatus(this MeasTask task, string Type = "New")
         {
             //правила переходов из статуса в статусы при заданной операции
-            //Task tsk = new Task(() =>
-            //{
+
                 List<RuleStatusTransition> OperationTransitionRule = new List<RuleStatusTransition>();
                 OperationTransitionRule.Add(new RuleStatusTransition("Stop", "N", "F"));
                 OperationTransitionRule.Add(new RuleStatusTransition("Stop", "A", "F"));
@@ -318,9 +317,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 Descr_MeasSubTaskStation.Clear();
                 Descr_MeasSubTask.Clear();
                 MaxWeightLst.Clear();
-            //});
-            //tsk.Start();
-            //tsk.Wait();
+            
         }
 }
 

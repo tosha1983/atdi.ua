@@ -11,6 +11,8 @@ using System.Xml;
 using System.Globalization;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.AppServer;
+using System.Data.Common;
+using Atdi.SDNRS.AppServer.BusManager;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -52,7 +54,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
-                    // сканирование по объектам БД
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
                     ICSM_T.meas_task = new YXbsMeastask();
@@ -65,15 +66,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
 
 
-                    //подключение к БД
                     YXbsMeastask task = new YXbsMeastask();
                     task.Format("*");
-                    // выбирать только таски, для которых STATUS не NULL
                     task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')",MeasTaskId);
                     for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                     {
                         ICSM_T = new CLASS_TASKS();
-                        ////////
                         YXbsMeastask m_meas_task = new YXbsMeastask();
                         m_meas_task.CopyDataFrom(task);
                         ICSM_T.meas_task = m_meas_task;
@@ -95,7 +93,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         XbsMeasstation_.Dispose();
                         ICSM_T.Stations = LXbsMeasstation;
 
-                        ///
 
                         List<YXbsStationdatform> LYXbsStationdatform = new List<YXbsStationdatform>();
                         YXbsStationdatform XbsStationdatform_ = new YXbsStationdatform();
@@ -237,19 +234,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return L_IN;
         }
 
-        /// <summary>
-        /// Извлечение с БД ICSM списка всех TASKS
-        /// </summary>
-        /// <returns></returns>
-        public List<CLASS_TASKS> ReadlAllSTasksFromDB()
+
+        public List<CLASS_TASKS> ShortReadTask(int MeasTaskId)
         {
-            // Список объектов в рамках конкретного адаптера ICSM
             L_IN = new List<CLASS_TASKS>();
             try
             {
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                    logger.Trace("Start procedure ReadlAllSTasksFromDB...");
+                    logger.Trace("Start procedure ReadTask...");
                     // сканирование по объектам БД
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
@@ -266,11 +259,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     //подключение к БД
                     YXbsMeastask task = new YXbsMeastask();
                     task.Format("*");
-                    // выбирать только таски, для которых STATUS не NULL
-                    task.Filter = "(ID>0) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')";
-                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext()) {
+                    task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')", MeasTaskId);
+                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
+                    {
                         ICSM_T = new CLASS_TASKS();
-                        ////////
                         YXbsMeastask m_meas_task = new YXbsMeastask();
                         m_meas_task.CopyDataFrom(task);
                         ICSM_T.meas_task = m_meas_task;
@@ -292,7 +284,180 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         XbsMeasstation_.Dispose();
                         ICSM_T.Stations = LXbsMeasstation;
 
-                        ///
+                        YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
+                        MeasDtParam_.Format("*");
+                        MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                        for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext())
+                        {
+                            var m = new YXbsMeasdtparam();
+                            m.CopyDataFrom(MeasDtParam_);
+                            ICSM_T.MeasDtParam.Add(m);
+                            m.Dispose();
+                        }
+                        MeasDtParam_.Close();
+                        MeasDtParam_.Dispose();
+
+                        YXbsMeastimeparaml TimeParamList_ = new YXbsMeastimeparaml();
+                        TimeParamList_.Format("*");
+                        TimeParamList_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                        for (TimeParamList_.OpenRs(); !TimeParamList_.IsEOF(); TimeParamList_.MoveNext())
+                        {
+                            var m = new YXbsMeastimeparaml();
+                            m.CopyDataFrom(TimeParamList_);
+                            ICSM_T.MeasTimeParamList = m;
+                            m.Dispose();
+                        }
+                        TimeParamList_.Close();
+                        TimeParamList_.Dispose();
+
+                        YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
+                        MeasLocParam_.Format("*");
+                        MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                        for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext())
+                        {
+                            var m = new YXbsMeaslocparam();
+                            m.CopyDataFrom(MeasLocParam_);
+                            ICSM_T.MeasLocParam.Add(m);
+                            m.Dispose();
+                        }
+                        MeasLocParam_.Close();
+                        MeasLocParam_.Dispose();
+
+                        YXbsMeasother MeasOther_ = new YXbsMeasother();
+                        MeasOther_.Format("*");
+                        MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                        for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext())
+                        {
+                            var m = new YXbsMeasother();
+                            m.CopyDataFrom(MeasOther_);
+                            ICSM_T.MeasOther = m;
+                            m.Dispose();
+                        }
+                        MeasOther_.Close();
+                        MeasOther_.Dispose();
+
+                        YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
+                        MeasFreqParam_.Format("*");
+                        MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                        for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext())
+                        {
+                            var m = new YXbsMeasfreqparam();
+                            m.CopyDataFrom(MeasFreqParam_);
+                            List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
+                            YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
+                            MeasFreqLst_.Format("*");
+                            MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
+                            for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext())
+                            {
+                                var m_fr = new YXbsMeasfreq();
+                                m_fr.CopyDataFrom(MeasFreqLst_);
+                                FreqL.Add(m_fr);
+                                m_fr.Dispose();
+                            }
+                            MeasFreqLst_.Close();
+                            MeasFreqLst_.Dispose();
+
+                            KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
+                            ICSM_T.MeasFreqLst_param.Add(key);
+                            m.Dispose();
+                        }
+                        MeasFreqParam_.Close();
+                        MeasFreqParam_.Dispose();
+
+                        YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                        MeasSubTask_.Format("*");
+                        MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                        for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                        {
+                            var m = new YXbsMeassubtask();
+                            m.CopyDataFrom(MeasSubTask_);
+                            List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
+                            YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                            MeasSubTaskSt_.Format("*");
+                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                            for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                            {
+                                var m_fr = new YXbsMeassubtasksta();
+                                m_fr.CopyDataFrom(MeasSubTaskSt_);
+                                SubTaskStL.Add(m_fr);
+                                m_fr.Dispose();
+                            }
+                            MeasSubTaskSt_.Close();
+                            MeasSubTaskSt_.Dispose();
+                            KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
+                            ICSM_T.meas_st.Add(key);
+                            m.Dispose();
+                        }
+                        MeasSubTask_.Close();
+                        MeasSubTask_.Dispose();
+                        L_IN.Add(ICSM_T);
+                    }
+                    task.Close();
+                    task.Dispose();
+                    logger.Trace("End procedure ReadTask.");
+                });
+                tsk.Start();
+                tsk.Join();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error in ReadTask: " + ex.Message);
+            }
+            return L_IN;
+        }
+
+        /// <summary>
+        /// Извлечение с БД ICSM списка всех TASKS
+        /// </summary>
+        /// <returns></returns>
+        public List<CLASS_TASKS> ReadlAllSTasksFromDB()
+        {
+            // Список объектов в рамках конкретного адаптера ICSM
+            L_IN = new List<CLASS_TASKS>();
+            try
+            {
+                #region Load Tasks from DB
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                    logger.Trace("Start procedure ReadlAllSTasksFromDB...");
+                    CLASS_TASKS ICSM_T = new CLASS_TASKS();
+                    ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
+                    ICSM_T.meas_task = new YXbsMeastask();
+                    ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
+                    ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
+                    ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
+                    ICSM_T.MeasOther = new YXbsMeasother();
+                    ICSM_T.MeasTimeParamList = new YXbsMeastimeparaml();
+                    ICSM_T.Stations = new List<YXbsMeasstation>();
+                    ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
+
+
+                    YXbsMeastask task = new YXbsMeastask();
+                    task.Format("*");
+                    task.Filter = "(ID>0) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')";
+                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext()) {
+                        ICSM_T = new CLASS_TASKS();
+                        YXbsMeastask m_meas_task = new YXbsMeastask();
+                        m_meas_task.CopyDataFrom(task);
+                        ICSM_T.meas_task = m_meas_task;
+                        m_meas_task.Close();
+                        m_meas_task.Dispose();
+
+                        List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
+                        YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
+                        XbsMeasstation_.Format("*");
+                        XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
+                        for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
+                        {
+                            var m_fr = new YXbsMeasstation();
+                            m_fr.CopyDataFrom(XbsMeasstation_);
+                            LXbsMeasstation.Add(m_fr);
+                            m_fr.Dispose();
+                        }
+                        XbsMeasstation_.Close();
+                        XbsMeasstation_.Dispose();
+                        ICSM_T.Stations = LXbsMeasstation;
+
 
                         List<YXbsStationdatform> LYXbsStationdatform = new List<YXbsStationdatform>();
                         YXbsStationdatform XbsStationdatform_ = new YXbsStationdatform();
@@ -439,10 +604,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                 logger.Trace("Start procedure SaveStatusTaskToDB...");
-                //подключение к БД
                 YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
-                // выбирать только сенсоры, для которых STATUS не NULL
                 task.Filter = string.Format("(ID={0})", obj.Id.Value);
                 for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                 {
@@ -465,9 +628,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         task.m_status = NewStatus;
                                         MeasSubTask_.m_status = NewStatus;
                                         MeasSubTaskSt_.m_status = NewStatus;
-                                        MeasSubTaskSt_.Save();
-                                        MeasSubTask_.Save();
-                                        task.Save();
+                                        MeasSubTaskSt_.Save(null,null);
+                                        MeasSubTask_.Save(null, null);
+                                        task.Save(null, null);
                                 }
                             }
                             MeasSubTaskSt_.Close();
@@ -504,10 +667,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     logger.Trace("Start procedure SaveStatusTaskToDB...");
-                    //подключение к БД
                     YXbsMeastask task = new YXbsMeastask();
                     task.Format("*");
-                    // выбирать только сенсоры, для которых STATUS не NULL
                     task.Filter = string.Format("(ID={0})", obj.Id.Value);
                     for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                     {
@@ -530,9 +691,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         task.m_status = obj.Status;
                                         MeasSubTask_.m_status = M_TS.Status;
                                         MeasSubTaskSt_.m_status = M_STX.Status;
-                                        MeasSubTaskSt_.Save();
-                                        MeasSubTask_.Save();
-                                        task.Save();
+                                        MeasSubTaskSt_.Save(null,null);
+                                        MeasSubTask_.Save(null,null);
+                                        task.Save(null,null);
                                     }
                                 }
                                 MeasSubTaskSt_.Close();
@@ -569,13 +730,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                 logger.Trace("Start procedure SaveIdsSdrTasks...");
-                //подключение к БД
                  YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
                 if (task.Fetch(obj.Id.Value)) {
                     task.m_id_start = ids;
-                    task.Save();
-                    //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "SaveIdsSdrTasks saved..." );
+                    task.Save(null,null);
                 }
                 task.Close();
                 task.Dispose();
@@ -651,7 +810,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             int MaxIDs = -1;
             try
             {
-                string ids = "";
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                 logger.Trace("Start procedure GetMaXIdsSdrResults...");
                 YXbsMeasurementres res = new YXbsMeasurementres();
@@ -691,10 +849,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             {
                System.Threading.Thread tsk = new System.Threading.Thread(() => {
                logger.Trace("Start procedure SetHistoryStatusTasksInDB...");
-               //подключение к БД 
                 YXbsMeastask task = new YXbsMeastask();
                 task.Format("*");
-                // выбирать только сенсоры, для которых STATUS не NULL
                 task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL)",obj.Id.Value);
                 for (task.OpenRs(); !task.IsEOF(); task.MoveNext()) {
                    YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
@@ -712,7 +868,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 if (M_STX != null) {
                                     if (M_STX.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0) {
                                         MeasSubTaskSt_.m_status = status;
-                                        MeasSubTaskSt_.Save();
+                                        MeasSubTaskSt_.Save(null,null);
                                     }
                                 }
                             }
@@ -720,13 +876,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             MeasSubTaskSt_.Dispose();
                         }
                            MeasSubTask_.m_status = status;
-                           MeasSubTask_.Save();
+                           MeasSubTask_.Save(null,null);
                        }
                     MeasSubTask_.Close();
                     MeasSubTask_.Dispose();
 
                     task.m_status = status;
-                    task.Save();
+                    task.Save(null,null);
                 }
                 task.Close();
                 task.Dispose();
@@ -750,15 +906,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public int SaveTaskToDB(MeasTask obj)
         {
             int ID = Constants.NullI;
-            Yyy transaction = new Yyy();
+            Yyy yyy = new Yyy();
+            DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+            DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
             try
             {
                 #region Save Task
                 System.Threading.Thread thread = new System.Threading.Thread(() =>
                 {
                     logger.Trace("Start procedure SaveTaskToDB...");
-                    /// Create new record in YXbsMeastask
-                    transaction.BeginTransaction();
                     if (obj.Id != null)
                     {
                         if (obj.Id.Value != Constants.NullI)
@@ -779,7 +935,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 meastask.m_executionmode = obj.ExecutionMode.ToString();
                                 if (obj.DateCreated != null) meastask.m_datecreated = obj.DateCreated.GetValueOrDefault();
                                 if (obj.OrderId != null) meastask.m_orderid = obj.OrderId.GetValueOrDefault();
-                                ID = (int)meastask.Save();
+                                ID = (int)meastask.Save(dbConnect,transaction);
                                 obj.Id.Value = ID;
                             }
                             else
@@ -792,7 +948,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                         if (ID != Constants.NullI)
                         {
-                            //// create YXbMeasDtParam
                             if (obj.MeasDtParam != null)
                             {
                                 List<Yyy> BlockInsert_YXbsMeasdtparam = new List<Yyy>();
@@ -831,14 +986,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsMeasdtparam YXbsMeasdtparam11 = new YXbsMeasdtparam();
                                     YXbsMeasdtparam11.Format("*");
                                     YXbsMeasdtparam11.New();
-                                    YXbsMeasdtparam11.SaveBath(BlockInsert_YXbsMeasdtparam);
+                                    YXbsMeasdtparam11.SaveBath(BlockInsert_YXbsMeasdtparam, dbConnect, transaction);
                                     YXbsMeasdtparam11.Close();
                                     YXbsMeasdtparam11.Dispose();
                                 }
                             }
 
 
-                            //// create YXbsMeaslocparam
                             if (obj.MeasLocParams != null)
                             {
                                 foreach (MeasLocParam loc_param in obj.MeasLocParams.ToArray())
@@ -857,7 +1011,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 if (loc_param.Lon != null) prm_loc.m_lon = loc_param.Lon.GetValueOrDefault();
                                                 if (loc_param.MaxDist != null) prm_loc.m_maxdist = loc_param.MaxDist.GetValueOrDefault();
                                                 prm_loc.m_id_xbs_meastask = ID;
-                                                int ID_loc_params = (int)prm_loc.Save();
+                                                int ID_loc_params = (int)prm_loc.Save(dbConnect, transaction);
                                                 loc_param.Id.Value = ID_loc_params;
 
                                             }
@@ -867,7 +1021,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                 }
                             }
-                            /// create YXbsMeasother
                             if (obj.MeasOther != null)
                             {
                                 List<Yyy> BlockInsert_YXbsMeasother = new List<Yyy>();
@@ -899,13 +1052,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsMeasother YXbsMeasother11 = new YXbsMeasother();
                                     YXbsMeasother11.Format("*");
                                     YXbsMeasother11.New();
-                                    YXbsMeasother11.SaveBath(BlockInsert_YXbsMeasother);
+                                    YXbsMeasother11.SaveBath(BlockInsert_YXbsMeasother, dbConnect, transaction);
                                     YXbsMeasother11.Close();
                                     YXbsMeasother11.Dispose();
                                 }
                             }
 
-                            ///// Create New YXbsMeastimeparaml
                             if (obj.MeasTimeParamList != null)
                             {
                                 List<Yyy> BlockInsert_YXbsMeastimeparaml = new List<Yyy>();
@@ -938,12 +1090,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsMeastimeparaml YXbsMeastimeparaml11 = new YXbsMeastimeparaml();
                                     YXbsMeastimeparaml11.Format("*");
                                     YXbsMeastimeparaml11.New();
-                                    YXbsMeastimeparaml11.SaveBath(BlockInsert_YXbsMeastimeparaml);
+                                    YXbsMeastimeparaml11.SaveBath(BlockInsert_YXbsMeastimeparaml, dbConnect, transaction);
                                     YXbsMeastimeparaml11.Close();
                                     YXbsMeastimeparaml11.Dispose();
                                 }
                             }
-                            ///////// create new YXbMeasSubTask
+
                             if (obj.MeasSubTasks != null)
                             {
                                 foreach (MeasSubTask sub_task in obj.MeasSubTasks.ToArray())
@@ -964,7 +1116,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 prm_sub_task.m_status = sub_task.Status;
                                                 prm_sub_task.m_timestart = sub_task.TimeStart;
                                                 prm_sub_task.m_timestop = sub_task.TimeStop;
-                                                ID_sub_task = (int)prm_sub_task.Save();
+                                                ID_sub_task = (int)prm_sub_task.Save(dbConnect, transaction);
                                                 sub_task.Id.Value = ID_sub_task;
                                             }
                                             else {
@@ -992,7 +1144,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (sub_task_st.TimeNextTask != null) prm_sub_task_st.m_timenexttask = sub_task_st.TimeNextTask.GetValueOrDefault();
                                                     if (sub_task_st.Count != null) prm_sub_task_st.m_count = sub_task_st.Count.GetValueOrDefault();
                                                     prm_sub_task_st.m_id_xbs_sensor = sub_task_st.StationId.Value;
-                                                    sub_task_st.Id = (int)prm_sub_task_st.Save();
+                                                    sub_task_st.Id = (int)prm_sub_task_st.Save(dbConnect, transaction);
                                                 }
                                                 else {
                                                     sub_task_st.Id = (int)prm_sub_task_st.m_id;
@@ -1002,14 +1154,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             }
                                         }
                                     }
-
                                 }
                             }
 
-                            ////// Create  new YXbMeasFreqParam
                             if (obj.MeasFreqParam != null)
                             {
-
                                 foreach (MeasFreqParam freq_param in new List<MeasFreqParam> { obj.MeasFreqParam })
                                 {
                                     int ID_MeasFreqParam = Constants.NullI;
@@ -1025,7 +1174,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (freq_param.RgL != null) prm_MeasFreqParam.m_rgl = freq_param.RgL.GetValueOrDefault();
                                             if (freq_param.RgU != null) prm_MeasFreqParam.m_rgu = freq_param.RgU.GetValueOrDefault();
                                             if (freq_param.Step != null) prm_MeasFreqParam.m_step = freq_param.Step.GetValueOrDefault();
-                                            ID_MeasFreqParam = (int)prm_MeasFreqParam.Save();
+                                            ID_MeasFreqParam = (int)prm_MeasFreqParam.Save(dbConnect, transaction);
                                         }
                                         else {
                                             ID_MeasFreqParam = (int)prm_MeasFreqParam.m_id;
@@ -1066,7 +1215,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             YXbsMeasfreq YXbsMeasfreq11 = new YXbsMeasfreq();
                                             YXbsMeasfreq11.Format("*");
                                             YXbsMeasfreq11.New();
-                                            YXbsMeasfreq11.SaveBath(BlockInsert_MeasFreq);
+                                            YXbsMeasfreq11.SaveBath(BlockInsert_MeasFreq, dbConnect, transaction);
                                             YXbsMeasfreq11.Close();
                                             YXbsMeasfreq11.Dispose();
                                         }
@@ -1088,7 +1237,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         prm_XbsMeasstation.m_id_xbs_meastask = ID;
                                         prm_XbsMeasstation.m_stationid = s_st.StationId.Value;
                                         prm_XbsMeasstation.m_stationtype = s_st.StationType;
-
                                     }
                                     else
                                     {
@@ -1107,13 +1255,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsMeasstation YXbsMeasstation11 = new YXbsMeasstation();
                                     YXbsMeasstation11.Format("*");
                                     YXbsMeasstation11.New();
-                                    YXbsMeasstation11.SaveBath(BlockInsert_YXbsMeasstation);
+                                    YXbsMeasstation11.SaveBath(BlockInsert_YXbsMeasstation, dbConnect, transaction);
                                     YXbsMeasstation11.Close();
                                     YXbsMeasstation11.Dispose();
                                 }
                             }
-
-                            /// Проверка сохранения StationsForMeasurements
 
                             if (obj.StationsForMeasurements != null)
                             {
@@ -1128,11 +1274,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
                                     if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
                                     prm_loc.m_id_xbs_meastask = ID;
-                                    ID_loc_params = (int)prm_loc.Save();
+                                    ID_loc_params = (int)prm_loc.Save(dbConnect, transaction);
                                     StationData_param.IdStation = ID_loc_params;
-
-
-
                                     prm_loc.Close();
                                     prm_loc.Dispose();
 
@@ -1147,7 +1290,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
                                         if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
 
-                                        int ID_site_formeas = (int)site_formeas.Save();
+                                        int ID_site_formeas = (int)site_formeas.Save(dbConnect, transaction);
                                         site_formeas.m_id_stationdatform = ID_loc_params;
                                         site_formeas.Close();
                                         site_formeas.Dispose();
@@ -1162,7 +1305,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (StationData_param.LicenseParameter.DozvilName != null) perm_formeas.m_dozvilname = StationData_param.LicenseParameter.DozvilName;
                                         if (StationData_param.LicenseParameter.EndDate != null) perm_formeas.m_enddate = StationData_param.LicenseParameter.EndDate.GetValueOrDefault();
                                         if (StationData_param.LicenseParameter.StartDate != null) perm_formeas.m_startdate = StationData_param.LicenseParameter.StartDate.GetValueOrDefault();
-                                        int ID_perm_formeas = (int)perm_formeas.Save();
+                                        int ID_perm_formeas = (int)perm_formeas.Save(dbConnect, transaction);
                                         perm_formeas.m_id_stationdatform = ID_loc_params;
                                         perm_formeas.Close();
                                         perm_formeas.Dispose();
@@ -1178,7 +1321,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
                                         if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
                                         if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
-                                        int ID_perm_formeas = (int)owner_formeas.Save();
+                                        int ID_perm_formeas = (int)owner_formeas.Save(dbConnect, transaction);
                                         owner_formeas.m_id_stationdatform = ID_perm_formeas;
                                         owner_formeas.Close();
                                         owner_formeas.Dispose();
@@ -1198,7 +1341,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (sec.ClassEmission != null) sect_formeas.m_classemission = sec.ClassEmission;
                                             if (sec.EIRP != null) sect_formeas.m_eirp = sec.EIRP.GetValueOrDefault();
                                             sect_formeas.m_id_stationdatform = ID_loc_params;
-                                            int ID_secformeas = (int)sect_formeas.Save();
+                                            int ID_secformeas = (int)sect_formeas.Save(dbConnect, transaction);
                                             sect_formeas.Close();
                                             sect_formeas.Dispose();
 
@@ -1226,7 +1369,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     YXbsFreqforsectics freq_formeas11 = new YXbsFreqforsectics();
                                                     freq_formeas11.Format("*");
                                                     freq_formeas11.New();
-                                                    freq_formeas11.SaveBath(BlockInsert);
+                                                    freq_formeas11.SaveBath(BlockInsert, dbConnect, transaction);
                                                     freq_formeas11.Close();
                                                     freq_formeas11.Dispose();
                                                 }
@@ -1240,7 +1383,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     YXbsMaskelements mask_formeas = new YXbsMaskelements();
                                                     mask_formeas.Format("*");
                                                     mask_formeas.New();
-                                                    //int ID_freq_formeas = mask_formeas.AllocID();
                                                     if (F.BW != null) mask_formeas.m_bw = F.BW.GetValueOrDefault();
                                                     if (F.level != null) mask_formeas.m_level = F.level.GetValueOrDefault();
                                                     mask_formeas.m_id_sectstformeas = ID_secformeas;
@@ -1255,7 +1397,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     YXbsMaskelements freq_formeas11 = new YXbsMaskelements();
                                                     freq_formeas11.Format("*");
                                                     freq_formeas11.New();
-                                                    freq_formeas11.SaveBath(BlockInsert);
+                                                    freq_formeas11.SaveBath(BlockInsert, dbConnect, transaction);
                                                     freq_formeas11.Close();
                                                     freq_formeas11.Dispose();
                                                 }
@@ -1266,8 +1408,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                         }
                     }
-                    //transaction.RollbackTransaction();
-                    transaction.CommitTransaction();
+                    transaction.Commit();
+                    //GlobalInit.blockingCollectionMeasTask.TryAdd(obj.Id.Value, obj);
                     logger.Trace("End procedure SaveTaskToDB.");
                     #endregion
                 });
@@ -1276,10 +1418,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
-                transaction.RollbackTransaction();
+                transaction.Rollback();
                 ID = Constants.NullI;
                 logger.Error("Error in SaveTaskToDB: " + ex.Message);
             }
+            transaction.Dispose();
+            dbConnect.Close();
+            dbConnect.Dispose();
             return ID;
         }
 

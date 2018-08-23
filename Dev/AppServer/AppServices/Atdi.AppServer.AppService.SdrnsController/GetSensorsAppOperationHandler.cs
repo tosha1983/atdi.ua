@@ -33,8 +33,13 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         {
             Logger.Trace(this, options, operationContext);
             List<Sensor> val = new List<Sensor>();
-            ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
-            val = gsd.LoadObjectAllSensor();
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
+                val = gsd.LoadObjectAllSensor();
+            });
+            thread.Start();
+            thread.Join();
             return val.ToArray();
         }
     }

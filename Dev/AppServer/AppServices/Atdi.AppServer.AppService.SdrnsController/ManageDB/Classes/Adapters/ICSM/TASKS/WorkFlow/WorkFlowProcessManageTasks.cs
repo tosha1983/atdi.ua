@@ -8,7 +8,7 @@ using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
-
+using Atdi.Oracle.DataAccess;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -38,37 +38,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             GC.SuppressFinalize(this);
         }
 
-        /*
-        public void UpdateListMeasTask()
-        {
-            logger.Trace("Start procedure UpdateListMeasTask...");
-            ClassConvertTasks ts = new ClassConvertTasks(logger);
-            ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
-            MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
-            List<MeasTask> mts_ = task.ToList();
-            //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
-            foreach (MeasTask FND in mts_.ToArray())
-            {
-                // Удаляем данные об объекте с глобального списка
-                if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == FND.Id.Value) == null) {
-                    GlobalInit.LIST_MEAS_TASK.Add(FND);
-                }
-                else {
-                    //lock (GlobalInit.LIST_MEAS_TASK)
-                    if ((FND.Status!=null) && (FND.Status != "N"))
-                    {
-                        MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == FND.Id.Value);
-                        if (fnd != null)
-                            GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, FND);
-                        else GlobalInit.LIST_MEAS_TASK.Add(FND);
-                    }
-                }
-            }
-            ts.Dispose();
-            cl.Dispose();
-            logger.Trace("End procedure UpdateListMeasTask.");
-        }
-        */
 
         /// <summary>
         /// Добавление в очередь новых тасков
@@ -83,23 +52,28 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             int NewIdMeasTask = -1;
             try
             {
-                if (s_out != null)
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    MeasTask Data_ = s_out;
-                    Data_.CreateAllSubTasks();
-                    List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(Data_.Id.Value)).ToList();
-                    if (mts_.Count() == 0)
+                    if (s_out != null)
                     {
-                        Data_.UpdateStatus(ActionType);
-                        NewIdMeasTask = cl.SaveTaskToDB(Data_);
+                        MeasTask Data_ = s_out;
+                        Data_.CreateAllSubTasks();
+                        List<MeasTask> mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(Data_.Id.Value)).ToList();
+                        if (mts_.Count() == 0)
+                        {
+                            Data_.UpdateStatus(ActionType);
+                            NewIdMeasTask = cl.SaveTaskToDB(Data_);
+                        }
+                        else
+                        {
+                            Data_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(Data_.Id.Value)).ToList()[0];
+                            Data_.UpdateStatus(ActionType);
+                            cl.SaveStatusTaskToDB(Data_);
+                        }
                     }
-                    else
-                    {
-                        Data_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(Data_.Id.Value)).ToList()[0];
-                        Data_.UpdateStatus(ActionType);
-                        cl.SaveStatusTaskToDB(Data_);
-                    }
-                }
+                });
+                tsk.Start();
+                tsk.Join();
 
             }
             catch (Exception er)
@@ -130,6 +104,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 //{
                 if (mt != null)
                 {
+                    //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
+                    MeasTask[] Res = new MeasTask[1] { mt };
                     List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
                     foreach (int SensorId in SensorIds.ToArray())
                     {
@@ -139,7 +115,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             System.Threading.Thread tsk = new System.Threading.Thread(() =>
                             {
                                 Checked_L.Clear();
-                                MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
                                 //if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
                                 if ((Res != null) && (Res.Length > 0))
                                 {
@@ -234,7 +209,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 }
                                 Checked_L.Clear();
                             });
-                            tsk.Start();
+                           tsk.Start();
                            tsk.Join();
                         }
                     }

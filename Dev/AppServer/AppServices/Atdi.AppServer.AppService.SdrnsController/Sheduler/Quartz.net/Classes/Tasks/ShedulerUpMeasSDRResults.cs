@@ -15,17 +15,17 @@ using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
-    public class Sheduler_Up_Meas_SDR_Results : InterfaceSheduler, IDisposable
+    public class ShedulerUpMeasSDRResults : InterfaceSheduler, IDisposable
     {
         public static ILogger logger;
-        public Sheduler_Up_Meas_SDR_Results(ILogger log)
+        public ShedulerUpMeasSDRResults(ILogger log)
         {
             if (logger == null) logger = log;
         }
         /// <summary>
         /// Деструктор.
         /// </summary>
-        ~Sheduler_Up_Meas_SDR_Results()
+        ~ShedulerUpMeasSDRResults()
         {
             Dispose();
         }
@@ -86,58 +86,55 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                         ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
                                         for (int i = 0; i < MEAS_SDR_RESULTS.Count; i++)
                                         {
-                                                if (MEAS_SDR_RESULTS.Count > 0)
+                                            if (MEAS_SDR_RESULTS.Count > 0)
+                                            {
+                                                if (MEAS_SDR_RESULTS[0] != null)
                                                 {
-                                                    if (MEAS_SDR_RESULTS[0] != null)
+                                                    int ID = -1;
+                                                    string Status_Original = MEAS_SDR_RESULTS[0].status;
+                                                    MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(MEAS_SDR_RESULTS[0]);
+                                                    if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
+                                                    if (msReslts.MeasurementsResults != null)
                                                     {
-                                                        int ID = -1;
-                                                        string Status_Original = MEAS_SDR_RESULTS[0].status;
-                                                        MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(MEAS_SDR_RESULTS[0]);
-                                                        if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
-                                                        if (msReslts.MeasurementsResults != null)
+                                                        if (msReslts.MeasurementsResults.Count() > 0)
                                                         {
-                                                            if (msReslts.MeasurementsResults.Count() > 0)
+                                                            if (msReslts.MeasurementsResults[0] is LevelMeasurementOnlineResult)
                                                             {
-                                                                if (msReslts.MeasurementsResults[0] is LevelMeasurementOnlineResult)
+                                                                msReslts.Status = "O";
+                                                                logger.Trace(string.Format("Start save online results..."));
+                                                                ID = DbGetRes.SaveResultToDB(msReslts);
+                                                                if (ID > 0)
                                                                 {
-                                                                    // Здесь в базу ничего не пишем (только в память)
-                                                                    msReslts.Status = "O";
-                                                                    //GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                                }
-                                                                else
-                                                                {
-                                                                    logger.Trace(string.Format("Start save results..."));
-                                                                    ID = DbGetRes.SaveResultToDB(msReslts);
-                                                                    if (ID > 0)
-                                                                    {
-                                                                        //GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                                        //if (MEAS_SDR_RESULTS.Count > 0) MEAS_SDR_RESULTS.Remove(MEAS_SDR_RESULTS[0]);
-                                                                        logger.Trace(string.Format("Success save results..."));
-                                                                    }
+                                                                    logger.Trace(string.Format("Success save online results..."));
                                                                 }
                                                             }
-                                                        }
-                                                        else
-                                                        {
-                                                            logger.Trace(string.Format("Start save results..."));
-                                                            ID = DbGetRes.SaveResultToDB(msReslts);
-                                                            if (ID > 0)
+                                                            else
                                                             {
-                                                                //GlobalInit.LST_MeasurementResults.Add(msReslts);
-                                                                //MEAS_SDR_RESULTS.Remove(MEAS_SDR_RESULTS[0]);
-                                                                logger.Trace(string.Format("Success save results..."));
+                                                                logger.Trace(string.Format("Start save results..."));
+                                                                ID = DbGetRes.SaveResultToDB(msReslts);
+                                                                if (ID > 0)
+                                                                {
+                                                                    logger.Trace(string.Format("Success save results..."));
+                                                                }
                                                             }
                                                         }
                                                     }
+                                                    else
+                                                    {
+                                                        logger.Trace(string.Format("Start save results..."));
+                                                        ID = DbGetRes.SaveResultToDB(msReslts);
+                                                        if (ID > 0)
+                                                        {
+                                                            logger.Trace(string.Format("Success save results..."));
+                                                        }
+                                                    }
+                                                    //GlobalInit.blockingCollectionMeasurementResults.TryAdd(msReslts);
                                                 }
-
-                                                //logger.Trace(string.Format("LST_MeasurementResults count: {0}", GlobalInit.LST_MeasurementResults.Count()));
-                                                //logger.Trace(string.Format("MEAS_SDR_RESULTS count: {0}", MEAS_SDR_RESULTS.Count()));
-                                                DbGetRes.Dispose();
-                                                conv.Dispose();
                                             }
+                                            DbGetRes.Dispose();
+                                            conv.Dispose();
+                                        }
                                     }
-                                   
                                 }
                             }
                             else

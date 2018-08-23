@@ -59,46 +59,41 @@ namespace Atdi.AppServer.RunServices
             /*
             System.Threading.Thread tt = new System.Threading.Thread(() => {
                 System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Normal;
-                    if (GlobalInit.LST_MeasurementResults.Count == 0) {
+                    if (GlobalInit.blockingCollectionMeasurementResults.Count == 0) {
                         MeasurementResults[] msResltConv = conv.ConvertTo_SDRObjects(DbGetRes.ReadlAllResultFromDB());
                         if (msResltConv != null) {
                             foreach (MeasurementResults inb in msResltConv.ToArray()) {
-                                GlobalInit.LST_MeasurementResults.Add(inb);
+                                GlobalInit.blockingCollectionMeasurementResults.TryAdd(inb);
                             }
                         }
                     }
             });
             tt.Start();
             tt.Join();
-            */
+           
 
-            /*
+           
               System.Threading.Thread tsg = new System.Threading.Thread(() => {
                 ClassesDBGetTasks cl = new ClassesDBGetTasks(this._logger);
                 ClassConvertTasks ts = new ClassConvertTasks(_logger);
                 MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
-                List<MeasTask> mts_ = task.ToList();
-                cl.Dispose();
+                  for (int i=0; i< task.Length; i++) GlobalInit.blockingCollectionMeasTask.TryAdd(task[i].Id.Value,task[i]);
+                  cl.Dispose();
                 ts.Dispose();
             });
             tsg.Start();
             tsg.Join();
+
             */
 
 
-           Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(_logger);
+           ShedulerUpMeasSDRResults Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
            Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-           //ShedulerReceiveStatusMeastaskSDR sc = new ShedulerReceiveStatusMeastaskSDR(this._logger);
-           //sc.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasTaskStatus);
            ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
            ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
-           //Sheduler_ArchiveSDRResults arch_sdrRes = new Sheduler_ArchiveSDRResults(); arch_sdrRes.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeArchiveResult);
            ShedulerCheckStart Quartz = new ShedulerCheckStart(this._logger);
            Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
-           
-
-
         }
 
         void IAppServerComponent.Deactivate()

@@ -9,6 +9,7 @@ using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
 using System.IO;
 using Atdi.AppServer;
+using System.Data.Common;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -708,6 +709,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public bool SaveLocationCoordSensor(Sensor sens)
         {
+            Yyy yyy = new Yyy();
+            DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+            DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
             try
             {
                 logger.Trace("Start procedure SaveLocationCoordSensor...");
@@ -735,7 +739,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     for (NH_sens_location_old.OpenRs(); !NH_sens_location_old.IsEOF(); NH_sens_location_old.MoveNext())
                                     {
                                         NH_sens_location_old.m_status = "Z";
-                                        NH_sens_location_old.Save();
+                                        NH_sens_location_old.Save(dbConnect,transaction);
                                     }
                                     NH_sens_location_old.Close();
                                     NH_sens_location_old.Dispose();
@@ -757,7 +761,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (sens_Locations.Lon != null) NH_sens_location.m_lon = sens_Locations.Lon.GetValueOrDefault();
                                     NH_sens_location.m_status = sens_Locations.Status;
                                     NH_sens_location.m_sensorid = m_ID_Sensor;
-                                    NH_sens_location.Save();
+                                    NH_sens_location.Save(dbConnect, transaction);
                                     NH_sens_location.Close();
                                     NH_sens_location.Dispose();
                                 }
@@ -772,11 +776,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     tsk.Join();
                     logger.Trace("End procedure SaveLocationCoordSensor.");
                 }
+                transaction.Commit();
             }
             catch (Exception ex)
             {
+                transaction.Rollback();
                 logger.Error("End procedure SaveLocationCoordSensor: " + ex.Message);
             }
+            transaction.Dispose();
+            dbConnect.Close();
+            dbConnect.Dispose();
             return true;
         }
 
@@ -787,12 +796,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public bool CreateNewObjectSensor(Sensor sens)
         {
-            Yyy transaction = new Yyy();
+            Yyy yyy = new Yyy();
+            DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+            DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
             try
             {
                 logger.Trace("Start procedure CreateNewObjectSensor...");
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                    transaction.BeginTransaction();
                     if (sens != null)
                     {
                         double? val = null;
@@ -805,7 +815,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             se.Filter = "(ID=-1)";
                             se.New();
-                            //m_ID_Sensor = se.AllocID();
                         }
                         else { se.Fetch(Fnd.Id.Value); m_ID_Sensor = Fnd.Id.Value; }
                         
@@ -831,12 +840,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         se.m_status = sens.Status;
                         if (sens.StepMeasTime != null) se.m_stepmeastime = sens.StepMeasTime.GetValueOrDefault();
                         se.m_typesensor = sens.TypeSensor;
-                        m_ID_Sensor = (int)se.Save();
+                        m_ID_Sensor = (int)se.Save(dbConnect, transaction);
 
                         if (se.Fetch(string.Format("ID={0}", m_ID_Sensor)))
                         {
                             se.m_sensoridentifier_id = m_ID_Sensor;
-                            se.SaveUpdate();
+                            se.SaveUpdate(dbConnect, transaction);
                         }
 
                         se.Close();
@@ -850,7 +859,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (!NH_sensor_ant.Fetch(string.Format("(SENSORID={0})", m_ID_Sensor)))
                             {
                                 NH_sensor_ant.New();
-                                //ID_sensor_ant = NH_sensor_ant.AllocID();
                             }
                             else ID_sensor_ant = (int)NH_sensor_ant.m_id;
                             NH_sensor_ant.m_addloss = sens.Antenna.AddLoss;
@@ -876,7 +884,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (sens.Antenna.VBeamwidth != null) NH_sensor_ant.m_vbeamwidth = sens.Antenna.VBeamwidth.GetValueOrDefault();
                             if (sens.Antenna.XPD != null) NH_sensor_ant.m_xpd = sens.Antenna.XPD.GetValueOrDefault();
                             NH_sensor_ant.m_sensorid = m_ID_Sensor;
-                            ID_sensor_ant = (int)NH_sensor_ant.Save();
+                            ID_sensor_ant = (int)NH_sensor_ant.Save(dbConnect, transaction);
                             NH_sensor_ant.Close();
                             NH_sensor_ant.Dispose();
 
@@ -889,7 +897,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (!NH_ant_patt.Fetch(string.Format("(SENSORANTENNA_ID={0}) and (FREQ{1}) and (GAIN{2}) ", ID_sensor_ant, patt_a.Freq != Constants.NullD ? "=" + patt_a.Freq.ToString().Replace(",", ".") : " IS NULL", patt_a.Gain != Constants.NullI ? "=" + patt_a.Gain.ToString().Replace(",", ".") : " IS NULL")))
                                     {
                                         NH_ant_patt.New();
-                                        //NH_ant_patt.AllocID();
                                     }
                                     NH_ant_patt.m_diaga = patt_a.DiagA;
                                     NH_ant_patt.m_diagh = patt_a.DiagH;
@@ -897,7 +904,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     NH_ant_patt.m_freq = patt_a.Freq;
                                     NH_ant_patt.m_gain = patt_a.Gain;
                                     NH_ant_patt.m_sensorantenna_id = ID_sensor_ant;
-                                    NH_ant_patt.Save();
+                                    NH_ant_patt.Save(dbConnect, transaction);
                                     NH_ant_patt.Close();
                                     NH_ant_patt.Dispose();
                                 }
@@ -911,7 +918,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (!NH_sens_eqp.Fetch(string.Format("(SENSORID={0})", m_ID_Sensor)))
                             {
                                 NH_sens_eqp.New();
-                                //ID_NH_sens_eqp = NH_sens_eqp.AllocID();
                             }
                             else ID_NH_sens_eqp = (int)NH_sens_eqp.m_id;
                             NH_sens_eqp.m_category = sens.Equipment.Category;
@@ -940,7 +946,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (sens.Equipment.VBWMin != null) NH_sens_eqp.m_vbwmin = sens.Equipment.VBWMin.GetValueOrDefault();
                             NH_sens_eqp.m_version = sens.Equipment.Version;
                             NH_sens_eqp.m_sensorid = m_ID_Sensor;
-                            ID_NH_sens_eqp = (int)NH_sens_eqp.Save();
+                            ID_NH_sens_eqp = (int)NH_sens_eqp.Save(dbConnect, transaction);
                             NH_sens_eqp.Close();
                             NH_sens_eqp.Dispose();
                             if (sens.Equipment.SensorEquipSensitivities != null)
@@ -954,7 +960,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (!NH_SensorEquipSensitivity_.Fetch(string.Format("(SENSOREQUIP_ID={0}) and (ADDLOSS{1}) and (FREQ{2}) and (FREQSTABILITY{3}) and (KTBF{4}) and (NOISEF{5})", ID_NH_sens_eqp, sens_eqp_s.AddLoss.HasValue ? "=" + sens_eqp_s.AddLoss.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.Freq != Constants.NullD ? "=" + sens_eqp_s.Freq.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.FreqStability.HasValue ? "=" + sens_eqp_s.FreqStability.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.KTBF.HasValue ? "=" + sens_eqp_s.KTBF.ToString().Replace(",", ".") : " IS NULL", sens_eqp_s.NoiseF.HasValue ? "=" + sens_eqp_s.NoiseF.ToString().Replace(",", ".") : " IS NULL")))
                                     {
                                         NH_SensorEquipSensitivity_.New();
-                                        //NH_SensorEquipSensitivity_.AllocID();
                                     }
                                     NH_SensorEquipSensitivity_.m_addloss = sens_eqp_s.AddLoss.GetValueOrDefault();
                                     NH_SensorEquipSensitivity_.m_freq = sens_eqp_s.Freq;
@@ -962,7 +967,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (sens_eqp_s.KTBF != null) NH_SensorEquipSensitivity_.m_ktbf = sens_eqp_s.KTBF.GetValueOrDefault();
                                     if (sens_eqp_s.NoiseF != null) NH_SensorEquipSensitivity_.m_noisef = sens_eqp_s.NoiseF.GetValueOrDefault();
                                     NH_SensorEquipSensitivity_.m_sensorequip_id = ID_NH_sens_eqp;
-                                    NH_SensorEquipSensitivity_.Save();
+                                    NH_SensorEquipSensitivity_.Save(dbConnect, transaction);
                                     NH_SensorEquipSensitivity_.Close();
                                     NH_SensorEquipSensitivity_.Dispose();
                                 }
@@ -983,7 +988,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     for (NH_sens_location_old.OpenRs(); !NH_sens_location_old.IsEOF(); NH_sens_location_old.MoveNext())
                                     {
                                         NH_sens_location_old.m_status = "Z";
-                                        NH_sens_location_old.Save();
+                                        NH_sens_location_old.Save(dbConnect, transaction);
                                     }
                                     NH_sens_location_old.Close();
                                     NH_sens_location_old.Dispose();
@@ -993,7 +998,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (!NH_sens_location.Fetch(string.Format("(SENSORID={0}) and (ASL{1}) and (LAT{2}) and (LON{3})", m_ID_Sensor, sens_Locations.ASL.HasValue ? "=" + sens_Locations.ASL.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lat.HasValue ? "=" + sens_Locations.Lat.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lon.HasValue ? "=" + sens_Locations.Lon.ToString().Replace(",", ".") : " IS NULL")))
                                     {
                                         NH_sens_location.New();
-                                        //NH_sens_location.AllocID();
                                     }
                                     if (sens_Locations.ASL != null) NH_sens_location.m_asl = sens_Locations.ASL.GetValueOrDefault();
                                     if (sens_Locations.DataCreated != null) NH_sens_location.m_datacreated = sens_Locations.DataCreated.GetValueOrDefault();
@@ -1003,7 +1007,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (sens_Locations.Lon != null) NH_sens_location.m_lon = sens_Locations.Lon.GetValueOrDefault();
                                     NH_sens_location.m_status = sens_Locations.Status;
                                     NH_sens_location.m_sensorid = m_ID_Sensor;
-                                    NH_sens_location.Save();
+                                    NH_sens_location.Save(dbConnect, transaction);
                                     NH_sens_location.Close();
                                     NH_sens_location.Dispose();
                                 }
@@ -1021,12 +1025,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (!NH_sens_location.Fetch(string.Format("(SENSORID={0}) and (LAT{1}) and (LON{2})", m_ID_Sensor, sens_Locations.Lat.HasValue ? "=" + sens_Locations.Lat.ToString().Replace(",", ".") : " IS NULL", sens_Locations.Lon.HasValue ? "=" + sens_Locations.Lon.ToString().Replace(",", ".") : " IS NULL")))
                                         {
                                             NH_sens_location.New();
-                                            //NH_sens_location.AllocID();
                                         }
                                         if (sens_Locations.Lat != null) NH_sens_location.m_lat = sens_Locations.Lat.GetValueOrDefault();
                                         if (sens_Locations.Lon != null) NH_sens_location.m_lon = sens_Locations.Lon.GetValueOrDefault();
                                         NH_sens_location.m_sensorid = m_ID_Sensor;
-                                        NH_sens_location.Save();
+                                        NH_sens_location.Save(dbConnect, transaction);
                                         NH_sens_location.Close();
                                         NH_sens_location.Dispose();
                                         logger.Trace("Success created record for table: YXbsSensorpolig");
@@ -1038,7 +1041,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                     
                 }
-                transaction.CommitTransaction();
+                transaction.Commit();
                 LoadObjectSensor();
                 });
                 tsk.Start();
@@ -1047,9 +1050,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("End procedure CreateNewObjectSensor.");
             }
             catch (Exception ex) {
-                transaction.RollbackTransaction();
+                transaction.Rollback();
                 logger.Error("Error in  procedure CreateNewObjectSensor: "+ex.Message);
             }
+            transaction.Dispose();
+            dbConnect.Close();
+            dbConnect.Dispose();
             return true;
         }
 
@@ -1080,7 +1086,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 for (se.OpenRs(); !se.IsEOF(); se.MoveNext())
                                 {
                                     se.m_status = sens.Status;
-                                    se.Save();
+                                    se.Save(null,null);
                                     break;
                                 }
                                 se.Close();
@@ -1116,7 +1122,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         for (se.OpenRs(); !se.IsEOF(); se.MoveNext())
                         {
                             se.m_status = sens.Status;
-                            se.Save();
+                            se.Save(null,null);
                             break;
                         }
                         se.Close();

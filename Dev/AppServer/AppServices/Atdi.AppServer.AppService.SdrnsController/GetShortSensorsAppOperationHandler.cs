@@ -45,7 +45,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 LstS = senLst.CreateShortSensorList();
             });
             th.Start();
-            th.IsBackground = true;
             th.Join();
             return LstS.ToArray();
         }

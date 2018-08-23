@@ -69,52 +69,56 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                 context.Scheduler.PauseAll();
                 try
                 {
-                    ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
-                    BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                    ClassConvertTasks ts = new ClassConvertTasks(logger);
-                    ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
-                    List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
-                    foreach (Sensor s in SensorListSDRNS.ToArray())
+                    System.Threading.Thread thread = new System.Threading.Thread(() =>
                     {
-                        if (ClassStaticBus.bus.Advanced.IsConnected)
+                        ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+                        BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                        ClassConvertTasks ts = new ClassConvertTasks(logger);
+                        ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
+                        List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
+                        foreach (Sensor s in SensorListSDRNS.ToArray())
                         {
-                            uint cnt = busManager.GetMessageCount(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
-                            for (int i = 0; i < cnt; i++)
+                            if (ClassStaticBus.bus.Advanced.IsConnected)
                             {
-                                var message = busManager.GetDataObject(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
-                                if (message != null)
+                                uint cnt = busManager.GetMessageCount(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
+                                for (int i = 0; i < cnt; i++)
                                 {
-                                    List<MeasSdrTask> fnd_s = message as List<MeasSdrTask>;
-                                    if (fnd_s != null)
+                                    var message = busManager.GetDataObject(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
+                                    if (message != null)
                                     {
-                                        foreach (MeasSdrTask h in fnd_s)
+                                        List<MeasSdrTask> fnd_s = message as List<MeasSdrTask>;
+                                        if (fnd_s != null)
                                         {
-                                            if (h.MeasTaskId != null)
+                                            foreach (MeasSdrTask h in fnd_s)
                                             {
-                                                MeasTask[] ResMeasTasks = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(h.MeasTaskId.Value));
-                                                MeasTask tsk = ResMeasTasks.ToList().Find(t => t.Id.Value == h.MeasTaskId.Value);
-                                                if (tsk != null)
+                                                if (h.MeasTaskId != null)
                                                 {
-                                                    tsk.Status = h.status;
-                                                    cl.SaveStatusTaskToDB(tsk);
+                                                    MeasTask[] ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(h.MeasTaskId.Value));
+                                                    MeasTask tsk = ResMeasTasks.ToList().Find(t => t.Id.Value == h.MeasTaskId.Value);
+                                                    if (tsk != null)
+                                                    {
+                                                        tsk.Status = h.status;
+                                                        cl.SaveStatusTaskToDB(tsk);
+                                                        //GlobalInit.blockingCollectionMeasTask.TryUpdate(h.Id, tsk, new MeasTask { CreatedBy = tsk.CreatedBy, DateCreated = tsk.DateCreated, ExecutionMode = tsk.ExecutionMode, Id = tsk.Id, MaxTimeBs = tsk.MaxTimeBs, MeasDtParam = tsk.MeasDtParam, MeasFreqParam = tsk.MeasFreqParam, MeasLocParams = tsk.MeasLocParams, MeasOther = tsk.MeasOther, MeasSubTasks = tsk.MeasSubTasks, MeasTimeParamList = tsk.MeasTimeParamList, Name = tsk.Name, OrderId = tsk.OrderId, Prio = tsk.Prio, ResultType = tsk.ResultType, Stations = tsk.Stations, StationsForMeasurements = tsk.StationsForMeasurements, Status = h.status, Task = tsk.Task, Type = tsk.Type });
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                else break;
                             }
-
+                            else
+                            {
+                                ClassStaticBus.bus.Dispose();
+                                GC.SuppressFinalize(ClassStaticBus.bus);
+                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
+                            }
                         }
-                        else
-                        {
-                            ClassStaticBus.bus.Dispose();
-                            GC.SuppressFinalize(ClassStaticBus.bus);
-                            ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                        }
-                    }
-                    cl.Dispose();
-                    System.GC.Collect();
+                        cl.Dispose();
+                        System.GC.Collect();
+                    });
+                    thread.Start();
+                    thread.Join();
                 }
                 catch (Exception ex)
                 {

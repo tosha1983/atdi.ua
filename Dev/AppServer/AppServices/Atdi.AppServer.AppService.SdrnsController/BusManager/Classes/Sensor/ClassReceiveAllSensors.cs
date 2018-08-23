@@ -50,29 +50,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
               System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     logger.Trace("Start procedure ReceiveAllSensorList...");
-                    //Sheduler_Up_Meas_SDR_Results Sc_Up_Meas_SDR = new Sheduler_Up_Meas_SDR_Results(logger);
-                    //Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
                     ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                     List<Sensor> SensorListSDRNS = DB.LoadObjectSensor();
-                    /*
-                    if (GlobalInit.SensorListSDRNS.Count == 0)
-                    {
-                        ClassDBGetSensor DB = new ClassDBGetSensor(logger);
-                        List<Sensor> L_S = DB.LoadObjectSensor();
-                        DB.Dispose();
-                        if (L_S != null)
-                        {
-                            foreach (Sensor stx in L_S.ToArray())
-                            {
-                                Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == stx.Name && t.Equipment.TechId == stx.Equipment.TechId);
-                                if (fnd != null)
-                                    GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, stx);
-                                else GlobalInit.SensorListSDRNS.Add(stx);
-                            }
-                        }
-                    }
-                    */
-
                     if (ClassStaticBus.bus.Advanced.IsConnected)
                         {
                             uint cnt = busManager.GetMessageCount(GlobalInit.Template_SENSORS_List_);
@@ -124,13 +103,13 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                             //Отправка на SDR уведомления о приеме сообщения
                                             busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
                                             L_S = DB.LoadObjectSensor();
-                                            if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
-                                            {
+                                            //if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
+                                            //{
                                                 //Sensor fnd = SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
                                                 //if (fnd != null)
                                                     //GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
                                                 //else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                            }
+                                            //}
                                         }
                                     }
                                     else
@@ -139,13 +118,13 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                         DB.SaveLocationCoordSensor((message as Sensor));
                                         busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
                                         List<Sensor> L_S = DB.LoadObjectSensor();
-                                        if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
-                                        {
+                                        //if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
+                                        //{
                                             //Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
                                             //if (fnd != null)
                                                 //GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
                                             //else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                        }
+                                        //}
                                     }
                                     DB.Dispose();
                                     GC.Collect();

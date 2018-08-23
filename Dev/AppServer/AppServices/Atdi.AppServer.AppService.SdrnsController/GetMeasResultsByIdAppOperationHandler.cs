@@ -34,20 +34,21 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             MeasurementResults res = new MeasurementResults();
             ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
-            List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDBTask(options.MeasResultsId.MeasTaskId.Value)).ToList();
+            //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t=>t.Id.MeasSdrResultsId== options.MeasResultsId.MeasSdrResultsId);
+            List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
             Logger.Trace(this, options, operationContext);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 if (options.MeasResultsId != null)
                 {
-                    if (options.MeasResultsId.MeasTaskId != null)
+                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
+                    if (LST_MeasurementResults != null)
                     {
-                        res = LST_MeasurementResults.Find(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId && t.Id.MeasTaskId.Value == options.MeasResultsId.MeasTaskId.Value && t.Id.SubMeasTaskId == options.MeasResultsId.SubMeasTaskId && t.Id.SubMeasTaskStationId == options.MeasResultsId.SubMeasTaskStationId);
+                        if (LST_MeasurementResults.Count > 0)  res = LST_MeasurementResults[0];
                     }
-                }
+               }
             });
             th.Start();
-            th.IsBackground = true;
             th.Join();
             return res;
         }
