@@ -14,16 +14,28 @@ namespace Atdi.DataModels.Sdrns.Device
     public class MeasTask
     {
         /// <summary>
-        /// Task identifier
-        /// </summary>
-        [DataMember]
-        public string TaskId { get; set; }
-
-        /// <summary>
         /// Instance name of SDRN Server, which puts a measurement task
         /// </summary>
         [DataMember]
         public string SdrnServer { get; set; }
+
+        /// <summary>
+        /// Sensor name
+        /// </summary>
+        [DataMember]
+        public string SensorName { get; set; }
+
+        /// <summary>
+        /// Equipment technical ID
+        /// </summary>
+        [DataMember]
+        public string EquipmentTechId { get; set; }
+
+        /// <summary>
+        /// Task identifier
+        /// </summary>
+        [DataMember]
+        public string TaskId { get; set; }
 
         /// <summary>
         /// Measurement type

@@ -14,10 +14,10 @@ namespace Atdi.DataModels.Sdrns.Device
     public class DeviceCommandResult
     {
         /// <summary>
-        /// Command ID
+        /// The instance name of the SDRN Server that puts the task on measurement
         /// </summary>
         [DataMember]
-        public string CommandId { get; set; }
+        public string SdrnServer { get; set; }
 
         /// <summary>
         /// Sensor name
@@ -30,6 +30,12 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public string EquipmentTechId { get; set; }
+
+        /// <summary>
+        /// Command ID
+        /// </summary>
+        [DataMember]
+        public string CommandId { get; set; }
 
         /// <summary>
         /// Status
