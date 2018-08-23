@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents sensor for measurement. Includes administrative and technical data.
+    /// Represents the sensor for measurement. Includes administrative and technical data
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
 
@@ -33,13 +33,13 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Administration { get; set; }
 
         /// <summary>
-        /// NetworkId
+        /// Network identifier
         /// </summary>
         [DataMember]
         public string NetworkId { get; set; }
 
         /// <summary>
-        /// Remark
+        /// Remarks
         /// </summary>
         [DataMember]
         public string Remark { get; set; }
@@ -57,13 +57,13 @@ namespace Atdi.DataModels.Sdrns.Device
         public DateTime? EouseDate { get; set; }
 
         /// <summary>
-        /// Azimuth, degree
+        /// Azimuth, degrees
         /// </summary>
         [DataMember]
         public double? Azimuth { get; set; }
 
         /// <summary>
-        /// Elevation, degree 
+        /// Elevation, degrees
         /// </summary>
         [DataMember]
         public double? Elevation { get; set; }
@@ -75,13 +75,13 @@ namespace Atdi.DataModels.Sdrns.Device
         public double? AGL { get; set; }
 
         /// <summary>
-        /// IdSysARGUS
+        /// ARGUS system identifier
         /// </summary>
         [DataMember]
         public string SysArgusId { get; set; }
 
         /// <summary>
-        /// TypeSensor
+        /// Sensor type
         /// </summary>
         [DataMember]
         public string Type { get; set; }
@@ -93,54 +93,54 @@ namespace Atdi.DataModels.Sdrns.Device
         public double? StepMeasTime { get; set; }
 
         /// <summary>
-        /// RxLoss, dB 
+        /// Rx losses, dB 
         /// </summary>
         [DataMember]
         public double? RxLoss { get; set; }
 
         /// <summary>
-        /// Operation HH From
+        /// Operation hours: From
         /// </summary>
         [DataMember]
         public double? OpHHFr { get; set; }
 
         /// <summary>
-        /// Operation HH To
+        /// Operation hours: To
         /// </summary>
         [DataMember]
         public double? OpHHTo { get; set; }
 
         /// <summary>
-        /// Operation Days
+        /// Operation days
         /// </summary>
         [DataMember]
         public string OpDays { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, text
         /// </summary>
         [DataMember]
         public string CustTxt1 { get; set; }
         /// <summary>
-        /// 
+        /// Custom data, datetime
         /// </summary>
         [DataMember]
-        public DateTime? CustData1 { get; set; }
+        public DateTime? CustDate1 { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, number (double)
         /// </summary>
         [DataMember]
         public double? CustNbr1 { get; set; }
 
         /// <summary>
-        /// DateCreated
+        /// Date created
         /// </summary>
         [DataMember]
         public DateTime? Created { get; set; }
 
         /// <summary>
-        /// CreatedBy
+        /// Created by
         /// </summary>
         [DataMember]
         public string CreatedBy { get; set; }
@@ -158,15 +158,15 @@ namespace Atdi.DataModels.Sdrns.Device
         public SensorAntenna Antenna { get; set; }
 
         /// <summary>
-        /// Locations of sensor
+        /// Sensor locations
         /// </summary>
         [DataMember]
         public SensorLocation[] Locations { get; set; }
 
         /// <summary>
-        /// Point of poligon of sensor
+        /// Points of sensor polygon
         /// </summary>
         [DataMember]
-        public SensorPoligon Poligon { get; set; }
+        public SensorPolygon Polygon { get; set; }
     }
 }

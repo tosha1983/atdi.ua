@@ -8,55 +8,55 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Параметры приемника для проведения измерений
+    /// Measurement device parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class DeviceMeasParam
     {
         /// <summary>
-        /// kHz
+        /// Radio bandwidth, kHz
         /// </summary>
         [DataMember]
         public double RBW_kHz { get; set; }
 
         /// <summary>
-        /// kHz
+        /// Video bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? VBW_kHz { get; set; }
 
         /// <summary>
-        /// kHz
+        /// Scanning bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? ScanBW_kHz { get; set; }
 
         /// <summary>
-        /// sec
+        /// Measurement time, sec
         /// </summary>
         [DataMember]
         public double? MeasTime_sec { get; set; }
 
         /// <summary>
-        /// dBm
+        /// Reference signal level, dBm
         /// </summary>
         [DataMember]
         public double? RefLevel_dBm { get; set; }
 
         /// <summary>
-        /// Average -> bb_api.BB_AVERAGE;  othre -> bb_api.BB_MIN_AND_MAX
+        /// Detection type
         /// </summary>
         [DataMember]
         public DetectingType DetectType { get; set; }
 
         /// <summary>
-        /// 0, 10, 20, ..., dB
+        /// Preamplification, dB
         /// </summary>
         [DataMember]
         public int? Preamplification_dB { get; set; }
 
         /// <summary>
-        /// 0, 10, 20, 30, ...,  dB 
+        /// RF attenuation, dB
         /// </summary>
         [DataMember]
         public int? RfAttenuation_dB { get; set; }

@@ -8,48 +8,48 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Represents the command result
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class DeviceCommandResult
     {
         /// <summary>
-        /// 
+        /// Command ID
         /// </summary>
         [DataMember]
         public string CommandId { get; set; }
 
         /// <summary>
-        /// Name
+        /// Sensor name
         /// </summary>
         [DataMember]
         public string SensorName { get; set; }
 
         /// <summary>
-        /// Technical ID
+        /// Equipment technical ID
         /// </summary>
         [DataMember]
         public string EquipmentTechId { get; set; }
 
         /// <summary>
-        /// 
+        /// Status
         /// </summary>
         [DataMember]
         public string Status { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom field, text
         /// </summary>
         [DataMember]
         public string CustTxt1 { get; set; }
         /// <summary>
-        /// 
+        /// Custom field, datetime
         /// </summary>
         [DataMember]
-        public DateTime? CustData1 { get; set; }
+        public DateTime? CustDate1 { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom field, number
         /// </summary>
         [DataMember]
         public double? CustNbr1 { get; set; }

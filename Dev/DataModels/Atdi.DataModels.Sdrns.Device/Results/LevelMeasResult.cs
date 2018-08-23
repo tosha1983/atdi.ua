@@ -8,39 +8,39 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Содержит результат измерения уровня сигнала в одной точки от некого передатчика.
+    /// Contains the signal level measurement result, obtained in one point from some transmitter
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class LevelMeasResult
     {
         /// <summary>
-        /// 
+        /// Geolocation
         /// </summary>
         [DataMember]
         public GeoLocation Location { get; set; }
 
         /// <summary>
-        /// уровень измеренного сигнала в полосе канала
+        /// Signal level measured within the channel band, dBm
         /// </summary>
         [DataMember]
         public double? Level_dBm { get; set; }
 
         /// <summary>
-        /// уровень измеренного сигнала в полосе канала 
+        /// Signal level measured within the channel band, dBuV/m
         /// </summary>
         [DataMember]
         public double? Level_dBmkVm { get; set; }
 
         /// <summary>
-        /// время когда был получен результат 
+        /// Time of the measurement result obtain
         /// </summary>
         [DataMember]
         public DateTime MeasurementTime { get; set; }
 
         /// <summary>
-        /// наносекунды 10^-9 Разсинхронизация с GPS
+        /// Difference with GPS time, ns
         /// </summary>
         [DataMember]
-        public double? DifferenceTimestamp_ns { get; set; }
+        public double? DifferenceTimeStamp_ns { get; set; }
     }
 }

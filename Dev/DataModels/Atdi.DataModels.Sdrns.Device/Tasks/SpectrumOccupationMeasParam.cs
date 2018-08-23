@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// параметря для измерения spectrum occupation
+    /// Spectrum occupancy measurement parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SpectrumOccupationMeasParam
     {
         /// <summary>
-        /// dBm
+        /// Trigger level for spectrum occupancy determination, dBm
         /// </summary>
         [DataMember]
         public double LevelMinOccup_dBm { get; set; }
 
         /// <summary>
-        /// FBO - freq bandwidth occupation , FCO - freq channel occupation.
+        /// Spectrum occupancy mode
         /// </summary>
         [DataMember]
         public SpectrumOccupationType Type { get; set; }
 
         /// <summary>
-        /// показывает сколько измерений необходимо сделать в канале Т.е. если канал 10 MHz а n_in_chenal = 5 то будем делать измерения с шагом = 10/5 = 2 MHz
+        /// Number of measurements to be performed within a channel
         /// </summary>
         [DataMember]
         public int MeasurmentNumber { get; set; }

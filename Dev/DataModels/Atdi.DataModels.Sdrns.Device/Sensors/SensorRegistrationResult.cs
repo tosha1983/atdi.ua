@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device.Sensors
 {
     /// <summary>
-    /// Represents sensor for measurement. Includes administrative and technical data.
+    /// Represents the sensor for measurement. Includes administrative and technical data
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SensorRegistrationResult
     {
         /// <summary>
-        /// Id
+        /// Sensor identifier
         /// </summary>
         [DataMember]
         public string SensorId { get; set; }
 
         /// <summary>
-        /// The instance name of the SDRN Server that puts the task on measurement
+        /// Instance name of SDRN Server, which puts a measurement task
         /// </summary>
         [DataMember]
         public string SdrnServer { get; set; }
 
         /// <summary>
-        /// Name
+        /// Name of sensor
         /// </summary>
         [DataMember]
         public string SensorName { get; set; }
@@ -38,13 +38,13 @@ namespace Atdi.DataModels.Sdrns.Device.Sensors
         public string EquipmentTechId { get; set; }
 
         /// <summary>
-        /// 
+        /// Status
         /// </summary>
         [DataMember]
         public string Status { get; set; }
 
         /// <summary>
-        /// 
+        /// Message
         /// </summary>
         [DataMember]
         public string Message { get; set; }

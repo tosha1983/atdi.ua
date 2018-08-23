@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\AntennaDirectional.cs" />
+    <Compile Include="Enums\AntennaDirectivity.cs" />
     <Compile Include="Enums\AntennaPolarization.cs" />
     <Compile Include="Enums\DetectingType.cs" />
     <Compile Include="Enums\FrequencyMode.cs" />

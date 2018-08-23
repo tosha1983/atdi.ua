@@ -52,7 +52,7 @@
     <Compile Include="Sensors\SensorUpdateResult.cs" />
     <Compile Include="Sensors\SensorRegistrationResult.cs" />
     <Compile Include="Results\StationSysInfo.cs" />
-    <Compile Include="Stations\StandarScantParameter.cs" />
+    <Compile Include="Stations\StandardScanParameter.cs" />
     <Compile Include="Stations\StationLicenseInfo.cs" />
     <Compile Include="Stations\ElementsMask.cs" />
     <Compile Include="Stations\MeasuredStation.cs" />
@@ -63,7 +63,7 @@
     <Compile Include="Sensors\SensorAntenna.cs" />
     <Compile Include="Sensors\SensorEquipment.cs" />
     <Compile Include="Sensors\SensorLocation.cs" />
-    <Compile Include="Sensors\SensorPoligon.cs" />
+    <Compile Include="Sensors\SensorPolygon.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Stations\SectorFrequency.cs" />
     <Compile Include="Stations\StationSector.cs" />

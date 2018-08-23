@@ -8,55 +8,55 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Параметры сетора станции
+    /// Station sector parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationSector
     {
         /// <summary>
-        /// В ICSM
+        /// Sector ID from ICSM
         /// </summary>
         [DataMember]
         public string SectorId { get; set; }
 
         /// <summary>
-        /// м, высота над уровнем земли
+        /// Altitude above ground level, m
         /// </summary>
         [DataMember]
         public double? AGL { get; set; }
 
         /// <summary>
-        /// дБм
+        /// EIRP, dBm
         /// </summary>
         [DataMember]
         public double? EIRP_dBm { get; set; }
 
         /// <summary>
-        /// град
+        /// Azimuth, degrees
         /// </summary>
         [DataMember]
-        public double? Azimut { get; set; }
+        public double? Azimuth { get; set; }
         
         /// <summary>
-        /// kHz
+        /// Bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? BW_kHz { get; set; }
 
         /// <summary>
-        /// 
+        /// Class of emission
         /// </summary>
         [DataMember]
         public string ClassEmission { get; set; }
 
         /// <summary>
-        /// 
+        /// Sector frequencies
         /// </summary>
         [DataMember]
         public SectorFrequency[] Frequencies { get; set; }
 
         /// <summary>
-        /// 
+        /// Spectrum mask
         /// </summary>
         [DataMember]
         public ElementsMask[] BWMask { get; set; }

@@ -14,31 +14,31 @@ namespace Atdi.DataModels.Sdrns.Device
     public class MeasuredFrequencies
     {
         /// <summary>
-        /// Mode of frequency  S	- Single frequency; L - Frequency list; R - Frequency range
+        /// Frequency mode
         /// </summary>
         [DataMember]
         public FrequencyMode Mode { get; set; }
 
         /// <summary>
-        /// Start freq, MHz
+        /// Lower frequency of the range, MHz
         /// </summary>
         [DataMember]
         public double? RgL_MHz { get; set; }
 
         /// <summary>
-        /// Stop freq, MHz
+        /// Upper frequency of the range, MHz
         /// </summary>
         [DataMember]
         public double? RgU_MHz { get; set; }
 
         /// <summary>
-        /// Step whith, kHz
+        /// Step, kHz
         /// </summary>
         [DataMember]
         public double? Step_kHz { get; set; }
 
         /// <summary>
-        /// Array (List) of the values of the frequencies 
+        /// Array of the frequencies, MHz
         /// </summary>
         [DataMember]
         public double[] Values_MHz { get; set; }

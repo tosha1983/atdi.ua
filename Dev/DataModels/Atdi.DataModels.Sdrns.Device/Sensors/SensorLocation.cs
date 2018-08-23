@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents location of sensor
+    /// Represents the sensor location
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SensorLocation : GeoLocation
     {
         /// <summary>
-        /// DataFrom
+        /// Date: From
         /// </summary>
         [DataMember]
         public DateTime? From { get; set; }
 
         /// <summary>
-        /// DataTo
+        /// Date: To
         /// </summary>
         [DataMember]
         public DateTime? To { get; set; }
 
         /// <summary>
-        /// DataCreated
+        /// Date created
         /// </summary>
         [DataMember]
         public DateTime? Created { get; set; }

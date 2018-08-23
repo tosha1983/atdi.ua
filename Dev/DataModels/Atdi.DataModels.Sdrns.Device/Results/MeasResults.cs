@@ -8,32 +8,32 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Общий результат измерений
+    /// Measurements general result
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class MeasResults
     {
         
         /// <summary>
-        /// Идентификатор таска
+        /// Task identifier
         /// </summary>
         [DataMember]
         public string TaskId { get; set; }
 
         /// <summary>
-        /// конкретное время окончания измерения  // для мобильных измерительных комплексов это время когда отправляется результат.
+        /// Time of measurement finish (for mobile measurement complexes it's a result sending time)
         /// </summary>
         [DataMember]
         public DateTime Measured { get; set; }
 
         /// <summary>
-        /// статус обекта
+        /// Object status
         /// </summary>
         [DataMember]
         public string Status { get; set; }
 
         /// <summary>
-        /// Используется для SO и храниться для запоминания количества измерений
+        /// Number of measurements, used for SO
         /// </summary>
         [DataMember]
         public int ScansSONumber { get; set; }
@@ -45,43 +45,43 @@ namespace Atdi.DataModels.Sdrns.Device
         public int SwNumber { get; set; }
 
         /// <summary>
-        /// Координаты измерения
+        /// Geolocation
         /// </summary>
         [DataMember]
         public GeoLocation Location { get; set; }
 
         /// <summary>
-        /// тип измерения 
+        /// Measurement type 
         /// </summary>
         [DataMember]
         public MeasurementType Measurement { get; set; }
 
         /// <summary>
-        /// Частотные отсчеты
+        /// Frequency samples
         /// </summary>
         [DataMember]
         public FrequencySample[] FrequencySamples { get; set; }
 
         /// <summary>
-        /// Частоты
+        /// Frequencies
         /// </summary>
         [DataMember]
         public float[] Frequencies { get; set; }
 
         /// <summary>
-        /// Уровни
+        /// Signal levels, dBm
         /// </summary>
         [DataMember]
         public float[] Levels_dBm { get; set; }
 
         /// <summary>
-        /// Результат измерения станций
+        /// Station measurement results
         /// </summary>
         [DataMember]
         public StationMeasResult[] StationResults { get; set; }
 
         /// <summary>
-        /// Результат измерения полосы частот
+        /// Bandwidth measurement result
         /// </summary>
         [DataMember]
         public BandwidthMeasResult BandwidthResult { get; set; }

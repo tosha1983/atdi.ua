@@ -8,18 +8,18 @@ using System.Runtime.Serialization;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Блок системной информации
+    /// System information block
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationSysInfoBlock
     {
         /// <summary>
-        /// Тип блока системной информации
+        /// Type of system information block
         /// </summary>
         [DataMember]
         public string Type { get; set; }
         /// <summary>
-        /// Данные блока системной информации
+        /// Data of system information block
         /// </summary>
         [DataMember]
         public string Data { get; set; }

@@ -14,14 +14,14 @@ namespace Atdi.DataModels.Sdrns
     public enum SpectrumOccupationType
     {
         /// <summary>
-        /// 
+        /// Frequency band occupancy
         /// </summary>
         [EnumMember]
-        FreqBandwidthOccupation,
+        FreqBandOccupancy,
         /// <summary>
-        /// 
+        /// Frequency channel occupancy
         /// </summary>
         [EnumMember]
-        FreqChannelOccupation
+        FreqChannelOccupancy
     }
 }

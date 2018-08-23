@@ -8,91 +8,91 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Содержит результаты измерений передатчика.
+    /// Contains the results of transmitter measurements
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class GeneralMeasResult
     {
         /// <summary>
-        /// кГц;
+        /// Radio bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? RBW_kHz { get; set; }
 
         /// <summary>
-        /// кГц;
+        /// Video bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? VBW_kHz { get; set; }
 
         /// <summary>
-        /// МГц частота согласно плану
+        /// Central frequency according to the channeling plan, MHz
         /// </summary>
         [DataMember]
         public double? CentralFrequency_MHz { get; set; }
 
         /// <summary>
-        /// МГц измеренный результат
+        /// Frequency measurement result, MHz
         /// </summary>
         [DataMember]
         public double? CentralFrequencyMeas_MHz { get; set; }
 
         /// <summary>
-        /// Относительно центральной частоты 10^-6
+        /// Frequency offset, x10^-6
         /// </summary>
         [DataMember]
         public double? OffsetFrequency_mk { get; set; }
 
         /// <summary>
-        /// МГц  первая частота спетра
+        /// Start spectrum frequency, MHz
         /// </summary>
         [DataMember]
         public decimal? SpectrumStartFreq_MHz { get; set; }
 
         /// <summary>
-        /// кГц  шаг у спектра
+        /// Spectrum step, kHz
         /// </summary>
         [DataMember]
         public decimal? SpectrumSteps_kHz { get; set; }
 
         /// <summary>
-        /// отсчеты спектра сигнала 
+        /// Spectrum levels, dBm
         /// </summary>
         [DataMember]
         public float[] LevelsSpectrum_dBm { get; set; }
 
         /// <summary>
-        /// маска сигнала 
+        /// Signal mask
         /// </summary>
         [DataMember]
         public ElementsMask[] BWMask { get; set; }
 
         /// <summary>
-        /// Результаты измерения полосы частот сигнала 
+        /// Bandwidth measurement result
         /// </summary>
         [DataMember]
         public BandwidthMeasResult BandwidthResult { get; set; }
 
         /// <summary>
-        /// сек, Длительность измерения частота согласно плану
+        /// Frequency measurement duration, sec
         /// </summary>
         [DataMember]
         public double? MeasDuration_sec { get; set; }
 
         /// <summary>
-        /// время начала измерения
+        /// Measurement start time
         /// </summary>
         [DataMember]
         public DateTime? MeasStartTime { get; set; }
 
         /// <summary>
-        /// время окончанияч измерения
+        /// Measurement finish time
         /// </summary>
         [DataMember]
         public DateTime? MeasFinishTime { get; set; }
 
         /// <summary>
-        /// Системная информация станции
+        /// Station system information
         /// </summary>
         [DataMember]
         public StationSysInfo StationSysInfo { get; set; }

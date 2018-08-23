@@ -8,37 +8,37 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// данные дозвола
+    /// License information
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationLicenseInfo
     {
         /// <summary>
-        /// из ICSM
+        /// License ID from ICSM
         /// </summary>
         [DataMember]
         public int? IcsmId { get; set; }
 
         /// <summary>
-        /// 
+        /// License name
         /// </summary>
         [DataMember]
         public string Name { get; set; }
 
         /// <summary>
-        /// 
+        /// Start date
         /// </summary>
         [DataMember]
         public DateTime? StartDate { get; set; }
 
         /// <summary>
-        /// 
+        /// End date
         /// </summary>
         [DataMember]
         public DateTime? EndDate { get; set; }
 
         /// <summary>
-        /// дата закртытия 
+        /// Close date
         /// </summary>
         [DataMember]
         public DateTime? CloseDate { get; set; }

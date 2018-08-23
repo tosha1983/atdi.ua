@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Параметры сайта станции
+    /// Parameters of the station site
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationSite : GeoPoint
     {
         /// <summary>
-        /// 
+        /// Address
         /// </summary>
         [DataMember]
         public string Adress { get; set; }
 
         /// <summary>
-        /// Район (часть области)
+        /// Region
         /// </summary>
         [DataMember]
         public string Region { get; set; }

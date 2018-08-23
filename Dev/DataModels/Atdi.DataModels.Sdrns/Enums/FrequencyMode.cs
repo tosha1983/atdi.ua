@@ -14,17 +14,17 @@ namespace Atdi.DataModels.Sdrns
     public enum FrequencyMode
     {
         /// <summary>
-        /// 
+        /// Single frequency mode
         /// </summary>
         [EnumMember]
         SingleFrequency,
         /// <summary>
-        /// 
+        /// Frequency list mode
         /// </summary>
         [EnumMember]
         FrequencyList,
         /// <summary>
-        /// 
+        /// Frequency range mode
         /// </summary>
         [EnumMember]
         FrequencyRange

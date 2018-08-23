@@ -8,33 +8,33 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Параметры частоты сектора станции 
+    /// Station sector frequency parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SectorFrequency
     {
         /// <summary>
-        /// Идентификатор частоты
+        /// Frequency identifier
         /// </summary>
         [DataMember]
         public int? Id; // 
 
         /// <summary>
-        /// Идетификатор частотного плана
+        /// Frequency plan identifier
         /// </summary>
         [DataMember]
         public int? PlanId; // 
 
         /// <summary>
-        /// 
+        /// Channel number
         /// </summary>
         [DataMember]
         public int? ChannelNumber;
 
         /// <summary>
-        /// 
+        /// Frequency, MHz
         /// </summary>
         [DataMember]
-        public decimal? Frequency_MHz; //МГц;
+        public decimal? Frequency_MHz;
     }
 }

@@ -8,56 +8,56 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Результат измерения станции
+    /// Station measurement result
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StationMeasResult
     {
         /// <summary>
-        /// Идентификатор станции
+        /// Station identifier
         /// </summary>
         [DataMember]
         public string StationId { get; set; }
 
         /// <summary>
-        /// Глобал сид из задачи
+        /// Global SID from the task
         /// </summary>
         [DataMember]
         public string TaskGlobalSid { get; set; }
 
         /// <summary>
-        /// измеренный глобал сид
+        /// Global SID measured
         /// </summary>
         [DataMember]
         public string RealGlobalSid { get; set; }
 
         /// <summary>
-        /// Идентификатор сектора
+        /// Sector identifier
         /// </summary>
         [DataMember]
         public string SectorId { get; set; }
 
         /// <summary>
-        /// Статус определяет соответсвие измеренных параметров лицензионным
+        /// Status, defines an accordance between the measured parameters with the licensed ones
         /// </summary>
         [DataMember]
         public string Status { get; set; }
         
         /// <summary>
-        /// радиостандарт станции
+        /// Station radio standard
         /// </summary>
         [DataMember]
         public string Standard { get; set; }
 
 
         /// <summary>
-        /// Набор уровней сиигнала от даного сектора данной станции по маршруту следования
+        /// Set of signal levels from a given sector of a given station within the planned route
         /// </summary>
         [DataMember]
         public LevelMeasResult[] LevelResults { get; set; }
 
         /// <summary>
-        /// обшие результаты измерения станции
+        /// General results of a station measurement
         /// </summary>
         [DataMember]
         public GeneralMeasResult GeneralResult { get; set; }

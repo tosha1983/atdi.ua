@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns
 {
     /// <summary>
-    /// Type of spectrum
+    /// Type of spectrum scan
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public enum SpectrumScanType
     {
         /// <summary>
-        /// 
+        /// Real time
         /// </summary>
         [EnumMember]
         RealTime,
 
         /// <summary>
-        /// 
+        /// Sweep
         /// </summary>
         [EnumMember]
         Sweep

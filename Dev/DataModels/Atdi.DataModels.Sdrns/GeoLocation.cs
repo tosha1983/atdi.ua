@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns
 {
     /// <summary>
-    /// Геопараметры точки.
+    /// Point geolocation parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class GeoLocation

@@ -14,19 +14,19 @@ namespace Atdi.DataModels.Sdrns
     public enum AntennaPolarization
     {
         /// <summary>
-        /// 
+        /// Vertical
         /// </summary>
         [EnumMember]
         V,
 
         /// <summary>
-        /// 
+        /// Horizontal
         /// </summary>
         [EnumMember]
         H,
 
         /// <summary>
-        /// 
+        /// Mixed
         /// </summary>
         [EnumMember]
         M

@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Элемент маски спектра сигнала 
+    /// Elements of signal spectrum mask
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class ElementsMask
     {
         /// <summary>
-        /// dB, например -3, - 30, -60
+        /// Level, dB (for example: -3, - 30, -60)
         /// </summary>
         [DataMember]
         public double? Level_dB { get; set; }
 
         /// <summary>
-        /// кГц, ширина спектра при данном уровне
+        /// Spectrum bandwidth on a given level, kHz
         /// </summary>
         [DataMember]
         public double? BW_kHz { get; set; }

@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents parameters of location for measurements.
+    /// Represents the location parameters for measurements
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class LocationMeasParam : GeoLocation
     {
         /// <summary>
-        /// Id
+        /// Identifier
         /// </summary>
         [DataMember]
         public int Id { get; set; }
 
         /// <summary>
-        /// MaxDist, km
+        /// Maximum distance, km
         /// </summary>
         [DataMember]
         public double? MaxDist { get; set; }

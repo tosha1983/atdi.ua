@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns
 {
     /// <summary>
-    /// Directional of antenna
+    /// Directivity of antenna
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public enum AntennaDirectional
+    public enum AntennaDirectivity
     {
         /// <summary>
-        /// 
+        /// Directional antenna
         /// </summary>
         [EnumMember]
         Directional,
 
         /// <summary>
-        /// 
+        /// Non-directional antenna
         /// </summary>
         [EnumMember]
-        NotDirectional
+        NonDirectional
     }
 }

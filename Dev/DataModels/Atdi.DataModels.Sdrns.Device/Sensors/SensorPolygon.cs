@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents location of point of poligon of sensor
+    /// Represents the sensor polygon
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class SensorPoligon
+    public class SensorPolygon
     {
         /// <summary>
-        /// 
+        /// Points coordinates
         /// </summary>
         [DataMember]
         public GeoPoint[] Points { get; set; }

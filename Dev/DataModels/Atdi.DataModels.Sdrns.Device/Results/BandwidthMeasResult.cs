@@ -8,39 +8,39 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Содержит результаты измерение ширины спектра сигнала
+    /// Contains the result of signal bandwidth measurement
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class BandwidthMeasResult
     {
         /// <summary>
-        /// индекс Т1 начало спектра сигнала 
+        /// Start point of frequency range to be measured
         /// </summary>
         [DataMember]
         public int? T1 { get; set; }
 
         /// <summary>
-        /// индекс Т2 конец спектра сигнала 
+        /// End point of frequency range to be measured
         /// </summary>
         [DataMember]
         public int? T2 { get; set; }
         /// <summary>
-        /// индекс спектра сигнала с максимальным уровнем 
+        /// Index of signal spectrum with maximum level
         /// </summary>
         [DataMember]
         public int? MarkerIndex { get; set; }
         /// <summary>
-        /// ширина спектра в килогерцах
+        /// Bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? Bandwidth_kHz { get; set; }
         /// <summary>
-        /// коректность проведеннного измерения согласно в ITU 443 
+        /// Validity of performed measurement according to ITU 443
         /// </summary>
         [DataMember]
         public bool? СorrectnessEstimations { get; set; }
         /// <summary>
-        /// Количество сканирований для определения BW
+        /// Number of scans for BW determination
         /// </summary>
         [DataMember]
         public int TraceCount { get; set; }

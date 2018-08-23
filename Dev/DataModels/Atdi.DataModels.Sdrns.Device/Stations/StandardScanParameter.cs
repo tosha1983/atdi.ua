@@ -8,38 +8,38 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Параметры настроек измерительной аппаратуры для обмера станций определенного стандарта
+    /// Parameters of measurement equipment settings for measuring the stations of different standards
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class StandarScantParameter
+    public class StandardScanParameter
     {
         /// <summary>
-        /// 
+        /// Standard
         /// </summary>
         [DataMember]
         public string Standard;
         /// <summary>
-        /// Максимальная Относительная растройка частоты, 10^-6
+        /// Maximal relative frequency offset, 10^-6
         /// </summary>
         [DataMember]
         public double? MaxFrequencyRelativeOffset_mk;
         /// <summary>
-        /// Уровень x для определения BW согласно рекомендации ITU 433 приложение 2, дБ
+        /// X level for bandwidth determination accoring to ITU 433 (Appendix 2), дБ
         /// </summary>
         [DataMember]
         public double? XdBLevel_dB;
         /// <summary>
-        /// Минимальный уровень сигнала для начала его анализа, дБм
+        /// Minimal signal level to start its analyzing, dBm
         /// </summary>
         [DataMember]
         public double? DetectionLevel_dBm;
         /// <summary>
-        /// Минимальный уровень сигнала для начала его анализа, дБм
+        /// Maximal allowed bandwidth, kHz
         /// </summary>
         [DataMember]
         public double? MaxPermissionBW_kHz;
         /// <summary>
-        /// Параметры приемника
+        /// Measurement device parameters
         /// </summary>
         [DataMember]
         public DeviceMeasParam DeviceParam;
