@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents antenna of sensor for measurement. Includes administrative and technical data.
+    /// Represents the antenna of sensor for measurement. Includes administrative and technical data
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
 
     public class SensorAntenna
     {
         /// <summary>
-        /// Code of Antenna
+        /// Code of antenna
         /// </summary>
         [DataMember]
         public string Code { get; set; }
 
         /// <summary>
-        /// SlewAng, degree
+        /// Slew angle, degrees
         /// </summary>
         [DataMember]
         public double? SlewAng { get; set; }
 
         /// <summary>
-        /// Manufacturer
+        /// Manufacturer of antenna
         /// </summary>
         [DataMember]
         public string Manufacturer { get; set; }
@@ -45,31 +45,31 @@ namespace Atdi.DataModels.Sdrns.Device
         public string TechId { get; set; }
 
         /// <summary>
-        /// Directional of antenna D -  directional, ND - not directional;
+        /// Directivity of antenna (D -  directional, ND - non-directional)
         /// </summary>
         [DataMember]
-        public AntennaDirectional Direction { get; set; }
+        public AntennaDirectivity Direction { get; set; }
 
         /// <summary>
-        /// Horizontal Beamwidth, degree
+        /// Horizontal beamwidth, degrees
         /// </summary>
         [DataMember]
         public double? HBeamwidth { get; set; }
 
         /// <summary>
-        /// Vertical Beamwidth, degree
+        /// Vertical beamwidth, degrees
         /// </summary>
         [DataMember]
         public double? VBeamwidth { get; set; }
 
         /// <summary>
-        /// Polarization V, H, M
+        /// Polarization (V - vertical, H - horizontal, M - mixed)
         /// </summary>
         [DataMember]
         public AntennaPolarization Polarization { get; set; }
 
         /// <summary>
-        /// UseType
+        /// Use type
         /// </summary>
         [DataMember]
         public string UseType { get; set; }
@@ -81,7 +81,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Category { get; set; }
 
         /// <summary>
-        /// Type of Gain D - dipole, V -vertical, I - isotropic
+        /// Type of gain (D - dipole, V - vertical, I - isotropic)
         /// </summary>
         [DataMember]
         public string GainType { get; set; }
@@ -93,16 +93,16 @@ namespace Atdi.DataModels.Sdrns.Device
         public double GainMax { get; set; }
 
         /// <summary>
-        /// Lower Frequency, MHz
+        /// Lower frequency, MHz
         /// </summary>
         [DataMember]
-        public double? LowerFreq { get; set; }
+        public double? LowerFreq_MHz { get; set; }
 
         /// <summary>
-        /// Upper Frequency, MHz
+        /// Upper frequency, MHz
         /// </summary>
         [DataMember]
-        public double? UpperFreq { get; set; }
+        public double? UpperFreq_MHz { get; set; }
 
         /// <summary>
         /// Additional loss, dB
@@ -111,7 +111,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public double AddLoss { get; set; }
 
         /// <summary>
-        /// XPD, dB
+        /// Cross-polarization discrimination, dB
         /// </summary>
         [DataMember]
         public double? XPD { get; set; }
@@ -123,31 +123,31 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Class { get; set; }
 
         /// <summary>
-        /// Remark
+        /// Remarks
         /// </summary>
         [DataMember]
         public string Remark { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, text
         /// </summary>
         [DataMember]
         public string CustTxt1 { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, datetime
         /// </summary>
         [DataMember]
-        public string CustData1 { get; set; }
+        public DateTime? CustDate1 { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, number (double)
         /// </summary>
         [DataMember]
         public double CustNbr1 { get; set; }
 
         /// <summary>
-        /// Patterns of antenna depends from frequency 
+        /// Antenna patterns depending on frequency 
         /// </summary>
         [DataMember]
         public AntennaPattern[] Patterns { get; set; }

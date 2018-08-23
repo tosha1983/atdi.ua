@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Directional of antenna
+    /// Elements of signal spectrum mask
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public enum AntennaDirectional
+    public class ElementsMask
     {
         /// <summary>
-        /// 
+        /// Level, dB (for example: -3, - 30, -60)
         /// </summary>
-        [EnumMember]
-        Directional,
+        [DataMember]
+        public double? Level_dB { get; set; }
 
         /// <summary>
-        /// 
+        /// Spectrum bandwidth on a given level, kHz
         /// </summary>
-        [EnumMember]
-        NotDirectional
-    }
+        [DataMember]
+        public double? BW_kHz { get; set; }
+}
 }

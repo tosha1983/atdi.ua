@@ -8,34 +8,27 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents the sensor location
+    /// Spectrum occupancy measurement parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class SensorLocation : GeoLocation
+    public class SpectrumOccupationMeasParam
     {
         /// <summary>
-        /// Date: From
+        /// Trigger level for spectrum occupancy determination, dBm
         /// </summary>
         [DataMember]
-        public DateTime? From { get; set; }
+        public double LevelMinOccup_dBm { get; set; }
 
         /// <summary>
-        /// Date: To
+        /// Spectrum occupancy mode
         /// </summary>
         [DataMember]
-        public DateTime? To { get; set; }
+        public SpectrumOccupationType Type { get; set; }
 
         /// <summary>
-        /// Date created
+        /// Number of measurements to be performed within a channel
         /// </summary>
         [DataMember]
-        public DateTime? Created { get; set; }
-
-        /// <summary>
-        /// Status
-        /// </summary>
-        [DataMember]
-        public string Status { get; set; }
-
+        public int MeasurmentNumber { get; set; }
     }
 }

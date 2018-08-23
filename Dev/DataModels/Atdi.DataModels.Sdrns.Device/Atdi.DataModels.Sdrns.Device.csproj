@@ -41,17 +41,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\DeviceCommandResult.cs" />
+    <Compile Include="Command\DeviceCommand.cs" />
+    <Compile Include="Results\BandwidthMeasResult.cs" />
+    <Compile Include="Results\FrequencySample.cs" />
+    <Compile Include="Results\GeneralMeasResult.cs" />
+    <Compile Include="Results\LevelMeasResult.cs" />
+    <Compile Include="Results\MeasResults.cs" />
+    <Compile Include="Results\StationMeasResult.cs" />
+    <Compile Include="Sensors\SensorUpdateResult.cs" />
+    <Compile Include="Sensors\SensorRegistrationResult.cs" />
+    <Compile Include="Results\StationSysInfo.cs" />
+    <Compile Include="Stations\StandardScanParameter.cs" />
+    <Compile Include="Stations\StationLicenseInfo.cs" />
+    <Compile Include="Stations\ElementsMask.cs" />
+    <Compile Include="Stations\MeasuredStation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sensors\AntennaDirectional.cs" />
     <Compile Include="Sensors\AntennaPattern.cs" />
-    <Compile Include="Sensors\AntennaPolarization.cs" />
     <Compile Include="Sensors\EquipmentSensitivity.cs" />
     <Compile Include="Sensors\Sensor.cs" />
     <Compile Include="Sensors\SensorAntenna.cs" />
     <Compile Include="Sensors\SensorEquipment.cs" />
     <Compile Include="Sensors\SensorLocation.cs" />
-    <Compile Include="Sensors\SensorPoligon.cs" />
+    <Compile Include="Sensors\SensorPolygon.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Stations\SectorFrequency.cs" />
+    <Compile Include="Stations\StationSector.cs" />
+    <Compile Include="Stations\StationOwner.cs" />
+    <Compile Include="Stations\StationSite.cs" />
+    <Compile Include="Results\StationSysInfoBlock.cs" />
+    <Compile Include="Tasks\DeviceMeasParam.cs" />
+    <Compile Include="Tasks\LocationMeasParam.cs" />
+    <Compile Include="Tasks\SpectrumOccupationMeasParam.cs" />
+    <Compile Include="Tasks\MeasTask.cs" />
+    <Compile Include="Tasks\MeasuredFrequencies.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">

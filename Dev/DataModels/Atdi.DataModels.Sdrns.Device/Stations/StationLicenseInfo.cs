@@ -8,39 +8,40 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents the antenna pattetrn parameters depending on frequency
+    /// License information
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class AntennaPattern
+    public class StationLicenseInfo
     {
         /// <summary>
-        /// Frequency, MHz
+        /// License ID from ICSM
         /// </summary>
         [DataMember]
-        public double Freq_MHz { get; set; }
+        public int? IcsmId { get; set; }
 
         /// <summary>
-        /// Antenna gain, dB
+        /// License name
         /// </summary>
         [DataMember]
-        public double Gain { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
-        /// DiagA - 9X - Antenna pattern
+        /// Start date
         /// </summary>
         [DataMember]
-        public string DiagA { get; set; }
+        public DateTime? StartDate { get; set; }
 
         /// <summary>
-        /// DiagH - 9XH - Horizontal diagram
+        /// End date
         /// </summary>
         [DataMember]
-        public string DiagH { get; set; }
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
-        /// DiagV - 9XV - Vertical diagram
+        /// Close date
         /// </summary>
         [DataMember]
-        public string DiagV { get; set; }
+        public DateTime? CloseDate { get; set; }
+
     }
 }

@@ -8,33 +8,35 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns
 {
     /// <summary>
-    /// Point geolocation parameters
+    /// Type of detecting
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class GeoLocation
+    public enum DetectingType
     {
         /// <summary>
-        /// Longitude, DEC
+        /// Average value
         /// </summary>
-        [DataMember]
-        public double Lon { get; set; }
-
+        [EnumMember]
+        Average,
         /// <summary>
-        /// Latitude,  DEC
+        /// Peak value
         /// </summary>
-        [DataMember]
-        public double Lat { get; set; }
-
+        [EnumMember]
+        Peak,
         /// <summary>
-        /// Altitude above sea level, m
+        /// Maximum peak value
         /// </summary>
-        [DataMember]
-        public double? ASL { get; set; }
-
+        [EnumMember]
+        MaxPeak,
         /// <summary>
-        /// Altitude above ground level, m
+        /// Minimum peak value
         /// </summary>
-        [DataMember]
-        public double? AGL { get; set; }
+        [EnumMember]
+        MinPeak,
+        /// <summary>
+        /// Root mean square value
+        /// </summary>
+        [EnumMember]
+        RMS
     }
 }

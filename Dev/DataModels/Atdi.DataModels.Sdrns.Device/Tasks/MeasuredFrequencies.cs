@@ -8,39 +8,39 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents the antenna pattetrn parameters depending on frequency
+    /// Represents frequencies for  measurements
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class AntennaPattern
+    public class MeasuredFrequencies
     {
         /// <summary>
-        /// Frequency, MHz
+        /// Frequency mode
         /// </summary>
         [DataMember]
-        public double Freq_MHz { get; set; }
+        public FrequencyMode Mode { get; set; }
 
         /// <summary>
-        /// Antenna gain, dB
+        /// Lower frequency of the range, MHz
         /// </summary>
         [DataMember]
-        public double Gain { get; set; }
+        public double? RgL_MHz { get; set; }
 
         /// <summary>
-        /// DiagA - 9X - Antenna pattern
+        /// Upper frequency of the range, MHz
         /// </summary>
         [DataMember]
-        public string DiagA { get; set; }
+        public double? RgU_MHz { get; set; }
 
         /// <summary>
-        /// DiagH - 9XH - Horizontal diagram
+        /// Step, kHz
         /// </summary>
         [DataMember]
-        public string DiagH { get; set; }
+        public double? Step_kHz { get; set; }
 
         /// <summary>
-        /// DiagV - 9XV - Vertical diagram
+        /// Array of the frequencies, MHz
         /// </summary>
         [DataMember]
-        public string DiagV { get; set; }
+        public double[] Values_MHz { get; set; }
     }
 }

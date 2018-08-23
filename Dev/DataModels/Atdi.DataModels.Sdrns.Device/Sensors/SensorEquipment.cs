@@ -8,32 +8,32 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents equipment of sensor for measurement. Includes administrative and technical data.
+    /// Represents the equipment of sensor for measurement. Includes administrative and technical data
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
 
     public class SensorEquipment
     {
         /// <summary>
-        /// code of equipment
+        /// Code of equipment
         /// </summary>
         [DataMember]
         public string Code { get; set; }
 
         /// <summary>
-        /// Manufacturer
+        /// Equipment manufacturer
         /// </summary>
         [DataMember]
         public string Manufacturer { get; set; }
 
         /// <summary>
-        /// Name
+        /// Name of equipment
         /// </summary>
         [DataMember]
         public string Name { get; set; }
 
         /// <summary>
-        /// Family
+        /// Equipment family
         /// </summary>
         [DataMember]
         public string Family { get; set; }
@@ -51,121 +51,121 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Version { get; set; }
 
         /// <summary>
-        /// LowerFreq, MHz
+        /// Lower frequency, MHz
         /// </summary>
         [DataMember]
-        public double? LowerFreq { get; set; }
+        public double? LowerFreq_MHz { get; set; }
 
         /// <summary>
-        /// UpperFreq, MHz 
+        /// Upper frequency, MHz 
         /// </summary>
         [DataMember]
-        public double? UpperFreq { get; set; }
+        public double? UpperFreq_MHz { get; set; }
 
         /// <summary>
-        /// RBWMin, kHz
+        /// Minimal radio bandwidth, kHz
         /// </summary>
         [DataMember]
-        public double? RBWMin { get; set; }
+        public double? RBWMin_kHz { get; set; }
 
         /// <summary>
-        /// RBWMax, kHz
+        /// Maximal radio bandwidth, kHz
         /// </summary>
         [DataMember]
-        public double? RBWMax { get; set; }
+        public double? RBWMax_kHz { get; set; }
 
         /// <summary>
-        /// VBWMin, kHz
+        /// Minimal video bandwidth, kHz
         /// </summary>
         [DataMember]
-        public double? VBWMin { get; set; }
+        public double? VBWMin_kHz { get; set; }
 
         /// <summary>
-        /// VBWMax, kHz
+        /// Maximal video bandwidth, kHz
         /// </summary>
         [DataMember]
-        public double? VBWMax { get; set; }
+        public double? VBWMax_kHz { get; set; }
 
         /// <summary>
-        /// Mobility - true - can be mobile, false cannot be mobile
+        /// Mobility (True - can be mobile, False  - cannot be mobile)
         /// </summary>
         [DataMember]
         public bool? Mobility { get; set; }
 
         /// <summary>
-        /// Maximum of points for Fast Fourier Transform
+        /// Maximum number of points for Fast Fourier Transform
         /// </summary>
         [DataMember]
         public double? FFTPointMax { get; set; }
 
         /// <summary>
-        /// Reference level in dBm
+        /// Maximum reference level, dBm
         /// </summary>
         [DataMember]
-        public double? RefLeveldBm { get; set; }
+        public double? MaxRefLevel_dBm { get; set; }
 
         /// <summary>
-        /// OperationMode
+        /// Operation mode
         /// </summary>
         [DataMember]
         public string OperationMode { get; set; }
 
         /// <summary>
-        /// Type
+        /// Type of equipment
         /// </summary>
         [DataMember]
         public string Type { get; set; }
 
         /// <summary>
-        /// EquipClass
+        /// Equipment class
         /// </summary>
         [DataMember]
         public string Class { get; set; }
 
         /// <summary>
-        /// TuningStep, Hz
+        /// Tuning step, Hz
         /// </summary>
         [DataMember]
-        public double? TuningStep { get; set; }
+        public double? TuningStep_Hz { get; set; }
 
         /// <summary>
-        /// UseType
+        /// Use type
         /// </summary>
         [DataMember]
         public string UseType { get; set; }
 
         /// <summary>
-        /// Category
+        /// Category of equipment
         /// </summary>
         [DataMember]
         public string Category { get; set; }
 
         /// <summary>
-        /// Remark
+        /// Remarks
         /// </summary>
         [DataMember]
         public string Remark { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, text
         /// </summary>
         [DataMember]
         public string CustTxt1 { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, datetime
         /// </summary>
         [DataMember]
-        public DateTime? CustData1 { get; set; }
+        public DateTime? CustDate1 { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom data, number (double)
         /// </summary>
         [DataMember]
         public double? CustNbr1 { get; set; }
 
         /// <summary>
-        /// Sensitivities of equpment of sensor
+        /// Equipment sensitivities
         /// </summary>
         [DataMember]
         public EquipmentSensitivity[] Sensitivities { get; set; }

@@ -8,39 +8,39 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Represents the antenna pattetrn parameters depending on frequency
+    /// Contains the signal level measurement result, obtained in one point from some transmitter
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class AntennaPattern
+    public class LevelMeasResult
     {
         /// <summary>
-        /// Frequency, MHz
+        /// Geolocation
         /// </summary>
         [DataMember]
-        public double Freq_MHz { get; set; }
+        public GeoLocation Location { get; set; }
 
         /// <summary>
-        /// Antenna gain, dB
+        /// Signal level measured within the channel band, dBm
         /// </summary>
         [DataMember]
-        public double Gain { get; set; }
+        public double? Level_dBm { get; set; }
 
         /// <summary>
-        /// DiagA - 9X - Antenna pattern
+        /// Signal level measured within the channel band, dBuV/m
         /// </summary>
         [DataMember]
-        public string DiagA { get; set; }
+        public double? Level_dBmkVm { get; set; }
 
         /// <summary>
-        /// DiagH - 9XH - Horizontal diagram
+        /// Time of the measurement result obtain
         /// </summary>
         [DataMember]
-        public string DiagH { get; set; }
+        public DateTime MeasurementTime { get; set; }
 
         /// <summary>
-        /// DiagV - 9XV - Vertical diagram
+        /// Difference with GPS time, ns
         /// </summary>
         [DataMember]
-        public string DiagV { get; set; }
+        public double? DifferenceTimeStamp_ns { get; set; }
     }
 }

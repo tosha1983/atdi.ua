@@ -41,10 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\AntennaDirectivity.cs" />
+    <Compile Include="Enums\AntennaPolarization.cs" />
+    <Compile Include="Enums\DetectingType.cs" />
+    <Compile Include="Enums\FrequencyMode.cs" />
+    <Compile Include="Enums\SpectrumOccupationType.cs" />
     <Compile Include="GeoLocation.cs" />
+    <Compile Include="Enums\MeasurementType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeoPoint.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Enums\SpectrumScanType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">

@@ -5,20 +5,24 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Device
+namespace Atdi.DataModels.Sdrns
 {
     /// <summary>
-    /// Represents location of point of poligon of sensor
+    /// Type of spectrum scan
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class SensorPoligon
+    public enum SpectrumScanType
     {
         /// <summary>
-        /// 
+        /// Real time
         /// </summary>
-        [DataMember]
-        public GeoPoint[] Points { get; set; }
+        [EnumMember]
+        RealTime,
 
-
+        /// <summary>
+        /// Sweep
+        /// </summary>
+        [EnumMember]
+        Sweep
     }
 }
