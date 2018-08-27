@@ -43,7 +43,7 @@ namespace Atdi.Oracle.DataAccess
                 paramsOracle2 = new List<OracleParameter>();
                 yyy = new Yyy();
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
         public void Init(OracleDataAccess rs)
@@ -54,7 +54,7 @@ namespace Atdi.Oracle.DataAccess
                 AllPropertiesColumns = new List<OracleParameter>();
                 params_val = null;
                 Clear(); oracleData = rs;
-                if (oracleData == null) throw new Exception("Recordset cannot be opened without OracleDataAccess");
+                if (oracleData == null) System.Console.WriteLine("Recordset cannot be opened without OracleDataAccess");
                 paramsOracle = new List<OracleParameter>();
                 yyy = (Yyy)rs;
                 AllPropertiesColumns = yyy.getAllFields;
@@ -85,7 +85,7 @@ namespace Atdi.Oracle.DataAccess
                     if (yyy.Order.Contains("ASC")) Order = NameColumnOrder + " ASC";
                 }
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
         public void OpenRs(OracleDataAccess oracleData)
@@ -107,7 +107,7 @@ namespace Atdi.Oracle.DataAccess
                 yyy.allvalc = AllObjLObj.ToArray();
                 if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
         public void OpenRs()
@@ -129,7 +129,7 @@ namespace Atdi.Oracle.DataAccess
                 yyy.allvalc = AllObjLObj.ToArray();
                 if (yyy.allvalc.Length > 0) { index = 0; cnt = yyy.allvalc.Length; yyy.valc = yyy.allvalc[index]; }
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
         public bool IsEOF()
@@ -145,7 +145,7 @@ namespace Atdi.Oracle.DataAccess
                 ++index;
                 if ((index >= 0) && (index < cnt)) yyy.valc = yyy.allvalc[index];
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
         public int GetCount()
@@ -160,7 +160,7 @@ namespace Atdi.Oracle.DataAccess
                 isNew = true;
                 yyy.valc = new object[AllPropertiesColumns.Count];
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
         public bool DeleteRecord(DbConnection dbConnection, DbTransaction dbTransaction)
@@ -188,7 +188,7 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                throw new Exception(e.ToString());
+                System.Console.WriteLine(e.ToString());
                 return false;
             }
 }
@@ -200,7 +200,7 @@ namespace Atdi.Oracle.DataAccess
                 oracleData = new OracleDataAccess();
                 return oracleData.GetNextId(sequenceName);
             }
-            catch (Exception e) { throw new Exception(e.ToString()); return null;  }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); return null;  }
         }
 
      
@@ -243,7 +243,7 @@ namespace Atdi.Oracle.DataAccess
                 }
                 return oracleData.UpdateRecord(paramsOracle, yyy.GetTableName(), ID_VALUE, dbConnection, dbTransaction);
             }
-            catch (Exception e) { throw new Exception(e.ToString()); return null; }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); return null; }
         }
 
         public int? InsertRecord(DbConnection dbConnection, DbTransaction dbTransaction)
@@ -284,7 +284,7 @@ namespace Atdi.Oracle.DataAccess
                 }
                 ID = oracleData.InsertRecord(paramsOracle, yyy.GetTableName(), dbConnection, dbTransaction);
             }
-            catch (Exception e) { throw new Exception(e.ToString()); return null; }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); return null; }
             return ID;
         }
 
@@ -334,7 +334,7 @@ namespace Atdi.Oracle.DataAccess
                 }
                 isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count, dbConnection, dbTransaction);
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
             return isSuccess;
         }
 
@@ -427,7 +427,7 @@ namespace Atdi.Oracle.DataAccess
                 }
                 isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter, dbConnection, dbTransaction);
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
             return isSuccess;
         }
     }

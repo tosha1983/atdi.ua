@@ -1032,108 +1032,96 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public bool DeleteResultFromDB(MeasurementResultsIdentifier obj, string Status)
         {
             bool isSuccess = false;
-            Yyy yyy = new Yyy();
-            DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
-            DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-            try
+            System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
-                logger.Trace("Start procedure DeleteResultFromDB...");
-                /// Create new record in YXbsMeastask
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                Yyy yyy = new Yyy();
+                DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                if (dbConnect.State == System.Data.ConnectionState.Open)
                 {
-                    YXbsMeasurementres measRes = new YXbsMeasurementres();
-                    measRes.Format("*");
-                    if (obj != null)
+                    DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                    try
                     {
-                        string sql = "";
-                        if (obj.MeasTaskId != null) sql += string.Format("(MEASTASKID ={0})", obj.MeasTaskId.Value);
-                        if (obj.MeasSdrResultsId > 0) sql += sql.Length>0 ? string.Format(" AND (ID ={0})", obj.MeasSdrResultsId) : string.Format("(ID ={0})", obj.MeasSdrResultsId);
-                        if (obj.SubMeasTaskId>0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKID ={0})", obj.SubMeasTaskId) : string.Format("(SUBMEASTASKID ={0})",obj.SubMeasTaskId);
-                        if (obj.SubMeasTaskStationId>0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId) : string.Format("(SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId);
-                        if (sql.Length > 0)
+                        logger.Trace("Start procedure DeleteResultFromDB...");
+                        YXbsMeasurementres measRes = new YXbsMeasurementres();
+                        measRes.Format("*");
+                        if (obj != null)
                         {
-                            measRes.Filter = sql;
-                            for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
+                            string sql = "";
+                            if (obj.MeasTaskId != null) sql += string.Format("(MEASTASKID ={0})", obj.MeasTaskId.Value);
+                            if (obj.MeasSdrResultsId > 0) sql += sql.Length > 0 ? string.Format(" AND (ID ={0})", obj.MeasSdrResultsId) : string.Format("(ID ={0})", obj.MeasSdrResultsId);
+                            if (obj.SubMeasTaskId > 0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKID ={0})", obj.SubMeasTaskId) : string.Format("(SUBMEASTASKID ={0})", obj.SubMeasTaskId);
+                            if (obj.SubMeasTaskStationId > 0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId) : string.Format("(SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId);
+                            if (sql.Length > 0)
                             {
-                                measRes.m_status = Status;
-                                measRes.Save(dbConnect, transaction);
-                                isSuccess = true;
+                                measRes.Filter = sql;
+                                for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
+                                {
+                                    measRes.m_status = Status;
+                                    measRes.Save(dbConnect, transaction);
+                                    isSuccess = true;
+                                }
                             }
+                            measRes.Close();
+                            measRes.Dispose();
                         }
-                        measRes.Close();
-                        measRes.Dispose();
+                        transaction.Commit();
                     }
-                    transaction.Commit();
-                });
-                tsk.Start();
-                tsk.Join();
-                logger.Trace("End procedure DeleteResultFromDB.");
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                isSuccess = false;
-                logger.Error("Error in procedure DeleteResultFromDB: "+ex.Message);
-            }
-            transaction.Dispose();
-            dbConnect.Close();
-            dbConnect.Dispose();
+                    catch (Exception ex)
+                    {
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
+                        logger.Error("Error in procedure DeleteResultFromDB: " + ex.Message);
+                        isSuccess = false;
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        dbConnect.Close();
+                        dbConnect.Dispose();
+                    }
+                }
+                else
+                {
+                    dbConnect.Close();
+                    dbConnect.Dispose();
+                }
+            });
+            tsk.Start();
+            tsk.Join();
+            logger.Trace("End procedure DeleteResultFromDB.");
             return isSuccess;
         }
         public bool DeleteResultFromDB(MeasurementResults obj)
         {
             bool isSuccess = false;
-            Yyy yyy = new Yyy();
-            DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
-            DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-            try
+
+
+            System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
                 logger.Trace("Start procedure DeleteResultFromDB...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                Yyy yyy = new Yyy();
+                DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                if (dbConnect.State == System.Data.ConnectionState.Open)
                 {
-                    YXbsMeasurementres measRes = new YXbsMeasurementres();
-                    measRes.Format("*");
-                    if (obj != null)
+                    DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                    try
                     {
-                        if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
+                        YXbsMeasurementres measRes = new YXbsMeasurementres();
+                        measRes.Format("*");
+                        if (obj != null)
                         {
-                            if (obj.StationMeasurements.StationId != null)
+                            if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                             {
-                                if (measRes.Fetch(string.Format(" (MEASTASKID={0}) and (SENSORID={1}) and (SUBMEASTASKID={2}) and (SUBMEASTASKSTATIONID={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
+                                if (obj.StationMeasurements.StationId != null)
                                 {
-                                    foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
+                                    if (measRes.Fetch(string.Format(" (MEASTASKID={0}) and (SENSORID={1}) and (SUBMEASTASKID={2}) and (SUBMEASTASKSTATIONID={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
                                     {
-                                        YXbsFrequencymeas dtr = new YXbsFrequencymeas();
-                                        dtr.Format("*");
-                                        if (dt_param != null)
+                                        foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
                                         {
-                                            if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
-                                            {
-                                                dtr.Delete(dbConnect, transaction);
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-                                    }
-                                    foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
-                                    {
-                                        YXbsLocationsensorm dtr = new YXbsLocationsensorm();
-                                        dtr.Format("*");
-                                        if (dt_param != null)
-                                        {
-                                            if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
-                                            {
-                                                dtr.Delete(dbConnect, transaction);
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-                                    }
-                                    foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
-                                    {
-                                        if (obj.TypeMeasurements == MeasurementType.Level)
-                                        {
-                                            YXbsLevelmeasres dtr = new YXbsLevelmeasres();
+                                            YXbsFrequencymeas dtr = new YXbsFrequencymeas();
                                             dtr.Format("*");
                                             if (dt_param != null)
                                             {
@@ -1144,87 +1132,67 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             }
                                             dtr.Close();
                                             dtr.Dispose();
+                                        }
+                                        foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
+                                        {
+                                            YXbsLocationsensorm dtr = new YXbsLocationsensorm();
+                                            dtr.Format("*");
+                                            if (dt_param != null)
+                                            {
+                                                if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                                {
+                                                    dtr.Delete(dbConnect, transaction);
+                                                }
+                                            }
+                                            dtr.Close();
+                                            dtr.Dispose();
+                                        }
+                                        foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
+                                        {
+                                            if (obj.TypeMeasurements == MeasurementType.Level)
+                                            {
+                                                YXbsLevelmeasres dtr = new YXbsLevelmeasres();
+                                                dtr.Format("*");
+                                                if (dt_param != null)
+                                                {
+                                                    if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                                    {
+                                                        dtr.Delete(dbConnect, transaction);
+                                                    }
+                                                }
+                                                dtr.Close();
+                                                dtr.Dispose();
 
-                                        }
-                                        else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation)
-                                        {
-                                            YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
-                                            dtr.Format("*");
-                                            if (dt_param != null)
-                                            {
-                                                if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
-                                                {
-                                                    dtr.Delete(dbConnect, transaction);
-                                                }
                                             }
-                                            dtr.Close();
-                                            dtr.Dispose();
+                                            else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation)
+                                            {
+                                                YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
+                                                dtr.Format("*");
+                                                if (dt_param != null)
+                                                {
+                                                    if (dtr.Fetch(string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id)))
+                                                    {
+                                                        dtr.Delete(dbConnect, transaction);
+                                                    }
+                                                }
+                                                dtr.Close();
+                                                dtr.Dispose();
+                                            }
                                         }
+                                        isSuccess = true;
+                                        measRes.Delete(dbConnect, transaction);
                                     }
-                                    isSuccess = true;
-                                    measRes.Delete(dbConnect, transaction);
                                 }
                             }
-                        }
-                        else if (obj.Id.MeasTaskId != null)
-                        {
+                            else if (obj.Id.MeasTaskId != null)
                             {
-                                measRes.Filter = string.Format(" (MEASTASKID={0}) ", obj.Id.MeasTaskId.Value);
-                                for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
                                 {
-                                    foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
+                                    measRes.Filter = string.Format(" (MEASTASKID={0}) ", obj.Id.MeasTaskId.Value);
+                                    for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
                                     {
-                                        YXbsFrequencymeas dtr = new YXbsFrequencymeas();
-                                        dtr.Format("*");
-                                        if (dt_param != null)
+                                        foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
                                         {
-                                            dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
-                                            for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
-                                            {
-                                                dtr.Delete(dbConnect, transaction);
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-                                    }
-
-                                    foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
-                                    {
-                                        YXbsLocationsensorm dtr = new YXbsLocationsensorm();
-                                        dtr.Format("*");
-                                        if (dt_param != null)
-                                        {
-                                            dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
-                                            for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
-                                            {
-                                                dtr.Delete(dbConnect, transaction);
-                                            }
-                                        }
-                                        dtr.Close();
-                                        dtr.Dispose();
-                                    }
-
-                                    foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
-                                    {
-                                        if (obj.TypeMeasurements == MeasurementType.Level)
-                                        {
-                                            YXbsLevelmeasres dtr = new YXbsLevelmeasres();
-                                            dtr.Format("*");
-                                            if (dt_param != null)
-                                            {
-                                                dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
-                                                for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
-                                                {
-                                                    dtr.Delete(dbConnect, transaction);
-                                                }
-                                            }
-                                            dtr.Close();
-                                            dtr.Dispose();
-
-                                        }
-                                        else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation)
-                                        {
-                                            YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
+                                            YXbsFrequencymeas dtr = new YXbsFrequencymeas();
                                             dtr.Format("*");
                                             if (dt_param != null)
                                             {
@@ -1237,30 +1205,92 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             dtr.Close();
                                             dtr.Dispose();
                                         }
+
+                                        foreach (LocationSensorMeasurement dt_param in obj.LocationSensorMeasurement.ToArray())
+                                        {
+                                            YXbsLocationsensorm dtr = new YXbsLocationsensorm();
+                                            dtr.Format("*");
+                                            if (dt_param != null)
+                                            {
+                                                dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                                for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                                {
+                                                    dtr.Delete(dbConnect, transaction);
+                                                }
+                                            }
+                                            dtr.Close();
+                                            dtr.Dispose();
+                                        }
+
+                                        foreach (MeasurementResult dt_param in obj.MeasurementsResults.ToArray())
+                                        {
+                                            if (obj.TypeMeasurements == MeasurementType.Level)
+                                            {
+                                                YXbsLevelmeasres dtr = new YXbsLevelmeasres();
+                                                dtr.Format("*");
+                                                if (dt_param != null)
+                                                {
+                                                    dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                                    for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                                    {
+                                                        dtr.Delete(dbConnect, transaction);
+                                                    }
+                                                }
+                                                dtr.Close();
+                                                dtr.Dispose();
+
+                                            }
+                                            else if (obj.TypeMeasurements == MeasurementType.SpectrumOccupation)
+                                            {
+                                                YXbsSpectoccupmeas dtr = new YXbsSpectoccupmeas();
+                                                dtr.Format("*");
+                                                if (dt_param != null)
+                                                {
+                                                    dtr.Filter = string.Format("ID_XBS_MEASUREMENTRES={0}", measRes.m_id);
+                                                    for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
+                                                    {
+                                                        dtr.Delete(dbConnect, transaction);
+                                                    }
+                                                }
+                                                dtr.Close();
+                                                dtr.Dispose();
+                                            }
+                                        }
+                                        isSuccess = true;
+                                        measRes.Delete(dbConnect, transaction);
                                     }
-                                    isSuccess = true;
-                                    measRes.Delete(dbConnect, transaction);
                                 }
                             }
+                            measRes.Close();
+                            measRes.Dispose();
                         }
-                        measRes.Close();
-                        measRes.Dispose();
+                        transaction.Commit();
                     }
-                    transaction.Commit();
-                });
-                tsk.Start();
-                tsk.Join();
-                logger.Trace("End procedure DeleteResultFromDB.");
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                isSuccess = false;
-                logger.Error("Error in procedure DeleteResultFromDB:" +ex.Message);
-            }
-            transaction.Dispose();
-            dbConnect.Close();
-            dbConnect.Dispose();
+                    catch (Exception)
+                    {
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        dbConnect.Close();
+                        dbConnect.Dispose();
+                    }
+                }
+                else
+                {
+                    dbConnect.Close();
+                    dbConnect.Dispose();
+                }
+
+            });
+            tsk.Start();
+            tsk.Join();
+            logger.Trace("End procedure DeleteResultFromDB.");
             return isSuccess;
         }
 
@@ -1268,15 +1298,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public int SaveResultToDB(MeasurementResults obj)
         {
             int ID = Constants.NullI;
-            Yyy yyy = new Yyy();
-            DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
-            DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-            try
+            //if (((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) && (obj.Status == "C")) || (obj.TypeMeasurements != MeasurementType.SpectrumOccupation))
             {
-                //if (((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) && (obj.Status == "C")) || (obj.TypeMeasurements != MeasurementType.SpectrumOccupation))
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    Yyy yyy = new Yyy();
+                    DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                    if (dbConnect.State == System.Data.ConnectionState.Open)
                     {
+                        DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
                         try
                         {
                             logger.Trace("Start procedure SaveResultToDB.");
@@ -1532,22 +1562,29 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                         catch (Exception ex)
                         {
-                            transaction.Rollback();
+                                try
+                                {
+                                    transaction.Rollback();
+                                }
+                            catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
                             logger.Error("Error in procedure SaveResultToDB: " + ex.Message);
                         }
-                    });
-                    tsk.Start();
-                    tsk.Join();
-                }
+                        finally
+                        {
+                            transaction.Dispose();
+                            dbConnect.Close();
+                            dbConnect.Dispose();
+                        }
+                    }
+                    else
+                    {
+                        dbConnect.Close();
+                        dbConnect.Dispose();
+                    }
+                });
+                tsk.Start();
+                tsk.Join();
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                logger.Error("Error in procedure SaveResultToDB: " + ex.Message);
-            }
-            transaction.Dispose();
-            dbConnect.Close();
-            dbConnect.Dispose();
             return ID;
         }
         

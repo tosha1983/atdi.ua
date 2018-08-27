@@ -91,7 +91,7 @@ namespace Atdi.Oracle.DataAccess
                     rs.OpenRs();
                 }
             }
-            catch (Exception e) { throw new Exception(e.ToString()); }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
         }
 
 
@@ -106,180 +106,309 @@ namespace Atdi.Oracle.DataAccess
         }
         public bool IsEOF()
         {
-            if (isConnection)
+            try
             {
-                if (rs != null)
+                if (isConnection)
                 {
-                    return rs.IsEOF();
+                    if (rs != null)
+                    {
+                        return rs.IsEOF();
+                    }
+                    else return false;
                 }
                 else return false;
             }
-            else return false;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return false;
+            }
         }
         public void MoveNext()
         {
-            if (isConnection)
+            try
             {
-                if (rs!=null)
+                if (isConnection)
                 {
-                    rs.MoveNext();
+                    if (rs != null)
+                    {
+                        rs.MoveNext();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
             }
         }
 
         public int? GetCount()
         {
-            if (isConnection)
+            try
             {
-                if (rs != null)
+                if (isConnection)
                 {
-                    return rs.GetCount();
+                    if (rs != null)
+                    {
+                        return rs.GetCount();
+                    }
+                    else return null;
                 }
-                else return 0;
+                return null;
             }
-            return null;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return null;
+            }
         }
         public void Close()
         {
-            if (isConnection)
+            try
             {
-                if (rs != null) rs.Clear();
+                if (isConnection)
+                {
+                    if (rs != null) rs.Clear();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
             }
         }
 
 
         public int? GetNextId(string sequenceName)
         {
-            if (rs == null) rs = new OrmRsOracle();
-            return rs.GetNextId(sequenceName);
+            try
+            {
+                if (rs == null) rs = new OrmRsOracle();
+                return rs.GetNextId(sequenceName);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return null;
+            }
         }
 
         public void Dispose()
         {
-            if (isConnection)
+            try
             {
-                if (rs != null)
+                if (isConnection)
                 {
-                    rs.Dispose();
+                    if (rs != null)
+                    {
+                        rs.Dispose();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
             }
         }
 
         public void New()
         {
-            if (isConnection)
+            try
             {
-                if (rs == null) rs = new OrmRsOracle();
-                rs.Init(this);
-                if (rs != null) rs.New();
+                if (isConnection)
+                {
+                    if (rs == null) rs = new OrmRsOracle();
+                    rs.Init(this);
+                    if (rs != null) rs.New();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
             }
         }
 
         public int? SaveUpdate(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (rs != null)
+            try
             {
-                if (!rs.isNew)
-                    return rs.UpdateRecord(dbConnection, dbTransaction);
+                if (rs != null)
+                {
+                    if (!rs.isNew)
+                        return rs.UpdateRecord(dbConnection, dbTransaction);
+                }
+                return null;
             }
-            return null;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return null;
+            }
         }
 
         public int? SaveCreateNew(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (rs != null)
+            try
             {
-                if (rs.isNew)
-                    return rs.InsertRecord(dbConnection, dbTransaction);
+                if (rs != null)
+                {
+                    if (rs.isNew)
+                        return rs.InsertRecord(dbConnection, dbTransaction);
+                }
+                return null;
             }
-            return null;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return null;
+            }
         }
 
         public int? Save(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (rs != null)
+            try
             {
-                if (rs.isNew)
-                    return rs.InsertRecord(dbConnection, dbTransaction);
-                else return rs.UpdateRecord(dbConnection, dbTransaction);
+                if (rs != null)
+                {
+                    if (rs.isNew)
+                        return rs.InsertRecord(dbConnection, dbTransaction);
+                    else return rs.UpdateRecord(dbConnection, dbTransaction);
+                }
+                return null;
             }
-            return null;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return null;
+            }
         }
 
         public void SetUpdateMode()
         {
-            if (rs != null)
+            try
             {
-                rs.isNew = false;
+                if (rs != null)
+                {
+                    rs.isNew = false;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
             }
         }
 
         public bool SaveBath(List<Yyy> ListY, DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (dbConnection != null)
+            try
             {
-                if (rs != null)
+                if (dbConnection != null)
                 {
-                    if (rs.isNew)
-                        return rs.InsertBulkRecords(ListY, dbConnection, dbTransaction);
+                    if (rs != null)
+                    {
+                        if (rs.isNew)
+                            return rs.InsertBulkRecords(ListY, dbConnection, dbTransaction);
+                    }
                 }
+                return false;
             }
-            return false;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return false;
+            }
         }
 
         public bool SaveBath(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter, DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (dbConnection != null)
+            try
             {
-                if (rs != null)
+                if (dbConnection != null)
                 {
-                    if (rs.isNew)
-                        return rs.InsertBulkRecords(ListY1,ListY2, oracleParameter, dbConnection, dbTransaction);
+                    if (rs != null)
+                    {
+                        if (rs.isNew)
+                            return rs.InsertBulkRecords(ListY1, ListY2, oracleParameter, dbConnection, dbTransaction);
+                    }
                 }
+                return false;
             }
-            return false;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return false;
+            }
         }
 
         public bool Delete(DbConnection dbConnection, DbTransaction dbTransaction)
         {
-            if (rs != null)
+            try
             {
-                return rs.DeleteRecord(dbConnection, dbTransaction);
+                if (rs != null)
+                {
+                    return rs.DeleteRecord(dbConnection, dbTransaction);
+                }
+                return false;
             }
-            return false;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return false;
+            }
         }
 
         public bool Fetch(int ID)
         {
-            if (isConnection)
+            try
             {
-                Filter = string.Format("ID = {0}", ID);
-                OpenRs();
-                if (GetCount() > 0) return true;
+                if (isConnection)
+                {
+                    Filter = string.Format("ID = {0}", ID);
+                    OpenRs();
+                    if (GetCount() > 0) return true;
+                    else return false;
+                }
                 else return false;
             }
-            else return false;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return false;
+            }
         }
 
         public bool Fetch(string sql)
         {
-            if (isConnection)
+            try
             {
-                Filter = sql;
-                OpenRs();
-                if (GetCount() > 0) return true;
+                if (isConnection)
+                {
+                    Filter = sql;
+                    OpenRs();
+                    if (GetCount() > 0) return true;
+                    else return false;
+                }
                 else return false;
             }
-            else return false;
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+                return false;
+            }
         }
 
-       public void CopyDataFrom(Yyy y)
+        public void CopyDataFrom(Yyy y)
         {
-            if (isConnection)
+            try
             {
-                
-                New();
-                rs.yyy.valc = y.valc;
+                if (isConnection)
+                {
+                    New();
+                    rs.yyy.valc = y.valc;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
             }
         }
     }
