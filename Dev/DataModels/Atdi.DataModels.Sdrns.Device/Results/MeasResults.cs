@@ -49,11 +49,11 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public string Status { get; set; }
 
-        /// <summary>
-        /// Number of measurements, used for SO
-        /// </summary>
-        [DataMember]
-        public int ScansSONumber { get; set; }
+        ///// <summary>
+        ///// Number of measurements, used for SO
+        ///// </summary>
+        //[DataMember]
+        //public int ScansSONumber { get; set; }
 
         /// <summary>
         /// Number of scans at a time.
@@ -61,35 +61,35 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public int SwNumber { get; set; }
 
-        /// <summary>
-        /// Geolocation
-        /// </summary>
-        [DataMember]
-        public GeoLocation Location { get; set; }
+        ///// <summary>
+        ///// Geolocation
+        ///// </summary>
+        //[DataMember]
+        //public GeoLocation Location { get; set; }
 
-        /// <summary>
-        /// Measurement type 
-        /// </summary>
-        [DataMember]
-        public MeasurementType Measurement { get; set; }
+        ///// <summary>
+        ///// Measurement type 
+        ///// </summary>
+        //[DataMember]
+        //public MeasurementType Measurement { get; set; }
 
-        /// <summary>
-        /// Frequency samples
-        /// </summary>
-        [DataMember]
-        public FrequencySample[] FrequencySamples { get; set; }
+        ///// <summary>
+        ///// Frequency samples
+        ///// </summary>
+        //[DataMember]
+        //public FrequencySample[] FrequencySamples { get; set; }
 
-        /// <summary>
-        /// Frequencies
-        /// </summary>
-        [DataMember]
-        public float[] Frequencies { get; set; }
+        ///// <summary>
+        ///// Frequencies
+        ///// </summary>
+        //[DataMember]
+        //public float[] Frequencies { get; set; }
 
-        /// <summary>
-        /// Signal levels, dBm
-        /// </summary>
-        [DataMember]
-        public float[] Levels_dBm { get; set; }
+        ///// <summary>
+        ///// Signal levels, dBm
+        ///// </summary>
+        //[DataMember]
+        //public float[] Levels_dBm { get; set; }
 
         /// <summary>
         /// Station measurement results
@@ -97,10 +97,10 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public StationMeasResult[] StationResults { get; set; }
 
-        /// <summary>
-        /// Bandwidth measurement result
-        /// </summary>
-        [DataMember]
-        public BandwidthMeasResult BandwidthResult { get; set; }
+        ///// <summary>
+        ///// Bandwidth measurement result
+        ///// </summary>
+        //[DataMember]
+        //public BandwidthMeasResult BandwidthResult { get; set; }
     }
 }
