@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Device.Sensors
+namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
     /// Represents the sensor for measurement. Includes administrative and technical data

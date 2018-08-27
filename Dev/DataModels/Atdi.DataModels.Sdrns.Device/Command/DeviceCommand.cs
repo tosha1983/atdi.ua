@@ -14,18 +14,6 @@ namespace Atdi.DataModels.Sdrns.Device
     public class DeviceCommand
     {
         /// <summary>
-        /// Command ID
-        /// </summary>
-        [DataMember]
-        public string CommandId { get; set; }
-
-        /// <summary>
-        /// Command name
-        /// </summary>
-        [DataMember]
-        public string Command { get; set; }
-
-        /// <summary>
         /// The instance name of the SDRN Server that puts the task on measurement
         /// </summary>
         [DataMember]
@@ -42,6 +30,18 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public string EquipmentTechId { get; set; }
+
+        /// <summary>
+        /// Command ID
+        /// </summary>
+        [DataMember]
+        public string CommandId { get; set; }
+
+        /// <summary>
+        /// Command name
+        /// </summary>
+        [DataMember]
+        public string Command { get; set; }
 
         /// <summary>
         /// Custom field, text

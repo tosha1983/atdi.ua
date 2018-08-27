@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4670DA92-06CF-4CE4-BBF8-67353A907BD0}</ProjectGuid>
+    <ProjectGuid>{6DE6D960-919F-449E-AEDA-993D0722BCDA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrns.Device</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrns.Device</AssemblyName>
+    <RootNamespace>Atdi.WcfServices.Sdrn.Device</RootNamespace>
+    <AssemblyName>Atdi.WcfServices.Sdrn.Device</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,6 +33,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,50 +42,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\DeviceCommandResult.cs" />
-    <Compile Include="Command\DeviceCommand.cs" />
-    <Compile Include="Results\BandwidthMeasResult.cs" />
-    <Compile Include="Results\FrequencySample.cs" />
-    <Compile Include="Results\GeneralMeasResult.cs" />
-    <Compile Include="Results\LevelMeasResult.cs" />
-    <Compile Include="Results\MeasResults.cs" />
-    <Compile Include="Results\StationMeasResult.cs" />
-    <Compile Include="Sensors\SensorDescriptor.cs" />
-    <Compile Include="Sensors\SensorUpdateResult.cs" />
-    <Compile Include="Sensors\SensorRegistrationResult.cs" />
-    <Compile Include="Results\StationSysInfo.cs" />
-    <Compile Include="Stations\StandardScanParameter.cs" />
-    <Compile Include="Stations\StationLicenseInfo.cs" />
-    <Compile Include="Stations\ElementsMask.cs" />
-    <Compile Include="Stations\MeasuredStation.cs" />
+    <Compile Include="MeasTasksBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sensors\AntennaPattern.cs" />
-    <Compile Include="Sensors\EquipmentSensitivity.cs" />
-    <Compile Include="Sensors\Sensor.cs" />
-    <Compile Include="Sensors\SensorAntenna.cs" />
-    <Compile Include="Sensors\SensorEquipment.cs" />
-    <Compile Include="Sensors\SensorLocation.cs" />
-    <Compile Include="Sensors\SensorPolygon.cs" />
-    <Compile Include="Specification.cs" />
-    <Compile Include="Stations\SectorFrequency.cs" />
-    <Compile Include="Stations\StationSector.cs" />
-    <Compile Include="Stations\StationOwner.cs" />
-    <Compile Include="Stations\StationSite.cs" />
-    <Compile Include="Results\StationSysInfoBlock.cs" />
-    <Compile Include="Tasks\DeviceMeasParam.cs" />
-    <Compile Include="Tasks\LocationMeasParam.cs" />
-    <Compile Include="Tasks\SpectrumOccupationMeasParam.cs" />
-    <Compile Include="Tasks\MeasTask.cs" />
-    <Compile Include="Tasks\MeasuredFrequencies.cs" />
+    <Compile Include="SdrnDeviceComponent.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Device\Atdi.Contracts.WcfServices.Sdrn.Device.csproj">
+      <Project>{bed80a02-9104-477f-a267-f9265eeed6c0}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
       <Name>Atdi.DataModels.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.WcfServices\Atdi.WcfServices.csproj">
+      <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
+      <Name>Atdi.WcfServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
