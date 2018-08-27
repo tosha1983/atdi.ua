@@ -43,16 +43,16 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
                 while (true)
                 {
-                    var commands = GetNextCommands(measTasksBusServiceEndpointName, sensor);
-                    for (int i = 0; i < commands.Length; i++)
+                    var command = GetNextCommand(measTasksBusServiceEndpointName, sensor);
+                    if (command != null)
                     {
-                        HandleCommand(measTasksBusServiceEndpointName, commands[i], sensor);
+                        HandleCommand(measTasksBusServiceEndpointName, command, sensor);
                     }
 
-                    var tasks = GetNextMeasTasks(measTasksBusServiceEndpointName, sensor);
-                    for (int i = 0; i < tasks.Length; i++)
-                    {
-                        HandleMeasTask(measTasksBusServiceEndpointName, tasks[i], sensor);
+                    var task = GetNextMeasTask(measTasksBusServiceEndpointName, sensor);
+                    if (task != null)
+                    { 
+                        HandleMeasTask(measTasksBusServiceEndpointName, task, sensor);
                     }
 
                     System.Threading.Thread.Sleep(SensorWorkSleepTime);
@@ -66,7 +66,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             
         }
 
-        static DeviceCommand[] GetNextCommands(string endpointName, Sensor sensor)
+        static DeviceCommand GetNextCommand(string endpointName, Sensor sensor)
         {
             var sensorDescriptor = new SensorDescriptor
             {
@@ -75,22 +75,22 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             };
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-            var getCommandsResult = busService.GetCommands(sensorDescriptor);
-            if (getCommandsResult.State == DataModels.CommonOperation.OperationState.Fault)
+            var getCommandResult = busService.GetCommand(sensorDescriptor);
+            if (getCommandResult.State == DataModels.CommonOperation.OperationState.Fault)
             {
-                throw new InvalidOperationException(getCommandsResult.FaultCause);
+                throw new InvalidOperationException(getCommandResult.FaultCause);
             }
 
-            var commands = getCommandsResult.Data;
-            if (commands != null && commands.Length > 0)
+            var command = getCommandResult.Data;
+            if (command != null )
             {
-                Console.WriteLine($"New commands have been received: count = '{commands.Length}'");
+                Console.WriteLine($"New commands have been received: Name = '{command.Command}'");
             }
 
-            return commands;
+            return command;
         }
 
-        static MeasTask[] GetNextMeasTasks(string endpointName, Sensor sensor)
+        static MeasTask GetNextMeasTask(string endpointName, Sensor sensor)
         {
             var sensorDescriptor = new SensorDescriptor
             {
@@ -99,19 +99,19 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             };
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-            var getMeasTasksResult = busService.GetMeasTasks(sensorDescriptor);
-            if (getMeasTasksResult.State == DataModels.CommonOperation.OperationState.Fault)
+            var getMeasTaskResult = busService.GetMeasTask(sensorDescriptor);
+            if (getMeasTaskResult.State == DataModels.CommonOperation.OperationState.Fault)
             {
-                throw new InvalidOperationException(getMeasTasksResult.FaultCause);
+                throw new InvalidOperationException(getMeasTaskResult.FaultCause);
             }
 
-            var tasks = getMeasTasksResult.Data;
-            if (tasks != null && tasks.Length > 0)
+            var task = getMeasTaskResult.Data;
+            if (task != null )
             {
-                Console.WriteLine($"New measurment tasks have been received: count = '{tasks.Length}'");
+                Console.WriteLine($"New measurment tasks have been received: ID = '{task.TaskId}'");
             }
 
-            return tasks;
+            return task;
         }
 
         static void HandleCommand(string endpointName, DeviceCommand deviceCommand, Sensor sensor)
@@ -126,17 +126,21 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                     break;
             }
 
-            var result = new DeviceCommandResult
+            var descriptor = new SensorDescriptor
             {
                 SdrnServer = deviceCommand.SdrnServer,
                 SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId,
+                EquipmentTechId = sensor.Equipment.TechId
+            };
+            var result = new DeviceCommandResult
+            {
+                
                 CommandId = deviceCommand.CommandId,
                 Status = "Success"
             };
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-            var sendCommandResultsResult = busService.SendCommandResults(new DeviceCommandResult[] { result });
+            var sendCommandResultsResult = busService.SendCommandResult(descriptor, result);
             if (sendCommandResultsResult.State == DataModels.CommonOperation.OperationState.Fault)
             {
                 throw new InvalidOperationException(sendCommandResultsResult.FaultCause);
@@ -147,35 +151,24 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
         static void HandleMeasTask(string endpointName, MeasTask measTask, Sensor sensor)
         {
-            var result1 = new MeasResults
+            var result = new MeasResults
             {
-                SdrnServer = measTask.SdrnServer,
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId,
+                //SdrnServer = measTask.SdrnServer,
+                //SensorName = sensor.Name,
+                //EquipmentTechId = sensor.Equipment.TechId,
                 TaskId = measTask.TaskId
             };
-            var result2 = new MeasResults
+            var descriptor = new SensorDescriptor
             {
                 SdrnServer = measTask.SdrnServer,
                 SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId,
-                TaskId = measTask.TaskId
-            };
-            var result3 = new MeasResults
-            {
-                SdrnServer = measTask.SdrnServer,
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId,
-                TaskId = measTask.TaskId
+                EquipmentTechId = sensor.Equipment.TechId
             };
 
-            var measResults = new MeasResults[]
-            {
-                result1, result2, result3
-            };
+            
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-            var sendMeasResultsResult = busService.SendMeasResults(measResults);
+            var sendMeasResultsResult = busService.SendMeasResults(descriptor, result);
             if (sendMeasResultsResult.State == DataModels.CommonOperation.OperationState.Fault)
             {
                 throw new InvalidOperationException(sendMeasResultsResult.FaultCause);
@@ -189,7 +182,6 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             var sensor = new Sensor
             {
                 Administration = "Administration",
-                AGL = 0.111,
                 Antenna = new SensorAntenna
                 {
                     AddLoss = 1,
@@ -215,49 +207,18 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
         {
             try
             {
-                SensorRegistrationResult sensorRegistrationResult = null;
 
                 var busService = GetMeasTasksBusServicByEndpoint(endpointName);
 
-                var tryRegisterResult = busService.TryRegister(sensor, sdrnServer);
+                var tryRegisterResult = busService.RegisterSensor(sensor, sdrnServer);
 
                 if (tryRegisterResult.State == DataModels.CommonOperation.OperationState.Fault)
                 {
                     throw new InvalidOperationException(tryRegisterResult.FaultCause);
                 }
 
-                var sensorDescriptor = new SensorDescriptor
-                {
-                    SensorName = sensor.Name,
-                    EquipmentTechId = sensor.Equipment?.TechId
-                };
+                return tryRegisterResult.Data;
 
-                var attempt = 100;
-                while(--attempt >= 0)
-                {
-                    var getRegistrationResultsResult = busService.GetRegistrationResults(sensorDescriptor);
-                    if (getRegistrationResultsResult.State == DataModels.CommonOperation.OperationState.Fault)
-                    {
-                        throw new InvalidOperationException(getRegistrationResultsResult.FaultCause);
-                    }
-
-                    foreach (var result in getRegistrationResultsResult.Data)
-                    {
-                        if (result != null && result.SdrnServer == sdrnServer)
-                        {
-                            sensorRegistrationResult = result;
-                            break;
-                        }
-                    }
-                    System.Threading.Thread.Sleep(SensorRegistrationTimeOut);
-                }
-
-                if (sensorRegistrationResult == null)
-                {
-                    throw new InvalidOperationException("Time out is over");
-                }
-
-                return sensorRegistrationResult;
             }
             catch(Exception e)
             {

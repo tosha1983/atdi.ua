@@ -13,23 +13,23 @@ namespace Atdi.DataModels.Sdrns.Device
     [DataContract(Namespace = Specification.Namespace)]
     public class DeviceCommandResult
     {
-        /// <summary>
-        /// The instance name of the SDRN Server that puts the task on measurement
-        /// </summary>
-        [DataMember]
-        public string SdrnServer { get; set; }
+        ///// <summary>
+        ///// The instance name of the SDRN Server that puts the task on measurement
+        ///// </summary>
+        //[DataMember]
+        //public string SdrnServer { get; set; }
 
-        /// <summary>
-        /// Sensor name
-        /// </summary>
-        [DataMember]
-        public string SensorName { get; set; }
+        ///// <summary>
+        ///// Sensor name
+        ///// </summary>
+        //[DataMember]
+        //public string SensorName { get; set; }
 
-        /// <summary>
-        /// Equipment technical ID
-        /// </summary>
-        [DataMember]
-        public string EquipmentTechId { get; set; }
+        ///// <summary>
+        ///// Equipment technical ID
+        ///// </summary>
+        //[DataMember]
+        //public string EquipmentTechId { get; set; }
 
         /// <summary>
         /// Command ID
