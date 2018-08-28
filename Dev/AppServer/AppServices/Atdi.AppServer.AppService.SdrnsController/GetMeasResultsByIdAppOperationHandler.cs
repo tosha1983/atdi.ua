@@ -39,14 +39,20 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             Logger.Trace(this, options, operationContext);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                if (options.MeasResultsId != null)
+                try
                 {
-                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
-                    if (LST_MeasurementResults != null)
+                    if (options.MeasResultsId != null)
                     {
-                        if (LST_MeasurementResults.Count > 0)  res = LST_MeasurementResults[0];
+                        LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
+                        if (LST_MeasurementResults != null)
+                        {
+                            if (LST_MeasurementResults.Count > 0) res = LST_MeasurementResults[0];
+                        }
                     }
-               }
+                }
+                catch (Exception ex) {
+                    Logger.Error(ex.Message);
+                }
             });
             th.Start();
             th.Join();

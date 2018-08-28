@@ -36,30 +36,37 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             Logger.Trace(this, options, operationContext);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                if (options.MeasResultsId != null)
+                try
                 {
                     if (options.MeasResultsId != null)
                     {
-                        //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId);
-                        List<MeasurementResults> msrtList = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
-                        if (msrtList != null)
+                        if (options.MeasResultsId != null)
                         {
-                            foreach (MeasurementResults msrt in msrtList)
+                            //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId);
+                            List<MeasurementResults> msrtList = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
+                            if (msrtList != null)
                             {
-                                ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
-                                if (msrt.LocationSensorMeasurement != null)
+                                foreach (MeasurementResults msrt in msrtList)
                                 {
-                                    if (msrt.LocationSensorMeasurement.Count() > 0)
+                                    ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
+                                    if (msrt.LocationSensorMeasurement != null)
                                     {
-                                        ShMsrt.CurrentLat = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lat;
-                                        ShMsrt.CurrentLon = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lon;
+                                        if (msrt.LocationSensorMeasurement.Count() > 0)
+                                        {
+                                            ShMsrt.CurrentLat = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lat;
+                                            ShMsrt.CurrentLon = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lon;
+                                        }
                                     }
+                                    ShortMeas = ShMsrt;
+                                    break;
                                 }
-                                ShortMeas = ShMsrt;
-                                break;
                             }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
                 }
             });
             th.Start();

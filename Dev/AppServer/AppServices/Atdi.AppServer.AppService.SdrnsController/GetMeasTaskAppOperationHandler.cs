@@ -37,6 +37,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             MeasTask val = null;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
+                try
+                { 
                 ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
                 ClassConvertTasks ts = new ClassConvertTasks(Logger);
                 List<MeasTask> getValues = new List<MeasTask>();
@@ -74,6 +76,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     }
                     */
                     Logger.Trace(this, options, operationContext);
+                }
+                catch (Exception ex) {
+                    Logger.Error(ex.Message);
+                }
             });
             thread.Start();
             thread.Join();

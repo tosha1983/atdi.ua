@@ -76,7 +76,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             catch (Exception ex) {
                 res.State = CommonOperationState.Fault;
                 res.FaultCause = ex.Message;
-            }
+                Logger.Error(ex.Message);
+                }
             });
             th.Start();
             th.Join();

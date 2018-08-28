@@ -42,7 +42,14 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             List<ShortSensor> LstS = new List<ShortSensor>();
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                LstS = senLst.CreateShortSensorList();
+                try
+                {
+                    LstS = senLst.CreateShortSensorList();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
             });
             th.Start();
             th.Join();

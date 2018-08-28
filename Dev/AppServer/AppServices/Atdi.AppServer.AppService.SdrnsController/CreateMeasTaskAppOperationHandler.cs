@@ -37,32 +37,38 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             MeasTaskIdentifier md = new MeasTaskIdentifier();
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                MeasTask mt = options.Task;
-                if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
-                if (mt.Status == null) mt.Status = "N";
-                WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
-                Logger.Trace("Start Create_New_Meas_Task... ");
-                int ID = tasks.Create_New_Meas_Task(mt, "New");
-                md.Value = ID;
-                Logger.Trace(this, options, operationContext);
-                List<int> SensorIds = new List<int>();
-                if (mt.Stations != null)
+                try
                 {
-                    foreach (MeasStation ts in mt.Stations)
+                    MeasTask mt = options.Task;
+                    if (mt.Id == null) mt.Id = new MeasTaskIdentifier();
+                    if (mt.Status == null) mt.Status = "N";
+                    WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
+                    Logger.Trace("Start Create_New_Meas_Task... ");
+                    int ID = tasks.Create_New_Meas_Task(mt, "New");
+                    md.Value = ID;
+                    Logger.Trace(this, options, operationContext);
+                    List<int> SensorIds = new List<int>();
+                    if (mt.Stations != null)
                     {
-                        if (ts.StationId != null)
+                        foreach (MeasStation ts in mt.Stations)
                         {
                             if (ts.StationId != null)
                             {
-                                if (!SensorIds.Contains(ts.StationId.Value))
-                                    SensorIds.Add(ts.StationId.Value);
+                                if (ts.StationId != null)
+                                {
+                                    if (!SensorIds.Contains(ts.StationId.Value))
+                                        SensorIds.Add(ts.StationId.Value);
+                                }
                             }
                         }
                     }
+                    if (SensorIds.Count > 0)
+                    {
+                        tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+                    }
                 }
-                if (SensorIds.Count > 0)
-                {
-                    tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+                catch (Exception ex) {
+                    Logger.Error(ex.Message);
                 }
             });
             th.Start();

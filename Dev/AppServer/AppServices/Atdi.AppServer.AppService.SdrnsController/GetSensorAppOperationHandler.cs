@@ -36,7 +36,14 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             Sensor sens = null;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
+                try
+                { 
                  sens = gsd.LoadObjectSensor(options.SensorId.Value);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
             });
             thread.Start();
             thread.Join();

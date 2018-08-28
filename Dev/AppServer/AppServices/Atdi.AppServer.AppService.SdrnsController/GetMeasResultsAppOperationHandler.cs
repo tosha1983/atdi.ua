@@ -40,8 +40,14 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 //MeasurementResults[] LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToArray();
-                LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB());
-            });
+                try
+                {
+                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB());
+                }
+                catch (Exception ex) {
+                    Logger.Error(ex.Message);
+                }
+        });
             th.Start();
             th.Join();
             return LST_MeasurementResults;
