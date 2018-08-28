@@ -60,7 +60,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         }
                     }
                 }
-                tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+                if (SensorIds.Count > 0)
+                {
+                    tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+                }
             });
             th.Start();
             th.Join();
