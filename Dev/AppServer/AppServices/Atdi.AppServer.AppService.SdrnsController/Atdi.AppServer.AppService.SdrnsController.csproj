@@ -56,14 +56,6 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atdi.AppServer.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.Contracts.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Atdi.AppServer.Contracts.Sdrns.dll</HintPath>
-    </Reference>
     <Reference Include="Atdi.AppServer.Model.SdrnsController, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\Atdi.AppServer.Model.SdrnsController.dll</HintPath>
@@ -220,12 +212,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dll\Atdi.AppServer.Contracts.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dll\Atdi.AppServer.Contracts.Sdrns.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Dll\Oracle.DataAccess.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net20\Newtonsoft.Json.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\net20\Newtonsoft.Json.xml" />
@@ -248,6 +234,14 @@
     <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
+      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
+      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
+      <Name>Atdi.AppServer.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
       <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>

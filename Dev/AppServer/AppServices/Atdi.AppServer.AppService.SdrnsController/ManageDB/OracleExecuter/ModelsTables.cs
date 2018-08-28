@@ -39,6 +39,7 @@ namespace Atdi.Oracle.DataAccess
         public double? m_custnbr1 { get { return getDouble(21); } set { setDouble(21, value); } }
         public DateTime? m_datecreated { get { return getDateTime(22); } set { setDateTime(22, value); } }
         public string m_createdby { get { return getString(23); } set { setString(23, 50, value); } }
+        public string m_apiversion { get { return getString(24); } set { setString(24, 10, value); } }
     }
 
     public class YXbsSensorantenna : Yyy
