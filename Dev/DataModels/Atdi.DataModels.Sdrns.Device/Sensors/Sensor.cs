@@ -59,26 +59,26 @@ namespace Atdi.DataModels.Sdrns.Device
         /// <summary>
         /// Azimuth, degrees
         /// </summary>
-        [DataMember]
-        public double? Azimuth { get; set; }
+        //[DataMember]
+        //public double? Azimuth { get; set; }
 
-        /// <summary>
-        /// Elevation, degrees
-        /// </summary>
-        [DataMember]
-        public double? Elevation { get; set; }
+        ///// <summary>
+        ///// Elevation, degrees
+        ///// </summary>
+        //[DataMember]
+        //public double? Elevation { get; set; }
 
-        /// <summary>
-        /// Altitude above ground level, m
-        /// </summary>
-        [DataMember]
-        public double? AGL { get; set; }
+        ///// <summary>
+        ///// Altitude above ground level, m
+        ///// </summary>
+        //[DataMember]
+        //public double? AGL { get; set; }
 
-        /// <summary>
-        /// ARGUS system identifier
-        /// </summary>
-        [DataMember]
-        public string SysArgusId { get; set; }
+        ///// <summary>
+        ///// ARGUS system identifier
+        ///// </summary>
+        //[DataMember]
+        //public string SysArgusId { get; set; }
 
         /// <summary>
         /// Sensor type
@@ -98,23 +98,23 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public double? RxLoss { get; set; }
 
-        /// <summary>
-        /// Operation hours: From
-        /// </summary>
-        [DataMember]
-        public double? OpHHFr { get; set; }
+        ///// <summary>
+        ///// Operation hours: From
+        ///// </summary>
+        //[DataMember]
+        //public double? OpHHFr { get; set; }
 
-        /// <summary>
-        /// Operation hours: To
-        /// </summary>
-        [DataMember]
-        public double? OpHHTo { get; set; }
+        ///// <summary>
+        ///// Operation hours: To
+        ///// </summary>
+        //[DataMember]
+        //public double? OpHHTo { get; set; }
 
-        /// <summary>
-        /// Operation days
-        /// </summary>
-        [DataMember]
-        public string OpDays { get; set; }
+        ///// <summary>
+        ///// Operation days
+        ///// </summary>
+        //[DataMember]
+        //public string OpDays { get; set; }
 
         /// <summary>
         /// Custom data, text
@@ -157,11 +157,11 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public SensorAntenna Antenna { get; set; }
 
-        /// <summary>
-        /// Sensor locations
-        /// </summary>
-        [DataMember]
-        public SensorLocation[] Locations { get; set; }
+        ///// <summary>
+        ///// Sensor locations
+        ///// </summary>
+        //[DataMember]
+        //public SensorLocation[] Locations { get; set; }
 
         /// <summary>
         /// Points of sensor polygon

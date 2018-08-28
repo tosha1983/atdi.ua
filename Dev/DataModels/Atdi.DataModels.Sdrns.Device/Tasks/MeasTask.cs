@@ -37,23 +37,23 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public string TaskId { get; set; }
 
-        /// <summary>
-        /// Measurement type
-        /// </summary>
-        [DataMember]
-        public MeasurementType Measurement { get; set; }
+        ///// <summary>
+        ///// Measurement type
+        ///// </summary>
+        //[DataMember]
+        //public MeasurementType Measurement { get; set; }
 
-        /// <summary>
-        /// Type of spectrum scan
-        /// </summary>
-        [DataMember]
-        public SpectrumScanType SpectrumScan { get; set; }
+        ///// <summary>
+        ///// Type of spectrum scan
+        ///// </summary>
+        //[DataMember]
+        //public SpectrumScanType SpectrumScan { get; set; }
 
-        /// <summary>
-        /// Number of scans at a time
-        /// </summary>
-        [DataMember]
-        public int SwNumber { get; set; }
+        ///// <summary>
+        ///// Number of scans at a time
+        ///// </summary>
+        //[DataMember]
+        //public int SwNumber { get; set; }
 
         /// <summary>
         /// Scanning start time
@@ -61,11 +61,11 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public DateTime StartTime { get; set; }
 
-        /// <summary>
-        /// Measurements duration, sec
-        /// </summary>
-        [DataMember]
-        public double Interval_sec { get; set; }
+        ///// <summary>
+        ///// Measurements duration, sec
+        ///// </summary>
+        //[DataMember]
+        //public double Interval_sec { get; set; }
 
         /// <summary>
         /// Scanning stop time
@@ -85,29 +85,29 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public string Status { get; set; }
 
-        /// <summary>
-        /// Frequencies for scanning
-        /// </summary>
-        [DataMember]
-        public MeasuredFrequencies Frequencies { get; set; }
+        ///// <summary>
+        ///// Frequencies for scanning
+        ///// </summary>
+        //[DataMember]
+        //public MeasuredFrequencies Frequencies { get; set; }
 
-        /// <summary>
-        /// Measurement equipment parameters
-        /// </summary>
-        [DataMember]
-        public DeviceMeasParam DeviceParam { get; set; }
+        ///// <summary>
+        ///// Measurement equipment parameters
+        ///// </summary>
+        //[DataMember]
+        //public DeviceMeasParam DeviceParam { get; set; }
 
-        /// <summary>
-        /// Spectrum occupancy measurement parameters
-        /// </summary>
-        [DataMember]
-        public SpectrumOccupationMeasParam SOParam { get; set; }
+        ///// <summary>
+        ///// Spectrum occupancy measurement parameters
+        ///// </summary>
+        //[DataMember]
+        //public SpectrumOccupationMeasParam SOParam { get; set; }
 
-        /// <summary>
-        /// Parameters of location areas for measurement
-        /// </summary>
-        [DataMember]
-        public LocationMeasParam[] LocationParams { get; set; }
+        ///// <summary>
+        ///// Parameters of location areas for measurement
+        ///// </summary>
+        //[DataMember]
+        //public LocationMeasParam[] LocationParams { get; set; }
 
         /// <summary>
         /// Parameter, which defines how many scans still need to be performed

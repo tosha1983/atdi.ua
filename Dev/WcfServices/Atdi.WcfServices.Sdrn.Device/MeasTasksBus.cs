@@ -22,33 +22,67 @@ namespace Atdi.WcfServices.Sdrn.Device
             this._logger = logger;
         }
 
-
-        public Result<DeviceCommand[]> GetCommands(SensorDescriptor sensorDescriptor)
+        public Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token)
         {
             throw new NotImplementedException();
         }
 
-        public Result<MeasTask[]> GetMeasTasks(SensorDescriptor sensorDescriptor)
+        public Result AckEntity(SensorDescriptor sensorDescriptor, byte[] token)
         {
             throw new NotImplementedException();
         }
 
-        public Result<SensorRegistrationResult[]> GetRegistrationResults(SensorDescriptor sensorDescriptor)
+        public Result AckEntityPart(SensorDescriptor sensorDescriptor, byte[] token)
         {
             throw new NotImplementedException();
         }
 
-        public Result SendCommandResults(DeviceCommandResult[] results)
+        public Result AckMeasTask(SensorDescriptor sensorDescriptor, byte[] token)
         {
             throw new NotImplementedException();
         }
 
-        public Result SendMeasResults(MeasResults[] results)
+        public BusResult<DeviceCommand> GetCommand(SensorDescriptor sensorDescriptor)
         {
             throw new NotImplementedException();
         }
 
-        public Result TryRegister(Sensor sensor, string sdrnServer)
+        public BusResult<Entity> GetEntity(SensorDescriptor sensorDescriptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BusResult<EntityPart> GetEntityPart(SensorDescriptor sensorDescriptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BusResult<MeasTask> GetMeasTask(SensorDescriptor sensorDescriptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result SendCommandResult(SensorDescriptor sensorDescriptor, DeviceCommandResult commandResult)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result SendEntity(SensorDescriptor sensorDescriptor, Entity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result SendEntityPart(SensorDescriptor sensorDescriptor, EntityPart entityPart)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result SendMeasResults(SensorDescriptor sensorDescriptor, MeasResults results)
         {
             throw new NotImplementedException();
         }

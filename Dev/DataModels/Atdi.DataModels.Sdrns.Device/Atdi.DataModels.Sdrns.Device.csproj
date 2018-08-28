@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Command\DeviceCommandResult.cs" />
     <Compile Include="Command\DeviceCommand.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\EntityPart.cs" />
     <Compile Include="Results\BandwidthMeasResult.cs" />
     <Compile Include="Results\FrequencySample.cs" />
     <Compile Include="Results\GeneralMeasResult.cs" />

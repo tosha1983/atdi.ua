@@ -6,9 +6,24 @@ using System.Threading.Tasks;
 using System.ServiceModel;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.CommonOperation;
+using System.Runtime.Serialization;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Device
 {
+    /// <summary>
+    /// Represents the result of the operation with the returned data of type TReturnedData and with the common state:  Success or Fault
+    /// </summary>
+    /// <typeparam name="TReturnedData">The type of the returned data of the operation</typeparam>
+    [DataContract(Namespace = Specification.Namespace)]
+    public class BusResult<TReturnedData> : Result<TReturnedData>
+    {
+        /// <summary>
+        /// The returned data of the operation
+        /// </summary>
+        [DataMember]
+        public byte[] Token { get; set; }
+    }
+
     /// <summary>
     /// The public contract of the WCF-service of the Device Integration Bus
     /// </summary>
@@ -19,36 +34,90 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// 
         /// </summary>
         [OperationContract]
-        Result TryRegister(Sensor sensor, string sdrnServer);
+        Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Result<SensorRegistrationResult[]> GetRegistrationResults(SensorDescriptor sensorDescriptor);
+        BusResult<DeviceCommand> GetCommand(SensorDescriptor sensorDescriptor);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Result<DeviceCommand[]> GetCommands(SensorDescriptor sensorDescriptor);
+        Result SendCommandResult(SensorDescriptor sensorDescriptor, DeviceCommandResult commandResult);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Result SendCommandResults(DeviceCommandResult[] results);
+        BusResult<MeasTask> GetMeasTask(SensorDescriptor sensorDescriptor);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Result AckMeasTask(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Result<MeasTask[]> GetMeasTasks(SensorDescriptor sensorDescriptor);
+        Result SendMeasResults(SensorDescriptor sensorDescriptor, MeasResults results);
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="sensorDescriptor"></param>
+        /// <param name="entity"></param>
         /// <returns></returns>
-        Result SendMeasResults(MeasResults[] results);
+        Result SendEntity(SensorDescriptor sensorDescriptor, Entity entity);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensorDescriptor"></param>
+        /// <param name="entityPart"></param>
+        /// <returns></returns>
+        Result SendEntityPart(SensorDescriptor sensorDescriptor, EntityPart entityPart);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensorDescriptor"></param>
+        /// <returns></returns>
+        BusResult<Entity> GetEntity(SensorDescriptor sensorDescriptor);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensorDescriptor"></param>
+        /// <returns></returns>
+        BusResult<EntityPart> GetEntityPart(SensorDescriptor sensorDescriptor);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensorDescriptor"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Result AckEntity(SensorDescriptor sensorDescriptor, byte[] token);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensorDescriptor"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Result AckEntityPart(SensorDescriptor sensorDescriptor, byte[] token);
     }
 }
