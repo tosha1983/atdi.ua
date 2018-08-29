@@ -35,24 +35,34 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             ShortMeasTask Res = new ShortMeasTask();
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                List<MeasTask> ResMeasTasks = new List<MeasTask>(); 
-                //List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList().FindAll(t => t.Key == options.TaskId.Value);
-                //foreach (KeyValuePair<int, MeasTask> v in mtsk)
+                try
+                {
+                    List<MeasTask> ResMeasTasks = new List<MeasTask>();
+                    //List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList().FindAll(t => t.Key == options.TaskId.Value);
+                    //foreach (KeyValuePair<int, MeasTask> v in mtsk)
                     //ResMeasTasks.Add(v.Value);
 
-             ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value)).ToList();
-            if (ResMeasTasks != null) {
-                if (ResMeasTasks.Count > 0) {
-                    MeasTask mts = ResMeasTasks.ToList().Find(t => t.Status != "Z" && t.Id.Value == options.TaskId.Value);
-                    if (mts != null) {
-                            var SMT = new ShortMeasTask { CreatedBy = mts.CreatedBy, DateCreated = mts.DateCreated, ExecutionMode = mts.ExecutionMode, Id = mts.Id, MaxTimeBs = mts.MaxTimeBs, Name = mts.Name, OrderId = mts.OrderId.GetValueOrDefault(), Prio = mts.Prio, ResultType = mts.ResultType, Status = mts.Status, Task = mts.Task, Type = mts.Type };
-                            if (mts.MeasDtParam != null) SMT.TypeMeasurements = mts.MeasDtParam.TypeMeasurements;
-                            Res = SMT;
+                    ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value)).ToList();
+                    if (ResMeasTasks != null)
+                    {
+                        if (ResMeasTasks.Count > 0)
+                        {
+                            MeasTask mts = ResMeasTasks.ToList().Find(t => t.Status != "Z" && t.Id.Value == options.TaskId.Value);
+                            if (mts != null)
+                            {
+                                var SMT = new ShortMeasTask { CreatedBy = mts.CreatedBy, DateCreated = mts.DateCreated, ExecutionMode = mts.ExecutionMode, Id = mts.Id, MaxTimeBs = mts.MaxTimeBs, Name = mts.Name, OrderId = mts.OrderId.GetValueOrDefault(), Prio = mts.Prio, ResultType = mts.ResultType, Status = mts.Status, Task = mts.Task, Type = mts.Type };
+                                if (mts.MeasDtParam != null) SMT.TypeMeasurements = mts.MeasDtParam.TypeMeasurements;
+                                Res = SMT;
+                            }
+                            else
+                                Res = null;
+                        }
                     }
-                    else
-                        Res = null;
                 }
-            }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
             });
             th.Start();
             th.Join();

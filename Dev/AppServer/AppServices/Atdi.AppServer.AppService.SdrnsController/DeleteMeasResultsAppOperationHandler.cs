@@ -38,16 +38,25 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
-                if (options.MeasResultsId != null)
+                try
                 {
-                    if (resDb.DeleteResultFromDB(options.MeasResultsId, "Z"))
+                    ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
+                    if (options.MeasResultsId != null)
                     {
-                        cv_r.State = CommonOperationState.Success;
+                        if (resDb.DeleteResultFromDB(options.MeasResultsId, "Z"))
+                        {
+                            cv_r.State = CommonOperationState.Success;
+                        }
+                        else cv_r.State = CommonOperationState.Fault;
                     }
                     else cv_r.State = CommonOperationState.Fault;
                 }
-                else cv_r.State = CommonOperationState.Fault;
+                catch (Exception ex)
+                {
+                    cv_r.State = CommonOperationState.Fault;
+                    cv_r.FaultCause = ex.Message;
+                    Logger.Error(ex.Message);
+                }
             });
             th.Start();
             th.Join();

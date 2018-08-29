@@ -867,8 +867,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
                                 if (M_STX != null) {
                                     if (M_STX.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0) {
-                                        MeasSubTaskSt_.m_status = status;
-                                        MeasSubTaskSt_.Save(null,null);
+                                           if (MeasSubTaskSt_.m_status != "Z")
+                                           {
+                                               MeasSubTaskSt_.m_status = status;
+                                               MeasSubTaskSt_.Save(null, null);
+                                               isSuccess = true;
+                                           }
                                     }
                                 }
                             }
@@ -893,6 +897,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             catch (Exception ex)
             {
+                isSuccess = false;
                 logger.Error("Error in SetHistoryStatusTasksInDB: " + ex.Message);
             }
             return isSuccess;

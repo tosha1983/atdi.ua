@@ -35,8 +35,16 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             List<Sensor> val = new List<Sensor>();
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
-                ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
-                val = gsd.LoadObjectAllSensor();
+                try
+                {
+                    ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
+                    val = gsd.LoadObjectAllSensor();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
+
             });
             thread.Start();
             thread.Join();

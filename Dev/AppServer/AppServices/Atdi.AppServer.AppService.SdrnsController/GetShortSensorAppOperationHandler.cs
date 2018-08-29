@@ -34,8 +34,15 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             SensorListSDRNS senLst = new SensorListSDRNS(Logger);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-               LstS = senLst.CreateShortSensorListBySensorId(options.SensorId.Value);
-               Logger.Trace(this, options, operationContext);
+                try
+                {
+                    LstS = senLst.CreateShortSensorListBySensorId(options.SensorId.Value);
+                    Logger.Trace(this, options, operationContext);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
             });
             th.Start();
             th.Join();
