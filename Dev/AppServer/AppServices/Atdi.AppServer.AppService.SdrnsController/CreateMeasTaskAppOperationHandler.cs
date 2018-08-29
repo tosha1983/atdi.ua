@@ -64,7 +64,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     }
                     if (SensorIds.Count > 0)
                     {
-                        tasks.Process_Multy_Meas(mt, SensorIds, "New", false);
+                        bool isSuccessTemp = false;
+                        tasks.Process_Multy_Meas(mt, SensorIds, "New", false, out isSuccessTemp);
                     }
                 }
                 catch (Exception ex) {

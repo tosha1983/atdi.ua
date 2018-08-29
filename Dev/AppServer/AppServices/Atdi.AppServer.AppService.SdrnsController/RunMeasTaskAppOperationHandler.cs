@@ -68,7 +68,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             if (SensorIds.Count > 0)
                             {
                                 bool isOnline = false;
-                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Run", isOnline);
+                                bool isSuccess = false;
+                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Run", isOnline, out isSuccess);
                                 res.State = CommonOperationState.Success;
                             }
                         }

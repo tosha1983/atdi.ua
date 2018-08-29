@@ -90,9 +90,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <summary>
         /// 
         /// </summary>
-        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline)
+        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline, out bool isSuccess)
         {
             bool isSendSuccess = false;
+            bool isSuccessTemp = false;
+            isSuccess = false;
             try
             {
                 logger.Trace("Start procedure Process_Multy_Meas...");
@@ -176,7 +178,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             //else GlobalInit.LIST_MEAS_TASK.Add(M);
                                             if (ActionType == "Del")
                                             {
-                                                cl.SetHistoryStatusTasksInDB(M, "Z");
+                                                isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
                                                 //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
                                             }
                                         }
@@ -203,6 +205,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
                                                 {
                                                     isSendSuccess = true;
+                                                    isSuccessTemp = true;
                                                 }
                                             }
                                             else
@@ -222,7 +225,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 });
                 tsk_main.Start();
                 tsk_main.Join();
-                
+                isSuccess = isSuccessTemp;
             }
             catch (Exception ex)
             {
