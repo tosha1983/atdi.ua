@@ -13,6 +13,9 @@ namespace Atdi.DataModels.Sdrns.Device
     [DataContract(Namespace = Specification.Namespace)]
     public class MeasResults
     {
+        /// <summary>
+        /// Results identifier
+        /// </summary>
         [DataMember]
         public string ResultId { get; set; }
 
@@ -105,5 +108,18 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// </summary>
         //[DataMember]
         //public BandwidthMeasResult BandwidthResult { get; set; }
+
+        /// <summary>
+        /// Routes during measurements
+        /// </summary>
+        [DataMember]
+        public Route[] Routes { get; set; }
+
+        ///// <summary>
+        ///// Signaling. Parameters of emissions above predefined level. 
+        ///// </summary>
+        //[DataMember]
+        //public SignalingSample[] SignalingSamples { get; set; }
+
     }
 }

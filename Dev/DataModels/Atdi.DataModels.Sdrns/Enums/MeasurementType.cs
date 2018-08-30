@@ -82,7 +82,11 @@ namespace Atdi.DataModels.Sdrns
         /// Monitoring stations
         /// </summary>
         [EnumMember]
-        MonitoringStations
-
+        MonitoringStations,
+        /// <summary>
+        /// Signaling unauthorized emissions
+        /// </summary>
+        [EnumMember]
+        Signaling
     }
 }

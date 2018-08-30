@@ -45,6 +45,7 @@
     <Compile Include="Enums\AntennaPolarization.cs" />
     <Compile Include="Enums\DetectingType.cs" />
     <Compile Include="Enums\FrequencyMode.cs" />
+    <Compile Include="Enums\PointStayType.cs" />
     <Compile Include="Enums\SpectrumOccupationType.cs" />
     <Compile Include="GeoLocation.cs" />
     <Compile Include="Enums\MeasurementType.cs" />
