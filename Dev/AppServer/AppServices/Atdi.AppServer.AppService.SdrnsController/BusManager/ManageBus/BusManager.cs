@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
 using Atdi.SDNRS.AppServer;
-
+using RabbitMQ.Client;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -18,6 +18,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
         where T : class
         where S : class
     {
+
+
+           
+
         // метод для отправки основного объекта в шину
         public bool SendDataObject(T obj, string name_queue, string Expriration)
         {
@@ -102,6 +106,61 @@ namespace Atdi.SDNRS.AppServer.BusManager
     public class BusManager<T>
         where T : class
     {
+
+        public bool SendDataToServer(string sensorName, string techId, byte[] data, string apiVer)
+        {
+            bool isSendSuccess = false;
+            try
+            {
+                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                {
+                    using (var connection = factory.CreateConnection())
+                    using (var channel = connection.CreateModel())
+                    {
+                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[v{apiVer}]";
+                        var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
+
+                        channel.ExchangeDeclare(
+                                exchange: exchange,
+                                type: "direct",
+                                durable: true
+                            );
+
+                        channel.QueueDeclare(
+                            queue: queueName,
+                            durable: true,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+
+                        var props = channel.CreateBasicProperties();
+                        props.Persistent = true;
+                        props.AppId = "SDRN Server";
+                        props.DeliveryMode = 2;
+                        props.Headers = new Dictionary<string, object>();
+                        props.Headers["SdrnServer"] = GlobalInit.NameServer;
+                        props.Headers["SensorName"] = sensorName;
+                        props.Headers["TechId"] = techId;
+
+                        channel.BasicPublish(exchange: exchange,
+                                             routingKey: routingKey,
+                                             basicProperties: props,
+                                             body: data);
+                        isSendSuccess = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                isSendSuccess = false;
+            }
+            return isSendSuccess;
+           
+        }
+
+
         public uint GetMessageCount(string name_queue)
         {
             try {

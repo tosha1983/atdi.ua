@@ -6,8 +6,44 @@ using System.Collections.Generic;
 using System.Reflection;
 using Oracle.DataAccess.Client;
 
-namespace Atdi.Oracle.DataAccess
+namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
+    public class YxbsEntitypart : Yyy
+    {
+        public YxbsEntitypart()
+        {
+            TableName = "XBS_ENTITYPART";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YxbsEntitypart)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public string m_entityid { get { return getString(1); } set { setString(1, 50, value); } }
+        public int? m_partindex { get { return getInt(2); } set { setInt(2, value); } }
+        public int? m_eof { get { return getInt(3); } set { setInt(3, value); } }
+        public byte[] m_content { get { return getBlob(4); } set { setBlob(4, value); } }
+    }
+
+    public class YxbsEntity : Yyy
+    {
+        public YxbsEntity()
+        {
+            TableName = "XBS_ENTITY";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YxbsEntity)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public string m_entityid { get { return getString(1); } set { setString(1, 250, value); } }
+        public string m_name { get { return getString(2); } set { setString(2, 250, value); } }
+        public string m_description { get { return getString(3); } set { setString(3, 4000, value); } }
+        public string m_parentid { get { return getString(4); } set { setString(4, 250, value); } }
+        public string m_parenttype { get { return getString(5); } set { setString(5, 250, value); } }
+        public string m_contenttype { get { return getString(6); } set { setString(6, 250, value); } }
+        public string m_encoding { get { return getString(7); } set { setString(7, 250, value); } }
+        public string m_hashalgoritm { get { return getString(8); } set { setString(8, 250, value); } }
+        public string m_hashcode { get { return getString(9); } set { setString(9, 4000, value); } }
+        public int? m_partindex { get { return getInt(10); } set { setInt(10, value); } }
+        public int? m_eof { get { return getInt(11); } set { setInt(11, value); } }
+        public byte[] m_content { get { return getBlob(12); } set { setBlob(12, value); } }
+    }
+
     public class YXbsSensor : Yyy
     {
         public YXbsSensor()

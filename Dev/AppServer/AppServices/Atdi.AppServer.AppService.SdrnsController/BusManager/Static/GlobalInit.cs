@@ -40,9 +40,6 @@ namespace Atdi.SDNRS.AppServer.BusManager
         // Значение по умолчанию для значения из XML (MEAS_TIME_PARAM_LIST.PER_INTERVAL = 300 сек)
         // Данное значение использувется если MEAS_TIME_PARAM_LIST.PER_INTERVAL = 0 !!!
         public static int DefaultValueMinTimeInterval = BaseXMLConfiguration.xml_conf._DefaultValueMinTimeInterval;
-
-
-
         #region Template_name_queue
         public static string DevicesAllList = "";
         public static string Template_SENSORS_Main_List_APPServer = "";
@@ -90,6 +87,16 @@ namespace Atdi.SDNRS.AppServer.BusManager
         //Очередь для отправки подтверждений об успешном получении результатов со стороны SDR
         public static string Template_Event_Confirm_MeasTaskResults_Send_ = "";
 
+        public static string RabbitHostName { get; }
+        public static string RabbitUserName { get; }
+        public static string RabbitPassword { get; }
+        public static string NameServer { get; }
+        public static string ExchangePointFromDevices { get; }
+        public static string ExchangePointFromServer { get; }
+        public static string StartNameQueueServer { get; }
+        public static string StartNameQueueDevice { get; }
+        public static string ConcumerDescribe { get; }
+
         #endregion
 
         public static void Initialization()
@@ -128,8 +135,15 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.Template_Event_Resp_Sensor_ = ConfigurationManager.ConnectionStrings["Template_Event_Resp_Sensor_"].ConnectionString;
             GlobalInit.Template_Event_UpdateStatus_MeasSubTasks_From_MeasTaskSDR = ConfigurationManager.ConnectionStrings["Template_Event_UpdateStatus_MeasSubTasks_From_MeasTaskSDR"].ConnectionString;
             GlobalInit.Template_Event_Confirm_MeasTaskResults_Send_ = ConfigurationManager.ConnectionStrings["Template_Event_Confirm_MeasTaskResults_Send_"].ConnectionString;
-
-
+            GlobalInit.RabbitHostName = ConfigurationManager.ConnectionStrings["RabbitHostName"].ConnectionString;
+            GlobalInit.RabbitUserName = ConfigurationManager.ConnectionStrings["RabbitUserName"].ConnectionString;
+            GlobalInit.RabbitPassword = ConfigurationManager.ConnectionStrings["RabbitPassword"].ConnectionString;
+            GlobalInit.NameServer = ConfigurationManager.ConnectionStrings["NameServer"].ConnectionString;
+            GlobalInit.ExchangePointFromDevices = ConfigurationManager.ConnectionStrings["ExchangePointFromDevices"].ConnectionString;
+            GlobalInit.ExchangePointFromServer = ConfigurationManager.ConnectionStrings["ExchangePointFromServer"].ConnectionString;
+            GlobalInit.StartNameQueueServer = ConfigurationManager.ConnectionStrings["StartNameQueueServer"].ConnectionString;
+            GlobalInit.StartNameQueueDevice = ConfigurationManager.ConnectionStrings["StartNameQueueDevice"].ConnectionString;
+            GlobalInit.ConcumerDescribe = ConfigurationManager.ConnectionStrings["ConcumerDescribe"].ConnectionString;
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
             Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();

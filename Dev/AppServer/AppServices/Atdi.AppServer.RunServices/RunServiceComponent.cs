@@ -44,7 +44,7 @@ namespace Atdi.AppServer.RunServices
         AppServerComponentType IAppServerComponent.Type => AppServerComponentType.AppService;
 
         string IAppServerComponent.Name => this._name;
-        
+
         void IAppServerComponent.Activate()
         {
             Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -53,47 +53,13 @@ namespace Atdi.AppServer.RunServices
             GlobalInit.Initialization();
             ClassesDBGetResult DbGetRes = new ClassesDBGetResult(_logger);
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(_logger);
-            ///
-            // Начальная инициализация (загрузка конфигурационных данных)
-            
-            /*
-            System.Threading.Thread tt = new System.Threading.Thread(() => {
-                System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Normal;
-                    if (GlobalInit.blockingCollectionMeasurementResults.Count == 0) {
-                        MeasurementResults[] msResltConv = conv.ConvertTo_SDRObjects(DbGetRes.ReadlAllResultFromDB());
-                        if (msResltConv != null) {
-                            foreach (MeasurementResults inb in msResltConv.ToArray()) {
-                                GlobalInit.blockingCollectionMeasurementResults.TryAdd(inb);
-                            }
-                        }
-                    }
-            });
-            tt.Start();
-            tt.Join();
-           
-
-           
-              System.Threading.Thread tsg = new System.Threading.Thread(() => {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks(this._logger);
-                ClassConvertTasks ts = new ClassConvertTasks(_logger);
-                MeasTask[] task = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
-                  for (int i=0; i< task.Length; i++) GlobalInit.blockingCollectionMeasTask.TryAdd(task[i].Id.Value,task[i]);
-                  cl.Dispose();
-                ts.Dispose();
-            });
-            tsg.Start();
-            tsg.Join();
-
-            */
-
-
-           ShedulerUpMeasSDRResults Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
-           Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-           ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
-           CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-           ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
-           ShedulerCheckStart Quartz = new ShedulerCheckStart(this._logger);
-           Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+            ShedulerUpMeasSDRResults Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
+            Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+            ShedulerCheckActivitySensor CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
+            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
+            ShedulerGetMeasTask getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
+            ShedulerCheckStart Quartz = new ShedulerCheckStart(this._logger);
+            Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
         }
 
         void IAppServerComponent.Deactivate()

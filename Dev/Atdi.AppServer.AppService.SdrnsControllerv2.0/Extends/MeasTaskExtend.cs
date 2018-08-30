@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
 
-namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
+namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
     public static class MeasTaskExtend
     {
         // Создание MeasSubTask и MeasSubTaskStation
         // Создание MeasSubTask и MeasSubTaskStation
-        public static void CreateAllSubTasksApi1_0(this MeasTask task)
+        public static void CreateAllSubTasks(this MeasTask task)
         {
             if (task.Status == "N")
             {
@@ -105,7 +105,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         }
 
         // Создание MeasTaskSDRs 26.12.2017 обновление функции Максим 27.12.2017
-        public static List<MeasSdrTask> CreateeasTaskSDRsApi1_0(this MeasTask task, string Type = "New")
+        public static List<MeasSdrTask> CreateeasTaskSDRs(this MeasTask task, string Type = "New")
         {
             List<MeasSdrTask> ListMTSDR = new List<MeasSdrTask>();
             if (task.MeasSubTasks == null) return ListMTSDR;
@@ -176,97 +176,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return ListMTSDR;
         }
 
-
-        public static List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi2_0(this MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, string Type = "New")
-        {
-            List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
-            if (task.MeasSubTasks == null) return ListMTSDR;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks)
-            {
-                foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations)
-                {
-                    if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
-                        ((Type == "Del") && (SubTaskStation.Status == "Z")))
-
-                    {
-                        Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                        MTSDR.TaskId = string.Format("MeasSubTaskId={0};MeasSubTaskStationId={1};MeasTaskId={2};SensorId={3}", SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
-                        if (Type == "New")
-                        {
-                            if (task.Id == null) task.Id = new MeasTaskIdentifier();
-                            if (task.MeasOther == null) task.MeasOther = new MeasOther();
-                            if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
-                            MTSDR.MobEqipmentMeasurements = new DataModels.Sdrns.MeasurementType[1];
-                            if (task.Prio != null) { MTSDR.Priority = task.Prio.GetValueOrDefault(); } else { MTSDR.Priority = 10; }
-                            MTSDR.ScanParameters = new DataModels.Sdrns.Device.StandardScanParameter[] { };
-                            MTSDR.StartTime= SubTask.TimeStart;
-                            MTSDR.StopTime = SubTask.TimeStop;
-                            MTSDR.Status = SubTask.Status;
-                            MTSDR.Stations = new DataModels.Sdrns.Device.MeasuredStation[1];
-
-                            /*
-                            MTSDR.Stations[0].GlobalSid
-                               MTSDR.Stations[0].LastRealGlobalSid
-                                MTSDR.Stations[0].License.CloseDate
-                                MTSDR.Stations[0].License.EndDate
-                                MTSDR.Stations[0].License.IcsmId
-                                MTSDR.Stations[0].License.Name
-                                MTSDR.Stations[0].License.StartDate
-                                MTSDR.Stations[0].Owner.Address
-                                MTSDR.Stations[0].Owner.Code
-                                MTSDR.Stations[0].Owner.Id
-                                MTSDR.Stations[0].Owner.OKPO
-                                MTSDR.Stations[0].Owner.OwnerName
-                                MTSDR.Stations[0].Owner.Zip
-                                MTSDR.Stations[0].Sectors[0].AGL
-                                MTSDR.Stations[0].Sectors[0].Azimuth
-                                MTSDR.Stations[0].Sectors[0].BWMask
-                                MTSDR.Stations[0].Sectors[0].BW_kHz
-                                MTSDR.Stations[0].Sectors[0].ClassEmission
-                                MTSDR.Stations[0].Sectors[0].EIRP_dBm
-                                MTSDR.Stations[0].Sectors[0].Frequencies[0].ChannelNumber
-                                MTSDR.Stations[0].Sectors[0].Frequencies[0].Frequency_MHz
-                                MTSDR.Stations[0].Sectors[0].Frequencies[0].Id.Value
-                                MTSDR.Stations[0].Sectors[0].Frequencies[0].PlanId.Value
-                                MTSDR.Stations[0].Sectors[0].SectorId
-                                MTSDR.Stations[0].Site.Adress
-                                MTSDR.Stations[0].Site.Lat
-                                MTSDR.Stations[0].Site.Lon
-                                MTSDR.Stations[0].Site.Region
-                                MTSDR.Stations[0].Standard
-                                MTSDR.Stations[0].StationId
-                                MTSDR.Stations[0].Status
-                                MTSDR.Status
-                                MTSDR.StopTime
-                                MTSDR.TaskId
-                                MTSDR.EquipmentTechId
-                                MTSDR.MobEqipmentMeasurements[0] = DataModels.Sdrns.MeasurementType.AmplModulation;
-                                MTSDR.ScanParameters[0].DetectionLevel_dBm
-                                MTSDR.ScanParameters[0].DeviceParam.DetectType
-                                MTSDR.ScanParameters[0].DeviceParam.MeasTime_sec
-                                MTSDR.ScanParameters[0].DeviceParam.Preamplification_dB
-                                MTSDR.ScanParameters[0].DeviceParam.RBW_kHz
-                                MTSDR.ScanParameters[0].DeviceParam.RefLevel_dBm
-                                MTSDR.ScanParameters[0].DeviceParam.RfAttenuation_dB
-                                MTSDR.ScanParameters[0].DeviceParam.ScanBW_kHz
-                                MTSDR.ScanParameters[0].DeviceParam.VBW_kHz
-                                MTSDR.ScanParameters[0].MaxFrequencyRelativeOffset_mk
-                                MTSDR.ScanParameters[0].MaxPermissionBW_kHz
-                                MTSDR.ScanParameters[0].Standard
-                                MTSDR.ScanParameters[0].XdBLevel_dB
-                                MTSDR.ScanPerTaskNumber
-                                */
-                            MTSDR.SensorName = SensorName;
-                            MTSDR.SdrnServer = SdrnServer;
-                            MTSDR.ScanPerTaskNumber = 0;
-                            MTSDR.EquipmentTechId = EquipmentTechId;
-                        }
-                        ListMTSDR.Add(MTSDR);
-                    }
-                }
-            }
-            return ListMTSDR;
-        }
 
         /// <summary>
         /// Функция обновления статуса MeasTask,MeasSubTask,MeasSubTaskStation

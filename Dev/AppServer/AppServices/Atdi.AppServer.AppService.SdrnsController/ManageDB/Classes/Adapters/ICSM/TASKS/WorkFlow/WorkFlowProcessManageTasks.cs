@@ -9,6 +9,7 @@ using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
 using Atdi.Oracle.DataAccess;
+using Newtonsoft.Json;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -57,7 +58,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     if (s_out != null)
                     {
                         MeasTask Data_ = s_out;
-                        Data_.CreateAllSubTasks();
+                        Data_.CreateAllSubTasksApi1_0();
                         List<MeasTask> mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(Data_.Id.Value)).ToList();
                         if (mts_.Count() == 0)
                         {
@@ -102,6 +103,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
                 ClassConvertTasks ts = new ClassConvertTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
+                List<Atdi.DataModels.Sdrns.Device.MeasTask> Checked_L_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
+
                 System.Threading.Thread tsk_main = new System.Threading.Thread(() =>
                 {
                     if (mt != null)
@@ -109,6 +112,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
                         MeasTask[] Res = new MeasTask[1] { mt };
                         List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
+                        List<Atdi.DataModels.Sdrns.Device.MeasTask> LM_SDR_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
                         foreach (int SensorId in SensorIds.ToArray())
                         {
                             Sensor fnd_s = gsd.LoadObjectSensor(SensorId);
@@ -116,24 +120,21 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             {
                                 if (fnd_s.Name != null)
                                 {
-                                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                                    //{
-                                        Checked_L.Clear();
-                                        //if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
-                                        if ((Res != null) && (Res.Length > 0))
+                                    string apiVer = gsd.GetSensorApiVersion(fnd_s.Id.Value);
+                                    Checked_L.Clear();
+                                    if ((Res != null) && (Res.Length > 0))
+                                    {
+                                        MeasTask M = Res[0]; //GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
+                                        int Id_Old = M.Id.Value;
+                                        MeasSubTask[] msbd_old = M.MeasSubTasks;
+                                        M = mt;
+                                        M.Id.Value = Id_Old;
+                                        if (M.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null)
                                         {
-                                            //MeasTask M = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
-                                            MeasTask M = Res[0]; //GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
-                                            int Id_Old = M.Id.Value;
-                                            MeasSubTask[] msbd_old = M.MeasSubTasks;
-                                            M = mt;
-                                            M.Id.Value = Id_Old;
-                                            if (M.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null)
+                                            M.UpdateStatusSubTasks(SensorId, ActionType, isOnline);
+                                            if (apiVer == "1.0")
                                             {
-                                                M.UpdateStatusSubTasks(SensorId, ActionType, isOnline);
-                                                LM_SDR = M.CreateeasTaskSDRs(ActionType);
-
-                                                //if (isCreateTasksSdr == false) {  LM_SDR = M.CreateeasTaskSDRs(ActionType); }
+                                                LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
                                                 if (LM_SDR != null)
                                                 {
                                                     string ids = "";
@@ -150,7 +151,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         if (mx.SensorId.Value == SensorId)
                                                         {
                                                             /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
-                                                            if (mx.ValidationMeas())
+                                                            if (mx.ValidationMeas1_0())
                                                             {
                                                                 Checked_L.Add(mx);
                                                                 M.UpdateStatus(ActionType);
@@ -170,53 +171,116 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
-
-                                            M.MeasSubTasks = msbd_old;
-                                            //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
-                                            //if (fnd != null)
-                                            //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
-                                            //else GlobalInit.LIST_MEAS_TASK.Add(M);
-                                            if (ActionType == "Del")
+                                            if (apiVer == "2.0")
                                             {
-                                                isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
-                                                //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
-                                            }
-                                        }
-
-                                        if (Checked_L.Count > 0)
-                                        {
-                                            BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
-                                            {
-                                                isSendSuccess = true;
-                                                //CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Success send new task...");
-                                            }
-                                            else
-                                            {
-                                                isSendSuccess = false;
-                                                //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
-                                                //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
-                                                //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
-                                            }
-
-                                            // Отправка сообщения в СТОП-ЛИСТ
-                                            if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
-                                            {
-                                                if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                                LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
+                                                if (LM_SDR_Device != null)
                                                 {
-                                                    isSendSuccess = true;
-                                                    isSuccessTemp = true;
+                                                    string ids = "";
+                                                    int MaxVal = cl.GetMaXIdsSdrTasks(M);
+                                                    int idx = MaxVal + 1;
+                                                    foreach (Atdi.DataModels.Sdrns.Device.MeasTask mx in LM_SDR_Device.ToArray())
+                                                    {
+                                                        ids = idx.ToString() + ";";
+                                                        if (mx.SensorName == fnd_s.Name)
+                                                        {
+                                                            /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
+                                                            if (mx.ValidationMeas2_0())
+                                                            {
+                                                                Checked_L_Device.Add(mx);
+                                                                M.UpdateStatus(ActionType);
+                                                            }
+                                                            else
+                                                            {
+                                                                M.UpdateStatus(ActionType);
+                                                                cl.SaveStatusTaskToDB(M);
+                                                            }
+                                                        }
+                                                        idx++;
+                                                    }
+                                                    if (ids.Length > 0) ids = ids.Remove(ids.Count() - 1, 1);
+                                                    cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
-                                            else
+                                            
+
+                                        }
+
+                                        M.MeasSubTasks = msbd_old;
+                                        //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
+                                        //if (fnd != null)
+                                        //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
+                                        //else GlobalInit.LIST_MEAS_TASK.Add(M);
+                                        if (ActionType == "Del")
+                                        {
+                                            isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
+                                            //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
+                                        }
+                                    }
+
+                                    if (Checked_L.Count > 0)
+                                    {
+                                        BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                                        if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                        {
+                                            isSendSuccess = true;
+                                        }
+                                        else
+                                        {
+                                            isSendSuccess = false;
+                                            //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
+                                            //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
+                                            //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
+                                        }
+
+                                        // Отправка сообщения в СТОП-ЛИСТ
+                                        if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
+                                        {
+                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
                                             {
-                                                //busManager.DeleteQueue(GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString());
+                                                isSendSuccess = true;
+                                                isSuccessTemp = true;
                                             }
                                         }
+                                        else
+                                        {
+                                            //busManager.DeleteQueue(GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString());
+                                        }
                                         Checked_L.Clear();
-                                    //});
-                                    //tsk.Start();
-                                    //tsk.Join();
+                                    }
+
+
+                                    //Отправка тасков в очередь специфичную для версии API 2.0
+                                    if (Checked_L_Device.Count > 0)
+                                    {
+                                        string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[v{apiVer}]";
+                                        BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
+                                        //if (busManager.SendDataObject(Checked_L_Device, Queue, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                        if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Checked_L_Device)), apiVer))
+                                        {
+                                            isSendSuccess = true;
+                                        }
+                                        else
+                                        {
+                                            isSendSuccess = false;
+                                        }
+
+                                       
+                                        if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
+                                        {
+                                            if (busManager.SendDataObject(Checked_L_Device, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L_Device[0].TaskId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            {
+                                                isSendSuccess = true;
+                                                isSuccessTemp = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            
+                                        }
+
+                                        Checked_L_Device.Clear();
+                                    }
                                 }
                             }
                         }

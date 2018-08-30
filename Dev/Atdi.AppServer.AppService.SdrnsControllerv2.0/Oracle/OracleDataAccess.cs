@@ -10,9 +10,9 @@ using Oracle.DataAccess.Client;
 using System.Data.Common;
 
 
-namespace Atdi.Oracle.DataAccess
+namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
-    public class OracleDataAccess : IDataAccess
+    public class OracleDataAccess  
     {
         public OrmRsOracle rs;
         public List<OracleParameter> getAllFields = new List<OracleParameter>();
@@ -316,27 +316,6 @@ namespace Atdi.Oracle.DataAccess
                 System.Console.WriteLine(e.ToString());
             }
             return Id;
-        }
-
-        public object GetValueFromField(string FieldName, string TableName, int ID)
-        {
-            object value = null;
-            try
-            {
-                if (connection == null) connection = NewConnection(GetConnectionString());
-                if (connection.State == ConnectionState.Open)
-                {
-                    DbCommand command = connection.CreateCommand();
-                    command.CommandText = string.Format("SELECT {0} FROM {1} WHERE ID={2}", FieldName, TableName, ID);
-                    value = command.ExecuteScalar();
-                    command.Dispose();
-                }
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e.ToString());
-            }
-            return value;
         }
 
         public int? GetNextId(string sequenceName)

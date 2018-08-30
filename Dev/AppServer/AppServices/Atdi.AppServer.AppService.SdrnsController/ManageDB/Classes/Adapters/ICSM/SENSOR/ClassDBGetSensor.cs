@@ -47,6 +47,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsSensor s_l_sensor = new YXbsSensor();
                         s_l_sensor.Format("*");
                         // выбирать только сенсоры, для которых STATUS не NULL
+                        // AND ((APIVERSION <> '2.0') OR  (APIVERSION IS NULL))
                         s_l_sensor.Filter = string.Format("(ID>0)");
                         s_l_sensor.Order = "[ID] DESC";
                         for (s_l_sensor.OpenRs(); !s_l_sensor.IsEOF(); s_l_sensor.MoveNext())
@@ -196,6 +197,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
             }
             return val;
+        }
+
+        public string GetSensorApiVersion(int IdSensor)
+        {
+            string apiVer = "1.0";
+            Yyy yyy = new Yyy();
+            object rx = yyy.GetValueFromField("APIVERSION", "XBS_SENSOR", IdSensor);
+            apiVer = (rx!=DBNull.Value ? rx.ToString() : "1.0");
+            return apiVer;
         }
 
         public Sensor LoadObjectSensor(int Id)
@@ -858,6 +868,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             se.m_status = sens.Status;
                             if (sens.StepMeasTime != null) se.m_stepmeastime = sens.StepMeasTime.GetValueOrDefault();
                             se.m_typesensor = sens.TypeSensor;
+                            se.m_techid = sens.Equipment.TechId;
                             m_ID_Sensor = (int)se.Save(dbConnect, transaction);
 
                             if (se.Fetch(string.Format("ID={0}", m_ID_Sensor)))

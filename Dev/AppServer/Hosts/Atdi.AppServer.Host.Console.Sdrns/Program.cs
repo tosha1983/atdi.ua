@@ -27,7 +27,7 @@ using Atdi.AppServer.CoreServices;
 using Atdi.AppServer.CoreServices.DataLayer;
 using Atdi.AppServer.CoreServices.DataLayer.MsSql;
 using Atdi.AppServer.CoreServices.DataLayer.Oracle;
-using Atdi.AppServer.RunServices;
+using Atdi.AppServer.ConfigurationSdrnController;
 
 namespace Atdi.AppServer.Host
 {
@@ -36,26 +36,18 @@ namespace Atdi.AppServer.Host
         static void Main(string[] args)
         {
             var components = new List<IAppServerComponent>();
-
             var sdrnsControllerAppServiceHost = new AppServiceHostServerComponent<SdrnsControllerAppService, GetMeasTaskAppOperationHandler>();
             var sdrnsControllerWcfServiceHost = new WcfServiceHostServerComponent<ISdrnsController, SdrnsControllerService>();
-
             var coreServicesComponent = new CoreServicesServerComponent();
             var dataLayerComponent = new DataLayerCoreServicesServerComponent();
             var msSqlComponent = new MsSqlDataLayerCoreServicesServerComponent();
-            //var oracleComponent = new OracleLayerCoreServicesServerComponent();
-            var sdrnsRunServiceComponent = new RunServiceComponent();
-
-
+            var sdrnsConfigurationController = new ConfigurationSdrnController.ConfigurationSdrnController();
             components.Add(sdrnsControllerAppServiceHost);
             components.Add(sdrnsControllerWcfServiceHost);
             components.Add(coreServicesComponent);
             components.Add(dataLayerComponent);
             components.Add(msSqlComponent);
-            ///components.Add(oracleComponent);
-            components.Add(sdrnsRunServiceComponent);
-
-
+            components.Add(sdrnsConfigurationController);
             using (var serverHost = AppServerHost.Create("WebQueryAppServer", components))
             {
                 try

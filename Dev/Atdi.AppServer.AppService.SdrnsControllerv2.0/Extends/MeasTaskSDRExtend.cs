@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer;
 
-namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
+namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
     public static class MeasTaskSDRExtend
     {
@@ -16,19 +15,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="taskSDR"></param>
         /// <returns></returns>
-        public static bool ValidationMeas1_0(this MeasSdrTask taskSDR)
+        public static bool ValidationMeas(this MeasSdrTask taskSDR)
         {
             if (taskSDR != null) {
                 if (taskSDR.SensorId != null) {
                     /// здесь код проверки
                 }
             }
-            return true;
-        }
-
-        public static bool ValidationMeas2_0(this Atdi.DataModels.Sdrns.Device.MeasTask taskSDR)
-        {
-           
             return true;
         }
 
@@ -90,18 +83,20 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 else if (taskSDR.status == "E_L") taskSDR.status = "E_T";
             }
             else {
-                if (CheckLoc(taskSDR, logger)) {
-                    if (taskSDR.status == "N") taskSDR.status = "A";
-                    else if (taskSDR.status == "A") taskSDR.status = "A";
-                    else if (taskSDR.status == "E_L") taskSDR.status = "A";
-                }
-                else {
+                //if (CheckLoc(taskSDR, logger)) {
+                    //if (taskSDR.status == "N") taskSDR.status = "A";
+                    //else if (taskSDR.status == "A") taskSDR.status = "A";
+                    //else if (taskSDR.status == "E_L") taskSDR.status = "A";
+                //}
+                //else 
+                {
                     if (taskSDR.status == "N") taskSDR.status = "E_L";
                     else if (taskSDR.status == "A") taskSDR.status = "E_L";
                     else if (taskSDR.status == "E_L") taskSDR.status = "E_L";
                 }
             }
         }
+        /*
         /// <summary>
         /// Функция CheckLoc  возвращает true если MeasTaskSDR не имеет MeasLocParam 
         /// или хотя бы один из параметров MeasLocParam находится на расстоянии от 
@@ -119,7 +114,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 if (taskSDR.MeasLocParam != null) {
                     if (taskSDR.MeasLocParam.Count() > 0) {
                         foreach (MeasLocParam locPrm in taskSDR.MeasLocParam.ToArray()) {
-                            Sensor Sensor_fnd = gsd.LoadObjectSensor(taskSDR.SensorId.Value);
+                            Atdi.DataModels.Sdrns.Device.Sensor Sensor_fnd = gsd.LoadObjectSensor(taskSDR.SensorId.Value);
                             if (Sensor_fnd != null) {
                                 if (Sensor_fnd.Locations != null) {
                                     List<SensorLocation> location_curr = Sensor_fnd.Locations.ToList().FindAll(r => r.Status == "A");
@@ -143,10 +138,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     else isChecked = true;
                 }
             }
-            gsd.Dispose();
             return isChecked;
         }
-
+        */
         /// <summary>
         /// Функция CheckDate возвращает true если текущая дата находится до MeasTaskSD.TimeStop
         /// </summary>
