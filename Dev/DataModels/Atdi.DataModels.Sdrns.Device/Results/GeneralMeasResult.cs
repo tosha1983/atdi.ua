@@ -96,7 +96,5 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public StationSysInfo StationSysInfo { get; set; }
-
-
     }
 }

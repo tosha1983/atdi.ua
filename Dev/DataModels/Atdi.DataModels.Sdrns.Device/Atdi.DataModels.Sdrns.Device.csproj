@@ -50,6 +50,9 @@
     <Compile Include="Results\GeneralMeasResult.cs" />
     <Compile Include="Results\LevelMeasResult.cs" />
     <Compile Include="Results\MeasResults.cs" />
+    <Compile Include="Results\Route.cs" />
+    <Compile Include="Results\RoutePoint.cs" />
+    <Compile Include="Results\SignalingSample.cs" />
     <Compile Include="Results\StationMeasResult.cs" />
     <Compile Include="Sensors\SensorDescriptor.cs" />
     <Compile Include="Sensors\SensorUpdateResult.cs" />

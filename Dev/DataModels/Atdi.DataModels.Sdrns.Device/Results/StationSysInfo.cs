@@ -15,6 +15,11 @@ namespace Atdi.DataModels.Sdrns.Device
     {
         /// <summary>
         /// Blocks with the system information
+        /// For technology GSM need bloks: SITYPE_1 - SITYPE_4, SITYPE_7 - SITYPE_9, SITYPE_13, SITYPE_15 - SITYPE_22, SITYPE_2_BIS, SITYPE_2_TER, SITYPE_9, SITYPE_2_QUATER, SITYPE_13_ALT, SITYPE_2_N.
+        /// For technology UMTS(WCDMA) need bloks: MIB, SIB1 - SIB5, SIB7, SIB11 - SIB13, SIB13_1 - SIB13_4, SIB15, SIB15_1 - SIB15_8, SIB16, SIB18 - SIB20, SB1, SB2, SIB23, SIB24, SIB5bis, SIB11ter, SIB11bis, SIB15_bis,SIB15_1bis, SIB15_2bis, SIB15_2ter, SIB15_3bis.
+        /// For technology LTE need bloks: MIB, SIB1 - SIB19.
+        /// For technology CDMA/EVDO need bloks: SYS_PARAMS, EXT_SYS_PARAMS, CHAN_LIST, EXT_CHAN_LIST, NEIGHBOR_LIST, EXT_NEIGHBOR_LIST, GEN_NEIGHBOR_LIST, GLOBAL_SERV_DIR, EXT_GLOBAL_SERV_RE, ACCESS_PARAMETERS, ATIM_MESSAGE, SYNC_MESSAGE, EVDO_QUICK_CONFIG, EVDO_SYNC, EVDO_SECTOR_PARAMETERS, EVDO_ACCESS_PARAMETERS.
+        /// Other blocks are also allowed. For example with PDUxx.
         /// </summary>
         [DataMember]
         public StationSysInfoBlock[] InfoBlocks { get; set; }
