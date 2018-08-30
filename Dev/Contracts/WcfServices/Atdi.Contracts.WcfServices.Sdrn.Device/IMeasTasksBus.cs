@@ -33,8 +33,12 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="sensor"></param>
+        /// <param name="sdrnServer"></param>
+        /// <returns></returns>
         [OperationContract]
         Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer);
+
 
         /// <summary>
         /// 

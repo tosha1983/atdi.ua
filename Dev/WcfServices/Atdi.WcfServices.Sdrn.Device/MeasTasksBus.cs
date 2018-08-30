@@ -9,16 +9,19 @@ using Atdi.DataModels.CommonOperation;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.Platform.Logging;
 
+
+
 namespace Atdi.WcfServices.Sdrn.Device
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class MeasTasksBus : WcfServiceBase<IMeasTasksBus>, IMeasTasksBus
     {
-
+        private readonly MessagesBus _bus;
         private readonly ILogger _logger;
 
-        public MeasTasksBus(ILogger logger)
+        public MeasTasksBus(MessagesBus bus, ILogger logger)
         {
+            this._bus = bus;
             this._logger = logger;
         }
 
@@ -64,7 +67,29 @@ namespace Atdi.WcfServices.Sdrn.Device
 
         public Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer)
         {
-            throw new NotImplementedException();
+            var descriptor = new SensorDescriptor
+            {
+                SdrnServer = sdrnServer,
+                SensorName = sensor.Name,
+                EquipmentTechId = sensor.Equipment.TechId
+            };
+
+            this._bus.SendObject(descriptor, "RegisterSensor", sensor);
+
+            var result = new Result<SensorRegistrationResult>
+            {
+                State = OperationState.Success,
+                Data = new SensorRegistrationResult
+                {
+                    SensorId = Guid.NewGuid().ToString(),
+                    SdrnServer = sdrnServer,
+                    SensorName = sensor.Name,
+                    EquipmentTechId = sensor.Equipment.TechId,
+                    Status = "Ok"
+                }
+            };
+
+            return result;
         }
 
         public Result SendCommandResult(SensorDescriptor sensorDescriptor, DeviceCommandResult commandResult)
