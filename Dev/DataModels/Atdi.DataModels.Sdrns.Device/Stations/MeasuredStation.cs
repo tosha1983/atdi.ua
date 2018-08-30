@@ -26,10 +26,10 @@ namespace Atdi.DataModels.Sdrns.Device
         public string GlobalSid { get; set; }
         
         /// <summary>
-        /// Last real global SID
+        /// Owner global SID
         /// </summary>
         [DataMember]
-        public string LastRealGlobalSid { get; set; }
+        public string OwnerGlobalSid { get; set; }
 
         /// <summary>
         /// Station owner

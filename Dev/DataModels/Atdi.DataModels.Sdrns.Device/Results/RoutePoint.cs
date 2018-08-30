@@ -17,13 +17,13 @@ namespace Atdi.DataModels.Sdrns.Device
         /// Time of the beginning of stay in this location
         /// </summary>
         [DataMember]
-        public DateTime TimeFrom { get; set; }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
-        /// Length of stay in this location
+        /// Time of the end of stay in this location
         /// </summary>
         [DataMember]
-        public TimeSpan StayLength  { get; set; }
+        public DateTime FinishTime { get; set; }
 
         /// <summary>
         /// Characterizes the reason for the stay of the measuring device at a point
