@@ -29,17 +29,17 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public GeoLocation Location { get; set; }
         /// <summary>
-        /// Frequency
+        /// Frequency, mandatory for LTE, GSM, MTS (WCDMA) and CDMA/EVDO
         /// </summary>
         [DataMember]
         public double? Freq { get; set; }
         /// <summary>
-        /// Bandwidth
+        /// Bandwidth, mandatory for LTE
         /// </summary>
         [DataMember]
         public double? BandWidth { get; set; }
         /// <summary>
-        /// RSCP
+        /// RSRP, mandatory for LTE
         /// </summary>
         [DataMember]
         public double? RSRP { get; set; }
@@ -54,37 +54,37 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public double? INBAND_POWER { get; set; }
         /// <summary>
-        /// MCC
+        /// MCC, mandatory for LTE, GSM and UMTS (WCDMA)
         /// </summary>
         [DataMember]
         public int? MCC { get; set; }
         /// <summary>
-        /// MNC
+        /// MNC, mandatory for LTE, GSM and UMTS (WCDMA)
         /// </summary>
         [DataMember]
         public int? MNC { get; set; }
         /// <summary>
-        /// TAC
+        /// TAC, mandatory for LTE
         /// </summary>
         [DataMember]
         public int? TAC { get; set; }
         /// <summary>
-        /// eNodeBID
+        /// eNodeBID, mandatory for LTE
         /// </summary>
         [DataMember]
         public int? eNodeBId { get; set; }
         /// <summary>
-        /// CID
+        /// CID, mandatory for LTE, GSM and UMTS (WCDMA)
         /// </summary>
         [DataMember]
         public int? CID { get; set; }
         /// <summary>
-        /// ECI
+        /// ECI, mandatory for LTE
         /// </summary>
         [DataMember]
         public int? ECI { get; set; }
         /// <summary>
-        /// PCI
+        /// PCI, mandatory for LTE
         /// </summary>
         [DataMember]
         public int? PCI { get; set; }
@@ -94,12 +94,12 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public int? BSIC { get; set; }
         /// <summary>
-        /// LAC
+        /// LAC, mandatory for GSM and UMTS (WCDMA)
         /// </summary>
         [DataMember]
         public int? LAC { get; set; }
         /// <summary>
-        /// Power
+        /// Power, mandatory for GSM
         /// </summary>
         [DataMember]
         public double? Power { get; set; }
@@ -129,7 +129,7 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public double? Ptotal { get; set; }
         /// <summary>
-        /// RSCP
+        /// RSCP, mandatory for UMTS (WCDMA) and CDMA/EVDO
         /// </summary>
         [DataMember]
         public double? RSCP { get; set; }
@@ -149,32 +149,32 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public double? IcIo { get; set; }
         /// <summary>
-        /// Channel number
+        /// Channel number, mandatory for LTE, GSM, UMTS (WCDMA) and CDMA/EVDO
         /// </summary>
         [DataMember]
         public int? ChannelNumber { get; set; }
         /// <summary>
-        /// CDMA EV-DO type
+        /// CDMA/EVDO type, mandatory for CDMA/EVDO
         /// </summary>
         [DataMember]
         public string TypeCDMAEVDO { get; set; }
         /// <summary>
-        /// SID
+        /// SID, mandatory for CDMA/EVDO
         /// </summary>
         [DataMember]
         public int? SID { get; set; }
         /// <summary>
-        /// NID
+        /// NID, mandatory for CDMA/EVDO
         /// </summary>
         [DataMember]
         public int? NID { get; set; }
         /// <summary>
-        /// PN
+        /// PN, mandatory for CDMA/EVDO
         /// </summary>
         [DataMember]
         public int? PN { get; set; }
         /// <summary>
-        /// Base station ID
+        /// Base station ID, mandatory for CDMA/EVDO
         /// </summary>
         [DataMember]
         public int? BaseID { get; set; }

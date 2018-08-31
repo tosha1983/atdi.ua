@@ -9,14 +9,18 @@ using System.ServiceModel;
 
 namespace Atdi.Test.MeasTasksBus.WcfClient
 {
-    
+
+
     class Program
     {
+
         private const int SensorRegistrationTimeOut = 100;
         private const int SensorWorkSleepTime = 1000;
 
         static void Main(string[] args)
         {
+    
+
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadKey();
 
@@ -41,18 +45,36 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
                 Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.SensorId}', id = '{regInfo.SensorId}'");
 
+                var sensorDescriptor = new SensorDescriptor
+                {
+                    SdrnServer = sdrnServer,
+                    SensorName = sensor.Name,
+                    EquipmentTechId = sensor.Equipment?.TechId
+                };
+
                 while (true)
                 {
-                    var command = GetNextCommand(measTasksBusServiceEndpointName, sensor);
+                    var command = GetNextCommand(measTasksBusServiceEndpointName, sensorDescriptor);
                     if (command != null)
                     {
-                        HandleCommand(measTasksBusServiceEndpointName, command, sensor);
+                        HandleCommand(measTasksBusServiceEndpointName, sensorDescriptor, command);
                     }
 
-                    var task = GetNextMeasTask(measTasksBusServiceEndpointName, sensor);
+                    var task = GetNextMeasTask(measTasksBusServiceEndpointName, sensorDescriptor);
                     if (task != null)
                     { 
-                        HandleMeasTask(measTasksBusServiceEndpointName, task, sensor);
+                        HandleMeasTask(measTasksBusServiceEndpointName, sensorDescriptor, task);
+                    }
+
+                    var entity = GetNextEntity(measTasksBusServiceEndpointName, sensorDescriptor);
+                    if (entity != null)
+                    {
+                        HandleEntity(measTasksBusServiceEndpointName, sensorDescriptor, entity);
+                    }
+                    var entityPart = GetNextEntityPart(measTasksBusServiceEndpointName, sensorDescriptor);
+                    if (entityPart != null)
+                    {
+                        HandleEntityPart(measTasksBusServiceEndpointName, sensorDescriptor, entityPart);
                     }
 
                     System.Threading.Thread.Sleep(SensorWorkSleepTime);
@@ -66,14 +88,8 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             
         }
 
-        static DeviceCommand GetNextCommand(string endpointName, Sensor sensor)
+        static DeviceCommand GetNextCommand(string endpointName, SensorDescriptor sensorDescriptor)
         {
-            var sensorDescriptor = new SensorDescriptor
-            {
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment?.TechId
-            };
-
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
             var getCommandResult = busService.GetCommand(sensorDescriptor);
             if (getCommandResult.State == DataModels.CommonOperation.OperationState.Fault)
@@ -87,16 +103,12 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 Console.WriteLine($"New commands have been received: Name = '{command.Command}'");
             }
 
+            busService.AckCommand(sensorDescriptor, getCommandResult.Token);
             return command;
         }
 
-        static MeasTask GetNextMeasTask(string endpointName, Sensor sensor)
+        static MeasTask GetNextMeasTask(string endpointName, SensorDescriptor sensorDescriptor)
         {
-            var sensorDescriptor = new SensorDescriptor
-            {
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment?.TechId
-            };
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
             var getMeasTaskResult = busService.GetMeasTask(sensorDescriptor);
@@ -104,6 +116,8 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             {
                 throw new InvalidOperationException(getMeasTaskResult.FaultCause);
             }
+
+            busService.AckMeasTask(sensorDescriptor, getMeasTaskResult.Token);
 
             var task = getMeasTaskResult.Data;
             if (task != null )
@@ -114,7 +128,45 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             return task;
         }
 
-        static void HandleCommand(string endpointName, DeviceCommand deviceCommand, Sensor sensor)
+        static Entity GetNextEntity(string endpointName, SensorDescriptor sensorDescriptor)
+        {
+            var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+            var getEntityResult = busService.GetEntity(sensorDescriptor);
+            if (getEntityResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                throw new InvalidOperationException(getEntityResult.FaultCause);
+            }
+
+            var entity = getEntityResult.Data;
+            if (entity != null)
+            {
+                Console.WriteLine($"New entity have been received: Name = '{entity.Name}'");
+            }
+
+            busService.AckEntity(sensorDescriptor, getEntityResult.Token);
+            return entity;
+        }
+
+        static EntityPart GetNextEntityPart(string endpointName, SensorDescriptor sensorDescriptor)
+        {
+            var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+            var getEntityPartResult = busService.GetEntityPart(sensorDescriptor);
+            if (getEntityPartResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                throw new InvalidOperationException(getEntityPartResult.FaultCause);
+            }
+
+            var entityPart = getEntityPartResult.Data;
+            if (entityPart != null)
+            {
+                Console.WriteLine($"New entity part have been received: Entity ID = '{entityPart.EntityId}', Part index = #{entityPart.PartIndex}");
+            }
+
+            busService.AckEntity(sensorDescriptor, getEntityPartResult.Token);
+            return entityPart;
+        }
+
+        static void HandleCommand(string endpointName, SensorDescriptor sensorDescriptor, DeviceCommand deviceCommand)
         {
             switch (deviceCommand.Command)
             {
@@ -126,12 +178,6 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                     break;
             }
 
-            var descriptor = new SensorDescriptor
-            {
-                SdrnServer = deviceCommand.SdrnServer,
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId
-            };
             var result = new DeviceCommandResult
             {
                 
@@ -140,7 +186,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             };
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-            var sendCommandResultsResult = busService.SendCommandResult(descriptor, result);
+            var sendCommandResultsResult = busService.SendCommandResult(sensorDescriptor, result);
             if (sendCommandResultsResult.State == DataModels.CommonOperation.OperationState.Fault)
             {
                 throw new InvalidOperationException(sendCommandResultsResult.FaultCause);
@@ -149,26 +195,15 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Command '#{deviceCommand.CommandId}: {deviceCommand.Command}' has been handled");
         }
 
-        static void HandleMeasTask(string endpointName, MeasTask measTask, Sensor sensor)
+        static void HandleMeasTask(string endpointName, SensorDescriptor sensorDescriptor, MeasTask measTask)
         {
             var result = new MeasResults
             {
-                //SdrnServer = measTask.SdrnServer,
-                //SensorName = sensor.Name,
-                //EquipmentTechId = sensor.Equipment.TechId,
                 TaskId = measTask.TaskId
             };
-            var descriptor = new SensorDescriptor
-            {
-                SdrnServer = measTask.SdrnServer,
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId
-            };
-
-            
 
             var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-            var sendMeasResultsResult = busService.SendMeasResults(descriptor, result);
+            var sendMeasResultsResult = busService.SendMeasResults(sensorDescriptor, result);
             if (sendMeasResultsResult.State == DataModels.CommonOperation.OperationState.Fault)
             {
                 throw new InvalidOperationException(sendMeasResultsResult.FaultCause);
@@ -177,10 +212,35 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Meas task '#{measTask.TaskId}' has been handled");
         }
 
+        static void HandleEntity(string endpointName, SensorDescriptor sensorDescriptor, Entity entity)
+        {
+            var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+            var sendEntityResult = busService.SendEntity(sensorDescriptor, entity);
+            if (sendEntityResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                throw new InvalidOperationException(sendEntityResult.FaultCause);
+            }
+
+            Console.WriteLine($"New entity have been handled: Name = '{entity.Name}'");
+        }
+
+        static void HandleEntityPart(string endpointName, SensorDescriptor sensorDescriptor, EntityPart entityPart)
+        {
+            var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+            var sendEntityPartResult = busService.SendEntityPart(sensorDescriptor, entityPart);
+            if (sendEntityPartResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                throw new InvalidOperationException(sendEntityPartResult.FaultCause);
+            }
+
+            Console.WriteLine($"New entity part have been handled: Entity ID = '{entityPart.EntityId}', Part index = #{entityPart.PartIndex}");
+        }
+
         static Sensor CreateSensorData()
         {
             var sensor = new Sensor
             {
+                Name = "SensorUnknown",
                 Administration = "Administration",
                 Antenna = new SensorAntenna
                 {
