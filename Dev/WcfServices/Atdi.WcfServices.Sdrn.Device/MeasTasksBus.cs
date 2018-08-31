@@ -74,19 +74,16 @@ namespace Atdi.WcfServices.Sdrn.Device
                 EquipmentTechId = sensor.Equipment.TechId
             };
 
-            this._bus.SendObject(descriptor, "RegisterSensor", sensor);
+            var correlationId = Guid.NewGuid().ToString();
+
+            var messageId = this._bus.SendObject(descriptor, "RegisterSensor", sensor, correlationId);
+
+            var data = this._bus.WaiteObject<SensorRegistrationResult>(descriptor, "SendRegistrationResult", correlationId);
 
             var result = new Result<SensorRegistrationResult>
             {
                 State = OperationState.Success,
-                Data = new SensorRegistrationResult
-                {
-                    SensorId = Guid.NewGuid().ToString(),
-                    SdrnServer = sdrnServer,
-                    SensorName = sensor.Name,
-                    EquipmentTechId = sensor.Equipment.TechId,
-                    Status = "Ok"
-                }
+                Data = data
             };
 
             return result;
