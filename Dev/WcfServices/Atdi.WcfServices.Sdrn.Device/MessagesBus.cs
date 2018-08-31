@@ -123,18 +123,16 @@ namespace Atdi.WcfServices.Sdrn.Device
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
-                    if (!ea.BasicProperties.Headers.ContainsKey("MessageType"))
+                    if (string.IsNullOrEmpty(ea.BasicProperties.CorrelationId) && !string.IsNullOrEmpty(correlationId))
                     {
-                        return;
-                    }
-                    if (string.IsNullOrEmpty(ea.BasicProperties.CorrelationId) || ea.BasicProperties.CorrelationId != correlationId)
-                    {
+                        channel.BasicAck(ea.DeliveryTag, false);
                         return;
                     }
 
                     var respMessageType = ea.BasicProperties.Type;
                     if (string.IsNullOrEmpty(respMessageType))
                     {
+                        channel.BasicAck(ea.DeliveryTag, false);
                         return;
                     }
 
@@ -142,6 +140,15 @@ namespace Atdi.WcfServices.Sdrn.Device
                     {
                         return;
                     }
+
+                    if (!string.IsNullOrEmpty(correlationId))
+                    {
+                        if (ea.BasicProperties.CorrelationId != correlationId)
+                        {
+                            return;
+                        }
+                    }
+                    
 
                     channel.BasicAck(ea.DeliveryTag, false);
                     respQueue.Add(ea.Body);
