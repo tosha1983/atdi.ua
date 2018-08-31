@@ -24,9 +24,9 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadKey();
 
-            Run("NetTcpEndpoint", "SdrnServer1");
-            Run("BasicHttpEndpoint", "SdrnServer2");
-            Run("NetNamedPipeEndpoint", "SdrnServer2");
+            Run("NetTcpEndpoint", "#0001");
+            Run("BasicHttpEndpoint", "#0001");
+            Run("NetNamedPipeEndpoint", "#0001");
 
             Console.WriteLine($"Press any key to exit ...");
             Console.ReadKey();
@@ -240,7 +240,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
         {
             var sensor = new Sensor
             {
-                Name = "SensorUnknown",
+                Name = "Sensor01",
                 Administration = "Administration",
                 Antenna = new SensorAntenna
                 {
@@ -250,7 +250,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 },
                 Equipment = new SensorEquipment
                 {
-                    TechId = "SN:0010023747364"
+                    TechId = "#0010023747364"
                 }
             };
 
@@ -267,17 +267,23 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
         {
             try
             {
+                SensorRegistrationResult result = null;
 
-                var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-
-                var tryRegisterResult = busService.RegisterSensor(sensor, sdrnServer);
-
-                if (tryRegisterResult.State == DataModels.CommonOperation.OperationState.Fault)
+                for (int i = 0; i < 1; i++)
                 {
-                    throw new InvalidOperationException(tryRegisterResult.FaultCause);
+                    var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+
+                    var tryRegisterResult = busService.RegisterSensor(sensor, sdrnServer);
+
+                    if (tryRegisterResult.State == DataModels.CommonOperation.OperationState.Fault)
+                    {
+                        throw new InvalidOperationException(tryRegisterResult.FaultCause);
+                    }
+                    result = tryRegisterResult.Data;
                 }
 
-                return tryRegisterResult.Data;
+
+                return result;
 
             }
             catch(Exception e)

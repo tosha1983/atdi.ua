@@ -42,7 +42,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 {
                     this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfuly: Host = '{this._serverDescriptor.RabbitMqHost}'");
 
-                    var deviceExchange = $"{this._serverDescriptor.MessagesExchange}.[{this._serverDescriptor.ApiVersion}]";
+                    var deviceExchange = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
 
                     channel.ExchangeDeclare(
                         exchange: deviceExchange,
@@ -56,7 +56,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                     foreach (var binding in bindings)
                     {
                         var routingKey = $"[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}]";
-                        var queueName = $"{this._serverDescriptor.ServerQueueNamePart}.[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}].[{this._serverDescriptor.ApiVersion}]";
+                        var queueName = $"{this._serverDescriptor.ServerQueueNamePart}.[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}].[v{this._serverDescriptor.ApiVersion}]";
 
                         channel.QueueDeclare(
                            queue: queueName,
