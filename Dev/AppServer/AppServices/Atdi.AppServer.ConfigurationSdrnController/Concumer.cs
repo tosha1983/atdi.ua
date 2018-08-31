@@ -26,7 +26,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             {
                 return;
             }
-            var messageType = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["MessageType"]);
+            
+            var messageType = message.BasicProperties.Type;
             var sdrnServer = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SdrnServer"]);
             var sensorName = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorName"]);
             var techId = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorTechId"]);
@@ -41,15 +42,15 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         if (ConfigurationRabbitOptions.listRabbitOptions.ToList().Find(t => t.Value.NameSensor == sensorName && t.Value.TechId == techId).Key == null)
                         {
                             var channel_new = connection.CreateModel();
-                            channel.ExchangeDeclare(exchange: ExchangePointFromServer + ".[" + ConfigurationRabbitOptions.apiVersion + "]", type: "direct", durable: true);
-                            var queueName_new = $"{StartNameQueueDevice}.[{sensorName}].[{techId}].[{ConfigurationRabbitOptions.apiVersion}]";
+                            channel.ExchangeDeclare(exchange: ExchangePointFromServer + ".[v" + ConfigurationRabbitOptions.apiVersion + "]", type: "direct", durable: true);
+                            var queueName_new = $"{StartNameQueueDevice}.[{sensorName}].[{techId}].[v{ConfigurationRabbitOptions.apiVersion}]";
                             var routingKey_new = $"{StartNameQueueDevice}.[{sensorName}].[{techId}]";
                             ConfigurationRabbitOptions.listRabbitOptions.Add(channel_new, new RabbitOptions(StartNameQueueDevice, routingKey, queueName_new, sensorName, techId));
-                            ConfigurationRabbitOptions.QueueDeclareDevice(StartNameQueueDevice, sensorName, techId, channel_new, ExchangePointFromServer + ".[" + ConfigurationRabbitOptions.apiVersion + "]");
+                            ConfigurationRabbitOptions.QueueDeclareDevice(StartNameQueueDevice, sensorName, techId, channel_new, ExchangePointFromServer + ".[v" + ConfigurationRabbitOptions.apiVersion + "]");
                         }
                         var dataRegisterSensor = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Sensor)) as Sensor;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
-                        var queueName = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
+                        var queueName = routingKey + $".[v{ConfigurationRabbitOptions.apiVersion}]";
                         channel.QueueDeclare(
                               queue: queueName,
                               durable: true,
@@ -177,14 +178,23 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             var props = channel.CreateBasicProperties();
             props.Persistent = true;
-            props.AppId = "SDRN Server";
-            props.DeliveryMode = 2;
+            var messageId = Guid.NewGuid().ToString();
+
+            props.Persistent = true;
+            props.AppId = "Atdi.AppServer.ConfigurationSdrnController.dll";
+            props.MessageId = messageId;
+            props.Type = MessageType;
+
+            if (!string.IsNullOrEmpty(CorrelationId))
+            {
+                props.CorrelationId = CorrelationId;
+            }
+
             props.Headers = new Dictionary<string, object>();
             props.Headers["SdrnServer"] = NameServer;
             props.Headers["SensorName"] = sensorName;
             props.Headers["SensorTechId"] = techId;
-            props.Headers["MessageType"] = MessageType;
-            if (CorrelationId!=null) props.CorrelationId = CorrelationId;
+            props.DeliveryMode = 2;
             channel.BasicPublish(exchange: exchange, routingKey: routingKey, basicProperties: props, body: data);
         }
     }
