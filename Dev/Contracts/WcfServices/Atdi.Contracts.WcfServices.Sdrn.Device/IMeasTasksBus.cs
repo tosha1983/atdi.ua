@@ -39,11 +39,20 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         [OperationContract]
         Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensor"></param>
+        /// <param name="sdrnServer"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Result<SensorUpdatingResult> UpdateSensor(Sensor sensor, string sdrnServer);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        [OperationContract]
         BusResult<DeviceCommand> GetCommand(SensorDescriptor sensorDescriptor);
 
         /// <summary>
@@ -51,18 +60,21 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
+        [OperationContract]
         Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        [OperationContract]
         Result SendCommandResult(SensorDescriptor sensorDescriptor, DeviceCommandResult commandResult);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        [OperationContract]
         BusResult<MeasTask> GetMeasTask(SensorDescriptor sensorDescriptor);
 
         /// <summary>
@@ -70,12 +82,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
+        [OperationContract]
         Result AckMeasTask(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        [OperationContract]
         Result SendMeasResults(SensorDescriptor sensorDescriptor, MeasResults results);
 
         /// <summary>
@@ -84,6 +98,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// <param name="sensorDescriptor"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
+        [OperationContract]
         Result SendEntity(SensorDescriptor sensorDescriptor, Entity entity);
 
         /// <summary>
@@ -92,6 +107,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// <param name="sensorDescriptor"></param>
         /// <param name="entityPart"></param>
         /// <returns></returns>
+        [OperationContract]
         Result SendEntityPart(SensorDescriptor sensorDescriptor, EntityPart entityPart);
 
         /// <summary>
@@ -99,6 +115,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <returns></returns>
+        [OperationContract]
         BusResult<Entity> GetEntity(SensorDescriptor sensorDescriptor);
 
         /// <summary>
@@ -106,6 +123,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <returns></returns>
+        [OperationContract]
         BusResult<EntityPart> GetEntityPart(SensorDescriptor sensorDescriptor);
 
         /// <summary>
@@ -114,6 +132,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// <param name="sensorDescriptor"></param>
         /// <param name="token"></param>
         /// <returns></returns>
+        [OperationContract]
         Result AckEntity(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
@@ -122,6 +141,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// <param name="sensorDescriptor"></param>
         /// <param name="token"></param>
         /// <returns></returns>
+        [OperationContract]
         Result AckEntityPart(SensorDescriptor sensorDescriptor, byte[] token);
     }
 }

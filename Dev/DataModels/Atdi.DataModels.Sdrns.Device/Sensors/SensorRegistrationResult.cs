@@ -14,12 +14,6 @@ namespace Atdi.DataModels.Sdrns.Device
     public class SensorRegistrationResult
     {
         /// <summary>
-        /// Sensor identifier
-        /// </summary>
-        [DataMember]
-        public string SensorId { get; set; }
-
-        /// <summary>
         /// Instance name of SDRN Server, which puts a measurement task
         /// </summary>
         [DataMember]

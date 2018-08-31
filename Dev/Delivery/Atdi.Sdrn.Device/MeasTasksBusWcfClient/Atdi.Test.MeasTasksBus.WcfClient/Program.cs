@@ -43,7 +43,11 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
                 var regInfo = RegisterSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
 
-                Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.SensorId}', id = '{regInfo.SensorId}'");
+                if (regInfo != null)
+                {
+                    Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");
+                }
+                
 
                 var sensorDescriptor = new SensorDescriptor
                 {
@@ -103,7 +107,11 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 Console.WriteLine($"New commands have been received: Name = '{command.Command}'");
             }
 
-            busService.AckCommand(sensorDescriptor, getCommandResult.Token);
+            if (getCommandResult.Token != null)
+            {
+                busService.AckCommand(sensorDescriptor, getCommandResult.Token);
+            }
+            
             return command;
         }
 
@@ -125,6 +133,11 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 Console.WriteLine($"New measurment tasks have been received: ID = '{task.TaskId}'");
             }
 
+            if (getMeasTaskResult.Token != null)
+            {
+                busService.AckMeasTask(sensorDescriptor, getMeasTaskResult.Token);
+            }
+
             return task;
         }
 
@@ -143,7 +156,11 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 Console.WriteLine($"New entity have been received: Name = '{entity.Name}'");
             }
 
-            busService.AckEntity(sensorDescriptor, getEntityResult.Token);
+            if (getEntityResult.Token != null)
+            {
+                busService.AckEntity(sensorDescriptor, getEntityResult.Token);
+            }
+            
             return entity;
         }
 
@@ -162,7 +179,11 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 Console.WriteLine($"New entity part have been received: Entity ID = '{entityPart.EntityId}', Part index = #{entityPart.PartIndex}");
             }
 
-            busService.AckEntity(sensorDescriptor, getEntityPartResult.Token);
+            if (getEntityPartResult.Token != null)
+            {
+                busService.AckEntity(sensorDescriptor, getEntityPartResult.Token);
+            }
+            
             return entityPart;
         }
 

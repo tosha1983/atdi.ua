@@ -55,7 +55,7 @@
     <Compile Include="Results\SignalingSample.cs" />
     <Compile Include="Results\StationMeasResult.cs" />
     <Compile Include="Sensors\SensorDescriptor.cs" />
-    <Compile Include="Sensors\SensorUpdateResult.cs" />
+    <Compile Include="Sensors\SensorUpdatingResult.cs" />
     <Compile Include="Sensors\SensorRegistrationResult.cs" />
     <Compile Include="Results\StationSysInfo.cs" />
     <Compile Include="Stations\StandardScanParameter.cs" />

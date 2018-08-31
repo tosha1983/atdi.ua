@@ -11,14 +11,8 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents the sensor for measurement. Includes administrative and technical data
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class SensorUpdateResult
+    public class SensorUpdatingResult
     {
-        /// <summary>
-        /// Sensor identifier
-        /// </summary>
-        [DataMember]
-        public string SensorId { get; set; }
-
         /// <summary>
         /// Instance name of SDRN Server, which puts a measurement task
         /// </summary>

@@ -37,7 +37,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                     Password = this._serverDescriptor.RabbitMqPassword
                 };
 
-                using (var connection = factory.CreateConnection())
+                using (var connection = factory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (Declaring) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                 using (var channel = connection.CreateModel())
                 {
                     this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfuly: Host = '{this._serverDescriptor.RabbitMqHost}'");
