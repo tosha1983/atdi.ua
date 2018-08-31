@@ -143,7 +143,6 @@
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\WorkFlow\MeasTaskSDRExtend.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\TASKS\WorkFlow\WorkFlowProcessManageTasks.cs" />
     <Compile Include="BusManager\Static\GlobalInit.cs" />
-    <Compile Include="ManageDB\OracleExecuter\IDataAccess.cs" />
     <Compile Include="ManageDB\OracleExecuter\ModelsTables.cs" />
     <Compile Include="ManageDB\OracleExecuter\OracleDataAccess.cs" />
     <Compile Include="ManageDB\OracleExecuter\OrmRsOracle.cs" />

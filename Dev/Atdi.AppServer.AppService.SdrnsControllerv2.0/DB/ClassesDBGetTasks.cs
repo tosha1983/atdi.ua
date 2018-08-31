@@ -30,6 +30,94 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         private List<ClassTasks> L_IN { get; set; }
 
 
+        public static void GetMeasTaskSDRNum(int NumValue, out int TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId)
+        {
+           int _TaskId = 0;
+           int _SubTaskId = 0;
+           int _SubTaskStationId = 0;
+           int _SensorId = 0;
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                    YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                    meastask.Format("*");
+                    if (meastask.Fetch(string.Format("NUM={0}", NumValue)))
+                    {
+                        _TaskId = (int)meastask.m_meastaskid;
+                        _SubTaskId = (int)meastask.m_meassubtaskid;
+                        _SubTaskStationId = (int)meastask.m_meassubtaskstationid;
+                        _SensorId = (int)meastask.m_sensorid;
+                    }
+                    meastask.Close();
+                    meastask.Dispose();
+               
+            });
+            thread.Start();
+            thread.Join();
+
+            TaskId = _TaskId;
+            SubTaskId = _SubTaskId;
+            SubTaskStationId = _SubTaskStationId;
+            SensorId = _SensorId;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
+        {
+            int? NUM_Val = null;
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                Yyy yyy = new Yyy();
+                DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                if (dbConnect.State == System.Data.ConnectionState.Open)
+                {
+                    DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                    try
+                    {
+                        logger.Trace("Start procedure SaveTaskToDB...");
+                        int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR", "NUM");
+                        ++Num;
+
+                        YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                        meastask.Format("*");
+                        meastask.New();
+                        meastask.m_meastaskid = TaskId;
+                        meastask.m_meassubtaskid = SubTaskId;
+                        meastask.m_meassubtaskstationid = SubTaskStationId;
+                        meastask.m_sensorid = SensorId;
+                        meastask.m_num = Num;
+                        meastask.Save(dbConnect, transaction);
+                        meastask.Close();
+                        meastask.Dispose();
+                        transaction.Commit();
+                        NUM_Val = Num;
+                    }
+                    catch (Exception ex)
+                    {
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
+                        logger.Error("Error in SaveTaskToDB: " + ex.Message);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        dbConnect.Close();
+                        dbConnect.Dispose();
+                    }
+                }
+            });
+            thread.Start();
+            thread.Join();
+            return NUM_Val;
+        }
+
         public List<ClassTasks> ReadTask(int MeasTaskId)
         {
             // Список объектов в рамках конкретного адаптера ICSM

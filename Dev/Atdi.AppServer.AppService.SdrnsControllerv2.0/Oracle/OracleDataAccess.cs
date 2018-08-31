@@ -318,6 +318,39 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             return Id;
         }
 
+        public int? GetMaxId(string TableName, string NameField)
+        {
+            int? Id = null;
+            try
+            {
+                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection.State == ConnectionState.Open)
+                {
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = string.Format("SELECT MAX({0}) FROM {1}", NameField, TableName);
+                    object o = command.ExecuteScalar();
+                    if (o != null)
+                    {
+                        if (o != DBNull.Value)
+                        {
+                            Id = Int32.Parse(o.ToString());
+                        }
+                        else Id = 1;
+                    }
+                    else
+                    {
+                        Id = 1;
+                    }
+                    command.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+            }
+            return Id;
+        }
+
         public int? GetNextId(string sequenceName)
         {
             int? Id = null;

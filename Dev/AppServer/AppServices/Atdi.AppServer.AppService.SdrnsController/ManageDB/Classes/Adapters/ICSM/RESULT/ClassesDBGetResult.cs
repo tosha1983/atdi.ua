@@ -67,9 +67,98 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 ICSM_T.meas_res = new YXbsMeasurementres();
                                 ICSM_T.spect_occup_meas = new List<YXbsSpectoccupmeas>();
                                 ICSM_T.meas_res = new YXbsMeasurementres();
+
+                                ICSM_T.XbsResGeneral = new List<YXbsResGeneral>();
+                                ICSM_T.XbsResLevelMeas = new List<YXbsResLevelMeas>();
+                                ICSM_T.XbsResmaskBw = new List<YXbsResmaskBw>();
+                                ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
+                                ICSM_T.XbsLevelSpecrum = new List<YXbsLevelSpecrum>();
+
                                 var m_fr = new YXbsMeasurementres();
                                 m_fr.CopyDataFrom(res_val);
                                 ICSM_T.meas_res = m_fr;
+
+                                /////
+                                YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                                XbsYXbsResmeasstation_.Format("*");
+                                XbsYXbsResmeasstation_.Filter = string.Format("(IDXBSMEASUREMENTRES={0})", res_val.m_id);
+                                for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                                {
+                                    var m_fr_z = new YXbsResmeasstation();
+                                    m_fr_z.CopyDataFrom(XbsYXbsResmeasstation_);
+                                    ICSM_T.XbsResmeasstation.Add(m_fr_z);
+                                    m_fr_z.Close();
+                                    m_fr_z.Dispose();
+
+
+                                    YXbsResLevelMeas XbsYXbsResLevelMeas_ = new YXbsResLevelMeas();
+                                    XbsYXbsResLevelMeas_.Format("*");
+                                    XbsYXbsResLevelMeas_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                    for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
+                                    {
+                                        var m_fr_3 = new YXbsResLevelMeas();
+                                        m_fr_3.CopyDataFrom(XbsYXbsResLevelMeas_);
+                                        ICSM_T.XbsResLevelMeas.Add(m_fr_3);
+                                        m_fr_3.Close();
+                                        m_fr_3.Dispose();
+                                    }
+                                    XbsYXbsResLevelMeas_.Close();
+                                    XbsYXbsResLevelMeas_.Dispose();
+
+
+                                    YXbsResGeneral XbsYXbsResGeneral_ = new YXbsResGeneral();
+                                    XbsYXbsResGeneral_.Format("*");
+                                    XbsYXbsResGeneral_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                    for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
+                                    {
+                                        var m_fr_1 = new YXbsResGeneral();
+                                        m_fr_1.CopyDataFrom(XbsYXbsResGeneral_);
+                                        ICSM_T.XbsResGeneral.Add(m_fr_1);
+                                        m_fr_1.Close();
+                                        m_fr_1.Dispose();
+
+
+                                        YXbsResmaskBw XbsYXbsResmaskBw_ = new YXbsResmaskBw();
+                                        XbsYXbsResmaskBw_.Format("*");
+                                        XbsYXbsResmaskBw_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                        for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
+                                        {
+                                            var m_fr_2 = new YXbsResmaskBw();
+                                            m_fr_2.CopyDataFrom(XbsYXbsResmaskBw_);
+                                            ICSM_T.XbsResmaskBw.Add(m_fr_2);
+                                            m_fr_2.Close();
+                                            m_fr_2.Dispose();
+
+                                        }
+                                        XbsYXbsResmaskBw_.Close();
+                                        XbsYXbsResmaskBw_.Dispose();
+
+
+                                        YXbsLevelSpecrum XbsYXbsLevelSpecrum_ = new YXbsLevelSpecrum();
+                                        XbsYXbsLevelSpecrum_.Format("*");
+                                        XbsYXbsLevelSpecrum_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                        for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
+                                        {
+                                            var m_fr_21 = new YXbsLevelSpecrum();
+                                            m_fr_21.CopyDataFrom(XbsYXbsLevelSpecrum_);
+                                            ICSM_T.XbsLevelSpecrum.Add(m_fr_21);
+                                            m_fr_21.Close();
+                                            m_fr_21.Dispose();
+                                        }
+                                        XbsYXbsLevelSpecrum_.Close();
+                                        XbsYXbsLevelSpecrum_.Dispose();
+
+                                    }
+                                    XbsYXbsResGeneral_.Close();
+                                    XbsYXbsResGeneral_.Dispose();
+
+
+                                }
+                                XbsYXbsResmeasstation_.Close();
+                                XbsYXbsResmeasstation_.Dispose();
+
+                                /////
+
 
                                 List<string> sqlFreqs = new List<string>();
                                 YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres();
@@ -313,9 +402,97 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.meas_res = new YXbsMeasurementres();
                         ICSM_T.spect_occup_meas = new List<YXbsSpectoccupmeas>();
                         ICSM_T.meas_res = new YXbsMeasurementres();
+
+                        ICSM_T.XbsResGeneral = new List<YXbsResGeneral>();
+                        ICSM_T.XbsResLevelMeas = new List<YXbsResLevelMeas>();
+                        ICSM_T.XbsResmaskBw = new List<YXbsResmaskBw>();
+                        ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
+                        ICSM_T.XbsLevelSpecrum = new List<YXbsLevelSpecrum>();
+
                         var m_fr = new YXbsMeasurementres();
                         m_fr.CopyDataFrom(res_val);
                         ICSM_T.meas_res = m_fr;
+
+                        /////
+                        YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                        XbsYXbsResmeasstation_.Format("*");
+                        XbsYXbsResmeasstation_.Filter = string.Format("(IDXBSMEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsResmeasstation();
+                            m_fr_.CopyDataFrom(XbsYXbsResmeasstation_);
+                            ICSM_T.XbsResmeasstation.Add(m_fr_);
+                            m_fr_.Close();
+                            m_fr_.Dispose();
+
+
+                            YXbsResLevelMeas XbsYXbsResLevelMeas_ = new YXbsResLevelMeas();
+                            XbsYXbsResLevelMeas_.Format("*");
+                            XbsYXbsResLevelMeas_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
+                            {
+                                var m_fr_3 = new YXbsResLevelMeas();
+                                m_fr_.CopyDataFrom(XbsYXbsResLevelMeas_);
+                                ICSM_T.XbsResLevelMeas.Add(m_fr_3);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsResLevelMeas_.Close();
+                            XbsYXbsResLevelMeas_.Dispose();
+
+
+                            YXbsResGeneral XbsYXbsResGeneral_ = new YXbsResGeneral();
+                            XbsYXbsResGeneral_.Format("*");
+                            XbsYXbsResGeneral_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
+                            {
+                                var m_fr_1 = new YXbsResGeneral();
+                                m_fr_.CopyDataFrom(XbsYXbsResGeneral_);
+                                ICSM_T.XbsResGeneral.Add(m_fr_1);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+
+
+                                YXbsResmaskBw XbsYXbsResmaskBw_ = new YXbsResmaskBw();
+                                XbsYXbsResmaskBw_.Format("*");
+                                XbsYXbsResmaskBw_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
+                                {
+                                    var m_fr_2 = new YXbsResmaskBw();
+                                    m_fr_.CopyDataFrom(XbsYXbsResmaskBw_);
+                                    ICSM_T.XbsResmaskBw.Add(m_fr_2);
+                                    m_fr_.Close();
+                                    m_fr_.Dispose();
+
+                                }
+                                XbsYXbsResmaskBw_.Close();
+                                XbsYXbsResmaskBw_.Dispose();
+
+
+                                YXbsLevelSpecrum XbsYXbsLevelSpecrum_ = new YXbsLevelSpecrum();
+                                XbsYXbsLevelSpecrum_.Format("*");
+                                XbsYXbsLevelSpecrum_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
+                                {
+                                    var m_fr_21 = new YXbsLevelSpecrum();
+                                    m_fr_.CopyDataFrom(XbsYXbsLevelSpecrum_);
+                                    ICSM_T.XbsLevelSpecrum.Add(m_fr_21);
+                                    m_fr_.Close();
+                                    m_fr_.Dispose();
+                                }
+                                XbsYXbsLevelSpecrum_.Close();
+                                XbsYXbsLevelSpecrum_.Dispose();
+
+                            }
+                            XbsYXbsResGeneral_.Close();
+                            XbsYXbsResGeneral_.Dispose();
+
+
+                        }
+                        XbsYXbsResmeasstation_.Close();
+                        XbsYXbsResmeasstation_.Dispose();
+
+                        /////
 
                         List<string> sqlFreqs = new List<string>();
                         YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres();
@@ -558,13 +735,100 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     ICSM_T.meas_res = new YXbsMeasurementres();
                     ICSM_T.spect_occup_meas = new List<YXbsSpectoccupmeas>();
 
+                    ICSM_T.XbsResGeneral = new List<YXbsResGeneral>();
+                    ICSM_T.XbsResLevelMeas = new List<YXbsResLevelMeas>();
+                    ICSM_T.XbsResmaskBw = new List<YXbsResmaskBw>();
+                    ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
+                    ICSM_T.XbsLevelSpecrum = new List<YXbsLevelSpecrum>();
+
                     ICSM_T.meas_res = new YXbsMeasurementres();
                     var m_fr = new YXbsMeasurementres();
                     m_fr.CopyDataFrom(res_val);
                     ICSM_T.meas_res = m_fr;
 
+                        /////
+                        YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                        XbsYXbsResmeasstation_.Format("*");
+                        XbsYXbsResmeasstation_.Filter = string.Format("(IDXBSMEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsResmeasstation();
+                            m_fr_.CopyDataFrom(XbsYXbsResmeasstation_);
+                            ICSM_T.XbsResmeasstation.Add(m_fr_);
+                            m_fr_.Close();
+                            m_fr_.Dispose();
 
-                    List<string> sqlFreqs = new List<string>();
+
+                            YXbsResLevelMeas XbsYXbsResLevelMeas_ = new YXbsResLevelMeas();
+                            XbsYXbsResLevelMeas_.Format("*");
+                            XbsYXbsResLevelMeas_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
+                            {
+                                var m_fr_3 = new YXbsResLevelMeas();
+                                m_fr_.CopyDataFrom(XbsYXbsResLevelMeas_);
+                                ICSM_T.XbsResLevelMeas.Add(m_fr_3);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsResLevelMeas_.Close();
+                            XbsYXbsResLevelMeas_.Dispose();
+
+
+                            YXbsResGeneral XbsYXbsResGeneral_ = new YXbsResGeneral();
+                            XbsYXbsResGeneral_.Format("*");
+                            XbsYXbsResGeneral_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
+                            {
+                                var m_fr_1 = new YXbsResGeneral();
+                                m_fr_.CopyDataFrom(XbsYXbsResGeneral_);
+                                ICSM_T.XbsResGeneral.Add(m_fr_1);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+
+
+                                YXbsResmaskBw XbsYXbsResmaskBw_ = new YXbsResmaskBw();
+                                XbsYXbsResmaskBw_.Format("*");
+                                XbsYXbsResmaskBw_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
+                                {
+                                    var m_fr_2 = new YXbsResmaskBw();
+                                    m_fr_.CopyDataFrom(XbsYXbsResmaskBw_);
+                                    ICSM_T.XbsResmaskBw.Add(m_fr_2);
+                                    m_fr_.Close();
+                                    m_fr_.Dispose();
+
+                                }
+                                XbsYXbsResmaskBw_.Close();
+                                XbsYXbsResmaskBw_.Dispose();
+
+
+                                YXbsLevelSpecrum XbsYXbsLevelSpecrum_ = new YXbsLevelSpecrum();
+                                XbsYXbsLevelSpecrum_.Format("*");
+                                XbsYXbsLevelSpecrum_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
+                                {
+                                    var m_fr_21 = new YXbsLevelSpecrum();
+                                    m_fr_.CopyDataFrom(XbsYXbsLevelSpecrum_);
+                                    ICSM_T.XbsLevelSpecrum.Add(m_fr_21);
+                                    m_fr_.Close();
+                                    m_fr_.Dispose();
+                                }
+                                XbsYXbsLevelSpecrum_.Close();
+                                XbsYXbsLevelSpecrum_.Dispose();
+
+                            }
+                            XbsYXbsResGeneral_.Close();
+                            XbsYXbsResGeneral_.Dispose();
+
+
+                        }
+                        XbsYXbsResmeasstation_.Close();
+                        XbsYXbsResmeasstation_.Dispose();
+
+                        /////
+
+
+                        List<string> sqlFreqs = new List<string>();
                     YXbsLevelmeasres XbsYXbsLevelmeasres_ = new YXbsLevelmeasres();
                     XbsYXbsLevelmeasres_.Format("*");
                     XbsYXbsLevelmeasres_.Filter = string.Format("(ID_XBS_MEASUREMENTRES={0})", res_val.m_id);
@@ -804,10 +1068,98 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.meas_res = new YXbsMeasurementres();
                         ICSM_T.spect_occup_meas = new List<YXbsSpectoccupmeas>();
 
+                        ICSM_T.XbsResGeneral = new List<YXbsResGeneral>();
+                        ICSM_T.XbsResLevelMeas = new List<YXbsResLevelMeas>();
+                        ICSM_T.XbsResmaskBw = new List<YXbsResmaskBw>();
+                        ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
+                        ICSM_T.XbsLevelSpecrum = new List<YXbsLevelSpecrum>();
+
                         ICSM_T.meas_res = new YXbsMeasurementres();
                         var m_fr = new YXbsMeasurementres();
                         m_fr.CopyDataFrom(res_val);
                         ICSM_T.meas_res = m_fr;
+
+                        /////
+                        YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                        XbsYXbsResmeasstation_.Format("*");
+                        XbsYXbsResmeasstation_.Filter = string.Format("(IDXBSMEASUREMENTRES={0})", res_val.m_id);
+                        for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                        {
+                            var m_fr_ = new YXbsResmeasstation();
+                            m_fr_.CopyDataFrom(XbsYXbsResmeasstation_);
+                            ICSM_T.XbsResmeasstation.Add(m_fr_);
+                            m_fr_.Close();
+                            m_fr_.Dispose();
+
+
+                            YXbsResLevelMeas XbsYXbsResLevelMeas_ = new YXbsResLevelMeas();
+                            XbsYXbsResLevelMeas_.Format("*");
+                            XbsYXbsResLevelMeas_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
+                            {
+                                var m_fr_3 = new YXbsResLevelMeas();
+                                m_fr_.CopyDataFrom(XbsYXbsResLevelMeas_);
+                                ICSM_T.XbsResLevelMeas.Add(m_fr_3);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsResLevelMeas_.Close();
+                            XbsYXbsResLevelMeas_.Dispose();
+
+
+                            YXbsResGeneral XbsYXbsResGeneral_ = new YXbsResGeneral();
+                            XbsYXbsResGeneral_.Format("*");
+                            XbsYXbsResGeneral_.Filter = string.Format("(RESULTSMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
+                            {
+                                var m_fr_1 = new YXbsResGeneral();
+                                m_fr_.CopyDataFrom(XbsYXbsResGeneral_);
+                                ICSM_T.XbsResGeneral.Add(m_fr_1);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+
+
+                                YXbsResmaskBw XbsYXbsResmaskBw_ = new YXbsResmaskBw();
+                                XbsYXbsResmaskBw_.Format("*");
+                                XbsYXbsResmaskBw_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
+                                {
+                                    var m_fr_2 = new YXbsResmaskBw();
+                                    m_fr_.CopyDataFrom(XbsYXbsResmaskBw_);
+                                    ICSM_T.XbsResmaskBw.Add(m_fr_2);
+                                    m_fr_.Close();
+                                    m_fr_.Dispose();
+
+                                }
+                                XbsYXbsResmaskBw_.Close();
+                                XbsYXbsResmaskBw_.Dispose();
+
+
+                                YXbsLevelSpecrum XbsYXbsLevelSpecrum_ = new YXbsLevelSpecrum();
+                                XbsYXbsLevelSpecrum_.Format("*");
+                                XbsYXbsLevelSpecrum_.Filter = string.Format("(XBSGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
+                                {
+                                    var m_fr_21 = new YXbsLevelSpecrum();
+                                    m_fr_.CopyDataFrom(XbsYXbsLevelSpecrum_);
+                                    ICSM_T.XbsLevelSpecrum.Add(m_fr_21);
+                                    m_fr_.Close();
+                                    m_fr_.Dispose();
+                                }
+                                XbsYXbsLevelSpecrum_.Close();
+                                XbsYXbsLevelSpecrum_.Dispose();
+
+                            }
+                            XbsYXbsResGeneral_.Close();
+                            XbsYXbsResGeneral_.Dispose();
+
+
+                        }
+                        XbsYXbsResmeasstation_.Close();
+                        XbsYXbsResmeasstation_.Dispose();
+
+                        /////
+
 
 
                         List<string> sqlFreqs = new List<string>();
@@ -1297,6 +1649,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public int SaveResultToDB(MeasurementResults obj)
         {
+            //obj.ResultsMeasStation
             int ID = Constants.NullI;
             //if (((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) && (obj.Status == "C")) || (obj.TypeMeasurements != MeasurementType.SpectrumOccupation))
             {
@@ -1342,6 +1695,127 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 }
                                 if (ID != Constants.NullI)
                                 {
+                                    ///////
+                                    if (obj.ResultsMeasStation != null)
+                                    {
+                                        foreach (ResultsMeasurementsStation station in obj.ResultsMeasStation)
+                                        {
+
+                                            YXbsResmeasstation measResStation = new YXbsResmeasstation();
+                                            measResStation.Format("*");
+                                            measResStation.Filter = "ID=-1";
+                                            measResStation.New();
+                                            measResStation.m_globalsid = station.GlobalSID;
+                                            measResStation.m_idsector = station.IdSector;
+                                            measResStation.m_idstation = station.Idstation;
+                                            measResStation.m_status = station.Status;
+                                            measResStation.m_measglobalsid = station.MeasGlobalSID;
+                                            measResStation.m_idxbsmeasurementres = ID;
+                                            int IDStation = (int)measResStation.Save(dbConnect, transaction);
+                                            measResStation.Close();
+                                            measResStation.Dispose();
+                                            if (IDStation > 0)
+                                            {
+                                                if (station.GeneralResult != null)
+                                                {
+                                                    YXbsResGeneral measResGeneral = new YXbsResGeneral();
+                                                    measResGeneral.Format("*");
+                                                    measResGeneral.Filter = "ID=-1";
+                                                    measResGeneral.New();
+                                                    measResGeneral.m_centralfrequency = station.GeneralResult.CentralFrequency;
+                                                    measResGeneral.m_centralfrequencymeas = station.GeneralResult.CentralFrequencyMeas;
+                                                    measResGeneral.m_durationmeas = station.GeneralResult.DurationMeas;
+                                                    measResGeneral.m_markerindex = station.GeneralResult.MarkerIndex;
+                                                    measResGeneral.m_offsetfrequency = station.GeneralResult.OffsetFrequency;
+                                                    measResGeneral.m_specrumstartfreq = (double?)station.GeneralResult.SpecrumStartFreq;
+                                                    measResGeneral.m_specrumsteps = (double?)station.GeneralResult.SpecrumSteps;
+                                                    measResGeneral.m_t1 = station.GeneralResult.T1;
+                                                    measResGeneral.m_t2 = station.GeneralResult.T2;
+                                                    measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
+                                                    measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
+                                                    measResGeneral.m_resultsmeasstationid = IDStation;
+                                                    int IDResGeneral = (int)measResGeneral.Save(dbConnect, transaction);
+                                                    measResGeneral.Close();
+                                                    measResGeneral.Dispose();
+
+                                                    if (IDResGeneral > 0)
+                                                    {
+                                                        if (station.GeneralResult.MaskBW != null)
+                                                        {
+                                                            if (station.GeneralResult.MaskBW.Length > 0)
+                                                            {
+                                                                foreach (MaskElements mslel in station.GeneralResult.MaskBW)
+                                                                {
+                                                                    YXbsResmaskBw resmaskBw = new YXbsResmaskBw();
+                                                                    resmaskBw.Format("*");
+                                                                    resmaskBw.Filter = "ID=-1";
+                                                                    resmaskBw.New();
+                                                                    resmaskBw.m_bw = mslel.BW;
+                                                                    resmaskBw.m_level = mslel.level;
+                                                                    resmaskBw.m_xbsgeneralid = IDResGeneral;
+                                                                    int IDYXbsResmaskBw = (int)resmaskBw.Save(dbConnect, transaction);
+                                                                    resmaskBw.Close();
+                                                                    resmaskBw.Dispose();
+                                                                }
+                                                            }
+                                                        }
+
+
+                                                        if (station.GeneralResult.LevelsSpecrum != null)
+                                                        {
+                                                            if (station.GeneralResult.LevelsSpecrum.Length > 0)
+                                                            {
+                                                                foreach (float lvl in station.GeneralResult.LevelsSpecrum)
+                                                                {
+                                                                    YXbsLevelSpecrum reslevelSpecrum = new YXbsLevelSpecrum();
+                                                                    reslevelSpecrum.Format("*");
+                                                                    reslevelSpecrum.Filter = "ID=-1";
+                                                                    reslevelSpecrum.New();
+                                                                    reslevelSpecrum.m_levelspecrum = lvl;
+                                                                    reslevelSpecrum.m_xbsgeneralid = IDResGeneral;
+                                                                    int IDreslevelSpecrum = (int)reslevelSpecrum.Save(dbConnect, transaction);
+                                                                    reslevelSpecrum.Close();
+                                                                    reslevelSpecrum.Dispose();
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    if (station.LevelMeasurements != null)
+                                                    {
+                                                        if (station.LevelMeasurements.Length > 0)
+                                                        {
+                                                            foreach (LevelMeasurementsCar car in station.LevelMeasurements)
+                                                            {
+                                                                YXbsResLevelMeas yXbsResLevelMeas = new YXbsResLevelMeas();
+                                                                yXbsResLevelMeas.Format("*");
+                                                                yXbsResLevelMeas.Filter = "ID=-1";
+                                                                yXbsResLevelMeas.New();
+                                                                yXbsResLevelMeas.m_altitude = car.Altitude;
+                                                                yXbsResLevelMeas.m_bw = car.BW;
+                                                                yXbsResLevelMeas.m_centralfrequency = (double?)car.CentralFrequency;
+                                                                yXbsResLevelMeas.m_differencetimestamp = car.DifferenceTimestamp;
+                                                                yXbsResLevelMeas.m_lat = car.Lat;
+                                                                yXbsResLevelMeas.m_leveldbm = car.LeveldBm;
+                                                                yXbsResLevelMeas.m_leveldbmkvm = car.LeveldBmkVm;
+                                                                yXbsResLevelMeas.m_lon = car.Lon;
+                                                                yXbsResLevelMeas.m_rbw = car.RBW;
+                                                                yXbsResLevelMeas.m_timeofmeasurements = car.TimeOfMeasurements;
+                                                                yXbsResLevelMeas.m_vbw = car.VBW;
+                                                                yXbsResLevelMeas.m_resultsmeasstationid = IDStation;
+                                                                int IDyXbsResLevelMeas = (int)yXbsResLevelMeas.Save(dbConnect, transaction);
+                                                                yXbsResLevelMeas.Close();
+                                                                yXbsResLevelMeas.Dispose();
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     if (obj.LocationSensorMeasurement != null)
                                     {
                                         List<Yyy> BlockInsert_LocationSensorMeasurement = new List<Yyy>();

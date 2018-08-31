@@ -137,6 +137,114 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 }
                             }
                         }
+
+                        //////////////////////////////////////////////
+                        if (obj.XbsResmeasstation != null)
+                        {
+                            if (obj.XbsResmeasstation.Count > 0)
+                            {
+                                s_out.ResultsMeasStation = new ResultsMeasurementsStation[obj.XbsResmeasstation.Count];
+                                int ii = 0;
+                                foreach (YXbsResmeasstation flevmeas in obj.XbsResmeasstation.ToArray())
+                                {
+                                    s_out.ResultsMeasStation[ii] = new ResultsMeasurementsStation();
+                                    if (flevmeas.m_idsector!=null) s_out.ResultsMeasStation[ii].IdSector = flevmeas.m_idsector;
+                                    if (flevmeas.m_idstation!=null) s_out.ResultsMeasStation[ii].Idstation = flevmeas.m_idstation;
+                                    s_out.ResultsMeasStation[ii].GlobalSID = flevmeas.m_globalsid;
+                                    s_out.ResultsMeasStation[ii].MeasGlobalSID = flevmeas.m_measglobalsid;
+                                    s_out.ResultsMeasStation[ii].Status = flevmeas.m_status;
+                                    if (obj.XbsResLevelMeas != null)
+                                    {
+                                        List<YXbsResLevelMeas> resF = obj.XbsResLevelMeas.FindAll(t => t.m_resultsmeasstationid == flevmeas.m_id);
+                                        if (resF.Count > 0)
+                                        {
+                                            s_out.ResultsMeasStation[ii].LevelMeasurements = new LevelMeasurementsCar[resF.Count];
+                                            int u = 0;
+                                            foreach (YXbsResLevelMeas x in resF)
+                                            {
+                                                s_out.ResultsMeasStation[ii].LevelMeasurements[u] = new LevelMeasurementsCar();
+                                                if (x.m_altitude!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].Altitude = x.m_altitude;
+                                                if (x.m_bw!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].BW = x.m_bw;
+                                                if (x.m_centralfrequency!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].CentralFrequency = (decimal?)x.m_centralfrequency;
+                                                if (x.m_differencetimestamp!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].DifferenceTimestamp = x.m_differencetimestamp;
+                                                if (x.m_lat!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].Lat = x.m_lat;
+                                                if (x.m_lon!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].Lon = x.m_lon;
+                                                if (x.m_leveldbm!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].LeveldBm = x.m_leveldbm;
+                                                if (x.m_leveldbmkvm!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].LeveldBmkVm = x.m_leveldbmkvm;
+                                                if (x.m_rbw!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].RBW = x.m_rbw;
+                                                if (x.m_timeofmeasurements!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].TimeOfMeasurements = x.m_timeofmeasurements.GetValueOrDefault();
+                                                if (x.m_vbw!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].VBW = x.m_vbw;
+                                                u++;
+                                            }
+                                        }
+                                    }
+
+
+                                    if (obj.XbsResGeneral != null)
+                                    {
+                                        s_out.ResultsMeasStation[ii].GeneralResult = new MeasurementsParameterGeneral();
+                                        List<YXbsResGeneral> resF = obj.XbsResGeneral.FindAll(t => t.m_resultsmeasstationid == flevmeas.m_id);
+                                        if (resF!=null)
+                                        {
+                                            foreach (YXbsResGeneral x in resF)
+                                            {
+                                                if (x.m_centralfrequency!=null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequency = x.m_centralfrequency;
+                                                if (x.m_centralfrequencymeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequencyMeas = x.m_centralfrequencymeas;
+                                                if (x.m_durationmeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.DurationMeas = x.m_durationmeas;
+                                                if (x.m_markerindex!=null) s_out.ResultsMeasStation[ii].GeneralResult.MarkerIndex = x.m_markerindex;
+                                                if (x.m_offsetfrequency!=null) s_out.ResultsMeasStation[ii].GeneralResult.OffsetFrequency = x.m_offsetfrequency;
+                                                if (x.m_specrumstartfreq!=null) s_out.ResultsMeasStation[ii].GeneralResult.SpecrumStartFreq = (decimal?)x.m_specrumstartfreq;
+                                                if (x.m_specrumsteps!=null) s_out.ResultsMeasStation[ii].GeneralResult.SpecrumSteps = (decimal?)x.m_specrumsteps;
+                                                if (x.m_t1!=null) s_out.ResultsMeasStation[ii].GeneralResult.T1 = x.m_t1;
+                                                if (x.m_t2!=null) s_out.ResultsMeasStation[ii].GeneralResult.T2 = x.m_t2;
+                                                if (x.m_timefinishmeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
+                                                if (x.m_timestartmeasdate!=null)  s_out.ResultsMeasStation[ii].GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
+
+                                                if (obj.XbsResmaskBw != null)
+                                                {
+                                                    List<YXbsResmaskBw> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbsgeneralid == x.m_id);
+                                                    if (resYXbsResmaskBw.Count > 0)
+                                                    {
+                                                        s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
+                                                        int u = 0;
+                                                        foreach (YXbsResmaskBw xv in resYXbsResmaskBw)
+                                                        {
+                                                            s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u] = new MaskElements();
+                                                            if (xv.m_bw!=null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].BW = xv.m_bw;
+                                                            if (xv.m_level != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].level = xv.m_level;
+                                                            u++;
+                                                        }
+                                                    }
+                                                }
+
+                                                if (obj.XbsLevelSpecrum != null)
+                                                {
+                                                    List<YXbsLevelSpecrum> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbsgeneralid == x.m_id);
+                                                    if (resYXbsLevelSpecrum.Count > 0)
+                                                    {
+                                                        s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
+                                                        int u = 0;
+                                                        foreach (YXbsLevelSpecrum xv in resYXbsLevelSpecrum)
+                                                        {
+                                                            s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = new float();
+                                                            if (xv.m_levelspecrum!=null) s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
+                                                            u++;
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    ii++;
+                                }
+
+                                
+
+
+                            }
+                        }
+ 
                         s_out.MeasurementsResults = L_MSR.ToArray();
                         L_OUT.Add(s_out);
                     }

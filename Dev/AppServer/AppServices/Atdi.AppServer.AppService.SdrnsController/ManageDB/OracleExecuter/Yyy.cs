@@ -72,7 +72,17 @@ namespace Atdi.Oracle.DataAccess
         public void setDateTime(int idx, DateTime? value) { try { valc[idx] = value; } catch (Exception) { } }
         public void setGuid(int idx, Guid? value) { try { valc[idx] = value; } catch (Exception) { } }
         public void setObject(int idx, object ob) { try { valc[idx] = ob; } catch (Exception) { } }
-
+        public byte[] getBlob(int idx)
+        {
+            byte[] val = null;
+            try
+            {
+                if ((valc[idx] != null) && (valc[idx] != DBNull.Value)) val = valc[idx] as byte[];
+            }
+            catch (Exception) { return null; }
+            return val;
+        }
+        public void setBlob(int idx, byte[] value) { try { valc[idx] = value; } catch (Exception) { } }
 
         public string Filter;
         public string FormatValue;

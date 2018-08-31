@@ -8,6 +8,117 @@ using Oracle.DataAccess.Client;
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
+
+    public class YXbsMeasTaskSDR : Yyy
+    {
+        public YXbsMeasTaskSDR()
+        {
+            TableName = "XBS_MEASTASK_SDR";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsMeasTaskSDR)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_meastaskid { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_meassubtaskid { get { return getInt(2); } set { setInt(2, value); } }
+        public int? m_meassubtaskstationid { get { return getInt(3); } set { setInt(3, value); } }
+        public int? m_sensorid { get { return getInt(4); } set { setInt(4, value); } }
+        public int? m_num { get { return getInt(5); } set { setInt(5, value); } }
+    }
+
+    public class YXbsResmeasstation : Yyy
+    {
+        public YXbsResmeasstation()
+        {
+            TableName = "XBS_RESMEASSTATION";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsResmeasstation)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public string m_globalsid { get { return getString(1); } set { setString(1, 250, value); } }
+        public string m_measglobalsid { get { return getString(2); } set { setString(2, 250, value); } }
+        public int? m_idsector { get { return getInt(3); } set { setInt(3, value); } }
+        public int? m_idstation { get { return getInt(4); } set { setInt(4, value); } }
+        public string m_status { get { return getString(5); } set { setString(5, 250, value); } }
+        public int? m_idxbsmeasurementres { get { return getInt(6); } set { setInt(6, value); } }
+        
+    }
+
+    public class YXbsResGeneral : Yyy
+    {
+        public YXbsResGeneral()
+        {
+            TableName = "XBS_RESGENERAL";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsResGeneral)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_resultsmeasstationid { get { return getInt(1); } set { setInt(1, value); } }
+        public double? m_centralfrequency { get { return getDouble(2); } set { setDouble(2, value); } }
+        public double? m_centralfrequencymeas { get { return getDouble(3); } set { setDouble(3, value); } }
+        public double? m_durationmeas { get { return getDouble(4); } set { setDouble(4, value); } }
+        public int? m_markerindex { get { return getInt(5); } set { setInt(5, value); } }
+        public int? m_t1 { get { return getInt(6); } set { setInt(6, value); } }
+        public int? m_t2 { get { return getInt(7); } set { setInt(7, value); } }
+        public DateTime? m_timefinishmeas { get { return getDateTime(8); } set { setDateTime(8, value); } }
+        public DateTime? m_timestartmeasdate { get { return getDateTime(9); } set { setDateTime(9, value); } }
+        public double? m_offsetfrequency { get { return getDouble(10); } set { setDouble(10, value); } }
+        public double? m_specrumstartfreq { get { return getDouble(11); } set { setDouble(11, value); } }
+        public double? m_specrumsteps { get { return getDouble(12); } set { setDouble(12, value); } }
+
+    }
+
+    public class YXbsResmaskBw : Yyy
+    {
+        public YXbsResmaskBw()
+        {
+            TableName = "XBS_RESMASKBW";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsResmaskBw)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_xbsgeneralid { get { return getInt(1); } set { setInt(1, value); } }
+        public double? m_bw { get { return getDouble(2); } set { setDouble(2, value); } }
+        public double? m_level { get { return getDouble(3); } set { setDouble(3, value); } }
+
+    }
+
+    public class YXbsLevelSpecrum : Yyy
+    {
+        public YXbsLevelSpecrum()
+        {
+            TableName = "XBS_LEVELSSPECRUM";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLevelSpecrum)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_xbsgeneralid { get { return getInt(1); } set { setInt(1, value); } }
+        public double? m_levelspecrum { get { return getDouble(2); } set { setDouble(2, value); } }
+        
+
+    }
+
+    
+
+    public class YXbsResLevelMeas : Yyy
+    {
+        public YXbsResLevelMeas()
+        {
+            TableName = "XBS_RESLEVELMEAS";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsResLevelMeas)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_resultsmeasstationid { get { return getInt(1); } set { setInt(1, value); } }
+        public double? m_bw { get { return getDouble(2); } set { setDouble(2, value); } }
+        public double? m_altitude { get { return getDouble(3); } set { setDouble(3, value); } }
+        public double? m_centralfrequency { get { return getDouble(4); } set { setDouble(4, value); } }
+        public double? m_differencetimestamp { get { return getDouble(5); } set { setDouble(5, value); } }
+        public double? m_lat { get { return getDouble(6); } set { setDouble(6, value); } }
+        public double? m_lon { get { return getDouble(7); } set { setDouble(7, value); } }
+        public double? m_leveldbm { get { return getDouble(8); } set { setDouble(8, value); } }
+        public double? m_leveldbmkvm { get { return getDouble(9); } set { setDouble(9, value); } }
+        public double? m_rbw { get { return getDouble(10); } set { setDouble(10, value); } }
+        public DateTime? m_timeofmeasurements { get { return getDateTime(11); } set { setDateTime(11, value); } }
+        public double? m_vbw { get { return getDouble(12); } set { setDouble(12, value); } }
+
+
+
+    }
+
     public class YxbsEntitypart : Yyy
     {
         public YxbsEntitypart()

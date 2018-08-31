@@ -8,7 +8,7 @@ using System.Data.Common;
 
 namespace Atdi.Oracle.DataAccess
 {
-    public class OrmRsOracle : IDisposable
+    public class OrmRsOracle
     {
         public OracleDataAccess oracleData;
         public bool isNew = false;
@@ -24,8 +24,6 @@ namespace Atdi.Oracle.DataAccess
         public List<OracleParameter> AllPropertiesColumns = new List<OracleParameter>();
         public List<OracleParameter> AllPropertiesColumns2 = new List<OracleParameter>();
         public string Order { get; set; }
-
-
         public void Dispose() { Clear(); }
         public void Clear()
         {
@@ -184,14 +182,14 @@ namespace Atdi.Oracle.DataAccess
                     }
                     if (ID_VALUE > -1) break;
                 }
-                return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE, dbConnection,dbTransaction);
+                return oracleData.DeleteRecord(yyy.GetTableName(), ID_VALUE, dbConnection, dbTransaction);
             }
             catch (Exception e)
             {
                 System.Console.WriteLine(e.ToString());
                 return false;
             }
-}
+        }
 
         public int? GetNextId(string sequenceName)
         {
@@ -200,10 +198,10 @@ namespace Atdi.Oracle.DataAccess
                 oracleData = new OracleDataAccess();
                 return oracleData.GetNextId(sequenceName);
             }
-            catch (Exception e) { System.Console.WriteLine(e.ToString()); return null;  }
+            catch (Exception e) { System.Console.WriteLine(e.ToString()); return null; }
         }
 
-     
+
         public int? UpdateRecord(DbConnection dbConnection, DbTransaction dbTransaction)
         {
             try

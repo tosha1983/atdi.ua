@@ -95,7 +95,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     {
                         var channel = _connection.CreateModel();
                         channel.ExchangeDeclare(exchange: ExchangePointFromDevices + ".[" + apiVersion + "]", type: "direct", durable: true);
-                        var queueName = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}].[v{apiVersion}]";
+                        var queueName = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}].[{apiVersion}]";
                         var routingKey = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}]";
                         dictionary.Add(channel, new RabbitOptions(StartNameQueueServer, routingKey, queueName, d.NameConcumer));
                         listRabbitOptions.Add(channel, new RabbitOptions(StartNameQueueServer, routingKey, queueName, d.NameConcumer));
@@ -117,7 +117,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     {
                         var channel = _connection.CreateModel();
                         channel.ExchangeDeclare(exchange: ExchangePointFromServer + ".[" + apiVersion + "]", type: "direct", durable: true);
-                        var queueName = $"{StartNameQueueDevice}.[{sensor.Name}].[{sensor.Equipment.TechId}].[v{apiVersion}]";
+                        var queueName = $"{StartNameQueueDevice}.[{sensor.Name}].[{sensor.Equipment.TechId}].[{apiVersion}]";
                         var routingKey = $"{StartNameQueueDevice}.[{sensor.Name}].[{sensor.Equipment.TechId}]";
                         dictionary.Add(channel, new RabbitOptions(StartNameQueueDevice, routingKey, queueName, sensor.Name, sensor.Equipment.TechId));
                         listRabbitOptions.Add(channel, new RabbitOptions(StartNameQueueDevice, routingKey, queueName, sensor.Name, sensor.Equipment.TechId));
@@ -139,7 +139,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 
         public void QueueDeclareConcumer(string ExchangePoint, string ConsumersQueue, IModel channel, string Point)
         {
-            var queueName = $"{ExchangePoint}.[{this.NameServer}].[{ConsumersQueue}].[v{apiVersion}]";
+            var queueName = $"{ExchangePoint}.[{this.NameServer}].[{ConsumersQueue}].[{apiVersion}]";
             var routingKey = $"{ExchangePoint}.[{this.NameServer}].[{ConsumersQueue}]";
             channel.QueueDeclare(
                   queue: queueName,
@@ -153,7 +153,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 
         public void QueueDeclareDevice(string ExchangePoint, string sensorName, string techId, IModel channel, string Point)
         {
-            var queueName = $"{ExchangePoint}.[{sensorName}].[{techId}].[v{apiVersion}]";
+            var queueName = $"{ExchangePoint}.[{sensorName}].[{techId}].[{apiVersion}]";
             var routingKey = $"{ExchangePoint}.[{sensorName}].[{techId}]";
             channel.QueueDeclare(
                   queue: queueName,

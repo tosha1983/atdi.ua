@@ -17,11 +17,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         //public YXbsStationmeas stat_meas { get; set; }
         public List<YXbsLocationsensorm> loc_sensorM { get; set; }
         public List<YXbsFrequencymeas> freq_meas { get; set; }
-
         public List<YXbsLevelmeasres> level_meas_res { get; set; }
         public List<YXbsLevelmeasonlres> level_meas_onl_res { get; set; }
         public List<YXbsSpectoccupmeas> spect_occup_meas { get; set; }
 
+        public List<YXbsResmeasstation> XbsResmeasstation { get; set; }
+        public List<YXbsResGeneral> XbsResGeneral { get; set; }
+        public List<YXbsResLevelMeas> XbsResLevelMeas { get; set; }
+        public List<YXbsResmaskBw> XbsResmaskBw { get; set; }
+        public List<YXbsLevelSpecrum> XbsLevelSpecrum { get; set; }
 
         /// <summary>
         /// Деструктор.
@@ -46,6 +50,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             level_meas_res = new List<YXbsLevelmeasres>();
             spect_occup_meas = new List<YXbsSpectoccupmeas>();
             level_meas_onl_res = new List<YXbsLevelmeasonlres>();
-        }
+            XbsResmeasstation = new List<YXbsResmeasstation>();
+            XbsResGeneral = new List<YXbsResGeneral>();
+            XbsResLevelMeas = new List<YXbsResLevelMeas>();
+            XbsResmaskBw = new List<YXbsResmaskBw>();
+            XbsLevelSpecrum = new List<YXbsLevelSpecrum>();
+    }
     }
 }

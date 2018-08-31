@@ -12,7 +12,7 @@ using System.Data.Common;
 
 namespace Atdi.Oracle.DataAccess
 {
-    public class OracleDataAccess : IDataAccess
+    public class OracleDataAccess 
     {
         public OrmRsOracle rs;
         public List<OracleParameter> getAllFields = new List<OracleParameter>();
@@ -295,6 +295,39 @@ namespace Atdi.Oracle.DataAccess
                 {
                     DbCommand command = connection.CreateCommand();
                     command.CommandText = string.Format("SELECT MAX(ID) FROM {0}", TableName);
+                    object o = command.ExecuteScalar();
+                    if (o != null)
+                    {
+                        if (o != DBNull.Value)
+                        {
+                            Id = Int32.Parse(o.ToString());
+                        }
+                        else Id = 1;
+                    }
+                    else
+                    {
+                        Id = 1;
+                    }
+                    command.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.ToString());
+            }
+            return Id;
+        }
+
+        public int? GetMaxId(string TableName, string NameField)
+        {
+            int? Id = null;
+            try
+            {
+                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection.State == ConnectionState.Open)
+                {
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = string.Format("SELECT MAX({0}) FROM {1}", NameField, TableName);
                     object o = command.ExecuteScalar();
                     if (o != null)
                     {

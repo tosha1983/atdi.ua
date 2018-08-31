@@ -40,7 +40,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     case "RegisterSensor":
                         var dataRegisterSensor = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Sensor)) as Sensor;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
-                        var queueName = routingKey + $".[v{ConfigurationRabbitOptions.apiVersion}]";
+                        var queueName = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
                         channel.QueueDeclare(
                               queue: queueName,
                               durable: true,

@@ -903,6 +903,64 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return isSuccess;
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
+        {
+           int? NUM_Val = null;
+           System.Threading.Thread thread = new System.Threading.Thread(() =>
+           {
+               Yyy yyy = new Yyy();
+               DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+               if (dbConnect.State == System.Data.ConnectionState.Open)
+               {
+                   DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                   try
+                   {
+                       logger.Trace("Start procedure SaveTaskToDB...");
+                       int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR","NUM");
+                       ++Num;
+                       
+                       YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                       meastask.Format("*");
+                       meastask.New();
+                       meastask.m_meastaskid = TaskId;
+                       meastask.m_meassubtaskid = SubTaskId;
+                       meastask.m_meassubtaskstationid = SubTaskStationId;
+                       meastask.m_sensorid = SensorId;
+                       meastask.m_num = Num;
+                       meastask.Save(dbConnect, transaction);
+                       meastask.Close();
+                       meastask.Dispose();
+                       transaction.Commit();
+                       NUM_Val = Num;
+                   }
+                   catch (Exception ex)
+                   {
+                       try
+                       {
+                           transaction.Rollback();
+                       }
+                       catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
+                       logger.Error("Error in SaveTaskToDB: " + ex.Message);
+                   }
+                   finally
+                   {
+                       transaction.Dispose();
+                       dbConnect.Close();
+                       dbConnect.Dispose();
+                   }
+               }
+           });
+          thread.Start();
+          thread.Join();
+          return NUM_Val;
+        }
+
         /// <summary>
         /// 
         /// </summary>
