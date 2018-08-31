@@ -17,7 +17,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         private bool disposedValue = false; 
         public ConnectionFactory factory { get; set; }
         public IConnection _connection { get; set; }
-        public Dictionary<IModel,RabbitOptions> listRabbitOptions { get; set; }
+        public static Dictionary<IModel,RabbitOptions> listRabbitOptions { get; set; }
         public List<ConcumerDescribe> listConcumerDescribe { get; set; }
         public Task[] tasks { get; set; }
         public string RabbitHostName { get; set; }
@@ -104,7 +104,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     foreach (KeyValuePair<IModel, RabbitOptions> lo in dictionary)
                     {
                         QueueDeclareConcumer(StartNameQueueServer, lo.Value.nameConcumer, lo.Key, ExchangePointFromDevices + ".[" + apiVersion + "]");
-                        tasks[i] = Task.Run(() => new System.Threading.Thread(() => this.CreateConsumer(lo.Key, i, dictionary[lo.Key].queue, "Concumer" + i.ToString(), StartNameQueueDevice, ExchangePointFromServer + ".[" + apiVersion + "]")).Start());
+                        tasks[i] = Task.Run(() => new System.Threading.Thread(() => this.CreateConsumer(lo.Key, i, dictionary[lo.Key].queue, "Concumer" + i.ToString(), StartNameQueueDevice, ExchangePointFromServer + ".[" + apiVersion + "]", _connection, ExchangePointFromServer, StartNameQueueDevice)).Start());
                         i++;
                     }
                     Task.WaitAll(tasks);
@@ -151,7 +151,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             
         }
 
-        public void QueueDeclareDevice(string ExchangePoint, string sensorName, string techId, IModel channel, string Point)
+        public static void QueueDeclareDevice(string ExchangePoint, string sensorName, string techId, IModel channel, string Point)
         {
             var queueName = $"{ExchangePoint}.[{sensorName}].[{techId}].[{apiVersion}]";
             var routingKey = $"{ExchangePoint}.[{sensorName}].[{techId}]";
@@ -185,7 +185,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             if (this._connection != null)
             {
-                if (this.listRabbitOptions != null && this.listRabbitOptions.Count > 0)
+                if (listRabbitOptions != null && listRabbitOptions.Count > 0)
                 {
                     foreach (KeyValuePair<IModel, RabbitOptions> ch in listRabbitOptions)
                     {
@@ -222,7 +222,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         }
 
 
-        void CreateConsumer(RabbitMQ.Client.IModel channel, int index, string QueueName, string Name, string StartName, string ExchangePoint)
+        void CreateConsumer(RabbitMQ.Client.IModel channel, int index, string QueueName, string Name, string StartName, string ExchangePoint, IConnection connection, string ExchangePointFromServer, string StartNameQueueDevice)
         {
             try
             {
@@ -232,7 +232,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 {
                     try
                     {
-                        consumer.HandleMessage(channel, ea, _container, StartName,  ExchangePoint);
+                        consumer.HandleMessage(channel, ea, _container, StartName,  ExchangePoint, connection, ExchangePointFromServer, StartNameQueueDevice);
                     }
                     catch (Exception e)
                     {

@@ -63,10 +63,6 @@
       <Project>{0eab226d-aa8d-4671-88cf-0f1049560535}</Project>
       <Name>Atdi.AppServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj">
-      <Project>{4db9d712-cce4-43f8-9e79-4eabb5047cde}</Project>
-      <Name>Atdi.AppServer.ConfigurationSdrnController</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Build\Atdi.Build.WebQuery\Atdi.Build.WebQuery.csproj">
       <Project>{1386e2b2-d67a-4033-8dd0-1ca3d7466a90}</Project>
       <Name>Atdi.Build.WebQuery</Name>
@@ -103,9 +99,17 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj">
+      <Project>{11ee0e94-8612-4aaa-889f-5ab447e7dd6a}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsControllerv2_0</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
       <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
       <Name>Atdi.AppServer.AppService.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj">
+      <Project>{4db9d712-cce4-43f8-9e79-4eabb5047cde}</Project>
+      <Name>Atdi.AppServer.ConfigurationSdrnController</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>

@@ -24,9 +24,9 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadKey();
 
-            Run("NetTcpEndpoint", "SdrnServer1");
+            //Run("NetTcpEndpoint", "SdrnServer1");
             Run("BasicHttpEndpoint", "SdrnServer2");
-            Run("NetNamedPipeEndpoint", "SdrnServer2");
+            //Run("NetNamedPipeEndpoint", "SdrnServer2");
 
             Console.WriteLine($"Press any key to exit ...");
             Console.ReadKey();

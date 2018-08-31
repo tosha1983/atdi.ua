@@ -64,37 +64,37 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
-      <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
-      <Name>Atdi.AppServer.AppService.SdrnsController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AppServer\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
       <Name>Atdi.AppServer.Contracts.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AppServer\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
       <Project>{2556f633-8292-4e00-a9d0-8abb4e09d1e3}</Project>
       <Name>Atdi.AppServer.AppServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AppServer\Core\Atdi.AppServer\Atdi.AppServer.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
       <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
       <Name>Atdi.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj">
       <Project>{11ee0e94-8612-4aaa-889f-5ab447e7dd6a}</Project>
       <Name>Atdi.AppServer.AppService.SdrnsControllerv2_0</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
-      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
-      <Name>Atdi.DataModels.Sdrns.Device</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Platform\Atdi.Platform\Atdi.Platform.csproj">
-      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
-      <Name>Atdi.Platform</Name>
+    <ProjectReference Include="..\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
+      <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsController</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.AppService.SdrnsController", "AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj", "{E3444180-04B4-4338-9C9B-D8CAACCC56B1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Common", "00 Common", "{BA9FB078-79D3-4580-86BF-EABB45C96ACD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Platform", "01 Platform", "{7AF2EEE1-1C56-4B92-9BF6-46B625F1AE1E}"
@@ -183,13 +181,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.WebApiServices.Identit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.WebApiServices.WebQuery", "WebApiServices\Atdi.WebApiServices.WebQuery\Atdi.WebApiServices.WebQuery.csproj", "{A589C230-DDBE-42B2-B54E-3D0139CE853D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.ConfigurationSdrnController", "Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj", "{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns", "DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj", "{40EBB60E-FE75-40C7-94FA-DDBADA32F58C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Device", "DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj", "{4670DA92-06CF-4CE4-BBF8-67353A907BD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.AppService.SdrnsControllerv2_0", "Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj", "{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.AppService.SdrnsController", "AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj", "{E3444180-04B4-4338-9C9B-D8CAACCC56B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.AppService.SdrnsControllerv2_0", "AppServer\AppServices\Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj", "{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.ConfigurationSdrnController", "AppServer\AppServices\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj", "{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,16 +201,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x64.Build.0 = Debug|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x86.Build.0 = Debug|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x64.ActiveCfg = Release|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x64.Build.0 = Release|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x86.ActiveCfg = Release|Any CPU
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x86.Build.0 = Release|Any CPU
 		{D3CFFBA9-C232-4C8D-BACD-5A30DED686D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3CFFBA9-C232-4C8D-BACD-5A30DED686D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3CFFBA9-C232-4C8D-BACD-5A30DED686D2}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -885,18 +875,6 @@ Global
 		{A589C230-DDBE-42B2-B54E-3D0139CE853D}.Release|x64.Build.0 = Release|Any CPU
 		{A589C230-DDBE-42B2-B54E-3D0139CE853D}.Release|x86.ActiveCfg = Release|Any CPU
 		{A589C230-DDBE-42B2-B54E-3D0139CE853D}.Release|x86.Build.0 = Release|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x64.Build.0 = Debug|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x86.Build.0 = Debug|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x64.ActiveCfg = Release|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x64.Build.0 = Release|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x86.ActiveCfg = Release|Any CPU
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x86.Build.0 = Release|Any CPU
 		{40EBB60E-FE75-40C7-94FA-DDBADA32F58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{40EBB60E-FE75-40C7-94FA-DDBADA32F58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40EBB60E-FE75-40C7-94FA-DDBADA32F58C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -921,6 +899,18 @@ Global
 		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|x64.Build.0 = Release|Any CPU
 		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|x86.ActiveCfg = Release|Any CPU
 		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|x86.Build.0 = Release|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x64.Build.0 = Debug|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x64.ActiveCfg = Release|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x64.Build.0 = Release|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1}.Release|x86.Build.0 = Release|Any CPU
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -933,12 +923,23 @@ Global
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}.Release|x64.Build.0 = Release|Any CPU
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}.Release|x86.ActiveCfg = Release|Any CPU
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A}.Release|x86.Build.0 = Release|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x64.Build.0 = Debug|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Debug|x86.Build.0 = Debug|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x64.Build.0 = Release|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E3444180-04B4-4338-9C9B-D8CAACCC56B1} = {5270598A-8873-4CEF-9258-D113E25030ED}
 		{77D86B37-3A76-4F02-93F1-7E432DF03D02} = {03FCB31A-F13F-4CE6-BF8E-5468E2B275F5}
 		{3CE5E7D5-4A41-4896-B964-3140F5B4EFC4} = {03FCB31A-F13F-4CE6-BF8E-5468E2B275F5}
 		{BDF9B9DF-136C-44F5-A44B-FEF63B4AFB71} = {03FCB31A-F13F-4CE6-BF8E-5468E2B275F5}
@@ -1013,10 +1014,11 @@ Global
 		{835B1A92-009C-4F4D-ACED-D5765D1AFE9F} = {218C51B6-A161-4AFA-BA32-67584F0C4F3A}
 		{C61C88B0-306F-4C54-A372-80CB97124504} = {92F03EAB-C3E9-4923-9A1F-EC3FDFFCBB93}
 		{A589C230-DDBE-42B2-B54E-3D0139CE853D} = {92F03EAB-C3E9-4923-9A1F-EC3FDFFCBB93}
-		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE} = {5270598A-8873-4CEF-9258-D113E25030ED}
 		{40EBB60E-FE75-40C7-94FA-DDBADA32F58C} = {87DDE9BC-6E58-48FB-ACDC-247532740169}
 		{4670DA92-06CF-4CE4-BBF8-67353A907BD0} = {87DDE9BC-6E58-48FB-ACDC-247532740169}
+		{E3444180-04B4-4338-9C9B-D8CAACCC56B1} = {5270598A-8873-4CEF-9258-D113E25030ED}
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A} = {5270598A-8873-4CEF-9258-D113E25030ED}
+		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE} = {5270598A-8873-4CEF-9258-D113E25030ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D40073F-3D0F-47FC-B9C7-D3E192D6D6DE}

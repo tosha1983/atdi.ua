@@ -71,19 +71,19 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppServer\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
       <Name>Atdi.AppServer.Contracts.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AppServer\Core\Atdi.AppServer\Atdi.AppServer.csproj">
+    <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
       <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
       <Name>Atdi.AppServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
       <Name>Atdi.DataModels.Sdrns</Name>
     </ProjectReference>
