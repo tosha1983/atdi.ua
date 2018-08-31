@@ -58,24 +58,24 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 using (var channel = this._connection.CreateModel())
                 {
+                    var messageId = Guid.NewGuid().ToString();
+
                     var props = channel.CreateBasicProperties();
                     
                     props.Persistent = true;
                     props.AppId = "Atdi.WcfServices.Sdrn.Device.dll";
+                    props.MessageId = messageId;
+                    props.Type = messageType;
 
                     if (!string.IsNullOrEmpty(correlationId))
                     {
                         props.CorrelationId = correlationId;
                     }
 
-                    var messageId = Guid.NewGuid().ToString();
-
                     props.Headers = new Dictionary<string, object>();
                     props.Headers["SdrnServer"] = descriptor.SdrnServer;
                     props.Headers["SensorName"] = descriptor.SensorName;
                     props.Headers["SensorTechId"] = descriptor.EquipmentTechId;
-                    props.Headers["MessageType"] = messageType;
-                    props.Headers["MessageId"] = messageId;
 
                     channel.BasicPublish(exchange: this._exchangeName,
                                      routingKey: routingKey,
@@ -83,6 +83,8 @@ namespace Atdi.WcfServices.Sdrn.Device
                                      body: data);
 
                     this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was sent successfuly: MessageType = '{messageType}', RoutingKey = '{routingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
+
+                    channel.Close();
 
                     return messageId;
                 }
@@ -93,6 +95,12 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this._logger.Exception("SdrnDeviceServices", (EventCategory)"Object sending", e);
                 throw new InvalidOperationException("The object was not sent to server", e);
             }
+        }
+
+        public TObject TryGetObject<TObject>(SensorDescriptor descriptor, string messageType)
+        {
+            var result = default(TObject);
+            return result;
         }
 
         public TObject WaiteObject<TObject>(SensorDescriptor descriptor, string messageType, string correlationId)
@@ -124,7 +132,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                         return;
                     }
 
-                    var respMessageType = GetHeaderValue("MessageType", ea.BasicProperties.Headers);
+                    var respMessageType = ea.BasicProperties.Type;
                     if (string.IsNullOrEmpty(respMessageType))
                     {
                         return;
@@ -145,6 +153,8 @@ namespace Atdi.WcfServices.Sdrn.Device
                     autoAck: false );
 
                 result = this.DeserializeObjectFromByteArray<TObject>(respQueue.Take());
+
+                channel.Close();
             }
 
             return result;
