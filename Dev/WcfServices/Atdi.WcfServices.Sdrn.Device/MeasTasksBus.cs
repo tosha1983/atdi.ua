@@ -67,26 +67,36 @@ namespace Atdi.WcfServices.Sdrn.Device
 
         public Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer)
         {
-            var descriptor = new SensorDescriptor
+            try
             {
-                SdrnServer = sdrnServer,
-                SensorName = sensor.Name,
-                EquipmentTechId = sensor.Equipment.TechId
-            };
+                var descriptor = new SensorDescriptor
+                {
+                    SdrnServer = sdrnServer,
+                    SensorName = sensor.Name,
+                    EquipmentTechId = sensor.Equipment.TechId
+                };
 
-            var correlationId = Guid.NewGuid().ToString();
+                var correlationId = Guid.NewGuid().ToString();
+                var messageId = this._bus.SendObject(descriptor, "RegisterSensor", sensor, correlationId);
 
-            var messageId = this._bus.SendObject(descriptor, "RegisterSensor", sensor, correlationId);
+                var data = this._bus.WaiteObject<SensorRegistrationResult>(descriptor, "SendRegistrationResult", correlationId);
 
-            var data = this._bus.WaiteObject<SensorRegistrationResult>(descriptor, "SendRegistrationResult", correlationId);
+                var result = new Result<SensorRegistrationResult>
+                {
+                    State = OperationState.Success,
+                    Data = data
+                };
 
-            var result = new Result<SensorRegistrationResult>
+                return result;
+            }
+            catch(Exception e)
             {
-                State = OperationState.Success,
-                Data = data
-            };
-
-            return result;
+                return new Result<SensorRegistrationResult>
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
         }
 
         public Result SendCommandResult(SensorDescriptor sensorDescriptor, DeviceCommandResult commandResult)

@@ -269,7 +269,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             {
                 SensorRegistrationResult result = null;
 
-                for (int i = 0; i < 1; i++)
+                for (int i = 0; i < 100000; i++)
                 {
                     var busService = GetMeasTasksBusServicByEndpoint(endpointName);
 
