@@ -58,6 +58,7 @@ namespace Atdi.WcfServices.Sdrn.Device
         }
         public SdrnServerDescriptor(IComponentConfig config)
         {
+            this.Instance = config.GetParameterAsString("Instance");
             this.RabbitMqHost = config.GetParameterAsString("RabbitMQ.Host");
             this.RabbitMqUser = config.GetParameterAsString("RabbitMQ.User");
             this.RabbitMqPassword = config.GetParameterAsString("RabbitMQ.Password");
@@ -81,7 +82,8 @@ namespace Atdi.WcfServices.Sdrn.Device
             this.QueueBindings = bindings;
         }
 
-        
+        public string Instance { get; set; }
+
         public string RabbitMqHost { get; set; }
 
         public string RabbitMqUser { get; set; }

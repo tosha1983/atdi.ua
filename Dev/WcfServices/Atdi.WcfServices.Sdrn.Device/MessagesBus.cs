@@ -34,13 +34,29 @@ namespace Atdi.WcfServices.Sdrn.Device
                 Password = this._serverDescriptor.RabbitMqPassword
             };
 
-            this._connection = this._connectionFactory.CreateConnection();
+            this._connection = this._connectionFactory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (MessagesBus.ctor) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
             this._exchangeName = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
         }
 
+        public static long DateTimeToUnixTimestamp(DateTime dateTime)
+        {
+            return  Convert.ToInt64( (TimeZoneInfo.ConvertTimeToUtc(dateTime) -
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds);
+        }
+
         public string SendObject<TObject>(SensorDescriptor descriptor, string messageType, TObject msgObject, string correlationId = null)
         {
+            if (descriptor == null)
+            {
+                throw new ArgumentNullException(nameof(descriptor));
+            }
+
+            if (string.IsNullOrEmpty(messageType))
+            {
+                throw new ArgumentException("message", nameof(messageType));
+            }
+
             try
             {
                 var data = this.SerializeObjectToByteArray(msgObject);
@@ -49,12 +65,7 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 var routingKey = $"[{this._serverDescriptor.ServerInstance}].[{msgKey}]";
 
-
-                if (!this._connection.IsOpen)
-                {
-                    this._connection.Dispose();
-                    this._connection = this._connectionFactory.CreateConnection();
-                }
+                this.RefreshConnection();
 
                 using (var channel = this._connection.CreateModel())
                 {
@@ -66,16 +77,20 @@ namespace Atdi.WcfServices.Sdrn.Device
                     props.AppId = "Atdi.WcfServices.Sdrn.Device.dll";
                     props.MessageId = messageId;
                     props.Type = messageType;
-
+                    props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
+ 
                     if (!string.IsNullOrEmpty(correlationId))
                     {
                         props.CorrelationId = correlationId;
                     }
 
-                    props.Headers = new Dictionary<string, object>();
-                    props.Headers["SdrnServer"] = descriptor.SdrnServer;
-                    props.Headers["SensorName"] = descriptor.SensorName;
-                    props.Headers["SensorTechId"] = descriptor.EquipmentTechId;
+                    props.Headers = new Dictionary<string, object>
+                    {
+                        ["SdrnServer"] = descriptor.SdrnServer,
+                        ["SensorName"] = descriptor.SensorName,
+                        ["SensorTechId"] = descriptor.EquipmentTechId,
+                        ["Created"] = DateTime.Now.ToString("o")
+                    };
 
                     channel.BasicPublish(exchange: this._exchangeName,
                                      routingKey: routingKey,
@@ -97,76 +112,187 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
         }
 
-        public TObject TryGetObject<TObject>(SensorDescriptor descriptor, string messageType)
+        public TObject TryGetObject<TObject>(SensorDescriptor descriptor, string messageType, out string token)
         {
-            var result = default(TObject);
-            return result;
-        }
-
-        public TObject WaiteObject<TObject>(SensorDescriptor descriptor, string messageType, string correlationId)
-        {
-            var result = default(TObject);
-            
-            if (!this._connection.IsOpen)
+            if (descriptor == null)
             {
-                this._connection.Dispose();
-                this._connection = this._connectionFactory.CreateConnection();
+                throw new ArgumentNullException(nameof(descriptor));
+            }
+            if (string.IsNullOrEmpty(messageType))
+            {
+                throw new ArgumentException("Invalid argument", nameof(messageType));
             }
 
-            using (var channel = this._connection.CreateModel())
+            try
             {
+                token = string.Empty;
 
-                var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
+                this.RefreshConnection();
 
-                var respQueue = new BlockingCollection<byte[]>();
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                using (var channel = this._connection.CreateModel())
                 {
-                    if (string.IsNullOrEmpty(ea.BasicProperties.CorrelationId) && !string.IsNullOrEmpty(correlationId))
+                    var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
+                    var message = default(BasicGetResult);
+                    do
                     {
-                        channel.BasicAck(ea.DeliveryTag, false);
-                        return;
-                    }
+                        message = channel.BasicGet(deviceQueueName, false);
+                        if (message == null)
+                        {
+                            return default(TObject);
+                        }
 
-                    var respMessageType = ea.BasicProperties.Type;
-                    if (string.IsNullOrEmpty(respMessageType))
-                    {
-                        channel.BasicAck(ea.DeliveryTag, false);
-                        return;
+                        if (messageType.Equals(message.BasicProperties.Type, StringComparison.OrdinalIgnoreCase))
+                        {
+                            token = message.BasicProperties.MessageId;
+                            return this.DeserializeObjectFromByteArray<TObject>(message.Body);
+                        }
                     }
+                    while (message.MessageCount > 0);
+                }
 
-                    if (!respMessageType.Equals(messageType, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return;
-                    }
+                return default(TObject);
+            }
+            catch(Exception e)
+            {
+                this._logger.Exception("SdrnDeviceServices", (EventCategory)"Object getting", e);
+                throw new InvalidOperationException("The object was not gotten from server", e);
+            }
+        }
 
-                    if (!string.IsNullOrEmpty(correlationId))
+        public TObject WaitObject<TObject>(SensorDescriptor descriptor, string messageType, string correlationId)
+        {
+            if (descriptor == null)
+            {
+                throw new ArgumentNullException(nameof(descriptor));
+            }
+            if (string.IsNullOrEmpty(messageType))
+            {
+                throw new ArgumentException("message", nameof(messageType));
+            }
+
+            try
+            {
+                var result = default(TObject);
+
+                this.RefreshConnection();
+
+                using (var channel = this._connection.CreateModel())
+                {
+                    var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
+
+                    var respQueue = new BlockingCollection<byte[]>();
+
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
                     {
-                        if (ea.BasicProperties.CorrelationId != correlationId)
+                        var respMessageType = ea.BasicProperties.Type;
+                        if (string.IsNullOrEmpty(respMessageType))
                         {
                             return;
                         }
-                    }
-                    
+                        if (!respMessageType.Equals(messageType, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return;
+                        }
+                        if (!string.IsNullOrEmpty(correlationId))
+                        {
+                            if (string.IsNullOrEmpty(ea.BasicProperties.CorrelationId))
+                            {
+                                return;
+                            }
 
-                    channel.BasicAck(ea.DeliveryTag, false);
-                    respQueue.Add(ea.Body);
-                };
+                            if (ea.BasicProperties.CorrelationId != correlationId)
+                            {
+                                return;
+                            }
+                        }
 
-                channel.BasicConsume(
-                    consumer: consumer,
-                    queue: deviceQueueName,
-                    autoAck: false );
+                        channel.BasicAck(ea.DeliveryTag, false);
+                        respQueue.Add(ea.Body);
+                    };
 
-                result = this.DeserializeObjectFromByteArray<TObject>(respQueue.Take());
+                    channel.BasicConsume(
+                        consumer: consumer,
+                        queue: deviceQueueName,
+                        autoAck: false);
 
-                channel.Close();
+                    var body = respQueue.Take();
+                    channel.Close();
+                    result = this.DeserializeObjectFromByteArray<TObject>(body);
+                }
+
+                return result;
             }
-
-            return result;
+            catch(Exception e)
+            {
+                this._logger.Exception("SdrnDeviceServices", (EventCategory)"Object waitting", e);
+                throw new InvalidOperationException("The object was not waited from server", e);
+            }
         }
 
+        public void AckMessage(SensorDescriptor descriptor, byte[] token)
+        {
+            if (descriptor == null)
+            {
+                throw new ArgumentNullException(nameof(descriptor));
+            }
+
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+            if (token.Length == 0)
+            {
+                throw new ArgumentException("Invalid token");
+            }
+
+            try
+            {
+                var messageId = Encoding.UTF8.GetString(token);
+
+                this.RefreshConnection();
+
+                using (var channel = this._connection.CreateModel())
+                {
+                    var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
+                    var message = default(BasicGetResult);
+                    do
+                    {
+                        message = channel.BasicGet(deviceQueueName, false);
+                        if (message == null)
+                        {
+                            return;
+                        }
+
+                        var respMessageId = message.BasicProperties.MessageId;
+                        if (!string.IsNullOrEmpty(respMessageId))
+                        {
+                            if (respMessageId.Equals(messageId, StringComparison.OrdinalIgnoreCase))
+                            {
+                                channel.BasicAck(message.DeliveryTag, false);
+                                this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was ACK successfuly: MessageId = '{messageId}', Type = '{message.BasicProperties.Type}', RoutingKey = '{message.RoutingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
+                                return;
+                            }
+                        }
+                    }
+                    while (message.MessageCount > 0);
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception("SdrnDeviceServices", (EventCategory)"Message is ack", e);
+                throw new InvalidOperationException("The message was not ack", e);
+            }
+        }
+
+        private void RefreshConnection()
+        {
+            if (!this._connection.IsOpen)
+            {
+                this._connection.Dispose();
+                this._connection = this._connectionFactory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (MessagesBus) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
+            }
+        }
         private string GetHeaderValue(string key, IDictionary<string, object> headers)
         {
             if (!headers.ContainsKey(key))
@@ -191,10 +317,14 @@ namespace Atdi.WcfServices.Sdrn.Device
 
         private byte[] SerializeObjectToByteArray<TObject>(TObject source)
         {
+            if (source == null)
+            {
+                return new byte[] { };
+            }
+
             byte[] result = null;
 
             var json = JsonConvert.SerializeObject(source);
-
             result = Encoding.UTF8.GetBytes(json);
 
             return result;
@@ -211,7 +341,6 @@ namespace Atdi.WcfServices.Sdrn.Device
 
             var json = Encoding.UTF8.GetString(source);
             result = JsonConvert.DeserializeObject<TObject>(json);
-
 
             return result;
         }
@@ -236,8 +365,6 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
         }
 
-
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
             Dispose(true);
