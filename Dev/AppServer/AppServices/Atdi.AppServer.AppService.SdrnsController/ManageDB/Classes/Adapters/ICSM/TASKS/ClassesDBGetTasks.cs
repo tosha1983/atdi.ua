@@ -924,20 +924,30 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                        logger.Trace("Start procedure SaveTaskToDB...");
                        int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR","NUM");
                        ++Num;
-                       
+
+                       bool isNew = false;
                        YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
                        meastask.Format("*");
-                       meastask.New();
+                       if (!meastask.Fetch(string.Format("MEASTASKID={0} AND MEASSUBTASKID={1} AND MEASSUBTASKSTATIONID={2} AND SENSORID={3}", TaskId, SubTaskId, SubTaskStationId, SensorId)))
+                       {
+                           meastask.New();
+                           isNew = true;
+                           NUM_Val = Num;
+                       }
+                       else
+                       {
+                           NUM_Val = meastask.m_num;
+                       }
                        meastask.m_meastaskid = TaskId;
                        meastask.m_meassubtaskid = SubTaskId;
                        meastask.m_meassubtaskstationid = SubTaskStationId;
                        meastask.m_sensorid = SensorId;
                        meastask.m_num = Num;
-                       meastask.Save(dbConnect, transaction);
+                       if (isNew)  meastask.Save(dbConnect, transaction);
                        meastask.Close();
                        meastask.Dispose();
                        transaction.Commit();
-                       NUM_Val = Num;
+                       
                    }
                    catch (Exception ex)
                    {

@@ -107,14 +107,14 @@ namespace Atdi.SDNRS.AppServer.BusManager
         where T : class
     {
 
-        public bool SendDataToServer(string sensorName, string techId, byte[] data, string apiVer)
+        public bool SendDataToServer(string sensorName, string techId, byte[] data, string apiVer, string typeMessage)
         {
             bool isSendSuccess = false;
             try
             {
                 var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
                 {
-                    using (var connection = factory.CreateConnection())
+                    using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
                         var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[v{0}]", apiVer);
@@ -140,7 +140,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
                         props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
                         props.MessageId = messageId;
-                        props.Type = "SendMeasTask";
+                        props.Type = typeMessage;;
                         props.Headers = new Dictionary<string, object>();
                         props.Headers["SdrnServer"] = GlobalInit.NameServer;
                         props.Headers["SensorName"] = sensorName;

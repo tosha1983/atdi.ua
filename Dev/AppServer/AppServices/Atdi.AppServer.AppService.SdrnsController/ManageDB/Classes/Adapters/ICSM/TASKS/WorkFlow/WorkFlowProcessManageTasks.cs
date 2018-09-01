@@ -221,18 +221,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (Checked_L.Count > 0)
                                     {
                                         BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                                        if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
-                                        {
-                                            isSendSuccess = true;
-                                        }
-                                        else
-                                        {
-                                            isSendSuccess = false;
-                                            //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
-                                            //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
-                                            //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
-                                        }
-
                                         // Отправка сообщения в СТОП-ЛИСТ
                                         if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
                                         {
@@ -244,7 +232,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         }
                                         else
                                         {
-                                            //busManager.DeleteQueue(GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString());
+                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            {
+                                                isSendSuccess = true;
+                                            }
+                                            else
+                                            {
+                                                isSendSuccess = false;
+                                                //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
+                                                //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
+                                                //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
+                                            }
                                         }
                                         Checked_L.Clear();
                                     }
@@ -255,20 +253,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[v{apiVer}]";
                                         BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
-                                        //if (busManager.SendDataObject(Checked_L_Device, Queue, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
-                                        if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Checked_L_Device)), apiVer))
+                                        if (ActionType == "Stop")
                                         {
-                                            isSendSuccess = true;
-                                        }
-                                        else
-                                        {
-                                            isSendSuccess = false;
-                                        }
-
-                                       
-                                        if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
-                                        {
-                                            if (busManager.SendDataObject(Checked_L_Device, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L_Device[0].TaskId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            Atdi.DataModels.Sdrns.Device.DeviceCommand command_stop = new DataModels.Sdrns.Device.DeviceCommand();
+                                            command_stop.CommandId = Guid.NewGuid().ToString();
+                                            command_stop.Command = "StopMeasTask";
+                                            command_stop.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
+                                            if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_stop)), apiVer, "SendCommand"))
                                             {
                                                 isSendSuccess = true;
                                                 isSuccessTemp = true;
@@ -276,9 +267,20 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         }
                                         else
                                         {
-                                            
-                                        }
+                                            Atdi.DataModels.Sdrns.Device.DeviceCommand command_send = new DataModels.Sdrns.Device.DeviceCommand();
+                                            command_send.CommandId = Guid.NewGuid().ToString();
+                                            command_send.Command = "SendMeasTask";
+                                            command_send.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
 
+                                            if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_send)), apiVer, "SendCommand"))
+                                            {
+                                                isSendSuccess = true;
+                                            }
+                                            else
+                                            {
+                                                isSendSuccess = false;
+                                            }
+                                        }
                                         Checked_L_Device.Clear();
                                     }
                                 }

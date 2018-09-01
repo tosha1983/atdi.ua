@@ -56,13 +56,15 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             {
                                 foreach (MeasSubTaskStation u in item.MeasSubTaskStations)
                                 {
-                                    SensorIds.Add(u.StationId.Value);
+                                    if (!SensorIds.Contains(u.StationId.Value))
+                                        SensorIds.Add(u.StationId.Value);
                                 }
                             }
 
                             foreach (MeasStation item in mt.Stations)
                             {
-                                SensorIds.Add(item.StationId.Value);
+                                if (!SensorIds.Contains(item.StationId.Value))
+                                    SensorIds.Add(item.StationId.Value);
                             }
 
                             var mt_edit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };

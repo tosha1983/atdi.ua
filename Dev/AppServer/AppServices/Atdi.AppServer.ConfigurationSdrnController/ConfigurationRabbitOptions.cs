@@ -76,7 +76,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 }
                 tasks = new Task[listConcumerDescribe.Count];
                 factory = new ConnectionFactory() { HostName = RabbitHostName, UserName = RabbitUserName, Password = RabbitPassword };
-                _connection = factory.CreateConnection();
+                _connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
             }
             catch (Exception ex)
             {

@@ -31,6 +31,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             var sdrnServer = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SdrnServer"]);
             var sensorName = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorName"]);
             var techId = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorTechId"]);
+            if (string.IsNullOrEmpty(messageType))   messageType = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["MessageType"]);
+
             var realObjectFromBody = UTF8Encoding.UTF8.GetString(message.Body);
             var result = false;
             try
@@ -71,20 +73,20 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 {
                                     deviceResult.Status = "Success";
                                     deviceResult.Message = string.Format("Confirm success registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, messageType, channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
                                 }
                                 else
                                 {
                                     deviceResult.Status = "Fault";
                                     deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, messageType, channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
                                 }
                             }
                             catch (Exception ex)
                             {
                                 deviceResult.Status = "Fault";
                                 deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}: {2}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId, ex.Message);
-                                PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, messageType, channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                                PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
                             }
                         }
                         result = true;
@@ -130,6 +132,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         result = true;
                         break;
                     case "SendCommand":
+
                         //ActiveSensor 
                         //ConfirmSendMeasTask
                         //ConfirmSendMeasResults
@@ -154,10 +157,15 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 */
                         result = true;
                         break;
-                    case "SendMeasTask":
+                        /*
+                    case "CheckSensorActivity":
+                        result = true;
+                        break;
+                    case "StopMeasTask":
 
                         result = true;
                         break;
+                        */
                     default:
                         break;
                 }

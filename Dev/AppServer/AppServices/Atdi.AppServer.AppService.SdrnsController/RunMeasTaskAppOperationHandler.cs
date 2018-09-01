@@ -54,13 +54,15 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             {
                                 foreach (MeasSubTaskStation u in item.MeasSubTaskStations)
                                 {
-                                    SensorIds.Add(u.StationId.Value);
+                                    if (!SensorIds.Contains(u.StationId.Value))
+                                        SensorIds.Add(u.StationId.Value);
                                 }
                             }
 
                             foreach (MeasStation item in mt.Stations)
                             {
-                                SensorIds.Add(item.StationId.Value);
+                                if (!SensorIds.Contains(item.StationId.Value))
+                                    SensorIds.Add(item.StationId.Value);
                             }
 
 

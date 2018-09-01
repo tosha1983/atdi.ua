@@ -192,12 +192,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
                         int? IdentValueTaskSDR = ClassesDBGetTasks.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
                         MTSDR.TaskId = IdentValueTaskSDR.GetValueOrDefault().ToString();
+                        if (task.Id == null) task.Id = new MeasTaskIdentifier();
+                        if (task.MeasOther == null) task.MeasOther = new MeasOther();
+                        if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
+                        if (task.Prio != null) { MTSDR.Priority = task.Prio.GetValueOrDefault(); } else { MTSDR.Priority = 10; }
+                        MTSDR.SensorName = SensorName;
+                        MTSDR.SdrnServer = SdrnServer;
+                        MTSDR.EquipmentTechId = EquipmentTechId;
                         if (Type == "New")
                         {
-                            if (task.Id == null) task.Id = new MeasTaskIdentifier();
-                            if (task.MeasOther == null) task.MeasOther = new MeasOther();
-                            if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
-                            if (task.Prio != null) { MTSDR.Priority = task.Prio.GetValueOrDefault(); } else { MTSDR.Priority = 10; }
                             MTSDR.ScanParameters = new DataModels.Sdrns.Device.StandardScanParameter[] { };
                             MTSDR.StartTime= SubTask.TimeStart;
                             MTSDR.StopTime = SubTask.TimeStop;
@@ -308,10 +311,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                 }
                             }
-                            MTSDR.SensorName = SensorName;
-                            MTSDR.SdrnServer = SdrnServer;
-                            MTSDR.ScanPerTaskNumber = 0;
-                            MTSDR.EquipmentTechId = EquipmentTechId;
                         }
                         ListMTSDR.Add(MTSDR);
                     }
