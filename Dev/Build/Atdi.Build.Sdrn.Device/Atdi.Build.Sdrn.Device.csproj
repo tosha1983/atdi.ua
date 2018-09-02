@@ -108,21 +108,23 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
-copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
-copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
+    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 
 
-copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
-copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
-copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
-copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
-copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\$(OutDir)"
+copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 
 
-copy "$(TargetDir)\Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\$(OutDir)"
-copy "$(TargetDir)\Atdi.DataModels.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\$(OutDir)"
-copy "$(TargetDir)\Atdi.DataModels.Sdrns.Device.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\$(OutDir)"
-copy "$(TargetDir)\Atdi.Contracts.WcfServices.Sdrn.Device.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\$(OutDir)"</PostBuildEvent>
+copy "$(TargetDir)\Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Atdi.DataModels.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Atdi.DataModels.Sdrns.Device.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Atdi.Contracts.WcfServices.Sdrn.Device.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\Bin$(ConfigurationName)"
+
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
