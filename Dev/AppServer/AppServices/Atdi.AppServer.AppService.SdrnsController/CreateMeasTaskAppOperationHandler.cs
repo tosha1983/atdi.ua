@@ -44,8 +44,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     if (mt.Status == null) mt.Status = "N";
                     WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                     Logger.Trace("Start Create_New_Meas_Task... ");
-                    int ID = tasks.Create_New_Meas_Task(mt, "New");
-                    md.Value = ID;
+                    int? ID = tasks.Create_New_Meas_Task(mt, "New");
+                    md.Value = ID.Value;
                     Logger.Trace(this, options, operationContext);
                     List<int> SensorIds = new List<int>();
                     if (mt.Stations != null)

@@ -45,12 +45,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="s_out"></param>
         /// <returns>количество новых объектов, добавленных в глобальный список</returns>
-        public int Create_New_Meas_Task(MeasTask s_out, string ActionType)
+        public int? Create_New_Meas_Task(MeasTask s_out, string ActionType)
         {
             logger.Trace("Start procedure Create_New_Meas_Task...");
             ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
             ClassConvertTasks ts = new ClassConvertTasks(logger);
-            int NewIdMeasTask = -1;
+            int? NewIdMeasTask = -1;
             try
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
@@ -132,7 +132,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (M.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null)
                                         {
                                             M.UpdateStatusSubTasks(SensorId, ActionType, isOnline);
-                                            if (apiVer == "1.0")
+                                            if (apiVer == "v1.0")
                                             {
                                                 LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
                                                 if (LM_SDR != null)
@@ -171,7 +171,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
-                                            if (apiVer == "2.0")
+                                            if (apiVer == "v2.0")
                                             {
                                                 LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
                                                 if (LM_SDR_Device != null)
@@ -251,7 +251,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     //Отправка тасков в очередь специфичную для версии API 2.0
                                     if (Checked_L_Device.Count > 0)
                                     {
-                                        string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[v{apiVer}]";
+                                        string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[{apiVer}]";
                                         BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
                                         if (ActionType == "Stop")
                                         {

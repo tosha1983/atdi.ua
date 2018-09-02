@@ -46,15 +46,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_out.AntVal = obj.meas_res.m_antval;
                         s_out.DataRank = obj.meas_res.m_datarank;
                         s_out.Id.MeasTaskId = new MeasTaskIdentifier();
-                        s_out.Id.MeasTaskId.Value = (int)obj.meas_res.m_meastaskid;
-                        s_out.Id.MeasSdrResultsId = (int)obj.meas_res.m_id;
+                        s_out.Id.MeasTaskId.Value = obj.meas_res.m_meastaskid.Value;
+                        s_out.Id.MeasSdrResultsId = obj.meas_res.m_id.Value;
                         s_out.N = obj.meas_res.m_n;
                         s_out.StationMeasurements = new StationMeasurements();
                         s_out.StationMeasurements.StationId = new SensorIdentifier();
-                        s_out.StationMeasurements.StationId.Value = (int)obj.meas_res.m_sensorid;
+                        s_out.StationMeasurements.StationId.Value = obj.meas_res.m_sensorid.Value;
                         s_out.Status = obj.meas_res.m_status;
-                        s_out.Id.SubMeasTaskId = (int)obj.meas_res.m_submeastaskid;
-                        s_out.Id.SubMeasTaskStationId = (int)obj.meas_res.m_submeastaskstationid;
+                        s_out.Id.SubMeasTaskId = obj.meas_res.m_submeastaskid.Value;
+                        s_out.Id.SubMeasTaskStationId = obj.meas_res.m_submeastaskstationid.Value;
                         s_out.TimeMeas = (DateTime)obj.meas_res.m_timemeas;
                         MeasurementType out_res_type;
                         if (Enum.TryParse<MeasurementType>(obj.meas_res.m_typemeasurements, out out_res_type))
@@ -66,8 +66,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             foreach (YXbsFrequencymeas fmeas in obj.freq_meas.ToArray())
                             {
                                 FrequencyMeasurement t_FM = new FrequencyMeasurement();
-                                t_FM.Id = (int)fmeas.m_num;
-                                t_FM.Freq = (double)fmeas.m_freq;
+                                t_FM.Id = fmeas.m_num.Value;
+                                t_FM.Freq = fmeas.m_freq.Value;
                                 L_FM.Add(t_FM);
                             }
                         }
@@ -97,7 +97,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         LevelMeasurementResult rsd = new LevelMeasurementResult();
                                         rsd.Id = new MeasurementResultIdentifier();
-                                        rsd.Id.Value = (int)flevmeas.m_id;
+                                        rsd.Id.Value = flevmeas.m_id.Value;
                                         rsd.Value = flevmeas.m_value;
                                         rsd.PMin = flevmeas.m_pmin;
                                         rsd.PMax = flevmeas.m_pmax;
@@ -114,8 +114,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     LevelMeasurementOnlineResult rsd = new LevelMeasurementOnlineResult();
                                     rsd.Id = new MeasurementResultIdentifier();
-                                    rsd.Id.Value = (int)flevmeas.m_id;
-                                    rsd.Value = (double)flevmeas.m_value;
+                                    rsd.Id.Value = flevmeas.m_id.Value;
+                                    rsd.Value = flevmeas.m_value.Value;
                                     L_MSR.Add(rsd);
                                 }
                             }
@@ -130,7 +130,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         SpectrumOccupationMeasurementResult rsd = new SpectrumOccupationMeasurementResult();
                                         rsd.Id = new MeasurementResultIdentifier();
-                                        rsd.Id.Value = (int)flevmeas.m_id;
+                                        rsd.Id.Value = flevmeas.m_id.Value;
                                         rsd.Value = flevmeas.m_occupancy;
                                         L_MSR.Add(rsd);
                                     }

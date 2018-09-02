@@ -66,7 +66,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             it_out.Elevation = s_l_sensor.m_elevation;
                             it_out.EouseDate = s_l_sensor.m_eousedate;
                             it_out.IdSysARGUS = s_l_sensor.m_idsysargus;
-                            it_out.Id.Value = (int)s_l_sensor.m_id;
+                            if (s_l_sensor.m_id!=null) it_out.Id.Value = (int)s_l_sensor.m_id;
                             it_out.Name = s_l_sensor.m_name;
                             it_out.NetworkId = s_l_sensor.m_networkid;
                             it_out.OpDays = s_l_sensor.m_opdays;
@@ -95,8 +95,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     ptu.DiagA = itr.m_diaga;
                                     ptu.DiagH = itr.m_diagh;
                                     ptu.DiagV = itr.m_diagv;
-                                    ptu.Freq = (double)itr.m_freq;
-                                    ptu.Gain = (double)itr.m_gain;
+                                    if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
+                                    if (itr.m_gain!=null) ptu.Gain = itr.m_gain.Value;
                                     L_ant_patt.Add(ptu);
                                 }
                                 itr.Close();
@@ -148,7 +148,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         SensorEquipSensitivity ptu = new SensorEquipSensitivity();
                                         ptu.AddLoss = itr.m_addloss;
-                                        ptu.Freq = (double)itr.m_freq;
+                                        if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
                                         ptu.FreqStability = itr.m_freqstability;
                                         ptu.KTBF = itr.m_ktbf;
                                         ptu.NoiseF = itr.m_noisef;
@@ -201,10 +201,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public string GetSensorApiVersion(int IdSensor)
         {
-            string apiVer = "1.0";
+            string apiVer = "v1.0";
             Yyy yyy = new Yyy();
             object rx = yyy.GetValueFromField("APIVERSION", "XBS_SENSOR", IdSensor);
-            apiVer = (rx!=DBNull.Value ? rx.ToString() : "1.0");
+            apiVer = (rx!=DBNull.Value ? rx.ToString() : "v1.0");
             return apiVer;
         }
 
@@ -238,7 +238,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             it_out.Elevation = s_l_sensor.m_elevation;
                             it_out.EouseDate = s_l_sensor.m_eousedate;
                             it_out.IdSysARGUS = s_l_sensor.m_idsysargus;
-                            it_out.Id.Value = (int)s_l_sensor.m_id;
+                            if (s_l_sensor.m_id!=null) it_out.Id.Value = (int)s_l_sensor.m_id;
                             it_out.Name = s_l_sensor.m_name;
                             it_out.NetworkId = s_l_sensor.m_networkid;
                             it_out.OpDays = s_l_sensor.m_opdays;
@@ -267,8 +267,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     ptu.DiagA = itr.m_diaga;
                                     ptu.DiagH = itr.m_diagh;
                                     ptu.DiagV = itr.m_diagv;
-                                    ptu.Freq = (double)itr.m_freq;
-                                    ptu.Gain = (double)itr.m_gain;
+                                    if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
+                                    if (itr.m_gain!=null) ptu.Gain = itr.m_gain.Value;
                                     L_ant_patt.Add(ptu);
                                 }
                                 itr.Close();
@@ -320,7 +320,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         SensorEquipSensitivity ptu = new SensorEquipSensitivity();
                                         ptu.AddLoss = itr.m_addloss;
-                                        ptu.Freq = (double)itr.m_freq;
+                                        if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
                                         ptu.FreqStability = itr.m_freqstability;
                                         ptu.KTBF = itr.m_ktbf;
                                         ptu.NoiseF = itr.m_noisef;
@@ -402,7 +402,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             it_out.Elevation = s_l_sensor.m_elevation;
                             it_out.EouseDate = s_l_sensor.m_eousedate;
                             it_out.IdSysARGUS = s_l_sensor.m_idsysargus;
-                            it_out.Id.Value = (int)s_l_sensor.m_id;
+                            if (s_l_sensor.m_id!=null) it_out.Id.Value = (int)s_l_sensor.m_id;
                             it_out.Name = s_l_sensor.m_name;
                             it_out.NetworkId = s_l_sensor.m_networkid;
                             it_out.OpDays = s_l_sensor.m_opdays;
@@ -431,8 +431,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     ptu.DiagA = itr.m_diaga;
                                     ptu.DiagH = itr.m_diagh;
                                     ptu.DiagV = itr.m_diagv;
-                                    ptu.Freq = (double)itr.m_freq;
-                                    ptu.Gain = (double)itr.m_gain;
+                                    if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
+                                    if (itr.m_gain!=null) ptu.Gain = itr.m_gain.Value;
                                     L_ant_patt.Add(ptu);
                                 }
                                 itr.Close();
@@ -484,7 +484,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         SensorEquipSensitivity ptu = new SensorEquipSensitivity();
                                         ptu.AddLoss = itr.m_addloss;
-                                        ptu.Freq = (double)itr.m_freq;
+                                        if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
                                         ptu.FreqStability = itr.m_freqstability;
                                         ptu.KTBF = itr.m_ktbf;
                                         ptu.NoiseF = itr.m_noisef;
@@ -568,7 +568,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             it_out.Elevation = s_l_sensor.m_elevation;
                             it_out.EouseDate = s_l_sensor.m_eousedate;
                             it_out.IdSysARGUS = s_l_sensor.m_idsysargus;
-                            it_out.Id.Value = (int)s_l_sensor.m_id;
+                            if (s_l_sensor.m_id!=null) it_out.Id.Value = (int)s_l_sensor.m_id;
                             it_out.Name = s_l_sensor.m_name;
                             it_out.NetworkId = s_l_sensor.m_networkid;
                             it_out.OpDays = s_l_sensor.m_opdays;
@@ -597,8 +597,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     ptu.DiagA = itr.m_diaga;
                                     ptu.DiagH = itr.m_diagh;
                                     ptu.DiagV = itr.m_diagv;
-                                    ptu.Freq = (double)itr.m_freq;
-                                    ptu.Gain = (double)itr.m_gain;
+                                    if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
+                                    if (itr.m_gain!=null) ptu.Gain = itr.m_gain.Value;
                                     L_ant_patt.Add(ptu);
                                 }
                                 itr.Close();
@@ -650,7 +650,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         SensorEquipSensitivity ptu = new SensorEquipSensitivity();
                                         ptu.AddLoss = itr.m_addloss;
-                                        ptu.Freq = (double)itr.m_freq;
+                                        if (itr.m_freq!=null) ptu.Freq = itr.m_freq.Value;
                                         ptu.FreqStability = itr.m_freqstability;
                                         ptu.KTBF = itr.m_ktbf;
                                         ptu.NoiseF = itr.m_noisef;
@@ -834,7 +834,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         if (sens != null)
                         {
                             double? val = null;
-                            int m_ID_Sensor = -1;
+                            int? m_ID_Sensor = -1;
                             List<Sensor> R_s_find = LoadObjectSensor();
                             Sensor Fnd = R_s_find.Find(t => t.Name == sens.Name && t.Equipment.TechId == sens.Equipment.TechId);
                             YXbsSensor se = new YXbsSensor();
@@ -869,7 +869,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (sens.StepMeasTime != null) se.m_stepmeastime = sens.StepMeasTime.GetValueOrDefault();
                             se.m_typesensor = sens.TypeSensor;
                             se.m_techid = sens.Equipment.TechId;
-                            m_ID_Sensor = (int)se.Save(dbConnect, transaction);
+                            m_ID_Sensor = se.Save(dbConnect, transaction);
 
                             if (se.Fetch(string.Format("ID={0}", m_ID_Sensor)))
                             {
@@ -882,14 +882,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                             if (sens.Antenna != null)
                             {
-                                int ID_sensor_ant = -1;
+                                int? ID_sensor_ant = -1;
                                 YXbsSensorantenna NH_sensor_ant = new YXbsSensorantenna();
                                 NH_sensor_ant.Format("*");
                                 if (!NH_sensor_ant.Fetch(string.Format("(SENSORID={0})", m_ID_Sensor)))
                                 {
                                     NH_sensor_ant.New();
                                 }
-                                else ID_sensor_ant = (int)NH_sensor_ant.m_id;
+                                else
+                                {
+                                    if (NH_sensor_ant.m_id!=null) ID_sensor_ant = (int)NH_sensor_ant.m_id;
+                                }
                                 NH_sensor_ant.m_addloss = sens.Antenna.AddLoss;
                                 NH_sensor_ant.m_antclass = sens.Antenna.AntClass;
                                 NH_sensor_ant.m_antdir = sens.Antenna.AntDir.ToString();
@@ -913,7 +916,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 if (sens.Antenna.VBeamwidth != null) NH_sensor_ant.m_vbeamwidth = sens.Antenna.VBeamwidth.GetValueOrDefault();
                                 if (sens.Antenna.XPD != null) NH_sensor_ant.m_xpd = sens.Antenna.XPD.GetValueOrDefault();
                                 NH_sensor_ant.m_sensorid = m_ID_Sensor;
-                                ID_sensor_ant = (int)NH_sensor_ant.Save(dbConnect, transaction);
+                                ID_sensor_ant = NH_sensor_ant.Save(dbConnect, transaction);
                                 NH_sensor_ant.Close();
                                 NH_sensor_ant.Dispose();
 
@@ -941,14 +944,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                             if (sens.Equipment != null)
                             {
-                                int ID_NH_sens_eqp = -1;
+                                int? ID_NH_sens_eqp = -1;
                                 YXbsSensorequip NH_sens_eqp = new YXbsSensorequip();
                                 NH_sens_eqp.Format("*");
                                 if (!NH_sens_eqp.Fetch(string.Format("(SENSORID={0})", m_ID_Sensor)))
                                 {
                                     NH_sens_eqp.New();
                                 }
-                                else ID_NH_sens_eqp = (int)NH_sens_eqp.m_id;
+                                else
+                                {
+                                    ID_NH_sens_eqp = NH_sens_eqp.m_id;
+                                }
                                 NH_sens_eqp.m_category = sens.Equipment.Category;
                                 NH_sens_eqp.m_code = sens.Equipment.Code;
                                 if (sens.Equipment.CustData1 != null) NH_sens_eqp.m_custdata1 = sens.Equipment.CustData1.GetValueOrDefault();
@@ -975,7 +981,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 if (sens.Equipment.VBWMin != null) NH_sens_eqp.m_vbwmin = sens.Equipment.VBWMin.GetValueOrDefault();
                                 NH_sens_eqp.m_version = sens.Equipment.Version;
                                 NH_sens_eqp.m_sensorid = m_ID_Sensor;
-                                ID_NH_sens_eqp = (int)NH_sens_eqp.Save(dbConnect, transaction);
+                                ID_NH_sens_eqp = NH_sens_eqp.Save(dbConnect, transaction);
                                 NH_sens_eqp.Close();
                                 NH_sens_eqp.Dispose();
                                 if (sens.Equipment.SensorEquipSensitivities != null)

@@ -107,6 +107,47 @@ namespace Atdi.SDNRS.AppServer.BusManager
         where T : class
     {
 
+        public bool RegisterQueue(string sensorName, string techId, string apiVer)
+        {
+            bool isSuccessRegister = false;
+            try
+            {
+                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                {
+                    using (var connection = factory.CreateConnection($"SDRN device (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var channel = connection.CreateModel())
+                    {
+                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                        var queueName = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}].[{apiVer}]";
+                        var routingKey = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}]";
+
+                    channel.ExchangeDeclare(
+                                exchange: exchange,
+                                type: "direct",
+                                durable: true
+                            );
+
+                        channel.QueueDeclare(
+                            queue: queueName,
+                            durable: true,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+                        channel.QueueBind(queueName, exchange, routingKey);
+                        isSuccessRegister = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                isSuccessRegister = false;
+            }
+            return isSuccessRegister;
+
+        }
+
+
         public bool SendDataToServer(string sensorName, string techId, byte[] data, string apiVer, string typeMessage)
         {
             bool isSendSuccess = false;
@@ -117,8 +158,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
-                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[v{0}]", apiVer);
-                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[v{apiVer}]";
+                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
                         var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
 
                         channel.ExchangeDeclare(

@@ -52,6 +52,14 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     logger.Trace("Start procedure ReceiveAllSensorList...");
                     ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                     List<Sensor> SensorListSDRNS = DB.LoadObjectSensor();
+                    foreach (Sensor s in SensorListSDRNS)
+                    {
+                        string apiVer = DB.GetSensorApiVersion(s.Id.Value);
+                        if (apiVer == "v2.0")
+                        {
+                            busManager.RegisterQueue(s.Name, s.Equipment.TechId, apiVer);
+                        }
+                    }
                     if (ClassStaticBus.bus.Advanced.IsConnected)
                         {
                             uint cnt = busManager.GetMessageCount(GlobalInit.Template_SENSORS_List_);

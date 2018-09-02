@@ -20,7 +20,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 if (task.MeasDtParam.TypeMeasurements == MeasurementType.MonitoringStations)
                 { // 21_02_2018 в данном случае мы делаем таски исключительно для системы мониторинга станций т.е. один таск на месяц.
                     MeasSubTask MST = new MeasSubTask();
-                    if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
+                    if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int?)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
                     MST.Id = new MeasTaskIdentifier();
                     MST.Id.Value = 1;
                     MST.TimeStart = task.MeasTimeParamList.PerStart;
@@ -51,7 +51,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     for (var day = task.MeasTimeParamList.PerStart; day.Date <= task.MeasTimeParamList.PerStop; day = day.AddDays(1))
                     {
                         MeasSubTask MST = new MeasSubTask();
-                        if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
                         MST.Id = new MeasTaskIdentifier();
                         MST.Id.Value = i; i++;
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);

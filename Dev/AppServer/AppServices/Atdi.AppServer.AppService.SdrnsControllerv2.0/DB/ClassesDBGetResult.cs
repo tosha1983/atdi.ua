@@ -1279,10 +1279,10 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         }
 
 
-        public int SaveResultToDB(MeasurementResults obj)
+        public int? SaveResultToDB(MeasurementResults obj)
         {
             //obj.ResultsMeasStation
-            int ID = Constants.NullI;
+            int? ID = Constants.NullI;
             //if (((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) && (obj.Status == "C")) || (obj.TypeMeasurements != MeasurementType.SpectrumOccupation))
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
@@ -1321,8 +1321,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                         measRes.m_submeastaskstationid = obj.Id.SubMeasTaskStationId;
                                         measRes.m_timemeas = obj.TimeMeas;
                                         measRes.m_typemeasurements = obj.TypeMeasurements.ToString();
-                                        ID = (int)measRes.Save(dbConnect, transaction);
-                                        obj.Id.MeasSdrResultsId = ID;
+                                        ID = measRes.Save(dbConnect, transaction);
+                                        obj.Id.MeasSdrResultsId = ID.Value;
                                         measRes.Close();
                                         measRes.Dispose();
                                     }
@@ -1346,7 +1346,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                             measResStation.m_status = station.Status;
                                             measResStation.m_measglobalsid = station.MeasGlobalSID;
                                             measResStation.m_idxbsmeasurementres = ID;
-                                            int IDStation = (int)measResStation.Save(dbConnect, transaction);
+                                            int? IDStation = measResStation.Save(dbConnect, transaction);
                                             measResStation.Close();
                                             measResStation.Dispose();
                                             if (IDStation > 0)
@@ -1369,7 +1369,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resultsmeasstationid = IDStation;
-                                                    int IDResGeneral = (int)measResGeneral.Save(dbConnect, transaction);
+                                                    int? IDResGeneral = measResGeneral.Save(dbConnect, transaction);
                                                     measResGeneral.Close();
                                                     measResGeneral.Dispose();
 
@@ -1388,7 +1388,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                     resmaskBw.m_bw = mslel.BW;
                                                                     resmaskBw.m_level = mslel.level;
                                                                     resmaskBw.m_xbsgeneralid = IDResGeneral;
-                                                                    int IDYXbsResmaskBw = (int)resmaskBw.Save(dbConnect, transaction);
+                                                                    int? IDYXbsResmaskBw = resmaskBw.Save(dbConnect, transaction);
                                                                     resmaskBw.Close();
                                                                     resmaskBw.Dispose();
                                                                 }
@@ -1408,7 +1408,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                     reslevelSpecrum.New();
                                                                     reslevelSpecrum.m_levelspecrum = lvl;
                                                                     reslevelSpecrum.m_xbsgeneralid = IDResGeneral;
-                                                                    int IDreslevelSpecrum = (int)reslevelSpecrum.Save(dbConnect, transaction);
+                                                                    int? IDreslevelSpecrum = reslevelSpecrum.Save(dbConnect, transaction);
                                                                     reslevelSpecrum.Close();
                                                                     reslevelSpecrum.Dispose();
                                                                 }
@@ -1439,7 +1439,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                 yXbsResLevelMeas.m_timeofmeasurements = car.TimeOfMeasurements;
                                                                 yXbsResLevelMeas.m_vbw = car.VBW;
                                                                 yXbsResLevelMeas.m_resultsmeasstationid = IDStation;
-                                                                int IDyXbsResLevelMeas = (int)yXbsResLevelMeas.Save(dbConnect, transaction);
+                                                                int? IDyXbsResLevelMeas = yXbsResLevelMeas.Save(dbConnect, transaction);
                                                                 yXbsResLevelMeas.Close();
                                                                 yXbsResLevelMeas.Dispose();
                                                             }
@@ -1629,7 +1629,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     dtr.m_id_xbs_measurementres = ID;
                                                     int? ID_DT_params = dtr.Save(dbConnect, transaction);
                                                     dt_param.Id = new MeasurementResultIdentifier();
-                                                    dt_param.Id.Value = (int)ID_DT_params;
+                                                    dt_param.Id.Value = ID_DT_params.Value;
                                                     dtr.Close();
                                                     dtr.Dispose();
                                                 }

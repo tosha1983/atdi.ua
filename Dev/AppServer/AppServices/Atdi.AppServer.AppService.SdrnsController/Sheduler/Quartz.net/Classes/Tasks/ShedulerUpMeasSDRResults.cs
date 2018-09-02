@@ -90,7 +90,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                             {
                                                 if (MEAS_SDR_RESULTS[0] != null)
                                                 {
-                                                    int ID = -1;
+                                                    int? ID = -1;
                                                     string Status_Original = MEAS_SDR_RESULTS[0].status;
                                                     MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(MEAS_SDR_RESULTS[0]);
                                                     if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
