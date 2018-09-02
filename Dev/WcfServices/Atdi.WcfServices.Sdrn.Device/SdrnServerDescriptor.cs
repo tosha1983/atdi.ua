@@ -38,7 +38,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                     var attrs = part.Split(new string[] { "=", " " }, StringSplitOptions.RemoveEmptyEntries);
                     if (attrs.Length != 2)
                     {
-                        throw new ArgumentException($"Incorrect endpoint string '{bindingPart}' in part '{part}'");
+                        throw new ArgumentException($"Incorrect binding part string '{bindingPart}' in part '{part}'");
                     }
 
                     if ("messageType".Equals(attrs[0], StringComparison.OrdinalIgnoreCase))

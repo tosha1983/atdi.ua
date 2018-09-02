@@ -20,6 +20,7 @@ namespace Atdi.WcfServices.Sdrn.Device
         private readonly SdrnServerDescriptor _serverDescriptor;
         private ConnectionFactory _connectionFactory;
         private IConnection _connection;
+        private IModel _channel;
         private readonly string _exchangeName;
 
         
@@ -33,10 +34,8 @@ namespace Atdi.WcfServices.Sdrn.Device
                 UserName = this._serverDescriptor.RabbitMqUser,
                 Password = this._serverDescriptor.RabbitMqPassword
             };
-
-            this._connection = this._connectionFactory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (MessagesBus.ctor) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
-
             this._exchangeName = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
+            this.EstablisheConnection();
         }
 
         public static long DateTimeToUnixTimestamp(DateTime dateTime)
@@ -65,45 +64,38 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 var routingKey = $"[{this._serverDescriptor.ServerInstance}].[{msgKey}]";
 
-                this.RefreshConnection();
+                this.EstablisheConnection();
 
-                using (var channel = this._connection.CreateModel())
-                {
-                    var messageId = Guid.NewGuid().ToString();
+                var messageId = Guid.NewGuid().ToString();
 
-                    var props = channel.CreateBasicProperties();
+                var props = _channel.CreateBasicProperties();
                     
-                    props.Persistent = true;
-                    props.AppId = "Atdi.WcfServices.Sdrn.Device.dll";
-                    props.MessageId = messageId;
-                    props.Type = messageType;
-                    props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
+                props.Persistent = true;
+                props.AppId = "Atdi.WcfServices.Sdrn.Device.dll";
+                props.MessageId = messageId;
+                props.Type = messageType;
+                props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
  
-                    if (!string.IsNullOrEmpty(correlationId))
-                    {
-                        props.CorrelationId = correlationId;
-                    }
-
-                    props.Headers = new Dictionary<string, object>
-                    {
-                        ["SdrnServer"] = descriptor.SdrnServer,
-                        ["SensorName"] = descriptor.SensorName,
-                        ["SensorTechId"] = descriptor.EquipmentTechId,
-                        ["Created"] = DateTime.Now.ToString("o")
-                    };
-
-                    channel.BasicPublish(exchange: this._exchangeName,
-                                     routingKey: routingKey,
-                                     basicProperties: props,
-                                     body: data);
-
-                    this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was sent successfuly: MessageType = '{messageType}', RoutingKey = '{routingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
-
-                    channel.Close();
-
-                    return messageId;
+                if (!string.IsNullOrEmpty(correlationId))
+                {
+                    props.CorrelationId = correlationId;
                 }
 
+                props.Headers = new Dictionary<string, object>
+                {
+                    ["SdrnServer"] = descriptor.SdrnServer,
+                    ["SensorName"] = descriptor.SensorName,
+                    ["SensorTechId"] = descriptor.EquipmentTechId,
+                    ["Created"] = DateTime.Now.ToString("o")
+                };
+
+                _channel.BasicPublish(exchange: this._exchangeName,
+                                    routingKey: routingKey,
+                                    basicProperties: props,
+                                    body: data);
+
+                this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was sent successfully: MessageType = '{messageType}', RoutingKey = '{routingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
+                return messageId;
             }
             catch (Exception e)
             {
@@ -127,28 +119,34 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 token = string.Empty;
 
-                this.RefreshConnection();
+                this.EstablisheConnection();
 
-                using (var channel = this._connection.CreateModel())
+                var deviceQueueName = this.DeclareDeviceQueue(descriptor, _channel);
+                var message = default(BasicGetResult);
+
+                using (var tryChannel = this._connection.CreateModel())
                 {
-                    var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
-                    var message = default(BasicGetResult);
                     do
                     {
-                        message = channel.BasicGet(deviceQueueName, false);
+                        message = tryChannel.BasicGet(deviceQueueName, false);
                         if (message == null)
                         {
+                            tryChannel.Close();
                             return default(TObject);
                         }
 
                         if (messageType.Equals(message.BasicProperties.Type, StringComparison.OrdinalIgnoreCase))
                         {
                             token = message.BasicProperties.MessageId;
+                            tryChannel.Close();
                             return this.DeserializeObjectFromByteArray<TObject>(message.Body);
                         }
                     }
                     while (message.MessageCount > 0);
+
+                    tryChannel.Close();
                 }
+                    
 
                 return default(TObject);
             }
@@ -174,51 +172,64 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 var result = default(TObject);
 
-                this.RefreshConnection();
+                this.EstablisheConnection();
 
-                using (var channel = this._connection.CreateModel())
+                var deviceQueueName = this.DeclareDeviceQueue(descriptor, _channel);
+
+                var respQueue = new BlockingCollection<byte[]>();
+
+                var consumer = new EventingBasicConsumer(_channel);
+                consumer.Received += (model, ea) =>
                 {
-                    var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
-
-                    var respQueue = new BlockingCollection<byte[]>();
-
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
+                    var respMessageType = ea.BasicProperties.Type;
+                    if (string.IsNullOrEmpty(respMessageType))
                     {
-                        var respMessageType = ea.BasicProperties.Type;
-                        if (string.IsNullOrEmpty(respMessageType))
+                        _channel.BasicReject(ea.DeliveryTag, false);
+                        return;
+                    }
+                    if (!respMessageType.Equals(messageType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _channel.BasicNack(ea.DeliveryTag, false, true);
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(correlationId))
+                    {
+                        if (string.IsNullOrEmpty(ea.BasicProperties.CorrelationId))
                         {
+                            _channel.BasicNack(ea.DeliveryTag, false, true);
                             return;
                         }
-                        if (!respMessageType.Equals(messageType, StringComparison.OrdinalIgnoreCase))
+
+                        if (ea.BasicProperties.CorrelationId != correlationId)
                         {
+                            _channel.BasicNack(ea.DeliveryTag, false, true);
                             return;
                         }
-                        if (!string.IsNullOrEmpty(correlationId))
-                        {
-                            if (string.IsNullOrEmpty(ea.BasicProperties.CorrelationId))
-                            {
-                                return;
-                            }
+                    }
 
-                            if (ea.BasicProperties.CorrelationId != correlationId)
-                            {
-                                return;
-                            }
-                        }
+                    _channel.BasicAck(ea.DeliveryTag, false);
+                    respQueue.Add(ea.Body);
+                };
 
-                        channel.BasicAck(ea.DeliveryTag, false);
-                        respQueue.Add(ea.Body);
-                    };
+                var consumerTag = $"RPC: {Guid.NewGuid().ToString()}";
+                _channel.BasicConsume(
+                    consumer: consumer,
+                    queue: deviceQueueName,
+                    consumerTag: consumerTag,
+                    autoAck: false);
 
-                    channel.BasicConsume(
-                        consumer: consumer,
-                        queue: deviceQueueName,
-                        autoAck: false);
-
+                try
+                {
                     var body = respQueue.Take();
-                    channel.Close();
                     result = this.DeserializeObjectFromByteArray<TObject>(body);
+                }
+                catch(Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    _channel.BasicCancel(consumerTag);
                 }
 
                 return result;
@@ -250,17 +261,19 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 var messageId = Encoding.UTF8.GetString(token);
 
-                this.RefreshConnection();
+                this.EstablisheConnection();
 
-                using (var channel = this._connection.CreateModel())
+                var deviceQueueName = this.DeclareDeviceQueue(descriptor, _channel);
+                var message = default(BasicGetResult);
+
+                using (var tryChannel = this._connection.CreateModel())
                 {
-                    var deviceQueueName = this.DeclareDeviceQueue(descriptor, channel);
-                    var message = default(BasicGetResult);
                     do
                     {
-                        message = channel.BasicGet(deviceQueueName, false);
+                        message = tryChannel.BasicGet(deviceQueueName, false);
                         if (message == null)
                         {
+                            tryChannel.Close();
                             return;
                         }
 
@@ -269,13 +282,15 @@ namespace Atdi.WcfServices.Sdrn.Device
                         {
                             if (respMessageId.Equals(messageId, StringComparison.OrdinalIgnoreCase))
                             {
-                                channel.BasicAck(message.DeliveryTag, false);
-                                this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was ACK successfuly: MessageId = '{messageId}', Type = '{message.BasicProperties.Type}', RoutingKey = '{message.RoutingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
+                                tryChannel.BasicAck(message.DeliveryTag, false);
+                                tryChannel.Close();
+                                this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was ACK successfully: MessageId = '{messageId}', Type = '{message.BasicProperties.Type}', RoutingKey = '{message.RoutingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
                                 return;
                             }
                         }
                     }
                     while (message.MessageCount > 0);
+                    tryChannel.Close();
                 }
             }
             catch (Exception e)
@@ -285,12 +300,26 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
         }
 
-        private void RefreshConnection()
+        private void EstablisheConnection()
         {
-            if (!this._connection.IsOpen)
+            var connectionName = $"SDRN Device [{this._serverDescriptor.Instance}] (MessagesBus) #{System.Threading.Thread.CurrentThread.ManagedThreadId}";
+            if (this._connection == null)
+            {
+                this._connection = this._connectionFactory.CreateConnection(connectionName);
+            }
+            else if (!this._connection.IsOpen)
             {
                 this._connection.Dispose();
-                this._connection = this._connectionFactory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (MessagesBus) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
+                this._connection = this._connectionFactory.CreateConnection(connectionName);
+            }
+            if (this._channel == null)
+            {
+                this._channel = this._connection.CreateModel();
+            }
+            else if (this._channel.IsClosed)
+            {
+                this._channel.Dispose();
+                this._channel = this._connection.CreateModel();
             }
         }
         private string GetHeaderValue(string key, IDictionary<string, object> headers)
@@ -351,6 +380,15 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 if (disposing)
                 {
+                    if (this._channel != null)
+                    {
+                        if (this._channel.IsOpen)
+                        {
+                            this._channel.Close();
+                        }
+                        this._channel.Dispose();
+                        this._channel = null;
+                    }
                     if (this._connection != null)
                     {
                         if (this._connection.IsOpen)

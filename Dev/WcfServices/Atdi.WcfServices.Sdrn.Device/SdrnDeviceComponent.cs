@@ -40,7 +40,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 using (var connection = factory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (Declaring) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                 using (var channel = connection.CreateModel())
                 {
-                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfuly: Host = '{this._serverDescriptor.RabbitMqHost}'");
+                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfully: Host = '{this._serverDescriptor.RabbitMqHost}'");
 
                     var deviceExchange = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
 
@@ -50,7 +50,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                         durable: true
                     );
 
-                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The Exchange was declared successfuly: Name = '{deviceExchange}'");
+                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The Exchange was declared successfully: Name = '{deviceExchange}'");
 
                     var bindings = this._serverDescriptor.QueueBindings.Values;
                     foreach (var binding in bindings)
@@ -67,7 +67,7 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                         channel.QueueBind(queueName, deviceExchange, routingKey);
 
-                        this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The queue was declared successfuly: Name = '{queueName}', RoutingKey = '{routingKey}'");
+                        this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The queue was declared successfully: Name = '{queueName}', RoutingKey = '{routingKey}'");
                     }
                 }
             }

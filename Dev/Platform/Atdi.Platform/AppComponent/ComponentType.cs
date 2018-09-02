@@ -13,6 +13,7 @@ namespace Atdi.Platform.AppComponent
         AspNetServices,
         AppServices,
         CoreServices,
-        LegacyServices
+        LegacyServices,
+        AppUnit
     }
 }

@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{823BA943-C30D-46D6-8634-617AA3CFDEA8}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.MeasTasksBus.WcfClient</RootNamespace>
-    <AssemblyName>Atdi.Test.MeasTasksBus.WcfClient</AssemblyName>
+    <ProjectGuid>{AA445E89-A706-4A2A-B28E-EDBAE056652B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.AppUnits</RootNamespace>
+    <AssemblyName>Atdi.AppUnits</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,28 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="AppUnitComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Device\Atdi.Contracts.WcfServices.Sdrn.Device.csproj">
-      <Project>{bed80a02-9104-477f-a267-f9265eeed6c0}</Project>
-      <Name>Atdi.Contracts.WcfServices.Sdrn.Device</Name>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
-      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
-      <Name>Atdi.DataModels.Sdrns.Device</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
-      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
-      <Name>Atdi.DataModels.Sdrns</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
