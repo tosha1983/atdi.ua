@@ -31,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -62,10 +63,6 @@
     <ProjectReference Include="..\..\..\AppServices\Atdi.AppServices\Atdi.AppServices.csproj">
       <Project>{0eab226d-aa8d-4671-88cf-0f1049560535}</Project>
       <Name>Atdi.AppServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Build\Atdi.Build.WebQuery\Atdi.Build.WebQuery.csproj">
-      <Project>{1386e2b2-d67a-4033-8dd0-1ca3d7466a90}</Project>
-      <Name>Atdi.Build.WebQuery</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
@@ -115,9 +112,17 @@
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
       <Name>Atdi.AppServer.Contracts.Sdrns</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.WebQuery\Atdi.AppServer.Contracts.WebQuery.csproj">
+      <Project>{26b1dff9-1f87-4494-ad98-c3033288eceb}</Project>
+      <Name>Atdi.AppServer.Contracts.WebQuery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
       <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
       <Name>Atdi.AppServer.Model.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.WebQueryManager\Atdi.AppServer.Model.WebQueryManager.csproj">
+      <Project>{51732528-c056-4091-ba83-2ea2abca44ff}</Project>
+      <Name>Atdi.AppServer.Model.WebQueryManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer.MsSql\Atdi.AppServer.CoreServices.DataLayer.MsSql.csproj">
       <Project>{238ef57c-17ba-464f-a818-717b872712dd}</Project>

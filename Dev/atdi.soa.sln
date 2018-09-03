@@ -191,6 +191,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.AppService.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.ConfigurationSdrnController", "AppServer\AppServices\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj", "{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.Server", "Build\Atdi.Build.Sdrn.Server\Atdi.Build.Sdrn.Server.csproj", "{45E97E56-594A-42EA-ADB1-7DB397F59CD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -935,6 +937,18 @@ Global
 		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x64.Build.0 = Release|Any CPU
 		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x86.ActiveCfg = Release|Any CPU
 		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE}.Release|x86.Build.0 = Release|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Debug|x64.Build.0 = Debug|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Debug|x86.Build.0 = Debug|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Release|x64.ActiveCfg = Release|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Release|x64.Build.0 = Release|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Release|x86.ActiveCfg = Release|Any CPU
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1019,6 +1033,7 @@ Global
 		{E3444180-04B4-4338-9C9B-D8CAACCC56B1} = {5270598A-8873-4CEF-9258-D113E25030ED}
 		{11EE0E94-8612-4AAA-889F-5AB447E7DD6A} = {5270598A-8873-4CEF-9258-D113E25030ED}
 		{4DB9D712-CCE4-43F8-9E79-4EABB5047CDE} = {5270598A-8873-4CEF-9258-D113E25030ED}
+		{45E97E56-594A-42EA-ADB1-7DB397F59CD5} = {B509088D-4C7E-4955-9FB3-6D607143FFEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D40073F-3D0F-47FC-B9C7-D3E192D6D6DE}

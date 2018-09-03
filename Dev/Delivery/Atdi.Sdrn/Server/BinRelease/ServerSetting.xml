@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PluginConfiguration>
+  <RootElement ListPlugins="SettingConfigurations">
+    <MainRabbitMQServices>host=10.1.2.129; username=SDR_Client; password=32Xr567</MainRabbitMQServices>
+    <Lon_Delta>0.000001</Lon_Delta>
+    <Lat_Delta>0.000001</Lat_Delta>
+    <TimeExpirationTask>604800000</TimeExpirationTask>
+    <TimeExpirationTemp>60000</TimeExpirationTemp>
+    <ReloadStart>10</ReloadStart>
+    <ScanDataSensor>10</ScanDataSensor>
+    <ClassSensorSubmitToDB>20</ClassSensorSubmitToDB>
+    <ScanMeasTasks>20</ScanMeasTasks>
+    <ShedulerSensorSubmitLstQueues>15</ShedulerSensorSubmitLstQueues>    
+    <DefaultValueMinTimeInterval>300</DefaultValueMinTimeInterval>    
+    <MEAS_SDR_PARAM_Time_of_m>10</MEAS_SDR_PARAM_Time_of_m>    
+    <MEAS_SDR_PARAM_RBW>50</MEAS_SDR_PARAM_RBW>    
+    <MEAS_SDR_PARAM_VBW>50</MEAS_SDR_PARAM_VBW>    
+    <MEAS_SDR_PARAM_ref_level_dbm>-20</MEAS_SDR_PARAM_ref_level_dbm>    
+    <MEAS_TypeFunction>Scan</MEAS_TypeFunction>  
+    <MEAS_Type_of_m>RT</MEAS_Type_of_m>      
+    <MEAS_sw_time>10</MEAS_sw_time>  
+    <TimerSendMeaskTaskToSDR>15</TimerSendMeaskTaskToSDR>  
+    <RescanActivitySensor>10</RescanActivitySensor>
+    <CheckActivitySensor>40</CheckActivitySensor>  
+    <MaxTimeNotActivateStatusSensor>120</MaxTimeNotActivateStatusSensor>  
+    <TimeUpdateMeasTaskStatus>10</TimeUpdateMeasTaskStatus>  
+    <TimeUpdateMeasResult>30</TimeUpdateMeasResult>
+    <TimeArchiveResult>20</TimeArchiveResult>
+ </RootElement>
+</PluginConfiguration>
