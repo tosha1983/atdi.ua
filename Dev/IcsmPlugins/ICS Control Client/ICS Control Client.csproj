@@ -182,10 +182,18 @@
   <ItemGroup>
     <Content Include="Contracts\Atdi.AppServer.Contracts.dll" />
     <Content Include="Contracts\Atdi.AppServer.Contracts.Sdrns.dll" />
-    <Content Include="ICSM 6.2.70\DatalayerCs.dll" />
-    <Content Include="ICSM 6.2.70\NetPlugins.dll" />
-    <Content Include="ICSM 6.2.70\NetPlugins2.dll" />
-    <Content Include="ICSM 6.2.70\OrmCs.dll" />
+    <Content Include="ICSM 6.2.70\DatalayerCs.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ICSM 6.2.70\NetPlugins.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ICSM 6.2.70\NetPlugins2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ICSM 6.2.70\OrmCs.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\MainForm.resx">
