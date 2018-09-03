@@ -35,21 +35,27 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ICSM 6.2.70\DatalayerCs.dll</HintPath>
+    </Reference>
     <Reference Include="GMap.NET.Core, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
     </Reference>
     <Reference Include="GMap.NET.WindowsPresentation, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
     </Reference>
-    <Reference Include="NetPlugins">
-      <HintPath>..\..\..\..\ICS Manager\NetPlugins.dll</HintPath>
+    <Reference Include="NetPlugins, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ICSM 6.2.70\NetPlugins.dll</HintPath>
     </Reference>
-    <Reference Include="NetPlugins2">
-      <HintPath>..\..\..\..\ICS Manager\NetPlugins2.dll</HintPath>
+    <Reference Include="NetPlugins2, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ICSM 6.2.70\NetPlugins2.dll</HintPath>
     </Reference>
-    <Reference Include="OrmCs">
-      <HintPath>..\..\..\..\ICS Manager\OrmCs.dll</HintPath>
+    <Reference Include="OrmCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ICSM 6.2.70\OrmCs.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -176,6 +182,10 @@
   <ItemGroup>
     <Content Include="Contracts\Atdi.AppServer.Contracts.dll" />
     <Content Include="Contracts\Atdi.AppServer.Contracts.Sdrns.dll" />
+    <Content Include="ICSM 6.2.70\DatalayerCs.dll" />
+    <Content Include="ICSM 6.2.70\NetPlugins.dll" />
+    <Content Include="ICSM 6.2.70\NetPlugins2.dll" />
+    <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\MainForm.resx">
@@ -199,6 +209,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ICSM 6.2.70\ICSM3.exe.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

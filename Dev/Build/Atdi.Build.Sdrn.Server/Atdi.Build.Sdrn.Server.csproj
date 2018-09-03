@@ -80,6 +80,8 @@ copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.A
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\ICSControlClient.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\MeasTaskForm.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\ICSM3.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
 
 </PreBuildEvent>
   </PropertyGroup>
