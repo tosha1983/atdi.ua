@@ -246,6 +246,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
  
                         s_out.MeasurementsResults = L_MSR.ToArray();
+
                         L_OUT.Add(s_out);
                     }
                 });

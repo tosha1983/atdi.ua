@@ -42,16 +42,16 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 _container = container;
                 listConcumerDescribe = new List<AppServer.ConfigurationSdrnController.ConcumerDescribe>();
                 listRabbitOptions = new Dictionary<IModel, RabbitOptions>();
-                RabbitHostName = ConfigurationManager.ConnectionStrings["RabbitHostName"].ConnectionString;
-                RabbitUserName = ConfigurationManager.ConnectionStrings["RabbitUserName"].ConnectionString;
-                RabbitPassword = ConfigurationManager.ConnectionStrings["RabbitPassword"].ConnectionString;
-                NameServer = ConfigurationManager.ConnectionStrings["NameServer"].ConnectionString;
-                ExchangePointFromDevices = ConfigurationManager.ConnectionStrings["ExchangePointFromDevices"].ConnectionString;
-                ExchangePointFromServer = ConfigurationManager.ConnectionStrings["ExchangePointFromServer"].ConnectionString;
-                StartNameQueueServer = ConfigurationManager.ConnectionStrings["StartNameQueueServer"].ConnectionString;
-                StartNameQueueDevice = ConfigurationManager.ConnectionStrings["StartNameQueueDevice"].ConnectionString;
-                ConcumerDescribe = ConfigurationManager.ConnectionStrings["ConcumerDescribe"].ConnectionString;
-                apiVersion = ConfigurationManager.ConnectionStrings["ApiVersion"].ConnectionString;
+                RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
+                RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
+                RabbitPassword = ConfigurationManager.AppSettings["RabbitPassword"];
+                NameServer = ConfigurationManager.AppSettings["NameServer"];
+                ExchangePointFromDevices = ConfigurationManager.AppSettings["ExchangePointFromDevices"];
+                ExchangePointFromServer = ConfigurationManager.AppSettings["ExchangePointFromServer"];
+                StartNameQueueServer = ConfigurationManager.AppSettings["StartNameQueueServer"];
+                StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
+                ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
+                apiVersion = ConfigurationManager.AppSettings["ApiVersion"];
                 string[] val = ConcumerDescribe.Split(new char[] { '}' });
                 foreach (string v in val)
                 {

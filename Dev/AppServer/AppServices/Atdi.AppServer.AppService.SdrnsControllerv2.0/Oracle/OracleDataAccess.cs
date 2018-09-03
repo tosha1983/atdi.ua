@@ -150,6 +150,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                    if (e is OracleException)
+                    {
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        {
+                            CloseConnection();
+                            OpenConnection(GetConnectionString());
+                        }
+                    }
                     System.Console.WriteLine("Neither record was written to database: "+e.ToString());
             }
             });
@@ -197,6 +205,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 }
                 catch (Exception e)
                 {
+                    if (e is OracleException)
+                    {
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        {
+                            CloseConnection();
+                            OpenConnection(GetConnectionString());
+                        }
+                    }
                     System.Console.WriteLine(e.ToString());
                 }
             
@@ -245,6 +261,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 }
                 catch (Exception e)
                 {
+                    if (e is OracleException)
+                    {
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        {
+                            CloseConnection();
+                            OpenConnection(GetConnectionString());
+                        }
+                    }
                     System.Console.WriteLine(e.ToString());
                 }
             });
@@ -276,6 +300,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return isSuccess;
@@ -313,6 +345,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return Id;
@@ -346,6 +386,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return Id;
@@ -379,6 +427,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return Id;
@@ -424,6 +480,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return LObj.ToArray();
@@ -446,6 +510,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return reader;
@@ -506,6 +578,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return LObj.ToArray();
@@ -592,6 +672,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
@@ -685,6 +773,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
@@ -788,6 +884,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
@@ -936,6 +1040,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;

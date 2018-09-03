@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.WcfServices.Sdrn.Device;
 using System.ServiceModel;
+using System.Xml.Serialization;
+
 
 namespace Atdi.Test.MeasTasksBus.WcfClient
 {
@@ -24,9 +26,9 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadKey();
 
-            Run("NetTcpEndpoint", "#0001");
-            Run("BasicHttpEndpoint", "#0001");
-            Run("NetNamedPipeEndpoint", "#0001");
+            //Run("NetTcpEndpoint", "#0001");
+            Run("BasicHttpEndpoint", "ServerSDRN01");
+            //Run("NetNamedPipeEndpoint", "#0001");
 
             Console.WriteLine($"Press any key to exit ...");
             Console.ReadKey();
@@ -40,14 +42,17 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
                 var measTasksBusServiceEndpointName = "MeasTasksBus" + endpointSuffix;
                 var sensor = CreateSensorData();
-
+              
                 var regInfo = RegisterSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
 
-                if (regInfo != null)
-                {
-                    Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");
-                }
-                
+                //if (regInfo != null)
+                //{
+                //Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");//
+                //}
+
+                //var busService = GetMeasTasksBusServicByEndpoint(measTasksBusServiceEndpointName);
+
+                //var tryRegisterResult = busService.UpdateSensor(sensor, sdrnServer);
 
                 var sensorDescriptor = new SensorDescriptor
                 {
@@ -70,6 +75,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                         HandleMeasTask(measTasksBusServiceEndpointName, sensorDescriptor, task);
                     }
 
+                    /*
                     var entity = GetNextEntity(measTasksBusServiceEndpointName, sensorDescriptor);
                     if (entity != null)
                     {
@@ -80,7 +86,24 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                     {
                         HandleEntityPart(measTasksBusServiceEndpointName, sensorDescriptor, entityPart);
                     }
+                    */
+                    /*
+                    var entity = new Atdi.DataModels.Sdrns.Device.Entity();
+                    entity.Content = new byte[1000];
+                    entity.ContentType = "BB";
+                    entity.Description = "D";
+                    entity.Encoding = "UTF";
+                    entity.Name = "4";
 
+                    HandleEntity(measTasksBusServiceEndpointName, sensorDescriptor, entity);
+                    */
+
+                    var entity_part = new Atdi.DataModels.Sdrns.Device.EntityPart();
+                    entity_part.Content = new byte[1000];
+                    entity_part.EntityId = "BB";
+                    entity_part.PartIndex = 1;
+                    entity_part.EOF = false;
+                    HandleEntityPart(measTasksBusServiceEndpointName, sensorDescriptor, entity_part);
                     System.Threading.Thread.Sleep(SensorWorkSleepTime);
                 }
             }
@@ -256,12 +279,13 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             Console.WriteLine($"New entity part have been handled: Entity ID = '{entityPart.EntityId}', Part index = #{entityPart.PartIndex}");
         }
+        
 
         static Sensor CreateSensorData()
         {
             var sensor = new Sensor
             {
-                Name = "Sensor01",
+                Name = "Test_Sensor",
                 Administration = "Administration",
                 Antenna = new SensorAntenna
                 {
@@ -271,10 +295,9 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
                 },
                 Equipment = new SensorEquipment
                 {
-                    TechId = "#0010023747364"
+                    TechId = "Tech_SpecialDev"
                 }
             };
-
             return sensor;
         }
         static IMeasTasksBus GetMeasTasksBusServicByEndpoint(string endpointName)
@@ -290,7 +313,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             {
                 SensorRegistrationResult result = null;
 
-                for (int i = 0; i < 100000; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     var busService = GetMeasTasksBusServicByEndpoint(endpointName);
 

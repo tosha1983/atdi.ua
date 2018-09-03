@@ -836,15 +836,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             double? val = null;
                             int? m_ID_Sensor = -1;
                             List<Sensor> R_s_find = LoadObjectSensor();
+                            bool isNew = false;
                             Sensor Fnd = R_s_find.Find(t => t.Name == sens.Name && t.Equipment.TechId == sens.Equipment.TechId);
                             YXbsSensor se = new YXbsSensor();
                             se.Format("*");
-                            if (Fnd == null)
+                            if (!se.Fetch(string.Format("NAME='{0}' AND TECHID='{1}'", sens.Name, sens.Equipment.TechId)))
                             {
                                 se.Filter = "(ID=-1)";
                                 se.New();
+                                isNew = true;
                             }
-                            else { se.Fetch(Fnd.Id.Value); m_ID_Sensor = Fnd.Id.Value; }
+                            else { m_ID_Sensor = se.m_id; }
 
                             se.m_administration = sens.Administration;
                             if (sens.AGL != null) se.m_agl = sens.AGL.GetValueOrDefault();
@@ -869,11 +871,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (sens.StepMeasTime != null) se.m_stepmeastime = sens.StepMeasTime.GetValueOrDefault();
                             se.m_typesensor = sens.TypeSensor;
                             se.m_techid = sens.Equipment.TechId;
-                            m_ID_Sensor = se.Save(dbConnect, transaction);
-
-                            if (se.Fetch(string.Format("ID={0}", m_ID_Sensor)))
+                            if (isNew)  
                             {
+                                m_ID_Sensor = se.Save(dbConnect, transaction);
                                 se.m_sensoridentifier_id = m_ID_Sensor;
+                                se.SaveUpdate(dbConnect, transaction);
+                            }
+                            else
+                            {
                                 se.SaveUpdate(dbConnect, transaction);
                             }
 

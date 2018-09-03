@@ -255,30 +255,38 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
                                         if (ActionType == "Stop")
                                         {
-                                            Atdi.DataModels.Sdrns.Device.DeviceCommand command_stop = new DataModels.Sdrns.Device.DeviceCommand();
-                                            command_stop.CommandId = Guid.NewGuid().ToString();
-                                            command_stop.Command = "StopMeasTask";
-                                            command_stop.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
-                                            if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_stop)), apiVer, "SendCommand"))
+                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_stop = new DataModels.Sdrns.Device.DeviceCommand();
+                                            //command_stop.CommandId = Guid.NewGuid().ToString();
+                                            //command_stop.Command = "StopMeasTask";
+                                            //command_stop.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
+                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_stop)), apiVer, "SendCommand"))
+                                            foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
                                             {
-                                                isSendSuccess = true;
-                                                isSuccessTemp = true;
+                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "StopMeasTask"))
+                                                {
+                                                    isSendSuccess = true;
+                                                    isSuccessTemp = true;
+                                                }
                                             }
                                         }
                                         else
                                         {
-                                            Atdi.DataModels.Sdrns.Device.DeviceCommand command_send = new DataModels.Sdrns.Device.DeviceCommand();
-                                            command_send.CommandId = Guid.NewGuid().ToString();
-                                            command_send.Command = "SendMeasTask";
-                                            command_send.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
+                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_send = new DataModels.Sdrns.Device.DeviceCommand();
+                                            //command_send.CommandId = Guid.NewGuid().ToString();
+                                            //command_send.Command = "SendMeasTask";
+                                            //command_send.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
+                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_send)), apiVer, "SendCommand"))
+                                            foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
+                                            {
+                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "SendMeasTask"))
+                                                {
 
-                                            if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_send)), apiVer, "SendCommand"))
-                                            {
-                                                isSendSuccess = true;
-                                            }
-                                            else
-                                            {
-                                                isSendSuccess = false;
+                                                    isSendSuccess = true;
+                                                }
+                                                else
+                                                {
+                                                    isSendSuccess = false;
+                                                }
                                             }
                                         }
                                         Checked_L_Device.Clear();

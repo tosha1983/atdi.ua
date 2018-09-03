@@ -17,17 +17,13 @@ namespace Atdi.AppServer.ConfigurationSdrnController
     {
         public void HandleMessage(RabbitMQ.Client.IModel channel, RabbitMQ.Client.Events.BasicDeliverEventArgs message, IWindsorContainer container, string StartName, string Exchangepoint, IConnection connection, string ExchangePointFromServer, string StartNameQueueDevice)
         {
-            var o = message.BasicProperties.Headers["MessageType"];
-            if (o == null)
-            {
-                return;
-            }
-            if (o.GetType() != typeof(byte[]))
-            {
-                return;
-            }
-            
             var messageType = message.BasicProperties.Type;
+            if (messageType == null)
+            {
+                return;
+            }
+
+            
             var sdrnServer = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SdrnServer"]);
             var sensorName = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorName"]);
             var techId = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorTechId"]);
@@ -87,6 +83,12 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}: {2}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId, ex.Message);
                                 PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
                             }
+                        }
+                        else
+                        {
+                            deviceResult.Status = "Fault";
+                            deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1} (Duplicate) ", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
                         }
                         result = true;
                         break;
