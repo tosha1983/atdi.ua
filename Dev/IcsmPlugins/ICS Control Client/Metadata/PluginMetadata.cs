@@ -23,8 +23,9 @@ namespace XICSM.ICSControlClient
             public static readonly string InvokeWcfOperation = "Invoke WCF Operation";
             public static readonly string SaveTaskToLog = "Save task to log";
             public static readonly string StartMeasurementsSO = "Start Measurements Spectrum Occupation";
+            public static readonly string SelectArea = "Select Area";
         }
-        
+
         public static class Menu
         {
             public static readonly string BeforeTool = "Tools";
@@ -45,6 +46,7 @@ namespace XICSM.ICSControlClient
                 public static readonly string CreateMeasTask = "Create Meas Task";
                 public static readonly string UpdateInspections = "Update Inspections";
                 public static readonly string SynchroInspections = "Synchro Inspections";
+                public static readonly string SelectArea = "Select Area";
             }
 
             public static class Allotment
