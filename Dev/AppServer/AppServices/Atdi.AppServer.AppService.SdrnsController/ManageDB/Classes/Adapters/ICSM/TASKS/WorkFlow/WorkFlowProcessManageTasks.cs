@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
-using Atdi.Oracle.DataAccess;
 using Newtonsoft.Json;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters

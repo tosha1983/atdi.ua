@@ -223,12 +223,11 @@
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\sl4\Newtonsoft.Json.xml" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\winrt45\Newtonsoft.Json.dll" />
     <Content Include="Dll\packages\Newtonsoft.Json.4.5.11\lib\winrt45\Newtonsoft.Json.xml" />
+    <Content Include="Settings\ServerSetting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>

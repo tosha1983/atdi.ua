@@ -1,30 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Castle.Windsor;
 using Castle.MicroKernel.Registration;
-using Castle.Facilities.TypedFactory;
-using System.Data;
-using System.Drawing;
-using System.Collections;
 using System.Configuration;
-using RabbitMQ;
-using RabbitMQ.Client;
-using Atdi.SDNRS.AppServer.ManageDB.Adapters;
-using Atdi.SDNRS.AppServer.ManageDB;
 using Atdi.SDNRS.AppServer.BusManager;
 using XMLLibrary;
-using Atdi.DataModels.Sdrns.Device;
-using Atdi.AppServer.Models.AppServices;
-using Atdi.AppServer.Contracts;
-using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.AppServer.AppServices;
-using Atdi.AppServer.AppServices.SdrnsController;
 using Atdi.SDNRS.AppServer.Sheduler;
-using Atdi.AppServer.AppService.SdrnsController;
-using Atdi.Platform.AppComponent;
 
 
 

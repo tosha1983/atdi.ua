@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.AppServer;
-using System.Data.Common;
+
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {

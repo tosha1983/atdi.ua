@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
-using Atdi.SDNRS.AppServer;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
 using EasyNetQ;
 using Atdi.AppServer;
-using XMLLibrary;
+
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {

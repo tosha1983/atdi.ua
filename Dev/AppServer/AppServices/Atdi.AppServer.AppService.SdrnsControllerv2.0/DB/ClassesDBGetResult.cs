@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.IO.Compression;
-using System.Xml;
-using System.Globalization;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.AppServer;
-using Oracle.DataAccess.Client;
 using System.Data.Common;
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0

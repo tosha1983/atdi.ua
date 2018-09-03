@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Configuration;
-using RabbitMQ;
-using RabbitMQ.Client;
-
-namespace Atdi.AppServer.ConfigurationSdrnController
+﻿namespace Atdi.AppServer.ConfigurationSdrnController
 {
     public class RabbitOptions
     {

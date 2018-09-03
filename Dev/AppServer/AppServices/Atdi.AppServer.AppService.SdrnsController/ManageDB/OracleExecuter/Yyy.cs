@@ -1,7 +1,5 @@
 ﻿using System;
-using Atdi.Oracle.DataAccess;
 using Oracle.DataAccess.Client;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 

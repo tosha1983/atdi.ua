@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
     public static class MeasTaskExtend
     {
-        // Создание MeasSubTask и MeasSubTaskStation
-        // Создание MeasSubTask и MeasSubTaskStation
         public static void CreateAllSubTasksApi1_0(this MeasTask task)
         {
             if (task.Status == "N")

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
-using RabbitMQ;
 using RabbitMQ.Client;
 using Atdi.DataModels.Sdrns.Device;
 using RabbitMQ.Client.Events;

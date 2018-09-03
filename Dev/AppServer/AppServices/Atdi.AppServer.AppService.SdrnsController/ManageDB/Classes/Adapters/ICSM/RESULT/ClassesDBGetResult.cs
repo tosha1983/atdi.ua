@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO;
-using System.IO.Compression;
-using System.Xml;
-using System.Globalization;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
-using Oracle.DataAccess.Client;
-using Atdi.SDNRS.AppServer.BusManager;
 using System.Data.Common;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters

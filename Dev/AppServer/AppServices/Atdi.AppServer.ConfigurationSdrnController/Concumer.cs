@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Atdi.DataModels.Sdrns.Device;
 using Castle.Windsor;
-using RabbitMQ;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+
 
 
 namespace Atdi.AppServer.ConfigurationSdrnController

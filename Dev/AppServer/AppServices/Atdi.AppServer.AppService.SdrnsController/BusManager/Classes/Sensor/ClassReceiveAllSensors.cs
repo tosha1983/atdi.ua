@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EasyNetQ;
-using XMLLibrary;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
-using Atdi.SDNRS.AppServer.Sheduler;
+
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {

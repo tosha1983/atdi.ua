@@ -51,7 +51,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>copy "..\..\..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\bin\$(ConfigurationName)\Atdi*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+    <PreBuildEvent>copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Settings\ServerSetting.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\bin\$(ConfigurationName)\Atdi*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsControllerv2.0\bin\$(ConfigurationName)\Atdi*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\AppServices\Atdi.AppServer.ConfigurationSdrnController\bin\$(ConfigurationName)\Atdi*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
@@ -82,6 +83,9 @@ copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.A
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\ICSControlClient.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\MeasTaskForm.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\ICSM3.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+
+
+
 
 </PreBuildEvent>
   </PropertyGroup>
