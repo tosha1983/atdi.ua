@@ -551,7 +551,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsSensor s_l_sensor = new YXbsSensor();
                         s_l_sensor.Format("*");
                         // выбирать только сенсоры, для которых STATUS не NULL
-                        s_l_sensor.Filter = "(ID>0) AND (STATUS<>'Z')";
+                        s_l_sensor.Filter = "(ID>0) AND ((STATUS IS NULL) OR (STATUS<>'Z'))";
                         for (s_l_sensor.OpenRs(); !s_l_sensor.IsEOF(); s_l_sensor.MoveNext())
                         {
                             Sensor it_out = new Sensor();
