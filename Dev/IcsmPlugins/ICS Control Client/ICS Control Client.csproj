@@ -35,6 +35,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="GMap.NET.Core, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
     </Reference>
@@ -42,10 +43,13 @@
       <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
     </Reference>
     <Reference Include="NetPlugins">
-      <HintPath>..\..\..\..\..\..\..\..\icsmr\NetPlugins.dll</HintPath>
+      <HintPath>..\..\..\..\ICS Manager\NetPlugins.dll</HintPath>
+    </Reference>
+    <Reference Include="NetPlugins2">
+      <HintPath>..\..\..\..\ICS Manager\NetPlugins2.dll</HintPath>
     </Reference>
     <Reference Include="OrmCs">
-      <HintPath>..\..\..\..\..\..\..\..\icsmr\OrmCs.dll</HintPath>
+      <HintPath>..\..\..\..\ICS Manager\OrmCs.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -85,8 +89,21 @@
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MeasTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasTaskForm.Designer.cs">
+      <DependentUpon>MeasTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SelectAreaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SelectAreaForm.Designer.cs">
+      <DependentUpon>SelectAreaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\Allotments\AllotmentsContextMenuBuilder.cs" />
     <Compile Include="Handlers\Allotments\Commands\StartMeasurementsSOCommand.cs" />
+    <Compile Include="Handlers\Tour\Commands\SelectAreaCommand.cs" />
     <Compile Include="Handlers\Tour\Commands\SynchroInspectionsCommand.cs" />
     <Compile Include="Metadata\FreqPlanChan.cs" />
     <Compile Include="Metadata\AllStations.cs" />
@@ -140,6 +157,7 @@
     <Compile Include="Handlers\Tour\Commands\BuildInspectionsCommand.cs" />
     <Compile Include="Handlers\Tour\ToursContextMenuBuilder.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
+    <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
@@ -162,6 +180,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasTaskForm.resx">
+      <DependentUpon>MeasTaskForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SelectAreaForm.resx">
+      <DependentUpon>SelectAreaForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

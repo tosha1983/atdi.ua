@@ -41,6 +41,11 @@ namespace XICSM.ICSControlClient
                     HD.SynchroInspectionsCommand.Handle
                 );
 
+                nodes.AddContextMenuToolForEachRecords(
+                    PluginMetadata.ContextMenu.Tour.SelectArea,
+                    HD.SelectAreaCommand.Handle
+                );
+
             }
 
             return nodes;
