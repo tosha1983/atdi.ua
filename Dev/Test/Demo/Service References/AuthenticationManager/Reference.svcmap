@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="53ca9ecf-1a8c-409a-b2c4-520e8a25c6c9" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="f3766fba-eb7a-45a5-bf98-707c8eb848f3" SourceId="1" SourceUrl="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?xsd=xsd1" />
+    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="cd6bea4b-8eb4-4fd4-a7c3-5b49121fdc46" SourceId="1" SourceUrl="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?xsd=xsd0" />
+    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="d08daaf7-e5e9-406b-bdf0-f23828081aa9" SourceId="1" SourceUrl="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?disco" />
+    <MetadataFile FileName="item.wsdl" MetadataType="Wsdl" ID="4ab4d471-c11b-4922-8070-95ef8e885b1c" SourceId="1" SourceUrl="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?wsdl=wsdl0" />
+    <MetadataFile FileName="AuthenticationManager.wsdl" MetadataType="Wsdl" ID="72c9d1f1-8918-43e3-ac78-781fa102fd41" SourceId="1" SourceUrl="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?wsdl" />
+    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="68ea2b9d-6751-4451-9306-6fe819e80d3c" SourceId="1" SourceUrl="http://localhost:8735/Atdi/WcfServices/AuthenticationManager/?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

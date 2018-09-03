@@ -124,6 +124,7 @@ namespace Atdi.AppServer.Models.AppServices
         }
 
 
+
         public SdrnsControllerAppService() 
             : base("SdrnsController")
         {

@@ -49,10 +49,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LegacyServices\Atdi.AppServer.AppService.WebQueryDataDriver\Atdi.AppServer.AppService.WebQueryDataDriver.csproj">
-      <Project>{015162ec-b3ba-4e29-913b-134b4191ec10}</Project>
-      <Name>Atdi.AppServer.AppService.WebQueryDataDriver</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.WebQuery\Atdi.AppServer.Contracts.WebQuery.csproj">
       <Project>{26b1dff9-1f87-4494-ad98-c3033288eceb}</Project>
       <Name>Atdi.AppServer.Contracts.WebQuery</Name>

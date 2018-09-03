@@ -9,7 +9,7 @@ using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer;
-using Atdi.AppServer.AppService.SdrnsController.ConstraintParsers;
+//using Atdi.AppServer.AppService.SdrnsController.ConstraintParsers;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -23,20 +23,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         >
     {
 
-        private ShortSensorConstraintParser _constraintParser;
-
-        /*
-        public GetShortSensorsAppOperationHandler(IAppServerContext serverContext, ILogger logger, ShortSensorConstraintParser constraintParser) 
-            : base(serverContext, logger)
-        {
-            this._constraintParser = constraintParser;
-        }
-        */
-
         public GetShortSensorsAppOperationHandler(IAppServerContext serverContext, ILogger logger)
             : base(serverContext, logger)
         {
-         
+
         }
 
         /// <summary>
@@ -48,9 +38,21 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override ShortSensor[] Handle(GetShortSensorsAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
-            SensorListSDRNS senLst = new SensorListSDRNS();
+            SensorListSDRNS senLst = new SensorListSDRNS(Logger);
             List<ShortSensor> LstS = new List<ShortSensor>();
-            LstS = senLst.CreateShortSensorList();
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                try
+                {
+                    LstS = senLst.CreateShortSensorList();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
+            });
+            th.Start();
+            th.Join();
             return LstS.ToArray();
         }
     }

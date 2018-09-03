@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OrmCs;
-using ICSM;
+using Atdi.Oracle.DataAccess;
+
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {

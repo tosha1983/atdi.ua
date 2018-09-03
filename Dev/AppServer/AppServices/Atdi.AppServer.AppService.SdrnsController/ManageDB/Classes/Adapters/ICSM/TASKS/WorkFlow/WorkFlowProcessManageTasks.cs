@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
-using OrmCs;
 using System.Windows.Forms;
 using Atdi.SDNRS.AppServer.BusManager;
-using CoreICSM.Logs;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
-
+using Atdi.Oracle.DataAccess;
+using Newtonsoft.Json;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -20,6 +18,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class WorkFlowProcessManageTasks: IDisposable
     {
+       public static ILogger logger;
+
+        public WorkFlowProcessManageTasks(ILogger log)
+        {
+            if (logger == null) logger = log;
+        }
+
         /// <summary>
         /// Деструктор.
         /// </summary>
@@ -34,103 +39,51 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             GC.SuppressFinalize(this);
         }
 
-        public void UpdateListMeasTask()
-        {
-            ClassConvertTasks ts = new ClassConvertTasks();
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
-            List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
-            foreach (MeasTask FND in mts_.ToArray())
-            {
-                // Удаляем данные об объекте с глобального списка
-                if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == FND.Id.Value) == null) {
-                    GlobalInit.LIST_MEAS_TASK.Add(FND);
-                }
-                else {
-                    //lock (GlobalInit.LIST_MEAS_TASK)
-                    if ((FND.Status!=null) && (FND.Status != "N"))
-                    {
-                        MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == FND.Id.Value);
-                        if (fnd != null)
-                            GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, FND);
-                        else GlobalInit.LIST_MEAS_TASK.Add(FND);
-                    }
-                }
-            }
-            ts.Dispose();
-            cl.Dispose();
-        }
 
         /// <summary>
         /// Добавление в очередь новых тасков
         /// </summary>
         /// <param name="s_out"></param>
         /// <returns>количество новых объектов, добавленных в глобальный список</returns>
-        public int Create_New_Meas_Task(MeasTask s_out, string ActionType)
+        public int? Create_New_Meas_Task(MeasTask s_out, string ActionType)
         {
-            ClassesDBGetTasks cl = new ClassesDBGetTasks();
-            ClassConvertTasks ts = new ClassConvertTasks();
-            int NewIdMeasTask = -1;
+            logger.Trace("Start procedure Create_New_Meas_Task...");
+            ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+            ClassConvertTasks ts = new ClassConvertTasks(logger);
+            int? NewIdMeasTask = -1;
             try
             {
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
                     if (s_out != null)
                     {
-                        //lock (GlobalInit.LIST_MEAS_TASK)
-                        //UpdateListMeasTask();
                         MeasTask Data_ = s_out;
-                        // создаём объект список подзадач типа MEAS_SUB_TASK и записываем в объект Data_
-                        Data_.CreateAllSubTasks();
-                        CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[CreateAllSubTasks] success...");
-                        // конвертируем объекты тасков с БД в список List<MEAS_TASK>
-                        //List<MeasTask> mts_ = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB()).ToList();
-                        List<MeasTask> mts_ = GlobalInit.LIST_MEAS_TASK;
-                        if (mts_.Find(r => r.Id.Value == Data_.Id.Value) == null)
+                        Data_.CreateAllSubTasksApi1_0();
+                        List<MeasTask> mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(Data_.Id.Value)).ToList();
+                        if (mts_.Count() == 0)
                         {
-                            if (((GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) == null)))
-                            {
-                                Data_.UpdateStatus(ActionType);
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success UpdateStatus !!!...");
-                                NewIdMeasTask = cl.SaveTaskToDB(Data_);
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "Success create new TASK !!!...");
-                                MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                if (fnd != null)
-                                    GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
-                                else GlobalInit.LIST_MEAS_TASK.Add(Data_);
-
-                            }
-                            else {
-                                if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) != null)
-                                {
-                                    Data_ = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                    Data_.UpdateStatus(ActionType);
-                                    //cl.SaveStatusTaskToDB(Data_);
-                                    MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                    if (fnd != null)
-                                        GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
-                                    else GlobalInit.LIST_MEAS_TASK.Add(Data_);
-                                }
-                            }
+                            Data_.UpdateStatus(ActionType);
+                            NewIdMeasTask = cl.SaveTaskToDB(Data_);
                         }
-                        else {
-                            if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value) != null)
-                            {
-                                Data_ = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                Data_.UpdateStatus();
-                                //cl.SaveStatusTaskToDB(Data_);
-                                MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Data_.Id.Value);
-                                if (fnd != null)
-                                    GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, Data_);
-                                else GlobalInit.LIST_MEAS_TASK.Add(Data_);
-                            }
+                        else
+                        {
+                            Data_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(Data_.Id.Value)).ToList()[0];
+                            Data_.UpdateStatus(ActionType);
+                            cl.SaveStatusTaskToDB(Data_);
                         }
-
                     }
-                    CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "[Create_New_Meas_Task] success...");
-              
+                });
+                tsk.Start();
+                tsk.Join();
+
             }
-            catch (Exception er) {
-                CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Create_New_Meas_Task]: " + er.Message); }
+            catch (Exception er)
+            {
+                logger.Error("Error in procedure Create_New_Meas_Task: " + er.Message);
+            }
             cl.Dispose();
             ts.Dispose();
+            logger.Trace("End procedure Create_New_Meas_Task.");
             return NewIdMeasTask;
         }
 
@@ -138,135 +91,219 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <summary>
         /// 
         /// </summary>
-        public static bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline)
+        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline, out bool isSuccess)
         {
             bool isSendSuccess = false;
+            bool isSuccessTemp = false;
+            isSuccess = false;
             try
             {
-                ClassesDBGetTasks cl = new ClassesDBGetTasks();
+                logger.Trace("Start procedure Process_Multy_Meas...");
+                ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
+                ClassesDBGetTasks cl = new ClassesDBGetTasks(logger);
+                ClassConvertTasks ts = new ClassConvertTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
-                //Task tdf = new Task(() =>
-                //{
-                if (mt != null)
-                {
-                    List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
-                    foreach (int SensorId in SensorIds.ToArray())
-                    {
-                        Sensor fnd_s = GlobalInit.SensorListSDRNS.Find(t => t.Id.Value == SensorId);
-                        if (fnd_s != null)
-                        {
-                            Task tsk = new Task(() =>
-                            {
-                                Checked_L.Clear();
-                                if (GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value) != null)
-                                {
-                                    MeasTask M = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
-                                    int Id_Old = M.Id.Value;
-                                    MeasSubTask[] msbd_old = M.MeasSubTasks;
-                                    M = mt;
-                                    M.Id.Value = Id_Old;
-                                    if (M.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null)
-                                    {
-                                        M.UpdateStatusSubTasks(SensorId, ActionType, isOnline);
-                                        LM_SDR = M.CreateeasTaskSDRs(ActionType);
+                List<Atdi.DataModels.Sdrns.Device.MeasTask> Checked_L_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
 
-                                        //if (isCreateTasksSdr == false) {  LM_SDR = M.CreateeasTaskSDRs(ActionType); }
-                                        if (LM_SDR != null)
+                System.Threading.Thread tsk_main = new System.Threading.Thread(() =>
+                {
+                    if (mt != null)
+                    {
+                        //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
+                        MeasTask[] Res = new MeasTask[1] { mt };
+                        List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
+                        List<Atdi.DataModels.Sdrns.Device.MeasTask> LM_SDR_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
+                        foreach (int SensorId in SensorIds.ToArray())
+                        {
+                            Sensor fnd_s = gsd.LoadObjectSensor(SensorId);
+                            if (fnd_s != null)
+                            {
+                                if (fnd_s.Name != null)
+                                {
+                                    string apiVer = gsd.GetSensorApiVersion(fnd_s.Id.Value);
+                                    Checked_L.Clear();
+                                    if ((Res != null) && (Res.Length > 0))
+                                    {
+                                        MeasTask M = Res[0]; //GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
+                                        int Id_Old = M.Id.Value;
+                                        MeasSubTask[] msbd_old = M.MeasSubTasks;
+                                        M = mt;
+                                        M.Id.Value = Id_Old;
+                                        if (M.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null)
                                         {
-                                            string ids = "";
-                                            int MaxVal = cl.GetMaXIdsSdrTasks(M);
-                                            int idx = MaxVal + 1;
-                                            foreach (MeasSdrTask mx in LM_SDR.ToArray())
+                                            M.UpdateStatusSubTasks(SensorId, ActionType, isOnline);
+                                            if (apiVer == "v1.0")
                                             {
-                                                mx.Id = idx;
-                                                ids = idx.ToString() + ";";
-                                                //Task ts = new Task(() => {
-                                                //если сенсор активен
-                                                //if (fnd_s.Status == "A")
-                                                //{
-                                                if (mx.SensorId.Value == SensorId)
+                                                LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
+                                                if (LM_SDR != null)
                                                 {
-                                                    /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
-                                                    if (mx.ValidationMeas())
+                                                    string ids = "";
+                                                    int MaxVal = cl.GetMaXIdsSdrTasks(M);
+                                                    int idx = MaxVal + 1;
+                                                    foreach (MeasSdrTask mx in LM_SDR.ToArray())
                                                     {
-                                                        Checked_L.Add(mx);
-                                                        M.UpdateStatus(ActionType);
+                                                        mx.Id = idx;
+                                                        ids = idx.ToString() + ";";
+                                                        //Task ts = new Task(() => {
+                                                        //если сенсор активен
+                                                        //if (fnd_s.Status == "A")
+                                                        //{
+                                                        if (mx.SensorId.Value == SensorId)
+                                                        {
+                                                            /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
+                                                            if (mx.ValidationMeas1_0())
+                                                            {
+                                                                Checked_L.Add(mx);
+                                                                M.UpdateStatus(ActionType);
+                                                            }
+                                                            else
+                                                            {
+                                                                // если вадидация не прошла
+                                                                M.UpdateStatusE_E(mx.MeasSubTaskStationId, "E_E");
+                                                                M.UpdateStatus(ActionType);
+                                                                //обновление группы статусов для объекта MeasTask
+                                                                cl.SaveStatusTaskToDB(M);
+                                                            }
+                                                        }
+                                                        idx++;
                                                     }
-                                                    else {
-                                                        // если вадидация не прошла
-                                                        M.UpdateStatusE_E(mx.MeasSubTaskStationId, "E_E");
-                                                        M.UpdateStatus(ActionType);
-                                                        //обновление группы статусов для объекта MeasTask
-                                                        cl.SaveStatusTaskToDB(M);
-                                                    }
+                                                    if (ids.Length > 0) ids = ids.Remove(ids.Count() - 1, 1);
+                                                    cl.SaveIdsSdrTasks(M, ids);
                                                 }
-                                                idx++;
                                             }
-                                            if (ids.Length > 0) ids = ids.Remove(ids.Count() - 1, 1);
-                                            cl.SaveIdsSdrTasks(M, ids);
+                                            if (apiVer == "v2.0")
+                                            {
+                                                LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
+                                                if (LM_SDR_Device != null)
+                                                {
+                                                    string ids = "";
+                                                    int MaxVal = cl.GetMaXIdsSdrTasks(M);
+                                                    int idx = MaxVal + 1;
+                                                    foreach (Atdi.DataModels.Sdrns.Device.MeasTask mx in LM_SDR_Device.ToArray())
+                                                    {
+                                                        ids = idx.ToString() + ";";
+                                                        if (mx.SensorName == fnd_s.Name)
+                                                        {
+                                                            /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
+                                                            if (mx.ValidationMeas2_0())
+                                                            {
+                                                                Checked_L_Device.Add(mx);
+                                                                M.UpdateStatus(ActionType);
+                                                            }
+                                                            else
+                                                            {
+                                                                M.UpdateStatus(ActionType);
+                                                                cl.SaveStatusTaskToDB(M);
+                                                            }
+                                                        }
+                                                        idx++;
+                                                    }
+                                                    if (ids.Length > 0) ids = ids.Remove(ids.Count() - 1, 1);
+                                                    cl.SaveIdsSdrTasks(M, ids);
+                                                }
+                                            }
+                                            
+
+                                        }
+
+                                        M.MeasSubTasks = msbd_old;
+                                        //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
+                                        //if (fnd != null)
+                                        //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
+                                        //else GlobalInit.LIST_MEAS_TASK.Add(M);
+                                        if (ActionType == "Del")
+                                        {
+                                            isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
+                                            //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
                                         }
                                     }
 
-                                    M.MeasSubTasks = msbd_old;
-                                    MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
-                                    if (fnd != null)
-                                        GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
-                                    else GlobalInit.LIST_MEAS_TASK.Add(M);
-                                    if (ActionType == "Del")
+                                    if (Checked_L.Count > 0)
                                     {
-                                        GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
+                                        BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                                        // Отправка сообщения в СТОП-ЛИСТ
+                                        if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
+                                        {
+                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            {
+                                                isSendSuccess = true;
+                                                isSuccessTemp = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            {
+                                                isSendSuccess = true;
+                                            }
+                                            else
+                                            {
+                                                isSendSuccess = false;
+                                                //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
+                                                //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
+                                                //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
+                                            }
+                                        }
+                                        Checked_L.Clear();
                                     }
-                                }
-                            });
-                            tsk.Start();
-                            tsk.Wait();
 
 
-                            if (Checked_L.Count > 0)
-                            {
-                                CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Start busManager send new task...");
-                                BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
-                                if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
-                                {
-                                    isSendSuccess = true;
-                                    CoreICSM.Logs.CLogs.WriteInfo(ELogsWhat.Unknown, "--> Success send new task...");
-                                }
-                                else {
-                                    isSendSuccess = false;
-                                    //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
-                                    //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
-                                    //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
-                                }
-
-                                // Отправка сообщения в СТОП-ЛИСТ
-                                if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
-                                {
-                                    if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                    //Отправка тасков в очередь специфичную для версии API 2.0
+                                    if (Checked_L_Device.Count > 0)
                                     {
-                                        isSendSuccess = true;
+                                        string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[{apiVer}]";
+                                        BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
+                                        if (ActionType == "Stop")
+                                        {
+                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_stop = new DataModels.Sdrns.Device.DeviceCommand();
+                                            //command_stop.CommandId = Guid.NewGuid().ToString();
+                                            //command_stop.Command = "StopMeasTask";
+                                            //command_stop.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
+                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_stop)), apiVer, "SendCommand"))
+                                            foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
+                                            {
+                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "StopMeasTask"))
+                                                {
+                                                    isSendSuccess = true;
+                                                    isSuccessTemp = true;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_send = new DataModels.Sdrns.Device.DeviceCommand();
+                                            //command_send.CommandId = Guid.NewGuid().ToString();
+                                            //command_send.Command = "SendMeasTask";
+                                            //command_send.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
+                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_send)), apiVer, "SendCommand"))
+                                            foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
+                                            {
+                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "SendMeasTask"))
+                                                {
+
+                                                    isSendSuccess = true;
+                                                }
+                                                else
+                                                {
+                                                    isSendSuccess = false;
+                                                }
+                                            }
+                                        }
+                                        Checked_L_Device.Clear();
                                     }
-                                }
-                                else {
-                                    //busManager.DeleteQueue(GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString());
                                 }
                             }
-                            Checked_L.Clear();
                         }
                     }
-                    //});
-                    //tsk.Start();
-                    //tsk.Wait();
-                }
-                       
-                   
-                //cl.Dispose();
-               //});
-               //tdf.Start();
-               //tdf.Wait();
+                    logger.Trace("End procedure Process_Multy_Meas.");
+                });
+                tsk_main.Start();
+                tsk_main.Join();
+                isSuccess = isSuccessTemp;
             }
             catch (Exception ex)
             {
-                CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[Process_Multy_Meas]: " + ex.Message);
+                logger.Error("Error procedure Process_Multy_Meas: " + ex.Message);
             }
             return isSendSuccess;
 

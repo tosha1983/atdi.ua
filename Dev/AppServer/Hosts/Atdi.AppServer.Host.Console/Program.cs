@@ -12,7 +12,7 @@ using Atdi.AppServer.Services.WebQuery;
 
 using Atdi.AppServer.AppServices;
 using Atdi.AppServer.Models.AppServices;
-using Atdi.AppServer.AppServices.WebQueryManager;
+//using Atdi.AppServer.AppServices.WebQueryManager;
 
 namespace Atdi.AppServer.Hosts
 {
@@ -21,12 +21,12 @@ namespace Atdi.AppServer.Hosts
         static void Main(string[] args)
         {
             var components = new List<IAppServerComponent>();
-            var webQueryManagerAppServiceHost = new AppServiceHostServerComponent<WebQueryManagerAppService, AuthenticateUserAppOperationHandler>();
+            //var webQueryManagerAppServiceHost = new AppServiceHostServerComponent<WebQueryManagerAppService, AuthenticateUserAppOperationHandler>();
             //var webQueryManagerAppServiceGetTree = new AppServiceHostServerComponent<WebQueryManagerAppService, GetQueryTreeAppOperationHandler>();
 
             var webQueryHost = new WcfServiceHostServerComponent<IWebQueryManager, WebQueryManagerService>();
 
-            components.Add(webQueryManagerAppServiceHost);
+            //components.Add(webQueryManagerAppServiceHost);
             components.Add(webQueryHost);
             
 

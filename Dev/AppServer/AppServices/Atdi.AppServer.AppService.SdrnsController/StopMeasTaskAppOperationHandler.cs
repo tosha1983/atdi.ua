@@ -22,8 +22,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             CommonOperationResult
         >
     {
+
         public StopMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+          
         }
 
         /// <summary>
@@ -35,36 +37,42 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override CommonOperationResult Handle(StopMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             CommonOperationResult res = new CommonOperationResult();
-            Task ge = new Task(() =>
+            System.Threading.Thread ge = new System.Threading.Thread(() =>
             {
                 try
                 {
                     if (options.TaskId != null)
                     {
-                        MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
+                        ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
+                        ClassConvertTasks ts = new ClassConvertTasks(Logger);
+                        MeasTask[] ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value));
+                        MeasTask mt = ResMeasTasks.ToList().Find(z => z.Id.Value == options.TaskId.Value);
                         if (mt != null)
                         {
-                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks();
+                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                             //int ID = tasks.Create_New_Meas_Task(mt, "Stop");
                             List<int> SensorIds = new List<int>();
                             foreach (MeasSubTask item in mt.MeasSubTasks)
                             {
                                 foreach (MeasSubTaskStation u in item.MeasSubTaskStations)
                                 {
-                                    SensorIds.Add(u.StationId.Value);
+                                    if (!SensorIds.Contains(u.StationId.Value))
+                                        SensorIds.Add(u.StationId.Value);
                                 }
                             }
 
                             foreach (MeasStation item in mt.Stations)
                             {
-                                SensorIds.Add(item.StationId.Value);
+                                if (!SensorIds.Contains(item.StationId.Value))
+                                    SensorIds.Add(item.StationId.Value);
                             }
 
                             var mt_edit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                             if (SensorIds.Count > 0)
                             {
                                 bool isOnline = false;
-                                WorkFlowProcessManageTasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", isOnline);
+                                bool isSuccess = false;
+                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", isOnline, out isSuccess);
                                 res.State = CommonOperationState.Success;
                             }
                         }
@@ -74,12 +82,13 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("StopMeasTask:"+ex.Message);
+                    Logger.Trace("Error in procedure StopMeasTaskAppOperationHandler: " + ex.Message);
                     res.State = CommonOperationState.Fault;
                     res.FaultCause = ex.Message;
                 }
             });
-            ge.RunSynchronously();
+            ge.Start();
+            ge.Join();
             return res;
         }
     }

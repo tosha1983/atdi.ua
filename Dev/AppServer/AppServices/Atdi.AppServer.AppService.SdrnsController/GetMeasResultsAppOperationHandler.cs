@@ -8,6 +8,7 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -33,7 +34,23 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override MeasurementResults[] Handle(GetMeasResultsAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
-            return GlobalInit.LST_MeasurementResults.ToArray();
+            MeasurementResults[] LST_MeasurementResults = null;
+            ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                //MeasurementResults[] LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToArray();
+                try
+                {
+                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB());
+                }
+                catch (Exception ex) {
+                    Logger.Error(ex.Message);
+                }
+        });
+            th.Start();
+            th.Join();
+            return LST_MeasurementResults;
         }
     }
 }

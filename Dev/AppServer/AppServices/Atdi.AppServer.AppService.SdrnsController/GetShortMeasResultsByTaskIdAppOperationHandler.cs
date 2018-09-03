@@ -8,6 +8,7 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -31,22 +32,39 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         {
             Logger.Trace(this, options, operationContext);
             List<ShortMeasurementResults> ShortMeas = new List<ShortMeasurementResults>();
-            //lock (GlobalInit.LST_MeasurementResults)
+            ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
+            System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                    List<MeasurementResults> msrt = GlobalInit.LST_MeasurementResults.FindAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
-                    if (msrt != null) {
-                     foreach (MeasurementResults rs in msrt)  { 
-                        ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = rs.DataRank, Id = rs.Id, Number = rs.N.Value, Status = rs.Status, TimeMeas = rs.TimeMeas, TypeMeasurements = rs.TypeMeasurements };
-                        if (rs.LocationSensorMeasurement != null) {
-                            if (rs.LocationSensorMeasurement.Count() > 0) {
-                                ShMsrt.CurrentLat = rs.LocationSensorMeasurement[rs.LocationSensorMeasurement.Count() - 1].Lat;
-                                ShMsrt.CurrentLon = rs.LocationSensorMeasurement[rs.LocationSensorMeasurement.Count() - 1].Lon;
+                try
+                {
+                    //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
+                    List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDBTask(options.TaskId.Value)).ToList();
+                    List<MeasurementResults> msrt = LST_MeasurementResults.FindAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
+                    if (msrt != null)
+                    {
+                        foreach (MeasurementResults rs in msrt)
+                        {
+                            ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = rs.DataRank, Id = rs.Id, Number = rs.N.Value, Status = rs.Status, TimeMeas = rs.TimeMeas, TypeMeasurements = rs.TypeMeasurements };
+                            if (rs.LocationSensorMeasurement != null)
+                            {
+                                if (rs.LocationSensorMeasurement.Count() > 0)
+                                {
+                                    ShMsrt.CurrentLat = rs.LocationSensorMeasurement[rs.LocationSensorMeasurement.Count() - 1].Lat;
+                                    ShMsrt.CurrentLon = rs.LocationSensorMeasurement[rs.LocationSensorMeasurement.Count() - 1].Lon;
+                                }
                             }
+                            ShortMeas.Add(ShMsrt);
                         }
-                        ShortMeas.Add(ShMsrt);
                     }
                 }
-            }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
+            });
+            th.Start();
+            th.Join();
             return ShortMeas.ToArray();
         }
     }

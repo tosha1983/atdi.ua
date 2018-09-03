@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1386E2B2-D67A-4033-8DD0-1CA3D7466A90}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Build.WebQuery</RootNamespace>
+    <AssemblyName>Atdi.Build.WebQuery</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
+      <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
+      <Name>Atdi.AppServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServices\Atdi.AppServices.csproj">
+      <Project>{0eab226d-aa8d-4671-88cf-0f1049560535}</Project>
+      <Name>Atdi.AppServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\AppServices\Atdi.Contracts.AppServices.WebQuery\Atdi.Contracts.AppServices.WebQuery.csproj">
+      <Project>{012b0214-ac04-43b0-b87f-a0c1e991ca8f}</Project>
+      <Name>Atdi.Contracts.AppServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
+      <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
+      <Name>Atdi.Contracts.CoreServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Netkey2\Atdi.Contracts.CoreServices.NetKeyValidator.csproj">
+      <Project>{a0f57dd8-f4b7-46f6-9d94-ffbb61d31fa6}</Project>
+      <Name>Atdi.Contracts.CoreServices.NetKeyValidator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
+      <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
+      <Name>Atdi.Contracts.LegacyServices.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Identity\Atdi.Contracts.WcfServices.Identity.csproj">
+      <Project>{cae762ce-a933-426c-9e31-656eb66a0f9a}</Project>
+      <Name>Atdi.Contracts.WcfServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.WebQuery\Atdi.Contracts.WcfServices.WebQuery.csproj">
+      <Project>{773a95ce-0a1c-4629-849d-23f65d6c59e4}</Project>
+      <Name>Atdi.Contracts.WcfServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
+      <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
+      <Name>Atdi.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.Identity\Atdi.CoreServices.Identity.csproj">
+      <Project>{3ffe283d-4233-4e63-8a27-260a8aeb353c}</Project>
+      <Name>Atdi.CoreServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.Netkey\Atdi.CoreServices.Netkey.csproj">
+      <Project>{57c627f3-f667-464c-a477-9e78e4457e4c}</Project>
+      <Name>Atdi.CoreServices.Netkey</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Icsm\Atdi.DataModels.Icsm.csproj">
+      <Project>{c9a6722b-f13a-4c7a-b389-9958b2abfb27}</Project>
+      <Name>Atdi.DataModels.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Identity\Atdi.DataModels.Identity.csproj">
+      <Project>{b0a9f81c-cf24-4899-a069-cbf63c4483e6}</Project>
+      <Name>Atdi.DataModels.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
+      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
+      <Name>Atdi.DataModels.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Console\Atdi.AppServer.Console.csproj">
+      <Project>{b551e073-cc82-4b4e-aba5-a183c949496d}</Project>
+      <Name>Atdi.AppServer.Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Svchost\Atdi.AppServer.Svchost.csproj">
+      <Project>{c9d6ed82-abf9-4585-aa7c-b49fe0bf8eb9}</Project>
+      <Name>Atdi.AppServer.Svchost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LegacyServices\Atdi.LegacyServices.Icsm\Atdi.LegacyServices.Icsm.csproj">
+      <Project>{b06cf99e-314f-485b-9e0d-5289147d5552}</Project>
+      <Name>Atdi.LegacyServices.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
+      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
+      <Name>Atdi.Platform.ServicesContainer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.Identity\Atdi.WcfServices.Identity.csproj">
+      <Project>{56055003-fc93-4ff2-8e1e-6be6b84d1589}</Project>
+      <Name>Atdi.WcfServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.WebQuery\Atdi.WcfServices.WebQuery.csproj">
+      <Project>{d55bd0a1-1610-4135-8516-239ec6e3f1f5}</Project>
+      <Name>Atdi.WcfServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices\Atdi.WcfServices.csproj">
+      <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
+      <Name>Atdi.WcfServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.Identity\Atdi.WebApiServices.Identity.csproj">
+      <Project>{c61c88b0-306f-4c54-a372-80cb97124504}</Project>
+      <Name>Atdi.WebApiServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj">
+      <Project>{ca3f294b-9c66-433f-84b3-d27ce3ab40f1}</Project>
+      <Name>Atdi.WebApiServices.SelfHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.WebQuery\Atdi.WebApiServices.WebQuery.csproj">
+      <Project>{a589c230-ddbe-42b2-b54e-3d0139ce853d}</Project>
+      <Name>Atdi.WebApiServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices\Atdi.WebApiServices.csproj">
+      <Project>{4803ae0c-1a06-4fc5-9be7-6affc943ee7c}</Project>
+      <Name>Atdi.WebApiServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)Dll\netkey.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\System.Net.Http.Formatting.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\System.Web.Http.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+copy "$(TargetDir)\System.Web.Http.SelfHost.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer"
+
+copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
+copy "$(TargetDir)Atdi.DataModels.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
+copy "$(TargetDir)Atdi.DataModels.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
+copy "$(TargetDir)Atdi.Contracts.WcfServices.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
+copy "$(TargetDir)Atdi.Contracts.WcfServices.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient"
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>

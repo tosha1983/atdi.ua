@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.atdi.com/appserver/services" elementFormDefault="qualified" targetNamespace="http://schemas.atdi.com/appserver/services" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd0" namespace="http://schemas.atdi.com/appserver/services/WebQuery" />
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
+  <xs:complexType name="UserToken">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Data" nillable="true" type="xs:base64Binary" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UserToken" nillable="true" type="tns:UserToken" />
+  <xs:complexType name="ResultOfQueryGroupskoy_Sv8m5">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultOf{0}{#}" Namespace="http://schemas.atdi.com/appserver/services" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="QueryGroups" Namespace="http://schemas.atdi.com/appserver/services/WebQuery" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Result">
+        <xs:sequence>
+          <xs:element xmlns:q1="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Data" nillable="true" type="q1:QueryGroups" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultOfQueryGroupskoy_Sv8m5" nillable="true" type="tns:ResultOfQueryGroupskoy_Sv8m5" />
+  <xs:complexType name="Result">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OperationResultOfOperationStatePRoijPX3">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Result" nillable="true" type="tns:Result" />
+  <xs:complexType name="OperationResultOfOperationStatePRoijPX3">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="OperationResultOf{0}{#}" Namespace="http://schemas.atdi.com/appserver/services" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="OperationState" Namespace="http://schemas.atdi.com/appserver/services" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FaultCause" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="State" type="tns:OperationState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="OperationResultOfOperationStatePRoijPX3" nillable="true" type="tns:OperationResultOfOperationStatePRoijPX3" />
+  <xs:simpleType name="OperationState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Success" />
+      <xs:enumeration value="Fault" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="OperationState" nillable="true" type="tns:OperationState" />
+  <xs:complexType name="ResultOfQueryMetadatakoy_Sv8m5">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultOf{0}{#}" Namespace="http://schemas.atdi.com/appserver/services" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="QueryMetadata" Namespace="http://schemas.atdi.com/appserver/services/WebQuery" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Result">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Data" nillable="true" type="q2:QueryMetadata" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultOfQueryMetadatakoy_Sv8m5" nillable="true" type="tns:ResultOfQueryMetadatakoy_Sv8m5" />
+  <xs:simpleType name="OrderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Ascending" />
+      <xs:enumeration value="Descending" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="OrderType" nillable="true" type="tns:OrderType" />
+  <xs:simpleType name="DataType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Undefined" />
+      <xs:enumeration value="String" />
+      <xs:enumeration value="Boolean" />
+      <xs:enumeration value="Integer" />
+      <xs:enumeration value="DateTime" />
+      <xs:enumeration value="Double" />
+      <xs:enumeration value="Float" />
+      <xs:enumeration value="Decimal" />
+      <xs:enumeration value="Byte" />
+      <xs:enumeration value="Bytes" />
+      <xs:enumeration value="Guid" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DataType" nillable="true" type="tns:DataType" />
+  <xs:complexType name="Condition">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Type" type="tns:ConditionType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Condition" nillable="true" type="tns:Condition" />
+  <xs:simpleType name="ConditionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Complex" />
+      <xs:enumeration value="Expression" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ConditionType" nillable="true" type="tns:ConditionType" />
+  <xs:complexType name="ConditionExpression">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Condition">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="LeftOperand" nillable="true" type="tns:Operand" />
+          <xs:element minOccurs="0" name="Operator" type="tns:ConditionOperator" />
+          <xs:element minOccurs="0" name="RightOperand" nillable="true" type="tns:Operand" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConditionExpression" nillable="true" type="tns:ConditionExpression" />
+  <xs:complexType name="Operand">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Type" type="tns:OperandType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Operand" nillable="true" type="tns:Operand" />
+  <xs:simpleType name="OperandType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Column" />
+      <xs:enumeration value="Value" />
+      <xs:enumeration value="Values" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="OperandType" nillable="true" type="tns:OperandType" />
+  <xs:complexType name="ValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Operand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DataType" type="tns:DataType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ValueOperand" nillable="true" type="tns:ValueOperand" />
+  <xs:complexType name="StringValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StringValueOperand" nillable="true" type="tns:StringValueOperand" />
+  <xs:complexType name="BooleanValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:boolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BooleanValueOperand" nillable="true" type="tns:BooleanValueOperand" />
+  <xs:complexType name="IntegerValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="IntegerValueOperand" nillable="true" type="tns:IntegerValueOperand" />
+  <xs:complexType name="DateTimeValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DateTimeValueOperand" nillable="true" type="tns:DateTimeValueOperand" />
+  <xs:complexType name="FloatValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FloatValueOperand" nillable="true" type="tns:FloatValueOperand" />
+  <xs:complexType name="DoubleValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DoubleValueOperand" nillable="true" type="tns:DoubleValueOperand" />
+  <xs:complexType name="DecimalValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:decimal" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DecimalValueOperand" nillable="true" type="tns:DecimalValueOperand" />
+  <xs:complexType name="ByteValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:unsignedByte" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ByteValueOperand" nillable="true" type="tns:ByteValueOperand" />
+  <xs:complexType name="BytesValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="xs:base64Binary" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BytesValueOperand" nillable="true" type="tns:BytesValueOperand" />
+  <xs:complexType name="GuidValueOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValueOperand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Value" nillable="true" type="ser:guid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GuidValueOperand" nillable="true" type="tns:GuidValueOperand" />
+  <xs:complexType name="ColumnOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Operand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ColumnName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Source" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ColumnOperand" nillable="true" type="tns:ColumnOperand" />
+  <xs:complexType name="ValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Operand">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DataType" type="tns:DataType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ValuesOperand" nillable="true" type="tns:ValuesOperand" />
+  <xs:complexType name="StringValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Values" nillable="true" type="q3:ArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StringValuesOperand" nillable="true" type="tns:StringValuesOperand" />
+  <xs:complexType name="BooleanValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q4:ArrayOfNullableOfboolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BooleanValuesOperand" nillable="true" type="tns:BooleanValuesOperand" />
+  <xs:complexType name="IntegerValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q5:ArrayOfNullableOfint" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="IntegerValuesOperand" nillable="true" type="tns:IntegerValuesOperand" />
+  <xs:complexType name="DateTimeValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q6:ArrayOfNullableOfdateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DateTimeValuesOperand" nillable="true" type="tns:DateTimeValuesOperand" />
+  <xs:complexType name="FloatValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q7:ArrayOfNullableOffloat" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FloatValuesOperand" nillable="true" type="tns:FloatValuesOperand" />
+  <xs:complexType name="DoubleValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q8:ArrayOfNullableOfdouble" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DoubleValuesOperand" nillable="true" type="tns:DoubleValuesOperand" />
+  <xs:complexType name="DecimalValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q9:ArrayOfNullableOfdecimal" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DecimalValuesOperand" nillable="true" type="tns:DecimalValuesOperand" />
+  <xs:complexType name="ByteValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q10:ArrayOfNullableOfunsignedByte" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ByteValuesOperand" nillable="true" type="tns:ByteValuesOperand" />
+  <xs:complexType name="BytesValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Values" nillable="true" type="q11:ArrayOfbase64Binary" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BytesValuesOperand" nillable="true" type="tns:BytesValuesOperand" />
+  <xs:complexType name="GuidValuesOperand">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ValuesOperand">
+        <xs:sequence>
+          <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Values" nillable="true" type="q12:ArrayOfNullableOfguid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GuidValuesOperand" nillable="true" type="tns:GuidValuesOperand" />
+  <xs:simpleType name="ConditionOperator">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Equal" />
+      <xs:enumeration value="GreaterEqual" />
+      <xs:enumeration value="GreaterThan" />
+      <xs:enumeration value="LessEqual" />
+      <xs:enumeration value="LessThan" />
+      <xs:enumeration value="NotEqual" />
+      <xs:enumeration value="IsNull" />
+      <xs:enumeration value="IsNotNull" />
+      <xs:enumeration value="Like" />
+      <xs:enumeration value="NotLike" />
+      <xs:enumeration value="In" />
+      <xs:enumeration value="NotIn" />
+      <xs:enumeration value="Between" />
+      <xs:enumeration value="NotBetween" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ConditionOperator" nillable="true" type="tns:ConditionOperator" />
+  <xs:complexType name="ComplexCondition">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Condition">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Conditions" nillable="true" type="tns:ArrayOfCondition" />
+          <xs:element minOccurs="0" name="Operator" type="tns:LogicalOperator" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ComplexCondition" nillable="true" type="tns:ComplexCondition" />
+  <xs:complexType name="ArrayOfCondition">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Condition" nillable="true" type="tns:Condition" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCondition" nillable="true" type="tns:ArrayOfCondition" />
+  <xs:simpleType name="LogicalOperator">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="And" />
+      <xs:enumeration value="Or" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="LogicalOperator" nillable="true" type="tns:LogicalOperator" />
+  <xs:complexType name="DataLimit">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Type" type="tns:LimitValueType" />
+      <xs:element minOccurs="0" name="Value" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DataLimit" nillable="true" type="tns:DataLimit" />
+  <xs:simpleType name="LimitValueType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Records" />
+      <xs:enumeration value="Percent" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="LimitValueType" nillable="true" type="tns:LimitValueType" />
+  <xs:complexType name="ArrayOfOrderExpression">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="OrderExpression" nillable="true" type="tns:OrderExpression" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfOrderExpression" nillable="true" type="tns:ArrayOfOrderExpression" />
+  <xs:complexType name="OrderExpression">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ColumnName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OrderType" type="tns:OrderType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="OrderExpression" nillable="true" type="tns:OrderExpression" />
+  <xs:simpleType name="DataSetStructure">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TypedCells" />
+      <xs:enumeration value="StringCells" />
+      <xs:enumeration value="ObjectCells" />
+      <xs:enumeration value="TypedRows" />
+      <xs:enumeration value="StringRows" />
+      <xs:enumeration value="ObjectRows" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DataSetStructure" nillable="true" type="tns:DataSetStructure" />
+  <xs:complexType name="ResultOfQueryResultkoy_Sv8m5">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultOf{0}{#}" Namespace="http://schemas.atdi.com/appserver/services" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="QueryResult" Namespace="http://schemas.atdi.com/appserver/services/WebQuery" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Result">
+        <xs:sequence>
+          <xs:element xmlns:q13="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Data" nillable="true" type="q13:QueryResult" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultOfQueryResultkoy_Sv8m5" nillable="true" type="tns:ResultOfQueryResultkoy_Sv8m5" />
+  <xs:complexType name="DataSet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Columns" nillable="true" type="tns:ArrayOfDataSetColumn" />
+      <xs:element minOccurs="0" name="RowCount" type="xs:int" />
+      <xs:element minOccurs="0" name="Structure" type="tns:DataSetStructure" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DataSet" nillable="true" type="tns:DataSet" />
+  <xs:complexType name="ArrayOfDataSetColumn">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DataSetColumn" nillable="true" type="tns:DataSetColumn" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDataSetColumn" nillable="true" type="tns:ArrayOfDataSetColumn" />
+  <xs:complexType name="DataSetColumn">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Index" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" type="tns:DataType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DataSetColumn" nillable="true" type="tns:DataSetColumn" />
+  <xs:complexType name="TypedCellsDataSet">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DataSet">
+        <xs:sequence>
+          <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="BooleanCells" nillable="true" type="q14:ArrayOfArrayOfNullableOfboolean" />
+          <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="ByteCells" nillable="true" type="q15:ArrayOfArrayOfNullableOfunsignedByte" />
+          <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BytesCells" nillable="true" type="q16:ArrayOfArrayOfbase64Binary" />
+          <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="DateTimeCells" nillable="true" type="q17:ArrayOfArrayOfNullableOfdateTime" />
+          <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="DecimalCells" nillable="true" type="q18:ArrayOfArrayOfNullableOfdecimal" />
+          <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="DoubleCells" nillable="true" type="q19:ArrayOfArrayOfNullableOfdouble" />
+          <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="FloatCells" nillable="true" type="q20:ArrayOfArrayOfNullableOffloat" />
+          <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="GuidCells" nillable="true" type="q21:ArrayOfArrayOfNullableOfguid" />
+          <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="IntegerCells" nillable="true" type="q22:ArrayOfArrayOfNullableOfint" />
+          <xs:element xmlns:q23="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="StringCells" nillable="true" type="q23:ArrayOfArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TypedCellsDataSet" nillable="true" type="tns:TypedCellsDataSet" />
+  <xs:complexType name="StringCellsDataSet">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DataSet">
+        <xs:sequence>
+          <xs:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Cells" nillable="true" type="q24:ArrayOfArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StringCellsDataSet" nillable="true" type="tns:StringCellsDataSet" />
+  <xs:complexType name="ObjectCellsDataSet">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DataSet">
+        <xs:sequence>
+          <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Cells" nillable="true" type="q25:ArrayOfArrayOfanyType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ObjectCellsDataSet" nillable="true" type="tns:ObjectCellsDataSet" />
+  <xs:complexType name="TypedRowsDataSet">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DataSet">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Rows" nillable="true" type="tns:ArrayOfTypedDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TypedRowsDataSet" nillable="true" type="tns:TypedRowsDataSet" />
+  <xs:complexType name="ArrayOfTypedDataRow">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TypedDataRow" nillable="true" type="tns:TypedDataRow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTypedDataRow" nillable="true" type="tns:ArrayOfTypedDataRow" />
+  <xs:complexType name="TypedDataRow">
+    <xs:sequence>
+      <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="BooleanCells" nillable="true" type="q26:ArrayOfNullableOfboolean" />
+      <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="ByteCells" nillable="true" type="q27:ArrayOfNullableOfunsignedByte" />
+      <xs:element xmlns:q28="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BytesCells" nillable="true" type="q28:ArrayOfbase64Binary" />
+      <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="DateTimeCells" nillable="true" type="q29:ArrayOfNullableOfdateTime" />
+      <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="DecimalCells" nillable="true" type="q30:ArrayOfNullableOfdecimal" />
+      <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="DoubleCells" nillable="true" type="q31:ArrayOfNullableOfdouble" />
+      <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="FloatCells" nillable="true" type="q32:ArrayOfNullableOffloat" />
+      <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="GuidCells" nillable="true" type="q33:ArrayOfNullableOfguid" />
+      <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="IntegerCells" nillable="true" type="q34:ArrayOfNullableOfint" />
+      <xs:element xmlns:q35="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="StringCells" nillable="true" type="q35:ArrayOfstring" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TypedDataRow" nillable="true" type="tns:TypedDataRow" />
+  <xs:complexType name="StringRowsDataSet">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DataSet">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Rows" nillable="true" type="tns:ArrayOfStringDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StringRowsDataSet" nillable="true" type="tns:StringRowsDataSet" />
+  <xs:complexType name="ArrayOfStringDataRow">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StringDataRow" nillable="true" type="tns:StringDataRow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStringDataRow" nillable="true" type="tns:ArrayOfStringDataRow" />
+  <xs:complexType name="StringDataRow">
+    <xs:sequence>
+      <xs:element xmlns:q36="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Cells" nillable="true" type="q36:ArrayOfstring" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StringDataRow" nillable="true" type="tns:StringDataRow" />
+  <xs:complexType name="ObjectRowsDataSet">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DataSet">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Rows" nillable="true" type="tns:ArrayOfObjectDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ObjectRowsDataSet" nillable="true" type="tns:ObjectRowsDataSet" />
+  <xs:complexType name="ArrayOfObjectDataRow">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ObjectDataRow" nillable="true" type="tns:ObjectDataRow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfObjectDataRow" nillable="true" type="tns:ArrayOfObjectDataRow" />
+  <xs:complexType name="ObjectDataRow">
+    <xs:sequence>
+      <xs:element xmlns:q37="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Cells" nillable="true" type="q37:ArrayOfanyType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ObjectDataRow" nillable="true" type="tns:ObjectDataRow" />
+  <xs:complexType name="Changeset">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Actions" nillable="true" type="tns:ArrayOfAction" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Changeset" nillable="true" type="tns:Changeset" />
+  <xs:complexType name="ArrayOfAction">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Action" nillable="true" type="tns:Action" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAction" nillable="true" type="tns:ArrayOfAction" />
+  <xs:complexType name="Action">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Type" type="tns:ActionType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Action" nillable="true" type="tns:Action" />
+  <xs:simpleType name="ActionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Create" />
+      <xs:enumeration value="Update" />
+      <xs:enumeration value="Delete" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ActionType" nillable="true" type="tns:ActionType" />
+  <xs:complexType name="CreationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Action">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Columns" nillable="true" type="tns:ArrayOfDataSetColumn" />
+          <xs:element minOccurs="0" name="RowType" type="tns:DataRowType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreationAction" nillable="true" type="tns:CreationAction" />
+  <xs:simpleType name="DataRowType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TypedCell" />
+      <xs:enumeration value="StringCell" />
+      <xs:enumeration value="ObjectCell" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DataRowType" nillable="true" type="tns:DataRowType" />
+  <xs:complexType name="TypedRowCreationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:CreationAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Row" nillable="true" type="tns:TypedDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TypedRowCreationAction" nillable="true" type="tns:TypedRowCreationAction" />
+  <xs:complexType name="StringRowCreationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:CreationAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Row" nillable="true" type="tns:StringDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StringRowCreationAction" nillable="true" type="tns:StringRowCreationAction" />
+  <xs:complexType name="ObjectRowCreationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:CreationAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Row" nillable="true" type="tns:ObjectDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ObjectRowCreationAction" nillable="true" type="tns:ObjectRowCreationAction" />
+  <xs:complexType name="UpdationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Action">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Columns" nillable="true" type="tns:ArrayOfDataSetColumn" />
+          <xs:element minOccurs="0" name="Condition" nillable="true" type="tns:Condition" />
+          <xs:element minOccurs="0" name="RowType" type="tns:DataRowType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UpdationAction" nillable="true" type="tns:UpdationAction" />
+  <xs:complexType name="TypedRowUpdationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:UpdationAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Row" nillable="true" type="tns:TypedDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TypedRowUpdationAction" nillable="true" type="tns:TypedRowUpdationAction" />
+  <xs:complexType name="StringRowUpdationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:UpdationAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Row" nillable="true" type="tns:StringDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StringRowUpdationAction" nillable="true" type="tns:StringRowUpdationAction" />
+  <xs:complexType name="ObjectRowUpdationAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:UpdationAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Row" nillable="true" type="tns:ObjectDataRow" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ObjectRowUpdationAction" nillable="true" type="tns:ObjectRowUpdationAction" />
+  <xs:complexType name="DeletionAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Action">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Condition" nillable="true" type="tns:Condition" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DeletionAction" nillable="true" type="tns:DeletionAction" />
+  <xs:complexType name="ResultOfChangesResultPRoijPX3">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultOf{0}{#}" Namespace="http://schemas.atdi.com/appserver/services" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ChangesResult" Namespace="http://schemas.atdi.com/appserver/services" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Result">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Data" nillable="true" type="tns:ChangesResult" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultOfChangesResultPRoijPX3" nillable="true" type="tns:ResultOfChangesResultPRoijPX3" />
+  <xs:complexType name="ChangesResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Actions" nillable="true" type="tns:ArrayOfActionResult" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ChangesResult" nillable="true" type="tns:ChangesResult" />
+  <xs:complexType name="ArrayOfActionResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ActionResult" nillable="true" type="tns:ActionResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfActionResult" nillable="true" type="tns:ArrayOfActionResult" />
+  <xs:complexType name="ActionResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RecordsAffected" type="xs:int" />
+      <xs:element minOccurs="0" name="Success" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Type" type="tns:ActionType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ActionResult" nillable="true" type="tns:ActionResult" />
+</xs:schema>

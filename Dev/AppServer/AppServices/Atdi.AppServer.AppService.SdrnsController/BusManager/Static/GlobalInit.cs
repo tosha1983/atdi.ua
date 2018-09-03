@@ -11,14 +11,14 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Threading.Tasks;
 using System.Collections;
-using DAL;
 using XMLLibrary;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.AppServer;
-
-
-
+using Atdi.Oracle.DataAccess;
+using EasyNetQ;
+using System.Configuration;
+using System.Collections.Concurrent;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -27,90 +27,77 @@ namespace Atdi.SDNRS.AppServer.BusManager
     /// </summary>
     public static class GlobalInit
     {
-        public static ConnectDB conn { get; set; }
         #region Lists_Global_Objects
-        // List all task (for service1)
-        public static List<MeasTask> LIST_MEAS_TASK = new List<MeasTask>();
-        // List all task (for service5)
-        public static List<MeasSdrResults> MEAS_SDR_RESULTS = new List<MeasSdrResults>();
-        // List all MeasurementResults
-        public static List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
-        // List all results
-        // Список активных объектов SENSOR
-        public static List<Sensor> SensorListSDRNS = new List<Sensor>();
-        // Перечень всех доступных устройств SDR
-        // имя очереди для отправки списка наименований устройств в AppServer
-        public static string DevicesAllList = "DevicesAllList";
-
+        //public static ConcurrentDictionary<int,MeasTask> blockingCollectionMeasTask = new ConcurrentDictionary<int, MeasTask>();
+        //public static BlockingCollection<MeasurementResults> blockingCollectionMeasurementResults = new BlockingCollection<MeasurementResults>();
         #endregion
 
 
+
+        // Список объектов, содержащих сведения о текущем состоянии активности каждого сенсора
+        public static List<Mdx> Lst_timers = new List<Mdx>();
         public static string MainRabbitMQServices = BaseXMLConfiguration.xml_conf._MainRabbitMQServices;
         // Значение по умолчанию для значения из XML (MEAS_TIME_PARAM_LIST.PER_INTERVAL = 300 сек)
         // Данное значение использувется если MEAS_TIME_PARAM_LIST.PER_INTERVAL = 0 !!!
         public static int DefaultValueMinTimeInterval = BaseXMLConfiguration.xml_conf._DefaultValueMinTimeInterval;
-
-        // Список объектов, содержащих сведения о текущем состоянии активности каждого сенсора
-        public static List<Mdx> Lst_timers = new List<Mdx>();
-
         #region Template_name_queue
-        public static string Template_SENSORS_Main_List_APPServer = "SENSORS_Main_List_APPServer_";
-        public static string Template_SENSORS_Main_List_SDR = "SENSORS_Main_List_SDR_";
-        public static string Template_SENSORS_Main_List_Status_APPServer = "SENSORS_Main_List_Status_APPServer_";
-        public static string Template_SENSORS_Stop_List = "SENSORS_Stop_List_";
-        public static string Template_MEAS_RESULTS_Main_List_APPServer = "MEAS_RESULTS_Main_List_APPServer_";
-        public static string Template_MEAS_RESULTS_Main_List_SDR = "MEAS_RESULTS_Main_List_SDR_";
-        public static string Template_MEAS_RESULTS_Stop_List = "MEAS_RESULTS_Stop_List_";
-        public static string Template_MEAS_SDR_RESULTS_Main_List_APPServer = "MEAS_SDR_RESULTS_Main_List_APPServer_";
-        public static string Template_MEAS_SDR_RESULTS_Main_List_SDR = "MEAS_SDR_RESULTS_Main_List_SDR_";
-        public static string Template_MEAS_SDR_RESULTS_Stop_List = "MEAS_SDR_RESULTS_Stop_List_";
-        public static string Template_MEAS_TASK_Main_List_APPServer = "MEAS_TASK_Main_List_APPServer_";
-        public static string Template_MEAS_TASK_Main_List_SDR = "MEAS_TASK_Main_List_SDR_";
-        public static string Template_MEAS_TASK_Stop_List = "MEAS_TASK_Stop_List_";
-        public static string Template_MEAS_TASK_SDR_Main_List_APPServer = "MEAS_TASK_SDR_Main_List_APPServer_";
-        public static string Template_MEAS_TASK_SDR_Main_List_SDR = "MEAS_TASK_SDR_Main_List_SDR_";
-        public static string Template_MEAS_TASK_SDR_Stop_List = "MEAS_TASK_SDR_Stop_List_";
+        public static string DevicesAllList = "";
+        public static string Template_SENSORS_Main_List_APPServer = "";
+        public static string Template_SENSORS_Main_List_SDR = "";
+        public static string Template_SENSORS_Main_List_Status_APPServer = "";
+        public static string Template_SENSORS_Stop_List = "";
+        public static string Template_MEAS_RESULTS_Main_List_APPServer = "";
+        public static string Template_MEAS_RESULTS_Main_List_SDR = "";
+        public static string Template_MEAS_RESULTS_Stop_List = "";
+        public static string Template_MEAS_SDR_RESULTS_Main_List_APPServer = "";
+        public static string Template_MEAS_SDR_RESULTS_Main_List_SDR = "";
+        public static string Template_MEAS_SDR_RESULTS_Stop_List = "";
+        public static string Template_MEAS_TASK_Main_List_APPServer = "";
+        public static string Template_MEAS_TASK_Main_List_SDR = "";
+        public static string Template_MEAS_TASK_Stop_List = "";
+        public static string Template_MEAS_TASK_SDR_Main_List_APPServer = "";
+        public static string Template_MEAS_TASK_SDR_Main_List_SDR = "";
+        public static string Template_MEAS_TASK_SDR_Stop_List = "";
         // имя очереди для отправки списка наименований очередей в заданную SDR
-        public static string QueuesAllList = "QueuesAllList_";
+        public static string QueuesAllList = "";
 
 
-        public static string Template_SENSOR_SDRNS_List_Request = "SENSOR_SDRNS_List_Request_";
-        public static string Template_SENSOR_SDRNS_List_Response = "SENSOR_SDRNS_List_Response_";
+        public static string Template_SENSOR_SDRNS_List_Request = "";
+        public static string Template_SENSOR_SDRNS_List_Response = "";
 
-        public static string Template_SENSORS_List_ = "SENSORS_List";
+        public static string Template_SENSORS_List_ = "";
         public static bool BoolTemplate_SENSORS_List_ = false;
-
-        
-
 
 
         //Очередь для приема подтверждений об успешной отправке сенсора с координатами в SDRNS
-        public static string Template_Event_Confirm_SENSORS_Send_ = "Event_Confirm_SENSORS_Send_";
-        
+        public static string Template_Event_Confirm_SENSORS_Send_ = "";
+
         //Очередь для отправки запросов в SDR на получение статуса сенсора
-        public static string Template_Event_CheckActivitySensor_Req = "Event_CheckActivitySensor_Req_";
+        public static string Template_Event_CheckActivitySensor_Req = "";
         //Очередь на  получение ответов от SDR о текущем состоянии сенсора
-        public static string Template_Event_CheckActivitySensor_Resp = "Event_CheckActivitySensor_Resp_";
+        public static string Template_Event_CheckActivitySensor_Resp = "";
 
 
         //Очередь для отправки запросов в SDRNS на получение сенсора в WCF - сервис
-        public static string Template_Event_Req_Sensor_ = "Event_Req_Sensor_";
+        public static string Template_Event_Req_Sensor_ = "";
         //Очередь для получения из SDRNS сенсора по запросу с  WCF - сервиса
-        public static string Template_Event_Resp_Sensor_ = "Event_Resp_Sensor_";
+        public static string Template_Event_Resp_Sensor_ = "";
         // Очередь хранения объектов MeasTaskSDR
-        public static string Template_Event_UpdateStatus_MeasSubTasks_From_MeasTaskSDR = "Event_St_MeasSubTasks_From_MeasTaskSDR_";
+        public static string Template_Event_UpdateStatus_MeasSubTasks_From_MeasTaskSDR = "";
         //Очередь для отправки подтверждений об успешном получении результатов со стороны SDR
-        public static string Template_Event_Confirm_MeasTaskResults_Send_ = "Event_Confirm_MeasTaskResults_Send_";
+        public static string Template_Event_Confirm_MeasTaskResults_Send_ = "";
+
+        public static string RabbitHostName { get; }
+        public static string RabbitUserName { get; }
+        public static string RabbitPassword { get; }
+        public static string NameServer { get; }
+        public static string ExchangePointFromDevices { get; }
+        public static string ExchangePointFromServer { get; }
+        public static string StartNameQueueServer { get; }
+        public static string StartNameQueueDevice { get; }
+        public static string ConcumerDescribe { get; }
 
         #endregion
-
-        /*
-        public static  List<IDisposable> Lds_Activity_Sensor_Receiver = new List<IDisposable>();
-        public static List<IDisposable> Lds_Activity_Sensor_List = new List<IDisposable>();
-        public static List<IDisposable> Lds_Activity_MEAS_TASK_SDR_Main_List_SDR = new List<IDisposable>();
-        public static List<IDisposable> Lds_Activity_MEAS_SDR_RESULTS_Main_List_APPServer = new List<IDisposable>();
-        public static List<KeyValuePair<bool, string>> Receive_Lds_Activity_MEAS_SDR_RESULTS_Main_List_APPServer = new List<KeyValuePair<bool, string>>();
-        */
 
         public static void Initialization()
         {
@@ -119,8 +106,58 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         static GlobalInit()
         {
-            conn = new ConnectDB();
+            System.Configuration.Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            GlobalInit.DevicesAllList = ConfigurationManager.AppSettings["DevicesAllList"];
+            GlobalInit.Template_SENSORS_Main_List_APPServer = ConfigurationManager.AppSettings["Template_SENSORS_Main_List_APPServer"];
+            GlobalInit.Template_SENSORS_Main_List_SDR = ConfigurationManager.AppSettings["Template_SENSORS_Main_List_SDR"];
+            GlobalInit.Template_SENSORS_Main_List_Status_APPServer = ConfigurationManager.AppSettings["Template_SENSORS_Main_List_Status_APPServer"];
+            GlobalInit.Template_SENSORS_Stop_List = ConfigurationManager.AppSettings["Template_SENSORS_Stop_List"];
+            GlobalInit.Template_MEAS_RESULTS_Main_List_APPServer = ConfigurationManager.AppSettings["Template_MEAS_RESULTS_Main_List_APPServer"];
+            GlobalInit.Template_MEAS_RESULTS_Main_List_SDR = ConfigurationManager.AppSettings["Template_MEAS_RESULTS_Main_List_SDR"];
+            GlobalInit.Template_MEAS_RESULTS_Stop_List = ConfigurationManager.AppSettings["Template_MEAS_RESULTS_Stop_List"];
+            GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer = ConfigurationManager.AppSettings["Template_MEAS_SDR_RESULTS_Main_List_APPServer"];
+            GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_SDR = ConfigurationManager.AppSettings["Template_MEAS_SDR_RESULTS_Main_List_SDR"];
+            GlobalInit.Template_MEAS_SDR_RESULTS_Stop_List = ConfigurationManager.AppSettings["Template_MEAS_SDR_RESULTS_Stop_List"];
+            GlobalInit.Template_MEAS_TASK_Main_List_APPServer = ConfigurationManager.AppSettings["Template_MEAS_TASK_Main_List_APPServer"];
+            GlobalInit.Template_MEAS_TASK_Main_List_SDR = ConfigurationManager.AppSettings["Template_MEAS_TASK_Main_List_SDR"];
+            GlobalInit.Template_MEAS_TASK_Stop_List = ConfigurationManager.AppSettings["Template_MEAS_TASK_Stop_List"];
+            GlobalInit.Template_MEAS_TASK_SDR_Main_List_APPServer = ConfigurationManager.AppSettings["Template_MEAS_TASK_SDR_Main_List_APPServer"];
+            GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR = ConfigurationManager.AppSettings["Template_MEAS_TASK_SDR_Main_List_SDR"];
+            GlobalInit.Template_MEAS_TASK_SDR_Stop_List = ConfigurationManager.AppSettings["Template_MEAS_TASK_SDR_Stop_List"];
+            GlobalInit.QueuesAllList = ConfigurationManager.AppSettings["QueuesAllList"];
+            GlobalInit.Template_SENSOR_SDRNS_List_Request = ConfigurationManager.AppSettings["Template_SENSOR_SDRNS_List_Request"];
+            GlobalInit.Template_SENSOR_SDRNS_List_Response = ConfigurationManager.AppSettings["Template_SENSOR_SDRNS_List_Response"];
+            GlobalInit.Template_SENSORS_List_ = ConfigurationManager.AppSettings["Template_SENSORS_List_"];
+            GlobalInit.Template_Event_Confirm_SENSORS_Send_ = ConfigurationManager.AppSettings["Template_Event_Confirm_SENSORS_Send_"];
+            GlobalInit.Template_Event_CheckActivitySensor_Req = ConfigurationManager.AppSettings["Template_Event_CheckActivitySensor_Req"];
+            GlobalInit.Template_Event_CheckActivitySensor_Resp = ConfigurationManager.AppSettings["Template_Event_CheckActivitySensor_Resp"];
+            GlobalInit.Template_Event_Req_Sensor_ = ConfigurationManager.AppSettings["Template_Event_Req_Sensor_"];
+            GlobalInit.Template_Event_Resp_Sensor_ = ConfigurationManager.AppSettings["Template_Event_Resp_Sensor_"];
+            GlobalInit.Template_Event_UpdateStatus_MeasSubTasks_From_MeasTaskSDR = ConfigurationManager.AppSettings["Template_Event_UpdateStatus_MeasSubTasks_From_MeasTaskSDR"];
+            GlobalInit.Template_Event_Confirm_MeasTaskResults_Send_ = ConfigurationManager.AppSettings["Template_Event_Confirm_MeasTaskResults_Send_"];
+            GlobalInit.RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
+            GlobalInit.RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
+            GlobalInit.RabbitPassword = ConfigurationManager.AppSettings["RabbitPassword"];
+            GlobalInit.NameServer = ConfigurationManager.AppSettings["NameServer"];
+            GlobalInit.ExchangePointFromDevices = ConfigurationManager.AppSettings["ExchangePointFromDevices"];
+            GlobalInit.ExchangePointFromServer = ConfigurationManager.AppSettings["ExchangePointFromServer"];
+            GlobalInit.StartNameQueueServer = ConfigurationManager.AppSettings["StartNameQueueServer"];
+            GlobalInit.StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
+            GlobalInit.ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
+            BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
+            GlobalInit.Initialization();
+            Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();
+            try
+            {
+                oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+            }
+            catch (Exception) { }
         }
 
+    }
+
+    public static class InitConnectionString
+    {
+        public static string oraDbString { get; set; }
     }
 }

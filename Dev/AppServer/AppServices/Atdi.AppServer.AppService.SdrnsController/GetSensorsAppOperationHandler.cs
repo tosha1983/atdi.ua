@@ -9,7 +9,7 @@ using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer;
-
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -28,12 +28,26 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         }
 
-
+      
         public override Sensor[] Handle(GetSensorsAppOperationOptions options, IAppOperationContext operationContext)
         {
             Logger.Trace(this, options, operationContext);
             List<Sensor> val = new List<Sensor>();
-            val = GlobalInit.SensorListSDRNS;
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                try
+                {
+                    ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
+                    val = gsd.LoadObjectAllSensor();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
+
+            });
+            thread.Start();
+            thread.Join();
             return val.ToArray();
         }
     }

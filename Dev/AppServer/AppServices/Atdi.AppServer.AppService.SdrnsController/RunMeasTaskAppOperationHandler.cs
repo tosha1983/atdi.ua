@@ -23,6 +23,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
     {
         public RunMeasTaskAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
+
         }
 
         /// <summary>
@@ -34,29 +35,34 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override CommonOperationResult Handle(RunMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             CommonOperationResult res = new CommonOperationResult();
-            Task ge = new Task(() =>
+            System.Threading.Thread ge = new System.Threading.Thread(() =>
             {
                 try
                 {
                     if (options.TaskId != null)
                     {
-                        MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
+                        ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
+                        ClassConvertTasks ts = new ClassConvertTasks(Logger);
+                        MeasTask[] ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value));
+                        MeasTask mt = ResMeasTasks.ToList().Find(z => z.Id.Value == options.TaskId.Value);
                         if (mt != null)
                         {
-                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks();
+                            WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                             //int ID = tasks.Create_New_Meas_Task(mt, "Run");
                             List<int> SensorIds = new List<int>();
                             foreach (MeasSubTask item in mt.MeasSubTasks)
                             {
                                 foreach (MeasSubTaskStation u in item.MeasSubTaskStations)
                                 {
-                                    SensorIds.Add(u.StationId.Value);
+                                    if (!SensorIds.Contains(u.StationId.Value))
+                                        SensorIds.Add(u.StationId.Value);
                                 }
                             }
 
                             foreach (MeasStation item in mt.Stations)
                             {
-                                SensorIds.Add(item.StationId.Value);
+                                if (!SensorIds.Contains(item.StationId.Value))
+                                    SensorIds.Add(item.StationId.Value);
                             }
 
 
@@ -64,7 +70,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             if (SensorIds.Count > 0)
                             {
                                 bool isOnline = false;
-                                WorkFlowProcessManageTasks.Process_Multy_Meas(mt_edit, SensorIds, "Run", isOnline);
+                                bool isSuccess = false;
+                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Run", isOnline, out isSuccess);
                                 res.State = CommonOperationState.Success;
                             }
                         }
@@ -75,9 +82,11 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 {
                     res.State = CommonOperationState.Fault;
                     res.FaultCause = ex.Message;
+                    Logger.Trace("Error in procedure RunMeasTaskAppOperationHandler: " + ex.Message);
                 }
             });
-            ge.RunSynchronously();
+            ge.Start();
+            ge.Join();
             return res;
 
         }

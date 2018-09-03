@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="1de00b3f-b821-46f0-b56d-f849b1653167" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8736/Atdi/WcfServices/WebQuery/" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="85a87d09-e604-41d9-81fd-c8ba6cc3bef5" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd3" />
+    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="ec523a02-5be4-449c-be44-77804b00a130" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd2" />
+    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="cf94d87d-6a7d-4707-834c-85f99f8d4afc" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd1" />
+    <MetadataFile FileName="item3.xsd" MetadataType="Schema" ID="5fdf1c8a-537c-4f72-9df0-08cdb7eb1afe" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd0" />
+    <MetadataFile FileName="item4.xsd" MetadataType="Schema" ID="dff2cbdb-a7e2-403d-9349-0fda8f8ba19a" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd4" />
+    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="bf06809c-3b9b-4260-89d1-1b003a6efa47" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?disco" />
+    <MetadataFile FileName="item.wsdl" MetadataType="Wsdl" ID="30d82267-702f-41fc-b5eb-8bc6c79e6733" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?wsdl=wsdl0" />
+    <MetadataFile FileName="WebQuery.wsdl" MetadataType="Wsdl" ID="c26f2ba8-f12e-4184-a156-08ce275d577b" SourceId="1" SourceUrl="http://localhost:8736/Atdi/WcfServices/WebQuery/?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

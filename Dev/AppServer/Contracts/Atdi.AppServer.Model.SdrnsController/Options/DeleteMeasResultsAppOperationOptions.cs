@@ -10,6 +10,6 @@ namespace Atdi.AppServer.Models.AppServices.SdrnsController
 {
     public class DeleteMeasResultsAppOperationOptions : SdrnsControllerAppOperationOptionsBase
     {
-        public DataConstraint Constraint;
+        public MeasurementResultsIdentifier MeasResultsId;
     }
 }

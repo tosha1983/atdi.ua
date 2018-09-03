@@ -8,7 +8,7 @@ using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Contracts;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.SDNRS.AppServer.BusManager;
-
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
@@ -31,30 +31,46 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override ShortMeasurementResults Handle(GetShortMeasResultsByIdAppOperationOptions options, IAppOperationContext operationContext)
         {
             ShortMeasurementResults ShortMeas = new ShortMeasurementResults();
+            ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
+            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
             Logger.Trace(this, options, operationContext);
-            //lock (GlobalInit.LST_MeasurementResults)
+            System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                if (options.MeasResultsId != null)
+                try
                 {
-                    if (options.MeasResultsId.MeasTaskId != null)
+                    if (options.MeasResultsId != null)
                     {
-                        MeasurementResults msrt = GlobalInit.LST_MeasurementResults.Find(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId && t.Id.MeasTaskId.Value== options.MeasResultsId.MeasTaskId.Value && t.Id.SubMeasTaskId == options.MeasResultsId.SubMeasTaskId && t.Id.SubMeasTaskStationId == options.MeasResultsId.SubMeasTaskStationId);
-                        if (msrt != null)
+                        if (options.MeasResultsId != null)
                         {
-                            ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
-                            if (msrt.LocationSensorMeasurement != null)
+                            //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId);
+                            List<MeasurementResults> msrtList = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
+                            if (msrtList != null)
                             {
-                                if (msrt.LocationSensorMeasurement.Count() > 0)
+                                foreach (MeasurementResults msrt in msrtList)
                                 {
-                                    ShMsrt.CurrentLat = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lat;
-                                    ShMsrt.CurrentLon = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lon;
+                                    ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
+                                    if (msrt.LocationSensorMeasurement != null)
+                                    {
+                                        if (msrt.LocationSensorMeasurement.Count() > 0)
+                                        {
+                                            ShMsrt.CurrentLat = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lat;
+                                            ShMsrt.CurrentLon = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lon;
+                                        }
+                                    }
+                                    ShortMeas = ShMsrt;
+                                    break;
                                 }
                             }
-                            ShortMeas = ShMsrt;
                         }
                     }
                 }
-            }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
+            });
+            th.Start();
+            th.Join();
             return ShortMeas;
         }
     }

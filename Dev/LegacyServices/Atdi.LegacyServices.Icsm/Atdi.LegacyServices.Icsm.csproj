@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B06CF99E-314F-485B-9E0D-5289147D5552}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.LegacyServices.Icsm</RootNamespace>
+    <AssemblyName>Atdi.LegacyServices.Icsm</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="IcsmComponent.cs" />
+    <Compile Include="IcsmDataLayer.cs" />
+    <Compile Include="IcsmOrmQueryBuilder.cs" />
+    <Compile Include="IrpParser\Frame.cs" />
+    <Compile Include="IrpParser\FrameDate.cs" />
+    <Compile Include="IrpParser\FrameFrame.cs" />
+    <Compile Include="IrpParser\FrameDouble.cs" />
+    <Compile Include="IrpParser\FrameInt.cs" />
+    <Compile Include="IrpParser\FrameString.cs" />
+    <Compile Include="IrpParser\FrameObject.cs" />
+    <Compile Include="IrpParser\IcsmReport.cs" />
+    <Compile Include="IrpParser\IrpParser.cs" />
+    <Compile Include="Orm\DataCoding.cs" />
+    <Compile Include="Orm\DataDesc.cs" />
+    <Compile Include="Orm\DbExpressionField.cs" />
+    <Compile Include="Orm\DbField.cs" />
+    <Compile Include="Orm\DbJoin.cs" />
+    <Compile Include="Orm\DBMS.cs" />
+    <Compile Include="Orm\DbTable.cs" />
+    <Compile Include="Orm\Extensitions.cs" />
+    <Compile Include="Orm\Field.cs" />
+    <Compile Include="Orm\FieldC.cs" />
+    <Compile Include="Orm\FieldE.cs" />
+    <Compile Include="Orm\FieldF.cs" />
+    <Compile Include="Orm\FieldFOption.cs" />
+    <Compile Include="Orm\FieldJ.cs" />
+    <Compile Include="Orm\FieldL.cs" />
+    <Compile Include="Orm\FieldM.cs" />
+    <Compile Include="Orm\FieldNature.cs" />
+    <Compile Include="Orm\FieldU.cs" />
+    <Compile Include="Orm\SchemasMetadata.cs" />
+    <Compile Include="Orm\Index.cs" />
+    <Compile Include="Orm\IndexType.cs" />
+    <Compile Include="Orm\Join.cs" />
+    <Compile Include="Orm\JoinType.cs" />
+    <Compile Include="Orm\Module.cs" />
+    <Compile Include="Orm\Null.cs" />
+    <Compile Include="Orm\SchemasMetadataConfig.cs" />
+    <Compile Include="Orm\Semant.cs" />
+    <Compile Include="Orm\Table.cs" />
+    <Compile Include="Orm\TableCat.cs" />
+    <Compile Include="Orm\TableType.cs" />
+    <Compile Include="Orm\SemantType.cs" />
+    <Compile Include="Orm\VarType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IrpParser\PropertyTable.cs" />
+    <Compile Include="IrpParser\InChannel.cs" />
+    <Compile Include="IrpParser\InChannelFile.cs" />
+    <Compile Include="IrpParser\InChannelString.cs" />
+    <Compile Include="IrpParser\Query.cs" />
+    <Compile Include="QueryDataReader.cs" />
+    <Compile Include="QueryUpdateStatement.cs" />
+    <Compile Include="QueryInsertStatement.cs" />
+    <Compile Include="QueryDeleteStatement.cs" />
+    <Compile Include="QueryExecutor.cs" />
+    <Compile Include="QueryBuilder.cs" />
+    <Compile Include="IrpParser\QueryItem.cs" />
+    <Compile Include="IrpParser\ReportItem.cs" />
+    <Compile Include="IrpParser\SelectData.cs" />
+    <Compile Include="IrpParser\Semant.cs" />
+    <Compile Include="IrpParser\Utils.cs" />
+    <Compile Include="QuerySelectStatement.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="ConditionParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
+      <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
+      <Name>Atdi.AppServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
+      <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
+      <Name>Atdi.Contracts.LegacyServices.Icsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
+      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
+      <Name>Atdi.DataModels.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IcsmOrm\ICSM.Schema" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

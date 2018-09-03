@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,10 +50,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.WebQueryManager\Atdi.AppServer.AppService.WebQueryManager.csproj">
-      <Project>{8f26af82-ac78-413a-85b5-5571947dc4e0}</Project>
-      <Name>Atdi.AppServer.AppService.WebQueryManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
       <Project>{2556f633-8292-4e00-a9d0-8abb4e09d1e3}</Project>
       <Name>Atdi.AppServer.AppServices</Name>

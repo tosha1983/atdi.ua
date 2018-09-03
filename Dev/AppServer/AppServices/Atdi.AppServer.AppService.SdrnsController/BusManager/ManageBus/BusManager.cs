@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
-using CoreICSM.Logs;
 using Atdi.SDNRS.AppServer;
-using DAL;
+using RabbitMQ.Client;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -19,6 +18,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
         where T : class
         where S : class
     {
+
+
+           
+
         // метод для отправки основного объекта в шину
         public bool SendDataObject(T obj, string name_queue, string Expriration)
         {
@@ -51,7 +54,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message);
+            }
             return is_Success;
         }
         // метод для отправки стоп-листа в шину
@@ -87,7 +92,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObjectStop]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObjectStop]:" + ex.Message);
+            }
             return is_Success;
         }
     }
@@ -99,6 +106,104 @@ namespace Atdi.SDNRS.AppServer.BusManager
     public class BusManager<T>
         where T : class
     {
+
+        public bool RegisterQueue(string sensorName, string techId, string apiVer)
+        {
+            bool isSuccessRegister = false;
+            try
+            {
+                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                {
+                    using (var connection = factory.CreateConnection($"SDRN device (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var channel = connection.CreateModel())
+                    {
+                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                        var queueName = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}].[{apiVer}]";
+                        var routingKey = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}]";
+
+                    channel.ExchangeDeclare(
+                                exchange: exchange,
+                                type: "direct",
+                                durable: true
+                            );
+
+                        channel.QueueDeclare(
+                            queue: queueName,
+                            durable: true,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+                        channel.QueueBind(queueName, exchange, routingKey);
+                        isSuccessRegister = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                isSuccessRegister = false;
+            }
+            return isSuccessRegister;
+
+        }
+
+
+        public bool SendDataToServer(string sensorName, string techId, byte[] data, string apiVer, string typeMessage)
+        {
+            bool isSendSuccess = false;
+            try
+            {
+                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                {
+                    using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var channel = connection.CreateModel())
+                    {
+                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
+                        var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
+
+                        channel.ExchangeDeclare(
+                                exchange: exchange,
+                                type: "direct",
+                                durable: true
+                            );
+
+                        channel.QueueDeclare(
+                            queue: queueName,
+                            durable: true,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+                        var props = channel.CreateBasicProperties();
+                        props.Persistent = true;
+                        var messageId = Guid.NewGuid().ToString();
+
+                        props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
+                        props.MessageId = messageId;
+                        props.Type = typeMessage;;
+                        props.Headers = new Dictionary<string, object>();
+                        props.Headers["SdrnServer"] = GlobalInit.NameServer;
+                        props.Headers["SensorName"] = sensorName;
+                        props.Headers["SensorTechId"] = techId;
+                        props.DeliveryMode = 2;
+                        channel.BasicPublish(exchange: exchange,
+                                             routingKey: routingKey,
+                                             basicProperties: props,
+                                             body: data);
+                        isSendSuccess = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                isSendSuccess = false;
+            }
+            return isSendSuccess;
+           
+        }
+
+
         public uint GetMessageCount(string name_queue)
         {
             try {
@@ -155,7 +260,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); 
+            }
             return is_Success;
         }
 
@@ -176,7 +283,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false; CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[DeleteQueue]:" + ex.Message); }
+            catch (Exception ex) { is_Success = false;
+                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[DeleteQueue]:" + ex.Message); 
+            }
             return is_Success;
         }
 

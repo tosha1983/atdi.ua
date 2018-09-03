@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.atdi.com/appserver/services/WebQuery" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd2" namespace="http://schemas.atdi.com/appserver/services" />
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://localhost:8736/Atdi/WcfServices/WebQuery/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:element name="GetQueryGroups">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.atdi.com/appserver/services" minOccurs="0" name="userToken" nillable="true" type="q1:UserToken" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetQueryGroupsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.atdi.com/appserver/services" minOccurs="0" name="GetQueryGroupsResult" nillable="true" type="q2:ResultOfQueryGroupskoy_Sv8m5" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="QueryGroups">
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Groups" nillable="true" type="q3:ArrayOfQueryGroup" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q4="http://schemas.atdi.com/appserver/services/WebQuery" name="QueryGroups" nillable="true" type="q4:QueryGroups" />
+  <xs:complexType name="ArrayOfQueryGroup">
+    <xs:sequence>
+      <xs:element xmlns:q5="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" maxOccurs="unbounded" name="QueryGroup" nillable="true" type="q5:QueryGroup" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q6="http://schemas.atdi.com/appserver/services/WebQuery" name="ArrayOfQueryGroup" nillable="true" type="q6:ArrayOfQueryGroup" />
+  <xs:complexType name="QueryGroup">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CanCreate" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CanDelete" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CanModify" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q7="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="QueryTokens" nillable="true" type="q7:ArrayOfQueryToken" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q8="http://schemas.atdi.com/appserver/services/WebQuery" name="QueryGroup" nillable="true" type="q8:QueryGroup" />
+  <xs:complexType name="ArrayOfQueryToken">
+    <xs:sequence>
+      <xs:element xmlns:q9="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" maxOccurs="unbounded" name="QueryToken" nillable="true" type="q9:QueryToken" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q10="http://schemas.atdi.com/appserver/services/WebQuery" name="ArrayOfQueryToken" nillable="true" type="q10:ArrayOfQueryToken" />
+  <xs:complexType name="QueryToken">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Stamp" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="Version" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q11="http://schemas.atdi.com/appserver/services/WebQuery" name="QueryToken" nillable="true" type="q11:QueryToken" />
+  <xs:element name="GetQueryMetadata">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.atdi.com/appserver/services" minOccurs="0" name="userToken" nillable="true" type="q12:UserToken" />
+        <xs:element xmlns:q13="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="queryToken" nillable="true" type="q13:QueryToken" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetQueryMetadataResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://schemas.atdi.com/appserver/services" minOccurs="0" name="GetQueryMetadataResult" nillable="true" type="q14:ResultOfQueryMetadatakoy_Sv8m5" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="QueryMetadata">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Code" nillable="true" type="xs:string" />
+      <xs:element xmlns:q15="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Columns" nillable="true" type="q15:ArrayOfColumnMetadata" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="PrimaryKey" nillable="true" type="q16:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+      <xs:element xmlns:q17="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Token" nillable="true" type="q17:QueryToken" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q18="http://schemas.atdi.com/appserver/services/WebQuery" name="QueryMetadata" nillable="true" type="q18:QueryMetadata" />
+  <xs:complexType name="ArrayOfColumnMetadata">
+    <xs:sequence>
+      <xs:element xmlns:q19="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" maxOccurs="unbounded" name="ColumnMetadata" nillable="true" type="q19:ColumnMetadata" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q20="http://schemas.atdi.com/appserver/services/WebQuery" name="ArrayOfColumnMetadata" nillable="true" type="q20:ArrayOfColumnMetadata" />
+  <xs:complexType name="ColumnMetadata">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Format" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q21="http://schemas.atdi.com/appserver/services" minOccurs="0" name="Order" type="q21:OrderType" />
+      <xs:element minOccurs="0" name="Position" type="xs:int" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+      <xs:element xmlns:q22="http://schemas.atdi.com/appserver/services" minOccurs="0" name="Type" type="q22:DataType" />
+      <xs:element minOccurs="0" name="Width" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q23="http://schemas.atdi.com/appserver/services/WebQuery" name="ColumnMetadata" nillable="true" type="q23:ColumnMetadata" />
+  <xs:element name="GetQueryMetadataByCode">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.atdi.com/appserver/services" minOccurs="0" name="userToken" nillable="true" type="q24:UserToken" />
+        <xs:element minOccurs="0" name="queryCode" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetQueryMetadataByCodeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.atdi.com/appserver/services" minOccurs="0" name="GetQueryMetadataByCodeResult" nillable="true" type="q25:ResultOfQueryMetadatakoy_Sv8m5" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExecuteQuery">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.atdi.com/appserver/services" minOccurs="0" name="userToken" nillable="true" type="q26:UserToken" />
+        <xs:element xmlns:q27="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="queryToken" nillable="true" type="q27:QueryToken" />
+        <xs:element xmlns:q28="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="fetchOptions" nillable="true" type="q28:FetchOptions" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="FetchOptions">
+    <xs:sequence>
+      <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Columns" nillable="true" type="q29:ArrayOfstring" />
+      <xs:element xmlns:q30="http://schemas.atdi.com/appserver/services" minOccurs="0" name="Condition" nillable="true" type="q30:Condition" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element xmlns:q31="http://schemas.atdi.com/appserver/services" minOccurs="0" name="Limit" nillable="true" type="q31:DataLimit" />
+      <xs:element xmlns:q32="http://schemas.atdi.com/appserver/services" minOccurs="0" name="Orders" nillable="true" type="q32:ArrayOfOrderExpression" />
+      <xs:element xmlns:q33="http://schemas.atdi.com/appserver/services" minOccurs="0" name="ResultStructure" type="q33:DataSetStructure" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q34="http://schemas.atdi.com/appserver/services/WebQuery" name="FetchOptions" nillable="true" type="q34:FetchOptions" />
+  <xs:element name="ExecuteQueryResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q35="http://schemas.atdi.com/appserver/services" minOccurs="0" name="ExecuteQueryResult" nillable="true" type="q35:ResultOfQueryResultkoy_Sv8m5" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="QueryResult">
+    <xs:sequence>
+      <xs:element xmlns:q36="http://schemas.atdi.com/appserver/services" minOccurs="0" name="Dataset" nillable="true" type="q36:DataSet" />
+      <xs:element minOccurs="0" name="OptionId" type="ser:guid" />
+      <xs:element xmlns:q37="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="Token" nillable="true" type="q37:QueryToken" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q38="http://schemas.atdi.com/appserver/services/WebQuery" name="QueryResult" nillable="true" type="q38:QueryResult" />
+  <xs:element name="SaveChanges">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q39="http://schemas.atdi.com/appserver/services" minOccurs="0" name="userToken" nillable="true" type="q39:UserToken" />
+        <xs:element xmlns:q40="http://schemas.atdi.com/appserver/services/WebQuery" minOccurs="0" name="queryToken" nillable="true" type="q40:QueryToken" />
+        <xs:element xmlns:q41="http://schemas.atdi.com/appserver/services" minOccurs="0" name="changeset" nillable="true" type="q41:Changeset" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveChangesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q42="http://schemas.atdi.com/appserver/services" minOccurs="0" name="SaveChangesResult" nillable="true" type="q42:ResultOfChangesResultPRoijPX3" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

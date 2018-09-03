@@ -183,6 +183,6 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        CommonOperationDataResult<int> DeleteMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs);
+        CommonOperationDataResult<int> DeleteMeasResults(MeasurementResultsIdentifier MeasResultsId, CommonOperationArguments otherArgs);
     }
 }

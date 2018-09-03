@@ -36,14 +36,14 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        CommonOperationDataResult<int> ISdrnsController.DeleteMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs)
+        CommonOperationDataResult<int> ISdrnsController.DeleteMeasResults(MeasurementResultsIdentifier MeasResultsId, CommonOperationArguments otherArgs)
         {
             var result =
                 Operation<SdrnsControllerAppService.DeleteMeasResultsAppOperation, CommonOperationDataResult<int>>()
                     .Invoke(
                         new DeleteMeasResultsAppOperationOptions
                         {
-                            Constraint = constraint,
+                            MeasResultsId = MeasResultsId,
                             OtherArgs = otherArgs
                         },
                         this.OperationContext
