@@ -11,6 +11,7 @@ using CS = XICSM.ICSControlClient.WpfControls.Charts;
 using MP = XICSM.ICSControlClient.WpfControls.Maps;
 using SDR = Atdi.AppServer.Contracts.Sdrns;
 using System.Windows;
+using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -69,8 +70,9 @@ namespace XICSM.ICSControlClient.ViewModels
         private Visibility _measTaskDetailVisibility = Visibility.Hidden;
         private Visibility _measResultsDetailVisibility = Visibility.Hidden;
 
-#region Commands
+        #region Commands
 
+        public WpfCommand CreateMeasTaskCommand { get; set; }
         public WpfCommand DeleteMeasTaskCommand { get; set; }
         public WpfCommand RunMeasTaskCommand { get; set; }
         public WpfCommand StopMeasTaskCommand { get; set; }
@@ -110,6 +112,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this._currentChartOption = this.GetDefaultChartOption();
 
+            this.CreateMeasTaskCommand = new WpfCommand(this.OnCreateMeasTaskCommand);
             this.DeleteMeasTaskCommand = new WpfCommand(this.OnDeleteMeasTaskCommand);
             this.RunMeasTaskCommand = new WpfCommand(this.OnRunMeasTaskCommand);
             this.StopMeasTaskCommand = new WpfCommand(this.OnStopMeasTaskCommand);
@@ -341,6 +344,19 @@ namespace XICSM.ICSControlClient.ViewModels
             this._levelMeasurements.Source = this.CurrentResultsMeasurementsStation.LevelMeasurements;
         }
 
+        private void OnCreateMeasTaskCommand(object parameter)
+        {
+            try
+            {
+                var measTaskForm = new FM.MeasTaskForm();
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
         private void OnDeleteMeasTaskCommand(object parameter)
         {
             if (this.CurrentShortMeasTask == null)

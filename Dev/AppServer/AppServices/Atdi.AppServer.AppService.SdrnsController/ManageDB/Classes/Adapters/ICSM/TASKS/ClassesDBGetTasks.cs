@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.Oracle.DataAccess;
-using System.Windows.Forms;
-using System.IO;
-using System.IO.Compression;
-using System.Xml;
-using System.Globalization;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.AppServer;
 using System.Data.Common;
-using Atdi.SDNRS.AppServer.BusManager;
+
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -820,7 +813,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 {
                     if (res.m_id > 0)
                     {
-                        MaxIDs = (int)res.m_id;
+                        MaxIDs = res.m_id.Value;
                         break;
                     }
                 }
@@ -903,14 +896,82 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return isSuccess;
         }
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public int SaveTaskToDB(MeasTask obj)
+        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
         {
-            int ID = Constants.NullI;
+           int? NUM_Val = null;
+           System.Threading.Thread thread = new System.Threading.Thread(() =>
+           {
+               Yyy yyy = new Yyy();
+               DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+               if (dbConnect.State == System.Data.ConnectionState.Open)
+               {
+                   DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                   try
+                   {
+                       logger.Trace("Start procedure SaveTaskToDB...");
+                       int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR","NUM");
+                       ++Num;
+
+                       bool isNew = false;
+                       YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                       meastask.Format("*");
+                       if (!meastask.Fetch(string.Format("MEASTASKID={0} AND MEASSUBTASKID={1} AND MEASSUBTASKSTATIONID={2} AND SENSORID={3}", TaskId, SubTaskId, SubTaskStationId, SensorId)))
+                       {
+                           meastask.New();
+                           isNew = true;
+                           NUM_Val = Num;
+                       }
+                       else
+                       {
+                           NUM_Val = meastask.m_num;
+                       }
+                       meastask.m_meastaskid = TaskId;
+                       meastask.m_meassubtaskid = SubTaskId;
+                       meastask.m_meassubtaskstationid = SubTaskStationId;
+                       meastask.m_sensorid = SensorId;
+                       meastask.m_num = Num;
+                       if (isNew)  meastask.Save(dbConnect, transaction);
+                       meastask.Close();
+                       meastask.Dispose();
+                       transaction.Commit();
+                       
+                   }
+                   catch (Exception ex)
+                   {
+                       try
+                       {
+                           transaction.Rollback();
+                       }
+                       catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
+                       logger.Error("Error in SaveTaskToDB: " + ex.Message);
+                   }
+                   finally
+                   {
+                       transaction.Dispose();
+                       dbConnect.Close();
+                       dbConnect.Dispose();
+                   }
+               }
+           });
+          thread.Start();
+          thread.Join();
+          return NUM_Val;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int? SaveTaskToDB(MeasTask obj)
+        {
+            int? ID = Constants.NullI;
             #region Save Task
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
@@ -942,13 +1003,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     meastask.m_executionmode = obj.ExecutionMode.ToString();
                                     if (obj.DateCreated != null) meastask.m_datecreated = obj.DateCreated.GetValueOrDefault();
                                     if (obj.OrderId != null) meastask.m_orderid = obj.OrderId.GetValueOrDefault();
-                                    ID = (int)meastask.Save(dbConnect, transaction);
-                                    obj.Id.Value = ID;
+                                    ID = meastask.Save(dbConnect, transaction);
+                                    obj.Id.Value = ID.Value;
                                 }
                                 else
                                 {
-                                    ID = (int)meastask.m_id;
-                                    obj.Id.Value = ID;
+                                    ID = meastask.m_id;
+                                    obj.Id.Value = ID.Value;
                                 }
                                 meastask.Close();
                                 meastask.Dispose();
@@ -1018,8 +1079,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (loc_param.Lon != null) prm_loc.m_lon = loc_param.Lon.GetValueOrDefault();
                                                     if (loc_param.MaxDist != null) prm_loc.m_maxdist = loc_param.MaxDist.GetValueOrDefault();
                                                     prm_loc.m_id_xbs_meastask = ID;
-                                                    int ID_loc_params = (int)prm_loc.Save(dbConnect, transaction);
-                                                    loc_param.Id.Value = ID_loc_params;
+                                                    int? ID_loc_params = prm_loc.Save(dbConnect, transaction);
+                                                    loc_param.Id.Value = ID_loc_params.Value;
 
                                                 }
                                                 prm_loc.Close();
@@ -1107,7 +1168,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     foreach (MeasSubTask sub_task in obj.MeasSubTasks.ToArray())
                                     {
-                                        int ID_sub_task = Constants.NullI;
+                                        int? ID_sub_task = Constants.NullI;
                                         if (sub_task.Id != null)
                                         {
                                             if (sub_task.Id.Value != Constants.NullI)
@@ -1117,19 +1178,19 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 if (!prm_sub_task.Fetch(sub_task.Id.Value))
                                                 {
                                                     prm_sub_task.New();
-                                                    sub_task.Id.Value = ID_sub_task;
+                                                    sub_task.Id.Value = ID_sub_task.Value;
                                                     prm_sub_task.m_id_xbs_meastask = ID;
                                                     if (sub_task.Interval != null) prm_sub_task.m_interval = sub_task.Interval.GetValueOrDefault();
                                                     prm_sub_task.m_status = sub_task.Status;
                                                     prm_sub_task.m_timestart = sub_task.TimeStart;
                                                     prm_sub_task.m_timestop = sub_task.TimeStop;
-                                                    ID_sub_task = (int)prm_sub_task.Save(dbConnect, transaction);
-                                                    sub_task.Id.Value = ID_sub_task;
+                                                    ID_sub_task = prm_sub_task.Save(dbConnect, transaction);
+                                                    sub_task.Id.Value = ID_sub_task.Value;
                                                 }
                                                 else
                                                 {
-                                                    ID_sub_task = (int)prm_sub_task.m_id;
-                                                    sub_task.Id.Value = ID_sub_task;
+                                                    ID_sub_task = prm_sub_task.m_id;
+                                                    sub_task.Id.Value = ID_sub_task.Value;
                                                 }
                                                 prm_sub_task.Close();
                                                 prm_sub_task.Dispose();
@@ -1152,11 +1213,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         if (sub_task_st.TimeNextTask != null) prm_sub_task_st.m_timenexttask = sub_task_st.TimeNextTask.GetValueOrDefault();
                                                         if (sub_task_st.Count != null) prm_sub_task_st.m_count = sub_task_st.Count.GetValueOrDefault();
                                                         prm_sub_task_st.m_id_xbs_sensor = sub_task_st.StationId.Value;
-                                                        sub_task_st.Id = (int)prm_sub_task_st.Save(dbConnect, transaction);
+                                                        sub_task_st.Id = prm_sub_task_st.Save(dbConnect, transaction).Value;
                                                     }
                                                     else
                                                     {
-                                                        sub_task_st.Id = (int)prm_sub_task_st.m_id;
+                                                        sub_task_st.Id = prm_sub_task_st.m_id.Value;
                                                     }
                                                     prm_sub_task_st.Close();
                                                     prm_sub_task_st.Dispose();
@@ -1170,7 +1231,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     foreach (MeasFreqParam freq_param in new List<MeasFreqParam> { obj.MeasFreqParam })
                                     {
-                                        int ID_MeasFreqParam = Constants.NullI;
+                                        int? ID_MeasFreqParam = Constants.NullI;
                                         if (freq_param != null)
                                         {
                                             YXbsMeasfreqparam prm_MeasFreqParam = new YXbsMeasfreqparam();
@@ -1183,11 +1244,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 if (freq_param.RgL != null) prm_MeasFreqParam.m_rgl = freq_param.RgL.GetValueOrDefault();
                                                 if (freq_param.RgU != null) prm_MeasFreqParam.m_rgu = freq_param.RgU.GetValueOrDefault();
                                                 if (freq_param.Step != null) prm_MeasFreqParam.m_step = freq_param.Step.GetValueOrDefault();
-                                                ID_MeasFreqParam = (int)prm_MeasFreqParam.Save(dbConnect, transaction);
+                                                ID_MeasFreqParam = prm_MeasFreqParam.Save(dbConnect, transaction);
                                             }
                                             else
                                             {
-                                                ID_MeasFreqParam = (int)prm_MeasFreqParam.m_id;
+                                                ID_MeasFreqParam = prm_MeasFreqParam.m_id;
                                             }
                                             prm_MeasFreqParam.Close();
                                             prm_MeasFreqParam.Dispose();
@@ -1275,7 +1336,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     foreach (StationDataForMeasurements StationData_param in obj.StationsForMeasurements.ToArray())
                                     {
-                                        int ID_loc_params = -1;
+                                        int? ID_loc_params = -1;
                                         YXbsStationdatform prm_loc = new YXbsStationdatform();
                                         prm_loc.Format("*");
 
@@ -1284,8 +1345,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
                                         if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
                                         prm_loc.m_id_xbs_meastask = ID;
-                                        ID_loc_params = (int)prm_loc.Save(dbConnect, transaction);
-                                        StationData_param.IdStation = ID_loc_params;
+                                        ID_loc_params = prm_loc.Save(dbConnect, transaction);
+                                        StationData_param.IdStation = ID_loc_params.Value;
                                         prm_loc.Close();
                                         prm_loc.Dispose();
 
@@ -1300,7 +1361,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
                                             if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
 
-                                            int ID_site_formeas = (int)site_formeas.Save(dbConnect, transaction);
+                                            int? ID_site_formeas = site_formeas.Save(dbConnect, transaction);
                                             site_formeas.m_id_stationdatform = ID_loc_params;
                                             site_formeas.Close();
                                             site_formeas.Dispose();
@@ -1315,7 +1376,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (StationData_param.LicenseParameter.DozvilName != null) perm_formeas.m_dozvilname = StationData_param.LicenseParameter.DozvilName;
                                             if (StationData_param.LicenseParameter.EndDate != null) perm_formeas.m_enddate = StationData_param.LicenseParameter.EndDate.GetValueOrDefault();
                                             if (StationData_param.LicenseParameter.StartDate != null) perm_formeas.m_startdate = StationData_param.LicenseParameter.StartDate.GetValueOrDefault();
-                                            int ID_perm_formeas = (int)perm_formeas.Save(dbConnect, transaction);
+                                            int? ID_perm_formeas = perm_formeas.Save(dbConnect, transaction);
                                             perm_formeas.m_id_stationdatform = ID_loc_params;
                                             perm_formeas.Close();
                                             perm_formeas.Dispose();
@@ -1331,7 +1392,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
                                             if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
                                             if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
-                                            int ID_perm_formeas = (int)owner_formeas.Save(dbConnect, transaction);
+                                            int? ID_perm_formeas = owner_formeas.Save(dbConnect, transaction);
                                             owner_formeas.m_id_stationdatform = ID_perm_formeas;
                                             owner_formeas.Close();
                                             owner_formeas.Dispose();
@@ -1351,7 +1412,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 if (sec.ClassEmission != null) sect_formeas.m_classemission = sec.ClassEmission;
                                                 if (sec.EIRP != null) sect_formeas.m_eirp = sec.EIRP.GetValueOrDefault();
                                                 sect_formeas.m_id_stationdatform = ID_loc_params;
-                                                int ID_secformeas = (int)sect_formeas.Save(dbConnect, transaction);
+                                                int? ID_secformeas = sect_formeas.Save(dbConnect, transaction);
                                                 sect_formeas.Close();
                                                 sect_formeas.Dispose();
 
@@ -1365,7 +1426,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         freq_formeas.New();
 
                                                         if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
-                                                        if (F.Frequency != null) freq_formeas.m_frequency = (double)F.Frequency;
+                                                        if (F.Frequency != null) freq_formeas.m_frequency = (double?)F.Frequency;
                                                         if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
                                                         freq_formeas.m_id_sectstformeas = ID_secformeas;
                                                         for (int i = 0; i < freq_formeas.getAllFields.Count; i++)

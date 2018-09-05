@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
 using Atdi.SDNRS.AppServer.BusManager;
-using Atdi.SDNRS.AppServer.ManageDB;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
-using EasyNetQ.Consumer;
 using EasyNetQ;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.AppServer;
@@ -90,7 +86,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                             {
                                                 if (MEAS_SDR_RESULTS[0] != null)
                                                 {
-                                                    int ID = -1;
+                                                    int? ID = -1;
                                                     string Status_Original = MEAS_SDR_RESULTS[0].status;
                                                     MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(MEAS_SDR_RESULTS[0]);
                                                     if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
@@ -16,13 +13,19 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="taskSDR"></param>
         /// <returns></returns>
-        public static bool ValidationMeas(this MeasSdrTask taskSDR)
+        public static bool ValidationMeas1_0(this MeasSdrTask taskSDR)
         {
             if (taskSDR != null) {
                 if (taskSDR.SensorId != null) {
                     /// здесь код проверки
                 }
             }
+            return true;
+        }
+
+        public static bool ValidationMeas2_0(this Atdi.DataModels.Sdrns.Device.MeasTask taskSDR)
+        {
+           
             return true;
         }
 

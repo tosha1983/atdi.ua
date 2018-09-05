@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.AppServer.Models.AppServices.SdrnsController;
 using Atdi.AppServer.Models.AppServices;
 using Atdi.AppServer.Contracts.Sdrns;
@@ -44,8 +41,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     if (mt.Status == null) mt.Status = "N";
                     WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                     Logger.Trace("Start Create_New_Meas_Task... ");
-                    int ID = tasks.Create_New_Meas_Task(mt, "New");
-                    md.Value = ID;
+                    int? ID = tasks.Create_New_Meas_Task(mt, "New");
+                    md.Value = ID.Value;
                     Logger.Trace(this, options, operationContext);
                     List<int> SensorIds = new List<int>();
                     if (mt.Stations != null)

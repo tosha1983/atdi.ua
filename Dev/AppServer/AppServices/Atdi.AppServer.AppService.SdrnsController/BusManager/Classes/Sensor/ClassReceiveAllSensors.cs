@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EasyNetQ;
-using XMLLibrary;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
-using Atdi.SDNRS.AppServer.Sheduler;
+
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -52,6 +47,14 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     logger.Trace("Start procedure ReceiveAllSensorList...");
                     ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                     List<Sensor> SensorListSDRNS = DB.LoadObjectSensor();
+                    foreach (Sensor s in SensorListSDRNS)
+                    {
+                        string apiVer = DB.GetSensorApiVersion(s.Id.Value);
+                        if (apiVer == "v2.0")
+                        {
+                            busManager.RegisterQueue(s.Name, s.Equipment.TechId, apiVer);
+                        }
+                    }
                     if (ClassStaticBus.bus.Advanced.IsConnected)
                         {
                             uint cnt = busManager.GetMessageCount(GlobalInit.Template_SENSORS_List_);

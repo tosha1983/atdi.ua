@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oracle.DataAccess.Client;
 using System.Data.Common;
 
 
 namespace Atdi.Oracle.DataAccess
 {
-    public class OracleDataAccess : IDataAccess
+    public class OracleDataAccess 
     {
         public OrmRsOracle rs;
         public List<OracleParameter> getAllFields = new List<OracleParameter>();
@@ -30,6 +26,7 @@ namespace Atdi.Oracle.DataAccess
             {
                 connection.Close();
                 connection.Dispose();
+                connection = null;
             }
         }
 
@@ -63,6 +60,14 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSucess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return isSucess;
@@ -150,6 +155,14 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                    if (e is OracleException)
+                    {
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        {
+                            CloseConnection();
+                            OpenConnection(GetConnectionString());
+                        }
+                    }
                     System.Console.WriteLine("Neither record was written to database: "+e.ToString());
             }
             });
@@ -197,6 +210,14 @@ namespace Atdi.Oracle.DataAccess
                 }
                 catch (Exception e)
                 {
+                    if (e is OracleException)
+                    {
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        {
+                            CloseConnection();
+                            OpenConnection(GetConnectionString());
+                        }
+                    }
                     System.Console.WriteLine(e.ToString());
                 }
             
@@ -245,6 +266,14 @@ namespace Atdi.Oracle.DataAccess
                 }
                 catch (Exception e)
                 {
+                    if (e is OracleException)
+                    {
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        {
+                            CloseConnection();
+                            OpenConnection(GetConnectionString());
+                        }
+                    }
                     System.Console.WriteLine(e.ToString());
                 }
             });
@@ -276,6 +305,14 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return isSuccess;
@@ -313,9 +350,87 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return Id;
+        }
+
+        public int? GetMaxId(string TableName, string NameField)
+        {
+            int? Id = null;
+            try
+            {
+                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection.State == ConnectionState.Open)
+                {
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = string.Format("SELECT MAX({0}) FROM {1}", NameField, TableName);
+                    object o = command.ExecuteScalar();
+                    if (o != null)
+                    {
+                        if (o != DBNull.Value)
+                        {
+                            Id = Int32.Parse(o.ToString());
+                        }
+                        else Id = 1;
+                    }
+                    else
+                    {
+                        Id = 1;
+                    }
+                    command.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
+                System.Console.WriteLine(e.ToString());
+            }
+            return Id;
+        }
+
+        public object GetValueFromField(string FieldName, string TableName, int ID)
+        {
+            object value = null;
+            try
+            {
+                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection.State == ConnectionState.Open)
+                {
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = string.Format("SELECT {0} FROM {1} WHERE ID={2}", FieldName, TableName, ID);
+                    value = command.ExecuteScalar();
+                    command.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
+                System.Console.WriteLine(e.ToString());
+            }
+            return value;
         }
 
         public int? GetNextId(string sequenceName)
@@ -346,6 +461,14 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return Id;
@@ -391,6 +514,14 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return LObj.ToArray();
@@ -413,6 +544,14 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return reader;
@@ -473,6 +612,14 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return LObj.ToArray();
@@ -559,6 +706,14 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
@@ -652,6 +807,14 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
@@ -755,6 +918,14 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
@@ -903,6 +1074,14 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return true;

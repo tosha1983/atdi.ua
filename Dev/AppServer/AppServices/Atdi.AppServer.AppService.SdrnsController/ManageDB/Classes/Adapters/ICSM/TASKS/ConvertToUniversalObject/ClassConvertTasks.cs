@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
-using System.Data.Common;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -49,7 +44,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 {
                     MeasTask s_out = new MeasTask();
                     s_out.Id = new MeasTaskIdentifier();
-                    s_out.Id.Value = (int)obj.meas_task.m_id;
+                    s_out.Id.Value = obj.meas_task.m_id.Value;
                     s_out.Name = obj.meas_task.m_name;
                     s_out.OrderId = obj.meas_task.m_orderid;
                     s_out.Prio = obj.meas_task.m_prio;
@@ -78,15 +73,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             if (Enum.TryParse<DetectingType>(r_dt.m_detecttype, out out_res_DetectType))
                                 dtx.DetectType = out_res_DetectType;
 
-                            dtx.IfAttenuation = (double)r_dt.m_ifattenuation;
+                            dtx.IfAttenuation = r_dt.m_ifattenuation.Value;
                             dtx.MeasTime = r_dt.m_meastime;
                             MeasurementMode out_res_MeasurementMode;
                             if (Enum.TryParse<MeasurementMode>(r_dt.m_detecttype, out out_res_MeasurementMode))
                                 dtx.Mode = out_res_MeasurementMode;
 
-                            dtx.Preamplification = (int)r_dt.m_preamplification;
+                            dtx.Preamplification = r_dt.m_preamplification.Value;
                             dtx.RBW = r_dt.m_rbw;
-                            dtx.RfAttenuation = (double)r_dt.m_rfattenuation;
+                            dtx.RfAttenuation = r_dt.m_rfattenuation.Value;
                             MeasurementType out_res_MeasurementType;
                             if (Enum.TryParse<MeasurementType>(r_dt.m_detecttype, out out_res_MeasurementType))
                                 dtx.TypeMeasurements = out_res_MeasurementType;
@@ -113,7 +108,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             foreach (YXbsMeasfreq F_lst in r_dt.Value.ToArray())
                             {
                                 MeasFreq f_l = new MeasFreq();
-                                f_l.Freq = (double)F_lst.m_freq;
+                                f_l.Freq = F_lst.m_freq.Value;
                                 meas_freq_lst.Add(f_l);
                             }
                             fre_param.MeasFreqs = meas_freq_lst.ToArray();
@@ -132,15 +127,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             SUB.TimeStart = (DateTime)r_dt.Key.m_timestart;
                             SUB.TimeStop = (DateTime)r_dt.Key.m_timestop;
                             SUB.Id = new MeasTaskIdentifier();
-                            SUB.Id.Value = (int)r_dt.Key.m_id;
+                            SUB.Id.Value = r_dt.Key.m_id.Value;
                             List<MeasSubTaskStation> L_MeasSubTaskStations = new List<MeasSubTaskStation>();
                             foreach (YXbsMeassubtasksta F_lst in r_dt.Value.ToArray())
                             {
                                 MeasSubTaskStation f_l = new MeasSubTaskStation();
                                 f_l.Count = F_lst.m_count;
-                                f_l.Id = (int)F_lst.m_id;
+                                f_l.Id = F_lst.m_id.Value;
                                 f_l.StationId = new SensorIdentifier();
-                                f_l.StationId.Value = (int)F_lst.m_id_xbs_sensor;
+                                f_l.StationId.Value = F_lst.m_id_xbs_sensor.Value;
                                 f_l.Status = F_lst.m_status;
                                 f_l.TimeNextTask = F_lst.m_timenexttask;
                                 L_MeasSubTaskStations.Add(f_l);
@@ -198,7 +193,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         LOCk.Lon = r_dt.m_lon;
                         LOCk.MaxDist = r_dt.m_maxdist;
                         LOCk.Id = new MeasLocParamIdentifier();
-                        LOCk.Id.Value = (int)r_dt.m_id;
+                        LOCk.Id.Value = r_dt.m_id.Value;
                         L_Lock.Add(LOCk);
                     }
                     s_out.MeasLocParams = L_Lock.ToArray();
@@ -209,7 +204,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             MeasStation MeasStation = new MeasStation();
                             MeasStation.StationId = new MeasStationIdentifier();
-                            MeasStation.StationId.Value = (int)r_dt.m_stationid;
+                            MeasStation.StationId.Value = r_dt.m_stationid.Value;
                             MeasStation.StationType = r_dt.m_stationtype;
                             L_MeasStation.Add(MeasStation);
                         }
@@ -355,7 +350,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             foreach (YXbsStationdatform r_dt in obj.XbsStationdatform.ToArray())
                             {
                                 StationDataForMeasurements MeasStation_ = new StationDataForMeasurements();
-                                MeasStation_.IdStation = (int)r_dt.m_id;
+                                MeasStation_.IdStation = r_dt.m_id.Value;
                                 MeasStation_.GlobalSID = r_dt.m_globalsid;
                                 MeasStation_.Standart = r_dt.m_standart;
                                 MeasStation_.Status = r_dt.m_status;
@@ -369,7 +364,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     own.Addres = XbsMeasstation_.m_addres;
                                     own.Code = XbsMeasstation_.m_code;
-                                    own.Id = (int)XbsMeasstation_.m_id;
+                                    own.Id = XbsMeasstation_.m_id.Value;
                                     own.OKPO = XbsMeasstation_.m_okpo;
                                     own.OwnerName = XbsMeasstation_.m_ownername;
                                     own.Zip = XbsMeasstation_.m_zip;
@@ -428,7 +423,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     sectM.BW = Xbssect_.m_bw;
                                     sectM.ClassEmission = Xbssect_.m_classemission;
                                     sectM.EIRP = Xbssect_.m_eirp;
-                                    sectM.IdSector = (int)Xbssect_.m_id;
+                                    sectM.IdSector = Xbssect_.m_id.Value;
 
                                     List<FrequencyForSectorFormICSM> LFreqICSM = new List<FrequencyForSectorFormICSM>();
                                     YXbsFreqforsectics XbsFreqforsectics_ = new YXbsFreqforsectics();
@@ -502,7 +497,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         MeasTask s_out = new MeasTask();
                         s_out.Id = new MeasTaskIdentifier();
-                        s_out.Id.Value = (int)obj.meas_task.m_id;
+                        s_out.Id.Value = obj.meas_task.m_id.Value;
                         s_out.Name = obj.meas_task.m_name;
                         s_out.OrderId = obj.meas_task.m_orderid;
                         s_out.Prio = obj.meas_task.m_prio;
@@ -531,15 +526,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 if (Enum.TryParse<DetectingType>(r_dt.m_detecttype, out out_res_DetectType))
                                     dtx.DetectType = out_res_DetectType;
 
-                                dtx.IfAttenuation = (double)r_dt.m_ifattenuation;
+                                dtx.IfAttenuation = r_dt.m_ifattenuation.Value;
                                 dtx.MeasTime = r_dt.m_meastime;
                                 MeasurementMode out_res_MeasurementMode;
                                 if (Enum.TryParse<MeasurementMode>(r_dt.m_detecttype, out out_res_MeasurementMode))
                                     dtx.Mode = out_res_MeasurementMode;
 
-                                dtx.Preamplification = (int)r_dt.m_preamplification;
+                                dtx.Preamplification = r_dt.m_preamplification.Value;
                                 dtx.RBW = r_dt.m_rbw;
-                                dtx.RfAttenuation = (double)r_dt.m_rfattenuation;
+                                dtx.RfAttenuation = r_dt.m_rfattenuation.Value;
                                 MeasurementType out_res_MeasurementType;
                                 if (Enum.TryParse<MeasurementType>(r_dt.m_detecttype, out out_res_MeasurementType))
                                     dtx.TypeMeasurements = out_res_MeasurementType;
@@ -566,7 +561,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 foreach (YXbsMeasfreq F_lst in r_dt.Value.ToArray())
                                 {
                                     MeasFreq f_l = new MeasFreq();
-                                    f_l.Freq = (double)F_lst.m_freq;
+                                    f_l.Freq = F_lst.m_freq.Value;
                                     meas_freq_lst.Add(f_l);
                                 }
                                 fre_param.MeasFreqs = meas_freq_lst.ToArray();
@@ -585,15 +580,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 SUB.TimeStart = (DateTime)r_dt.Key.m_timestart;
                                 SUB.TimeStop = (DateTime)r_dt.Key.m_timestop;
                                 SUB.Id = new MeasTaskIdentifier();
-                                SUB.Id.Value = (int)r_dt.Key.m_id;
+                                SUB.Id.Value = r_dt.Key.m_id.Value;
                                 List<MeasSubTaskStation> L_MeasSubTaskStations = new List<MeasSubTaskStation>();
                                 foreach (YXbsMeassubtasksta F_lst in r_dt.Value.ToArray())
                                 {
                                     MeasSubTaskStation f_l = new MeasSubTaskStation();
                                     f_l.Count = F_lst.m_count;
-                                    f_l.Id = (int)F_lst.m_id;
+                                    f_l.Id = F_lst.m_id.Value;
                                     f_l.StationId = new SensorIdentifier();
-                                    f_l.StationId.Value = (int)F_lst.m_id_xbs_sensor;
+                                    f_l.StationId.Value = F_lst.m_id_xbs_sensor.Value;
                                     f_l.Status = F_lst.m_status;
                                     f_l.TimeNextTask = F_lst.m_timenexttask;
                                     L_MeasSubTaskStations.Add(f_l);
@@ -651,7 +646,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             LOCk.Lon = r_dt.m_lon;
                             LOCk.MaxDist = r_dt.m_maxdist;
                             LOCk.Id = new MeasLocParamIdentifier();
-                            LOCk.Id.Value = (int)r_dt.m_id;
+                            LOCk.Id.Value = r_dt.m_id.Value;
                             L_Lock.Add(LOCk);
                         }
                         s_out.MeasLocParams = L_Lock.ToArray();
@@ -662,7 +657,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             {
                                 MeasStation MeasStation = new MeasStation();
                                 MeasStation.StationId = new MeasStationIdentifier();
-                                MeasStation.StationId.Value = (int)r_dt.m_stationid;
+                                MeasStation.StationId.Value = r_dt.m_stationid.Value;
                                 MeasStation.StationType = r_dt.m_stationtype;
                                 L_MeasStation.Add(MeasStation);
                             }

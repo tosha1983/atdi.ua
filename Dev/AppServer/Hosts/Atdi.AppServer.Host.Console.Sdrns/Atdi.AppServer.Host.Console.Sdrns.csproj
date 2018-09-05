@@ -31,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -55,57 +56,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
-      <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
-      <Name>Atdi.AppServices.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\AppServices\Atdi.AppServices\Atdi.AppServices.csproj">
-      <Project>{0eab226d-aa8d-4671-88cf-0f1049560535}</Project>
-      <Name>Atdi.AppServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Build\Atdi.Build.WebQuery\Atdi.Build.WebQuery.csproj">
-      <Project>{1386e2b2-d67a-4033-8dd0-1ca3d7466a90}</Project>
-      <Name>Atdi.Build.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Contracts\AppServices\Atdi.Contracts.AppServices.WebQuery\Atdi.Contracts.AppServices.WebQuery.csproj">
-      <Project>{012b0214-ac04-43b0-b87f-a0c1e991ca8f}</Project>
-      <Name>Atdi.Contracts.AppServices.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
-      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
-      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
-      <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
-      <Name>Atdi.CoreServices.DataLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CoreServices\Atdi.CoreServices.Identity\Atdi.CoreServices.Identity.csproj">
-      <Project>{3ffe283d-4233-4e63-8a27-260a8aeb353c}</Project>
-      <Name>Atdi.CoreServices.Identity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CoreServices\Atdi.CoreServices.Netkey\Atdi.CoreServices.Netkey.csproj">
-      <Project>{57c627f3-f667-464c-a477-9e78e4457e4c}</Project>
-      <Name>Atdi.CoreServices.Netkey</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Icsm\Atdi.DataModels.Icsm.csproj">
-      <Project>{c9a6722b-f13a-4c7a-b389-9958b2abfb27}</Project>
-      <Name>Atdi.DataModels.Icsm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj">
+      <Project>{11ee0e94-8612-4aaa-889f-5ab447e7dd6a}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsControllerv2_0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
       <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
       <Name>Atdi.AppServer.AppService.SdrnsController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.RunServices\Atdi.AppServer.RunServices.csproj">
-      <Project>{81c83541-efb3-4802-a577-1d98e8164292}</Project>
-      <Name>Atdi.AppServer.RunServices</Name>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj">
+      <Project>{4db9d712-cce4-43f8-9e79-4eabb5047cde}</Project>
+      <Name>Atdi.AppServer.ConfigurationSdrnController</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
@@ -115,29 +76,9 @@
       <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
       <Name>Atdi.AppServer.Model.SdrnsController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer.MsSql\Atdi.AppServer.CoreServices.DataLayer.MsSql.csproj">
-      <Project>{238ef57c-17ba-464f-a818-717b872712dd}</Project>
-      <Name>Atdi.AppServer.CoreServices.DataLayer.MsSql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer.Oracle\Atdi.AppServer.CoreServices.DataLayer.Oracle.csproj">
-      <Project>{14e3c8db-bfff-4390-a1f1-06540ffadbb6}</Project>
-      <Name>Atdi.AppServer.CoreServices.DataLayer.Oracle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreServices\Atdi.AppServer.CoreServices.DataLayer\Atdi.AppServer.CoreServices.DataLayer.csproj">
-      <Project>{999a1a60-ea67-49c6-9fee-ab4e33c5bd5d}</Project>
-      <Name>Atdi.AppServer.CoreServices.DataLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
       <Project>{2556f633-8292-4e00-a9d0-8abb4e09d1e3}</Project>
       <Name>Atdi.AppServer.AppServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Atdi.AppServer.Common\Atdi.AppServer.Common.csproj">
-      <Project>{fcd6ce65-f50a-4edc-89b3-d2efc2552941}</Project>
-      <Name>Atdi.AppServer.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
-      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
-      <Name>Atdi.AppServer.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Atdi.AppServer.CoreServices\Atdi.AppServer.CoreServices.csproj">
       <Project>{c6605af9-033d-40ca-b656-d2e38a7d181f}</Project>
