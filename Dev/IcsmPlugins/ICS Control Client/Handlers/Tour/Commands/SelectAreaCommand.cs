@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ICSM;
 using XICSM.ICSControlClient.Environment;
-using DM = XICSM.ICSControlClient.Models.SynchroInspections;
+using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.Handlers.TourCommnads
 {
@@ -20,13 +21,19 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
         }
         private static bool SelectAreaForTour(int tourId)
         {
-            //var tour = Repository.ReadEntityById<DM.Tour>(tourId);
+            try
+            {
+                var measTaskForm = new FM.SelectAreaForm();
+                measTaskForm.tourId = tourId;
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
 
-            //tour.
-            //Repository.UpdateEntity(tour);
-
-
-            System.Windows.Forms.MessageBox.Show("Select Area for tour with ID - " + tourId + " : ", "SelectAreaCommand", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+            //System.Windows.Forms.MessageBox.Show("Select Area for tour with ID - " + tourId + " : ", "SelectAreaCommand", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
             return true;
         }
     }

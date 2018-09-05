@@ -25,10 +25,34 @@ namespace Atdi.WcfServices.Sdrn.Device
             this._logger = logger;
         }
 
+        private void Verify(SensorDescriptor sensorDescriptor)
+        {
+            if (sensorDescriptor == null)
+            {
+                throw new ArgumentNullException(nameof(sensorDescriptor));
+            }
+
+            if (string.IsNullOrEmpty(sensorDescriptor.SdrnServer))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sensorDescriptor.SdrnServer));
+            }
+
+            if (string.IsNullOrEmpty(sensorDescriptor.SensorName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sensorDescriptor.SensorName));
+            }
+
+            if (string.IsNullOrEmpty(sensorDescriptor.EquipmentTechId))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sensorDescriptor.EquipmentTechId));
+            }
+        }
         public Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token)
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.AckMessage(sensorDescriptor, token);
 
                 var result = new Result
@@ -52,6 +76,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.AckMessage(sensorDescriptor, token);
 
                 var result = new Result
@@ -75,6 +101,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.AckMessage(sensorDescriptor, token);
 
                 var result = new Result
@@ -98,6 +126,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.AckMessage(sensorDescriptor, token);
 
                 var result = new Result
@@ -121,6 +151,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 var token = string.Empty;
                 var data = this._bus.TryGetObject<DeviceCommand>(sensorDescriptor, "SendCommand", out token);
 
@@ -147,6 +179,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 var token = string.Empty;
                 var data = this._bus.TryGetObject<Entity>(sensorDescriptor, "SendEntity", out token);
 
@@ -173,6 +207,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 var token = string.Empty;
                 var data = this._bus.TryGetObject<EntityPart>(sensorDescriptor, "SendEntityPart", out token);
 
@@ -199,6 +235,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 var token = string.Empty;
                 var data = this._bus.TryGetObject<MeasTask>(sensorDescriptor, "SendMeasTask", out token);
 
@@ -232,6 +270,8 @@ namespace Atdi.WcfServices.Sdrn.Device
                     EquipmentTechId = sensor.Equipment.TechId
                 };
 
+                this.Verify(descriptor);
+
                 var correlationId = Guid.NewGuid().ToString();
                 var messageId = this._bus.SendObject(descriptor, "RegisterSensor", sensor, correlationId);
 
@@ -259,6 +299,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.SendObject(sensorDescriptor, "SendCommandResult", commandResult);
 
                 var result = new Result
@@ -282,6 +324,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.SendObject(sensorDescriptor, "SendEntity", entity);
 
                 var result = new Result
@@ -305,6 +349,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.SendObject(sensorDescriptor, "SendEntityPart", entityPart);
 
                 var result = new Result
@@ -328,6 +374,8 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
+                this.Verify(sensorDescriptor);
+
                 this._bus.SendObject(sensorDescriptor, "SendMeasResults", results);
 
                 var result = new Result
@@ -351,17 +399,19 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             try
             {
-                var descriptor = new SensorDescriptor
+                var sensorDescriptor = new SensorDescriptor
                 {
                     SdrnServer = sdrnServer,
                     SensorName = sensor.Name,
                     EquipmentTechId = sensor.Equipment.TechId
                 };
 
-                var correlationId = Guid.NewGuid().ToString();
-                var messageId = this._bus.SendObject(descriptor, "UpdateSensor", sensor, correlationId);
+                this.Verify(sensorDescriptor);
 
-                var data = this._bus.WaitObject<SensorUpdatingResult>(descriptor, "SendSensorUpdatingResult", correlationId);
+                var correlationId = Guid.NewGuid().ToString();
+                var messageId = this._bus.SendObject(sensorDescriptor, "UpdateSensor", sensor, correlationId);
+
+                var data = this._bus.WaitObject<SensorUpdatingResult>(sensorDescriptor, "SendSensorUpdatingResult", correlationId);
 
                 var result = new Result<SensorUpdatingResult>
                 {
