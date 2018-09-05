@@ -83,7 +83,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return NewIdMeasTask;
         }
 
-      
+
         /// <summary>
         /// 
         /// </summary>
@@ -198,7 +198,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
-                                            
+
 
                                         }
 
@@ -305,8 +305,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
 
         }
-      
-      
+
+
 
     }
 }

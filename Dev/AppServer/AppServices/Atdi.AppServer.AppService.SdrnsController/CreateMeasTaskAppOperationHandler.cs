@@ -65,7 +65,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         tasks.Process_Multy_Meas(mt, SensorIds, "New", false, out isSuccessTemp);
                     }
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     Logger.Error(ex.Message);
                 }
             });
