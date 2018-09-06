@@ -13,8 +13,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         }
 
 
-        public void SaveEntity(Atdi.DataModels.Sdrns.Device.Entity entity)
+        public int? SaveEntity(Atdi.DataModels.Sdrns.Device.Entity entity)
         {
+            int? ID = null;
             Yyy yyy = new Yyy();
             DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
             if (dbConnect.State == System.Data.ConnectionState.Open)
@@ -39,7 +40,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     yxbsEntity.m_entityid = entity.EntityId;
                     yxbsEntity.m_eof = entity.EOF == true ? 1 : 0;
                     yxbsEntity.m_content = entity.Content;
-                    yxbsEntity.Save(dbConnect, transaction);
+                    ID = yxbsEntity.Save(dbConnect, transaction);
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -54,10 +55,11 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     dbConnect.Dispose();
                 }
             }
-
+            return ID;
         }
-        public void SaveEntityPart(Atdi.DataModels.Sdrns.Device.EntityPart entityPart)
+        public int? SaveEntityPart(Atdi.DataModels.Sdrns.Device.EntityPart entityPart)
         {
+            int? ID = null;
             Yyy yyy = new Yyy();
             DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
             if (dbConnect.State == System.Data.ConnectionState.Open)
@@ -74,7 +76,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     yxbsEntitypart.m_eof = entityPart.EOF == true ? 1 : 0;
                     yxbsEntitypart.m_partindex = entityPart.PartIndex;
                     yxbsEntitypart.m_content = entityPart.Content;
-                    yxbsEntitypart.Save(dbConnect, transaction);
+                    ID = yxbsEntitypart.Save(dbConnect, transaction);
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -89,7 +91,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     dbConnect.Dispose();
                 }
             }
-
+            return ID;
         }
 
     }

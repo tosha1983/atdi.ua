@@ -164,18 +164,85 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         {
                             ID = DbGetRes.SaveResultToDB(msReslts);
                         }
+                        if (ID > 0)
+                        {
+                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
+                            commandResSendMeasResults.Command = "SendMeasResultsResult";
+                            commandResSendMeasResults.CommandId = "SendCommand";
+                            commandResSendMeasResults.SensorName = sensorName;
+                            commandResSendMeasResults.EquipmentTechId = techId;
+                            commandResSendMeasResults.SdrnServer = sdrnServer;
+                            commandResSendMeasResults.CustTxt1 = "Successfully saved Results to DB";
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendMeasResults)), message.BasicProperties.CorrelationId);
+                        }
+                        else
+                        {
+                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
+                            commandResSendMeasResults.Command = "SendMeasResultsResult";
+                            commandResSendMeasResults.CommandId = "SendCommand";
+                            commandResSendMeasResults.SensorName = sensorName;
+                            commandResSendMeasResults.EquipmentTechId = techId;
+                            commandResSendMeasResults.SdrnServer = sdrnServer;
+                            commandResSendMeasResults.CustTxt1 = "Error saved Results to DB";
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendMeasResults)), message.BasicProperties.CorrelationId);
+                        }
                         result = true;
                         break;
                     case "SendEntityPart":
                         var datapartEntityPart = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.EntityPart)) as Atdi.DataModels.Sdrns.Device.EntityPart;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntityPart = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
-                        DbGetResEntityPart.SaveEntityPart(datapartEntityPart);
+                        int? ID1 = DbGetResEntityPart.SaveEntityPart(datapartEntityPart);
+                        if (ID1 > 0)
+                        {
+                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandRes = new DeviceCommand();
+                            commandRes.Command = "SendEntityPartResult";
+                            commandRes.CommandId = "SendCommand";
+                            commandRes.SensorName = sensorName;
+                            commandRes.EquipmentTechId = techId;
+                            commandRes.SdrnServer = sdrnServer;
+                            commandRes.CustTxt1 = "Successfully saved SendEntityPart to DB";
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandRes)), message.BasicProperties.CorrelationId);
+                        }
+                        else
+                        {
+                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandRes = new DeviceCommand();
+                            commandRes.Command = "SendEntityPartResult";
+                            commandRes.CommandId = "SendCommand";
+                            commandRes.SensorName = sensorName;
+                            commandRes.EquipmentTechId = techId;
+                            commandRes.SdrnServer = sdrnServer;
+                            commandRes.CustTxt1 = "Fail saved SendEntityPart to DB";
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandRes)), message.BasicProperties.CorrelationId);
+                        }
+
                         result = true;
                         break;
                     case "SendEntity":
                         var datapartEntity = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.Entity)) as Atdi.DataModels.Sdrns.Device.Entity;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntity = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
-                        DbGetResEntity.SaveEntity(datapartEntity);
+                        int? ID2 = DbGetResEntity.SaveEntity(datapartEntity);
+                        if (ID2 > 0)
+                        {
+                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendEntity = new DeviceCommand();
+                            commandResSendEntity.Command = "SendEntityResult";
+                            commandResSendEntity.CommandId = "SendCommand";
+                            commandResSendEntity.CustTxt1 = "Successfully saved SendEntity to DB";
+                            commandResSendEntity.SensorName = sensorName;
+                            commandResSendEntity.EquipmentTechId = techId;
+                            commandResSendEntity.SdrnServer = sdrnServer;
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendEntity)), message.BasicProperties.CorrelationId);
+                        }
+                        else
+                        {
+                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendEntity = new DeviceCommand();
+                            commandResSendEntity.Command = "SendEntityResult";
+                            commandResSendEntity.CommandId = "SendCommand";
+                            commandResSendEntity.CustTxt1 = "Fail saved SendEntity to DB";
+                            commandResSendEntity.SensorName = sensorName;
+                            commandResSendEntity.EquipmentTechId = techId;
+                            commandResSendEntity.SdrnServer = sdrnServer;
+                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendEntity)), message.BasicProperties.CorrelationId);
+                        }
                         result = true;
                         break;
                     case "SendCommand":
