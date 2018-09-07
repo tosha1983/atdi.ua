@@ -83,7 +83,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             }
                             else res.State = CommonOperationState.Fault;
 
-                            if (tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false, out isSuccessTemp))
+                            tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false, out isSuccessTemp);
                             res.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
                         }

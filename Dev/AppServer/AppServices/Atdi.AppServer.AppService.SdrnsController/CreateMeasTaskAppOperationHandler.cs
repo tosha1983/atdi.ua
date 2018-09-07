@@ -32,6 +32,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         public override MeasTaskIdentifier Handle(CreateMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
             MeasTaskIdentifier md = new MeasTaskIdentifier();
+            ClassDBGetSensor gsd = new ClassDBGetSensor(Logger);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 try
@@ -54,7 +55,19 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                                     if (ts.StationId.Value > 0)
                                     {
                                         if (!SensorIds.Contains(ts.StationId.Value))
-                                            SensorIds.Add(ts.StationId.Value);
+                                        {
+                                            Sensor sens = gsd.LoadObjectSensor(ts.StationId.Value);
+                                            if (sens != null)
+                                            {
+                                                if (sens.Id!=null)
+                                                {
+                                                    if (sens.Id.Value>0)
+                                                    {
+                                                        SensorIds.Add(ts.StationId.Value);
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

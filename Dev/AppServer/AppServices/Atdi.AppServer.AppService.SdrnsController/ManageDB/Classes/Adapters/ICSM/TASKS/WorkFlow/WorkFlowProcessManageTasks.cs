@@ -108,7 +108,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         if (ActionType == "Del")
                         {
                             isSuccessTemp = cl.SetHistoryStatusTasksInDB(mt, "Z");
-                            return;
                         }
                         //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
                         MeasTask[] Res = new MeasTask[1] { mt };
@@ -212,11 +211,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         //if (fnd != null)
                                         //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
                                         //else GlobalInit.LIST_MEAS_TASK.Add(M);
-                                        if (ActionType == "Del")
-                                        {
-                                            isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
+                                        //if (ActionType == "Del")
+                                        //{
+                                            //isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
                                             //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
-                                        }
+                                        //}
                                     }
 
                                     if (Checked_L.Count > 0)
