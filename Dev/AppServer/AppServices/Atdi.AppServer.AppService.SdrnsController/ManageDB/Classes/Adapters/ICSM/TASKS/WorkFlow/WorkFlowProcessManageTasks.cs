@@ -105,6 +105,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 {
                     if (mt != null)
                     {
+                        if (ActionType == "Del")
+                        {
+                            isSuccessTemp = cl.SetHistoryStatusTasksInDB(mt, "Z");
+                            return;
+                        }
                         //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
                         MeasTask[] Res = new MeasTask[1] { mt };
                         List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();

@@ -41,8 +41,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     if (mt.Status == null) mt.Status = "N";
                     WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                     Logger.Trace("Start Create_New_Meas_Task... ");
-                    int? ID = tasks.Create_New_Meas_Task(mt, "New");
-                    md.Value = ID.Value;
                     Logger.Trace(this, options, operationContext);
                     List<int> SensorIds = new List<int>();
                     if (mt.Stations != null)
@@ -53,8 +51,11 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             {
                                 if (ts.StationId != null)
                                 {
-                                    if (!SensorIds.Contains(ts.StationId.Value))
-                                        SensorIds.Add(ts.StationId.Value);
+                                    if (ts.StationId.Value > 0)
+                                    {
+                                        if (!SensorIds.Contains(ts.StationId.Value))
+                                            SensorIds.Add(ts.StationId.Value);
+                                    }
                                 }
                             }
                         }
@@ -62,6 +63,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     if (SensorIds.Count > 0)
                     {
                         bool isSuccessTemp = false;
+                        int? ID = tasks.Create_New_Meas_Task(mt, "New");
+                        md.Value = ID.Value;
                         tasks.Process_Multy_Meas(mt, SensorIds, "New", false, out isSuccessTemp);
                     }
                 }
