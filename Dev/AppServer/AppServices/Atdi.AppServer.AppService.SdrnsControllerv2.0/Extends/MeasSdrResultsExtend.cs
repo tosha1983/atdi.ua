@@ -36,16 +36,15 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             int NumValue;
             if (int.TryParse(sdrRes.TaskId, out NumValue))
             {
-                ClassesDBGetTasks.GetMeasTaskSDRNum(NumValue, out MeasTaskId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId);
+                ClassesDBGetTasks.GetMeasTaskSDRIdentifier(NumValue, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId);
                 MRs.StationMeasurements.StationId = new SensorIdentifier();
                 MRs.StationMeasurements.StationId.Value = SensorId;
                 MRs.Id.MeasTaskId = new MeasTaskIdentifier();
-                MRs.Id.MeasTaskId.Value = MeasTaskId;
+                MRs.Id.MeasTaskId.Value = NumValue;
                 MRs.Id.SubMeasTaskId = SubMeasTaskId;
                 MRs.Id.SubMeasTaskStationId = SubMeasTaskStationId;
             }
 
-            
             MRs.TimeMeas = sdrRes.Measured;
             MRs.TypeMeasurements =  MeasurementType.MonitoringStations;
             MRs.Status = "N";
