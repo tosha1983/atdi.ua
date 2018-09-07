@@ -38,6 +38,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+                //DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
                 _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
                 BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
                 GlobalInit.Initialization();
