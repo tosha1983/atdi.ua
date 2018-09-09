@@ -395,6 +395,46 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             return Id;
         }
 
+        public DateTime? GetSystemDate()
+        {
+            DateTime? Date = null;
+            try
+            {
+                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection.State == ConnectionState.Open)
+                {
+                    DbCommand command = connection.CreateCommand();
+                    
+                    command.CommandText = "SELECT SYSDATE FROM DUAL";
+                    object o = command.ExecuteScalar();
+                    if (o != null)
+                    {
+                        if (o != DBNull.Value)
+                        {
+                            Date = DateTime.Parse(o.ToString());
+                        }
+                    }
+                  
+                    command.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                if (e is OracleException)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    {
+                        CloseConnection();
+                        OpenConnection(GetConnectionString());
+                    }
+                }
+                System.Console.WriteLine(e.ToString());
+            }
+            return Date;
+        }
+
+        
+
         public int? GetNextId(string sequenceName)
         {
             int? Id = null;

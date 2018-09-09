@@ -51,6 +51,37 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             SensorId = _SensorId;
         }
 
+        public static void GetMeasTaskSDRIdentifier(int TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId)
+        {
+            int _TaskId = 0;
+            int _SubTaskId = 0;
+            int _SubTaskStationId = 0;
+            int _SensorId = 0;
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                meastask.Format("*");
+                if (meastask.Fetch(string.Format("MEASTASKID={0}",TaskId)))
+                {
+                    _TaskId = meastask.m_meastaskid.Value;
+                    _SubTaskId = meastask.m_meassubtaskid.Value;
+                    _SubTaskStationId = meastask.m_meassubtaskstationid.Value;
+                    _SensorId = meastask.m_sensorid.Value;
+                }
+                meastask.Close();
+                meastask.Dispose();
+
+            });
+            thread.Start();
+            thread.Join();
+
+            TaskId = _TaskId;
+            SubTaskId = _SubTaskId;
+            SubTaskStationId = _SubTaskStationId;
+            SensorId = _SensorId;
+        }
+
+
 
         /// <summary>
         /// 

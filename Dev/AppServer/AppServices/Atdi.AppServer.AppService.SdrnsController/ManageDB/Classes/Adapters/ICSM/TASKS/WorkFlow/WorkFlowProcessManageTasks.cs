@@ -83,7 +83,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return NewIdMeasTask;
         }
 
-      
+
         /// <summary>
         /// 
         /// </summary>
@@ -105,6 +105,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 {
                     if (mt != null)
                     {
+                        if (ActionType == "Del")
+                        {
+                            isSuccessTemp = cl.SetHistoryStatusTasksInDB(mt, "Z");
+                        }
                         //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
                         MeasTask[] Res = new MeasTask[1] { mt };
                         List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
@@ -198,7 +202,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
-                                            
+
 
                                         }
 
@@ -207,11 +211,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         //if (fnd != null)
                                         //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
                                         //else GlobalInit.LIST_MEAS_TASK.Add(M);
-                                        if (ActionType == "Del")
-                                        {
-                                            isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
+                                        //if (ActionType == "Del")
+                                        //{
+                                            //isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
                                             //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
-                                        }
+                                        //}
                                     }
 
                                     if (Checked_L.Count > 0)
@@ -305,8 +309,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
 
         }
-      
-      
+
+
 
     }
 }

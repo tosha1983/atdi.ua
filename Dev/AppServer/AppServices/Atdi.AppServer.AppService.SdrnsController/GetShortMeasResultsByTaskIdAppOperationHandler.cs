@@ -41,7 +41,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     {
                         foreach (MeasurementResults rs in msrt)
                         {
-                            ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = rs.DataRank, Id = rs.Id, Number = rs.N.Value, Status = rs.Status, TimeMeas = rs.TimeMeas, TypeMeasurements = rs.TypeMeasurements };
+                            ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = rs.DataRank, Id = rs.Id, Number = rs.N!=null ? rs.N.Value : -1, Status = rs.Status, TimeMeas = rs.TimeMeas, TypeMeasurements = rs.TypeMeasurements };
                             if (rs.LocationSensorMeasurement != null)
                             {
                                 if (rs.LocationSensorMeasurement.Count() > 0)

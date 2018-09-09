@@ -50,7 +50,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public DateTime Measured { get; set; }
 
         /// <summary>
-        /// Object status
+        /// Result status
         /// </summary>
         [DataMember]
         public string Status { get; set; }

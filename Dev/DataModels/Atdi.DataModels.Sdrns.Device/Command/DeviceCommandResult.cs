@@ -32,13 +32,13 @@ namespace Atdi.DataModels.Sdrns.Device
         //public string EquipmentTechId { get; set; }
 
         /// <summary>
-        /// Command ID
+        /// Command identifier
         /// </summary>
         [DataMember]
         public string CommandId { get; set; }
 
         /// <summary>
-        /// Status
+        /// Command status
         /// </summary>
         [DataMember]
         public string Status { get; set; }

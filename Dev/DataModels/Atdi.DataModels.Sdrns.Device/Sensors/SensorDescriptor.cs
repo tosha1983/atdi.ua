@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// 
+    /// Identifies the Sensor equipment
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class SensorDescriptor
@@ -26,7 +26,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public string SensorName { get; set; }
 
         /// <summary>
-        /// Technical ID
+        /// Equipment technical ID
         /// </summary>
         [DataMember]
         public string EquipmentTechId { get; set; }

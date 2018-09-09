@@ -1361,8 +1361,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
                                             if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
 
-                                            int? ID_site_formeas = site_formeas.Save(dbConnect, transaction);
                                             site_formeas.m_id_stationdatform = ID_loc_params;
+                                            int? ID_site_formeas = site_formeas.Save(dbConnect, transaction);
+                                            
                                             site_formeas.Close();
                                             site_formeas.Dispose();
                                         }
@@ -1376,8 +1377,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (StationData_param.LicenseParameter.DozvilName != null) perm_formeas.m_dozvilname = StationData_param.LicenseParameter.DozvilName;
                                             if (StationData_param.LicenseParameter.EndDate != null) perm_formeas.m_enddate = StationData_param.LicenseParameter.EndDate.GetValueOrDefault();
                                             if (StationData_param.LicenseParameter.StartDate != null) perm_formeas.m_startdate = StationData_param.LicenseParameter.StartDate.GetValueOrDefault();
-                                            int? ID_perm_formeas = perm_formeas.Save(dbConnect, transaction);
                                             perm_formeas.m_id_stationdatform = ID_loc_params;
+                                            int? ID_perm_formeas = perm_formeas.Save(dbConnect, transaction);
                                             perm_formeas.Close();
                                             perm_formeas.Dispose();
                                         }
@@ -1392,8 +1393,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
                                             if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
                                             if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
+                                            owner_formeas.m_id_stationdatform = ID_loc_params;
                                             int? ID_perm_formeas = owner_formeas.Save(dbConnect, transaction);
-                                            owner_formeas.m_id_stationdatform = ID_perm_formeas;
                                             owner_formeas.Close();
                                             owner_formeas.Dispose();
                                         }

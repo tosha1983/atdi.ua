@@ -32,7 +32,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public string EquipmentTechId { get; set; }
 
         /// <summary>
-        /// Status
+        /// Sensor status
         /// </summary>
         [DataMember]
         public string Status { get; set; }

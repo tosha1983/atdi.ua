@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace Atdi.DataModels.CommonOperation
 {
     /// <summary>
-    /// Represents the result of the operation with the common state:  Success or Fault
+    /// Represents the result of the operation with the common state: Success or Fault
     /// </summary>
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class Result : OperationResult<OperationState>

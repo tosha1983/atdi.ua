@@ -15,19 +15,19 @@ namespace Atdi.DataModels.Sdrns.Device
     public class Sensor
     {
         /// <summary>
-        /// Name
+        /// Defines the Sensor name
         /// </summary>
         [DataMember]
         public string Name { get; set; }
 
         /// <summary>
-        /// Status
+        /// Defines the Sensor status
         /// </summary>
         [DataMember]
         public string Status { get; set; }
 
         /// <summary>
-        /// Administration
+        /// Defines the Sensor administration
         /// </summary>
         [DataMember]
         public string Administration { get; set; }
@@ -39,7 +39,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public string NetworkId { get; set; }
 
         /// <summary>
-        /// Remarks
+        /// User’s remarks
         /// </summary>
         [DataMember]
         public string Remark { get; set; }
@@ -87,13 +87,13 @@ namespace Atdi.DataModels.Sdrns.Device
         public string Type { get; set; }
 
         /// <summary>
-        /// StepMeasTime
+        /// Defines the time step of measurements
         /// </summary>
         [DataMember]
         public double? StepMeasTime { get; set; }
 
         /// <summary>
-        /// Rx losses, dB 
+        /// Defines the Sensor Rx losses, dB 
         /// </summary>
         [DataMember]
         public double? RxLoss { get; set; }
@@ -140,19 +140,19 @@ namespace Atdi.DataModels.Sdrns.Device
         public DateTime? Created { get; set; }
 
         /// <summary>
-        /// Created by
+        /// Creator name
         /// </summary>
         [DataMember]
         public string CreatedBy { get; set; }
 
         /// <summary>
-        /// Equipment of sensor
+        /// Defines the Sensor equipment
         /// </summary>
         [DataMember]
         public SensorEquipment Equipment { get; set; }
 
         /// <summary>
-        /// Antenna of sensor
+        /// Defines the Sensor antenna
         /// </summary>
         [DataMember]
         public SensorAntenna Antenna { get; set; }
@@ -164,7 +164,7 @@ namespace Atdi.DataModels.Sdrns.Device
         //public SensorLocation[] Locations { get; set; }
 
         /// <summary>
-        /// Points of sensor polygon
+        /// Defines the points of assigned Sensor polygon
         /// </summary>
         [DataMember]
         public SensorPolygon Polygon { get; set; }

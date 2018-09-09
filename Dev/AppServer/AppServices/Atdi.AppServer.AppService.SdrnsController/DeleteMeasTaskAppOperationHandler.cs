@@ -52,28 +52,39 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         {
                             WorkFlowProcessManageTasks tasks = new WorkFlowProcessManageTasks(Logger);
                             List<int> SensorIds = new List<int>();
-                            foreach (MeasSubTask item in mt.MeasSubTasks)
+                            if (mt.MeasSubTasks != null)
                             {
-                                foreach (MeasSubTaskStation u in item.MeasSubTaskStations)
+                                foreach (MeasSubTask item in mt.MeasSubTasks)
                                 {
-                                    SensorIds.Add(u.StationId.Value);
+                                    foreach (MeasSubTaskStation u in item.MeasSubTaskStations)
+                                    {
+                                        SensorIds.Add(u.StationId.Value);
+                                    }
                                 }
                             }
 
-                            foreach (MeasStation item in mt.Stations)
+                            if (mt.Stations != null)
                             {
-                                SensorIds.Add(item.StationId.Value);
+                                foreach (MeasStation item in mt.Stations)
+                                {
+                                    if (item.StationId.Value > 0)
+                                    {
+                                        SensorIds.Add(item.StationId.Value);
+                                    }
+                                }
                             }
 
                             var mt_edit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
+                            bool isSuccessTemp = false;
                             if (SensorIds.Count > 0)
                             {
-                                bool isSuccessTemp = false;
                                 tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", false, out isSuccessTemp);
-                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false, out isSuccessTemp);
                                 res.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
                             }
                             else res.State = CommonOperationState.Fault;
+
+                            tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false, out isSuccessTemp);
+                            res.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
                         }
                         else res.State = CommonOperationState.Fault;
