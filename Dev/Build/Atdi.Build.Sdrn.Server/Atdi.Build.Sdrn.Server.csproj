@@ -33,6 +33,53 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Atdi.Modules.Licensing">
+      <HintPath>..\..\AppServer\AppServices\Atdi.AppServer.ConfigurationSdrnController\Dll\Atdi.Modules.Licensing.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\..\packages\Castle.LoggingFacility.4.1.0\lib\net45\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.WcfIntegration">
+      <HintPath>..\..\packages\Castle.WcfIntegrationFacility.4.1.0\lib\net45\Castle.Facilities.WcfIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.NLogIntegration">
+      <HintPath>..\..\packages\Castle.Core-NLog.4.2.1\lib\net45\Castle.Services.Logging.NLogIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core">
+      <HintPath>..\..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyNetQ">
+      <HintPath>..\..\packages\EasyNetQ.2.2.0\lib\net451\EasyNetQ.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource">
+      <HintPath>..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Dll\Oracle.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\..\packages\Quartz.2.6.0\lib\net40\Quartz.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,6 +95,84 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj">
+      <Project>{11ee0e94-8612-4aaa-889f-5ab447e7dd6a}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsControllerv2_0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
+      <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\AppServices\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj">
+      <Project>{4db9d712-cce4-43f8-9e79-4eabb5047cde}</Project>
+      <Name>Atdi.AppServer.ConfigurationSdrnController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
+      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
+      <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
+      <Name>Atdi.AppServer.Model.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
+      <Project>{2556f633-8292-4e00-a9d0-8abb4e09d1e3}</Project>
+      <Name>Atdi.AppServer.AppServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer.Common\Atdi.AppServer.Common.csproj">
+      <Project>{fcd6ce65-f50a-4edc-89b3-d2efc2552941}</Project>
+      <Name>Atdi.AppServer.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
+      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
+      <Name>Atdi.AppServer.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer.CoreServices\Atdi.AppServer.CoreServices.csproj">
+      <Project>{c6605af9-033d-40ca-b656-d2e38a7d181f}</Project>
+      <Name>Atdi.AppServer.CoreServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer.Services\Atdi.AppServer.Services.csproj">
+      <Project>{01edf962-3c20-4db5-b5b4-e855138b6bbc}</Project>
+      <Name>Atdi.AppServer.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer\Atdi.AppServer.csproj">
+      <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
+      <Name>Atdi.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\Atdi.AppServer.Host.Console.Sdrns.csproj">
+      <Project>{3e4233b7-1f1c-4bd1-b5ef-62d75a509052}</Project>
+      <Name>Atdi.AppServer.Host.Console.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\Atdi.AppServer.Host.Svchost.Sdrns.csproj">
+      <Project>{a697f7c7-5522-4474-8472-2e275a968342}</Project>
+      <Name>Atdi.AppServer.Host.Svchost.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServer\WcfServices\Atdi.AppServer.Services.Sdrns\Atdi.AppServer.Services.Sdrns.csproj">
+      <Project>{2c0d02fc-9d02-4a5b-af1b-8ad2e9a37403}</Project>
+      <Name>Atdi.AppServer.Services.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -71,6 +196,12 @@ copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(Config
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Castle*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Logger\nlog.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\Logger"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\EasyNetQ*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\License\SDRN.Server.v2.0.lic" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+
+
 
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\XICSM_ICSControlClient.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\XICSM_ICSControlClient.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
