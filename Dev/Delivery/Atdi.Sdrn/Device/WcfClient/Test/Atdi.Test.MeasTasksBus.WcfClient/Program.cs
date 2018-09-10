@@ -187,7 +187,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             if (getEntityPartResult.Token != null)
             {
-                busService.AckEntity(sensorDescriptor, getEntityPartResult.Token);
+                busService.AckEntityPart(sensorDescriptor, getEntityPartResult.Token);
             }
             
             return entityPart;
@@ -296,42 +296,37 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             {
                 SensorRegistrationResult result = null;
 
-                for (int i = 0; i < 1000; i++)
+                var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+
+                var registerSensorResult = busService.RegisterSensor(sensor, sdrnServer);
+
+                if (registerSensorResult.State == DataModels.CommonOperation.OperationState.Fault)
                 {
-                    var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-
-                    var registerSensorResult = busService.RegisterSensor(sensor, sdrnServer);
-
-                    if (registerSensorResult.State == DataModels.CommonOperation.OperationState.Fault)
-                    {
-                        throw new InvalidOperationException(registerSensorResult.FaultCause);
-                    }
-
-                    result = registerSensorResult.Data;
-
-                    if (result == null)
-                    {
-                        throw new InvalidOperationException("Test RegisterSensor is failed: result is null ");
-                    }
-                    if (result.SdrnServer != sdrnServer)
-                    {
-                        throw new InvalidOperationException("Test RegisterSensor is failed: SdrnServer ");
-                    }
-                    if (result.SensorName != sensor.Name)
-                    {
-                        throw new InvalidOperationException("Test RegisterSensor is failed: SdrnServer ");
-                    }
-                    if (result.EquipmentTechId != sensor.Equipment.TechId)
-                    {
-                        throw new InvalidOperationException("Test RegisterSensor is failed: EquipmentTechId ");
-                    }
-
-                    Console.WriteLine($"Test PASS: the sensor '{sensor.Name}' has been registered [Status='{result.Status}']");
+                    throw new InvalidOperationException(registerSensorResult.FaultCause);
                 }
 
+                result = registerSensorResult.Data;
+
+                if (result == null)
+                {
+                    throw new InvalidOperationException("Test RegisterSensor is failed: result is null ");
+                }
+                if (result.SdrnServer != sdrnServer)
+                {
+                    throw new InvalidOperationException("Test RegisterSensor is failed: SdrnServer ");
+                }
+                if (result.SensorName != sensor.Name)
+                {
+                    throw new InvalidOperationException("Test RegisterSensor is failed: SdrnServer ");
+                }
+                if (result.EquipmentTechId != sensor.Equipment.TechId)
+                {
+                    throw new InvalidOperationException("Test RegisterSensor is failed: EquipmentTechId ");
+                }
+
+                Console.WriteLine($"Test PASS: the sensor '{sensor.Name}' has been registered [Status='{result.Status}']");
 
                 return result;
-
             }
             catch(Exception e)
             {
@@ -344,42 +339,36 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             try
             {
                 SensorUpdatingResult result = null;
+                var busService = GetMeasTasksBusServicByEndpoint(endpointName);
 
-                for (int i = 0; i < 1000; i++)
+                var updateSensorResult = busService.UpdateSensor(sensor, sdrnServer);
+                if (updateSensorResult.State == DataModels.CommonOperation.OperationState.Fault)
                 {
-                    var busService = GetMeasTasksBusServicByEndpoint(endpointName);
-
-                    var updateSensorResult = busService.UpdateSensor(sensor, sdrnServer);
-                    if (updateSensorResult.State == DataModels.CommonOperation.OperationState.Fault)
-                    {
-                        throw new InvalidOperationException(updateSensorResult.FaultCause);
-                    }
-
-                    result = updateSensorResult.Data;
-
-                    if (result == null)
-                    {
-                        throw new InvalidOperationException("Test UpdateSensor is failed: result is null ");
-                    }
-                    if (result.SdrnServer != sdrnServer)
-                    {
-                        throw new InvalidOperationException("Test UpdateSensor is failed: SdrnServer ");
-                    }
-                    if (result.SensorName != sensor.Name)
-                    {
-                        throw new InvalidOperationException("Test UpdateSensor is failed: SdrnServer ");
-                    }
-                    if (result.EquipmentTechId != sensor.Equipment.TechId)
-                    {
-                        throw new InvalidOperationException("Test UpdateSensor is failed: EquipmentTechId ");
-                    }
-
-                    Console.WriteLine($"Test PASS: the sensor '{sensor.Name}' has been updated [Status='{result.Status}']");
+                    throw new InvalidOperationException(updateSensorResult.FaultCause);
                 }
 
+                result = updateSensorResult.Data;
+
+                if (result == null)
+                {
+                    throw new InvalidOperationException("Test UpdateSensor is failed: result is null ");
+                }
+                if (result.SdrnServer != sdrnServer)
+                {
+                    throw new InvalidOperationException("Test UpdateSensor is failed: SdrnServer ");
+                }
+                if (result.SensorName != sensor.Name)
+                {
+                    throw new InvalidOperationException("Test UpdateSensor is failed: SdrnServer ");
+                }
+                if (result.EquipmentTechId != sensor.Equipment.TechId)
+                {
+                    throw new InvalidOperationException("Test UpdateSensor is failed: EquipmentTechId ");
+                }
+
+                Console.WriteLine($"Test PASS: the sensor '{sensor.Name}' has been updated [Status='{result.Status}']");
 
                 return result;
-
             }
             catch (Exception e)
             {

@@ -40,7 +40,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result<SensorRegistrationResult> RegisterSensor(Sensor sensor, string sdrnServer);
 
         /// <summary>
-        /// 
+        /// Update the Sensor parameters
         /// </summary>
         /// <param name="sensor"></param>
         /// <param name="sdrnServer"></param>
@@ -49,14 +49,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result<SensorUpdatingResult> UpdateSensor(Sensor sensor, string sdrnServer);
 
         /// <summary>
-        /// 
+        /// Requests and obtains the device command from the Server
         /// </summary>
         /// <returns></returns>
         [OperationContract]
         BusResult<DeviceCommand> GetCommand(SensorDescriptor sensorDescriptor);
 
         /// <summary>
-        /// 
+        /// Confirms the correspondent answer has been received from the Server
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -64,21 +64,21 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
-        /// 
+        /// Sends the result of the command, previously received from the Server
         /// </summary>
         /// <returns></returns>
         [OperationContract]
         Result SendCommandResult(SensorDescriptor sensorDescriptor, DeviceCommandResult commandResult);
 
         /// <summary>
-        /// 
+        /// Requests and obtains the measurement task from the Server
         /// </summary>
         /// <returns></returns>
         [OperationContract]
         BusResult<MeasTask> GetMeasTask(SensorDescriptor sensorDescriptor);
 
         /// <summary>
-        /// 
+        /// Confirms the correspondent answer has been received from the Server
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -86,14 +86,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result AckMeasTask(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
-        /// 
+        /// Send the measurement results to the Server
         /// </summary>
         /// <returns></returns>
         [OperationContract]
         Result SendMeasResults(SensorDescriptor sensorDescriptor, MeasResults results);
 
         /// <summary>
-        /// 
+        /// Sends a universal object to the Server
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <param name="entity"></param>
@@ -102,7 +102,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result SendEntity(SensorDescriptor sensorDescriptor, Entity entity);
 
         /// <summary>
-        /// 
+        /// Sends a part of universal object
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <param name="entityPart"></param>
@@ -111,7 +111,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result SendEntityPart(SensorDescriptor sensorDescriptor, EntityPart entityPart);
 
         /// <summary>
-        /// 
+        /// Requests and obtains a universal object from the Server
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <returns></returns>
@@ -119,7 +119,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         BusResult<Entity> GetEntity(SensorDescriptor sensorDescriptor);
 
         /// <summary>
-        /// 
+        /// Requests and obtains a part of universal object, previously obtained from the Server
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <returns></returns>
@@ -127,7 +127,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         BusResult<EntityPart> GetEntityPart(SensorDescriptor sensorDescriptor);
 
         /// <summary>
-        /// 
+        /// Confirms the correspondent answer has been received from the Server
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <param name="token"></param>
@@ -136,7 +136,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         Result AckEntity(SensorDescriptor sensorDescriptor, byte[] token);
 
         /// <summary>
-        /// 
+        /// Confirms the correspondent answer has been received from the Server
         /// </summary>
         /// <param name="sensorDescriptor"></param>
         /// <param name="token"></param>
