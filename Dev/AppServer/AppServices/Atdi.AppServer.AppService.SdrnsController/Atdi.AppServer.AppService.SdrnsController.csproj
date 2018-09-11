@@ -172,6 +172,7 @@
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nupkg" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nuspec" />
     <None Include="Dll\packages\repositories.config" />
+    <None Include="License\SDRN.Server.v2.0.lic" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

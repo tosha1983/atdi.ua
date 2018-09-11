@@ -5,7 +5,7 @@ using System.Configuration;
 using Atdi.SDNRS.AppServer.BusManager;
 using XMLLibrary;
 using Atdi.SDNRS.AppServer.Sheduler;
-
+using Atdi.Modules.Licensing;
 
 
 namespace Atdi.AppServer.ConfigurationSdrnController
@@ -31,6 +31,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 
         string IAppServerComponent.Name => this._name;
 
+
         void IAppServerComponent.Activate()
         {
             try
@@ -38,17 +39,43 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
-                //DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
-                _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
-                BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
-                GlobalInit.Initialization();
-                Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
-                Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-                CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
-                CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-                getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
-                Quartz = new ShedulerCheckStart(this._logger);
-                Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+                DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
+                var fileName = System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetEntryAssembly().Location)+ @"\SDRN.Server.v2.0.lic";
+                if (System.IO.File.Exists(fileName))
+                {
+                    var licBody = System.IO.File.ReadAllBytes(fileName);
+                    var v = new LicenseVerifier("gdZ3DDX2nYSxOpB6m+i/bQ==", 32);
+                    var vd = new VerificationData
+                    {
+                        ClientId = "201809041707",
+                        ProductName = "SDRN.Server.[v2.0]",
+                        ProductKey = "SYU2Z-L1G70-VJ56X-09ABV-P3H7C",
+                        LicenseType = "ServerLicense",
+                        Date = CurrDate.Value
+                    };
+                    int res = v.Verify(vd, licBody);
+                    if (res > 0)
+                    {
+                        _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
+                        BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
+                        GlobalInit.Initialization();
+                        Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
+                        Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+                        CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
+                        CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
+                        getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
+                        Quartz = new ShedulerCheckStart(this._logger);
+                        Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+                    }
+                    else
+                    {
+                    _logger.Error("Error validation license");
+                    }
+                }
+                else
+                {
+                    _logger.Error("Not found SDRN.Server.v2.0.lic file");
+                }
             }
             catch (Exception ex)
             {

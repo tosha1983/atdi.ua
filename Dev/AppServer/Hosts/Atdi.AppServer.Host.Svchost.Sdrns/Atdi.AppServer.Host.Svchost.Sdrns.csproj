@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A697F7C7-5522-4474-8472-2E275A968342}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Atdi.AppServer.Host.Svchost.Sdrns</RootNamespace>
+    <AssemblyName>Atdi.AppServer.Host.Svchost.Sdrns</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HostService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HostService.Designer.cs">
+      <DependentUpon>HostService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Installer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer.Designer.cs">
+      <DependentUpon>Installer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsControllerv2.0\Atdi.AppServer.AppService.SdrnsControllerv2_0.csproj">
+      <Project>{11ee0e94-8612-4aaa-889f-5ab447e7dd6a}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsControllerv2_0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.AppService.SdrnsController\Atdi.AppServer.AppService.SdrnsController.csproj">
+      <Project>{e3444180-04b4-4338-9c9b-d8caaccc56b1}</Project>
+      <Name>Atdi.AppServer.AppService.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServer.ConfigurationSdrnController\Atdi.AppServer.ConfigurationSdrnController.csproj">
+      <Project>{4db9d712-cce4-43f8-9e79-4eabb5047cde}</Project>
+      <Name>Atdi.AppServer.ConfigurationSdrnController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
+      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
+      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Model.SdrnsController\Atdi.AppServer.Model.SdrnsController.csproj">
+      <Project>{e29633d4-3b17-43fb-beef-da504143f587}</Project>
+      <Name>Atdi.AppServer.Model.SdrnsController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.AppServices\Atdi.AppServer.AppServices.csproj">
+      <Project>{2556f633-8292-4e00-a9d0-8abb4e09d1e3}</Project>
+      <Name>Atdi.AppServer.AppServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.CoreServices\Atdi.AppServer.CoreServices.csproj">
+      <Project>{c6605af9-033d-40ca-b656-d2e38a7d181f}</Project>
+      <Name>Atdi.AppServer.CoreServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer.Services\Atdi.AppServer.Services.csproj">
+      <Project>{01edf962-3c20-4db5-b5b4-e855138b6bbc}</Project>
+      <Name>Atdi.AppServer.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Atdi.AppServer\Atdi.AppServer.csproj">
+      <Project>{94705bfc-10c6-482f-8b90-05af06d2c2d0}</Project>
+      <Name>Atdi.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.AppServer.Services.Sdrns\Atdi.AppServer.Services.Sdrns.csproj">
+      <Project>{2c0d02fc-9d02-4a5b-af1b-8ad2e9a37403}</Project>
+      <Name>Atdi.AppServer.Services.Sdrns</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

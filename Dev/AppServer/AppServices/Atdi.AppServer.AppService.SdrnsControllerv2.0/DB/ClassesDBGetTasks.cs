@@ -29,6 +29,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
            int _SensorId = 0;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
+                try
+                { 
                     YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
                     meastask.Format("*");
                     if (meastask.Fetch(string.Format("NUM={0}", NumValue)))
@@ -40,7 +42,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     }
                     meastask.Close();
                     meastask.Dispose();
-               
+                }
+                catch (Exception ex)
+                {
+                    logger.Trace("Error in procedure GetMeasTaskSDRNum... " + ex.Message);
+                }
+
             });
             thread.Start();
             thread.Join();
@@ -59,17 +66,24 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             int _SensorId = 0;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
-                YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
-                meastask.Format("*");
-                if (meastask.Fetch(string.Format("MEASTASKID={0}",TaskId)))
+                try
                 {
-                    _TaskId = meastask.m_meastaskid.Value;
-                    _SubTaskId = meastask.m_meassubtaskid.Value;
-                    _SubTaskStationId = meastask.m_meassubtaskstationid.Value;
-                    _SensorId = meastask.m_sensorid.Value;
+                    YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                    meastask.Format("*");
+                    if (meastask.Fetch(string.Format("MEASTASKID={0}", TaskId)))
+                    {
+                        _TaskId = meastask.m_meastaskid.Value;
+                        _SubTaskId = meastask.m_meassubtaskid.Value;
+                        _SubTaskStationId = meastask.m_meassubtaskstationid.Value;
+                        _SensorId = meastask.m_sensorid.Value;
+                    }
+                    meastask.Close();
+                    meastask.Dispose();
                 }
-                meastask.Close();
-                meastask.Dispose();
+                catch (Exception ex)
+                {
+                    logger.Trace("Error in procedure GetMeasTaskSDRIdentifier... " + ex.Message);
+                }
 
             });
             thread.Start();
