@@ -356,7 +356,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public string m_status { get { return getString(2); } set { setString(2, 20, value); } }
         public string m_standart { get { return getString(3); } set { setString(3, 50, value); } }
         public int? m_id_xbs_meastask { get { return getInt(4); } set { setInt(4, value); } }
-
+        public int? m_idstation { get { return getInt(5); } set { setInt(5, value); } }
     }
 
     public class YXbsMeassubtask : Yyy

@@ -350,7 +350,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             foreach (YXbsStationdatform r_dt in obj.XbsStationdatform.ToArray())
                             {
                                 StationDataForMeasurements MeasStation_ = new StationDataForMeasurements();
-                                MeasStation_.IdStation = r_dt.m_id.Value;
+                                MeasStation_.IdStation = r_dt.m_idstation.Value;
                                 MeasStation_.GlobalSID = r_dt.m_globalsid;
                                 MeasStation_.Standart = r_dt.m_standart;
                                 MeasStation_.Status = r_dt.m_status;

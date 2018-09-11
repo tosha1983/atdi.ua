@@ -1344,9 +1344,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (StationData_param.GlobalSID != null) prm_loc.m_globalsid = StationData_param.GlobalSID;
                                         if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
                                         if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
+                                        prm_loc.m_idstation = StationData_param.IdStation;
                                         prm_loc.m_id_xbs_meastask = ID;
                                         ID_loc_params = prm_loc.Save(dbConnect, transaction);
-                                        StationData_param.IdStation = ID_loc_params.Value;
                                         prm_loc.Close();
                                         prm_loc.Dispose();
 
