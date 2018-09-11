@@ -5,7 +5,7 @@ using System.Configuration;
 using Atdi.SDNRS.AppServer.BusManager;
 using XMLLibrary;
 using Atdi.SDNRS.AppServer.Sheduler;
-//using Atdi.Modules.Licensing;
+using Atdi.Modules.Licensing;
 
 
 namespace Atdi.AppServer.ConfigurationSdrnController
@@ -43,18 +43,18 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 var fileName = System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetEntryAssembly().Location)+ @"\SDRN.Server.v2.0.lic";
                 if (System.IO.File.Exists(fileName))
                 {
-                    //var licBody = System.IO.File.ReadAllBytes(fileName);
-                    //var v = new LicenseVerifier("gdZ3DDX2nYSxOpB6m+i/bQ==", 32);
-                    //var vd = new VerificationData
-                    //{
-                        //ClientId = "201809041707",
-                        //ProductName = "SDRN.Server.[v2.0]",
-                        //ProductKey = "SYU2Z-L1G70-VJ56X-09ABV-P3H7C",
-                        //LicenseType = "ServerLicense",
-                        //Date = CurrDate.Value
-                    //};
-                    //int res = v.Verify(vd, licBody);
-                    //if (res > 0)
+                    var licBody = System.IO.File.ReadAllBytes(fileName);
+                    var v = new LicenseVerifier("gdZ3DDX2nYSxOpB6m+i/bQ==", 32);
+                    var vd = new VerificationData
+                    {
+                        ClientId = "201809041707",
+                        ProductName = "SDRN.Server.[v2.0]",
+                        ProductKey = "SYU2Z-L1G70-VJ56X-09ABV-P3H7C",
+                        LicenseType = "ServerLicense",
+                        Date = CurrDate.Value
+                    };
+                    int res = v.Verify(vd, licBody);
+                    if (res > 0)
                     {
                         _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
                         BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
@@ -67,10 +67,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         Quartz = new ShedulerCheckStart(this._logger);
                         Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
                     }
-                    //else
-                    //{
-                    //_logger.Error("Error validation license");
-                    //}
+                    else
+                    {
+                    _logger.Error("Error validation license");
+                    }
                 }
             }
             catch (Exception ex)
