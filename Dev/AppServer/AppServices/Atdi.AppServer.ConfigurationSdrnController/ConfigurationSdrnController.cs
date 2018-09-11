@@ -72,6 +72,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     _logger.Error("Error validation license");
                     }
                 }
+                else
+                {
+                    _logger.Error("Not found SDRN.Server.v2.0.lic file");
+                }
             }
             catch (Exception ex)
             {
