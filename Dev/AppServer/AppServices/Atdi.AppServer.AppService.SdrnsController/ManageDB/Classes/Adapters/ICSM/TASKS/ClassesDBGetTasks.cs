@@ -47,6 +47,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
+                    try
+                    { 
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
                     ICSM_T.meas_task = new YXbsMeastask();
@@ -214,6 +216,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     task.Close();
                     task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ReadTask... " + ex.Message);
+                    }
                     logger.Trace("End procedure ReadTask.");
                 });
                 tsk.Start();
@@ -236,6 +243,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
+                    try
+                    { 
                     // сканирование по объектам БД
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
@@ -387,6 +396,95 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     task.Close();
                     task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ReadTask... " + ex.Message);
+                    }
+                    logger.Trace("End procedure ReadTask.");
+                });
+                tsk.Start();
+                tsk.Join();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error in ReadTask: " + ex.Message);
+            }
+            return L_IN;
+        }
+
+        public List<CLASS_TASKS> VeryShortReadTask(int MeasTaskId)
+        {
+            L_IN = new List<CLASS_TASKS>();
+            try
+            {
+                #region Load Tasks from DB
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                    logger.Trace("Start procedure ReadTask...");
+                    try
+                    {
+                        // сканирование по объектам БД
+                        CLASS_TASKS ICSM_T = new CLASS_TASKS();
+                        ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
+                        ICSM_T.meas_task = new YXbsMeastask();
+                        ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
+                        ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
+                        ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
+                        ICSM_T.MeasOther = new YXbsMeasother();
+                        ICSM_T.MeasTimeParamList = new YXbsMeastimeparaml();
+                        ICSM_T.Stations = new List<YXbsMeasstation>();
+                        ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
+
+
+                        //подключение к БД
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')", MeasTaskId);
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
+                        {
+                            ICSM_T = new CLASS_TASKS();
+                            YXbsMeastask m_meas_task = new YXbsMeastask();
+                            m_meas_task.CopyDataFrom(task);
+                            ICSM_T.meas_task = m_meas_task;
+                            m_meas_task.Close();
+                            m_meas_task.Dispose();
+
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                            {
+                                var m = new YXbsMeassubtask();
+                                m.CopyDataFrom(MeasSubTask_);
+                                List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
+                                YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                MeasSubTaskSt_.Format("*");
+                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeassubtasksta();
+                                    m_fr.CopyDataFrom(MeasSubTaskSt_);
+                                    SubTaskStL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasSubTaskSt_.Close();
+                                MeasSubTaskSt_.Dispose();
+                                KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
+                                ICSM_T.meas_st.Add(key);
+                                m.Dispose();
+                            }
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
+                            L_IN.Add(ICSM_T);
+                        }
+                        task.Close();
+                        task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ReadTask... " + ex.Message);
+                    }
                     logger.Trace("End procedure ReadTask.");
                 });
                 tsk.Start();
@@ -413,6 +511,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 #region Load Tasks from DB
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadlAllSTasksFromDB...");
+                    try
+                    { 
                     CLASS_TASKS ICSM_T = new CLASS_TASKS();
                     ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
                     ICSM_T.meas_task = new YXbsMeastask();
@@ -572,6 +672,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     task.Close();
                     task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ReadlAllSTasksFromDB... " + ex.Message);
+                    }
                     logger.Trace("End procedure ReadlAllSTasksFromDB.");
                 });
                 tsk.Start();
@@ -595,47 +700,55 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                logger.Trace("Start procedure SaveStatusTaskToDB...");
-                YXbsMeastask task = new YXbsMeastask();
-                task.Format("*");
-                task.Filter = string.Format("(ID={0})", obj.Id.Value);
-                for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
-                    MeasSubTask_.Format("*");
-                    MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                    for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                    logger.Trace("Start procedure SaveStatusTaskToDB...");
+                    try
                     {
-                        MeasSubTask M_TS = obj.MeasSubTasks.ToList().Find(t => t.Id.Value == MeasSubTask_.m_id);
-                        if (M_TS != null)
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = string.Format("(ID={0})", obj.Id.Value);
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                         {
-                            YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
-                            MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
-                            for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
                             {
-                                MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
-                                if (M_STX != null)
+                                MeasSubTask M_TS = obj.MeasSubTasks.ToList().Find(t => t.Id.Value == MeasSubTask_.m_id);
+                                if (M_TS != null)
                                 {
-                                        task.m_status = NewStatus;
-                                        MeasSubTask_.m_status = NewStatus;
-                                        MeasSubTaskSt_.m_status = NewStatus;
-                                        MeasSubTaskSt_.Save(null,null);
-                                        MeasSubTask_.Save(null, null);
-                                        task.Save(null, null);
+                                    YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                    MeasSubTaskSt_.Format("*");
+                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                    for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                    {
+                                        MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
+                                        if (M_STX != null)
+                                        {
+                                            task.m_status = NewStatus;
+                                            MeasSubTask_.m_status = NewStatus;
+                                            MeasSubTaskSt_.m_status = NewStatus;
+                                            MeasSubTaskSt_.Save(null, null);
+                                            MeasSubTask_.Save(null, null);
+                                            task.Save(null, null);
+                                        }
+                                    }
+                                    MeasSubTaskSt_.Close();
+                                    MeasSubTaskSt_.Dispose();
                                 }
                             }
-                            MeasSubTaskSt_.Close();
-                            MeasSubTaskSt_.Dispose();
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
                         }
+                        task.Close();
+                        task.Dispose();
                     }
-                    MeasSubTask_.Close();
-                    MeasSubTask_.Dispose();
-                }
-                task.Close();
-                task.Dispose();
-                logger.Trace("End procedure SaveStatusTaskToDB.");
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure SaveStatusTaskToDB... " + ex.Message);
+                    }
+                    logger.Trace("End procedure SaveStatusTaskToDB.");
                 });
                 tsk.Start();
                 tsk.Join();
@@ -660,6 +773,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
                     logger.Trace("Start procedure SaveStatusTaskToDB...");
+                    try
+                    { 
                     YXbsMeastask task = new YXbsMeastask();
                     task.Format("*");
                     task.Filter = string.Format("(ID={0})", obj.Id.Value);
@@ -698,6 +813,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     }
                     task.Close();
                     task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure SaveStatusTaskToDB... " + ex.Message);
+                    }
                     logger.Trace("End procedure SaveStatusTaskToDB.");
                 });
                 tsk.Start();
@@ -721,19 +841,28 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                logger.Trace("Start procedure SaveIdsSdrTasks...");
-                 YXbsMeastask task = new YXbsMeastask();
-                task.Format("*");
-                if (task.Fetch(obj.Id.Value)) {
-                    task.m_id_start = ids;
-                    task.Save(null,null);
-                }
-                task.Close();
-                task.Dispose();
-                logger.Trace("End procedure SaveIdsSdrTasks.");
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
+                    logger.Trace("Start procedure SaveIdsSdrTasks...");
+                    try
+                    {
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        if (task.Fetch(obj.Id.Value))
+                        {
+                            task.m_id_start = ids;
+                            task.Save(null, null);
+                        }
+                        task.Close();
+                        task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure SaveIdsSdrTasks... " + ex.Message);
+                    }
+                    logger.Trace("End procedure SaveIdsSdrTasks.");
                 });
-            tsk.Start();
+                tsk.Start();
                 tsk.Join();
             }
             catch (Exception ex)
@@ -753,35 +882,47 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 string ids = "";
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                logger.Trace("Start procedure GetMaXIdsSdrTasks...");
-                YXbsMeastask task = new YXbsMeastask();
-                task.Format("*");
-                task.Filter = "(ID>0)";
-                task.Order = "[ID] DESC";
-                for (task.OpenRs(); !task.IsEOF(); task.MoveNext()) {
-                        if (task.m_id_start != null)
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
+                    logger.Trace("Start procedure GetMaXIdsSdrTasks...");
+                    try
+                    {
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = "(ID>0)";
+                        task.Order = "[ID] DESC";
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                         {
-                            if (task.m_id_start.Length > 0)
+                            if (task.m_id_start != null)
                             {
-                                ids = task.m_id_start;
-                                break;
+                                if (task.m_id_start.Length > 0)
+                                {
+                                    ids = task.m_id_start;
+                                    break;
+                                }
                             }
                         }
-                }
-                task.Close();
-                task.Dispose();
-                if (ids.Length>0) {
-                    string[] words = ids.Split(new char[] { ';' });
-                    if (words.Length>0) {
-                        int val = -1;
-                        if (int.TryParse(words[words.Length-1], out val)) {
-                            MaxIDs = val;
+                        task.Close();
+                        task.Dispose();
+                        if (ids.Length > 0)
+                        {
+                            string[] words = ids.Split(new char[] { ';' });
+                            if (words.Length > 0)
+                            {
+                                int val = -1;
+                                if (int.TryParse(words[words.Length - 1], out val))
+                                {
+                                    MaxIDs = val;
+                                }
+                            }
                         }
+                        if (MaxIDs == -1) MaxIDs = 0;
                     }
-                }
-                if (MaxIDs == -1) MaxIDs = 0;
-                logger.Trace("End procedure GetMaXIdsSdrTasks.");
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure GetMaXIdsSdrTasks... " + ex.Message);
+                    }
+                    logger.Trace("End procedure GetMaXIdsSdrTasks.");
                 });
                 tsk.Start();
                 tsk.Join();
@@ -803,22 +944,30 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             int MaxIDs = -1;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
-                logger.Trace("Start procedure GetMaXIdsSdrResults...");
-                YXbsMeasurementres res = new YXbsMeasurementres();
-                res.Format("*");
-                res.Filter = "(ID>0)";
-                res.Order = "[ID] DESC";
-                for (res.OpenRs(); !res.IsEOF(); res.MoveNext())
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    if (res.m_id > 0)
+                    logger.Trace("Start procedure GetMaXIdsSdrResults...");
+                    try
                     {
-                        MaxIDs = res.m_id.Value;
-                        break;
+                        YXbsMeasurementres res = new YXbsMeasurementres();
+                        res.Format("*");
+                        res.Filter = "(ID>0)";
+                        res.Order = "[ID] DESC";
+                        for (res.OpenRs(); !res.IsEOF(); res.MoveNext())
+                        {
+                            if (res.m_id > 0)
+                            {
+                                MaxIDs = res.m_id.Value;
+                                break;
+                            }
+                        }
+                        if (MaxIDs == -1) MaxIDs = 0;
                     }
-                }
-                if (MaxIDs == -1) MaxIDs = 0;
-                logger.Trace("End procedure GetMaXIdsSdrResults.");
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure GetMaXIdsSdrResults... " + ex.Message);
+                    }
+                    logger.Trace("End procedure GetMaXIdsSdrResults.");
                 });
                 tsk.Start();
                 tsk.Join();
@@ -840,51 +989,64 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-               System.Threading.Thread tsk = new System.Threading.Thread(() => {
-               logger.Trace("Start procedure SetHistoryStatusTasksInDB...");
-                YXbsMeastask task = new YXbsMeastask();
-                task.Format("*");
-                task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL)",obj.Id.Value);
-                for (task.OpenRs(); !task.IsEOF(); task.MoveNext()) {
-                   YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
-                    MeasSubTask_.Format("*");
-                    MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                    for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext()) {
-                        MeasSubTask M_TS =  obj.MeasSubTasks.ToList().Find(t => t.Id.Value == MeasSubTask_.m_id);
-                        if (M_TS != null)
-                           {
-                            YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
-                            MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
-                            for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext()) {
-                                MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
-                                if (M_STX != null) {
-                                    if (M_STX.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0) {
-                                           if (MeasSubTaskSt_.m_status != "Z")
-                                           {
-                                               MeasSubTaskSt_.m_status = status;
-                                               MeasSubTaskSt_.Save(null, null);
-                                               isSuccess = true;
-                                           }
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
+                    logger.Trace("Start procedure SetHistoryStatusTasksInDB...");
+                    try
+                    {
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL)", obj.Id.Value);
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
+                        {
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                            {
+                                MeasSubTask M_TS = obj.MeasSubTasks.ToList().Find(t => t.Id.Value == MeasSubTask_.m_id);
+                                if (M_TS != null)
+                                {
+                                    YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                    MeasSubTaskSt_.Format("*");
+                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                    for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                    {
+                                        MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
+                                        if (M_STX != null)
+                                        {
+                                            if (M_STX.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0)
+                                            {
+                                                if (MeasSubTaskSt_.m_status != "Z")
+                                                {
+                                                    MeasSubTaskSt_.m_status = status;
+                                                    MeasSubTaskSt_.Save(null, null);
+                                                    isSuccess = true;
+                                                }
+                                            }
+                                        }
                                     }
+                                    MeasSubTaskSt_.Close();
+                                    MeasSubTaskSt_.Dispose();
                                 }
+                                MeasSubTask_.m_status = status;
+                                MeasSubTask_.Save(null, null);
                             }
-                            MeasSubTaskSt_.Close();
-                            MeasSubTaskSt_.Dispose();
-                        }
-                           MeasSubTask_.m_status = status;
-                           MeasSubTask_.Save(null,null);
-                       }
-                    MeasSubTask_.Close();
-                    MeasSubTask_.Dispose();
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
 
-                    task.m_status = status;
-                    task.Save(null,null);
-                }
-                task.Close();
-                task.Dispose();
-                logger.Trace("End procedure SetHistoryStatusTasksInDB.");
-               });
+                            task.m_status = status;
+                            task.Save(null, null);
+                        }
+                        task.Close();
+                        task.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure SetHistoryStatusTasksInDB... " + ex.Message);
+                    }
+                    logger.Trace("End procedure SetHistoryStatusTasksInDB.");
+                });
                 tsk.Start();
                 tsk.Join();
             }

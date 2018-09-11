@@ -35,6 +35,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 logger.Trace("Start procedure ConvertTo_SDRObjects...");
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
+                    try
+                    { 
                     foreach (ClassSDRResults obj in objs.ToArray())
                     {
                         MeasurementResults s_out = new MeasurementResults();
@@ -244,6 +246,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_out.MeasurementsResults = L_MSR.ToArray();
 
                         L_OUT.Add(s_out);
+                    }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ConvertTo_SDRObjects... " + ex.Message);
                     }
                 });
                 tsk.Start();
