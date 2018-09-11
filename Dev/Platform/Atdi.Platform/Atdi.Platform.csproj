@@ -52,6 +52,7 @@
     <Compile Include="AppServer\IServerContext.cs" />
     <Compile Include="AppComponent\IComponent.cs" />
     <Compile Include="AppServer\IServerConfig.cs" />
+    <Compile Include="Cryptography\Encryptor.cs" />
     <Compile Include="DefaultResourceResolver.cs" />
     <Compile Include="DependencyInjection\BaseOnMode.cs" />
     <Compile Include="DependencyInjection\IHandlerResolver.cs" />

@@ -1,0 +1,11 @@
+<project outputDir="C:\Users\andrey\Documents\Visual Studio 2017\Projects\Atdi.Modules.Licensing\bin\Release\Confused" baseDir="C:\Users\andrey\Documents\Visual Studio 2017\Projects\Atdi.Modules.Licensing\bin\Release" seed="фуаацшо823руорвлфоралорфарорфлораолрчфифыпа" xmlns="http://confuser.codeplex.com">
+  <module path="Atdi.Modules.Licensing.dll" snKey="C:\Users\andrey\Documents\Visual Studio 2017\Projects\Atdi.Modules.Licensing\Key.snk">
+    <rule pattern="true" preset="maximum" inherit="false">
+      <protection id="anti ildasm" />
+      <protection id="anti tamper" />
+      <protection id="constants" />
+      <protection id="anti dump" />
+      <protection id="rename" />
+    </rule>
+  </module>
+</project>

@@ -77,6 +77,10 @@
       <Project>{c9d6ed82-abf9-4585-aa7c-b49fe0bf8eb9}</Project>
       <Name>Atdi.AppServer.Svchost</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
+      <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
+      <Name>Atdi.Modules.Licensing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
       <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
       <Name>Atdi.Platform.AppServer</Name>
@@ -118,6 +122,7 @@ copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\A
 copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 
 
 copy "$(TargetDir)\Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfClient\Bin$(ConfigurationName)"

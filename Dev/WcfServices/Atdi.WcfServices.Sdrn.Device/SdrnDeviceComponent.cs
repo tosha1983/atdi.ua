@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Modules.Licensing;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.Logging;
 using RabbitMQ.Client;
@@ -20,7 +22,33 @@ namespace Atdi.WcfServices.Sdrn.Device
         protected override void OnInstall()
         {
             base.OnInstall();
-            this._serverDescriptor = new SdrnServerDescriptor(this.Config);
+
+            try
+            {
+                var productKey = this.Config.GetParameterAsDecodeString("License.ProductKey", "Atdi.WcfServices.Sdrn.Device");
+                var ownerId = this.Config.GetParameterAsDecodeString("License.OwnerId", "Atdi.WcfServices.Sdrn.Device");
+
+                var verificationData = new VerificationData
+                {
+                    OwnerId = ownerId,
+                    ProductName = "ICS Control Device",
+                    ProductKey = productKey,
+                    LicenseType = "DeviceLicense",
+                    Date = DateTime.Now
+                };
+
+                var licenseFileName = this.Config.GetParameterAsString("License.FileName");
+                var licenseBody = File.ReadAllBytes(licenseFileName);
+
+                var verResult = LicenseVerifier.Verify(verificationData, licenseBody);
+
+                this._serverDescriptor = new SdrnServerDescriptor(this.Config, verResult.Instance);
+            }
+            catch(Exception e)
+            {
+                throw new InvalidOperationException("The license verification failed", e);
+            }
+
             this.Container.RegisterInstance(this._serverDescriptor, Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<MessagesBus>(Platform.DependencyInjection.ServiceLifetime.PerThread);
         }

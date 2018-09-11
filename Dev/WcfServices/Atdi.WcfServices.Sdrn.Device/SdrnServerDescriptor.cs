@@ -56,12 +56,12 @@ namespace Atdi.WcfServices.Sdrn.Device
 
             public string RoutingKey { get; set; }
         }
-        public SdrnServerDescriptor(IComponentConfig config)
+        public SdrnServerDescriptor(IComponentConfig config, string instance)
         {
-            this.Instance = config.GetParameterAsString("Instance");
+            this.Instance = instance; // config.GetParameterAsString("Instance");
             this.RabbitMqHost = config.GetParameterAsString("RabbitMQ.Host");
             this.RabbitMqUser = config.GetParameterAsString("RabbitMQ.User");
-            this.RabbitMqPassword = config.GetParameterAsString("RabbitMQ.Password");
+            this.RabbitMqPassword = config.GetParameterAsDecodeString("RabbitMQ.Password", "Atdi.WcfServices.Sdrn.Device");
             this.ApiVersion = config.GetParameterAsString("SDRN.ApiVersion");
             this.ServerInstance = config.GetParameterAsString("SDRN.ServerInstance");
             this.MessagesExchange = config.GetParameterAsString("SDRN.MessagesExchange");
