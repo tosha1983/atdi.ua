@@ -74,7 +74,7 @@ namespace XMLLibrary
     /// </summary>
     public class BaseXMLConfiguration
     {
-        public static string file_name_current = AppDomain.CurrentDomain.BaseDirectory + @"\ServerSetting.xml";
+        public static string file_name_current = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)+ @"\ServerSetting.xml";
         public XMLConfiguration xml_configuration = new XMLConfiguration();
         public static XMLConfType xml_conf = new XMLConfType();
 
