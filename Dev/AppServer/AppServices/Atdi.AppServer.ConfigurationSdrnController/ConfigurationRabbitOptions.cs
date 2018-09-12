@@ -41,8 +41,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 listRabbitOptions = new Dictionary<IModel, RabbitOptions>();
                 RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
                 RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
-                RabbitPassword = ConfigurationManager.AppSettings["RabbitPassword"];
-                NameServer = ConfigurationManager.AppSettings["NameServer"];
+                RabbitPassword = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["RabbitMQ.Password"], "Atdi.AppServer.AppService.SdrnsController");
+                NameServer = ConfigurationManager.AppSettings["ServerInstance"];
                 ExchangePointFromDevices = ConfigurationManager.AppSettings["ExchangePointFromDevices"];
                 ExchangePointFromServer = ConfigurationManager.AppSettings["ExchangePointFromServer"];
                 StartNameQueueServer = ConfigurationManager.AppSettings["StartNameQueueServer"];

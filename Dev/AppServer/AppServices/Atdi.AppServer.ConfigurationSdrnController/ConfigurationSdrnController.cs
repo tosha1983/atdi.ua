@@ -43,7 +43,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
                 DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
-                var licenseFileName = ConfigurationManager.AppSettings["License.FileName"].ToString();
+                var licenseFileName = @"License\"+ConfigurationManager.AppSettings["License.FileName"].ToString();
                 if (System.IO.File.Exists(licenseFileName))
                 {
                     var productKey = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["License.ProductKey"].ToString(), "Atdi.AppServer.AppService.SdrnsController");
@@ -66,6 +66,47 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
                             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
                             GlobalInit.Initialization();
+                            var ownerI = "OWNID-01181765";
+                            var productK = "TEST-TEST-TEST-TEST-TEST";
+                            var licenseFile = @"License\LCS-2018-TEST INS-DV-2018-TEST.lic";
+                            // зашит в код
+                            var verificationD = new VerificationData
+                            {
+                                OwnerId = ownerI,
+                                ProductName = "ICS Control Device",
+                                ProductKey = productK,
+                                LicenseType = "DeviceLicense",
+                                Date = DateTime.Now
+                            };
+
+                            var licenseB = System.IO.File.ReadAllBytes(licenseFile);
+                            var verRes = LicenseVerifier.Verify(verificationD, licenseB);
+                            if (verRes != null)
+                            {
+                                if (!string.IsNullOrEmpty(verRes.Instance))
+                                {
+                                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\License");
+                                    System.IO.FileInfo[] list = di.GetFiles();
+                                    for (int i = 0; i < list.Length; i++)
+                                    {
+                                        if (list[i].Extension.ToLower() == ".xml")
+                                        {
+                                            XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
+                                            if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
+                                            {
+                                                BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
+                                                sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status="N",  DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask);
+                                                if (System.IO.File.Exists(list[i].FullName))
+                                                {
+                                                    System.IO.File.Delete(list[i].FullName);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                                    
                             Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
                             Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
                             CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);

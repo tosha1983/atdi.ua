@@ -122,7 +122,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.Template_Event_Confirm_MeasTaskResults_Send_ = ConfigurationManager.AppSettings["Template_Event_Confirm_MeasTaskResults_Send_"];
             GlobalInit.RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
             GlobalInit.RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
-            GlobalInit.NameServer = ConfigurationManager.AppSettings["NameServer"];
+            GlobalInit.NameServer = ConfigurationManager.AppSettings["ServerInstance"];
             GlobalInit.ExchangePointFromDevices = ConfigurationManager.AppSettings["ExchangePointFromDevices"];
             GlobalInit.ExchangePointFromServer = ConfigurationManager.AppSettings["ExchangePointFromServer"];
             GlobalInit.StartNameQueueServer = ConfigurationManager.AppSettings["StartNameQueueServer"];

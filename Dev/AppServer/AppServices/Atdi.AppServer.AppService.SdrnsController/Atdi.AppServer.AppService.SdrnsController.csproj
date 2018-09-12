@@ -158,6 +158,7 @@
     <Compile Include="Sheduler\Quartz.net\Interface\InterfaceSheduler.cs" />
     <Compile Include="Sheduler\Quartz.net\Classes\ShedulerStatic.cs" />
     <Compile Include="StopMeasTaskAppOperationHandler.cs" />
+    <Compile Include="XmlReader.cs" />
     <Compile Include="XMLDirect.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -172,7 +173,9 @@
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nupkg" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nuspec" />
     <None Include="Dll\packages\repositories.config" />
-    <None Include="License\LCS-2018-TEST-SERVER INS-SRV-2018-TEST.lic" />
+    <None Include="License\LCS-2018-TEST-SERVER INS-SRV-2018-TEST.lic">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
