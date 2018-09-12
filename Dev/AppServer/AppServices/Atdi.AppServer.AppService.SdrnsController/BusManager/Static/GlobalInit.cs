@@ -21,7 +21,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         // Список объектов, содержащих сведения о текущем состоянии активности каждого сенсора
         public static List<Mdx> Lst_timers = new List<Mdx>();
-        public static string MainRabbitMQServices = BaseXMLConfiguration.xml_conf._MainRabbitMQServices;
+        public static string MainRabbitMQServices = "";
         // Значение по умолчанию для значения из XML (MEAS_TIME_PARAM_LIST.PER_INTERVAL = 300 сек)
         // Данное значение использувется если MEAS_TIME_PARAM_LIST.PER_INTERVAL = 0 !!!
         public static int DefaultValueMinTimeInterval = BaseXMLConfiguration.xml_conf._DefaultValueMinTimeInterval;
@@ -122,13 +122,14 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.Template_Event_Confirm_MeasTaskResults_Send_ = ConfigurationManager.AppSettings["Template_Event_Confirm_MeasTaskResults_Send_"];
             GlobalInit.RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
             GlobalInit.RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
-            GlobalInit.RabbitPassword = ConfigurationManager.AppSettings["RabbitPassword"];
             GlobalInit.NameServer = ConfigurationManager.AppSettings["NameServer"];
             GlobalInit.ExchangePointFromDevices = ConfigurationManager.AppSettings["ExchangePointFromDevices"];
             GlobalInit.ExchangePointFromServer = ConfigurationManager.AppSettings["ExchangePointFromServer"];
             GlobalInit.StartNameQueueServer = ConfigurationManager.AppSettings["StartNameQueueServer"];
             GlobalInit.StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
             GlobalInit.ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
+            GlobalInit.RabbitPassword = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["RabbitMQ.Password"], "Atdi.AppServer.AppService.SdrnsController");
+            MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
             Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();

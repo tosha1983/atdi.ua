@@ -172,7 +172,7 @@
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nupkg" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nuspec" />
     <None Include="Dll\packages\repositories.config" />
-    <None Include="License\SDRN.Server.v2.0.lic" />
+    <None Include="License\LCS-2018-TEST-SERVER INS-SRV-2018-TEST.lic" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -236,6 +236,14 @@
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
       <Name>Atdi.DataModels.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
