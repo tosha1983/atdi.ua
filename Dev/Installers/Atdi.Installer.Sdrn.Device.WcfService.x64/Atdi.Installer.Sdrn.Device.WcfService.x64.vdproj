@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4A0B4D1814DB4EA887D4C2A40C0E41C1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4F5BDB3C51A621A6E2E1F4855F77660B"
         "OwnerKey" = "8:_319A763F549235558AE4CD4443C24A60"
         "MsmSig" = "8:_UNDEFINED"
@@ -65,6 +71,12 @@
         {
         "MsmKey" = "8:_7700FA898FC25A4E27BD4454DC2CB6BA"
         "OwnerKey" = "8:_BB8665CE19DC4F97950A29C95FE5AAB0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7700FA898FC25A4E27BD4454DC2CB6BA"
+        "OwnerKey" = "8:_4A0B4D1814DB4EA887D4C2A40C0E41C1"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -244,6 +256,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4A0B4D1814DB4EA887D4C2A40C0E41C1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_EA9611DD5D3A440596982FCC93BFF387"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -392,6 +410,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -590,6 +616,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4A0B4D1814DB4EA887D4C2A40C0E41C1"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Atdi.Tools.LicenseAnalyzer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_4A0B4D1814DB4EA887D4C2A40C0E41C1"
+                    {
+                    "Name" = "8:Atdi.Tools.LicenseAnalyzer.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\..\\Delivery\\Atdi.Sdrn\\Device\\WcfService\\BinRelease\\Atdi.Tools.LicenseAnalyzer.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6B545C253F8C4B9E8E7FD5511F0004EA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4F5BDB3C51A621A6E2E1F4855F77660B"
@@ -1267,7 +1324,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ICS Control Device WCF Service"
         "ProductCode" = "8:{B491B6CA-0057-4733-94A3-F9B51731DA6B}"
-        "PackageCode" = "8:{17459CC9-25DA-484B-B1FC-9ACCF32CFB24}"
+        "PackageCode" = "8:{5CF2D0FD-922F-45C7-BDC8-D4F43D0ADD80}"
         "UpgradeCode" = "8:{846B3D47-CE56-4677-9A35-3616D3AC3551}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

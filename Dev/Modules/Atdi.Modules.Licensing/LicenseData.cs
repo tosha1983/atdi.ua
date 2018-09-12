@@ -27,6 +27,8 @@ namespace Atdi.Modules.Licensing
 
         public DateTime Created { get; set; }
 
+        public DateTime StartDate { get; set; }
+
         public DateTime StopDate { get; set; }
 
         public int Count { get; set; }

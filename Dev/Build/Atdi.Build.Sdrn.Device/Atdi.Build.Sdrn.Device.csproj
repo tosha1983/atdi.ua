@@ -105,6 +105,10 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Atdi.Tools.LicenseAnalyzer\Atdi.Tools.LicenseAnalyzer.csproj">
+      <Project>{7a762e12-0f04-4b0b-a8a4-d888ccd74b28}</Project>
+      <Name>Atdi.Tools.LicenseAnalyzer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.Sdrn.Device\Atdi.WcfServices.Sdrn.Device.csproj">
       <Project>{6de6d960-919f-449e-aeda-993d0722bcda}</Project>
       <Name>Atdi.WcfServices.Sdrn.Device</Name>
@@ -120,6 +124,8 @@
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Atdi.ConfigWizard.Sdrn.Device.WcfService.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Atdi.Tools.LicenseAnalyzer.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
+
 
 copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
