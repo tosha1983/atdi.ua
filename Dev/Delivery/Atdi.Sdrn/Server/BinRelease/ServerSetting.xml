@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PluginConfiguration>
   <RootElement ListPlugins="SettingConfigurations">
-    <MainRabbitMQServices>host=10.1.2.129; username=SDR_Client; password=32Xr567</MainRabbitMQServices>
     <Lon_Delta>0.000001</Lon_Delta>
     <Lat_Delta>0.000001</Lat_Delta>
     <TimeExpirationTask>604800000</TimeExpirationTask>
