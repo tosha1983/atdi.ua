@@ -6,11 +6,13 @@ using Atdi.SDNRS.AppServer.BusManager;
 using XMLLibrary;
 using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.Modules.Licensing;
+using Atdi.Platform.Cryptography;
+using Atdi.Platform.AppComponent;
 
 
 namespace Atdi.AppServer.ConfigurationSdrnController
 {
-    public class ConfigurationSdrnController : IAppServerComponent
+    public class ConfigurationSdrnController : IAppServerComponent 
     {
         private readonly string _name;
         private ILogger _logger;
@@ -21,6 +23,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         private ShedulerCheckActivitySensor CheckActivitySensor;
         private ShedulerGetMeasTask getMeasTask;
         private ShedulerCheckStart Quartz;
+
 
         public ConfigurationSdrnController()
         {
@@ -40,41 +43,106 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
                 DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
-                var fileName = System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetEntryAssembly().Location)+ @"\SDRN.Server.v2.0.lic";
-                if (System.IO.File.Exists(fileName))
+                var licenseFileName = @"License\"+ConfigurationManager.AppSettings["License.FileName"].ToString();
+                if (System.IO.File.Exists(licenseFileName))
                 {
-                    var licBody = System.IO.File.ReadAllBytes(fileName);
-                    var v = new LicenseVerifier("gdZ3DDX2nYSxOpB6m+i/bQ==", 32);
-                    var vd = new VerificationData
+                    var productKey = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["License.ProductKey"].ToString(), "Atdi.AppServer.AppService.SdrnsController");
+                    var ownerId = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["License.OwnerId"], "Atdi.AppServer.AppService.SdrnsController");
+                    var verificationData = new VerificationData
                     {
-                        ClientId = "201809041707",
-                        ProductName = "SDRN.Server.[v2.0]",
-                        ProductKey = "SYU2Z-L1G70-VJ56X-09ABV-P3H7C",
+                        OwnerId = ownerId,
+                        ProductName = "ICS Control Server",
+                        ProductKey = productKey,
                         LicenseType = "ServerLicense",
                         Date = CurrDate.Value
                     };
-                    int res = v.Verify(vd, licBody);
-                    if (res > 0)
+
+                    var licenseBody = System.IO.File.ReadAllBytes(licenseFileName);
+                    var verResult = LicenseVerifier.Verify(verificationData, licenseBody);
+                    if (verResult != null)
                     {
-                        _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
-                        BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
-                        GlobalInit.Initialization();
-                        Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
-                        Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-                        CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
-                        CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-                        getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
-                        Quartz = new ShedulerCheckStart(this._logger);
-                        Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+                        if (!string.IsNullOrEmpty(verResult.Instance))
+                        {
+                            _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
+                            BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
+                            GlobalInit.Initialization();
+                            var ownerI = "OWNID-01181765";
+                            var productK = "TEST-TEST-TEST-TEST-TEST";
+                            var licenseFile = @"License\LCS-2018-TEST INS-DV-2018-TEST.lic";
+                            // зашит в код
+                            var verificationD = new VerificationData
+                            {
+                                OwnerId = ownerI,
+                                ProductName = "ICS Control Device",
+                                ProductKey = productK,
+                                LicenseType = "DeviceLicense",
+                                Date = DateTime.Now
+                            };
+
+                            if (System.IO.File.Exists(licenseFile))
+                            {
+                                var licenseB = System.IO.File.ReadAllBytes(licenseFile);
+                                var verRes = LicenseVerifier.Verify(verificationD, licenseB);
+                                if (verRes != null)
+                                {
+                                    if (!string.IsNullOrEmpty(verRes.Instance))
+                                    {
+                                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\License");
+                                        System.IO.FileInfo[] list = di.GetFiles();
+                                        for (int i = 0; i < list.Length; i++)
+                                        {
+                                            if (list[i].Extension.ToLower() == ".xml")
+                                            {
+                                                XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
+                                                if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
+                                                {
+                                                    BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
+                                                    sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status = "N", DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask);
+                                                    if (System.IO.File.Exists(list[i].FullName))
+                                                    {
+                                                        System.IO.File.Delete(list[i].FullName);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _logger.Error("Error validation license: " + licenseFile);
+                                    }
+                                }
+                                else
+                                {
+                                    _logger.Error("Error validation license: "+ licenseFile);
+                                }
+                            }
+                            else
+                            {
+                                _logger.Error("Not found file: "+ licenseFile);
+                            }
+                                    
+                            Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
+                            Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+                            CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
+                            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
+                            getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
+                            Quartz = new ShedulerCheckStart(this._logger);
+                            Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+                        }
+                        else
+                        {
+                            _logger.Error("Error validation license" + licenseFileName);
+                        }
                     }
                     else
                     {
-                    _logger.Error("Error validation license");
+                        _logger.Error("Error validation license: " + licenseFileName);
                     }
                 }
                 else
                 {
-                    _logger.Error("Not found SDRN.Server.v2.0.lic file");
+                    _logger.Error(string.Format("Not found {0} file", licenseFileName));
                 }
             }
             catch (Exception ex)
