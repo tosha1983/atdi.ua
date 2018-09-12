@@ -53,6 +53,10 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ConfigWizards\Atdi.ConfigWizard.Sdrn.Device.WcfService\Atdi.ConfigWizard.Sdrn.Device.WcfService.csproj">
+      <Project>{488d28b2-e9ae-4a2f-bf3c-5b18f3d79b5f}</Project>
+      <Name>Atdi.ConfigWizard.Sdrn.Device.WcfService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Device\Atdi.Contracts.WcfServices.Sdrn.Device.csproj">
       <Project>{bed80a02-9104-477f-a267-f9265eeed6c0}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Device</Name>
@@ -115,7 +119,7 @@
     <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
-
+copy "$(TargetDir)\Atdi.ConfigWizard.Sdrn.Device.WcfService.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 
 copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\WcfService\Bin$(ConfigurationName)"

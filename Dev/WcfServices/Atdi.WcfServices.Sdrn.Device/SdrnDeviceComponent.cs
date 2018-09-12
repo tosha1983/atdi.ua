@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Modules.Licensing;
@@ -19,6 +20,18 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
            
         }
+
+        private string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetAssembly(this.GetType()).CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+
         protected override void OnInstall()
         {
             base.OnInstall();
@@ -38,6 +51,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 };
 
                 var licenseFileName = this.Config.GetParameterAsString("License.FileName");
+                licenseFileName = Path.Combine(this.AssemblyDirectory, licenseFileName);
                 var licenseBody = File.ReadAllBytes(licenseFileName);
 
                 var verResult = LicenseVerifier.Verify(verificationData, licenseBody);
