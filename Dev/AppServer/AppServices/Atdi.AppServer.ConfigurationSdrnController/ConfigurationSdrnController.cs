@@ -79,32 +79,47 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 Date = DateTime.Now
                             };
 
-                            var licenseB = System.IO.File.ReadAllBytes(licenseFile);
-                            var verRes = LicenseVerifier.Verify(verificationD, licenseB);
-                            if (verRes != null)
+                            if (System.IO.File.Exists(licenseFile))
                             {
-                                if (!string.IsNullOrEmpty(verRes.Instance))
+                                var licenseB = System.IO.File.ReadAllBytes(licenseFile);
+                                var verRes = LicenseVerifier.Verify(verificationD, licenseB);
+                                if (verRes != null)
                                 {
-                                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\License");
-                                    System.IO.FileInfo[] list = di.GetFiles();
-                                    for (int i = 0; i < list.Length; i++)
+                                    if (!string.IsNullOrEmpty(verRes.Instance))
                                     {
-                                        if (list[i].Extension.ToLower() == ".xml")
+                                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\License");
+                                        System.IO.FileInfo[] list = di.GetFiles();
+                                        for (int i = 0; i < list.Length; i++)
                                         {
-                                            XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
-                                            if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
+                                            if (list[i].Extension.ToLower() == ".xml")
                                             {
-                                                BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
-                                                sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status="N",  DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask);
-                                                if (System.IO.File.Exists(list[i].FullName))
+                                                XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
+                                                if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
                                                 {
-                                                    System.IO.File.Delete(list[i].FullName);
+                                                    BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
+                                                    sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status = "N", DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask);
+                                                    if (System.IO.File.Exists(list[i].FullName))
+                                                    {
+                                                        System.IO.File.Delete(list[i].FullName);
+                                                    }
+                                                    break;
                                                 }
-                                                break;
                                             }
                                         }
                                     }
+                                    else
+                                    {
+                                        _logger.Error("Error validation license: " + licenseFile);
+                                    }
                                 }
+                                else
+                                {
+                                    _logger.Error("Error validation license: "+ licenseFile);
+                                }
+                            }
+                            else
+                            {
+                                _logger.Error("Not found file: "+ licenseFile);
                             }
                                     
                             Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
@@ -117,13 +132,17 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         }
                         else
                         {
-                            _logger.Error("Error validation license");
+                            _logger.Error("Error validation license" + licenseFileName);
                         }
+                    }
+                    else
+                    {
+                        _logger.Error("Error validation license: " + licenseFileName);
                     }
                 }
                 else
                 {
-                    _logger.Error("Not found SDRN.Server.v2.0.lic file");
+                    _logger.Error(string.Format("Not found {0} file", licenseFileName));
                 }
             }
             catch (Exception ex)
