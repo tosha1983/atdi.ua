@@ -128,7 +128,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.StartNameQueueServer = ConfigurationManager.AppSettings["StartNameQueueServer"];
             GlobalInit.StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
             GlobalInit.ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
-            GlobalInit.RabbitPassword = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["RabbitMQ.Password"], "Atdi.AppServer.AppService.SdrnsController");
+            GlobalInit.RabbitPassword = ConfigurationManager.AppSettings["RabbitMQ.Password"];
             MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
