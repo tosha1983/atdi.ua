@@ -3,8 +3,8 @@
   <RootElement ListPlugins="SettingConfigurations">
     <OwnerId>OWNID-01181765</OwnerId>
     <ProductKey>TEST-TEST-TEST-TEST-TEST</ProductKey>
-    <SensorEquipmentTechId>SensorYYY</SensorEquipmentTechId>
-    <RabbitHostName>10.1.2.129</RabbitHostName>
+    <SensorEquipmentTechId>Tech_SpecialDev</SensorEquipmentTechId>
+    <RabbitHostName>109.237.91.29</RabbitHostName>
     <RabbitUserName>SDR_Client</RabbitUserName>
     <RabbitPassword>32Xr567</RabbitPassword>
     <SensorQueue>SENSORS_List</SensorQueue>
