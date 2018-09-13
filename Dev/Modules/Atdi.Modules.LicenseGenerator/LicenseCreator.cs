@@ -29,29 +29,6 @@ namespace Atdi.Modules.LicenseGenerator
                     Body = Encoding.UTF8.GetBytes(encodeVal)
                 };
             }
-
-            //using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
-            //{
-            //    aes.GenerateIV();
-            //    byte[] iv = aes.IV;
-            //    ivAsBase64 = Convert.ToBase64String(iv);
-
-            //    var key = Assembly.GetAssembly(typeof(LicenseData)).FullName;
-            //    keySize = aes.Key.Length;
-            //    var keyBytes = Encoding.UTF8.GetBytes(key.Substring(0, aes.Key.Length));
-            //    aes.Key = keyBytes;
-
-            //    keyAsBase64 = Convert.ToBase64String(aes.Key);
-
-            //    var cryptor = aes.CreateEncryptor();
-            //    result = cryptor.TransformFinalBlock(result, 0, result.Length);
-            //}
-
-            //return new LicenseCrationResult
-            //{
-            //    Body = result
-            //};
-
         }
     }
 }

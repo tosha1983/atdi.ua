@@ -8,8 +8,6 @@ namespace Atdi.Modules.LicenseGenerator
 {
     public class LicenseCrationResult
     {
-        public string IvAsBase64;
-        public int KeySize;
         public byte[] Body;
     }
 }
