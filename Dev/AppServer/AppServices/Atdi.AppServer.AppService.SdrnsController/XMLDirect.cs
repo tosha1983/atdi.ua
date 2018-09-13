@@ -85,30 +85,12 @@ namespace XMLLibrary
             xml_conf._MainRabbitMQServices = xml_configuration._MainRabbitMQServices;
             double.TryParse(xml_configuration._Lon_Delta.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._Lon_Delta);
             double.TryParse(xml_configuration._Lat_Delta.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._Lat_Delta);
-            int.TryParse(xml_configuration._ClassSensorSubmitToDB.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._ClassSensorSubmitToDB);
-            int.TryParse(xml_configuration._DefaultValueMinTimeInterval.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._DefaultValueMinTimeInterval);
             int.TryParse(xml_configuration._ReloadStart.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._ReloadStart);
-            int.TryParse(xml_configuration._ScanDataSensor.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._ScanDataSensor);
             int.TryParse(xml_configuration._ScanMeasTasks.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._ScanMeasTasks);
-            int.TryParse(xml_configuration._ShedulerSensorSubmitLstQueues.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._ShedulerSensorSubmitLstQueues);
             int.TryParse(xml_configuration._TimeExpirationTask.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._TimeExpirationTask);
             int.TryParse(xml_configuration._TimeExpirationTemp.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._TimeExpirationTemp);
-            double.TryParse(xml_configuration._MEAS_SDR_PARAM_RBW.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._MEAS_SDR_PARAM_RBW);
-            double.TryParse(xml_configuration._MEAS_SDR_PARAM_VBW.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._MEAS_SDR_PARAM_VBW);
-            double.TryParse(xml_configuration._MEAS_SDR_PARAM_ref_level_dbm.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._MEAS_SDR_PARAM_ref_level_dbm);
-            double.TryParse(xml_configuration._MEAS_SDR_PARAM_Time_of_m.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._MEAS_SDR_PARAM_Time_of_m);
-            xml_conf._MEAS_Type_of_m = xml_configuration._MEAS_Type_of_m;
-            xml_conf._MEAS_TypeFunction = xml_configuration._MEAS_TypeFunction;
-            int.TryParse(xml_configuration._MEAS_sw_time.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._MEAS_sw_time);
-            int.TryParse(xml_configuration._TimerSendMeaskTaskToSDR.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._TimerSendMeaskTaskToSDR);
-            int.TryParse(xml_configuration._CheckActivitySensor.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._CheckActivitySensor);
-            int.TryParse(xml_configuration._MaxTimeNotActivateStatusSensor.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._MaxTimeNotActivateStatusSensor);
             int.TryParse(xml_configuration._RescanActivitySensor.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._RescanActivitySensor);
-            int.TryParse(xml_configuration._TimeUpdateMeasTaskStatus.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._TimeUpdateMeasTaskStatus);
             int.TryParse(xml_configuration._TimeUpdateMeasResult.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._TimeUpdateMeasResult);
-            int.TryParse(xml_configuration._TimeArchiveResult.Trim().ToString().Replace(".", decimal_sep).Replace(",", decimal_sep), out xml_conf._TimeArchiveResult);
-
-            
         }
         public static XMLConfiguration GetXmlSettings(string FileName)
         {

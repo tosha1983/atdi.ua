@@ -134,7 +134,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
                             CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
                             CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-                            getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(20);
+                            getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ScanMeasTasks);
                             Quartz = new ShedulerCheckStart(this._logger);
                             Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
                         }
