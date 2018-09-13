@@ -48,8 +48,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 
                 if (System.IO.File.Exists(licenseServerFileName))
                 {
-                    var productKey = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["License.ProductKey"].ToString(), "Atdi.AppServer.AppService.SdrnsController");
-                    var ownerId = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["License.OwnerId"], "Atdi.AppServer.AppService.SdrnsController");
+                    var productKey = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseServer.ProductKey"].ToString(), "Atdi.AppServer.AppService.SdrnsController");
+                    var ownerId = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseServer.OwnerId"], "Atdi.AppServer.AppService.SdrnsController");
                     var verificationData = new VerificationData
                     {
                         OwnerId = ownerId,
@@ -68,8 +68,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
                             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
                             GlobalInit.Initialization();
-                            var ownerI = "OWNID-01181765";
-                            var productK = "TEST-TEST-TEST-TEST-TEST";
+                            var productK = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.ProductKey"].ToString(),"Atdi.WcfServices.Sdrn.Device");
+                            var ownerI = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.OwnerId"].ToString(), "Atdi.WcfServices.Sdrn.Device");
                             var licenseFile = licenseDeviceFileName;
                             // зашит в код
                             var verificationD = new VerificationData
