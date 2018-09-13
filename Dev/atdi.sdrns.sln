@@ -81,6 +81,10 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Atdi.Installer.Sdrn.Device.
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Atdi.Installer.Sdrn.Device.WcfService.x86", "Installers\Atdi.Installer.Sdrn.Device.WcfService.x86\Atdi.Installer.Sdrn.Device.WcfService.x86.vdproj", "{CCE80E59-A8FA-455D-9648-7314A4F7BF25}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "98 Tools", "98 Tools", "{AE94C3B3-3576-42C1-98FD-A7DCEF480CF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Tools.LicenseAnalyzer", "Tools\Atdi.Tools.LicenseAnalyzer\Atdi.Tools.LicenseAnalyzer.csproj", "{7A762E12-0F04-4B0B-A8A4-D888CCD74B28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +184,10 @@ Global
 		{CCE80E59-A8FA-455D-9648-7314A4F7BF25}.Debug|Any CPU.Build.0 = Debug
 		{CCE80E59-A8FA-455D-9648-7314A4F7BF25}.Release|Any CPU.ActiveCfg = Release
 		{CCE80E59-A8FA-455D-9648-7314A4F7BF25}.Release|Any CPU.Build.0 = Release
+		{7A762E12-0F04-4B0B-A8A4-D888CCD74B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A762E12-0F04-4B0B-A8A4-D888CCD74B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A762E12-0F04-4B0B-A8A4-D888CCD74B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A762E12-0F04-4B0B-A8A4-D888CCD74B28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +229,8 @@ Global
 		{488D28B2-E9AE-4A2F-BF3C-5B18F3D79B5F} = {84D47736-3EB1-4B81-98DB-8D99522E19D5}
 		{38131DAF-70E4-4A95-9706-F88D905EAA96} = {395AD4CE-F673-4D90-85F2-50D701AE7C0A}
 		{CCE80E59-A8FA-455D-9648-7314A4F7BF25} = {395AD4CE-F673-4D90-85F2-50D701AE7C0A}
+		{AE94C3B3-3576-42C1-98FD-A7DCEF480CF5} = {21E7E276-6012-498E-A58D-B5A0D0286465}
+		{7A762E12-0F04-4B0B-A8A4-D888CCD74B28} = {AE94C3B3-3576-42C1-98FD-A7DCEF480CF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
