@@ -38,6 +38,14 @@ namespace Atdi.WcfServices.Sdrn.Device
             this.EstablisheConnection();
         }
 
+        public void CheckSensorName(string name)
+        {
+            if (!_serverDescriptor.AllowedSensors.ContainsKey(name))
+            {
+                throw new InvalidOperationException("Attempting to use an unlicensed device");
+            }
+        }
+
         public static long DateTimeToUnixTimestamp(DateTime dateTime)
         {
             return  Convert.ToInt64( (TimeZoneInfo.ConvertTimeToUtc(dateTime) -
