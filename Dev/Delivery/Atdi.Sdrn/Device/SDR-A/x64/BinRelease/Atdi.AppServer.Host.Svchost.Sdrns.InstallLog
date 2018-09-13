@@ -1,0 +1,13 @@
+﻿Выполняется установка сборки 'C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\Atdi.AppServer.Host.Svchost.Sdrns.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\Atdi.AppServer.Host.Svchost.Sdrns.exe
+   logfile = C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\Atdi.AppServer.Host.Svchost.Sdrns.InstallLog
+Устанавливается служба Atdi.SDR...
+Служба Atdi.SDR успешно установлена.
+Создается исходный EventLog Atdi.SDR в журнале Application...
+Выполняется фиксация сборки 'C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\Atdi.AppServer.Host.Svchost.Sdrns.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   assemblypath = C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\Atdi.AppServer.Host.Svchost.Sdrns.exe
+   logfile = C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\Atdi.AppServer.Host.Svchost.Sdrns.InstallLog

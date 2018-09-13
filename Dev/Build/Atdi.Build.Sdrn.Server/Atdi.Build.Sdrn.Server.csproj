@@ -231,7 +231,6 @@ copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(Config
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\License\LCS-2018-TEST-SERVER INS-SRV-2018-TEST.lic" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\License"
 
 
 

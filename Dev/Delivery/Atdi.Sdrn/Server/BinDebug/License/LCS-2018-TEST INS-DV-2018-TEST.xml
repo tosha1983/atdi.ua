@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PluginConfiguration>
   <RootElement ListPlugins="SettingConfigurations">
-    <OwnerId>OWNID-01181765</OwnerId>
-    <ProductKey>TEST-TEST-TEST-TEST-TEST</ProductKey>
+    <OwnerId>OID-BD12-A00-N00</OwnerId>
+    <ProductKey>0ZB0-DVZR-ATI1-WIHB-NC1B</ProductKey>
     <SensorEquipmentTechId>Tech_SpecialDev</SensorEquipmentTechId>
     <RabbitHostName>109.237.91.29</RabbitHostName>
     <RabbitUserName>SDR_Client</RabbitUserName>

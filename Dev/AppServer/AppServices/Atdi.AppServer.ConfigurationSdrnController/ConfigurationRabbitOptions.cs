@@ -195,7 +195,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 }
                 foreach (Task t in tasks)
                 {
-                    t.Dispose();
+                    if (t!=null) t.Dispose();
                 }
                 tasks = null;
                 listConcumerDescribe.Clear();

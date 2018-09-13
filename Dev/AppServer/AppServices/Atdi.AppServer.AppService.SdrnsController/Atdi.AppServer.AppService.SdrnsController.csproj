@@ -173,9 +173,6 @@
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nupkg" />
     <None Include="Dll\packages\Newtonsoft.Json.4.5.11\Newtonsoft.Json.4.5.11.nuspec" />
     <None Include="Dll\packages\repositories.config" />
-    <None Include="License\LCS-2018-TEST-SERVER INS-SRV-2018-TEST.lic">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -265,7 +262,9 @@
       <Name>Atdi.AppServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="License\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\..\packages\Microsoft.Diagnostics.Tracing.EventRegister.1.1.28\build\Microsoft.Diagnostics.Tracing.EventRegister.targets" Condition="Exists('..\..\..\packages\Microsoft.Diagnostics.Tracing.EventRegister.1.1.28\build\Microsoft.Diagnostics.Tracing.EventRegister.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

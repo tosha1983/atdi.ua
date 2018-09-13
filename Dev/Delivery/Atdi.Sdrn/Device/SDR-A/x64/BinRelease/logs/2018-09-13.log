@@ -1,0 +1,5 @@
+2018-09-13 22:50:23.9661 [TRACE] Init logs subsystem ...  
+2018-09-13 22:50:26.6016 [TRACE] DateTime: 13.09.2018 22:50:26, Type Object - LIST_SENSOR, Count in Memory: 2, Count in DB: 6 
+DateTime: 13.09.2018 22:50:26, Type Object - LIST_MEAS_TASK_SDR, Count in Memory: 0, Count in DB: 0 
+DateTime: 13.09.2018 22:50:26, Type Object - LIST_MEAS_SDR_RESULTS, Count in Memory: 0, Count in DB: 0 
+ 

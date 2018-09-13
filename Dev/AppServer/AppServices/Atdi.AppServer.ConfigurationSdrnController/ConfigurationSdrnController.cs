@@ -162,14 +162,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         void IAppServerComponent.Deactivate()
         {
             _configurationRabbitOptions.UnBindConcumers();
-            Sc_Up_Meas_SDR.Dispose();
             ShedulerUpMeasSDRResults.DisposeSheduler();
             ShedulerCheckActivitySensor.DisposeSheduler();
             ShedulerGetMeasTask.DisposeSheduler();
             ShedulerCheckStart.DisposeSheduler();
-            CheckActivitySensor.Dispose();
-            getMeasTask.Dispose();
-            Quartz.Dispose();
             _oracleDataAccess.CloseConnection();
         }
 
