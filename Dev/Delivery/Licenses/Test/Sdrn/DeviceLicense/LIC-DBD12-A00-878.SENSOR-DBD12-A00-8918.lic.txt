@@ -1,0 +1,20 @@
+﻿
+  -- License Data -- 
+License Number    : 'LIC-DBD12-A00-878'
+License Type      : DeviceLicense
+Issued by Company : ТОВ 'Лабораторія інформаційних систем'
+  ------------------ 
+
+Owner Id     : 'OID-BD12-A00-N00'
+Owner Name   : 'ТОВ 'Лабораторія інформаційних систем''
+Product Name : 'ICS Control Device'
+Product Key  : '0VE1-OCOL-S4S0-C1D1-SEXB'
+  ------------------ 
+
+Created    : 13.09.2018 20:30:12
+Start Date : 12.09.2018 0:00:00
+Stop Date  : 01.01.2019 0:00:00
+  ------------------ 
+
+Instance : 'SENSOR-DBD12-A00-8918'
+  ------------------ 
