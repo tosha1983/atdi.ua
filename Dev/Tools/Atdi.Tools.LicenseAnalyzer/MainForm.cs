@@ -1,4 +1,5 @@
 ﻿using Atdi.Modules.Licensing;
+using Atdi.Platform.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -55,6 +57,25 @@ namespace Atdi.Tools.LicenseAnalyzer
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var sharedSecret = Assembly.GetAssembly(typeof(Encryptor)).FullName;
+
+            if (cmbConfigType.SelectedIndex == 0)
+            {
+                sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
+            }
+            if (cmbConfigType.SelectedIndex == 1)
+            {
+                sharedSecret = "Atdi.WcfServices.Sdrn.Device";
+            }
+
+            txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
+            txtEncryptedProductKey.Text = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, sharedSecret);
+            txtEncryptedPassword.Text = Encryptor.EncryptStringAES(txtPassword.Text, sharedSecret);
 
         }
     }

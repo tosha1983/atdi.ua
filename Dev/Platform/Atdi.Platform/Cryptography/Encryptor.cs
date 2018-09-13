@@ -22,8 +22,8 @@ namespace Atdi.Platform.Cryptography
         /// <param name="sharedSecret">A password used to generate a key for encryption.</param>
         public static string EncryptStringAES(string plainText, string sharedSecret)
         {
-            if (string.IsNullOrEmpty(plainText))
-                throw new ArgumentNullException("plainText");
+            //if (string.IsNullOrEmpty(plainText))
+            //    throw new ArgumentNullException("plainText");
             if (string.IsNullOrEmpty(sharedSecret))
                 throw new ArgumentNullException("sharedSecret");
 

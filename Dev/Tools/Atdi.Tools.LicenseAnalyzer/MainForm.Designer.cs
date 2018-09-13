@@ -57,12 +57,26 @@
             this.label11 = new System.Windows.Forms.Label();
             this.txtOwner = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.txtEncryptedProductKey = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txtEncryptedOwnerId = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtEncryptedPassword = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.cmbConfigType = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label15);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.txtLicenseProductKey);
@@ -73,7 +87,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(482, 113);
+            this.groupBox1.Size = new System.Drawing.Size(482, 110);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
@@ -169,7 +183,7 @@
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.txtNumber);
             this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Location = new System.Drawing.Point(12, 131);
+            this.groupBox3.Location = new System.Drawing.Point(12, 138);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(479, 186);
             this.groupBox3.TabIndex = 3;
@@ -330,11 +344,140 @@
             this.label12.TabIndex = 22;
             this.label12.Text = "Owner";
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label15.Location = new System.Drawing.Point(6, 110);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(0, 13);
+            this.label15.TabIndex = 13;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cmbConfigType);
+            this.groupBox2.Controls.Add(this.label17);
+            this.groupBox2.Controls.Add(this.txtEncryptedPassword);
+            this.groupBox2.Controls.Add(this.txtPassword);
+            this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.button3);
+            this.groupBox2.Controls.Add(this.txtEncryptedProductKey);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.txtEncryptedOwnerId);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox2.Location = new System.Drawing.Point(12, 341);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(479, 164);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Encrypted:";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(390, 24);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 46);
+            this.button3.TabIndex = 17;
+            this.button3.Text = "Encrypt";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // txtEncryptedProductKey
+            // 
+            this.txtEncryptedProductKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtEncryptedProductKey.Location = new System.Drawing.Point(81, 132);
+            this.txtEncryptedProductKey.Name = "txtEncryptedProductKey";
+            this.txtEncryptedProductKey.ReadOnly = true;
+            this.txtEncryptedProductKey.Size = new System.Drawing.Size(377, 20);
+            this.txtEncryptedProductKey.TabIndex = 16;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label13.Location = new System.Drawing.Point(10, 135);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(65, 13);
+            this.label13.TabIndex = 15;
+            this.label13.Text = "Product Key";
+            // 
+            // txtEncryptedOwnerId
+            // 
+            this.txtEncryptedOwnerId.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtEncryptedOwnerId.Location = new System.Drawing.Point(81, 106);
+            this.txtEncryptedOwnerId.Name = "txtEncryptedOwnerId";
+            this.txtEncryptedOwnerId.ReadOnly = true;
+            this.txtEncryptedOwnerId.Size = new System.Drawing.Size(377, 20);
+            this.txtEncryptedOwnerId.TabIndex = 14;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label14.Location = new System.Drawing.Point(10, 109);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(52, 13);
+            this.label14.TabIndex = 13;
+            this.label14.Text = "Owner ID";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtPassword.Location = new System.Drawing.Point(81, 54);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(303, 20);
+            this.txtPassword.TabIndex = 19;
+            this.txtPassword.UseSystemPasswordChar = true;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label16.Location = new System.Drawing.Point(10, 57);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(53, 13);
+            this.label16.TabIndex = 18;
+            this.label16.Text = "Password";
+            // 
+            // txtEncryptedPassword
+            // 
+            this.txtEncryptedPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtEncryptedPassword.Location = new System.Drawing.Point(81, 80);
+            this.txtEncryptedPassword.Name = "txtEncryptedPassword";
+            this.txtEncryptedPassword.ReadOnly = true;
+            this.txtEncryptedPassword.Size = new System.Drawing.Size(377, 20);
+            this.txtEncryptedPassword.TabIndex = 21;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label17.Location = new System.Drawing.Point(11, 30);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(60, 13);
+            this.label17.TabIndex = 22;
+            this.label17.Text = "Config type";
+            // 
+            // cmbConfigType
+            // 
+            this.cmbConfigType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbConfigType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cmbConfigType.FormattingEnabled = true;
+            this.cmbConfigType.Items.AddRange(new object[] {
+            "ICS Control Server  (SDRN App Server)",
+            "ICS Control Device (SDRN Device API)"});
+            this.cmbConfigType.Location = new System.Drawing.Point(81, 27);
+            this.cmbConfigType.Name = "cmbConfigType";
+            this.cmbConfigType.Size = new System.Drawing.Size(303, 21);
+            this.cmbConfigType.TabIndex = 23;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(503, 329);
+            this.ClientSize = new System.Drawing.Size(503, 517);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -347,6 +490,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -382,6 +527,18 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtNumber;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox txtEncryptedProductKey;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtEncryptedOwnerId;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox txtEncryptedPassword;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.ComboBox cmbConfigType;
+        private System.Windows.Forms.Label label17;
     }
 }
 
