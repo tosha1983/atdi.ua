@@ -46,6 +46,8 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 throw new ArgumentOutOfRangeException(nameof(sensorDescriptor.EquipmentTechId));
             }
+
+            this._bus.CheckSensorName(sensorDescriptor.SensorName);
         }
         public Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token)
         {
