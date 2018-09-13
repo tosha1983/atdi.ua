@@ -1,0 +1,31 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<hibernate-configuration>
+	
+  <session-factory xmlns="urn:nhibernate-configuration-2.2">
+		
+    <property name="connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
+    <property name="connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
+    <property name="dialect">NHibernate.Dialect.MsSql2000Dialect</property>
+    <property name="connection.connection_string">Server=GTR-1\SQL;Initial Catalog=NHibDB2;Trusted_Connection=yes;</property>
+    <mapping resource="NHibernate_DB.NH_MeasSDRFreq.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasSDRFreqParam.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasSDRLoc.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_LocationSensor.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasSDRParam.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasSDRSOParam.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasTaskSDR.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasSDRResults.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_FSemples.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_SensorLocation.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_SensorEquipSensitivity.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_SensorEquip.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_AntennaPattern.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_SensorAntenna.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_Sensor.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasResultsFreq.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_MeasResultsLevel.hbm.xml" assembly="NHibernate_DB" />
+    <mapping resource="NHibernate_DB.NH_SensorPoligon.hbm.xml" assembly="NHibernate_DB" />
+    
+  </session-factory>
+	
+</hibernate-configuration>

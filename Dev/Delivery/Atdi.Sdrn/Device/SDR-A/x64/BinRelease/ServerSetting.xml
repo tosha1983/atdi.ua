@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PluginConfiguration>
+  <RootElement ListPlugins="SettingConfigurations">
+    <Lon_Delta>0.000001</Lon_Delta>
+    <Lat_Delta>0.000001</Lat_Delta>
+    <TimeExpirationTask>604800000</TimeExpirationTask>
+    <TimeExpirationTemp>300000</TimeExpirationTemp>
+    <TimeUpdateSensorLocation>60</TimeUpdateSensorLocation>
+    <ReloadStart>10</ReloadStart>
+    <MEAS_SDR_PARAM_Time_of_m>10</MEAS_SDR_PARAM_Time_of_m>    
+    <MEAS_SDR_PARAM_RBW>50</MEAS_SDR_PARAM_RBW>    
+    <MEAS_SDR_PARAM_VBW>50</MEAS_SDR_PARAM_VBW>    
+    <MEAS_SDR_PARAM_ref_level_dbm>-20</MEAS_SDR_PARAM_ref_level_dbm>    
+    <MEAS_TypeFunction>Scan</MEAS_TypeFunction>  
+    <MEAS_Type_of_m>RT</MEAS_Type_of_m>      
+    <MEAS_sw_time>10</MEAS_sw_time>  
+    <CheckActivitySensor>5</CheckActivitySensor>  
+    <TimerSendMeasSDRResults>20</TimerSendMeasSDRResults>  
+    <MaxTimeOnlineCalculation>60</MaxTimeOnlineCalculation>
+    <TimeArchiveResult>40</TimeArchiveResult>
+    <TimeUpdateMeasTaskStatus>5</TimeUpdateMeasTaskStatus>
+  </RootElement>
+</PluginConfiguration>
