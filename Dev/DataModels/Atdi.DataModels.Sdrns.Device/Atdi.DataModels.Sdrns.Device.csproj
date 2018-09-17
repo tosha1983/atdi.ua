@@ -46,6 +46,7 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityPart.cs" />
     <Compile Include="Results\BandwidthMeasResult.cs" />
+    <Compile Include="Results\DirectionFindingData.cs" />
     <Compile Include="Results\FrequencySample.cs" />
     <Compile Include="Results\GeneralMeasResult.cs" />
     <Compile Include="Results\LevelMeasResult.cs" />

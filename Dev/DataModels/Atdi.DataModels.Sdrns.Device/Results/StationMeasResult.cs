@@ -57,10 +57,17 @@ namespace Atdi.DataModels.Sdrns.Device
         public LevelMeasResult[] LevelResults { get; set; }
 
         /// <summary>
+        /// Set of signals bearings with additional data 
+        /// </summary>
+        [DataMember]
+        public DirectionFindingData[] Bearings { get; set; }
+
+        /// <summary>
         /// General results of a station measurement
         /// </summary>
         [DataMember]
         public GeneralMeasResult GeneralResult { get; set; }
+
 
     }
 }
