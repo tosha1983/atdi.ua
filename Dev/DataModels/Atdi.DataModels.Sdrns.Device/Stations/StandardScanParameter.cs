@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
-    /// Parameters of measurement equipment settings for measuring the stations of different standards
+    /// Parameters of measurement equipment settings for measuring the stations of different standards 
+    /// Нормальна ситуация когда один и тотже стандарт требует несколько записей, например для случая когда мы имеем LTE с различными полосами частот.
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
     public class StandardScanParameter
