@@ -8,6 +8,84 @@ using Oracle.DataAccess.Client;
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
+    public class YXbsSysInfoBlocks : Yyy
+    {
+        public YXbsSysInfoBlocks()
+        {
+            TableName = "XBS_SYSINFOBLOCKS";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsSysInfoBlocks)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+
+        public string m_data { get { return getString(1); } set { setString(1, 1000, value); } }
+        public string m_type { get { return getString(2); } set { setString(2, 50, value); } }
+        public int? m_idxbssysinfo { get { return getInt(3); } set { setInt(3, value); } }
+    }
+
+    public class YXbsRoutes : Yyy
+    {
+        public YXbsRoutes()
+        {
+            TableName = "XBS_ROUTES";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsRoutes)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public string m_routeid { get { return getString(1); } set { setString(1, 250, value); } }
+        public double? m_agl { get { return getDouble(2); } set { setDouble(2, value); } }
+        public double? m_asl { get { return getDouble(3); } set { setDouble(3, value); } }
+        public DateTime? m_finishtime { get { return getDateTime(4); } set { setDateTime(4, value); } }
+        public double? m_lat { get { return getDouble(5); } set { setDouble(5, value); } }
+        public double? m_lon { get { return getDouble(6); } set { setDouble(6, value); } }
+        public string m_pointstaytype { get { return getString(7); } set { setString(7, 150, value); } }
+        public DateTime? m_starttime { get { return getDateTime(8); } set { setDateTime(8, value); } }
+        public int? m_idxbsmeasurementres { get { return getInt(9); } set { setInt(9, value); } }
+
+    }
+    public class YXbsSysInfo : Yyy
+    {
+        public YXbsSysInfo()
+        {
+            TableName = "XBS_SYSINFO";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsSysInfo)));
+        }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public double? m_BandWidth { get { return getDouble(1); } set { setDouble(1, value); } }
+        public int? m_BaseID { get { return getInt(2); } set { setInt(2, value); } }
+        public int? m_BSIC { get { return getInt(3); } set { setInt(3, value); } }
+        public int? m_ChannelNumber { get { return getInt(4); } set { setInt(4, value); } }
+        public int? m_CID { get { return getInt(5); } set { setInt(5, value); } }
+        public double? m_Code { get { return getDouble(6); } set { setDouble(6, value); } }
+        public double? m_CtoI { get { return getDouble(7); } set { setDouble(7, value); } }
+        public int? m_ECI { get { return getInt(8); } set { setInt(8, value); } }
+        public int? m_eNodeBId { get { return getInt(9); } set { setInt(9, value); } }
+        public double? m_Freq { get { return getDouble(10); } set { setDouble(10, value); } }
+        public double? m_IcIo { get { return getDouble(11); } set { setDouble(11, value); } }
+        public double? m_INBAND_POWER { get { return getDouble(12); } set { setDouble(12, value); } }
+        public double? m_ISCP { get { return getDouble(13); } set { setDouble(13, value); } }
+        public int? m_LAC { get { return getInt(14); } set { setInt(14, value); } }
+        public double? m_AGL { get { return getDouble(15); } set { setDouble(15, value); } }
+        public double? m_ASL { get { return getDouble(16); } set { setDouble(16, value); } }
+        public double? m_Lat { get { return getDouble(17); } set { setDouble(17, value); } }
+        public double? m_Lon { get { return getDouble(18); } set { setDouble(18, value); } }
+        public int? m_MCC { get { return getInt(19); } set { setInt(19, value); } }
+        public int? m_MNC { get { return getInt(20); } set { setInt(20, value); } }
+        public int? m_NID { get { return getInt(21); } set { setInt(21, value); } }
+        public int? m_PCI { get { return getInt(22); } set { setInt(22, value); } }
+        public int? m_PN { get { return getInt(23); } set { setInt(23, value); } }
+        public double? m_Power { get { return getDouble(24); } set { setDouble(24, value); } }
+        public double? m_Ptotal { get { return getDouble(25); } set { setDouble(25, value); } }
+        public int? m_RNC { get { return getInt(26); } set { setInt(26, value); } }
+        public double? m_RSCP { get { return getDouble(27); } set { setDouble(27, value); } }
+        public double? m_RSRP { get { return getDouble(28); } set { setDouble(28, value); } }
+        public double? m_RSRQ { get { return getDouble(29); } set { setDouble(29, value); } }
+        public int? m_SC { get { return getInt(30); } set { setInt(30, value); } }
+        public int? m_SID { get { return getInt(31); } set { setInt(31, value); } }
+        public int? m_TAC { get { return getInt(32); } set { setInt(32, value); } }
+        public string m_TypeCDMAEVDO { get { return getString(33); } set { setString(33, 250, value); } }
+        public int? m_UCID { get { return getInt(34); } set { setInt(34, value); } }
+        public int? m_IDXBSRESGENERAL { get { return getInt(35); } set { setInt(35, value); } }
+
+    }
 
     public class YXbsMeasTaskSDR : Yyy
     {
@@ -17,7 +95,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsMeasTaskSDR)));
         }
         public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_meastaskid { get { return getInt(1); } set { setInt(1, value); } }
+        public string m_meastaskid { get { return getString(1); } set { setString(1, 250, value); } }
         public int? m_meassubtaskid { get { return getInt(2); } set { setInt(2, value); } }
         public int? m_meassubtaskstationid { get { return getInt(3); } set { setInt(3, value); } }
         public int? m_sensorid { get { return getInt(4); } set { setInt(4, value); } }
@@ -38,7 +116,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public int? m_idstation { get { return getInt(4); } set { setInt(4, value); } }
         public string m_status { get { return getString(5); } set { setString(5, 250, value); } }
         public int? m_idxbsmeasurementres { get { return getInt(6); } set { setInt(6, value); } }
-        
+        public string m_standard { get { return getString(7); } set { setString(7, 50, value); } }
     }
 
     public class YXbsResGeneral : Yyy
@@ -61,6 +139,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public double? m_offsetfrequency { get { return getDouble(10); } set { setDouble(10, value); } }
         public double? m_specrumstartfreq { get { return getDouble(11); } set { setDouble(11, value); } }
         public double? m_specrumsteps { get { return getDouble(12); } set { setDouble(12, value); } }
+        public int? m_ñorrectnessestim { get { return getInt(13); } set { setInt(13, value); } }
+        public int? m_tracecount { get { return getInt(14); } set { setInt(14, value); } }
 
     }
 
@@ -114,9 +194,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public double? m_rbw { get { return getDouble(10); } set { setDouble(10, value); } }
         public DateTime? m_timeofmeasurements { get { return getDateTime(11); } set { setDateTime(11, value); } }
         public double? m_vbw { get { return getDouble(12); } set { setDouble(12, value); } }
-
-
-
+        public double? m_agl { get { return getDouble(13); } set { setDouble(13, value); } }
     }
 
     public class YxbsEntitypart : Yyy
@@ -619,7 +697,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         }
 
         public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_meastaskid { get { return getInt(1); } set { setInt(1, value); } }
+        public string m_meastaskid { get { return getString(1); } set { setString(1, 150, value); } }
         public int? m_submeastaskid { get { return getInt(2); } set { setInt(2, value); } }
         public int? m_submeastaskstationid { get { return getInt(3); } set { setInt(3, value); } }
         public int? m_sensorid { get { return getInt(4); } set { setInt(4, value); } }

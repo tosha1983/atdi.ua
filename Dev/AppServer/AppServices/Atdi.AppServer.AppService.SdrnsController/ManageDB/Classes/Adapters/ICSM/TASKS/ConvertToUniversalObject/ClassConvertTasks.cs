@@ -79,14 +79,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     dtx.IfAttenuation = r_dt.m_ifattenuation.Value;
                                     dtx.MeasTime = r_dt.m_meastime;
                                     MeasurementMode out_res_MeasurementMode;
-                                    if (Enum.TryParse<MeasurementMode>(r_dt.m_detecttype, out out_res_MeasurementMode))
+                                    if (Enum.TryParse<MeasurementMode>(r_dt.m_mode, out out_res_MeasurementMode))
                                         dtx.Mode = out_res_MeasurementMode;
 
                                     dtx.Preamplification = r_dt.m_preamplification.Value;
                                     dtx.RBW = r_dt.m_rbw;
                                     dtx.RfAttenuation = r_dt.m_rfattenuation.Value;
                                     MeasurementType out_res_MeasurementType;
-                                    if (Enum.TryParse<MeasurementType>(r_dt.m_detecttype, out out_res_MeasurementType))
+                                    if (Enum.TryParse<MeasurementType>(r_dt.m_typemeasurements, out out_res_MeasurementType))
                                         dtx.TypeMeasurements = out_res_MeasurementType;
                                     dtx.VBW = r_dt.m_vbw;
                                     s_out.MeasDtParam = dtx;
@@ -538,14 +538,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 dtx.IfAttenuation = r_dt.m_ifattenuation.HasValue ? r_dt.m_ifattenuation.Value : 0;
                                 dtx.MeasTime = r_dt.m_meastime;
                                 MeasurementMode out_res_MeasurementMode;
-                                if (Enum.TryParse<MeasurementMode>(r_dt.m_detecttype, out out_res_MeasurementMode))
+                                if (Enum.TryParse<MeasurementMode>(r_dt.m_mode, out out_res_MeasurementMode))
                                     dtx.Mode = out_res_MeasurementMode;
 
                                 dtx.Preamplification = r_dt.m_preamplification.HasValue ? r_dt.m_preamplification.Value : -1;
                                 dtx.RBW = r_dt.m_rbw;
                                 dtx.RfAttenuation = r_dt.m_rfattenuation.HasValue ? r_dt.m_rfattenuation.Value : 0;
                                 MeasurementType out_res_MeasurementType;
-                                if (Enum.TryParse<MeasurementType>(r_dt.m_detecttype, out out_res_MeasurementType))
+                                if (Enum.TryParse<MeasurementType>(r_dt.m_typemeasurements, out out_res_MeasurementType))
                                     dtx.TypeMeasurements = out_res_MeasurementType;
                                 dtx.VBW = r_dt.m_vbw;
                                 s_out.MeasDtParam = dtx;

@@ -74,16 +74,18 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                                 }
                             }
 
+                            int? ID = null;
                             var mt_edit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                             bool isSuccessTemp = false;
                             if (SensorIds.Count > 0)
                             {
-                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", false, out isSuccessTemp);
+
+                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", false, out isSuccessTemp, out ID);
                                 res.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
                             }
                             else res.State = CommonOperationState.Fault;
 
-                            tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false, out isSuccessTemp);
+                            tasks.Process_Multy_Meas(mt_edit, SensorIds, "Del", false, out isSuccessTemp, out ID);
                             res.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
                         }

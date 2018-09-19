@@ -87,8 +87,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <summary>
         /// 
         /// </summary>
-        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline, out bool isSuccess)
+        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline, out bool isSuccess, out int? IdTask)
         {
+            IdTask = null;
+            int? IdTsk = null;
             bool isSendSuccess = false;
             bool isSuccessTemp = false;
             isSuccess = false;
@@ -137,6 +139,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
                                                 if (LM_SDR != null)
                                                 {
+                                                    if (ActionType == "New")
+                                                    {
+                                                        IdTsk = Create_New_Meas_Task(M, "New");
+                                                    }
                                                     string ids = "";
                                                     int MaxVal = cl.GetMaXIdsSdrTasks(M);
                                                     int idx = MaxVal + 1;
@@ -176,6 +182,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
                                                 if (LM_SDR_Device != null)
                                                 {
+                                                    if (ActionType == "New")
+                                                    {
+                                                        IdTsk = Create_New_Meas_Task(M, "New");
+                                                    }
                                                     string ids = "";
                                                     int MaxVal = cl.GetMaXIdsSdrTasks(M);
                                                     int idx = MaxVal + 1;
@@ -205,6 +215,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
 
                                         }
+
+                                        
 
                                         M.MeasSubTasks = msbd_old;
                                         //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
@@ -299,6 +311,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 });
                 tsk_main.Start();
                 tsk_main.Join();
+                IdTask = IdTsk;
                 isSuccess = isSuccessTemp;
             }
             catch (Exception ex)

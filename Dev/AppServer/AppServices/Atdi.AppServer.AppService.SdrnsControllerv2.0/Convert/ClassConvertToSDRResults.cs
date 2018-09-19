@@ -26,7 +26,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         s_out.AntVal = obj.meas_res.m_antval;
                         s_out.DataRank = obj.meas_res.m_datarank;
                         s_out.Id.MeasTaskId = new MeasTaskIdentifier();
-                        s_out.Id.MeasTaskId.Value = obj.meas_res.m_meastaskid.Value;
+                        int MeasTaskId = -1; int.TryParse(obj.meas_res.m_meastaskid, out MeasTaskId);
+                        s_out.Id.MeasTaskId.Value = MeasTaskId;
                         s_out.Id.MeasSdrResultsId = obj.meas_res.m_id.Value;
                         s_out.N = obj.meas_res.m_n;
                         s_out.StationMeasurements = new StationMeasurements();

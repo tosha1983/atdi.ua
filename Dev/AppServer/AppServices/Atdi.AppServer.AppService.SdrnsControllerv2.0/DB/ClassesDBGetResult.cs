@@ -18,7 +18,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         
 
 
-        public int? SaveResultToDB(MeasurementResults obj)
+        public int? SaveResultToDB(MeasurementResults obj, Atdi.DataModels.Sdrns.Device.MeasResults api2Result, string taskId)
         {
             //obj.ResultsMeasStation
             int? ID = Constants.NullI;
@@ -26,65 +26,105 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
                 System.Threading.Thread tsk = new System.Threading.Thread(() =>
                 {
-                    Yyy yyy = new Yyy();
-                    DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
-                    if (dbConnect.State == System.Data.ConnectionState.Open)
+                Yyy yyy = new Yyy();
+                DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                if (dbConnect.State == System.Data.ConnectionState.Open)
+                {
+                    DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                    try
                     {
-                        DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-                        try
+                        logger.Trace("Start procedure SaveResultToDB.");
+                        List<Yyy> BlockInsert_FrequencyMeasurement2 = new List<Yyy>();
+                        List<Yyy> BlockInsert_YXbsLevelmeasres1 = new List<Yyy>();
+                        List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
+                        /// Create new record in YXbsMeastask
+                        if (obj != null)
                         {
-                            logger.Trace("Start procedure SaveResultToDB.");
-                            List<Yyy> BlockInsert_FrequencyMeasurement2 = new List<Yyy>();
-                            List<Yyy> BlockInsert_YXbsLevelmeasres1 = new List<Yyy>();
-                            List<Yyy> BlockInsert_YXbsSpectoccupmeas1 = new List<Yyy>();
-                            /// Create new record in YXbsMeastask
-                            if (obj != null)
+
+                            if ((taskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                             {
-                              
-                                if ((obj.Id.MeasTaskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
+
+                                if (obj.StationMeasurements.StationId != null)
                                 {
-                                   
-                                    if (obj.StationMeasurements.StationId != null)
+                                    YXbsMeasurementres measRes = new YXbsMeasurementres();
+                                    measRes.Format("*");
+                                    measRes.Filter = "ID=-1";
+                                    measRes.New();
+                                    if (obj.AntVal != null) measRes.m_antval = obj.AntVal.GetValueOrDefault();
+                                    if (obj.DataRank != null) measRes.m_datarank = obj.DataRank.GetValueOrDefault();
+                                    measRes.m_status = obj.Status;
+                                    measRes.m_meastaskid = taskId;
+                                    if (obj.N != null) measRes.m_n = obj.N.GetValueOrDefault();
+                                    measRes.m_sensorid = obj.StationMeasurements.StationId.Value;
+                                    measRes.m_submeastaskid = obj.Id.SubMeasTaskId;
+                                    measRes.m_submeastaskstationid = obj.Id.SubMeasTaskStationId;
+                                    measRes.m_timemeas = obj.TimeMeas;
+                                    measRes.m_typemeasurements = obj.TypeMeasurements.ToString();
+                                    ID = measRes.Save(dbConnect, transaction);
+                                    obj.Id.MeasSdrResultsId = ID.Value;
+                                    measRes.Close();
+                                    measRes.Dispose();
+                                }
+                            }
+                            if (ID != Constants.NullI)
+                            {
+
+                                //////////////////////////////////////////
+                                if (api2Result.Routes != null)
+                                {
+                                    foreach (DataModels.Sdrns.Device.Route route in api2Result.Routes)
                                     {
-                                        YXbsMeasurementres measRes = new YXbsMeasurementres();
-                                        measRes.Format("*");
-                                        measRes.Filter = "ID=-1";
-                                        measRes.New();
-                                        if (obj.AntVal != null) measRes.m_antval = obj.AntVal.GetValueOrDefault();
-                                        if (obj.DataRank != null) measRes.m_datarank = obj.DataRank.GetValueOrDefault();
-                                        measRes.m_status = obj.Status;
-                                        measRes.m_meastaskid = obj.Id.MeasTaskId.Value;
-                                        if (obj.N != null) measRes.m_n = obj.N.GetValueOrDefault();
-                                        measRes.m_sensorid = obj.StationMeasurements.StationId.Value;
-                                        measRes.m_submeastaskid = obj.Id.SubMeasTaskId;
-                                        measRes.m_submeastaskstationid = obj.Id.SubMeasTaskStationId;
-                                        measRes.m_timemeas = obj.TimeMeas;
-                                        measRes.m_typemeasurements = obj.TypeMeasurements.ToString();
-                                        ID = measRes.Save(dbConnect, transaction);
-                                        obj.Id.MeasSdrResultsId = ID.Value;
-                                        measRes.Close();
-                                        measRes.Dispose();
+                                        if (route.RoutePoints != null)
+                                        {
+                                            foreach (DataModels.Sdrns.Device.RoutePoint routePoint in route.RoutePoints)
+                                            {
+                                                YXbsRoutes resRoutes = new YXbsRoutes();
+                                                resRoutes.Format("*");
+                                                resRoutes.Filter = "ID=-1";
+                                                resRoutes.New();
+                                                resRoutes.m_agl = routePoint.AGL;
+                                                resRoutes.m_asl = routePoint.ASL;
+                                                resRoutes.m_finishtime = routePoint.FinishTime;
+                                                resRoutes.m_starttime = routePoint.StartTime;
+                                                resRoutes.m_routeid = route.RouteId;
+                                                resRoutes.m_pointstaytype = routePoint.PointStayType.ToString();
+                                                resRoutes.m_lat = routePoint.Lat;
+                                                resRoutes.m_lon = routePoint.Lon;
+                                                resRoutes.m_idxbsmeasurementres = ID;
+                                                resRoutes.Save(dbConnect, transaction);
+                                                resRoutes.Close();
+                                                resRoutes.Dispose();
+                                            }
+                                        }
                                     }
                                 }
-                                if (ID != Constants.NullI)
+
+                                /////////////////////////////////////////
+
+                                if (obj.ResultsMeasStation != null)
                                 {
-
-                                    ///////
-                                    if (obj.ResultsMeasStation != null)
+                                    foreach (ResultsMeasurementsStation station in obj.ResultsMeasStation)
                                     {
-                                        foreach (ResultsMeasurementsStation station in obj.ResultsMeasStation)
+                                        DataModels.Sdrns.Device.StationMeasResult rFinded = new DataModels.Sdrns.Device.StationMeasResult();
+                                        YXbsResmeasstation measResStation = new YXbsResmeasstation();
+                                        measResStation.Format("*");
+                                        measResStation.Filter = "ID=-1";
+                                        measResStation.New();
+                                        measResStation.m_globalsid = station.GlobalSID;
+                                        measResStation.m_idsector = station.IdSector;
+                                        measResStation.m_idstation = station.Idstation;
+                                        measResStation.m_status = station.Status;
+                                        measResStation.m_measglobalsid = station.MeasGlobalSID;
+                                        measResStation.m_idxbsmeasurementres = ID;
+                                        if (api2Result.StationResults != null)
                                         {
-
-                                            YXbsResmeasstation measResStation = new YXbsResmeasstation();
-                                            measResStation.Format("*");
-                                            measResStation.Filter = "ID=-1";
-                                            measResStation.New();
-                                            measResStation.m_globalsid = station.GlobalSID;
-                                            measResStation.m_idsector = station.IdSector;
-                                            measResStation.m_idstation = station.Idstation;
-                                            measResStation.m_status = station.Status;
-                                            measResStation.m_measglobalsid = station.MeasGlobalSID;
-                                            measResStation.m_idxbsmeasurementres = ID;
+                                                rFinded = api2Result.StationResults.ToList().Find(t => t.StationId == station.Idstation.ToString() && t.SectorId == station.IdSector.ToString() && t.RealGlobalSid == station.MeasGlobalSID && t.TaskGlobalSid == station.GlobalSID);
+                                                if (rFinded != null)
+                                                {
+                                                    measResStation.m_standard = rFinded.Standard;
+                                                }
+                                         }
+        
                                             int? IDStation = measResStation.Save(dbConnect, transaction);
                                             measResStation.Close();
                                             measResStation.Dispose();
@@ -108,12 +148,108 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resultsmeasstationid = IDStation;
+
+                                                    if (rFinded != null)
+                                                    {
+                                                        if (rFinded.GeneralResult != null)
+                                                        {
+                                                            if (rFinded.GeneralResult.BandwidthResult != null)
+                                                            {
+                                                                measResGeneral.m_tracecount = rFinded.GeneralResult.BandwidthResult.TraceCount;
+                                                                measResGeneral.m_сorrectnessestim = rFinded.GeneralResult.BandwidthResult.СorrectnessEstimations == true ? 1 : 0;
+                                                            }
+                                                        }
+                                                    }
+
                                                     int? IDResGeneral = measResGeneral.Save(dbConnect, transaction);
                                                     measResGeneral.Close();
                                                     measResGeneral.Dispose();
 
                                                     if (IDResGeneral > 0)
                                                     {
+
+                                                        //////////////////////////////////////////
+                                                        if (api2Result.StationResults != null)
+                                                        {
+                                                            foreach (DataModels.Sdrns.Device.StationMeasResult r in api2Result.StationResults)
+                                                            {
+
+                                                                if (r.GeneralResult.StationSysInfo != null)
+                                                                {
+
+                                                                    YXbsSysInfo resSysInfo = new YXbsSysInfo();
+                                                                    resSysInfo.Format("*");
+                                                                    resSysInfo.Filter = "ID=-1";
+                                                                    resSysInfo.New();
+
+                                                                    if (r.GeneralResult.StationSysInfo.Location != null)
+                                                                    {
+                                                                        resSysInfo.m_AGL = r.GeneralResult.StationSysInfo.Location.AGL;
+                                                                        resSysInfo.m_ASL = r.GeneralResult.StationSysInfo.Location.ASL;
+                                                                        resSysInfo.m_Lat = r.GeneralResult.StationSysInfo.Location.Lat;
+                                                                        resSysInfo.m_Lon = r.GeneralResult.StationSysInfo.Location.Lon;
+                                                                    }
+
+
+                                                                    resSysInfo.m_BandWidth = r.GeneralResult.StationSysInfo.BandWidth;
+                                                                    resSysInfo.m_BaseID = r.GeneralResult.StationSysInfo.BaseID;
+                                                                    resSysInfo.m_BSIC = r.GeneralResult.StationSysInfo.BSIC;
+                                                                    resSysInfo.m_ChannelNumber = r.GeneralResult.StationSysInfo.ChannelNumber;
+                                                                    resSysInfo.m_CID = r.GeneralResult.StationSysInfo.CID;
+                                                                    resSysInfo.m_Code = r.GeneralResult.StationSysInfo.Code;
+                                                                    resSysInfo.m_CtoI = r.GeneralResult.StationSysInfo.CtoI;
+                                                                    resSysInfo.m_ECI = r.GeneralResult.StationSysInfo.ECI;
+                                                                    resSysInfo.m_eNodeBId = r.GeneralResult.StationSysInfo.eNodeBId;
+                                                                    resSysInfo.m_Freq = r.GeneralResult.StationSysInfo.Freq;
+                                                                    resSysInfo.m_IcIo = r.GeneralResult.StationSysInfo.IcIo;
+                                                                    resSysInfo.m_INBAND_POWER = r.GeneralResult.StationSysInfo.INBAND_POWER;
+                                                                    resSysInfo.m_ISCP = r.GeneralResult.StationSysInfo.ISCP;
+                                                                    resSysInfo.m_LAC = r.GeneralResult.StationSysInfo.LAC;
+                                                                    resSysInfo.m_MCC = r.GeneralResult.StationSysInfo.MCC;
+                                                                    resSysInfo.m_MNC = r.GeneralResult.StationSysInfo.MNC;
+                                                                    resSysInfo.m_NID= r.GeneralResult.StationSysInfo.NID;
+                                                                    resSysInfo.m_PCI = r.GeneralResult.StationSysInfo.PCI;
+                                                                    resSysInfo.m_PN = r.GeneralResult.StationSysInfo.PN;
+                                                                    resSysInfo.m_Power = r.GeneralResult.StationSysInfo.Power;
+                                                                    resSysInfo.m_Ptotal = r.GeneralResult.StationSysInfo.Ptotal;
+                                                                    resSysInfo.m_RNC = r.GeneralResult.StationSysInfo.RNC;
+                                                                    resSysInfo.m_RSCP= r.GeneralResult.StationSysInfo.RSCP;
+                                                                    resSysInfo.m_RSRP = r.GeneralResult.StationSysInfo.RSRP;
+                                                                    resSysInfo.m_RSRQ = r.GeneralResult.StationSysInfo.RSRQ;
+                                                                    resSysInfo.m_SC = r.GeneralResult.StationSysInfo.SC;
+                                                                    resSysInfo.m_SID = r.GeneralResult.StationSysInfo.SID;
+                                                                    resSysInfo.m_TAC= r.GeneralResult.StationSysInfo.TAC;
+                                                                    resSysInfo.m_TypeCDMAEVDO = r.GeneralResult.StationSysInfo.TypeCDMAEVDO;
+                                                                    resSysInfo.m_UCID = r.GeneralResult.StationSysInfo.UCID;
+                                                                    resSysInfo.m_IDXBSRESGENERAL = IDResGeneral;
+                                                                    int? ID_SysInfo = resSysInfo.Save(dbConnect, transaction);
+                                                                    resSysInfo.Close();
+                                                                    resSysInfo.Dispose();
+
+                                                                    if (ID_SysInfo != null)
+                                                                    {
+                                                                        if (r.GeneralResult.StationSysInfo.InfoBlocks != null)
+                                                                        {
+                                                                            foreach (DataModels.Sdrns.Device.StationSysInfoBlock b in r.GeneralResult.StationSysInfo.InfoBlocks)
+                                                                            {
+                                                                                YXbsSysInfoBlocks resSysInfoBlocks = new YXbsSysInfoBlocks();
+                                                                                resSysInfoBlocks.Format("*");
+                                                                                resSysInfoBlocks.Filter = "ID=-1";
+                                                                                resSysInfoBlocks.New();
+                                                                                resSysInfoBlocks.m_idxbssysinfo = ID_SysInfo;
+                                                                                resSysInfoBlocks.m_data = b.Data;
+                                                                                resSysInfoBlocks.m_type = b.Type;
+                                                                                resSysInfoBlocks.Save(dbConnect, transaction);
+                                                                                resSysInfoBlocks.Close();
+                                                                                resSysInfoBlocks.Dispose();
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        /////////////////////////////////////////
+
                                                         if (station.GeneralResult.MaskBW != null)
                                                         {
                                                             if (station.GeneralResult.MaskBW.Length > 0)
@@ -178,6 +314,20 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                 yXbsResLevelMeas.m_timeofmeasurements = car.TimeOfMeasurements;
                                                                 yXbsResLevelMeas.m_vbw = car.VBW;
                                                                 yXbsResLevelMeas.m_resultsmeasstationid = IDStation;
+                                                                //////////////////
+                                                                if (rFinded != null)
+                                                                {
+                                                                    if (rFinded.LevelResults != null)
+                                                                    {
+                                                                        DataModels.Sdrns.Device.LevelMeasResult res = rFinded.LevelResults.ToList().Find(t => t.DifferenceTimeStamp_ns == car.DifferenceTimestamp && t.Level_dBm == car.LeveldBm && t.Level_dBmkVm == car.LeveldBmkVm && t.MeasurementTime == car.TimeOfMeasurements && t.Location.ASL == car.Altitude && t.Location.Lat == car.Lat && t.Location.Lon == car.Lon);
+                                                                        if (res!=null)
+                                                                        {
+                                                                            yXbsResLevelMeas.m_agl = res.Location.AGL;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                //////////////////
+
                                                                 int? IDyXbsResLevelMeas = yXbsResLevelMeas.Save(dbConnect, transaction);
                                                                 yXbsResLevelMeas.Close();
                                                                 yXbsResLevelMeas.Dispose();

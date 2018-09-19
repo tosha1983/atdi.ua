@@ -42,7 +42,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     System.Threading.Thread tsk = new System.Threading.Thread(() => {
                         try
                         { 
-                        if (obj.MeasTaskId != null) sql += string.Format("(MEASTASKID ={0})", obj.MeasTaskId.Value);
+                        if (obj.MeasTaskId != null) sql += string.Format("(MEASTASKID ='{0}')", obj.MeasTaskId.Value.ToString());
                         if (obj.MeasSdrResultsId > 0) sql += sql.Length > 0 ? string.Format(" AND (ID ={0})", obj.MeasSdrResultsId) : string.Format("(ID ={0})", obj.MeasSdrResultsId);
                         if (obj.SubMeasTaskId > 0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKID ={0})", obj.SubMeasTaskId) : string.Format("(SUBMEASTASKID ={0})", obj.SubMeasTaskId);
                         if (obj.SubMeasTaskStationId > 0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId) : string.Format("(SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId);
@@ -1074,7 +1074,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsMeasurementres res_val = new YXbsMeasurementres();
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
-                        res_val.Filter = string.Format("(MEASTASKID={0}) AND (STATUS<>'Z')", MeasTaskId);
+                        res_val.Filter = string.Format("(MEASTASKID='{0}') AND (STATUS<>'Z')", MeasTaskId);
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -1420,7 +1420,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         if (obj != null)
                         {
                             string sql = "";
-                            if (obj.MeasTaskId != null) sql += string.Format("(MEASTASKID ={0})", obj.MeasTaskId.Value);
+                            if (obj.MeasTaskId != null) sql += string.Format("(MEASTASKID ='{0}')", obj.MeasTaskId.Value.ToString());
                             if (obj.MeasSdrResultsId > 0) sql += sql.Length > 0 ? string.Format(" AND (ID ={0})", obj.MeasSdrResultsId) : string.Format("(ID ={0})", obj.MeasSdrResultsId);
                             if (obj.SubMeasTaskId > 0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKID ={0})", obj.SubMeasTaskId) : string.Format("(SUBMEASTASKID ={0})", obj.SubMeasTaskId);
                             if (obj.SubMeasTaskStationId > 0) sql += sql.Length > 0 ? string.Format(" AND (SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId) : string.Format("(SUBMEASTASKSTATIONID ={0})", obj.SubMeasTaskStationId);
@@ -1490,7 +1490,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             {
                                 if (obj.StationMeasurements.StationId != null)
                                 {
-                                    if (measRes.Fetch(string.Format(" (MEASTASKID={0}) and (SENSORID={1}) and (SUBMEASTASKID={2}) and (SUBMEASTASKSTATIONID={3})", obj.Id.MeasTaskId.Value, obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
+                                    if (measRes.Fetch(string.Format(" (MEASTASKID='{0}') and (SENSORID={1}) and (SUBMEASTASKID={2}) and (SUBMEASTASKSTATIONID={3})", obj.Id.MeasTaskId.Value.ToString(), obj.StationMeasurements.StationId.Value, obj.Id.SubMeasTaskId, obj.Id.SubMeasTaskStationId)))
                                     {
                                         foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
                                         {
@@ -1560,7 +1560,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             else if (obj.Id.MeasTaskId != null)
                             {
                                 {
-                                    measRes.Filter = string.Format(" (MEASTASKID={0}) ", obj.Id.MeasTaskId.Value);
+                                    measRes.Filter = string.Format(" (MEASTASKID='{0}') ", obj.Id.MeasTaskId.Value.ToString());
                                     for (measRes.OpenRs(); !measRes.IsEOF(); measRes.MoveNext())
                                     {
                                         foreach (FrequencyMeasurement dt_param in obj.FrequenciesMeasurements.ToArray())
@@ -1701,7 +1701,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         if (obj.AntVal != null) measRes.m_antval = obj.AntVal.GetValueOrDefault();
                                         if (obj.DataRank != null) measRes.m_datarank = obj.DataRank.GetValueOrDefault();
                                         measRes.m_status = obj.Status;
-                                        measRes.m_meastaskid = obj.Id.MeasTaskId.Value;
+                                        measRes.m_meastaskid = obj.Id.MeasTaskId.Value.ToString();
                                         if (obj.N != null) measRes.m_n = obj.N.GetValueOrDefault();
                                         measRes.m_sensorid = obj.StationMeasurements.StationId.Value;
                                         measRes.m_submeastaskid = obj.Id.SubMeasTaskId;

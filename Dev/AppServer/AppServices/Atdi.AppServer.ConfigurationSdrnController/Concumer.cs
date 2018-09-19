@@ -152,17 +152,17 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 if (msReslts.MeasurementsResults[0] is Atdi.AppServer.Contracts.Sdrns.LevelMeasurementOnlineResult)
                                 {
                                     msReslts.Status = "O";
-                                    ID = DbGetRes.SaveResultToDB(msReslts);
+                                    ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
                                 }
                                 else
                                 {
-                                    ID = DbGetRes.SaveResultToDB(msReslts);
+                                    ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
                                 }
                             }
                         }
                         else
                         {
-                            ID = DbGetRes.SaveResultToDB(msReslts);
+                            ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
                         }
                         if (ID > 0)
                         {

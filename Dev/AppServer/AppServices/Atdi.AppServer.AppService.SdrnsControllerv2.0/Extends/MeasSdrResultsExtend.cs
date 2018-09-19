@@ -11,43 +11,31 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             MeasurementResults MRs = new MeasurementResults();
             //MRs.N = sdrRes.NN; // подумать 
             MRs.DataRank = sdrRes.SwNumber; // подумать
-                                            //sdrRes.Measured
-                                            //sdrRes.ResultId
-
-
-
             MRs.StationMeasurements = new StationMeasurements();
-           
-            //MRs.LocationSensorMeasurement = new LocationSensorMeasurement[1];
             MRs.AntVal = null;
-            //if (sdrRes.MeasSDRLoc != null) MRs.LocationSensorMeasurement[0] = sdrRes. .MeasSDRLoc;
             if (MRs.Id == null) MRs.Id = new MeasurementResultsIdentifier();
             int ResId;
             if (int.TryParse(sdrRes.ResultId, out ResId))
             {
                 MRs.Id.MeasSdrResultsId = ResId;
             }
-
             int SensorId;
             int MeasTaskId;
             int SubMeasTaskId;
             int SubMeasTaskStationId;
-
-            int NumValue;
-            if (int.TryParse(sdrRes.TaskId, out NumValue))
             {
-                ClassesDBGetTasks.GetMeasTaskSDRIdentifier(NumValue, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId);
+                ClassesDBGetTasks.GetMeasTaskSDRIdentifier(sdrRes.TaskId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId);
                 MRs.StationMeasurements.StationId = new SensorIdentifier();
                 MRs.StationMeasurements.StationId.Value = SensorId;
                 MRs.Id.MeasTaskId = new MeasTaskIdentifier();
-                MRs.Id.MeasTaskId.Value = NumValue;
+                MRs.Id.MeasTaskId.Value = -1;
                 MRs.Id.SubMeasTaskId = SubMeasTaskId;
                 MRs.Id.SubMeasTaskStationId = SubMeasTaskStationId;
             }
 
             MRs.TimeMeas = sdrRes.Measured;
             MRs.TypeMeasurements =  MeasurementType.MonitoringStations;
-            MRs.Status = "N";
+            MRs.Status = sdrRes.Status;
             if (sdrRes.StationResults != null)
             {
                 MRs.ResultsMeasStation = new ResultsMeasurementsStation[sdrRes.StationResults.Length];
@@ -59,7 +47,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         {
                             MRs.ResultsMeasStation[i] = new ResultsMeasurementsStation();
                             MRs.ResultsMeasStation[i].GeneralResult = new MeasurementsParameterGeneral();
-                            MRs.ResultsMeasStation[i].GeneralResult.CentralFrequency = sdrRes.StationResults[i].GeneralResult.CentralFrequencyMeas_MHz;
+                            MRs.ResultsMeasStation[i].GeneralResult.CentralFrequency = sdrRes.StationResults[i].GeneralResult.CentralFrequency_MHz;
                             MRs.ResultsMeasStation[i].GeneralResult.CentralFrequencyMeas = sdrRes.StationResults[i].GeneralResult.CentralFrequencyMeas_MHz;
                             MRs.ResultsMeasStation[i].GeneralResult.DurationMeas = sdrRes.StationResults[i].GeneralResult.MeasDuration_sec;
                             MRs.ResultsMeasStation[i].GeneralResult.LevelsSpecrum = sdrRes.StationResults[i].GeneralResult.LevelsSpectrum_dBm;
@@ -69,6 +57,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             MRs.ResultsMeasStation[i].GeneralResult.TimeFinishMeas = sdrRes.StationResults[i].GeneralResult.MeasFinishTime;
                             MRs.ResultsMeasStation[i].GeneralResult.TimeStartMeas = sdrRes.StationResults[i].GeneralResult.MeasStartTime;
                             MRs.ResultsMeasStation[i].GeneralResult.MaskBW = new MaskElements[sdrRes.StationResults[i].GeneralResult.BWMask.Length];
+
 
                             for (int j = 0; j < sdrRes.StationResults[i].GeneralResult.BWMask.Length; j++)
                             {
@@ -105,9 +94,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                 MRs.ResultsMeasStation[i].LevelMeasurements[j].VBW = sdrRes.StationResults[i].GeneralResult.VBW_kHz;
                             }
                         }
-
                         MRs.ResultsMeasStation[i].Status = sdrRes.StationResults[i].Status;
-                        //MRs.StationMeasurements.StationId.Value
                     }
                 }
             }

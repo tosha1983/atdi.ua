@@ -1064,7 +1064,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
+        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, string TaskId, int SensorId)
         {
            int? NUM_Val = null;
            System.Threading.Thread thread = new System.Threading.Thread(() =>
@@ -1083,7 +1083,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                        bool isNew = false;
                        YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
                        meastask.Format("*");
-                       if (!meastask.Fetch(string.Format("MEASTASKID={0} AND MEASSUBTASKID={1} AND MEASSUBTASKSTATIONID={2} AND SENSORID={3}", TaskId, SubTaskId, SubTaskStationId, SensorId)))
+                       if (!meastask.Fetch(string.Format("MEASTASKID='{0}' AND MEASSUBTASKID={1} AND MEASSUBTASKSTATIONID={2} AND SENSORID={3}", TaskId, SubTaskId, SubTaskStationId, SensorId)))
                        {
                            meastask.New();
                            isNew = true;

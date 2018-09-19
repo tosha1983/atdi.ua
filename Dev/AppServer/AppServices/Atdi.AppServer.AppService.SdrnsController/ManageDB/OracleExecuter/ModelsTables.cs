@@ -16,7 +16,7 @@ namespace Atdi.Oracle.DataAccess
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsMeasTaskSDR)));
         }
         public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_meastaskid { get { return getInt(1); } set { setInt(1, value); } }
+        public string m_meastaskid { get { return getString(1); } set { setString(1, 250, value); } }
         public int? m_meassubtaskid { get { return getInt(2); } set { setInt(2, value); } }
         public int? m_meassubtaskstationid { get { return getInt(3); } set { setInt(3, value); } }
         public int? m_sensorid { get { return getInt(4); } set { setInt(4, value); } }
@@ -620,7 +620,7 @@ namespace Atdi.Oracle.DataAccess
         }
 
         public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_meastaskid { get { return getInt(1); } set { setInt(1, value); } }
+        public string m_meastaskid { get { return getString(1); } set { setString(1, 150, value); } }
         public int? m_submeastaskid { get { return getInt(2); } set { setInt(2, value); } }
         public int? m_submeastaskstationid { get { return getInt(3); } set { setInt(3, value); } }
         public int? m_sensorid { get { return getInt(4); } set { setInt(4, value); } }
