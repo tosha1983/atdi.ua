@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Atdi.Platform.DependencyInjection;
+using MMB = Atdi.Modules.Sdrn.MessageBus;
 
 namespace Atdi.AppUnits.Sdrn.BusController
 {
@@ -15,6 +16,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
     {
         private readonly string _siteName;
         private readonly SdrnServerDescriptor _serverDescriptor;
+        private readonly MMB.MessageConverter _messageConverter;
         private readonly IServicesResolver _servicesResolver;
         private readonly ConnectionFactory _connectionFactory;
         private IConnection _connection;
@@ -24,10 +26,11 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private List<QueueConsumer> _consumers;
         private List<IModel> _channels;
 
-        public RabbitMQConnection(string siteName, SdrnServerDescriptor serverDescriptor, IServicesResolver servicesResolver, ILogger logger) : base(logger)
+        public RabbitMQConnection(string siteName, SdrnServerDescriptor serverDescriptor, MMB.MessageConverter messageConverter, IServicesResolver servicesResolver, ILogger logger) : base(logger)
         {
             this._siteName = siteName;
             this._serverDescriptor = serverDescriptor;
+            this._messageConverter = messageConverter;
             this._servicesResolver = servicesResolver;
             this._eventCategory = (EventCategory)$"Rabbit MQ: {this._serverDescriptor.RabbitMqHost}";
             this._eventContext = $"SDRN.Server.[{_serverDescriptor.ServerInstance}].{this._siteName}";
@@ -199,37 +202,42 @@ namespace Atdi.AppUnits.Sdrn.BusController
                    new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds);
         }
 
-        public string Publish(string exchange, string routingKey, IDictionary<string, object> headers, string type, byte[] body, string correlationId = null)
+        public string Publish(string exchange, string routingKey, MMB.Message message)   //IDictionary<string, object> headers, string type, byte[] body, string correlationId = null)
         {
             try
             {
                 this.EstablishSharedChannel();
 
-                var messageId = Guid.NewGuid().ToString();
-
                 var props = this._sharedChannel.CreateBasicProperties();
                 props.Persistent = true;
                 props.AppId = "Atdi.AppUnits.Sdrn.BusController.dll";
-                props.MessageId = messageId;
-                props.Type = type;
+                props.MessageId = message.Id;
+                props.Type = message.Type;
                 props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
-                if (!string.IsNullOrEmpty(correlationId))
+                if (!string.IsNullOrEmpty(message.ContentType))
                 {
-                    props.CorrelationId = correlationId;
+                    props.ContentType = message.ContentType;
                 }
+                if (!string.IsNullOrEmpty(message.ContentEncoding))
+                {
+                    props.ContentEncoding = message.ContentEncoding;
+                }
+                if (!string.IsNullOrEmpty(message.CorrelationId))
+                {
+                    props.CorrelationId = message.CorrelationId;
+                }
+                props.Headers = message.Headers;
 
-                props.Headers = headers;
+                this._sharedChannel.BasicPublish(exchange, routingKey, props, message.Body);
 
-                this._sharedChannel.BasicPublish(exchange, routingKey, props, body);
+                this.Logger.Verbouse(this._eventContext, this._eventCategory, $"The message '{message.Type}' is published successfully: Id = '{message.Id}', Routing key = '{routingKey}', Exchange name: '{exchange}'");
 
-                this.Logger.Verbouse(this._eventContext, this._eventCategory, $"The message '{messageId}' is published successfully: Routing key = '{routingKey}', Exchange name: '{exchange}'");
-
-                return messageId;
+                return message.Id;
             }
             catch (Exception e)
             {
                 this.Logger.Exception(this._eventContext, this._eventCategory, e);
-                throw new InvalidOperationException($"The message with type '{type}' is not published", e);
+                throw new InvalidOperationException($"The message with type '{message.Type}' is not published", e);
             }
         }
 
@@ -243,7 +251,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 for (int i = 0; i < count; i++)
                 {
                     var consumerName = $"[{consumerNamePart}].[#{i}]";
-                    var consumer = new QueueConsumer(consumerName, queueName, this._serverDescriptor, channel, this._servicesResolver, this.Logger);
+                    var consumer = new QueueConsumer(consumerName, queueName, this._serverDescriptor, this._messageConverter, channel, this._servicesResolver, this.Logger);
                     this._consumers.Add(consumer);
                     consumers[i] = consumer;
                 }
@@ -260,16 +268,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
     public class PublisherRabbitMQConnection : RabbitMQConnection
     {
-        public PublisherRabbitMQConnection(SdrnServerDescriptor serverDescriptor, IServicesResolver servicesResolver, ILogger logger) 
-            : base("Publisher", serverDescriptor, servicesResolver, logger)
+        public PublisherRabbitMQConnection(SdrnServerDescriptor serverDescriptor, MMB.MessageConverter messageConverter, IServicesResolver servicesResolver, ILogger logger) 
+            : base("Publisher", serverDescriptor, messageConverter, servicesResolver, logger)
         {
         }
     }
 
     public class ConsumersRabbitMQConnection : RabbitMQConnection
     {
-        public ConsumersRabbitMQConnection(SdrnServerDescriptor serverDescriptor, IServicesResolver servicesResolver, ILogger logger)
-            : base("Consumers", serverDescriptor, servicesResolver, logger)
+        public ConsumersRabbitMQConnection(SdrnServerDescriptor serverDescriptor, MMB.MessageConverter messageConverter, IServicesResolver servicesResolver, ILogger logger)
+            : base("Consumers", serverDescriptor, messageConverter, servicesResolver, logger)
         {
         }
 

@@ -52,5 +52,27 @@ namespace Atdi.Platform.AppComponent
             return Cryptography.Encryptor.DecryptStringAES(encodeValue, sharedSecret);
 
         }
+
+        public static bool GetParameterAsBoolean(this IComponentConfig config, string paramName)
+        {
+            if (config == null)
+            {
+                return false;
+            }
+
+            var realValue = config[paramName];
+            if (realValue == null)
+            {
+                return false;
+            }
+
+            var stringValue = Convert.ToString(realValue);
+            if (stringValue == null)
+            {
+                return false;
+            }
+
+            return "true".Equals(stringValue, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

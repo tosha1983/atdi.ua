@@ -11,6 +11,9 @@ namespace Atdi.AppServer.Sdrn.Server
     {
         static void Main(string[] args)
         {
+            Console.WriteLine($"Press any key to start SDRN Server ...");
+            Console.ReadLine();
+
             using (var host = PlatformConfigurator.BuildHost())
             {
                 try
@@ -22,11 +25,11 @@ namespace Atdi.AppServer.Sdrn.Server
                     Console.WriteLine("Exception: " + e.Message);
                 }
 
-                Console.ReadKey();
+                Console.ReadLine();
                 host.Stop();
 
             }
-            Console.ReadKey();
+            Console.ReadLine();
         }
     }
 }

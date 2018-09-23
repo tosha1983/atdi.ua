@@ -1,4 +1,5 @@
-﻿using Atdi.Platform.DependencyInjection;
+﻿using Atdi.Modules.Sdrn.MessageBus;
+using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             this._serverDescriptor = new SdrnServerDescriptor(this.Config);
             this.Container.RegisterInstance(this._serverDescriptor, ServiceLifetime.Singleton);
+
+            var convertorSettings = new MessageConvertSettings
+            {
+                UseEncryption = this._serverDescriptor.UseEncryption,
+                UseСompression = this._serverDescriptor.UseСompression
+            };
+            var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+            var messageConvertor = new MessageConverter(convertorSettings, typeResolver);
+            this.Container.RegisterInstance(messageConvertor, ServiceLifetime.Singleton);
+
             this.Container.Register<ConsumersRabbitMQConnection>(ServiceLifetime.PerThread);
             this.Container.Register<PublisherRabbitMQConnection>(ServiceLifetime.PerThread);
             this.Container.Register<ConsumersBusConnector>(ServiceLifetime.Transient);

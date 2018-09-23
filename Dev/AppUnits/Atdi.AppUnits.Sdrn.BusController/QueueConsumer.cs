@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Atdi.Platform.DependencyInjection;
 using Atdi.DataModels.Sdrns.Device;
 using Newtonsoft.Json;
+using MMB = Atdi.Modules.Sdrn.MessageBus;
 
 namespace Atdi.AppUnits.Sdrn.BusController
 {
@@ -20,14 +21,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly string _queueName;
         private readonly string _consumerName;
         private readonly SdrnServerDescriptor _serverDescriptor;
+        private readonly MMB.MessageConverter _messageConverter;
         private readonly IServicesResolver _servicesResolver;
         private readonly ILogger _logger;
 
-        public QueueConsumer(string consumerName, string queueName, SdrnServerDescriptor serverDescriptor, IModel channel, IServicesResolver servicesResolver, ILogger logger) : base(channel)
+        public QueueConsumer(string consumerName, string queueName, SdrnServerDescriptor serverDescriptor, MMB.MessageConverter messageConverter, IModel channel, IServicesResolver servicesResolver, ILogger logger) : base(channel)
         {
             this._consumerName = consumerName;
             this._queueName = queueName;
             this._serverDescriptor = serverDescriptor;
+            this._messageConverter = messageConverter;
             this._servicesResolver = servicesResolver;
             this._logger = logger;
             this._eventCategory = (EventCategory)$"Rabbit MQ: {this._serverDescriptor.RabbitMqHost}";
@@ -36,114 +39,132 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         public override void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, byte[] body)
         {
-            this._logger.Verbouse(this._eventContext, this._eventCategory, $"The message {deliveryTag} is handled successfully: Type = '{properties.Type}'");
-
-            var sensorDescriptor = this.GetSensorDescriptor(properties);
-            if (this._serverDescriptor.ServerInstance != sensorDescriptor.SdrnServer)
+            try
             {
-                this.Model.BasicAck(deliveryTag, false);
-                return;
-            }
+                this._logger.Verbouse(this._eventContext, this._eventCategory, $"The message {deliveryTag} is handled successfully: Type = '{properties.Type}'");
 
-            if (properties.Type == "RegisterSensor")
-            {
-                var sensor = DeserializeObjectFromByteArray<Sensor>(body);
-                this._logger.Verbouse(this._eventContext, this._eventCategory, $"The object is '{sensor}'");
-                this.Model.BasicAck(deliveryTag, false);
-
-                var result = new SensorRegistrationResult
+                var sensorDescriptor = this.GetSensorDescriptor(properties);
+                if (this._serverDescriptor.ServerInstance != sensorDescriptor.SdrnServer)
                 {
-                    Status = "Ok",
-                    SdrnServer = sensorDescriptor.SdrnServer,
-                    SensorName = sensorDescriptor.SensorName,
-                    EquipmentTechId = sensorDescriptor.EquipmentTechId
+                    this.Model.BasicAck(deliveryTag, false);
+                    return;
+                }
+
+                var message = new MMB.Message
+                {
+                    Id = properties.MessageId,
+                    Type = properties.Type,
+                    CorrelationId = properties.CorrelationId,
+                    ContentType = properties.ContentType,
+                    ContentEncoding = properties.ContentEncoding,
+                    Headers = properties.Headers,
+                    Body = body
                 };
 
-                var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
-                publisherConnector.Publish(sensorDescriptor, "SendRegistrationResult", result, properties.CorrelationId);
-                return;
-            }
+                var messageObject = this._messageConverter.Deserialize(message);
 
-            if (properties.Type == "UpdateSensor")
-            {
-                var sensor = DeserializeObjectFromByteArray<Sensor>(body);
-                this._logger.Verbouse(this._eventContext, this._eventCategory, $"The object is '{sensor}'");
-                this.Model.BasicAck(deliveryTag, false);
-
-                var result = new SensorUpdatingResult
+                if (properties.Type == "RegisterSensor")
                 {
-                    Status = "Ok",
-                    SdrnServer = sensorDescriptor.SdrnServer,
-                    SensorName = sensorDescriptor.SensorName,
-                    EquipmentTechId = sensorDescriptor.EquipmentTechId
-                };
+                    var sensor = (Sensor)messageObject.Object;
+                    this._logger.Verbouse(this._eventContext, this._eventCategory, $"The object is '{sensor}'");
+                    this.Model.BasicAck(deliveryTag, false);
 
-                var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
-                publisherConnector.Publish(sensorDescriptor, "SendSensorUpdatingResult", result, properties.CorrelationId);
+                    var result = new SensorRegistrationResult
+                    {
+                        Status = "Ok",
+                        SdrnServer = sensorDescriptor.SdrnServer,
+                        SensorName = sensorDescriptor.SensorName,
+                        EquipmentTechId = sensorDescriptor.EquipmentTechId
+                    };
 
+                    var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
+                    publisherConnector.Publish(sensorDescriptor, "SendRegistrationResult", result, properties.CorrelationId);
+                    return;
+                }
 
-                // send command
-                var commnad = new DeviceCommand
+                if (properties.Type == "UpdateSensor")
                 {
-                    CommandId = Guid.NewGuid().ToString(),
-                    Command = "CheckSensorActivity",
-                    SdrnServer = sensorDescriptor.SdrnServer,
-                    SensorName = sensorDescriptor.SensorName,
-                    EquipmentTechId = sensorDescriptor.EquipmentTechId
-                };
+                    var sensor = (Sensor)messageObject.Object;
+                    this._logger.Verbouse(this._eventContext, this._eventCategory, $"The object is '{sensor}'");
+                    this.Model.BasicAck(deliveryTag, false);
 
-                publisherConnector.Publish(sensorDescriptor, "SendCommand", commnad, commnad.CommandId);
+                    var result = new SensorUpdatingResult
+                    {
+                        Status = "Ok",
+                        SdrnServer = sensorDescriptor.SdrnServer,
+                        SensorName = sensorDescriptor.SensorName,
+                        EquipmentTechId = sensorDescriptor.EquipmentTechId
+                    };
 
-                return;
+                    var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
+                    publisherConnector.Publish(sensorDescriptor, "SendSensorUpdatingResult", result, properties.CorrelationId);
 
-            }
 
-            if (properties.Type == "SendCommandResult")
-            {
-                this.Model.BasicAck(deliveryTag, false);
+                    // send command
+                    var commnad = new DeviceCommand
+                    {
+                        CommandId = Guid.NewGuid().ToString(),
+                        Command = "CheckSensorActivity",
+                        SdrnServer = sensorDescriptor.SdrnServer,
+                        SensorName = sensorDescriptor.SensorName,
+                        EquipmentTechId = sensorDescriptor.EquipmentTechId
+                    };
 
-                var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
-                var task = new MeasTask
+                    publisherConnector.Publish(sensorDescriptor, "SendCommand", commnad, commnad.CommandId);
+
+                    return;
+
+                }
+
+                if (properties.Type == "SendCommandResult")
                 {
-                    TaskId =  Guid.NewGuid().ToString(),
-                    SdrnServer = sensorDescriptor.SdrnServer,
-                    SensorName = sensorDescriptor.SensorName,
-                    EquipmentTechId = sensorDescriptor.EquipmentTechId
-                };
+                    this.Model.BasicAck(deliveryTag, false);
 
-                publisherConnector.Publish(sensorDescriptor, "SendMeasTask", task, task.TaskId);
+                    var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
+                    var task = new MeasTask
+                    {
+                        TaskId = Guid.NewGuid().ToString(),
+                        SdrnServer = sensorDescriptor.SdrnServer,
+                        SensorName = sensorDescriptor.SensorName,
+                        EquipmentTechId = sensorDescriptor.EquipmentTechId
+                    };
 
-                return;
-            }
-            if (properties.Type == "SendMeasResults")
-            {
-                this.Model.BasicAck(deliveryTag, false);
+                    publisherConnector.Publish(sensorDescriptor, "SendMeasTask", task, task.TaskId);
 
-                var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
-                var entity = new Entity
+                    return;
+                }
+                if (properties.Type == "SendMeasResults")
                 {
-                    EntityId = Guid.NewGuid().ToString(),
-                    Name = "Some entity",
-                    EOF = true,
-                    PartIndex = 0
-                };
+                    this.Model.BasicAck(deliveryTag, false);
 
-                publisherConnector.Publish(sensorDescriptor, "SendEntity", entity, entity.EntityId);
+                    var publisherConnector = this._servicesResolver.Resolve<PublisherBusConnector>();
+                    var entity = new Entity
+                    {
+                        EntityId = Guid.NewGuid().ToString(),
+                        Name = "Some entity",
+                        EOF = true,
+                        PartIndex = 0
+                    };
 
-                return;
+                    publisherConnector.Publish(sensorDescriptor, "SendEntity", entity, entity.EntityId);
+
+                    return;
+                }
+                if (properties.Type == "SendEntity")
+                {
+                    this.Model.BasicAck(deliveryTag, false);
+                    return;
+                }
+                if (properties.Type == "SendEntityPart")
+                {
+                    this.Model.BasicAck(deliveryTag, false);
+                    return;
+                }
             }
-            if (properties.Type == "SendEntity")
+            catch(Exception  e)
             {
-                this.Model.BasicAck(deliveryTag, false);
-                return;
+                this._logger.Exception(this._eventContext, this._eventCategory, e);
             }
-            if (properties.Type == "SendEntityPart")
-            {
-                this.Model.BasicAck(deliveryTag, false);
-                return;
-            }
-            
-            
         }
 
         private SensorDescriptor GetSensorDescriptor(IBasicProperties properties)
@@ -171,20 +192,20 @@ namespace Atdi.AppUnits.Sdrn.BusController
             return Convert.ToString(Encoding.UTF8.GetString(((byte[])headers[key])));
         }
 
-        private TObject DeserializeObjectFromByteArray<TObject>(byte[] source)
-        {
-            if (source == null)
-            {
-                return default(TObject);
-            }
+        //private TObject DeserializeObjectFromByteArray<TObject>(byte[] source)
+        //{
+        //    if (source == null)
+        //    {
+        //        return default(TObject);
+        //    }
 
-            TObject result = default(TObject);
+        //    TObject result = default(TObject);
 
-            var json = Encoding.UTF8.GetString(source);
-            result = JsonConvert.DeserializeObject<TObject>(json);
+        //    var json = Encoding.UTF8.GetString(source);
+        //    result = JsonConvert.DeserializeObject<TObject>(json);
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public void Activate()
         {

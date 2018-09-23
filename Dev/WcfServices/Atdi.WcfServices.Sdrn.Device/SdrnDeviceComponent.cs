@@ -9,6 +9,8 @@ using Atdi.Modules.Licensing;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.Logging;
 using RabbitMQ.Client;
+using MMB = Atdi.Modules.Sdrn.MessageBus;
+using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.WcfServices.Sdrn.Device
 {
@@ -62,6 +64,16 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 throw new InvalidOperationException("The license verification failed", e);
             }
+
+
+            var convertorSettings = new MMB.MessageConvertSettings
+            {
+                UseEncryption = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseEncryption"),
+                UseСompression = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.ompression")
+            };
+            var typeResolver = MMB.MessageObjectTypeResolver.CreateForApi20();
+            var messageConvertor = new MMB.MessageConverter(convertorSettings, typeResolver);
+            this.Container.RegisterInstance(messageConvertor, Platform.DependencyInjection.ServiceLifetime.Singleton);
 
             this.Container.RegisterInstance(this._serverDescriptor, Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<MessagesBus>(Platform.DependencyInjection.ServiceLifetime.PerThread);

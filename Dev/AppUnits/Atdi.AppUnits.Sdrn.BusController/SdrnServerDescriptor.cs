@@ -16,13 +16,13 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.RabbitMqUser = config.GetParameterAsString("RabbitMQ.User");
             this.RabbitMqPassword = config.GetParameterAsString("RabbitMQ.Password");
             this.ApiVersion = config.GetParameterAsString("SDRN.ApiVersion");
-            this.ServerInstance = config.GetParameterAsString("SDRN.ServerInstance");
-            this.ServerExchange = config.GetParameterAsString("SDRN.ServerExchange");
-            this.DeviceExchange = config.GetParameterAsString("SDRN.DeviceExchange");
-            this.ServerQueueNamePart = config.GetParameterAsString("SDRN.ServerQueueNamePart");
-            this.DeviceQueueNamePart = config.GetParameterAsString("SDRN.DeviceQueueNamePart");
+            this.ServerInstance = config.GetParameterAsString("SDRN.Server.Instance");
+            this.ServerExchange = config.GetParameterAsString("SDRN.Server.Exchange");
+            this.DeviceExchange = config.GetParameterAsString("SDRN.Device.Exchange");
+            this.ServerQueueNamePart = config.GetParameterAsString("SDRN.Server.QueueNamePart");
+            this.DeviceQueueNamePart = config.GetParameterAsString("SDRN.Device.QueueNamePart");
 
-            var serverQueuesParam = config.GetParameterAsString("SDRN.ServerQueues");
+            var serverQueuesParam = config.GetParameterAsString("SDRN.Server.Queues");
             var serverQueues = new Dictionary<string, ServerQueueDecriptor>();
 
             if (!string.IsNullOrEmpty(serverQueuesParam))
@@ -34,6 +34,9 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 }
             }
             this.ServerQueueus = serverQueues;
+
+            this.UseEncryption = config.GetParameterAsBoolean("SDRN.MessageConvertor.UseEncryption");
+            this.UseСompression = config.GetParameterAsBoolean("SDRN.MessageConvertor.UseСompression");
         }
 
         public string RabbitMqHost { get; set; }
@@ -52,6 +55,10 @@ namespace Atdi.AppUnits.Sdrn.BusController
         public string ServerQueueNamePart { get; set; }
 
         public string DeviceQueueNamePart { get; set; }
+
+        public bool UseEncryption { get; set; }
+
+        public bool UseСompression { get; set; }
 
         public IDictionary<string, ServerQueueDecriptor> ServerQueueus { get; set; }
 

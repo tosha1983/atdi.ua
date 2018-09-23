@@ -85,6 +85,10 @@
       <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
       <Name>Atdi.Modules.Licensing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.MessageBus\Atdi.Modules.Sdrn.MessageBus.csproj">
+      <Project>{b44eaf91-883a-4bb5-b9e8-fea420afcca3}</Project>
+      <Name>Atdi.Modules.Sdrn.MessageBus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
       <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
       <Name>Atdi.Platform.AppServer</Name>

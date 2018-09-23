@@ -10,6 +10,7 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using RabbitMQ.Client.Events;
+using MMB = Atdi.Modules.Sdrn.MessageBus;
 
 namespace Atdi.WcfServices.Sdrn.Device
 {
@@ -18,16 +19,18 @@ namespace Atdi.WcfServices.Sdrn.Device
         private bool disposedValue = false; 
         private readonly ILogger _logger;
         private readonly SdrnServerDescriptor _serverDescriptor;
+        private readonly MMB.MessageConverter _messageConverter;
         private ConnectionFactory _connectionFactory;
         private IConnection _connection;
         private IModel _channel;
         private readonly string _exchangeName;
 
         
-        public MessagesBus(SdrnServerDescriptor serverDescriptor, ILogger logger)
+        public MessagesBus(SdrnServerDescriptor serverDescriptor, MMB.MessageConverter messageConverter, ILogger logger)
         {
             this._logger = logger;
             this._serverDescriptor = serverDescriptor;
+            this._messageConverter = messageConverter;
             this._connectionFactory= new ConnectionFactory()
             {
                 HostName = this._serverDescriptor.RabbitMqHost,
@@ -66,29 +69,33 @@ namespace Atdi.WcfServices.Sdrn.Device
 
             try
             {
-                var data = this.SerializeObjectToByteArray(msgObject);
+                var message = this._messageConverter.Pack(messageType, msgObject);
 
                 var msgKey = this._serverDescriptor.QueueBindings[messageType].RoutingKey;
-
                 var routingKey = $"[{this._serverDescriptor.ServerInstance}].[{msgKey}]";
 
                 this.EstablisheConnection();
-
-                var messageId = Guid.NewGuid().ToString();
 
                 var props = _channel.CreateBasicProperties();
                     
                 props.Persistent = true;
                 props.AppId = "Atdi.WcfServices.Sdrn.Device.dll";
-                props.MessageId = messageId;
+                props.MessageId = message.Id;
                 props.Type = messageType;
+                if (!string.IsNullOrEmpty(message.ContentType))
+                {
+                    props.ContentType = message.ContentType;
+                }
+                if (!string.IsNullOrEmpty(message.ContentEncoding))
+                {
+                    props.ContentEncoding = message.ContentEncoding;
+                }
+                if (!string.IsNullOrEmpty(message.CorrelationId))
+                {
+                    props.CorrelationId = message.CorrelationId;
+                }
                 props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
  
-                if (!string.IsNullOrEmpty(correlationId))
-                {
-                    props.CorrelationId = correlationId;
-                }
-
                 props.Headers = new Dictionary<string, object>
                 {
                     ["SdrnServer"] = descriptor.SdrnServer,
@@ -100,10 +107,10 @@ namespace Atdi.WcfServices.Sdrn.Device
                 _channel.BasicPublish(exchange: this._exchangeName,
                                     routingKey: routingKey,
                                     basicProperties: props,
-                                    body: data);
+                                    body: message.Body);
 
                 this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The message was sent successfully: MessageType = '{messageType}', RoutingKey = '{routingKey}', SDRN Server = '{descriptor.SdrnServer}', Sensor = '{descriptor.SensorName}'");
-                return messageId;
+                return message.Id;
             }
             catch (Exception e)
             {
@@ -147,7 +154,18 @@ namespace Atdi.WcfServices.Sdrn.Device
                         {
                             token = message.BasicProperties.MessageId;
                             tryChannel.Close();
-                            return this.DeserializeObjectFromByteArray<TObject>(message.Body);
+
+                            var msg = new MMB.Message
+                            {
+                                Id = message.BasicProperties.MessageId,
+                                Type = message.BasicProperties.Type,
+                                ContentType = message.BasicProperties.ContentType,
+                                ContentEncoding = message.BasicProperties.ContentEncoding,
+                                Body = message.Body
+                            };
+
+                            var messageObject = this._messageConverter.Deserialize(msg);
+                            return (TObject) messageObject.Object;
                         }
                     }
                     while (message.MessageCount > 0);
@@ -184,7 +202,7 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 var deviceQueueName = this.DeclareDeviceQueue(descriptor, _channel);
 
-                var respQueue = new BlockingCollection<byte[]>();
+                var respQueue = new BlockingCollection<MMB.Message>();
 
                 var consumer = new EventingBasicConsumer(_channel);
                 consumer.Received += (model, ea) =>
@@ -215,8 +233,16 @@ namespace Atdi.WcfServices.Sdrn.Device
                         }
                     }
 
+                    var sdrnMsg = new MMB.Message
+                    {
+                        Id = ea.BasicProperties.MessageId,
+                        Type = ea.BasicProperties.Type,
+                        ContentType = ea.BasicProperties.ContentType,
+                        ContentEncoding = ea.BasicProperties.ContentEncoding,
+                        Body = ea.Body
+                    };
                     _channel.BasicAck(ea.DeliveryTag, false);
-                    respQueue.Add(ea.Body);
+                    respQueue.Add(sdrnMsg);
                 };
 
                 var consumerTag = $"RPC: {Guid.NewGuid().ToString()}";
@@ -228,8 +254,9 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 try
                 {
-                    var body = respQueue.Take();
-                    result = this.DeserializeObjectFromByteArray<TObject>(body);
+                    var sdrnMsg = respQueue.Take();
+                    var msgObject = this._messageConverter.Deserialize(sdrnMsg);
+                    result = (TObject)msgObject.Object;
                 }
                 catch(Exception)
                 {
@@ -352,35 +379,35 @@ namespace Atdi.WcfServices.Sdrn.Device
             return deviceQueueName;
         }
 
-        private byte[] SerializeObjectToByteArray<TObject>(TObject source)
-        {
-            if (source == null)
-            {
-                return new byte[] { };
-            }
+        //private byte[] SerializeObjectToByteArray<TObject>(TObject source)
+        //{
+        //    if (source == null)
+        //    {
+        //        return new byte[] { };
+        //    }
 
-            byte[] result = null;
+        //    byte[] result = null;
 
-            var json = JsonConvert.SerializeObject(source);
-            result = Encoding.UTF8.GetBytes(json);
+        //    var json = JsonConvert.SerializeObject(source);
+        //    result = Encoding.UTF8.GetBytes(json);
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        private TObject DeserializeObjectFromByteArray<TObject>(byte[] source)
-        {
-            if (source == null)
-            {
-                return default(TObject);
-            }
+        //private TObject DeserializeObjectFromByteArray<TObject>(byte[] source)
+        //{
+        //    if (source == null)
+        //    {
+        //        return default(TObject);
+        //    }
 
-            TObject result = default(TObject);
+        //    TObject result = default(TObject);
 
-            var json = Encoding.UTF8.GetString(source);
-            result = JsonConvert.DeserializeObject<TObject>(json);
+        //    var json = Encoding.UTF8.GetString(source);
+        //    result = JsonConvert.DeserializeObject<TObject>(json);
 
-            return result;
-        }
+        //    return result;
+        //}
 
         protected virtual void Dispose(bool disposing)
         {

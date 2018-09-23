@@ -22,11 +22,11 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
     
 
             Console.WriteLine($"Press any key to start test ...");
-            Console.ReadKey();
+            Console.ReadLine();
 
-            Run("NetTcpEndpoint", "#0001");
-            Run("BasicHttpEndpoint", "#0001");
-            Run("NetNamedPipeEndpoint", "#0001");
+            Run("NetTcpEndpoint", "SDRNSV-SBD12-A00-8591");
+            Run("BasicHttpEndpoint", "SDRNSV-SBD12-A00-8591");
+            Run("NetNamedPipeEndpoint", "SDRNSV-SBD12-A00-8591");
 
             Console.WriteLine($"Press any key to exit ...");
             Console.ReadKey();
@@ -115,7 +115,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             if (getCommandResult.Token != null)
             {
-                busService.AckCommand(sensorDescriptor, getCommandResult.Token);
+             //   busService.AckCommand(sensorDescriptor, getCommandResult.Token);
             }
             
             return command;
@@ -141,7 +141,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             if (getMeasTaskResult.Token != null)
             {
-                busService.AckMeasTask(sensorDescriptor, getMeasTaskResult.Token);
+              //  busService.AckMeasTask(sensorDescriptor, getMeasTaskResult.Token);
             }
 
             return task;
@@ -164,7 +164,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             if (getEntityResult.Token != null)
             {
-                busService.AckEntity(sensorDescriptor, getEntityResult.Token);
+              //  busService.AckEntity(sensorDescriptor, getEntityResult.Token);
             }
             
             return entity;
@@ -187,7 +187,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             if (getEntityPartResult.Token != null)
             {
-                busService.AckEntityPart(sensorDescriptor, getEntityPartResult.Token);
+              //  busService.AckEntityPart(sensorDescriptor, getEntityPartResult.Token);
             }
             
             return entityPart;
@@ -267,7 +267,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
         {
             var sensor = new Sensor
             {
-                Name = "Sensor01",
+                Name = "SENSOR-DBD12-A00-1280",
                 Administration = "Administration",
                 Antenna = new SensorAntenna
                 {
@@ -373,6 +373,92 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             catch (Exception e)
             {
                 throw new InvalidOperationException("The sensor was not update", e);
+            }
+        }
+
+        static SensorRegistrationResult RegisterSensorSimple(string endpointName)
+        {
+            try
+            {
+                var sdrnServer = "SDRNSV-SBD12-A00-8591"; // Имя SDRN Server (зависит от доступной на сервере лицензии)
+                var sensor = new Sensor()
+                {
+                   Name = "SENSOR-DBD12-A00-1280", //Важно: Имя сенсора из лицензии
+                   Equipment = new SensorEquipment
+                   {
+                       TechId = "SomeSensor SN:0923382737273", // идентификатор сенсора до 200 символов
+                   },
+                   Antenna = new SensorAntenna
+                   {
+                       TechId = "SomeTechId"
+                   }
+                   // определение прочих реквизитов сенсора
+                };
+
+                SensorRegistrationResult result = null;
+
+                var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+
+                var registerSensorResult = busService.RegisterSensor(sensor, sdrnServer);
+                if (registerSensorResult.State == DataModels.CommonOperation.OperationState.Fault)
+                {
+                    throw new InvalidOperationException(registerSensorResult.FaultCause);
+                }
+
+                result = registerSensorResult.Data;
+
+                Console.WriteLine($"The sensor '{sensor.Name}' has been registered [Status='{result.Status}']");
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("The sensor was not registered", e);
+            }
+        }
+
+        static void SendMeasResultsSimple(string endpointName)
+        {
+            try
+            {
+                var sensorDescriptor = new SensorDescriptor()
+                {
+                    SdrnServer = "SDRNSV-SBD12-A00-8591", // Имя SDRN Server (зависит от доступной на сервере лицензии)
+                    SensorName = "SENSOR-DBD12-A00-1280", //Важно: Имя сенсора из лицензии WCF сервиса
+                    EquipmentTechId = "SomeSensor SN:0923382737273", // идентификатор сенсора до 200 символов
+                };
+
+
+                var measResults = new MeasResults
+                {
+                    TaskId = "Some task ID",
+                    ResultId = "Some result ID",
+                    StationResults = new StationMeasResult[]
+                    {
+                        new StationMeasResult
+                        {
+                            SectorId = "Some sector ID"
+                        }
+                    },
+
+                    // определение прочих данныых об измерении
+                };
+
+                var busService = GetMeasTasksBusServicByEndpoint(endpointName);
+
+                var sendMeasResultsResult = busService.SendMeasResults(sensorDescriptor, measResults);
+                if (sendMeasResultsResult.State == DataModels.CommonOperation.OperationState.Fault)
+                {
+                    throw new InvalidOperationException(sendMeasResultsResult.FaultCause);
+                }
+
+
+                Console.WriteLine($"The sensor '{sensorDescriptor.SensorName}' has sent measurment result '{measResults.Measured}'");
+
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("The meas results was not sent to server", e);
             }
         }
     }
