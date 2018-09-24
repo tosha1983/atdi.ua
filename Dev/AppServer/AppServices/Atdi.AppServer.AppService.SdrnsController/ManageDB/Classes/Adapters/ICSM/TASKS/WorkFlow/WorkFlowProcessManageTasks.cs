@@ -54,7 +54,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     if (s_out != null)
                     {
                         MeasTask Data_ = s_out;
-                        Data_.CreateAllSubTasksApi1_0();
+                        //Data_.CreateAllSubTasksApi1_0();
                         List<MeasTask> mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(Data_.Id.Value)).ToList();
                         if (mts_.Count() == 0)
                         {
@@ -87,8 +87,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <summary>
         /// 
         /// </summary>
-        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline, out bool isSuccess)
+        public bool Process_Multy_Meas(MeasTask mt, List<int> SensorIds, string ActionType, bool isOnline, out bool isSuccess, out int? IdTask)
         {
+            IdTask = null;
+            int? IdTsk = null;
             bool isSendSuccess = false;
             bool isSuccessTemp = false;
             isSuccess = false;
@@ -109,8 +111,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             isSuccessTemp = cl.SetHistoryStatusTasksInDB(mt, "Z");
                         }
-                        //MeasTask[] Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(mt.Id.Value));
+                       
                         MeasTask[] Res = new MeasTask[1] { mt };
+
+                        
                         List<MeasSdrTask> LM_SDR = new List<MeasSdrTask>();
                         List<Atdi.DataModels.Sdrns.Device.MeasTask> LM_SDR_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
                         foreach (int SensorId in SensorIds.ToArray())
@@ -124,7 +128,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     Checked_L.Clear();
                                     if ((Res != null) && (Res.Length > 0))
                                     {
+
                                         MeasTask M = Res[0]; //GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == mt.Id.Value);
+                                        if (ActionType == "New")
+                                        {
+                                             M.CreateAllSubTasksApi1_0();
+                                        }
                                         int Id_Old = M.Id.Value;
                                         MeasSubTask[] msbd_old = M.MeasSubTasks;
                                         M = mt;
@@ -134,9 +143,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             M.UpdateStatusSubTasks(SensorId, ActionType, isOnline);
                                             if (apiVer == "v1.0")
                                             {
+
+                                                if (ActionType == "New")
+                                                {
+                                                    IdTsk = Create_New_Meas_Task(M, "New");
+                                                }
+
                                                 LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
                                                 if (LM_SDR != null)
                                                 {
+
                                                     string ids = "";
                                                     int MaxVal = cl.GetMaXIdsSdrTasks(M);
                                                     int idx = MaxVal + 1;
@@ -144,10 +160,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     {
                                                         mx.Id = idx;
                                                         ids = idx.ToString() + ";";
-                                                        //Task ts = new Task(() => {
-                                                        //если сенсор активен
-                                                        //if (fnd_s.Status == "A")
-                                                        //{
                                                         if (mx.SensorId.Value == SensorId)
                                                         {
                                                             /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
@@ -169,13 +181,19 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     }
                                                     if (ids.Length > 0) ids = ids.Remove(ids.Count() - 1, 1);
                                                     cl.SaveIdsSdrTasks(M, ids);
+
                                                 }
                                             }
                                             if (apiVer == "v2.0")
                                             {
+                                                if (ActionType == "New")
+                                                {
+                                                    IdTsk = Create_New_Meas_Task(M, "New");
+                                                }
                                                 LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
                                                 if (LM_SDR_Device != null)
                                                 {
+
                                                     string ids = "";
                                                     int MaxVal = cl.GetMaXIdsSdrTasks(M);
                                                     int idx = MaxVal + 1;
@@ -202,10 +220,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
-
-
                                         }
-
                                         M.MeasSubTasks = msbd_old;
                                         //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
                                         //if (fnd != null)
@@ -299,6 +314,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 });
                 tsk_main.Start();
                 tsk_main.Join();
+                IdTask = IdTsk;
                 isSuccess = isSuccessTemp;
             }
             catch (Exception ex)

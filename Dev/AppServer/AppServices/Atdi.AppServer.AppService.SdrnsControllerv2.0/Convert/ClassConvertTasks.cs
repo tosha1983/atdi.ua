@@ -132,21 +132,18 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         s_out.MeasSubTasks = MsT.ToArray();
                     }
 
-                    if (obj.MeasTimeParamList.valc != null)
-                    {
-                        s_out.MeasTimeParamList = new MeasTimeParamList();
-                        YXbsMeastimeparaml r_dt = obj.MeasTimeParamList;
+                        if (obj.meas_task != null)
                         {
+                            s_out.MeasTimeParamList = new MeasTimeParamList();
                             MeasTimeParamList time_param_list = new MeasTimeParamList();
-                            time_param_list.Days = r_dt.m_days;
-                            time_param_list.PerInterval = r_dt.m_perinterval;
-                            time_param_list.PerStart = r_dt.m_perstart.Value;
-                            time_param_list.PerStop = r_dt.m_perstop.Value;
-                            time_param_list.TimeStart = r_dt.m_timestart;
-                            time_param_list.TimeStop = r_dt.m_timestop;
+                            time_param_list.Days = obj.meas_task.m_days;
+                            time_param_list.PerInterval = obj.meas_task.m_perinterval;
+                            time_param_list.PerStart = obj.meas_task.m_perstart.Value;
+                            time_param_list.PerStop = obj.meas_task.m_perstop.Value;
+                            time_param_list.TimeStart = obj.meas_task.m_timestart;
+                            time_param_list.TimeStop = obj.meas_task.m_timestop;
                             s_out.MeasTimeParamList = time_param_list;
                         }
-                    }
 
 
                     if (obj.MeasOther.valc != null)
@@ -197,142 +194,10 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     }
 
                     {
-                            /*
-                            List<StationDataForMeasurements> LStationDataForMeasurements = new List<StationDataForMeasurements>();
-                            foreach (YXbsStationdatform r_dt in obj.XbsStationdatform.ToArray())
-                            {
-                                OracleDataAccess oracleDataAccess = new OracleDataAccess();
-                                string[] aliasNames = new string[] { "STATIONDATFORM_ID", "STATIONDATFORM_GLOBALSID",  "STATIONDATFORM_STATUS", "STATIONDATFORM_STANDART", "STATIONDATFORM_ID_XBS_MEASTASK",
-                                                                 "PERMASSIGN_ID","PERMASSIGN_STARTDATE", "PERMASSIGN_ENDDATE", "PERMASSIGN_CLOSEDATE",  "PERMASSIGN_DOZVILNAME",  "PERMASSIGN_ID_STATIONDATFORM",
-                                                                 "SITESTFORM_ID", "SITESTFORM_LON", "SITESTFORM_LAT", "SITESTFORM_ADDRESS", "SITESTFORM_REGION", "SITESTFORM_ID_STATIONDATFORM",
-                                                                 "SECTST_ID", "SECTST_AGL", "SECTST_EIRP", "SECTST_AZIMUT", "SECTST_BW", "SECTST_CLASSEMISSION", "SECTST_ID_STATIONDATFORM",
-                                                                 "FREQ_ID", "FREQ_IDPLAN", "FREQ_CHANNALNUMBER", "FREQ_FREQUENCY", "FREQ_ID_SECTSTFORMEAS",
-                                                                 "MASKEL_ID", "\"LEVEL\"", "MASKEL_BW"," MASKEL_ID_SECTSTFORMEAS",
-                                                                 "OWNER_ID" ,"OWNER_OWNERNAME","OWNER_ADDRES","OWNER_CODE","OWNER_ID_STATIONDATFORM","OWNER_OKPO","OWNER_ZIP"};
-                                string SQL = string.Format("SELECT STATIONDATFORM.ID as STATIONDATFORM_ID, STATIONDATFORM.GLOBALSID as STATIONDATFORM_GLOBALSID, STATIONDATFORM.STATUS as STATIONDATFORM_STATUS, STATIONDATFORM.STANDART as STATIONDATFORM_STANDART, STATIONDATFORM.ID_XBS_MEASTASK as STATIONDATFORM_ID_XBS_MEASTASK," +
-                                                 "PERMASSIGN.ID as PERMASSIGN_ID, PERMASSIGN.STARTDATE as PERMASSIGN_STARTDATE, PERMASSIGN.ENDDATE as PERMASSIGN_ENDDATE, PERMASSIGN.CLOSEDATE as PERMASSIGN_CLOSEDATE, PERMASSIGN.DOZVILNAME as PERMASSIGN_DOZVILNAME, PERMASSIGN.ID_STATIONDATFORM as PERMASSIGN_ID_STATIONDATFORM, " +
-                                                 "SITESTFORM.ID as SITESTFORM_ID, SITESTFORM.LON as SITESTFORM_LON, SITESTFORM.LAT as SITESTFORM_LAT, SITESTFORM.ADDRES as SITESTFORM_ADDRESS, SITESTFORM.REGION as SITESTFORM_REGION, SITESTFORM.ID_STATIONDATFORM AS SITESTFORM_ID_STATIONDATFORM, " +
-                                                 "SECTST.ID as SECTST_ID,SECTST.AGL as SECTST_AGL,SECTST.EIRP as SECTST_EIRP,SECTST.AZIMUT as SECTST_AZIMUT,SECTST.BW as SECTST_BW,SECTST.CLASSEMISSION as SECTST_CLASSEMISSION,SECTST.ID_STATIONDATFORM as SECTST_ID_STATIONDATFORM, " +
-                                                 "FREQ.ID AS FREQ_ID,FREQ.IDPLAN AS FREQ_IDPLAN,FREQ.CHANNALNUMBER AS FREQ_CHANNALNUMBER,FREQ.FREQUENCY AS FREQ_FREQUENCY,FREQ.ID_SECTSTFORMEAS AS FREQ_ID_SECTSTFORMEAS, " +
-                                                 "MASKEL.ID as MASKEL_ID, MASKEL.\"LEVEL\" AS MASKEL_LEVEL, MASKEL.BW AS MASKEL_BW, MASKEL.ID_SECTSTFORMEAS as MASKEL_ID_SECTSTFORMEAS, " +
-                                                 "OWNER.ID AS OWNER_ID, OWNER.OWNERNAME AS OWNER_OWNERNAME, OWNER.ADDRES as  OWNER_ADDRES,  OWNER.CODE as OWNER_CODE,  OWNER.ID_STATIONDATFORM as OWNER_ID_STATIONDATFORM, OWNER.OKPO as OWNER_OKPO, OWNER.ZIP as OWNER_ZIP " +
-                                                 "FROM ICSM.XBS_STATIONDATFORM STATIONDATFORM " +
-                                                 "LEFT OUTER JOIN ICSM.XBS_PERMASSIGN PERMASSIGN ON STATIONDATFORM.ID = PERMASSIGN.ID_STATIONDATFORM " +
-                                                 "LEFT OUTER JOIN ICSM.XBS_SITESTFORMEAS SITESTFORM ON STATIONDATFORM.ID = SITESTFORM.ID_STATIONDATFORM " +
-                                                 "LEFT OUTER JOIN ICSM.XBS_SECTSTFORMEAS SECTST ON STATIONDATFORM.ID = SECTST.ID_STATIONDATFORM " +
-                                                 "LEFT OUTER JOIN ICSM.XBS_FREQFORSECTICS FREQ ON SECTST.ID = FREQ.ID_SECTSTFORMEAS " +
-                                                 "LEFT OUTER JOIN ICSM.XBS_MASKELEMENTS MASKEL ON SECTST.ID = MASKEL.ID_SECTSTFORMEAS " +
-                                                 "LEFT OUTER JOIN ICSM.XBS_OWNERDATA OWNER ON STATIONDATFORM.ID=OWNER.ID_STATIONDATFORM "+
-                                                 "WHERE  STATIONDATFORM.ID={0} AND STATIONDATFORM.ID_XBS_MEASTASK={1}", r_dt.m_id, (int)obj.meas_task.m_id);
-                                DbDataReader reader = oracleDataAccess.GetValuesSql(SQL);
-                                List<SectorStationForMeas> LsectM = new List<SectorStationForMeas>();
-                                StationDataForMeasurements MeasStation_ = new StationDataForMeasurements();
-                                List<FrequencyForSectorFormICSM> LFreqICSM = new List<FrequencyForSectorFormICSM>();
-                                List<MaskElements> L_Mask = new List<MaskElements>();
-                                while (reader.Read())
-                                {
-                                    OwnerData own = new OwnerData();
-                                    PermissionForAssignment perm = new PermissionForAssignment();
-                                    SiteStationForMeas stM = new SiteStationForMeas();
-                                    SectorStationForMeas sectM = new SectorStationForMeas();
-                                    FrequencyForSectorFormICSM freqM = new FrequencyForSectorFormICSM();
-                                    MaskElements MaskElementsM = new MaskElements();
-                                    for (int p = 0; p < aliasNames.Length; p++)
-                                    {
-                                        if (aliasNames[p].Contains("STATIONDATFORM_"))
-                                        {
-                                            if (aliasNames[p] == "STATIONDATFORM_ID") MeasStation_.IdStation = (reader[p] as int?) == null ? 0 : (int)(reader[p]);
-                                            if (aliasNames[p] == "STATIONDATFORM_GLOBALSID") MeasStation_.GlobalSID = reader[p].ToString();
-                                            if (aliasNames[p] == "STATIONDATFORM_STATUS") MeasStation_.Status = reader[p].ToString();
-                                            if (aliasNames[p] == "STATIONDATFORM_STANDART") MeasStation_.Standart = reader[p].ToString();
-                                        }
 
-                                        if (aliasNames[p].Contains("OWNER_"))
-                                        {
-                                            if (aliasNames[p] == "OWNER_ADDRES") own.Addres = reader[p].ToString();
-                                            if (aliasNames[p] == "OWNER_CODE") own.Code = reader[p].ToString();
-                                            if (aliasNames[p] == "OWNER_ID") own.Id = (reader[p] as int?) == null ? 0 : (int)(reader[p]);
-                                            if (aliasNames[p] == "OWNER_OKPO") own.OKPO = reader[p].ToString();
-                                            if (aliasNames[p] == "OWNER_OWNERNAME") own.OwnerName = reader[p].ToString();
-                                            if (aliasNames[p] == "OWNER_ZIP") own.Zip = reader[p].ToString();
-                                        }
-
-                                        if (aliasNames[p].Contains("PERMASSIGN_"))
-                                        {
-                                            if (aliasNames[p] == "PERMASSIGN_CLOSEDATE") perm.CloseDate = reader[p] as DateTime?;
-                                            if (aliasNames[p] == "PERMASSIGN_STARTDATE") perm.StartDate = reader[p] as DateTime?;
-                                            if (aliasNames[p] == "PERMASSIGN_ENDDATE") perm.EndDate = reader[p] as DateTime?;
-                                            if (aliasNames[p] == "PERMASSIGN_DOZVILNAME") perm.DozvilName = reader[p].ToString();
-                                            if (aliasNames[p] == "PERMASSIGN_ID") perm.Id = reader[p] as int?;
-                                            
-                                        }
-
-                                        if (aliasNames[p].Contains("SITESTFORM_"))
-                                        {
-                                            if (aliasNames[p] == "SITESTFORM_LON") stM.Lon = (reader[p] as double?);
-                                            if (aliasNames[p] == "SITESTFORM_LAT") stM.Lat = (reader[p] as double?);
-                                            if (aliasNames[p] == "SITESTFORM_ADDRESS") stM.Adress = reader[p].ToString();
-                                            if (aliasNames[p] == "SITESTFORM_REGION") stM.Region = reader[p].ToString();
-                                        }
-
-                                        if (aliasNames[p].Contains("SECTST_"))
-                                        {
-                                            if (aliasNames[p] == "SECTST_AGL") sectM.AGL = (reader[p] as double?);
-                                            if (aliasNames[p] == "SECTST_EIRP") sectM.EIRP = (reader[p] as double?);
-                                            if (aliasNames[p] == "SECTST_AZIMUT") sectM.Azimut = (reader[p] as double?);
-                                            if (aliasNames[p] == "SECTST_ID") sectM.IdSector = (reader[p] as int?) == null ? 0 : (int)(reader[p]);
-                                            if (aliasNames[p] == "SECTST_BW") sectM.BW = (reader[p] as double?);
-                                            if (aliasNames[p] == "SECTST_CLASSEMISSION") sectM.ClassEmission = reader[p].ToString();
-                                        }
-
-                                        if (aliasNames[p].Contains("FREQ_"))
-                                        {
-                                            if (aliasNames[p] == "FREQ_CHANNALNUMBER") freqM.ChannalNumber = reader[p] as int?;
-                                            if (aliasNames[p] == "FREQ_FREQUENCY") freqM.Frequency = reader[p] as decimal?;
-                                            if (aliasNames[p] == "FREQ_ID") freqM.Id = reader[p] as int?;
-                                            if (aliasNames[p] == "FREQ_IDPLAN") freqM.IdPlan = reader[p] as int?;
-                                            
-                                        }
-
-                                        if (aliasNames[p].Contains("MASKEL_")|| aliasNames[p].Contains("\"LEVEL\""))
-                                        {
-                                            if (aliasNames[p] == "MASKEL_BW") MaskElementsM.BW = reader[p] as double?;
-                                            if (aliasNames[p] == "\"LEVEL\"") MaskElementsM.level = reader[p] as double?;
-                                        }
-                                       
-                                    }
-
-                                    if (freqM.Frequency != null)
-                                        LFreqICSM.Add(freqM);
-
-                                    if (MaskElementsM.BW != null || MaskElementsM.level != null)
-                                        L_Mask.Add(MaskElementsM);
-
-                                    if (stM.Lon != null || stM.Lat != null)
-                                        MeasStation_.Site = stM;
-
-                                    if (perm.CloseDate != null || perm.StartDate != null || perm.EndDate != null || perm.DozvilName != null || perm.Id != null || perm.StartDate != null)
-                                        MeasStation_.LicenseParameter = perm;
-
-                                    if (own.Addres != null || own.Code != null || own.Id != null || own.OKPO != null || own.OwnerName != null || own.Zip != null)
-                                        MeasStation_.Owner = own;
-
-                                    sectM.MaskBW = L_Mask.ToArray();
-                                    sectM.Frequencies = LFreqICSM.ToArray();
-                                    LsectM.Add(sectM);
-                                    L_Mask = new List<MaskElements>();
-                                    LFreqICSM = new List<FrequencyForSectorFormICSM>();
-                                    sectM = new SectorStationForMeas();
-                                }
-                                reader.Close();
-                                MeasStation_.Sectors = LsectM.ToArray();
-                                LStationDataForMeasurements.Add(MeasStation_);
-                            }
-                            */
-                   
                    
                             List<StationDataForMeasurements> LStationDataForMeasurements = new List<StationDataForMeasurements>();
-                            foreach (YXbsStationdatform r_dt in obj.XbsStationdatform.ToArray())
+                            foreach (YXbsStation r_dt in obj.XbsStationdatform.ToArray())
                             {
                                 StationDataForMeasurements MeasStation_ = new StationDataForMeasurements();
                                 MeasStation_.IdStation = r_dt.m_id.Value;
@@ -344,7 +209,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                 OwnerData own = new OwnerData();
                                 YXbsOwnerdata XbsMeasstation_ = new YXbsOwnerdata();
                                 XbsMeasstation_.Format("*");
-                                XbsMeasstation_.Filter = string.Format("(ID_STATIONDATFORM={0})",  r_dt.m_id);
+                                XbsMeasstation_.Filter = string.Format("(ID={0})",  r_dt.m_id_xbs_ownerdata);
                                 for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
                                 {
                                     own.Addres = XbsMeasstation_.m_addres;
@@ -360,28 +225,19 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                 XbsMeasstation_.Dispose();
 
 
-                                PermissionForAssignment perm = new PermissionForAssignment();
-                                YXbsPermassign Xbsperm_ = new YXbsPermassign();
-                                Xbsperm_.Format("*");
-                                Xbsperm_.Filter = string.Format("(ID_STATIONDATFORM={0})", r_dt.m_id);
-                                for (Xbsperm_.OpenRs(); !Xbsperm_.IsEOF(); Xbsperm_.MoveNext())
-                                {
-                                    perm.CloseDate = Xbsperm_.m_closedate;
-                                    perm.DozvilName = Xbsperm_.m_dozvilname;
-                                    perm.EndDate = Xbsperm_.m_enddate;
-                                    perm.Id = Xbsperm_.m_id;
-                                    perm.StartDate = Xbsperm_.m_startdate;
-                                    MeasStation_.LicenseParameter = perm;
-                                    break;
-                                }
-                                Xbsperm_.Close();
-                                Xbsperm_.Dispose();
-
+                               PermissionForAssignment perm = new PermissionForAssignment();
+                               perm.CloseDate = r_dt.m_closedate;
+                               perm.DozvilName = r_dt.m_dozvilname;
+                               perm.EndDate = r_dt.m_enddate;
+                               perm.Id = r_dt.m_id;
+                               perm.StartDate = r_dt.m_startdate;
+                               MeasStation_.LicenseParameter = perm;
+                                  
 
                                 SiteStationForMeas stM = new SiteStationForMeas();
-                                YXbsSitestformeas Xbssite_ = new YXbsSitestformeas();
+                                YXbsStationSite Xbssite_ = new YXbsStationSite();
                                 Xbssite_.Format("*");
-                                Xbssite_.Filter = string.Format("(ID_STATIONDATFORM={0})", r_dt.m_id);
+                                Xbssite_.Filter = string.Format("(ID={0})", r_dt.m_id_xbs_stationsite);
                                 for (Xbssite_.OpenRs(); !Xbssite_.IsEOF(); Xbssite_.MoveNext())
                                 {
                                     stM.Adress = Xbssite_.m_addres;
@@ -396,9 +252,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 
 
                                 List<SectorStationForMeas> LsectM = new List<SectorStationForMeas>();
-                                YXbsSectstformeas Xbssect_ = new YXbsSectstformeas();
+                                YXbsSector Xbssect_ = new YXbsSector();
                                 Xbssect_.Format("*");
-                                Xbssect_.Filter = string.Format("(ID_STATIONDATFORM={0})", r_dt.m_id);
+                                Xbssect_.Filter = string.Format("(ID_XBS_STATION={0})", r_dt.m_id);
                                 for (Xbssect_.OpenRs(); !Xbssect_.IsEOF(); Xbssect_.MoveNext())
                                 {
                                     SectorStationForMeas sectM = new SectorStationForMeas();
@@ -411,39 +267,53 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                     sectM.IdSector = Xbssect_.m_id.Value;
 
                                     List<FrequencyForSectorFormICSM> LFreqICSM = new List<FrequencyForSectorFormICSM>();
-                                    YXbsFreqforsectics XbsFreqforsectics_ = new YXbsFreqforsectics();
-                                    XbsFreqforsectics_.Format("*");
-                                    XbsFreqforsectics_.Filter = string.Format("(ID_SECTSTFORMEAS={0})", Xbssect_.m_id);
-                                    for (XbsFreqforsectics_.OpenRs(); !XbsFreqforsectics_.IsEOF(); XbsFreqforsectics_.MoveNext())
+                                    YXbsLinkSectorFreq linkSectorFreq = new YXbsLinkSectorFreq();
+                                    linkSectorFreq.Format("*");
+                                    linkSectorFreq.Filter = string.Format("(ID_XBS_SECTOR={0})", Xbssect_.m_id);
+                                    for (linkSectorFreq.OpenRs(); !linkSectorFreq.IsEOF(); linkSectorFreq.MoveNext())
                                     {
-                                        FrequencyForSectorFormICSM freqM = new FrequencyForSectorFormICSM();
-                                        freqM.ChannalNumber = XbsFreqforsectics_.m_channalnumber;
-                                        freqM.Frequency = (decimal)XbsFreqforsectics_.m_frequency;
-                                        freqM.Id = XbsFreqforsectics_.m_id;
-                                        freqM.IdPlan = XbsFreqforsectics_.m_idplan;
-                                        LFreqICSM.Add(freqM);
+                                        YXbsSectorFreq XbsFreqforsectics_ = new YXbsSectorFreq();
+                                        XbsFreqforsectics_.Format("*");
+                                        XbsFreqforsectics_.Filter = string.Format("(ID={0})", linkSectorFreq.m_id_xbs_sectorfreq);
+                                        for (XbsFreqforsectics_.OpenRs(); !XbsFreqforsectics_.IsEOF(); XbsFreqforsectics_.MoveNext())
+                                        {
+                                            FrequencyForSectorFormICSM freqM = new FrequencyForSectorFormICSM();
+                                            freqM.ChannalNumber = XbsFreqforsectics_.m_channalnumber;
+                                            freqM.Frequency = (decimal)XbsFreqforsectics_.m_frequency;
+                                            freqM.Id = XbsFreqforsectics_.m_id;
+                                            freqM.IdPlan = XbsFreqforsectics_.m_idplan;
+                                            LFreqICSM.Add(freqM);
+                                        }
+                                        XbsFreqforsectics_.Close();
+                                        XbsFreqforsectics_.Dispose();
+
                                     }
-                                    XbsFreqforsectics_.Close();
-                                    XbsFreqforsectics_.Dispose();
+                                    linkSectorFreq.Close();
+                                    linkSectorFreq.Dispose();
+
                                     sectM.Frequencies = LFreqICSM.ToArray();
 
 
                                     List<MaskElements> L_Mask = new List<MaskElements>();
-                                    YXbsMaskelements Xbsaskelements_ = new YXbsMaskelements();
-                                    Xbsaskelements_.Format("*");
-                                    Xbsaskelements_.Filter = string.Format("(ID_SECTSTFORMEAS={0})", Xbssect_.m_id);
-                                    for (Xbsaskelements_.OpenRs(); !Xbsaskelements_.IsEOF(); Xbsaskelements_.MoveNext())
+                                    YXbsLinkSectorMask yXbsLinkSectorMask = new YXbsLinkSectorMask();
+                                    yXbsLinkSectorMask.Format("*");
+                                    yXbsLinkSectorMask.Filter = string.Format("(ID_XBS_SECTOR={0})", Xbssect_.m_id);
+                                    for (yXbsLinkSectorMask.OpenRs(); !yXbsLinkSectorMask.IsEOF(); yXbsLinkSectorMask.MoveNext())
                                     {
-                                        MaskElements MaskElementsM = new MaskElements();
-                                        MaskElementsM.BW = Xbsaskelements_.m_bw;
-                                        MaskElementsM.level = Xbsaskelements_.m_level;
-                                        L_Mask.Add(MaskElementsM);
+                                        YXbsSectorMaskElem Xbsaskelements_ = new YXbsSectorMaskElem();
+                                        Xbsaskelements_.Format("*");
+                                        Xbsaskelements_.Filter = string.Format("(ID={0})", yXbsLinkSectorMask.m_id_sectormaskelem);
+                                        for (Xbsaskelements_.OpenRs(); !Xbsaskelements_.IsEOF(); Xbsaskelements_.MoveNext())
+                                        {
+                                            MaskElements MaskElementsM = new MaskElements();
+                                            MaskElementsM.BW = Xbsaskelements_.m_bw;
+                                            MaskElementsM.level = Xbsaskelements_.m_level;
+                                            L_Mask.Add(MaskElementsM);
+                                        }
+                                        Xbsaskelements_.Close();
+                                        Xbsaskelements_.Dispose();
                                     }
-                                    Xbsaskelements_.Close();
-                                    Xbsaskelements_.Dispose();
                                     sectM.MaskBW = L_Mask.ToArray();
-
-
                                     LsectM.Add(sectM);
                                     MeasStation_.Sectors = LsectM.ToArray();
                                 }
@@ -584,24 +454,18 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             }
                             s_out.MeasSubTasks = MsT.ToArray();
                         }
-
-                        if (obj.MeasTimeParamList.valc != null)
+                        if (obj.meas_task != null)
                         {
                             s_out.MeasTimeParamList = new MeasTimeParamList();
-                            YXbsMeastimeparaml r_dt = obj.MeasTimeParamList;
-                            {
-                                MeasTimeParamList time_param_list = new MeasTimeParamList();
-                                time_param_list.Days = r_dt.m_days;
-                                time_param_list.PerInterval = r_dt.m_perinterval;
-                                time_param_list.PerStart = r_dt.m_perstart.Value;
-                                time_param_list.PerStop = r_dt.m_perstop.Value;
-                                time_param_list.TimeStart = r_dt.m_timestart;
-                                time_param_list.TimeStop = r_dt.m_timestop;
-                                s_out.MeasTimeParamList = time_param_list;
-                            }
+                            MeasTimeParamList time_param_list = new MeasTimeParamList();
+                            time_param_list.Days = obj.meas_task.m_days;
+                            time_param_list.PerInterval = obj.meas_task.m_perinterval;
+                            time_param_list.PerStart = obj.meas_task.m_perstart.Value;
+                            time_param_list.PerStop = obj.meas_task.m_perstop.Value;
+                            time_param_list.TimeStart = obj.meas_task.m_timestart;
+                            time_param_list.TimeStop = obj.meas_task.m_timestop;
+                            s_out.MeasTimeParamList = time_param_list;
                         }
-
-
                         if (obj.MeasOther.valc != null)
                         {
                             YXbsMeasother r_dt = obj.MeasOther;

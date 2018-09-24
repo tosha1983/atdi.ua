@@ -173,7 +173,7 @@ namespace Atdi.Oracle.DataAccess
                         {
                             if (x.SourceColumn == "\"ID\"")
                             {
-                                ID_VALUE = (int)yyy.valc[i];
+                                ID_VALUE = yyy.valc[i]!=null ? Convert.ToInt32(yyy.valc[i]) : -1;
                                 break;
                             }
                         }
@@ -231,7 +231,7 @@ namespace Atdi.Oracle.DataAccess
                             }
                             else
                             {
-                                ID_VALUE = (int)yyy.valc[i];
+                                ID_VALUE = yyy.valc[i]!=null ? Convert.ToInt32(yyy.valc[i]) : -1;
                                 i++;
                             }
                         }

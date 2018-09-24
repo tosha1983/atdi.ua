@@ -197,3 +197,6 @@ DateTime: 13.09.2018 22:50:14, Type Object - LIST_MEAS_SDR_RESULTS, Count in Mem
 2018-09-13 22:52:44.7123 [TRACE] Init logs subsystem ...  
 2018-09-13 22:52:44.7223 [TRACE] Please wait... Read data from MeasTask.. 
 2018-09-13 22:52:44.7223 [TRACE] License file C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\License\LCS-2018-TEST INS-DV-2018-TEST.lic not found! 
+2018-09-13 23:45:56.5993 [TRACE] Init logs subsystem ...  
+2018-09-13 23:45:56.5993 [TRACE] Please wait... Read data from MeasTask.. 
+2018-09-13 23:45:56.5993 [TRACE] License file C:\Projects\ReposApi2\Dev\Delivery\Atdi.Sdrn\Device\SDR-A\x64\BinDebug\License\LCS-2018-TEST INS-DV-2018-TEST.lic not found! 
