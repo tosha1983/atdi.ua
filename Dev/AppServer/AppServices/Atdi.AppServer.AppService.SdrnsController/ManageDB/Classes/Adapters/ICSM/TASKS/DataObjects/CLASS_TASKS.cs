@@ -14,8 +14,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public List<YXbsMeasdtparam> MeasDtParam { get; set; }
         public List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>> MeasFreqLst_param { get; set; }
         public YXbsMeasother MeasOther { get; set; }
-        public YXbsMeastimeparaml MeasTimeParamList { get; set; }
-        public List<YXbsStationdatform> XbsStationdatform { get; set; }
+        public List<YXbsStation> XbsStationdatform { get; set; }
 
         /// <summary>
         /// Деструктор.
@@ -40,8 +39,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             MeasDtParam = new List<YXbsMeasdtparam>();
             Stations = new List<YXbsMeasstation>();
             MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
-            MeasTimeParamList = new YXbsMeastimeparaml();
-            XbsStationdatform = new List<YXbsStationdatform>();
+            XbsStationdatform = new List<YXbsStation>();
         }
     }
 

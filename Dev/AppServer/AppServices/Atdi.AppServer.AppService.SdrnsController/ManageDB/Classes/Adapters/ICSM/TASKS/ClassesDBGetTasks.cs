@@ -56,9 +56,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
                     ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
                     ICSM_T.MeasOther = new YXbsMeasother();
-                    ICSM_T.MeasTimeParamList = new YXbsMeastimeparaml();
                     ICSM_T.Stations = new List<YXbsMeasstation>();
-                    ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
+                    ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
 
                     YXbsMeastask task = new YXbsMeastask();
@@ -89,13 +88,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.Stations = LXbsMeasstation;
 
 
-                        List<YXbsStationdatform> LYXbsStationdatform = new List<YXbsStationdatform>();
-                        YXbsStationdatform XbsStationdatform_ = new YXbsStationdatform();
+                        List<YXbsStation> LYXbsStationdatform = new List<YXbsStation>();
+                        YXbsStation XbsStationdatform_ = new YXbsStation();
                         XbsStationdatform_.Format("*");
                         XbsStationdatform_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
                         for (XbsStationdatform_.OpenRs(); !XbsStationdatform_.IsEOF(); XbsStationdatform_.MoveNext())
                         {
-                            var m_fr = new YXbsStationdatform();
+                            var m_fr = new YXbsStation();
                             m_fr.CopyDataFrom(XbsStationdatform_);
                             LYXbsStationdatform.Add(m_fr);
                             m_fr.Dispose();
@@ -119,18 +118,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         MeasDtParam_.Close();
                         MeasDtParam_.Dispose();
 
-                        YXbsMeastimeparaml TimeParamList_ = new YXbsMeastimeparaml();
-                        TimeParamList_.Format("*");
-                        TimeParamList_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (TimeParamList_.OpenRs(); !TimeParamList_.IsEOF(); TimeParamList_.MoveNext())
-                        {
-                            var m = new YXbsMeastimeparaml();
-                            m.CopyDataFrom(TimeParamList_);
-                            ICSM_T.MeasTimeParamList = m;
-                            m.Dispose();
-                        }
-                        TimeParamList_.Close();
-                        TimeParamList_.Dispose();
 
                         YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
                         MeasLocParam_.Format("*");
@@ -253,9 +240,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
                     ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
                     ICSM_T.MeasOther = new YXbsMeasother();
-                    ICSM_T.MeasTimeParamList = new YXbsMeastimeparaml();
                     ICSM_T.Stations = new List<YXbsMeasstation>();
-                    ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
+                    ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
 
                     //подключение к БД
@@ -299,18 +285,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         MeasDtParam_.Close();
                         MeasDtParam_.Dispose();
 
-                        YXbsMeastimeparaml TimeParamList_ = new YXbsMeastimeparaml();
-                        TimeParamList_.Format("*");
-                        TimeParamList_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (TimeParamList_.OpenRs(); !TimeParamList_.IsEOF(); TimeParamList_.MoveNext())
-                        {
-                            var m = new YXbsMeastimeparaml();
-                            m.CopyDataFrom(TimeParamList_);
-                            ICSM_T.MeasTimeParamList = m;
-                            m.Dispose();
-                        }
-                        TimeParamList_.Close();
-                        TimeParamList_.Dispose();
 
                         YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
                         MeasLocParam_.Format("*");
@@ -432,9 +406,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
                         ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
                         ICSM_T.MeasOther = new YXbsMeasother();
-                        ICSM_T.MeasTimeParamList = new YXbsMeastimeparaml();
                         ICSM_T.Stations = new List<YXbsMeasstation>();
-                        ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
+                        ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
 
                         //подключение к БД
@@ -520,9 +493,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
                     ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
                     ICSM_T.MeasOther = new YXbsMeasother();
-                    ICSM_T.MeasTimeParamList = new YXbsMeastimeparaml();
                     ICSM_T.Stations = new List<YXbsMeasstation>();
-                    ICSM_T.XbsStationdatform = new List<YXbsStationdatform>();
+                    ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
 
                     YXbsMeastask task = new YXbsMeastask();
@@ -552,13 +524,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.Stations = LXbsMeasstation;
 
 
-                        List<YXbsStationdatform> LYXbsStationdatform = new List<YXbsStationdatform>();
-                        YXbsStationdatform XbsStationdatform_ = new YXbsStationdatform();
+                        List<YXbsStation> LYXbsStationdatform = new List<YXbsStation>();
+                            YXbsStation XbsStationdatform_ = new YXbsStation();
                         XbsStationdatform_.Format("*");
                         XbsStationdatform_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
                         for (XbsStationdatform_.OpenRs(); !XbsStationdatform_.IsEOF(); XbsStationdatform_.MoveNext())
                         {
-                            var m_fr = new YXbsStationdatform();
+                            var m_fr = new YXbsStation();
                             m_fr.CopyDataFrom(XbsStationdatform_);
                             LYXbsStationdatform.Add(m_fr);
                             m_fr.Dispose();
@@ -581,19 +553,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         MeasDtParam_.Close();
                         MeasDtParam_.Dispose();
 
-                        YXbsMeastimeparaml TimeParamList_ = new YXbsMeastimeparaml();
-                        TimeParamList_.Format("*");
-                        TimeParamList_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (TimeParamList_.OpenRs(); !TimeParamList_.IsEOF(); TimeParamList_.MoveNext())
-                        {
-                            var m = new YXbsMeastimeparaml();
-                            m.CopyDataFrom(TimeParamList_);
-                            ICSM_T.MeasTimeParamList = m;
-                            m.Dispose();
-                        }
-                        TimeParamList_.Close();
-                        TimeParamList_.Dispose();
-
+                      
                         YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
                         MeasLocParam_.Format("*");
                         MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
@@ -949,7 +909,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     logger.Trace("Start procedure GetMaXIdsSdrResults...");
                     try
                     {
-                        YXbsMeasurementres res = new YXbsMeasurementres();
+                        YXbsResMeas res = new YXbsResMeas();
                         res.Format("*");
                         res.Filter = "(ID>0)";
                         res.Order = "[ID] DESC";
@@ -1133,6 +1093,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public int? SaveTaskToDB(MeasTask obj)
         {
+            Dictionary<List<string>, int?> dicXbsSectorFreq = new Dictionary<List<string>, int?>();
             int? ID = Constants.NullI;
             #region Save Task
             System.Threading.Thread thread = new System.Threading.Thread(() =>
@@ -1163,6 +1124,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     meastask.m_type = obj.Type;
                                     meastask.m_createdby = obj.CreatedBy;
                                     meastask.m_executionmode = obj.ExecutionMode.ToString();
+                                    if (obj.MeasTimeParamList != null)
+                                    {
+                                        meastask.m_days = obj.MeasTimeParamList.Days;
+                                        meastask.m_perstart = obj.MeasTimeParamList.PerStart;
+                                        meastask.m_perstop = obj.MeasTimeParamList.PerStop;
+                                        if (obj.MeasTimeParamList.TimeStart != null) meastask.m_timestart = obj.MeasTimeParamList.TimeStart.GetValueOrDefault();
+                                        if (obj.MeasTimeParamList.TimeStop != null) meastask.m_timestop = obj.MeasTimeParamList.TimeStop.GetValueOrDefault();
+                                        if (obj.MeasTimeParamList.PerInterval != null) meastask.m_perinterval = obj.MeasTimeParamList.PerInterval.GetValueOrDefault();
+                                    }
                                     if (obj.DateCreated != null) meastask.m_datecreated = obj.DateCreated.GetValueOrDefault();
                                     if (obj.OrderId != null) meastask.m_orderid = obj.OrderId.GetValueOrDefault();
                                     ID = meastask.Save(dbConnect, transaction);
@@ -1288,43 +1258,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                 }
 
-                                if (obj.MeasTimeParamList != null)
-                                {
-                                    List<Yyy> BlockInsert_YXbsMeastimeparaml = new List<Yyy>();
-                                    foreach (MeasTimeParamList time_par in new List<MeasTimeParamList> { obj.MeasTimeParamList })
-                                    {
-                                        if (time_par != null)
-                                        {
-                                            YXbsMeastimeparaml prm_lst = new YXbsMeastimeparaml();
-                                            prm_lst.Format("*");
-                                            if (!prm_lst.Fetch(string.Format("ID_XBS_MEASTASK={0}", ID)))
-                                            {
-                                                prm_lst.New();
-                                                prm_lst.m_days = time_par.Days;
-                                                prm_lst.m_id_xbs_meastask = ID;
-                                                prm_lst.m_perstart = time_par.PerStart;
-                                                prm_lst.m_perstop = time_par.PerStop;
-                                                if (time_par.TimeStart != null) prm_lst.m_timestart = time_par.TimeStart.GetValueOrDefault();
-                                                if (time_par.TimeStop != null) prm_lst.m_timestop = time_par.TimeStop.GetValueOrDefault();
-                                                if (time_par.PerInterval != null) prm_lst.m_perinterval = time_par.PerInterval.GetValueOrDefault();
-                                                for (int i = 0; i < prm_lst.getAllFields.Count; i++)
-                                                    prm_lst.getAllFields[i].Value = prm_lst.valc[i];
-                                                BlockInsert_YXbsMeastimeparaml.Add(prm_lst);
-                                            }
-                                            prm_lst.Close();
-                                            prm_lst.Dispose();
-                                        }
-                                    }
-                                    if (BlockInsert_YXbsMeastimeparaml.Count > 0)
-                                    {
-                                        YXbsMeastimeparaml YXbsMeastimeparaml11 = new YXbsMeastimeparaml();
-                                        YXbsMeastimeparaml11.Format("*");
-                                        YXbsMeastimeparaml11.New();
-                                        YXbsMeastimeparaml11.SaveBath(BlockInsert_YXbsMeastimeparaml, dbConnect, transaction);
-                                        YXbsMeastimeparaml11.Close();
-                                        YXbsMeastimeparaml11.Dispose();
-                                    }
-                                }
 
                                 if (obj.MeasSubTasks != null)
                                 {
@@ -1499,74 +1432,83 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     foreach (StationDataForMeasurements StationData_param in obj.StationsForMeasurements.ToArray())
                                     {
                                         int? ID_loc_params = -1;
-                                        YXbsStationdatform prm_loc = new YXbsStationdatform();
+                                        YXbsStation prm_loc = new YXbsStation();
                                         prm_loc.Format("*");
 
                                         prm_loc.New();
                                         if (StationData_param.GlobalSID != null) prm_loc.m_globalsid = StationData_param.GlobalSID;
                                         if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
                                         if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
-                                        prm_loc.m_idstation = StationData_param.IdStation;
+                                        if (StationData_param.IdStation != Constants.NullI) prm_loc.m_id_station = StationData_param.IdStation;
                                         prm_loc.m_id_xbs_meastask = ID;
-                                        ID_loc_params = prm_loc.Save(dbConnect, transaction);
-                                        prm_loc.Close();
-                                        prm_loc.Dispose();
-
-
-                                        if (StationData_param.Site != null)
-                                        {
-                                            YXbsSitestformeas site_formeas = new YXbsSitestformeas();
-                                            site_formeas.Format("*");
-                                            site_formeas.New();
-                                            if (StationData_param.Site.Lat != null) site_formeas.m_lat = StationData_param.Site.Lat.GetValueOrDefault();
-                                            if (StationData_param.Site.Lon != null) site_formeas.m_lon = StationData_param.Site.Lon.GetValueOrDefault();
-                                            if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
-                                            if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
-
-                                            site_formeas.m_id_stationdatform = ID_loc_params;
-                                            int? ID_site_formeas = site_formeas.Save(dbConnect, transaction);
-                                            
-                                            site_formeas.Close();
-                                            site_formeas.Dispose();
-                                        }
-
                                         if (StationData_param.LicenseParameter != null)
                                         {
-                                            YXbsPermassign perm_formeas = new YXbsPermassign();
-                                            perm_formeas.Format("*");
-                                            perm_formeas.New();
-                                            if (StationData_param.LicenseParameter.CloseDate != null) perm_formeas.m_closedate = StationData_param.LicenseParameter.CloseDate.GetValueOrDefault();
-                                            if (StationData_param.LicenseParameter.DozvilName != null) perm_formeas.m_dozvilname = StationData_param.LicenseParameter.DozvilName;
-                                            if (StationData_param.LicenseParameter.EndDate != null) perm_formeas.m_enddate = StationData_param.LicenseParameter.EndDate.GetValueOrDefault();
-                                            if (StationData_param.LicenseParameter.StartDate != null) perm_formeas.m_startdate = StationData_param.LicenseParameter.StartDate.GetValueOrDefault();
-                                            perm_formeas.m_id_stationdatform = ID_loc_params;
-                                            int? ID_perm_formeas = perm_formeas.Save(dbConnect, transaction);
-                                            perm_formeas.Close();
-                                            perm_formeas.Dispose();
+                                            if (StationData_param.LicenseParameter.CloseDate != null) prm_loc.m_closedate = StationData_param.LicenseParameter.CloseDate.GetValueOrDefault();
+                                            if (StationData_param.LicenseParameter.DozvilName != null) prm_loc.m_dozvilname = StationData_param.LicenseParameter.DozvilName;
+                                            if (StationData_param.LicenseParameter.EndDate != null) prm_loc.m_enddate = StationData_param.LicenseParameter.EndDate.GetValueOrDefault();
+                                            if (StationData_param.LicenseParameter.StartDate != null) prm_loc.m_startdate = StationData_param.LicenseParameter.StartDate.GetValueOrDefault();
                                         }
-
+                                        int? ID_Ownerdata = null;
+                                        int? ID_site_formeas = null;
                                         if (StationData_param.Owner != null)
                                         {
                                             YXbsOwnerdata owner_formeas = new YXbsOwnerdata();
                                             owner_formeas.Format("*");
-                                            owner_formeas.New();
-                                            if (StationData_param.Owner.Addres != null) owner_formeas.m_addres = StationData_param.Owner.Addres;
-                                            if (StationData_param.Owner.Code != null) owner_formeas.m_code = StationData_param.Owner.Code;
-                                            if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
-                                            if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
-                                            if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
-                                            owner_formeas.m_id_stationdatform = ID_loc_params;
-                                            int? ID_perm_formeas = owner_formeas.Save(dbConnect, transaction);
+                                            //if (!owner_formeas.Fetch(string.Format("(ADDRES='{0}') AND (CODE='{1}') AND (OKPO='{2}') AND (OWNERNAME='{3}' AND (ZIP='{4}'))", StationData_param.Owner.Addres, StationData_param.Owner.Code, StationData_param.Owner.OKPO, StationData_param.Owner.OwnerName, StationData_param.Owner.Zip)))
+                                            //{
+                                                owner_formeas.New();
+                                                if (StationData_param.Owner.Addres != null) owner_formeas.m_addres = StationData_param.Owner.Addres;
+                                                if (StationData_param.Owner.Code != null) owner_formeas.m_code = StationData_param.Owner.Code;
+                                                if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
+                                                if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
+                                                if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
+                                                ID_Ownerdata = owner_formeas.Save(dbConnect, transaction);
+                                            //}
                                             owner_formeas.Close();
                                             owner_formeas.Dispose();
                                         }
+                                        if (StationData_param.Site != null)
+                                        {
+                                            YXbsStationSite site_formeas = new YXbsStationSite();
+                                            site_formeas.Format("*");
+                                            //if (!site_formeas.Fetch(string.Format("(REGION='{0}') AND (ADDRES='{1}') AND (LAT={2}) AND (LON={3})", StationData_param.Site.Region, StationData_param.Site.Adress, ID, StationData_param.Site.Lat.GetValueOrDefault().ToString().Replace(",", "."), StationData_param.Site.Lon.GetValueOrDefault().ToString().Replace(",", "."))))
+                                            //{
+                                                site_formeas.New();
+                                                if (StationData_param.Site.Lat != null) site_formeas.m_lat = StationData_param.Site.Lat.GetValueOrDefault();
+                                                if (StationData_param.Site.Lon != null) site_formeas.m_lon = StationData_param.Site.Lon.GetValueOrDefault();
+                                                if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
+                                                if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
 
+                                                ID_site_formeas = site_formeas.Save(dbConnect, transaction);
+
+                                                site_formeas.Close();
+                                                site_formeas.Dispose();
+                                            //}
+                                        }
+                                        prm_loc.m_id_xbs_stationsite = ID_site_formeas;
+                                        prm_loc.m_id_xbs_ownerdata = ID_Ownerdata;
+
+                                        ID_loc_params = prm_loc.Save(dbConnect, transaction);
+                                        prm_loc.Close();
+                                        prm_loc.Dispose();
+
+                                        if (ID_loc_params > 0)
+                                        {
+                                            YXbsLinkMeasStation yXbsLinkMeasStation = new YXbsLinkMeasStation();
+                                            yXbsLinkMeasStation.Format("*");
+                                            yXbsLinkMeasStation.New();
+                                            yXbsLinkMeasStation.m_id_xbs_station = ID_loc_params;
+                                            yXbsLinkMeasStation.m_id_xbs_meastask = ID;
+                                            yXbsLinkMeasStation.Save(dbConnect, transaction);
+                                            yXbsLinkMeasStation.Close();
+                                            yXbsLinkMeasStation.Dispose();
+                                        }
 
                                         if (StationData_param.Sectors != null)
                                         {
                                             foreach (SectorStationForMeas sec in StationData_param.Sectors.ToArray())
                                             {
-                                                YXbsSectstformeas sect_formeas = new YXbsSectstformeas();
+                                                YXbsSector sect_formeas = new YXbsSector();
                                                 sect_formeas.Format("*");
                                                 sect_formeas.New();
                                                 if (sec.AGL != null) sect_formeas.m_agl = sec.AGL.GetValueOrDefault();
@@ -1574,7 +1516,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 if (sec.BW != null) sect_formeas.m_bw = sec.BW.GetValueOrDefault();
                                                 if (sec.ClassEmission != null) sect_formeas.m_classemission = sec.ClassEmission;
                                                 if (sec.EIRP != null) sect_formeas.m_eirp = sec.EIRP.GetValueOrDefault();
-                                                sect_formeas.m_id_stationdatform = ID_loc_params;
+                                                sect_formeas.m_idsector = sec.IdSector;
+                                                sect_formeas.m_id_xbs_station = ID_loc_params;
                                                 int? ID_secformeas = sect_formeas.Save(dbConnect, transaction);
                                                 sect_formeas.Close();
                                                 sect_formeas.Dispose();
@@ -1584,23 +1527,47 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     List<Yyy> BlockInsert = new List<Yyy>();
                                                     foreach (FrequencyForSectorFormICSM F in sec.Frequencies)
                                                     {
-                                                        YXbsFreqforsectics freq_formeas = new YXbsFreqforsectics();
+                                                        int? ID_sectorfreq = null;
+                                                        List<string> valueKey = new List<string> { F.ChannalNumber.GetValueOrDefault().ToString(), F.IdPlan.GetValueOrDefault().ToString(), F.Frequency.ToString() };
+                                                        YXbsSectorFreq freq_formeas = new YXbsSectorFreq();
                                                         freq_formeas.Format("*");
-                                                        freq_formeas.New();
+                                                        
+                                                            //if (!freq_formeas.Fetch(string.Format("(CHANNALNUMBER={0}) AND (IDPLAN={1}) AND (FREQUENCY={2})", F.ChannalNumber.GetValueOrDefault(), F.IdPlan.GetValueOrDefault(), ((double?)F.Frequency).ToString().Replace(",", "."))))
+                                                            {
+                                                                freq_formeas.New();
+                                                                if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
+                                                                if (F.Frequency != null) freq_formeas.m_frequency = (double?)F.Frequency;
+                                                                if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
+                                                                ID_sectorfreq = freq_formeas.Save(dbConnect, transaction);
+                                                            }
+                                                            //else
+                                                            //{
+                                                                //ID_sectorfreq = freq_formeas.m_id;
+                                                            //}
 
-                                                        if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
-                                                        if (F.Frequency != null) freq_formeas.m_frequency = (double?)F.Frequency;
-                                                        if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
-                                                        freq_formeas.m_id_sectstformeas = ID_secformeas;
-                                                        for (int i = 0; i < freq_formeas.getAllFields.Count; i++)
-                                                            freq_formeas.getAllFields[i].Value = freq_formeas.valc[i];
-                                                        BlockInsert.Add(freq_formeas);
+                                                        
                                                         freq_formeas.Close();
                                                         freq_formeas.Dispose();
+
+                                                        if ((ID_sectorfreq != null) && (ID_secformeas != null))
+                                                        {
+                                                            YXbsLinkSectorFreq yXbsLinkSectorFreq = new YXbsLinkSectorFreq();
+                                                            yXbsLinkSectorFreq.Format("*");
+                                                            yXbsLinkSectorFreq.New();
+                                                            yXbsLinkSectorFreq.m_id_xbs_sectorfreq = ID_sectorfreq;
+                                                            yXbsLinkSectorFreq.m_id_xbs_sector = ID_secformeas;
+
+                                                            for (int i = 0; i < yXbsLinkSectorFreq.getAllFields.Count; i++)
+                                                                yXbsLinkSectorFreq.getAllFields[i].Value = yXbsLinkSectorFreq.valc[i];
+                                                            BlockInsert.Add(yXbsLinkSectorFreq);
+                                                            yXbsLinkSectorFreq.Close();
+                                                            yXbsLinkSectorFreq.Dispose();
+                                                        }
+                                                      
                                                     }
                                                     if (BlockInsert.Count > 0)
                                                     {
-                                                        YXbsFreqforsectics freq_formeas11 = new YXbsFreqforsectics();
+                                                        YXbsLinkSectorFreq freq_formeas11 = new YXbsLinkSectorFreq();
                                                         freq_formeas11.Format("*");
                                                         freq_formeas11.New();
                                                         freq_formeas11.SaveBath(BlockInsert, dbConnect, transaction);
@@ -1614,21 +1581,42 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     List<Yyy> BlockInsert = new List<Yyy>();
                                                     foreach (MaskElements F in sec.MaskBW)
                                                     {
-                                                        YXbsMaskelements mask_formeas = new YXbsMaskelements();
-                                                        mask_formeas.Format("*");
-                                                        mask_formeas.New();
-                                                        if (F.BW != null) mask_formeas.m_bw = F.BW.GetValueOrDefault();
-                                                        if (F.level != null) mask_formeas.m_level = F.level.GetValueOrDefault();
-                                                        mask_formeas.m_id_sectstformeas = ID_secformeas;
-                                                        for (int i = 0; i < mask_formeas.getAllFields.Count; i++)
-                                                            mask_formeas.getAllFields[i].Value = mask_formeas.valc[i];
-                                                        BlockInsert.Add(mask_formeas);
-                                                        mask_formeas.Close();
-                                                        mask_formeas.Dispose();
+                                                        int? SectorMaskElemId = null;
+                                                        YXbsSectorMaskElem yXbsMaskelements = new YXbsSectorMaskElem();
+                                                        yXbsMaskelements.Format("*");
+                                                        //if (!yXbsMaskelements.Fetch(string.Format("(BW={0}) AND (LEVEL={1})", F.BW.GetValueOrDefault().ToString().Replace(",", "."), F.level.GetValueOrDefault().ToString().Replace(",", "."))))
+                                                        {
+                                                            yXbsMaskelements.New();
+                                                            if (F.BW != null) yXbsMaskelements.m_bw = F.BW.GetValueOrDefault();
+                                                            if (F.level != null) yXbsMaskelements.m_level = F.level.GetValueOrDefault();
+                                                            SectorMaskElemId = yXbsMaskelements.Save(dbConnect, transaction);
+                                                        }
+                                                        //else
+                                                        //{
+                                                            //SectorMaskElemId = yXbsMaskelements.m_id;
+                                                        //}
+
+                                                        yXbsMaskelements.Close();
+                                                        yXbsMaskelements.Dispose();
+
+                                                        if ((SectorMaskElemId != null) && (ID_secformeas != null))
+                                                        {
+                                                            YXbsLinkSectorMask yXbsLinkSectorMask = new YXbsLinkSectorMask();
+                                                            yXbsLinkSectorMask.Format("*");
+                                                            yXbsLinkSectorMask.New();
+                                                            yXbsLinkSectorMask.m_id_sectormaskelem = SectorMaskElemId;
+                                                            yXbsLinkSectorMask.m_id_xbs_sector = ID_secformeas;
+
+                                                            for (int i = 0; i < yXbsLinkSectorMask.getAllFields.Count; i++)
+                                                                yXbsLinkSectorMask.getAllFields[i].Value = yXbsLinkSectorMask.valc[i];
+                                                            BlockInsert.Add(yXbsLinkSectorMask);
+                                                            yXbsLinkSectorMask.Close();
+                                                            yXbsLinkSectorMask.Dispose();
+                                                        }
                                                     }
                                                     if (BlockInsert.Count > 0)
                                                     {
-                                                        YXbsMaskelements freq_formeas11 = new YXbsMaskelements();
+                                                        YXbsLinkSectorMask freq_formeas11 = new YXbsLinkSectorMask();
                                                         freq_formeas11.Format("*");
                                                         freq_formeas11.New();
                                                         freq_formeas11.SaveBath(BlockInsert, dbConnect, transaction);
