@@ -70,7 +70,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             {
                                 bool isOnline = false;
                                 bool isSuccess = false;
-                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", isOnline, out isSuccess);
+                                int? ID = null;
+                                tasks.Process_Multy_Meas(mt_edit, SensorIds, "Stop", isOnline, out isSuccess, out ID);
                                 res.State = CommonOperationState.Success;
                             }
                         }

@@ -10,19 +10,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
     /// </summary>
     public class ClassSDRResults: IDisposable
     {
-        public YXbsMeasurementres meas_res { get; set; }
+        public YXbsResMeas meas_res { get; set; }
         //public YXbsStationmeas stat_meas { get; set; }
-        public List<YXbsLocationsensorm> loc_sensorM { get; set; }
-        public List<YXbsFrequencymeas> freq_meas { get; set; }
-        public List<YXbsLevelmeasres> level_meas_res { get; set; }
-        public List<YXbsLevelmeasonlres> level_meas_onl_res { get; set; }
-        public List<YXbsSpectoccupmeas> spect_occup_meas { get; set; }
+        public List<YXbsResLocSensorMeas> loc_sensorM { get; set; }
+        public List<YXbsResLevels> resLevels { get; set; }
+        public List<YXbsResLevmeasonline> level_meas_onl_res { get; set; }
 
         public List<YXbsResmeasstation> XbsResmeasstation { get; set; }
-        public List<YXbsResGeneral> XbsResGeneral { get; set; }
-        public List<YXbsResLevelMeas> XbsResLevelMeas { get; set; }
-        public List<YXbsResmaskBw> XbsResmaskBw { get; set; }
-        public List<YXbsLevelSpecrum> XbsLevelSpecrum { get; set; }
+        public List<YXbsResStGeneral> XbsResGeneral { get; set; }
+        public List<YXbsResStLevelCar> XbsResLevelMeas { get; set; }
+        public List<YXbsResStMaskElm> XbsResmaskBw { get; set; }
+        public List<YXbsResStLevelsSpect> XbsLevelSpecrum { get; set; }
 
         /// <summary>
         /// Деструктор.
@@ -40,18 +38,18 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public ClassSDRResults()
         {
-            meas_res = new YXbsMeasurementres();
+            meas_res = new YXbsResMeas();
             //stat_meas = new YXbsStationmeas();
-            loc_sensorM = new List<YXbsLocationsensorm>();
-            freq_meas = new List<YXbsFrequencymeas>();
-            level_meas_res = new List<YXbsLevelmeasres>();
-            spect_occup_meas = new List<YXbsSpectoccupmeas>();
-            level_meas_onl_res = new List<YXbsLevelmeasonlres>();
+            loc_sensorM = new List<YXbsResLocSensorMeas>();
+            resLevels = new List<YXbsResLevels>();
+            level_meas_onl_res = new List<YXbsResLevmeasonline>();
             XbsResmeasstation = new List<YXbsResmeasstation>();
-            XbsResGeneral = new List<YXbsResGeneral>();
-            XbsResLevelMeas = new List<YXbsResLevelMeas>();
-            XbsResmaskBw = new List<YXbsResmaskBw>();
-            XbsLevelSpecrum = new List<YXbsLevelSpecrum>();
+            XbsResGeneral = new List<YXbsResStGeneral>();
+            XbsResLevelMeas = new List<YXbsResStLevelCar>();
+            XbsResmaskBw = new List<YXbsResStMaskElm>();
+            XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
     }
+
+       
     }
 }

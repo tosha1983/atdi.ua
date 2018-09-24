@@ -12,8 +12,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public List<YXbsMeasdtparam> MeasDtParam { get; set; }
         public List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>> MeasFreqLst_param { get; set; }
         public YXbsMeasother MeasOther { get; set; }
-        public YXbsMeastimeparaml MeasTimeParamList { get; set; }
-        public List<YXbsStationdatform> XbsStationdatform { get; set; }
+        public List<YXbsStation> XbsStationdatform { get; set; }
 
      
         public ClassTasks()
@@ -25,8 +24,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             MeasDtParam = new List<YXbsMeasdtparam>();
             Stations = new List<YXbsMeasstation>();
             MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
-            MeasTimeParamList = new YXbsMeastimeparaml();
-            XbsStationdatform = new List<YXbsStationdatform>();
+            XbsStationdatform = new List<YXbsStation>();
         }
     }
 

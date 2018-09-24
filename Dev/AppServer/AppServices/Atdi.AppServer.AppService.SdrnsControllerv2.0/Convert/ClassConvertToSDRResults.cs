@@ -26,7 +26,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         s_out.AntVal = obj.meas_res.m_antval;
                         s_out.DataRank = obj.meas_res.m_datarank;
                         s_out.Id.MeasTaskId = new MeasTaskIdentifier();
-                        s_out.Id.MeasTaskId.Value = obj.meas_res.m_meastaskid.Value;
+                        int MeasTaskId = -1; int.TryParse(obj.meas_res.m_meastaskid, out MeasTaskId);
+                        s_out.Id.MeasTaskId.Value = MeasTaskId;
                         s_out.Id.MeasSdrResultsId = obj.meas_res.m_id.Value;
                         s_out.N = obj.meas_res.m_n;
                         s_out.StationMeasurements = new StationMeasurements();
@@ -41,46 +42,44 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             s_out.TypeMeasurements = out_res_type;
                         /// Freq
                         List<FrequencyMeasurement> L_FM = new List<FrequencyMeasurement>();
-                        if (obj.freq_meas != null)
+                        if (obj.ResLevels != null)
                         {
-                            foreach (YXbsFrequencymeas fmeas in obj.freq_meas.ToArray())
+                            foreach (YXbsResLevels fmeas in obj.ResLevels.ToArray())
                             {
                                 FrequencyMeasurement t_FM = new FrequencyMeasurement();
-                                t_FM.Id = fmeas.m_num.Value;
-                                t_FM.Freq = fmeas.m_freq.Value;
+                                t_FM.Id = fmeas.m_id.Value;//.m_nummeas.Value;
+                                t_FM.Freq = fmeas.m_freqmeas.Value;
                                 L_FM.Add(t_FM);
                             }
                         }
                         s_out.FrequenciesMeasurements = L_FM.ToArray();
                         /// Location
                         List<LocationSensorMeasurement> L_SM = new List<LocationSensorMeasurement>();
-                        if (obj.freq_meas != null)
+                        foreach (YXbsResLocSensorMeas fmeas in obj.loc_sensorM.ToArray())
                         {
-                            foreach (YXbsLocationsensorm fmeas in obj.loc_sensorM.ToArray())
-                            {
-                                LocationSensorMeasurement t_SM = new LocationSensorMeasurement();
-                                t_SM.ASL = fmeas.m_asl;
-                                t_SM.Lon = fmeas.m_lon;
-                                t_SM.Lat = fmeas.m_lat;
-                                L_SM.Add(t_SM);
-                            }
+                            LocationSensorMeasurement t_SM = new LocationSensorMeasurement();
+                            t_SM.ASL = fmeas.m_asl;
+                            t_SM.Lon = fmeas.m_lon;
+                            t_SM.Lat = fmeas.m_lat;
+                            L_SM.Add(t_SM);
                         }
+
                         s_out.LocationSensorMeasurement = L_SM.ToArray();
                         List<MeasurementResult> L_MSR = new List<MeasurementResult>();
-                        if (obj.level_meas_res != null)
+                        if (obj.ResLevels != null)
                         {
-                            if (obj.level_meas_res.Count > 0)
+                            if (obj.ResLevels.Count > 0)
                             {
-                                foreach (YXbsLevelmeasres flevmeas in obj.level_meas_res.ToArray())
+                                foreach (YXbsResLevels flevmeas in obj.ResLevels.ToArray())
                                 {
                                     if (obj.meas_res.m_typemeasurements == MeasurementType.Level.ToString())
                                     {
                                         LevelMeasurementResult rsd = new LevelMeasurementResult();
                                         rsd.Id = new MeasurementResultIdentifier();
                                         rsd.Id.Value = flevmeas.m_id.Value;
-                                        rsd.Value = flevmeas.m_value;
-                                        rsd.PMin = flevmeas.m_pmin;
-                                        rsd.PMax = flevmeas.m_pmax;
+                                        rsd.Value = flevmeas.m_valuelvl;
+                                        rsd.PMin = flevmeas.m_pminlvl;
+                                        rsd.PMax = flevmeas.m_pmaxlvl;
                                         L_MSR.Add(rsd);
                                     }
                                 }
@@ -90,7 +89,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         {
                             if (obj.level_meas_onl_res.Count > 0)
                             {
-                                foreach (YXbsLevelmeasonlres flevmeas in obj.level_meas_onl_res.ToArray())
+                                foreach (YXbsResLevmeasonline flevmeas in obj.level_meas_onl_res.ToArray())
                                 {
                                     LevelMeasurementOnlineResult rsd = new LevelMeasurementOnlineResult();
                                     rsd.Id = new MeasurementResultIdentifier();
@@ -100,18 +99,18 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                 }
                             }
                         }
-                        if (obj.spect_occup_meas != null)
+                        if (obj.ResLevels != null)
                         {
-                            if (obj.spect_occup_meas.Count > 0)
+                            if (obj.ResLevels.Count > 0)
                             {
-                                foreach (YXbsSpectoccupmeas flevmeas in obj.spect_occup_meas.ToArray())
+                                foreach (YXbsResLevels flevmeas in obj.ResLevels.ToArray())
                                 {
                                     if (obj.meas_res.m_typemeasurements == MeasurementType.SpectrumOccupation.ToString())
                                     {
                                         SpectrumOccupationMeasurementResult rsd = new SpectrumOccupationMeasurementResult();
                                         rsd.Id = new MeasurementResultIdentifier();
                                         rsd.Id.Value = flevmeas.m_id.Value;
-                                        rsd.Value = flevmeas.m_occupancy;
+                                        rsd.Value = flevmeas.m_occupancyspect;
                                         L_MSR.Add(rsd);
                                     }
                                 }

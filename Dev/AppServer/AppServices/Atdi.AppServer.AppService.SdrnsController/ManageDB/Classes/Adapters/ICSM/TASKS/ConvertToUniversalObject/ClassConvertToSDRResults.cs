@@ -44,7 +44,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         s_out.AntVal = obj.meas_res.m_antval;
                         s_out.DataRank = obj.meas_res.m_datarank;
                         s_out.Id.MeasTaskId = new MeasTaskIdentifier();
-                        s_out.Id.MeasTaskId.Value = obj.meas_res.m_meastaskid.Value;
+                        int MeasTaskId = -1; int.TryParse(obj.meas_res.m_meastaskid, out MeasTaskId);
+                        s_out.Id.MeasTaskId.Value = MeasTaskId;
                         s_out.Id.MeasSdrResultsId = obj.meas_res.m_id.Value;
                         s_out.N = obj.meas_res.m_n;
                         s_out.StationMeasurements = new StationMeasurements();
@@ -59,22 +60,21 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             s_out.TypeMeasurements = out_res_type;
                         /// Freq
                         List<FrequencyMeasurement> L_FM = new List<FrequencyMeasurement>();
-                        if (obj.freq_meas != null)
+                        if (obj.resLevels != null)
                         {
-                            foreach (YXbsFrequencymeas fmeas in obj.freq_meas.ToArray())
+                            foreach (YXbsResLevels fmeas in obj.resLevels.ToArray())
                             {
                                 FrequencyMeasurement t_FM = new FrequencyMeasurement();
-                                t_FM.Id = fmeas.m_num.Value;
-                                t_FM.Freq = fmeas.m_freq.Value;
+                                t_FM.Id = fmeas.m_id.Value;
+                                //t_FM.Id = fmeas.m_nummeas.Value;
+                                t_FM.Freq = fmeas.m_freqmeas.Value;
                                 L_FM.Add(t_FM);
                             }
                         }
                         s_out.FrequenciesMeasurements = L_FM.ToArray();
                         /// Location
                         List<LocationSensorMeasurement> L_SM = new List<LocationSensorMeasurement>();
-                        if (obj.freq_meas != null)
-                        {
-                            foreach (YXbsLocationsensorm fmeas in obj.loc_sensorM.ToArray())
+                            foreach (YXbsResLocSensorMeas fmeas in obj.loc_sensorM.ToArray())
                             {
                                 LocationSensorMeasurement t_SM = new LocationSensorMeasurement();
                                 t_SM.ASL = fmeas.m_asl;
@@ -82,23 +82,23 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 t_SM.Lat = fmeas.m_lat;
                                 L_SM.Add(t_SM);
                             }
-                        }
+                       
                         s_out.LocationSensorMeasurement = L_SM.ToArray();
                         List<MeasurementResult> L_MSR = new List<MeasurementResult>();
-                        if (obj.level_meas_res != null)
+                        if (obj.resLevels != null)
                         {
-                            if (obj.level_meas_res.Count > 0)
+                            if (obj.resLevels.Count > 0)
                             {
-                                foreach (YXbsLevelmeasres flevmeas in obj.level_meas_res.ToArray())
+                                foreach (YXbsResLevels flevmeas in obj.resLevels.ToArray())
                                 {
                                     if (obj.meas_res.m_typemeasurements == MeasurementType.Level.ToString())
                                     {
                                         LevelMeasurementResult rsd = new LevelMeasurementResult();
                                         rsd.Id = new MeasurementResultIdentifier();
                                         rsd.Id.Value = flevmeas.m_id.Value;
-                                        rsd.Value = flevmeas.m_value;
-                                        rsd.PMin = flevmeas.m_pmin;
-                                        rsd.PMax = flevmeas.m_pmax;
+                                        rsd.Value = flevmeas.m_valuelvl;
+                                        rsd.PMin = flevmeas.m_pminlvl;
+                                        rsd.PMax = flevmeas.m_pmaxlvl;
                                         L_MSR.Add(rsd);
                                     }
                                 }
@@ -108,7 +108,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             if (obj.level_meas_onl_res.Count > 0)
                             {
-                                foreach (YXbsLevelmeasonlres flevmeas in obj.level_meas_onl_res.ToArray())
+                                foreach (YXbsResLevmeasonline flevmeas in obj.level_meas_onl_res.ToArray())
                                 {
                                     LevelMeasurementOnlineResult rsd = new LevelMeasurementOnlineResult();
                                     rsd.Id = new MeasurementResultIdentifier();
@@ -118,18 +118,18 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 }
                             }
                         }
-                        if (obj.spect_occup_meas != null)
+                        if (obj.resLevels != null)
                         {
-                            if (obj.spect_occup_meas.Count > 0)
+                            if (obj.resLevels.Count > 0)
                             {
-                                foreach (YXbsSpectoccupmeas flevmeas in obj.spect_occup_meas.ToArray())
+                                foreach (YXbsResLevels flevmeas in obj.resLevels.ToArray())
                                 {
                                     if (obj.meas_res.m_typemeasurements == MeasurementType.SpectrumOccupation.ToString())
                                     {
                                         SpectrumOccupationMeasurementResult rsd = new SpectrumOccupationMeasurementResult();
                                         rsd.Id = new MeasurementResultIdentifier();
                                         rsd.Id.Value = flevmeas.m_id.Value;
-                                        rsd.Value = flevmeas.m_occupancy;
+                                        rsd.Value = flevmeas.m_occupancyspect;
                                         L_MSR.Add(rsd);
                                     }
                                 }
@@ -153,12 +153,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     s_out.ResultsMeasStation[ii].Status = flevmeas.m_status;
                                     if (obj.XbsResLevelMeas != null)
                                     {
-                                        List<YXbsResLevelMeas> resF = obj.XbsResLevelMeas.FindAll(t => t.m_resultsmeasstationid == flevmeas.m_id);
+                                        List<YXbsResStLevelCar> resF = obj.XbsResLevelMeas.FindAll(t => t.m_xbs_resmeasstationid == flevmeas.m_id);
                                         if (resF.Count > 0)
                                         {
                                             s_out.ResultsMeasStation[ii].LevelMeasurements = new LevelMeasurementsCar[resF.Count];
                                             int u = 0;
-                                            foreach (YXbsResLevelMeas x in resF)
+                                            foreach (YXbsResStLevelCar x in resF)
                                             {
                                                 s_out.ResultsMeasStation[ii].LevelMeasurements[u] = new LevelMeasurementsCar();
                                                 if (x.m_altitude!=null) s_out.ResultsMeasStation[ii].LevelMeasurements[u].Altitude = x.m_altitude;
@@ -181,10 +181,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     if (obj.XbsResGeneral != null)
                                     {
                                         s_out.ResultsMeasStation[ii].GeneralResult = new MeasurementsParameterGeneral();
-                                        List<YXbsResGeneral> resF = obj.XbsResGeneral.FindAll(t => t.m_resultsmeasstationid == flevmeas.m_id);
+                                        List<YXbsResStGeneral> resF = obj.XbsResGeneral.FindAll(t => t.m_resmeasstationid == flevmeas.m_id);
                                         if (resF!=null)
                                         {
-                                            foreach (YXbsResGeneral x in resF)
+                                            foreach (YXbsResStGeneral x in resF)
                                             {
                                                 if (x.m_centralfrequency!=null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequency = x.m_centralfrequency;
                                                 if (x.m_centralfrequencymeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequencyMeas = x.m_centralfrequencymeas;
@@ -200,12 +200,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                                 if (obj.XbsResmaskBw != null)
                                                 {
-                                                    List<YXbsResmaskBw> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbsgeneralid == x.m_id);
+                                                    List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
                                                     if (resYXbsResmaskBw.Count > 0)
                                                     {
                                                         s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
                                                         int u = 0;
-                                                        foreach (YXbsResmaskBw xv in resYXbsResmaskBw)
+                                                        foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
                                                         {
                                                             s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u] = new MaskElements();
                                                             if (xv.m_bw!=null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].BW = xv.m_bw;
@@ -217,12 +217,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                                 if (obj.XbsLevelSpecrum != null)
                                                 {
-                                                    List<YXbsLevelSpecrum> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbsgeneralid == x.m_id);
+                                                    List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
                                                     if (resYXbsLevelSpecrum.Count > 0)
                                                     {
                                                         s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
                                                         int u = 0;
-                                                        foreach (YXbsLevelSpecrum xv in resYXbsLevelSpecrum)
+                                                        foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
                                                         {
                                                             s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = new float();
                                                             if (xv.m_levelspecrum!=null) s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;

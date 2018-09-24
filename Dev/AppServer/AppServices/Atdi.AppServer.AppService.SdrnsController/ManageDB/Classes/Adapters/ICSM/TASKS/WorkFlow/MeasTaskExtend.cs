@@ -47,6 +47,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     for (var day = task.MeasTimeParamList.PerStart; day.Date <= task.MeasTimeParamList.PerStop; day = day.AddDays(1))
                     {
                         MeasSubTask MST = new MeasSubTask();
+                        if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int?)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
                         MST.Id = new MeasTaskIdentifier();
                         MST.Id.Value = i; i++;
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);
@@ -196,7 +197,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                         {
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            int? IdentValueTaskSDR = ClassesDBGetTasks.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
+                            int? IdentValueTaskSDR = ClassesDBGetTasks.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value.ToString(), SubTaskStation.StationId.Value);
                             MTSDR.TaskId = IdentValueTaskSDR.GetValueOrDefault().ToString();
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();

@@ -21,9 +21,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         private List<ClassTasks> L_IN { get; set; }
 
 
-        public static void GetMeasTaskSDRNum(int NumValue, out int TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId)
+        public static void GetMeasTaskSDRNum(int NumValue, out string TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId)
         {
-           int _TaskId = 0;
+           string _TaskId = "";
            int _SubTaskId = 0;
            int _SubTaskStationId = 0;
            int _SensorId = 0;
@@ -35,7 +35,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     meastask.Format("*");
                     if (meastask.Fetch(string.Format("NUM={0}", NumValue)))
                     {
-                        _TaskId = meastask.m_meastaskid.Value;
+                        _TaskId = meastask.m_meastaskid;
                         _SubTaskId = meastask.m_meassubtaskid.Value;
                         _SubTaskStationId = meastask.m_meassubtaskstationid.Value;
                         _SensorId = meastask.m_sensorid.Value;
@@ -58,9 +58,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             SensorId = _SensorId;
         }
 
-        public static void GetMeasTaskSDRIdentifier(int TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId)
+        public static void GetMeasTaskSDRIdentifier(string TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId)
         {
-            int _TaskId = 0;
+            string _TaskId = "";
             int _SubTaskId = 0;
             int _SubTaskStationId = 0;
             int _SensorId = 0;
@@ -70,9 +70,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 {
                     YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
                     meastask.Format("*");
-                    if (meastask.Fetch(string.Format("MEASTASKID={0}", TaskId)))
+                    if (meastask.Fetch(string.Format("MEASTASKID='{0}'", TaskId)))
                     {
-                        _TaskId = meastask.m_meastaskid.Value;
+                        _TaskId = meastask.m_meastaskid;
                         _SubTaskId = meastask.m_meassubtaskid.Value;
                         _SubTaskStationId = meastask.m_meassubtaskstationid.Value;
                         _SensorId = meastask.m_sensorid.Value;
@@ -102,7 +102,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
+        public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, string TaskId, int SensorId)
         {
             int? NUM_Val = null;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
