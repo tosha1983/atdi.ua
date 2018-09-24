@@ -281,8 +281,8 @@ namespace Atdi.Api.Sdrn.Device.BusController
                     UseEncryption = descriptor.SdrnMessageConvertorUseEncryption,
                     UseСompression = descriptor.SdrnMessageConvertorUseСompression
                 };
-                var typeResolver = MessageObjectTypeResolver.CreateForApi20();
-                var messageConvertor = new MessageConverter(convertorSettings, typeResolver);
+                //var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+                var messageConvertor = new MessageConverter(convertorSettings);
 
                 var gate = new BusGate(gateTag, descriptor, messageConvertor, logger);
 

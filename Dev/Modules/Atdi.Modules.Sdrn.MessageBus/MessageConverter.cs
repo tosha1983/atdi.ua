@@ -18,6 +18,11 @@ namespace Atdi.Modules.Sdrn.MessageBus
             this._typeResolver = typeResolver;
         }
 
+        public MessageConverter(MessageConvertSettings settings)
+        {
+            this._settings = settings;
+            this._typeResolver = MessageObjectTypeResolver.CreateForApi20(); ;
+        }
         public Message Pack<TObject>(string messageType, TObject source)
         {
             var messageObject = new MessageObject
