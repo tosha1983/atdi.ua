@@ -14,16 +14,19 @@ namespace Atdi.Api.Sdrn.Device.BusController
         private readonly EnvironmentDescriptor _environmentDescriptor;
         private readonly MessageConverter _messageConverter;
 
-        internal BusGate(EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
+        internal BusGate(string tag, EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
         {
+            this.Tag = tag;
             this._logger = logger;
             this._environmentDescriptor = environmentDescriptor;
             this._messageConverter = messageConverter;
         }
 
+        public string Tag { get; }
+
         public IBusGateConfig Config => this._environmentDescriptor.GateConfig;
 
-        public IMessageDispatcher CreateDispatcher(string name, IBusEventObserver eventObserver = null)
+        public IMessageDispatcher CreateDispatcher(string dispatcherTag, IBusEventObserver eventObserver = null)
         {
             try
             {
@@ -33,7 +36,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                     logger = new BusLogger(eventObserver);
                 }
 
-                var dispatcher = new MessageDispatcher(name, this._environmentDescriptor, this._messageConverter, logger);
+                var dispatcher = new MessageDispatcher(dispatcherTag, this._environmentDescriptor, this._messageConverter, logger);
                 logger.Info(0, "CreateDispatcher", "The object of the dispatcher was created saccessfully", this);
 
                 return dispatcher;
@@ -44,7 +47,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
             }
         }
 
-        public IMessagePublisher CreatePublisher(IBusEventObserver eventObserver = null)
+        public IMessagePublisher CreatePublisher(string publisherTag, IBusEventObserver eventObserver = null)
         {
             try
             {
@@ -54,7 +57,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                     logger = new BusLogger(eventObserver);
                 }
 
-                var publisher = new MessagePublisher(this._environmentDescriptor, this._messageConverter, logger);
+                var publisher = new MessagePublisher(publisherTag, this._environmentDescriptor, this._messageConverter, logger);
                 logger.Info(0, "CreatePublisher", "The object of the publisher was created saccessfully", this);
 
                 return publisher;

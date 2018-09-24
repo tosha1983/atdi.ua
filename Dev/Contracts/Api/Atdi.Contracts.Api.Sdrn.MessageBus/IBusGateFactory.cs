@@ -10,6 +10,6 @@ namespace Atdi.Contracts.Api.Sdrn.MessageBus
     {
         IBusGateConfig CreateConfig();
 
-        IBusGate CreateGate(IBusGateConfig gateConfig, IBusEventObserver eventObserver = null);
+        IBusGate CreateGate(string gateTag, IBusGateConfig gateConfig, IBusEventObserver eventObserver = null);
     }
 }

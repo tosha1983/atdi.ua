@@ -12,7 +12,6 @@ namespace Atdi.Api.Sdrn.Device.BusController
 {
     internal class MessageDispatcher : IMessageDispatcher
     {
-        private readonly string _name;
         private readonly BusLogger _logger;
         private readonly EnvironmentDescriptor _environmentDescriptor;
         private readonly MessageConverter _messageConverter;
@@ -21,17 +20,19 @@ namespace Atdi.Api.Sdrn.Device.BusController
         private MessageDispatcherState _state;
         private QueueConsumer _consumer;
 
-        internal MessageDispatcher(string name, EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
+        internal MessageDispatcher(string tag, EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
         {
-            this._name = name;
+            this.Tag = tag;
             this._logger = logger;
             this._environmentDescriptor = environmentDescriptor;
             this._messageConverter = messageConverter;
-            this._rabbitBus = new RabbitMQBus("Dispatcher", environmentDescriptor, logger);
+            this._rabbitBus = new RabbitMQBus($"Dispatcher.[{this.Tag}]", environmentDescriptor, logger);
             this._state = MessageDispatcherState.Deactivated;
             this._handlers = new Dictionary<string, List<MessageHandlerDescriptor>>();
-            this._consumer = this._rabbitBus.CreateConsumer(this._environmentDescriptor.BuildDeviceQueueName(), name, this);
+            this._consumer = this._rabbitBus.CreateConsumer(this._environmentDescriptor.BuildDeviceQueueName(), this.Tag, this);
         }
+
+        public string Tag { get; }
 
         public MessageDispatcherState State => this._state;
 

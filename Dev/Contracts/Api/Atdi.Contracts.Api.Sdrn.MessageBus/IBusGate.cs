@@ -8,10 +8,12 @@ namespace Atdi.Contracts.Api.Sdrn.MessageBus
 {
     public interface IBusGate : IDisposable
     {
+        string Tag { get; }
+
         IBusGateConfig Config { get; }
 
-        IMessageDispatcher CreateDispatcher(string name, IBusEventObserver eventObserver = null);
+        IMessageDispatcher CreateDispatcher(string dispatcherTag, IBusEventObserver eventObserver = null);
 
-        IMessagePublisher CreatePublisher(IBusEventObserver eventObserver = null);
+        IMessagePublisher CreatePublisher(string publisherTag, IBusEventObserver eventObserver = null);
     }
 }

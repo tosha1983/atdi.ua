@@ -10,6 +10,8 @@ namespace Atdi.Contracts.Api.Sdrn.MessageBus
     {
         MessageDispatcherState State { get; }
 
+        string Tag { get; }
+
         void Activate();
 
         void Deactivate();

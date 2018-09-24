@@ -103,7 +103,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             // если нужно отследить события работы гейта, следует подготовить объект реализующий интерфейс
             IBusEventObserver busObserver = new MyEventObserver(); // инстанцирование своего объекта
-            var busGate = busGateFactory.CreateGate(config, busObserver);
+            var busGate = busGateFactory.CreateGate("someTag", config, busObserver);
 
             // При создании гейта происходит вся полня инициализация Rabbit MQ с учетом указанной конфигурации.
             // экземпляр busGate можно использовать в разных потоках, и даже порой нужно
@@ -177,7 +177,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             // т.е. клиенту не нужно явно контроллировать соединения с Rabbit MQ только получаемые от него сообщения и выводить кудато в лог для пользователей
 
             // пример отправки сообщения сервре: результаты измерения
-            var publisher = busGate.CreatePublisher(busObserver);
+            var publisher = busGate.CreatePublisher("someTag", busObserver);
 
             // некий код подготовки результатов
             var measResult = new DM.MeasResults
@@ -231,11 +231,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             dispatcher.Activate();
 
 
-            var publisher = gate.CreatePublisher();
+            var publisher = gate.CreatePublisher("main");
 
             var sensor = new DM.Sensor
             {
-                Name = "SENSOR-DBD12-A00-1280",
+                Name = "SENSOR-DBD12-A00-1280", 
                 Equipment = new DM.SensorEquipment
                 {
                     TechId = "SomeSensor 2.3 SN:00009093"
@@ -258,7 +258,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         static IBusGate CreateGate(IBusGateFactory gateFactory)
         {
             var gateConfig = CreateConfig(gateFactory);
-            var gate = gateFactory.CreateGate(gateConfig);
+            var gate = gateFactory.CreateGate("MainGate", gateConfig);
             return gate;
         }
 

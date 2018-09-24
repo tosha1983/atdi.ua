@@ -268,7 +268,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
             }
         }
 
-        public IBusGate CreateGate(IBusGateConfig gateConfig, IBusEventObserver eventObserver = null)
+        public IBusGate CreateGate(string gateTag, IBusGateConfig gateConfig, IBusEventObserver eventObserver = null)
         {
             try
             {
@@ -284,7 +284,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 var typeResolver = MessageObjectTypeResolver.CreateForApi20();
                 var messageConvertor = new MessageConverter(convertorSettings, typeResolver);
 
-                var gate = new BusGate(descriptor, messageConvertor, logger);
+                var gate = new BusGate(gateTag, descriptor, messageConvertor, logger);
 
                 logger.Info(0, "CreateGate", "The object of the gate was created saccessfully", this);
 

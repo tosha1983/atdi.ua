@@ -16,8 +16,11 @@ namespace Atdi.Api.Sdrn.Device.BusController
         private readonly MessageConverter _messageConverter;
         private readonly RabbitMQBus _rabbitBus;
 
-        internal MessagePublisher(EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
+        public string Tag { get; }
+
+        internal MessagePublisher(string tag, EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
         {
+            this.Tag = tag;
             this._logger = logger;
             this._environmentDescriptor = environmentDescriptor;
             this._messageConverter = messageConverter;  

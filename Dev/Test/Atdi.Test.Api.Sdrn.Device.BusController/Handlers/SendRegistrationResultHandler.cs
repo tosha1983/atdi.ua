@@ -26,7 +26,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
             message.ReasonFailure = "Some reason of send command";
 
 
-            using (var publisher = _gate.CreatePublisher())
+            using (var publisher = _gate.CreatePublisher("SendRegistrationResultHandler"))
             {
                 var sensor = new DM.Sensor
                 {
