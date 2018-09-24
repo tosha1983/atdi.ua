@@ -162,7 +162,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                 YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                                 XbsYXbsLevelmeasonlres_.Format("*");
-                                XbsYXbsLevelmeasonlres_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                                XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                                 for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                                 {
                                     var m_fr_ = new YXbsResLevmeasonline();
@@ -177,7 +177,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                 YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                                 XbsYXbsLocationsensorm_.Format("*");
-                                XbsYXbsLocationsensorm_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                                XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                                 for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                                 {
                                     var m_fr_ = new YXbsResLocSensorMeas();
@@ -341,7 +341,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                         YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                         XbsYXbsLevelmeasonlres_.Format("*");
-                        XbsYXbsLevelmeasonlres_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                        XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                         for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                         {
                             var m_fr_ = new YXbsResLevmeasonline();
@@ -355,7 +355,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                         YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                         XbsYXbsLocationsensorm_.Format("*");
-                        XbsYXbsLocationsensorm_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                        XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                         for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                         {
                             var m_fr_ = new YXbsResLocSensorMeas();
@@ -521,7 +521,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                             YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                             XbsYXbsLevelmeasonlres_.Format("*");
-                            XbsYXbsLevelmeasonlres_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                            XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                             for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevmeasonline();
@@ -536,7 +536,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                             YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                             XbsYXbsLocationsensorm_.Format("*");
-                            XbsYXbsLocationsensorm_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                            XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                             for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLocSensorMeas();
@@ -698,7 +698,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                           
                             YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                             XbsYXbsLevelmeasonlres_.Format("*");
-                            XbsYXbsLevelmeasonlres_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                            XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                             for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevmeasonline();
@@ -713,7 +713,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                             YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                             XbsYXbsLocationsensorm_.Format("*");
-                            XbsYXbsLocationsensorm_.Filter = string.Format("(ID_XBS_RESSTATIONMEAS={0})", res_val.m_id);
+                            XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
                             for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLocSensorMeas();
@@ -858,7 +858,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             dtr.Format("*");
                                             if (dt_param != null)
                                             {
-                                                if (dtr.Fetch(string.Format("ID_XBS_RESSTATIONMEAS={0}", measRes.m_id)))
+                                                if (dtr.Fetch(string.Format("XBSRESMEASID={0}", measRes.m_id)))
                                                 {
                                                     dtr.Delete(dbConnect, transaction);
                                                 }
@@ -931,7 +931,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             dtr.Format("*");
                                             if (dt_param != null)
                                             {
-                                                dtr.Filter = string.Format("ID_XBS_RESSTATIONMEAS={0}", measRes.m_id);
+                                                dtr.Filter = string.Format("XBSRESMEASID={0}", measRes.m_id);
                                                 for (dtr.OpenRs(); !dtr.IsEOF(); dtr.MoveNext())
                                                 {
                                                     dtr.Delete(dbConnect, transaction);
