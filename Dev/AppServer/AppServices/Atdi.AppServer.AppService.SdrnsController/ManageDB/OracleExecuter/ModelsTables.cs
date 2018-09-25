@@ -109,8 +109,9 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKRESSENSOR";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkResSensor)));
         }
-        public int? m_id_xbs_sensor { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_idxbsresmeassta { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_id_xbs_sensor { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_idxbsresmeassta { get { return getInt(2); } set { setInt(2, value); } }
     }
 
     public class YXbsLinkSectorMask : Yyy
@@ -120,9 +121,9 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKSECTORMASK";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkSectorMask)));
         }
-
-        public int? m_id_sectormaskelem { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_id_xbs_sector { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_id_sectormaskelem { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id_xbs_sector { get { return getInt(2); } set { setInt(2, value); } }
     }
 
     public class YXbsLinkSectorFreq : Yyy
@@ -132,8 +133,9 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKSECTORFREQ";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkSectorFreq)));
         }
-        public int? m_id_xbs_sectorfreq { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_id_xbs_sector { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_id_xbs_sectorfreq { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id_xbs_sector { get { return getInt(2); } set { setInt(2, value); } }
     }
 
     public class YXbsLinkMeasStation : Yyy
@@ -143,8 +145,9 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKMEASSTATION";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkMeasStation)));
         }
-        public int? m_id_xbs_meastask { get { return getInt(0); } set { setInt(0, value); } }
-        public int? m_id_xbs_station { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+        public int? m_id_xbs_meastask { get { return getInt(1); } set { setInt(1, value); } }
+        public int? m_id_xbs_station { get { return getInt(2); } set { setInt(2, value); } }
     }
 
 
@@ -164,7 +167,7 @@ namespace Atdi.Oracle.DataAccess
         public int? m_xbsresmeasid { get { return getInt(6); } set { setInt(6, value); } }
         public string m_standard { get { return getString(7); } set { setString(7, 50, value); } }
         public int? m_idxbsstation { get { return getInt(8); } set { setInt(8, value); } }
-        
+
     }
 
     public class YXbsResStGeneral : Yyy
@@ -216,11 +219,11 @@ namespace Atdi.Oracle.DataAccess
         public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
         public int? m_xbs_resstgeneralid { get { return getInt(1); } set { setInt(1, value); } }
         public double? m_levelspecrum { get { return getDouble(2); } set { setDouble(2, value); } }
-        
+
 
     }
 
-    
+
 
     public class YXbsResStLevelCar : Yyy
     {
@@ -303,7 +306,7 @@ namespace Atdi.Oracle.DataAccess
         public string m_idsysargus { get { return getString(12); } set { setString(12, 50, value); } }
         public string m_typesensor { get { return getString(13); } set { setString(13, 50, value); } }
         public double? m_stepmeastime { get { return getDouble(14); } set { setDouble(14, value); } }
-        public double?  m_rxloss { get { return getDouble(15); } set { setDouble(15, value); } }
+        public double? m_rxloss { get { return getDouble(15); } set { setDouble(15, value); } }
         public double? m_ophhfr { get { return getDouble(16); } set { setDouble(16, value); } }
         public double? m_ophhto { get { return getDouble(17); } set { setDouble(17, value); } }
         public string m_opdays { get { return getString(18); } set { setString(18, 50, value); } }
@@ -561,7 +564,7 @@ namespace Atdi.Oracle.DataAccess
         public int? m_id_xbs_meastask { get { return getInt(6); } set { setInt(6, value); } }
     }
 
-   
+
 
     public class YXbsMeaslocparam : Yyy
     {
@@ -683,7 +686,7 @@ namespace Atdi.Oracle.DataAccess
         public int? m_idsector { get { return getInt(7); } set { setInt(7, value); } }
     }
 
-   
+
 
     public class YXbsSectorMaskElem : Yyy
     {
@@ -733,7 +736,7 @@ namespace Atdi.Oracle.DataAccess
         public string m_typemeasurements { get { return getString(10); } set { setString(10, 50, value); } }
         public string m_meassdrresultsid { get { return getString(11); } set { setString(11, 450, value); } }
         public int? m_synchronized { get { return getInt(12); } set { setInt(12, value); } }
-        
+
     }
 
     public class YXbsStationmeas : Yyy
