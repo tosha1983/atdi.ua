@@ -109,7 +109,6 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKRESSENSOR";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkResSensor)));
         }
-        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
         public int? m_id_xbs_sensor { get { return getInt(1); } set { setInt(1, value); } }
         public int? m_idxbsresmeassta { get { return getInt(2); } set { setInt(2, value); } }
     }
@@ -121,7 +120,7 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKSECTORMASK";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkSectorMask)));
         }
-        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
+
         public int? m_id_sectormaskelem { get { return getInt(1); } set { setInt(1, value); } }
         public int? m_id_xbs_sector { get { return getInt(2); } set { setInt(2, value); } }
     }
@@ -133,7 +132,6 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKSECTORFREQ";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkSectorFreq)));
         }
-        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
         public int? m_id_xbs_sectorfreq { get { return getInt(1); } set { setInt(1, value); } }
         public int? m_id_xbs_sector { get { return getInt(2); } set { setInt(2, value); } }
     }
@@ -145,7 +143,6 @@ namespace Atdi.Oracle.DataAccess
             TableName = "XBS_LINKMEASSTATION";
             getAllFields.AddRange(Utils.GetAllProps(typeof(YXbsLinkMeasStation)));
         }
-        public int? m_id { get { return getInt(0); } set { setInt(0, value); } }
         public int? m_id_xbs_meastask { get { return getInt(1); } set { setInt(1, value); } }
         public int? m_id_xbs_station { get { return getInt(2); } set { setInt(2, value); } }
     }
