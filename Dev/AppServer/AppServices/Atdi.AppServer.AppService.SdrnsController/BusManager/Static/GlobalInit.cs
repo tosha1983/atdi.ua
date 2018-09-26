@@ -81,6 +81,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
         public static string StartNameQueueServer { get; }
         public static string StartNameQueueDevice { get; }
         public static string ConcumerDescribe { get; }
+        public static bool UseEncryption { get; }
+        public static bool UseСompression { get; }
 
         #endregion
 
@@ -129,6 +131,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
             GlobalInit.ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
             GlobalInit.RabbitPassword = ConfigurationManager.AppSettings["RabbitMQ.Password"];
+            GlobalInit.UseEncryption = ConfigurationManager.AppSettings["RabbitMQ.UseEncryption"].ToString().ToLower()=="false" ? false : true;
+            GlobalInit.UseСompression = ConfigurationManager.AppSettings["RabbitMQ.UseСompression"].ToString().ToLower() == "false" ? false : true;
+
+
             MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();

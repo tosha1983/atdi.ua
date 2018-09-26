@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EasyNetQ;
 using Atdi.SDNRS.AppServer;
 using RabbitMQ.Client;
+using Atdi.Modules.Sdrn.MessageBus;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -147,6 +148,88 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         }
 
+        public static long DateTimeToUnixTimestamp(DateTime dateTime)
+        {
+            return Convert.ToInt64((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds);
+        }
+
+        public bool SendDataToDeviceCrypto<Tobj>(string messageType, Tobj messageObject, string sensorName, string techId, string apiVer, string correlationToken = null)
+        {
+            bool isSendSuccess = false;
+            try
+            {
+                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                {
+                    using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var channel = connection.CreateModel())
+                    {
+                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
+                        var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
+
+                        channel.ExchangeDeclare(
+                                exchange: exchange,
+                                type: "direct",
+                                durable: true
+                            );
+
+                        channel.QueueDeclare(
+                            queue: queueName,
+                            durable: true,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+
+                        MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
+                        messageConvertSettings.UseEncryption = GlobalInit.UseEncryption;
+                        messageConvertSettings.UseСompression = GlobalInit.UseСompression;
+                        var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+                        var messageConvertor = new MessageConverter(messageConvertSettings, typeResolver);
+                        var message = messageConvertor.Pack<Tobj>(messageType, messageObject);
+                        message.CorrelationId = correlationToken;
+                        message.Headers = new Dictionary<string, object>
+                        {
+                            ["SdrnServer"] = GlobalInit.NameServer,
+                            ["SensorName"] = sensorName,
+                            ["SensorTechId"] = techId,
+                            ["Created"] = DateTime.Now.ToString("o")
+                        };
+
+
+                        var props = channel.CreateBasicProperties();
+                        props.Persistent = true;
+                        props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
+                        props.MessageId = message.Id;
+                        props.Type = message.Type;
+                        if (!string.IsNullOrEmpty(message.ContentType))
+                        {
+                            props.ContentType = message.ContentType;
+                        }
+                        if (!string.IsNullOrEmpty(message.ContentEncoding))
+                        {
+                            props.ContentEncoding = message.ContentEncoding;
+                        }
+                        if (!string.IsNullOrEmpty(message.CorrelationId))
+                        {
+                            props.CorrelationId = message.CorrelationId;
+                        }
+                        props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
+                        props.Headers = message.Headers;
+
+                        channel.BasicPublish(exchange, routingKey, props, message.Body);
+                        isSendSuccess = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                isSendSuccess = false;
+            }
+            return isSendSuccess;
+
+        }
 
         public bool SendDataToServer(string sensorName, string techId, byte[] data, string apiVer, string typeMessage)
         {
