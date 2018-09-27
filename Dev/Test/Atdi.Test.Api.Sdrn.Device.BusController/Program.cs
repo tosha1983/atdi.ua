@@ -71,23 +71,22 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             // Из фабрики запрашиваем новый объект для описания конфигурации
             var config = busGateFactory.CreateConfig();
 
-            // все параметрі уже указіваются в расшифрованном виде
             config["License.FileName"] = "LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280.lic";
             config["License.OwnerId"] = "OID-BD12-A00-N00";
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
-            config["RabbitMQ.Host"] = "192.168.33.110";
-            config["RabbitMQ.User"] = "andrey";
-            config["RabbitMQ.Password"] = "P@ssw0rd";
+            config["RabbitMQ.Host"] = "10.1.2.129";
+            config["RabbitMQ.User"] = "SDR_Client";
+            config["RabbitMQ.Password"] = "32Xr567";
 
             config["SDRN.ApiVersion"] = "2.0";
 
-            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-8591";
+            config["SDRN.Server.Instance"] = "ServerSDRN01";
             config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
 
             // будет взят из лицензии - изменить будет нельзя
             //config["SDRN.Device.SensorName"] = "my SENSOR-DBD12-A00-1280";
-            config["SDRN.Device.SensorTechId"] = "SomeSensor 2.3 SN:00009093";
+            config["SDRN.Device.SensorTechId"] = "SomeSensor";
 
             config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
             config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
@@ -167,7 +166,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
 
             // пример подключения обработчка ввиде отдельного класса, 
-            messageDispatcher.RegistryHandler(new MyTaskHandler());
+            
+             messageDispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(busGate));
 
 
             // отправка сообщение осуществляется через публикатор
@@ -224,10 +224,10 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             var gate = CreateGate(gateFactory);
 
             var dispatcher = gate.CreateDispatcher("main");
-            dispatcher.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            dispatcher.RegistryHandler(new Handlers.SendCommandHandler(gate));
+            //dispatcher.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+            //dispatcher.RegistryHandler(new Handlers.SendCommandHandler(gate));
             dispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
-            dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
+            //dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
             dispatcher.Activate();
 
 
@@ -270,19 +270,25 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.OwnerId"] = "OID-BD12-A00-N00";
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
-            config["RabbitMQ.Host"] = "192.168.33.110";
-            config["RabbitMQ.User"] = "andrey";
-            config["RabbitMQ.Password"] = "P@ssw0rd";
+            config["RabbitMQ.Host"] = "10.1.2.129";
+            config["RabbitMQ.User"] = "SDR_Client";
+            config["RabbitMQ.Password"] = "32Xr567";
 
             config["SDRN.ApiVersion"] = "2.0";
 
-            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-8591";
+            config["SDRN.Server.Instance"] = "ServerSDRN01";
             config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
 
-            config["SDRN.Device.SensorTechId"] = "SomeSensor 2.3 SN:00009093";
+            // будет взят из лицензии - изменить будет нельзя
+            //config["SDRN.Device.SensorName"] = "my SENSOR-DBD12-A00-1280";
+            config["SDRN.Device.SensorTechId"] = "SomeSensor";
+
             config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
             config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
             config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
+
+
+            // Шифрование и компресия сообщений
             config["SDRN.MessageConvertor.UseEncryption"] = "true";
             config["SDRN.MessageConvertor.UseСompression"] = "true";
 

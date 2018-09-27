@@ -8,97 +8,10 @@ using Atdi.SDNRS.AppServer;
 using RabbitMQ.Client;
 using Atdi.Modules.Sdrn.MessageBus;
 
+
 namespace Atdi.SDNRS.AppServer.BusManager
 {
-    /// <summary>
-    /// Шаблон для отправки сообщений в очереди сообщений
-    /// </summary>
-    /// <typeparam name="T">Класс основного объекта</typeparam>
-    /// <typeparam name="S">Класс стоп-листа для основного объекта</typeparam>
-    public class BusManager<T, S>
-        where T : class
-        where S : class
-    {
-
-
-           
-
-        // метод для отправки основного объекта в шину
-        public bool SendDataObject(T obj, string name_queue, string Expriration)
-        {
-            bool is_Success = false;
-            try {
-                    IMessage<T> z = new Message<T>(obj);
-                    z.Properties.ExpirationPresent = true;
-                    z.Properties.Expiration = Expriration;
-                    z.Properties.DeliveryModePresent = true;
-                    z.Properties.DeliveryMode = 2;
-                    if (ClassStaticBus.bus.IsConnected)
-                    {
-                        if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }
-                        ClassStaticBus.bus.Advanced.PublishAsync(EasyNetQ.Topology.Exchange.GetDefault(), name_queue, true, z)
-                            .ContinueWith(task =>
-                        {
-                            if (task.IsCompleted)
-                            {
-                                is_Success = true;
-                            }
-                            if (task.IsFaulted)
-                            {
-                                is_Success = false;
-                            }
-                        }).Wait();
-                    }
-                    else
-                    {
-                        ClassStaticBus.bus.Dispose();
-                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                    }
-            }
-            catch (Exception ex) { is_Success = false;
-                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message);
-            }
-            return is_Success;
-        }
-        // метод для отправки стоп-листа в шину
-        public bool SendDataObjectStop(S obj, string name_queue, string Expriration)
-        {
-            bool is_Success = false;
-            try
-            {
-                    IMessage<S> z = new Message<S>(obj);
-                    z.Properties.ExpirationPresent = true;
-                    z.Properties.Expiration = Expriration;
-                    z.Properties.DeliveryModePresent = true;
-                    z.Properties.DeliveryMode = 2;
-                    if (ClassStaticBus.bus.IsConnected)
-                    {
-                        if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }
-                        ClassStaticBus.bus.Advanced.PublishAsync(EasyNetQ.Topology.Exchange.GetDefault(), name_queue, true, z)
-                                .ContinueWith(task =>
-                                {
-                                    if (task.IsCompleted)
-                                    {
-                                        is_Success = true;
-                                    }
-                                    if (task.IsFaulted)
-                                    {
-                                        is_Success = false;
-                                    }
-                                }).Wait();
-                    }
-                    else
-                    {
-                        ClassStaticBus.bus.Dispose();
-                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                    }
-            }
-            catch (Exception ex) { is_Success = false;
-                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObjectStop]:" + ex.Message);
-            }
-            return is_Success;
-        }
-    }
+   
 
     /// <summary>
     /// Шаблон для отправки сообщений в очереди сообщений
@@ -146,6 +59,31 @@ namespace Atdi.SDNRS.AppServer.BusManager
             }
             return isSuccessRegister;
 
+        }
+
+        
+
+        public T UnPackObject(RabbitMQ.Client.Events.BasicDeliverEventArgs message)
+        {
+            var messageResponse = new Message
+            {
+                Id = message.BasicProperties.MessageId,
+                Type = message.BasicProperties.Type,
+                ContentType = message.BasicProperties.ContentType,
+                ContentEncoding = message.BasicProperties.ContentEncoding,
+                CorrelationId = message.BasicProperties.CorrelationId,
+                Headers = message.BasicProperties.Headers,
+                Body = message.Body
+            };
+            MessageObject res = new MessageObject();
+            MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
+            messageConvertSettings.UseEncryption = true;
+            messageConvertSettings.UseСompression = true;
+            var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+            var messageConvertor = new MessageConverter(messageConvertSettings, typeResolver);
+            res = messageConvertor.Deserialize(messageResponse);
+            var dataRes = res.Object as T;
+            return dataRes;
         }
 
         public static long DateTimeToUnixTimestamp(DateTime dateTime)
@@ -275,6 +213,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                              basicProperties: props,
                                              body: data);
                         isSendSuccess = true;
+
                     }
                 }
             }
@@ -297,6 +236,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
             { return 0; }
         }
 
+        
         public object GetDataObject(string name_queue)
         {
             try {
@@ -309,7 +249,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
             catch (Exception)
             { return null; }
         }
-                            
+       
+      
 
         // метод для отправки основного объекта в шину
         public bool SendDataObject(T obj, string name_queue, string Expriration)

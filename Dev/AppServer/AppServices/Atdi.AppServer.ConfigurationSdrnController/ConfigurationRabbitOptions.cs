@@ -49,6 +49,9 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
                 ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
                 apiVersion = ConfigurationManager.AppSettings["ApiVersion"];
+
+
+
                 string[] val = ConcumerDescribe.Split(new char[] { '}' });
                 foreach (string v in val)
                 {

@@ -222,15 +222,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             }
                                         }
                                         M.MeasSubTasks = msbd_old;
-                                        //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
-                                        //if (fnd != null)
-                                        //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
-                                        //else GlobalInit.LIST_MEAS_TASK.Add(M);
-                                        //if (ActionType == "Del")
-                                        //{
-                                            //isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
-                                            //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
-                                        //}
+
                                     }
 
                                     if (Checked_L.Count > 0)
@@ -244,7 +236,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 isSendSuccess = true;
                                                 isSuccessTemp = true;
                                             }
-                                            busManager.SendDataToDeviceCrypto<List<MeasSdrTask>>("StopMeasTask", Checked_L, fnd_s.Name, fnd_s.Equipment.TechId, apiVer, Guid.NewGuid().ToString());
                                         }
                                         else
                                         {
@@ -255,11 +246,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             else
                                             {
                                                 isSendSuccess = false;
-                                                //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
-                                                //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
-                                                //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
                                             }
-                                            busManager.SendDataToDeviceCrypto<List<MeasSdrTask>>("SendMeasTask", Checked_L, fnd_s.Name, fnd_s.Equipment.TechId, apiVer, Guid.NewGuid().ToString());
                                         }
                                         Checked_L.Clear();
                                     }
@@ -272,40 +259,27 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
                                         if (ActionType == "Stop")
                                         {
-                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_stop = new DataModels.Sdrns.Device.DeviceCommand();
-                                            //command_stop.CommandId = Guid.NewGuid().ToString();
-                                            //command_stop.Command = "StopMeasTask";
-                                            //command_stop.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
-                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_stop)), apiVer, "SendCommand"))
                                             foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
                                             {
-                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "StopMeasTask"))
+                                                if (busManager.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.MeasTask>("StopMeasTask", task, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
                                                 {
                                                     isSendSuccess = true;
                                                     isSuccessTemp = true;
                                                 }
-                                                busManager.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.MeasTask>("StopMeasTask", task, fnd_s.Name, fnd_s.Equipment.TechId, apiVer, Guid.NewGuid().ToString());
                                             }
                                         }
                                         else
                                         {
-                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_send = new DataModels.Sdrns.Device.DeviceCommand();
-                                            //command_send.CommandId = Guid.NewGuid().ToString();
-                                            //command_send.Command = "SendMeasTask";
-                                            //command_send.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
-                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_send)), apiVer, "SendCommand"))
                                             foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
                                             {
-                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "SendMeasTask"))
+                                                if (busManager.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.MeasTask>("SendMeasTask", task, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
                                                 {
-
                                                     isSendSuccess = true;
                                                 }
                                                 else
                                                 {
                                                     isSendSuccess = false;
                                                 }
-                                                busManager.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.MeasTask>("SendMeasTask", task, fnd_s.Name, fnd_s.Equipment.TechId, apiVer, Guid.NewGuid().ToString());
                                             }
                                         }
                                         Checked_L_Device.Clear();

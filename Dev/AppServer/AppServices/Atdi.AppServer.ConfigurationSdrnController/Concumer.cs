@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Atdi.DataModels.Sdrns.Device;
 using Castle.Windsor;
 using RabbitMQ.Client;
-
+using Atdi.Modules.Sdrn.MessageBus;
 
 
 namespace Atdi.AppServer.ConfigurationSdrnController
@@ -21,7 +21,17 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 return;
             }
 
-            
+            var messageResponse = new Message
+            {
+                Id = message.BasicProperties.MessageId,
+                Type = message.BasicProperties.Type,
+                ContentType = message.BasicProperties.ContentType,
+                ContentEncoding = message.BasicProperties.ContentEncoding,
+                CorrelationId = message.BasicProperties.CorrelationId,
+                Headers = message.BasicProperties.Headers,
+                Body = message.Body
+            };
+
             var sdrnServer = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SdrnServer"]);
             var sensorName = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorName"]);
             var techId = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["SensorTechId"]);
@@ -44,7 +54,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             ConfigurationRabbitOptions.listRabbitOptions.Add(channel_new, new RabbitOptions(StartNameQueueDevice, routingKey, queueName_new, sensorName, techId));
                             ConfigurationRabbitOptions.QueueDeclareDevice(StartNameQueueDevice, sensorName, techId, channel_new, ExchangePointFromServer + ".[" + ConfigurationRabbitOptions.apiVersion + "]");
                         }
-                        var dataRegisterSensor = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Sensor)) as Sensor;
+                        MessageObject objectRes = UnPackObject(messageResponse);
+                        var dataRegisterSensor = objectRes.Object as Atdi.DataModels.Sdrns.Device.Sensor;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
                         var queueName = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
                         channel.QueueDeclare(
@@ -66,27 +77,27 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 {
                                     deviceResult.Status = "Success";
                                     deviceResult.Message = string.Format("Confirm success registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                                    PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
                                 }
                                 else
                                 {
                                     deviceResult.Status = "Fault";
                                     deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                                    PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
                                 }
                             }
                             catch (Exception ex)
                             {
                                 deviceResult.Status = "Fault";
                                 deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}: {2}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId, ex.Message);
-                                PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                                PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
                             }
                         }
                         else
                         {
                             deviceResult.Status = "Fault";
                             deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1} (Duplicate) ", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResult)), message.BasicProperties.CorrelationId);
+                            PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
                         }
                         result = true;
                         break;
@@ -100,7 +111,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             ConfigurationRabbitOptions.listRabbitOptions.Add(channel_new, new RabbitOptions(StartNameQueueDevice, routingKey, queueName_new, sensorName, techId));
                             ConfigurationRabbitOptions.QueueDeclareDevice(StartNameQueueDevice, sensorName, techId, channel_new, ExchangePointFromServer + ".[" + ConfigurationRabbitOptions.apiVersion + "]");
                         }
-                        var dataUpdateSensor = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Sensor)) as Sensor;
+
+                        MessageObject dataUpdate = UnPackObject(messageResponse);
+                        var dataUpdateSensor = dataUpdate.Object as Atdi.DataModels.Sdrns.Device.Sensor;
+                        
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handlerUpdate = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
                         var queueNameUpdate = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
                         channel.QueueDeclare(
@@ -120,27 +134,30 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 {
                                     deviceResultUpdate.Status = "Success";
                                     deviceResultUpdate.Message = string.Format("Confirm success updated sensor Name = {0}, TechId = {1}", dataUpdateSensor.Name, dataUpdateSensor.Equipment.TechId);
-                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendSensorUpdatingResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResultUpdate)), message.BasicProperties.CorrelationId);
+                                    PublishMessage<SensorUpdatingResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendSensorUpdatingResult", channel, deviceResultUpdate, message.BasicProperties.CorrelationId);
                                 }
                                 else
                                 {
                                     deviceResultUpdate.Status = "Fault";
                                     deviceResultUpdate.Message = string.Format("Error updated sensor Name = {0}, TechId = {1}", dataUpdateSensor.Name, dataUpdateSensor.Equipment.TechId);
-                                    PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendSensorUpdatingResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResultUpdate)), message.BasicProperties.CorrelationId);
+                                    PublishMessage<SensorUpdatingResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendSensorUpdatingResult", channel, deviceResultUpdate, message.BasicProperties.CorrelationId);
                                 }
                             }
                             catch (Exception ex)
                             {
                                 deviceResultUpdate.Status = "Fault";
                                 deviceResultUpdate.Message = string.Format("Error updated sensor Name = {0}, TechId = {1}: {2}", dataUpdateSensor.Name, dataUpdateSensor.Equipment.TechId, ex.Message);
-                                PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendSensorUpdatingResult", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(deviceResultUpdate)), message.BasicProperties.CorrelationId);
+                                PublishMessage<SensorUpdatingResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendSensorUpdatingResult", channel, deviceResultUpdate, message.BasicProperties.CorrelationId);
                             }
 
                         result = true;
                         break;
                     case "SendMeasResults":
+
+                        MessageObject dataU = UnPackObject(messageResponse);
+                        var data = dataU.Object as Atdi.DataModels.Sdrns.Device.MeasResults;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult DbGetRes = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult>();
-                        var data = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.MeasResults)) as Atdi.DataModels.Sdrns.Device.MeasResults;
+                        //var data = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.MeasResults)) as Atdi.DataModels.Sdrns.Device.MeasResults;
                         int? ID = -1;
                         string Status_Original = data.Status;
                         Atdi.AppServer.Contracts.Sdrns.MeasurementResults msReslts = Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassConvertToSDRResults.GenerateMeasResults2_0(data);
@@ -173,7 +190,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendMeasResults.EquipmentTechId = techId;
                             commandResSendMeasResults.SdrnServer = sdrnServer;
                             commandResSendMeasResults.CustTxt1 = "Successfully saved Results to DB";
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendMeasResults)), message.BasicProperties.CorrelationId);
+                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                         }
                         else
                         {
@@ -184,12 +201,14 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendMeasResults.EquipmentTechId = techId;
                             commandResSendMeasResults.SdrnServer = sdrnServer;
                             commandResSendMeasResults.CustTxt1 = "Error saved Results to DB";
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendMeasResults)), message.BasicProperties.CorrelationId);
+                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                         }
                         result = true;
                         break;
                     case "SendEntityPart":
-                        var datapartEntityPart = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.EntityPart)) as Atdi.DataModels.Sdrns.Device.EntityPart;
+                        MessageObject datapartEntityP = UnPackObject(messageResponse);
+                        var datapartEntityPart = datapartEntityP.Object as Atdi.DataModels.Sdrns.Device.EntityPart;
+                        //var datapartEntityPart = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.EntityPart)) as Atdi.DataModels.Sdrns.Device.EntityPart;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntityPart = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
                         int? ID1 = DbGetResEntityPart.SaveEntityPart(datapartEntityPart);
                         if (ID1 > 0)
@@ -201,7 +220,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandRes.EquipmentTechId = techId;
                             commandRes.SdrnServer = sdrnServer;
                             commandRes.CustTxt1 = "Successfully saved SendEntityPart to DB";
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandRes)), message.BasicProperties.CorrelationId);
+                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandRes, message.BasicProperties.CorrelationId);
                         }
                         else
                         {
@@ -212,13 +231,16 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandRes.EquipmentTechId = techId;
                             commandRes.SdrnServer = sdrnServer;
                             commandRes.CustTxt1 = "Fail saved SendEntityPart to DB";
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandRes)), message.BasicProperties.CorrelationId);
+                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandRes, message.BasicProperties.CorrelationId);
                         }
 
                         result = true;
                         break;
                     case "SendEntity":
-                        var datapartEntity = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.Entity)) as Atdi.DataModels.Sdrns.Device.Entity;
+
+                        MessageObject datapartEntit = UnPackObject(messageResponse);
+                        var datapartEntity = datapartEntit.Object as Atdi.DataModels.Sdrns.Device.Entity;
+                        //var datapartEntity = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.Entity)) as Atdi.DataModels.Sdrns.Device.Entity;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntity = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
                         int? ID2 = DbGetResEntity.SaveEntity(datapartEntity);
                         if (ID2 > 0)
@@ -230,7 +252,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendEntity.SensorName = sensorName;
                             commandResSendEntity.EquipmentTechId = techId;
                             commandResSendEntity.SdrnServer = sdrnServer;
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendEntity)), message.BasicProperties.CorrelationId);
+                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendEntity, message.BasicProperties.CorrelationId);
                         }
                         else
                         {
@@ -241,7 +263,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendEntity.SensorName = sensorName;
                             commandResSendEntity.EquipmentTechId = techId;
                             commandResSendEntity.SdrnServer = sdrnServer;
-                            PublishMessage(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(commandResSendEntity)), message.BasicProperties.CorrelationId);
+                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendEntity, message.BasicProperties.CorrelationId);
                         }
                         result = true;
                         break;
@@ -294,6 +316,79 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             {
                 channel.BasicAck(message.DeliveryTag, false);
             }
+        }
+
+
+        public static long DateTimeToUnixTimestamp(DateTime dateTime)
+        {
+            return Convert.ToInt64((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds);
+        }
+
+
+        public MessageObject UnPackObject(Message obj)
+        {
+            MessageObject res = new MessageObject();
+            MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
+            messageConvertSettings.UseEncryption = true;
+            messageConvertSettings.UseСompression = true;
+            var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+            var messageConvertor = new MessageConverter(messageConvertSettings, typeResolver);
+            res = messageConvertor.Deserialize(obj);
+            return res;
+        }
+
+        public bool PublishMessage<Tobj>(string NameServer, string exchange, string routingKey, string sensorName, string techId, string MessageType, RabbitMQ.Client.IModel channel, Tobj messageObject, string CorrelationId = null)
+        {
+            bool isSendSuccess = false;
+            try
+            {
+                        MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
+                        messageConvertSettings.UseEncryption = Atdi.SDNRS.AppServer.BusManager.GlobalInit.UseEncryption;
+                        messageConvertSettings.UseСompression = Atdi.SDNRS.AppServer.BusManager.GlobalInit.UseСompression;
+                        var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+                        var messageConvertor = new MessageConverter(messageConvertSettings, typeResolver);
+                        var message = messageConvertor.Pack<Tobj>(MessageType, messageObject);
+                        message.CorrelationId = CorrelationId;
+                        message.Headers = new Dictionary<string, object>
+                        {
+                            ["SdrnServer"] = NameServer,
+                            ["SensorName"] = sensorName,
+                            ["SensorTechId"] = techId,
+                            ["Created"] = DateTime.Now.ToString("o")
+                        };
+
+
+                        var props = channel.CreateBasicProperties();
+                        props.Persistent = true;
+                        props.AppId = "Atdi.AppServer.AppService.SdrnsControllerv2_0.dll";
+                        props.MessageId = message.Id;
+                        props.Type = message.Type;
+                        if (!string.IsNullOrEmpty(message.ContentType))
+                        {
+                            props.ContentType = message.ContentType;
+                        }
+                        if (!string.IsNullOrEmpty(message.ContentEncoding))
+                        {
+                            props.ContentEncoding = message.ContentEncoding;
+                        }
+                        if (!string.IsNullOrEmpty(message.CorrelationId))
+                        {
+                            props.CorrelationId = message.CorrelationId;
+                        }
+                        props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
+                        props.Headers = message.Headers;
+
+                        channel.BasicPublish(exchange, routingKey, props, message.Body);
+                        isSendSuccess = true;
+                  
+            }
+            catch (Exception)
+            {
+                isSendSuccess = false;
+            }
+            return isSendSuccess;
+
         }
 
         public void PublishMessage(string NameServer, string exchange, string routingKey, string sensorName, string techId, string MessageType, RabbitMQ.Client.IModel channel, byte[] data, string CorrelationId=null)
