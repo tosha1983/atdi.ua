@@ -20,10 +20,23 @@ namespace Atdi.Test.Api.Sdrn.Device.BusControllerAPI2_0
 
         public override void OnHandle(IReceivedMessage<DM.DeviceCommand> message)
         {
+            /*
+             На текущий момент определены такие команды:
+             SendMeasResultsConfirmed - команда подтверждения успешного принятия результатов на стороне сервиса SDRN
+             SendEntityPartResult - команада подтверждения успешного принятия объекта EntityPart на стороне сервиса SDRN
+             SendEntityResult - команада подтверждения успешного принятия объета Entity на стороне сервиса SDRN
+             */
             Console.WriteLine($"Recieved command '{message.Data.Command}'");
-
-            message.Result = MessageHandlingResult.Confirmed;
-            message.ReasonFailure = "Some reason of send command";
+            if ((message.Data.Command == "SendMeasResultsConfirmed") ||
+                (message.Data.Command == "SendEntityPartResult") || 
+                (message.Data.Command == "SendEntityResult"))
+            {
+                message.Result = MessageHandlingResult.Confirmed;
+            }
+            else
+            {
+                message.Result = MessageHandlingResult.Reject;
+            }
         }
     }
 }

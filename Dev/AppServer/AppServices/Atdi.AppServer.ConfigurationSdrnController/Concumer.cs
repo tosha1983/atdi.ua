@@ -184,7 +184,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         if (ID > 0)
                         {
                             Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
-                            commandResSendMeasResults.Command = "SendMeasResultsResult";
+                            commandResSendMeasResults.Command = "SendMeasResultsConfirmed";
                             commandResSendMeasResults.CommandId = "SendCommand";
                             commandResSendMeasResults.SensorName = sensorName;
                             commandResSendMeasResults.EquipmentTechId = techId;
@@ -195,7 +195,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         else
                         {
                             Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
-                            commandResSendMeasResults.Command = "SendMeasResultsResult";
+                            commandResSendMeasResults.Command = "SendMeasResultsConfirmed";
                             commandResSendMeasResults.CommandId = "SendCommand";
                             commandResSendMeasResults.SensorName = sensorName;
                             commandResSendMeasResults.EquipmentTechId = techId;

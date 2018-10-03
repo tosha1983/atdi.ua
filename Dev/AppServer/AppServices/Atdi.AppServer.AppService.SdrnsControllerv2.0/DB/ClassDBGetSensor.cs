@@ -1127,6 +1127,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 
         public bool UpdateObjectSensor(Sensor sens, string apiVersion)
         {
+            bool isSuccess = false;
             System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
                 logger.Trace("Start procedure CreateNewObjectSensor...");
@@ -1324,6 +1325,11 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                         }
                                     }
                                 }
+                                isSuccess = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
                             }
 
                         }
@@ -1355,7 +1361,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             tsk.Start();
             tsk.Join();
             logger.Trace("End procedure CreateNewObjectSensor.");
-            return true;
+            return isSuccess;
         }
 
         /// <summary>

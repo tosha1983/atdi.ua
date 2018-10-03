@@ -97,5 +97,10 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// </summary>
         [DataMember]
         public ResultsMeasurementsStation[] ResultsMeasStation;
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public Route[] Routes;
     }
 }

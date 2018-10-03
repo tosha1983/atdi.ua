@@ -73,7 +73,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         MRs.ResultsMeasStation[i].GlobalSID = sdrRes.StationResults[i].TaskGlobalSid;
                         MRs.ResultsMeasStation[i].MeasGlobalSID = sdrRes.StationResults[i].RealGlobalSid;
                         int SectorId; if (int.TryParse(sdrRes.StationResults[i].SectorId, out SectorId)) MRs.ResultsMeasStation[i].IdSector = SectorId;
-                        int Idstation; if (int.TryParse(sdrRes.StationResults[i].StationId, out Idstation)) MRs.ResultsMeasStation[i].Idstation = Idstation;
+                        int Idstation; if (int.TryParse(sdrRes.StationResults[i].StationId, out Idstation)) MRs.ResultsMeasStation[i].Idstation = Idstation.ToString();
 
                         MRs.ResultsMeasStation[i].LevelMeasurements = new LevelMeasurementsCar[sdrRes.StationResults[i].LevelResults.Length];
                         for (int j = 0; j < sdrRes.StationResults[i].LevelResults.Length; j++)

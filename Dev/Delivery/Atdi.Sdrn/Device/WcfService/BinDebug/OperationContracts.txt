@@ -1,0 +1,42 @@
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measurementType"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ShortMeasurementResults[] GetShortMeasResultsSpecial(MeasurementType measurementType, CommonOperationArguments otherArgs);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MeasResultsId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId, CommonOperationArguments otherArgs);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MeasResultsId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Route[] GetRoutes(int MeasResultsId, CommonOperationArguments otherArgs);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MeasResultsId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MeasResultsId"></param>
+        /// <param name="StationId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId, CommonOperationArguments otherArgs);

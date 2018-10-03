@@ -32,6 +32,24 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,6 +66,7 @@
     <Compile Include="Enums\MeasTaskExecutionMode.cs" />
     <Compile Include="Enums\MeasTaskResultType.cs" />
     <Compile Include="Enums\MeasTaskType.cs" />
+    <Compile Include="Enums\PointStayType.cs" />
     <Compile Include="Enums\SpectrumOccupationType.cs" />
     <Compile Include="Enums\SpectrumScanType.cs" />
     <Compile Include="Enums\DetectingType.cs" />
@@ -65,11 +84,15 @@
     <Compile Include="Models\Devices\BB60C\MeasSdrResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrSOParam.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrTask.cs" />
+    <Compile Include="Models\Measurements\GeoLocation.cs" />
     <Compile Include="Models\Measurements\MeasurementResultsIdentifier.cs" />
     <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementOnlineResult.cs" />
+    <Compile Include="Models\Measurements\Route.cs" />
+    <Compile Include="Models\Measurements\RoutePoint.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\ShortResultsMeasurementsStation.cs" />
     <Compile Include="Models\Sensors\AntennaPattern.cs" />
     <Compile Include="Models\Sensors\SensorPoligonPoint.cs" />
     <Compile Include="Models\StationDataForMeasurements\FrequencyForSectorFormICSM.cs" />

@@ -47,8 +47,6 @@
     <Compile Include="Handlers\SendMeasTaskHandler.cs" />
     <Compile Include="Handlers\SendRegistrationResultHandler.cs" />
     <Compile Include="Handlers\SendSensorUpdatingResultHandler.cs" />
-    <Compile Include="MyCommandHandler.cs" />
-    <Compile Include="MyEventObserver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -67,7 +65,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

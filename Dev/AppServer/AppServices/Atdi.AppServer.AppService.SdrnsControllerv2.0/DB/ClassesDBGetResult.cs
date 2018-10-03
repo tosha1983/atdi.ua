@@ -111,7 +111,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                         measResStation.New();
                                         measResStation.m_globalsid = station.GlobalSID;
                                         measResStation.m_idsector = station.IdSector;
-                                        measResStation.m_idstation = station.Idstation;
+                                        int m_idstation = -1;
+                                        if (int.TryParse(station.Idstation, out m_idstation))
+                                            measResStation.m_idstation = m_idstation;
                                         measResStation.m_status = station.Status;
                                         measResStation.m_measglobalsid = station.MeasGlobalSID;
                                         measResStation.m_xbsresmeasid = ID;

@@ -105,11 +105,43 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetShortMeasResultsSpecialAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResultsSpecialAppOperation() : base("GetShortMeasResultsSpecial")
+            { }
+        }
+        
+
         public sealed class GetShortMeasResultsByIdAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
             public GetShortMeasResultsByIdAppOperation() : base("GetShortMeasResultsById")
             { }
         }
+
+        public sealed class GetShortMeasResStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResStationAppOperation() : base("GetShortMeasResStation")
+            { }
+        }
+        public sealed class GetRoutesAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetRoutesAppOperation() : base("GetRoutes")
+            { }
+        }
+
+        public sealed class GetSensorPoligonPointAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetSensorPoligonPointAppOperation() : base("GetSensorPoligonPoint")
+            { }
+        }
+
+        public sealed class GetResMeasStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetResMeasStationAppOperation() : base("GetResMeasStation")
+            { }
+        }
+
+ 
 
         public sealed class GetShortMeasResultsByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
@@ -148,8 +180,13 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResultsAppOperation(),
                      new GetShortMeasResultsByIdAppOperation(),
                      new GetShortMeasResultsByTaskIdAppOperation(),
-                     new DeleteMeasResultsAppOperation()
-                    }
+                     new DeleteMeasResultsAppOperation(),
+                     new GetShortMeasResultsSpecialAppOperation(),
+                     new GetShortMeasResStationAppOperation(),
+                     new GetRoutesAppOperation(),
+                     new GetSensorPoligonPointAppOperation(),
+                     new GetResMeasStationAppOperation()
+                 }
                 );
         }
     }

@@ -21,9 +21,15 @@ namespace Atdi.Test.Api.Sdrn.Device.BusControllerAPI2_0
         public override void OnHandle(IReceivedMessage<DM.SensorUpdatingResult> message)
         {
             Console.WriteLine($"{message.CorrelationToken}: Recieved update sensor info '{message.Data.Status}'");
-
-            message.Result = MessageHandlingResult.Confirmed;
-            message.ReasonFailure = "Some reason of send command";
+            if (message.Data.Status == "Success")
+            {
+                // подтверждаем обработку
+                message.Result = MessageHandlingResult.Confirmed;
+            }
+            else
+            {
+                message.Result = MessageHandlingResult.Reject;
+            }
         }
     }
 }

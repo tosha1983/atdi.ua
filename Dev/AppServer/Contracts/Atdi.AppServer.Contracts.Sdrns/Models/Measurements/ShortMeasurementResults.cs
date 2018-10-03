@@ -54,5 +54,26 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// </summary>
         [DataMember]
         public double? CurrentLat;
+        /// <summary>
+        /// Sensor name
+        /// </summary>
+        [DataMember]
+        public string SensorName;
+        /// <summary>
+        /// Sensor TechId
+        /// </summary>
+        [DataMember]
+        public string SensorTechId;
+        /// <summary>
+        /// Count measurements
+        /// </summary>
+        [DataMember]
+        public int? CountStationMeasurements;
+        /// <summary>
+        /// Count Unknown Station Measurements
+        /// </summary>
+        [DataMember]
+        public int? CountUnknownStationMeasurements;
+
     }
 }

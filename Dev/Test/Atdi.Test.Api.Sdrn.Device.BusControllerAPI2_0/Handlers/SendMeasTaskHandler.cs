@@ -22,8 +22,17 @@ namespace Atdi.Test.Api.Sdrn.Device.BusControllerAPI2_0
         {
             Console.WriteLine($"Recieved meas task with ID = '{message.Data.TaskId}'");
 
-            message.Result = MessageHandlingResult.Confirmed;
-            message.ReasonFailure = "Some reason od send meas task";
+            if (message.Data!=null)
+            {
+                //некоторая обработка таска
+                DM.MeasTask mt = message.Data;
+                // подтверждаем обработку
+                message.Result = MessageHandlingResult.Confirmed;
+            }
+            else
+            {
+                message.Result = MessageHandlingResult.Reject;
+            }
         }
     }
 }
