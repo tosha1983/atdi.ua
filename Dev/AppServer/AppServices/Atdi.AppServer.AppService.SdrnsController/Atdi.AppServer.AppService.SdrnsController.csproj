@@ -79,9 +79,9 @@
     <Reference Include="NLog">
       <HintPath>..\..\..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.DataAccess, Version=4.112.3.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\Oracle.DataAccess.dll</HintPath>
+      <HintPath>Dll\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Quartz">
       <HintPath>..\..\..\packages\Quartz.2.6.0\lib\net40\Quartz.dll</HintPath>

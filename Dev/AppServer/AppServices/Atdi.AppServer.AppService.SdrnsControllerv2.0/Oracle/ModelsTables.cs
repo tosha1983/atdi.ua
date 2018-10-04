@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
@@ -836,7 +836,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             memberInfo = tp.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo f in memberInfo)
             {
-                OracleDbType oracleDbType = OracleDbType.Object;
+                OracleDbType oracleDbType = OracleDbType.Raw;
                 string tps = "";
                 if (f.PropertyType.GetGenericArguments().Length > 0)
                     tps = f.PropertyType.GetGenericArguments()[0].ToString();
