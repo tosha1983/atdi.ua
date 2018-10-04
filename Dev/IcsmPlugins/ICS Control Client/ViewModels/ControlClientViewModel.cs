@@ -756,14 +756,14 @@ namespace XICSM.ICSControlClient.ViewModels
             
             if (currentMeasTaskResultStation != null)
             {
-                if (currentMeasTask != null && currentMeasTaskResultStation.StationId.HasValue)
+                if (currentMeasTask != null && currentMeasTaskResultStation.StationId!=null)
                 {
                     var measTaskStations = currentMeasTask.StationsForMeasurements;
                     if (measTaskStations != null && measTaskStations.Length > 0)
                     {
                         var stationForShow = measTaskStations
                             .Where(measTaskStation =>
-                                   measTaskStation.IdStation == currentMeasTaskResultStation.StationId.Value 
+                                   measTaskStation.IdStation.ToString() == currentMeasTaskResultStation.StationId 
                                 && measTaskStation.Site != null 
                                 && measTaskStation.Site.Lon.HasValue
                                 && measTaskStation.Site.Lat.HasValue)
@@ -788,7 +788,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         {
                             var stationsForShow = measTaskStations
                                 .Where(measTaskStation => 
-                                        measTaskResultStations.Where(s => s.Idstation.HasValue && s.Idstation.Value == measTaskStation.IdStation).FirstOrDefault() != null)
+                                        measTaskResultStations.Where(s => s.Idstation == measTaskStation.IdStation.ToString()).FirstOrDefault() != null)
                                 .ToArray();
 
                             if (stationsForShow.Length > 0)

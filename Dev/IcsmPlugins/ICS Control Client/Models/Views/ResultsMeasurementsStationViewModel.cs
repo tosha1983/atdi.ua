@@ -8,7 +8,7 @@ namespace XICSM.ICSControlClient.Models.Views
 {
     public class ResultsMeasurementsStationViewModel
     {
-        public int? StationId { get; set; }
+        public string StationId { get; set; }
 
         public int? SectorId { get; set; }
 

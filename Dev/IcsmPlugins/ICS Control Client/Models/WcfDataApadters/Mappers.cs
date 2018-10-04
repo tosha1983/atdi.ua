@@ -226,7 +226,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 LevelMeasurementsLength = source.LevelMeasurements == null ? (int?)null : source.LevelMeasurements.Length,
                 MeasGlobalSID = source.MeasGlobalSID,
                 SectorId = source.IdSector.ToNull(),
-                StationId = source.Idstation.ToNull(),
+                StationId = source.Idstation,
                 Status = source.Status
             };
         }
