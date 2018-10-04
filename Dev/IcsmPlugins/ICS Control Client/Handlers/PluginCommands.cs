@@ -48,5 +48,18 @@ namespace XICSM.ICSControlClient
                 MessageBox.Show(e.ToString());
             }
         }
+        public static void OnMeasResultsCommand()
+        {
+            try
+            {
+                var mainForm = new FM.MeasResultForm();
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
     }
 }

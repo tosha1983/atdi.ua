@@ -15,8 +15,8 @@ using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    
-    public class ControlClientViewModel : WpfViewModelBase
+
+    public class MeasResultsViewModel : WpfViewModelBase
     {
         public enum ModelType
         {
@@ -28,10 +28,10 @@ namespace XICSM.ICSControlClient.ViewModels
             Sensors
         }
 
-        
 
-#region Corrent Objects
-        
+
+        #region Corrent Objects
+
         // Tasks
         private MeasTaskViewModel _currentMeasTask;
         private ShortMeasTaskViewModel _currentShortMeasTask;
@@ -107,23 +107,10 @@ namespace XICSM.ICSControlClient.ViewModels
             };
         }
 
-        public ControlClientViewModel()
+        public MeasResultsViewModel()
         {
             this._currentModel = ModelType.None;
-
             this._currentChartOption = this.GetDefaultChartOption();
-
-            this.CreateMeasTaskCommand = new WpfCommand(this.OnCreateMeasTaskCommand);
-            this.DeleteMeasTaskCommand = new WpfCommand(this.OnDeleteMeasTaskCommand);
-            this.RunMeasTaskCommand = new WpfCommand(this.OnRunMeasTaskCommand);
-            this.StopMeasTaskCommand = new WpfCommand(this.OnStopMeasTaskCommand);
-
-            this.RefreshShortTasksCommand = new WpfCommand(this.OnRefreshShortTasksCommand);
-            this.RefreshShortSensorsCommand = new WpfCommand(this.OnRefreshShortSensorsCommand);
-            this.ShowHideMeasTaskDetailCommand = new WpfCommand(this.OnShowHideMeasTaskDetailCommand);
-            this.ShowHideMeasResultsDetailCommand = new WpfCommand(this.OnShowHideMeasResultsDetailCommand);
-            this.MeasResultCommand = new WpfCommand(this.OnMeasResultCommand);
-
             this._shortMeasTasks = new ShortMeasTaskDataAdatper();
             this._shortMeasResults = new ShortMeasurementResultsDataAdatper();
             this._shortSensors = new ShortSensorDataAdatper();
@@ -131,18 +118,19 @@ namespace XICSM.ICSControlClient.ViewModels
             this._resultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
             this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
 
-
-            this.ReloadShortMeasTasks();
-            this.ReloadShorSensors();
+            this.MeasDtParamTypeMeasurements = SDR.MeasurementType.MonitoringStations;
         }
-
+        public SDR.MeasurementType MeasDtParamTypeMeasurements { get; set; }
+        public IList<SDR.MeasurementType> MeasDtParamTypeMeasurementsValues
+        {
+            get { return Enum.GetValues(typeof(SDR.MeasurementType)).Cast<SDR.MeasurementType>().ToList<SDR.MeasurementType>(); }
+        }
         public ModelType CurrentModel
         {
             get => this._currentModel;
             set => this.Set(ref this._currentModel, value);
         }
 
-        
 
         public CS.ChartOption CurrentChartOption
         {
@@ -156,19 +144,6 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._currentMapData, value);
         }
 
-        
-
-        public MeasTaskViewModel CurrentMeasTask
-        {
-            get => this._currentMeasTask;
-            set => this.Set(ref this._currentMeasTask, value, () => { ReloadShorSensors(); RedrawMap(); });
-        }
-
-        public ShortMeasTaskViewModel CurrentShortMeasTask
-        {
-            get => this._currentShortMeasTask;
-            set => this.Set(ref this._currentShortMeasTask, value, () => { ReloadShortMeasResults(); ReloadMeasTaskDetail(); ReloadMeasResaltDetail(); });
-        }
 
         public ShortSensorViewModel CurrentShortSensor
         {
@@ -185,7 +160,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public MeasurementResultsViewModel CurrentMeasurementResults
         {
             get => this._currentMeasurementResults;
-            set => this.Set(ref this._currentMeasurementResults, value,() => { UpdateCurrentChartOption(); this.RedrawMap(); });
+            set => this.Set(ref this._currentMeasurementResults, value, () => { UpdateCurrentChartOption(); this.RedrawMap(); });
         }
 
         public ShortMeasurementResultsViewModel CurrentShortMeasurementResults
@@ -208,6 +183,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public ShortMeasurementResultsDataAdatper ShortMeasResults => this._shortMeasResults;
 
+        //public ShortMeasResultsSpecial => this._ShortMeasResultsSpecial GetShortMeasResultsSpecial
+
         public ShortSensorDataAdatper ShortSensors => this._shortSensors;
 
         public MeasTaskDetailStationDataAdapter MeasTaskDetailStations => this._measTaskDetailStations;
@@ -216,18 +193,6 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #endregion
 
-
-        public Visibility MeasTaskDetailVisibility
-        {
-            get => this._measTaskDetailVisibility;
-            set => this.Set(ref this._measTaskDetailVisibility, value, ReloadMeasTaskDetail);
-        }
-
-        public Visibility MeasResultsDetailVisibility
-        {
-            get => this._measResultsDetailVisibility;
-            set => this.Set(ref this._measResultsDetailVisibility, value, ReloadMeasResaltDetail);
-        }
 
         private void ReloadShortMeasTasks()
         {
@@ -250,35 +215,10 @@ namespace XICSM.ICSControlClient.ViewModels
             this._resultsMeasurementsStations.Source = null;
         }
 
-        private void ReloadMeasTaskDetail()
-        {
-            int taskId = 0;
-            if (this._currentShortMeasTask != null)
-            {
-                taskId = this._currentShortMeasTask.Id;
-            }
-
-            var task = SVC.SdrnsControllerWcfClient.GetMeasTaskById(taskId);
-            var taskViewModel = Mappers.Map(task);
-            this.CurrentMeasTask = taskViewModel;
-
-            if (this.MeasTaskDetailVisibility == Visibility.Visible && taskId > 0)
-            {
-                
-                if (task != null)
-                {
-                    this._measTaskDetailStations.Source = task.StationsForMeasurements;
-                }
-                else
-                {
-                    this._measTaskDetailStations.Source = null;
-                }
-            }
-        }
-
         private void ReloadMeasResaltDetail()
         {
-            if (this._currentShortMeasurementResults!= null)
+            //this.MeasDtParamTypeMeasurements = SDR.MeasurementType.MonitoringStations;
+            if (this._currentShortMeasurementResults != null)
             {
                 var measResults = SVC.SdrnsControllerWcfClient
                         .GetMeasResultsById(
@@ -290,16 +230,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 var measResultsViewModel = Mappers.Map(measResults);
                 this.CurrentMeasurementResults = measResultsViewModel;
 
-                if (this.MeasResultsDetailVisibility == Visibility.Visible)
+                if (measResultsViewModel != null)
                 {
-                    if (measResultsViewModel!= null)
-                    {
-                        this._resultsMeasurementsStations.Source = measResultsViewModel.ResultsMeasStation;
-                    }
-                    else
-                    {
-                        this._resultsMeasurementsStations.Source = null; 
-                    }
+                    this._resultsMeasurementsStations.Source = measResultsViewModel.ResultsMeasStation;
+                }
+                else
+                {
+                    this._resultsMeasurementsStations.Source = null;
                 }
             }
             else
@@ -308,30 +245,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._resultsMeasurementsStations.Source = null;
             }
 
-            
-        }
 
-        private void ReloadShorSensors()
-        {
-            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(new Atdi.AppServer.Contracts.DataConstraint());
-
-            var measTask = this.CurrentMeasTask;
-            if (measTask != null )
-            {
-                if (measTask.Stations != null && measTask.Stations.Length > 0)
-                {
-                    sdrSensors = sdrSensors
-                        .Where(sdrSensor => measTask.Stations
-                                .FirstOrDefault(s => s.StationId.Value == sdrSensor.Id.Value) != null
-                            )
-                        .ToArray();
-                }
-                else
-                {
-                    sdrSensors = new SDR.ShortSensor[] { };
-                }
-            }
-            this._shortSensors.Source = sdrSensors;
         }
 
         private void ReloadLevelMeasurements()
@@ -345,144 +259,15 @@ namespace XICSM.ICSControlClient.ViewModels
             this._levelMeasurements.Source = this.CurrentResultsMeasurementsStation.LevelMeasurements;
         }
 
-        private void OnCreateMeasTaskCommand(object parameter)
-        {
-            try
-            {
-                var measTaskForm = new FM.MeasTaskForm();
-                measTaskForm.ShowDialog();
-                measTaskForm.Dispose();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
-
-        private void OnMeasResultCommand(object parameter)
-        {
-            try
-            {
-                var measTaskForm = new FM.MeasResultForm();
-                measTaskForm.ShowDialog();
-                measTaskForm.Dispose();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
-
-
-        private void OnDeleteMeasTaskCommand(object parameter)
-        {
-            if (this.CurrentShortMeasTask == null)
-            {
-                return;
-            }
-            var taskId = this.CurrentShortMeasTask.Id;
-            var result = System.Windows.Forms.MessageBox.Show("Are you sure?", $"Delete the meas task with ID #{taskId}", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
-
-            if (result != System.Windows.Forms.DialogResult.Yes)
-            {
-                return;
-            }
-
-            SVC.SdrnsControllerWcfClient.DeleteMeasTaskById(taskId);
-        }
-        private void OnRunMeasTaskCommand(object parameter)
-        {
-            if (this.CurrentShortMeasTask == null)
-            {
-                return;
-            }
-            var taskId = this.CurrentShortMeasTask.Id;
-            var result = System.Windows.Forms.MessageBox.Show("Are you sure?", $"Run the meas task with ID #{taskId}", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
-
-            if (result != System.Windows.Forms.DialogResult.Yes)
-            {
-                return;
-            }
-
-            SVC.SdrnsControllerWcfClient.RunMeasTask(taskId);
-        }
-        private void OnStopMeasTaskCommand(object parameter)
-        {
-            if (this.CurrentShortMeasTask == null)
-            {
-                return;
-            }
-
-            var taskId = this.CurrentShortMeasTask.Id;
-            var result = System.Windows.Forms.MessageBox.Show("Are you sure?", $"Stop the meas task with ID #{taskId}", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
-
-            if (result != System.Windows.Forms.DialogResult.Yes)
-            {
-                return;
-            }
-
-            SVC.SdrnsControllerWcfClient.StopMeasTask(taskId);
-        }
-
-        private void OnRefreshShortTasksCommand(object parameter)
-        {
-            this.ReloadShortMeasTasks();
-        }
-
-        private void OnRefreshShortSensorsCommand(object parameter)
-        {
-            this.ReloadShorSensors();
-        }
-
-        private void OnShowHideMeasTaskDetailCommand(object parameter)
-        {
-            switch (this._measTaskDetailVisibility)
-            {
-                case Visibility.Visible:
-                    this.MeasTaskDetailVisibility = Visibility.Hidden;
-                    break;
-                case Visibility.Hidden:
-                    this.MeasTaskDetailVisibility = Visibility.Visible;
-                    break;
-                case Visibility.Collapsed:
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void OnShowHideMeasResultsDetailCommand(object parameter)
-        {
-            switch (this._measResultsDetailVisibility)
-            {
-                case Visibility.Visible:
-                    this.MeasResultsDetailVisibility = Visibility.Hidden;
-                    break;
-                case Visibility.Hidden:
-                    this.MeasResultsDetailVisibility = Visibility.Visible;
-                    break;
-                case Visibility.Collapsed:
-                    break;
-                default:
-                    break;
-            }
-        }
-
-
         private void UpdateCurrentChartOption()
         {
-            if (this.MeasResultsDetailVisibility != Visibility.Visible)
-            {
-                return;
-            }
-
             if (this.CurrentMeasurementResults == null)
             {
                 this.CurrentChartOption = this.GetDefaultChartOption();
             }
             else
             {
-                this.CurrentChartOption = this.GetChartOption(this.CurrentMeasurementResults); 
+                this.CurrentChartOption = this.GetChartOption(this.CurrentMeasurementResults);
             }
         }
 
@@ -501,7 +286,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 return this.GetChartOptionByLevel(result);
             }
             return this.GetDefaultChartOption();
-            
+
         }
 
         private CS.ChartOption GetChartOptionByMonitoringStations(MeasurementResultsViewModel result)
@@ -572,7 +357,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
                 points[i] = point;
             }
-           
+
             var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
             option.YTick = 10;
             option.YMax = preparedDataY.MaxValue;
@@ -664,7 +449,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             var count = result.FrequenciesMeasurements.Length;
             var points = new Point[count];
-            
+
             var maxX = default(double);
             var minX = default(double);
 
@@ -740,117 +525,117 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void RedrawMap()
         {
-            var data = new MP.MapDrawingData();
-            var points = new List<MP.MapDrawingDataPoint>();
+        //    var data = new MP.MapDrawingData();
+        //    var points = new List<MP.MapDrawingDataPoint>();
 
-            if (this.CurrentShortSensor != null)
-            {
-                var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(this.CurrentShortSensor.Id);
-                if (svcSensor != null)
-                {
-                    var modelSensor = Mappers.Map(svcSensor);
-                    if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
-                    {
-                        var sensorPoints = modelSensor.Locations
-                            .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
-                                    || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
-                                    && l.Lon.HasValue
-                                    && l.Lat.HasValue)
-                            .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
-                            .ToArray();
+        //    if (this.CurrentShortSensor != null)
+        //    {
+        //        var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(this.CurrentShortSensor.Id);
+        //        if (svcSensor != null)
+        //        {
+        //            var modelSensor = Mappers.Map(svcSensor);
+        //            if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
+        //            {
+        //                var sensorPoints = modelSensor.Locations
+        //                    .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+        //                            || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+        //                            && l.Lon.HasValue
+        //                            && l.Lat.HasValue)
+        //                    .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+        //                    .ToArray();
 
-                        points.AddRange(sensorPoints);
-                    }
-                }
-            }
+        //                points.AddRange(sensorPoints);
+        //            }
+        //        }
+        //    }
 
-            var currentMeasTaskResultStation = this.CurrentResultsMeasurementsStation;
-            var currentMeasTaskResult = this.CurrentMeasurementResults;
-            var currentMeasTaskStation = this.CurrentMeasTaskStation;
-            var currentMeasTask = this.CurrentMeasTask;
+        //    var currentMeasTaskResultStation = this.CurrentResultsMeasurementsStation;
+        //    var currentMeasTaskResult = this.CurrentMeasurementResults;
+        //    var currentMeasTaskStation = this.CurrentMeasTaskStation;
+        //    var currentMeasTask = this.CurrentMeasTask;
 
-            // To define station points
-            
-            if (currentMeasTaskResultStation != null)
-            {
-                if (currentMeasTask != null && currentMeasTaskResultStation.StationId.HasValue)
-                {
-                    var measTaskStations = currentMeasTask.StationsForMeasurements;
-                    if (measTaskStations != null && measTaskStations.Length > 0)
-                    {
-                        var stationForShow = measTaskStations
-                            .Where(measTaskStation =>
-                                   measTaskStation.IdStation == currentMeasTaskResultStation.StationId.Value 
-                                && measTaskStation.Site != null 
-                                && measTaskStation.Site.Lon.HasValue
-                                && measTaskStation.Site.Lat.HasValue)
-                            .FirstOrDefault(); 
+        //    // To define station points
 
-                        if (stationForShow != null)
-                        {
-                            points.Add(this.MakeDrawingPointForStation(stationForShow.Site.Lon.Value, stationForShow.Site.Lat.Value));
-                        }
-                    }
-                }
-            }
-            else if(currentMeasTaskResult != null)
-            {
-                var measTaskResultStations = currentMeasTaskResult.ResultsMeasStation;
-                if (measTaskResultStations != null && measTaskResultStations.Length > 0)
-                {
-                    if (currentMeasTask != null)
-                    {
-                        var measTaskStations = currentMeasTask.StationsForMeasurements;
-                        if (measTaskStations != null && measTaskStations.Length > 0)
-                        {
-                            var stationsForShow = measTaskStations
-                                .Where(measTaskStation => 
-                                        measTaskResultStations.Where(s => s.Idstation.HasValue && s.Idstation.Value == measTaskStation.IdStation).FirstOrDefault() != null)
-                                .ToArray();
+        //    if (currentMeasTaskResultStation != null)
+        //    {
+        //        if (currentMeasTask != null && currentMeasTaskResultStation.StationId.HasValue)
+        //        {
+        //            var measTaskStations = currentMeasTask.StationsForMeasurements;
+        //            if (measTaskStations != null && measTaskStations.Length > 0)
+        //            {
+        //                var stationForShow = measTaskStations
+        //                    .Where(measTaskStation =>
+        //                           measTaskStation.IdStation == currentMeasTaskResultStation.StationId.Value
+        //                        && measTaskStation.Site != null
+        //                        && measTaskStation.Site.Lon.HasValue
+        //                        && measTaskStation.Site.Lat.HasValue)
+        //                    .FirstOrDefault();
 
-                            if (stationsForShow.Length > 0)
-                            {
-                                var stationPoints = stationsForShow
-                                    .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
-                                    .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
-                                    .ToArray();
+        //                if (stationForShow != null)
+        //                {
+        //                    points.Add(this.MakeDrawingPointForStation(stationForShow.Site.Lon.Value, stationForShow.Site.Lat.Value));
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (currentMeasTaskResult != null)
+        //    {
+        //        var measTaskResultStations = currentMeasTaskResult.ResultsMeasStation;
+        //        if (measTaskResultStations != null && measTaskResultStations.Length > 0)
+        //        {
+        //            if (currentMeasTask != null)
+        //            {
+        //                var measTaskStations = currentMeasTask.StationsForMeasurements;
+        //                if (measTaskStations != null && measTaskStations.Length > 0)
+        //                {
+        //                    var stationsForShow = measTaskStations
+        //                        .Where(measTaskStation =>
+        //                                measTaskResultStations.Where(s => s.Idstation.HasValue && s.Idstation.Value == measTaskStation.IdStation).FirstOrDefault() != null)
+        //                        .ToArray();
 
-                                if (stationPoints.Length > 0)
-                                {
-                                    points.AddRange(stationPoints);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else if (currentMeasTaskStation != null)
-            {
-                if (currentMeasTaskStation.SiteLon.HasValue && currentMeasTaskStation.SiteLat.HasValue)
-                {
-                    points.Add(this.MakeDrawingPointForStation(currentMeasTaskStation.SiteLon.Value, currentMeasTaskStation.SiteLat.Value));
-                }
-            }
-            else if (currentMeasTask != null )
-            {
-                var taskStations = currentMeasTask.StationsForMeasurements;
-                if (taskStations != null && taskStations.Length > 0)
-                {
-                    var stationPoints = taskStations
-                        .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
-                        .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
-                        .ToArray();
+        //                    if (stationsForShow.Length > 0)
+        //                    {
+        //                        var stationPoints = stationsForShow
+        //                            .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
+        //                            .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
+        //                            .ToArray();
 
-                    if (stationPoints.Length > 0)
-                    {
-                        points.AddRange(stationPoints);
-                    }
-                }
-            }
+        //                        if (stationPoints.Length > 0)
+        //                        {
+        //                            points.AddRange(stationPoints);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (currentMeasTaskStation != null)
+        //    {
+        //        if (currentMeasTaskStation.SiteLon.HasValue && currentMeasTaskStation.SiteLat.HasValue)
+        //        {
+        //            points.Add(this.MakeDrawingPointForStation(currentMeasTaskStation.SiteLon.Value, currentMeasTaskStation.SiteLat.Value));
+        //        }
+        //    }
+        //    else if (currentMeasTask != null)
+        //    {
+        //        var taskStations = currentMeasTask.StationsForMeasurements;
+        //        if (taskStations != null && taskStations.Length > 0)
+        //        {
+        //            var stationPoints = taskStations
+        //                .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
+        //                .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
+        //                .ToArray();
+
+        //            if (stationPoints.Length > 0)
+        //            {
+        //                points.AddRange(stationPoints);
+        //            }
+        //        }
+        //    }
 
 
-            data.Points = points.ToArray();
-            this.CurrentMapData = data;
+        //    data.Points = points.ToArray();
+        //    this.CurrentMapData = data;
         }
     }
 }
