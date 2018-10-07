@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E5011DD5-16C5-4CD0-ADA3-D783F11C7C61}</ProjectGuid>
+    <ProjectGuid>{73C8791E-3FC5-4C91-84E5-C19C98096F10}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.Contracts.CoreServices.DataLayer</RootNamespace>
-    <AssemblyName>Atdi.Contracts.CoreServices.DataLayer</AssemblyName>
+    <RootNamespace>Atdi.DataModels.EntityOrm</RootNamespace>
+    <AssemblyName>Atdi.DataModels.EntityOrm</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,33 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataContextBase.cs" />
-    <Compile Include="DataEngineType.cs" />
-    <Compile Include="DataOrmBase.cs" />
-    <Compile Include="EngineCommand.cs" />
-    <Compile Include="EngineCommandParameter.cs" />
-    <Compile Include="IConstraintSyntax.cs" />
-    <Compile Include="IDataContext.cs" />
-    <Compile Include="IDataEngine.cs" />
-    <Compile Include="IDataEngineConfig.cs" />
-    <Compile Include="IDataLayer.cs" />
-    <Compile Include="IDataLayerConfig.cs" />
-    <Compile Include="IDataOrm.cs" />
-    <Compile Include="IEngineSyntax.cs" />
-    <Compile Include="IQueryDeleteStatement.cs" />
-    <Compile Include="IQueryExecutor.cs" />
-    <Compile Include="IQueryBuilder.cs" />
-    <Compile Include="IQueryInsertStatement.cs" />
-    <Compile Include="IQuerySelectStatement.cs" />
-    <Compile Include="IQueryStatement.cs" />
-    <Compile Include="IQueryUpdateStatement.cs" />
+    <Compile Include="EntityAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

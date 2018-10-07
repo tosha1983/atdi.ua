@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "Antenna" 
+  Title       = "Antenna" 
+  Desc        = "The antenna"
+  Inheritance = "Prototype"
+  BaseEntity  = "Atdi.DataModels.SDRN.Server.AntennaBase"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <DataSource Type="Database" Object="Table">
+    <Name>ANTENNA</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field Name="FrequencyMHz" 
+           SourceType="Column" 
+           SourceName="FREQ_MHz" 
+           DataType="Number.28.10" 
+           Required="false" 
+           Title="Frequency, MHz" 
+           Desc="The frequency MHz" 
+           Unit="Frequency.MHz"/>
+    
+    <Field Name="EXT1" 
+           SourceType="Extension" 
+           SourceName ="Atdi.DataModels.SDRN.Server.AntennaExten1" 
+           Title="Antenna extention"  />
+    
+    <Field Name="POS" 
+           SourceType="Relation" 
+           SourceName="AntennaPosition" 
+           Title="Antenna position" >
+      <RelationCondition JoinType="Inner|Outer">
+        <Or>
+          <And>
+            <Eq>
+              <Field Name="#source.TableName"/>
+              <Value>Antenna</Value>
+            </Eq>
+            <Eq>
+              <Field Name="#source.Id"/>
+              <Field Name="#this.Id"/>
+            </Eq>
+            <Eq>
+              <Field Name="#source.PosType"/>
+              <Field Name="#this.EXT1.PosType"/>
+            </Eq>
+          </And>
+          <And>
+            <Eq>
+              <Field Name="#source.TableName"/>
+              <Value>AntennaBase</Value>
+            </Eq>
+            <Eq>
+              <Field Name="#source.Id"/>
+              <Field Name="#this.Id"/>
+            </Eq>
+            <Eq>
+              <Field Name="#source.PosType"/>
+              <Field Name="#this.EXT1.PosType"/>
+            </Eq>
+          </And>
+          <And>
+            <In>
+              <Field Name="#source.TableName"/>
+              <Values>
+                <Value>Antenna</Value>
+                <Value>AntennaBase</Value>
+              </Values>
+            </In>
+            <Eq>
+              <Field Name="#source.Id"/>
+              <Field Name="#this.Id"/>
+            </Eq>
+            <Eq>
+              <Field Name="#source.PosType"/>
+              <Field Name="#this.EXT1.PosType"/>
+            </Eq>
+          </And>
+        </Or>
+      </RelationCondition>
+    </Field>
+  </Fields>
+
+
+  
+</Entity>

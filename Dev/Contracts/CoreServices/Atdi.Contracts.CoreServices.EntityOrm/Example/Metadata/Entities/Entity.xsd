@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="atdi.orm.entity"
+    targetNamespace="http://schemas.atdi.com/orm/entity.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://schemas.atdi.com/orm/entity.xsd"
+    xmlns:en="http://schemas.atdi.com/orm/entity.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="Entity" type="en:EntityDef">
+    
+  </xs:element>
+
+  <xs:complexType name="EntityDef">
+    <xs:all>
+      <xs:element name="DataSource" type="en:DataSourceDef" minOccurs="1" maxOccurs="1"></xs:element>
+      <xs:element name="Fields" type="en:FieldsDef" minOccurs="1" maxOccurs="1"></xs:element>
+      <xs:element name="PrimaryKey" type="en:PrimaryKeyDef" minOccurs="0" maxOccurs="1"></xs:element>
+    </xs:all>
+    <xs:attribute name="Name" type="xs:string" use ="required" />
+    <xs:attribute name="Title" type="xs:string" use ="optional" />
+    <xs:attribute name="Desc" type="xs:string" use ="optional" />
+
+    <xs:attribute name="Type" type="en:EntityType" use ="optional" default="Normal" />
+    <xs:attribute name="BaseEntity" type="xs:string" use ="optional" />
+    <xs:attribute name="Inheritance" type="en:InheritanceType" use="optional"  />
+    <xs:attribute name="ExtendEntity" type="xs:string" use ="optional" />
+    
+  </xs:complexType>
+
+  
+  
+  <xs:complexType name="FieldsDef">
+    <xs:sequence>
+      <xs:element name="Field" type="en:FieldDef" minOccurs="1" maxOccurs="unbounded"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PrimaryKeyDef">
+    <xs:sequence>
+      <xs:element name="FieldRef" type="en:PrimaryKeyFieldRefDef" minOccurs="1" maxOccurs="unbounded"></xs:element>
+    </xs:sequence>
+    <xs:attribute name="Clustered" type="xs:boolean" use ="required"  />
+  </xs:complexType>
+
+  <xs:complexType name="PrimaryKeyFieldRefDef">
+    <xs:attribute name="Name" type="xs:string" use ="required" />
+    <xs:attribute name="SortOrder" type="en:SortDirection" use ="optional" default="Ascending" />
+  </xs:complexType>
+  
+  <xs:complexType name="FieldDef">
+    <xs:all>
+      <xs:element name="RelationCondition" minOccurs="0" maxOccurs="1"></xs:element>
+    </xs:all>
+    <xs:attribute name="Name" type="xs:string" use ="required" />
+    <xs:attribute name="Title" type="xs:string" use ="optional" />
+    <xs:attribute name="Desc" type="xs:string" use ="optional" />
+    
+    <xs:attribute name="Required" type="xs:boolean" use ="optional" default="false" />
+
+    <xs:attribute name="SourceType" type="en:FieldSourceType" use ="required"/>
+    <xs:attribute name="SourceName" type="xs:string" use ="optional" />
+
+    <xs:attribute name="DataType" type="xs:string" use ="optional" />
+    <xs:attribute name="Unit" type="xs:string" use ="optional" />
+    
+  </xs:complexType>
+
+  <xs:complexType name="DataSourceDef">
+    <xs:sequence>
+      <xs:element name="Name" minOccurs="1" maxOccurs="1" type="xs:string"></xs:element>
+      <xs:element name="Schema" minOccurs="0" maxOccurs="1" type="xs:string"></xs:element>
+    </xs:sequence>
+    <xs:attribute name="Type" type="en:DataSourceType" use ="required" />
+    <xs:attribute name="Object" type="en:DataSourceObject" use ="required" />
+  </xs:complexType>
+
+  <xs:simpleType name="DataSourceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Database" />
+      <xs:enumeration value="Json" />
+      <xs:enumeration value="Xml" />
+      <xs:enumeration value="Csv" />
+      <xs:enumeration value="Excel" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DataSourceObject">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Table" />
+      <xs:enumeration value="Query" />
+      <xs:enumeration value="File" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="FieldSourceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Column" />
+      <xs:enumeration value="Reference" />
+      <xs:enumeration value="Extension" />
+      <xs:enumeration value="Relation" />
+      <xs:enumeration value="Expression" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EntityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="Extention" />
+      <xs:enumeration value="Predefined" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  
+  <xs:simpleType name="SortDirection">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Ascending" />
+      <xs:enumeration value="Descending" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="InheritanceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Prototype" />
+      <xs:enumeration value="Role" />
+      <xs:enumeration value="Simple" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>
