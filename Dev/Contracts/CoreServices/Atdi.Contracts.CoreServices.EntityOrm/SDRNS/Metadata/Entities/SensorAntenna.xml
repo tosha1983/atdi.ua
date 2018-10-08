@@ -222,7 +222,7 @@
               SourceType="Relation"
               SourceName="Sensor"
               Title="Relation SensorAntenna to Sensor" >
-      <RelationCondition JoinType="Inner|Outer">
+      <RelationCondition JoinType="Inner">
         <Or>
           <And>
             <Eq>

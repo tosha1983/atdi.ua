@@ -249,7 +249,7 @@
               SourceType="Relation"
               SourceName="Sensor"
               Title="Relation SensorEquipment to Sensor" >
-      <RelationCondition JoinType="Inner|Outer">
+      <RelationCondition JoinType="Inner">
         <Or>
           <And>
             <Eq>
