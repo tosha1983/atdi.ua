@@ -3,6 +3,7 @@ using Atdi.DataModels.DataConstraint;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         IQueryInsertStatement SetValue(ColumnValue columnValue);
 
         IQueryInsertStatement SetValues(ColumnValue[] columnsValues);
+    }
+
+    public interface IQueryInsertStatement<TModel> : IQueryStatement
+    {
+        IQueryInsertStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value);
     }
 
     public static class QueryInsertStatementExtensitons

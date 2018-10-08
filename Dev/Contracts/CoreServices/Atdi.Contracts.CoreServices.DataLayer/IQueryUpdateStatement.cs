@@ -3,6 +3,7 @@ using Atdi.DataModels.DataConstraint;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,17 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQueryUpdateStatement SetValues(ColumnValue[] columnsValues);
 
+    }
+
+    public interface IQueryUpdateStatement<TModel> : IQueryStatement
+    {
+        IQueryUpdateStatement<TModel> Where(Expression<Func<TModel, bool>> expression);
+
+        IQueryUpdateStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression);
+
+        IQueryUpdateStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values);
+
+        IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value);
     }
 
     public static class QueryUpdateStatementExtensitons
