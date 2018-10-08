@@ -18,6 +18,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         where TDataOrm : IDataOrm
     {
         IQueryBuilder Builder { get; }
+
+        IQueryBuilder<TModel> GetBuilder<TModel>();
+
         IQueryExecutor Executor<TContext>() 
             where TContext : IDataContext, new();
         

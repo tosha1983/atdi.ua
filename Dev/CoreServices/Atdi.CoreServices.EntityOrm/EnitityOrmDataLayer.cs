@@ -22,6 +22,11 @@ namespace Atdi.CoreServices.EntityOrm
             throw new NotImplementedException();
         }
 
+        public IQueryBuilder<TModel> GetBuilder<TModel>()
+        {
+            throw new NotImplementedException();
+        }
+
         public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
         {
             throw new NotImplementedException();

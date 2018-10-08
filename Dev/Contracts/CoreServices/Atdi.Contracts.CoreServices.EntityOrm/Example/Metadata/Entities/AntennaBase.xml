@@ -24,7 +24,7 @@
       Name="Name" 
       SourceType="Column"    
       SourceName ="NAME"  
-      DataType="Text_s100"
+      DataType="Text.100"
       Required="true"
       Title="Antenna Name" />
     

@@ -18,4 +18,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQueryDeleteStatement Delete(string tableName);
     }
+
+    public interface IQueryBuilder<TModel>
+    {
+        IQuerySelectStatement<TModel> From();
+
+        IQueryInsertStatement<TModel> Insert();
+
+        IQueryUpdateStatement<TModel> Update();
+
+        IQueryDeleteStatement<TModel> Delete();
+    }
 }
