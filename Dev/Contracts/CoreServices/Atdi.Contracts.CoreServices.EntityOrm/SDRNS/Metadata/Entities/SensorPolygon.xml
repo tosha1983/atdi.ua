@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "SensorPolygon" 
+  Title       = "SensorPolygon" 
+  Desc        = "The sensor polygon"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_SENSORPOLIG</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field Name="Id" 
+     SourceType="Column" 
+     SourceName="ID" 
+     DataType="Number.15.0" 
+     Required="true" 
+     Title="Id" 
+     Desc="Id"/>
+
+    <Field Name="SensorId"
+    SourceType="Column"
+    SourceName="SENSORID"
+    DataType="Number.15.0"
+    Required="true"
+    Title="SensorId"
+    Desc="SensorId"/>
+
+
+    <Field Name="Lon"
+    SourceType="Column"
+    SourceName="LON"
+    DataType="Number.22.8"
+    Required="false"
+    Title="Longitude, DEC"
+    Desc="Longitude, DEC"
+    Unit="Longitude.DEC" />
+    
+
+    <Field Name="Lat"
+    SourceType="Column"
+    SourceName="LAT"
+    DataType="Number.22.8"
+    Required="false"
+    Title="Latitude,  DEC"
+    Desc="Latitude,  DEC"
+    Unit="Latitude.DEC"/>
+
+    
+    <Field Name="RelSensorPolygon"
+              SourceType="Relation"
+              SourceName="Sensor"
+              Title="Relation SensorPolygon to Sensor" >
+      <RelationCondition JoinType="Inner">
+        <Or>
+          <And>
+            <Eq>
+              <Field Name="#source.Id"/>
+              <Field Name="#this.SensorId"/>
+            </Eq>
+          </And>
+        </Or>
+      </RelationCondition>
+    </Field>  
+  </Fields>
+
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id" SortOrder="Descending" />
+  </PrimaryKey>
+
+  </Entity>

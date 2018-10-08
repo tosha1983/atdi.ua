@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Text.25" DataSourceType="Database">
+  <Autonum>false</Autonum>
+  <CodeVarType>String</CodeVarType>
+  <SourceVarType>UNICODE</SourceVarType>
+  <Length>25</Length>
+</DataType>

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="DateTime" DataSourceType="Database">
+  <Autonum>false</Autonum>
+  <CodeVarType>DateTime</CodeVarType>
+  <SourceVarType>DATE</SourceVarType>
+</DataType>

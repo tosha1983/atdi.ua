@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "Sensor" 
+  Title       = "Sensor" 
+  Desc        = "The sensor"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_SENSOR</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field Name="Id" 
+     SourceType="Column" 
+     SourceName="ID" 
+     DataType="Number.15.0" 
+     Required="true" 
+     Title="Id" 
+     Desc="Id"/>
+
+    <Field Name="SensorIdentifierId"
+     SourceType="Column"
+     SourceName="SENSORIDENTIFIER_ID"
+     DataType="Number.15.0"
+     Required="false"
+     Title="SensorIdentifierId"
+     Desc="SensorIdentifierId"/>
+
+    <Field Name="Status"
+     SourceType="Column"
+     SourceName="STATUS"
+     DataType="Text.25"
+     Required="false"
+     Title="Status"
+     Desc="Status"/>
+
+    <Field Name="Name"
+     SourceType="Column"
+     SourceName="NAME"
+     DataType="Text.150"
+     Required="false"
+     Title="Name"
+     Desc="Name"/>
+
+    <Field Name="Name"
+     SourceType="Column"
+     SourceName="NAME"
+     DataType="Text.150"
+     Required="false"
+     Title="Name"
+     Desc="Name"/>
+
+
+    <Field Name="Administration"
+     SourceType="Column"
+     SourceName="ADMINISTRATION"
+     DataType="Text.50"
+     Required="false"
+     Title="Administration"
+     Desc="Administration"/> 
+
+
+    <Field Name="NetworkId"
+     SourceType="Column"
+     SourceName="NETWORKID"
+     DataType="Text.150"
+     Required="false"
+     Title="NetworkId"
+     Desc="NetworkId"/> 
+
+    <Field Name="Remark"
+     SourceType="Column"
+     SourceName="REMARK"
+     DataType="Text.250"
+     Required="false"
+     Title="Remark"
+     Desc="Remark"/>
+
+    <Field Name="BiuseDate"
+     SourceType="Column"
+     SourceName="BIUSEDATE"
+     DataType="DateTime"
+     Required="false"
+     Title="Bring into use date"
+     Desc="Bring into use date"/> 
+
+    <Field Name="EouseDate"
+     SourceType="Column"
+     SourceName="EOUSEDATE"
+     DataType="DateTime"
+     Required="false"
+     Title="End of use date"
+     Desc="End of use date"/>
+
+    <Field Name="Azimuth"
+     SourceType="Column"
+     SourceName="AZIMUTH"
+     DataType="Number.22.8"
+     Required="false"
+     Title="Azimuth, degree"
+     Desc="Azimuth, Azimuth"
+     Unit="Angle.Degree"/>
+
+    <Field Name="Elevation"
+     SourceType="Column"
+     SourceName="ELEVATION"
+     DataType="Number.22.8"
+     Required="false"
+     Title="Elevation, degree"
+     Desc="Elevation, degree"
+     Unit="Angle.Degree"/>
+
+    <Field Name="Agl"
+     SourceType="Column"
+     SourceName="AGL"
+     DataType="Number.22.8"
+     Required="false"
+     Title="Altitude above ground level, m"
+     Desc="Altitude above ground level, m"
+     Unit="Length.m"/>
+
+    <Field Name="IdSysArgus"
+     SourceType="Column"
+     SourceName="IDSYSARGUS"
+     DataType="Text.50"
+     Required="false"
+     Title="IdSysArgus"
+     Desc="IdSysArgus"/>
+
+
+    <Field Name="TypeSensor"
+     SourceType="Column"
+     SourceName="TYPESENSOR"
+     DataType="Text.50"
+     Required="false"
+     Title="TypeSensor"
+     Desc="TypeSensor"/>
+
+
+    <Field Name="StepMeasTime"
+     SourceType="Column"
+     SourceName="STEPMEASTIME"
+     DataType="Number.22.8"
+     Required="false"
+     Title="StepMeasTime"
+     Desc="StepMeasTime"/>
+
+    <Field Name="RxLoss"
+     SourceType="Column"
+     SourceName="RXLOSS"
+     DataType="Number.22.8"
+     Required="false"
+     Title="RxLoss, dB"
+     Desc="RxLoss, dB"
+     Unit="Power.dB"/>
+
+    <Field Name="OpHhFr"
+     SourceType="Column"
+     SourceName="OPHHFR"
+     DataType="Number.22.8"
+     Required="false"
+     Title="Operation HH From"
+     Desc="Operation HH From"/>
+
+    <Field Name="OpHhTo"
+     SourceType="Column"
+     SourceName="OPHHTO"
+     DataType="Number.22.8"
+     Required="false"
+     Title="Operation HH To"
+     Desc="Operation HH To"/>
+
+
+    <Field Name="OpDays"
+     SourceType="Column"
+     SourceName="OPDAYS"
+     DataType="Text.50"  
+     Required="false"
+     Title="Operation Days" 
+     Desc="Operation Days"/>
+
+
+    <Field Name="CustTxt1"
+     SourceType="Column"
+     SourceName="CUSTTXT1"
+     DataType="Text.50"
+     Required="false"
+     Title="CustTxt1"
+     Desc="CustTxt1"/>
+
+
+   <Field Name="CustNbr1"
+    SourceType="Column"
+    SourceName="CUSTNBR1"
+    DataType="Number.22.8"
+    Required="false"
+    Title="CustNbr1"
+    Desc="CustNbr1"/>
+
+    <Field Name="DateCreated"
+    SourceType="Column"
+    SourceName="DATECREATED"
+    DataType="DateTime"
+    Required="false"
+    Title="DateCreated"
+    Desc="DateCreated"/>
+
+
+    <Field Name="CreatedBy"
+    SourceType="Column"
+    SourceName="CREATEDBY"
+    DataType="Text.50"
+    Required="false"
+    Title="CreatedBy"
+    Desc="CreatedBy"/>
+
+
+    <Field Name="ApiVersion"
+    SourceType="Column"
+    SourceName="APIVERSION"
+    DataType="Text.10"
+    Required="false"
+    Title="ApiVersion"
+    Desc="ApiVersion"/>
+
+
+    <Field Name="TechId"
+    SourceType="Column"
+    SourceName="TECHID"
+    DataType="Text.150"
+    Required="false"
+    Title="TechId"
+    Desc="TechId"/>
+  
+
+  </Fields>
+
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id" SortOrder="Descending" />
+  </PrimaryKey>
+
+  </Entity>
