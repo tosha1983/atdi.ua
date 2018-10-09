@@ -196,7 +196,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 commandResSendMeasResults.SensorName = sensorName;
                                 commandResSendMeasResults.EquipmentTechId = techId;
                                 commandResSendMeasResults.SdrnServer = sdrnServer;
-                                commandResSendMeasResults.CustTxt1 = "Successfully saved Results to DB";
+                                commandResSendMeasResults.CustTxt1 = "Success";
                                 PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                             }
                             else
@@ -207,7 +207,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 commandResSendMeasResults.SensorName = sensorName;
                                 commandResSendMeasResults.EquipmentTechId = techId;
                                 commandResSendMeasResults.SdrnServer = sdrnServer;
-                                commandResSendMeasResults.CustTxt1 = "Error saved Results to DB";
+                                commandResSendMeasResults.CustTxt1 = "Fault";
                                 PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                             }
                         }
@@ -219,7 +219,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendMeasResults.SensorName = sensorName;
                             commandResSendMeasResults.EquipmentTechId = techId;
                             commandResSendMeasResults.SdrnServer = sdrnServer;
-                            commandResSendMeasResults.CustTxt1 = "Error saved Results to DB";
+                            commandResSendMeasResults.CustTxt1 = "Fault";
                             PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                         }
                         result = true;
@@ -238,7 +238,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandRes.SensorName = sensorName;
                             commandRes.EquipmentTechId = techId;
                             commandRes.SdrnServer = sdrnServer;
-                            commandRes.CustTxt1 = "Successfully saved SendEntityPart to DB";
+                            commandRes.CustTxt1 = "Success";
                             PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandRes, message.BasicProperties.CorrelationId);
                         }
                         else
@@ -249,7 +249,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandRes.SensorName = sensorName;
                             commandRes.EquipmentTechId = techId;
                             commandRes.SdrnServer = sdrnServer;
-                            commandRes.CustTxt1 = "Fail saved SendEntityPart to DB";
+                            commandRes.CustTxt1 = "Fault";
                             PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandRes, message.BasicProperties.CorrelationId);
                         }
 
@@ -267,7 +267,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendEntity = new DeviceCommand();
                             commandResSendEntity.Command = "SendEntityResult";
                             commandResSendEntity.CommandId = "SendCommand";
-                            commandResSendEntity.CustTxt1 = "Successfully saved SendEntity to DB";
+                            commandResSendEntity.CustTxt1 = "Success";
                             commandResSendEntity.SensorName = sensorName;
                             commandResSendEntity.EquipmentTechId = techId;
                             commandResSendEntity.SdrnServer = sdrnServer;
@@ -278,7 +278,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendEntity = new DeviceCommand();
                             commandResSendEntity.Command = "SendEntityResult";
                             commandResSendEntity.CommandId = "SendCommand";
-                            commandResSendEntity.CustTxt1 = "Fail saved SendEntity to DB";
+                            commandResSendEntity.CustTxt1 = "Fault";
                             commandResSendEntity.SensorName = sensorName;
                             commandResSendEntity.EquipmentTechId = techId;
                             commandResSendEntity.SdrnServer = sdrnServer;
@@ -383,6 +383,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         props.AppId = "Atdi.AppServer.AppService.SdrnsControllerv2_0.dll";
                         props.MessageId = message.Id;
                         props.Type = message.Type;
+               
                         if (!string.IsNullOrEmpty(message.ContentType))
                         {
                             props.ContentType = message.ContentType;
