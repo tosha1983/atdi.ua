@@ -657,15 +657,15 @@ namespace Atdi.CoreServices.EntityOrm
             var command = new EngineCommand();
             if (statement is QueryInsertStatement queryInsertStatement)
             {
-                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                //command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
             }
             else if (statement is QueryUpdateStatement queryUpdateStatement)
             {
-                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+                //command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
             }
             else if (statement is QueryDeleteStatement queryDeleteStatement)
             {
-                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+                //command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
             }
 
             if (command == null)
@@ -680,7 +680,7 @@ namespace Atdi.CoreServices.EntityOrm
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
             var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
+            //command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
 

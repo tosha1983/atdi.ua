@@ -19,6 +19,7 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly ConditionParser _conditionParser;
         private readonly IEntityMetadata _schemasMetadata;
 
+        
         public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityMetadata schemasMetadata, ILogger logger) : base(logger)
         {
             this._dataEngine = dataEngine;
@@ -27,7 +28,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._schemasMetadata = schemasMetadata;
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
-
+/*
         public string BuildSelectStatement(QuerySelectStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try
@@ -291,9 +292,10 @@ namespace Atdi.CoreServices.EntityOrm
                 columns.Add(columnOperand);
             }
         }
-
+*/
         public void Dispose()
         {
         }
+        
     }
 }
