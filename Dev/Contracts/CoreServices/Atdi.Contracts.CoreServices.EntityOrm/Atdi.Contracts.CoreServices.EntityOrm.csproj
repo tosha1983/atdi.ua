@@ -98,6 +98,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Example\Metadata\Environment.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Double.22.8.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Int.9.0.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Int.15.0.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Counter.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.1000.xml" />
@@ -113,7 +116,7 @@
     <Content Include="Sdrns\Metadata\Entities\SensorLocation.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Sdrns\Metadata\Entities\SensorEquipmentSensitivites.xml">
+    <Content Include="Sdrns\Metadata\Entities\SensorSensitivites.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Sdrns\Metadata\Entities\AntennaPattern.xml">
@@ -135,9 +138,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Example\Metadata\Units\Frequency.MHz" />
-    <None Include="Sdrns\Metadata\Entities\Entity.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Sdrns\Metadata\Units\Frequency.Hz" />
     <None Include="Sdrns\Metadata\Units\Frequency.kHz" />
     <None Include="Sdrns\Metadata\Units\Level.dBm" />

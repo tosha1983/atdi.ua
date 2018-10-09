@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "SensorEquipmentSensitivites" 
-  Title       = "SensorEquipmentSensitivites" 
+  Name        = "SensorSensitivites" 
+  Title       = "SensorSensitivites" 
   Desc        = "The sensor equipment sensitivites"
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
@@ -15,15 +15,14 @@
     <Field Name="Id" 
      SourceType="Column" 
      SourceName="ID" 
-     DataType="Number.15.0" 
-     Required="true" 
+     DataType="Counter" 
      Title="Id" 
      Desc="Id"/>
 
     <Field Name="SensorEquipId"
      SourceType="Column"
      SourceName="SENSOREQUIP_ID"
-     DataType="Number.15.0"
+     DataType="Int.15.0"
      Required="false"
      Title="SensorEquipId"
      Desc="SensorEquipId"/>
@@ -32,7 +31,7 @@
     <Field Name="Freq"
       SourceType="Column"
       SourceName="FREQ"
-      DataType="Number.22.8"
+      DataType="Double.22.8"
       Required="false"
       Title="Freq, MHz"
       Desc="Freq, MHz"
@@ -41,7 +40,7 @@
     <Field Name="Ktbf"
       SourceType="Column"
       SourceName="KTBF"
-      DataType="Number.22.8"
+      DataType="Double.22.8"
       Required="false"
       Title="own noise level, dBm"
       Desc="own noise level, dBm"
@@ -50,7 +49,7 @@
     <Field Name="Noisef"
       SourceType="Column"
       SourceName="NOISEF"
-      DataType="Number.22.8"
+      DataType="Double.22.8"
       Required="false"
       Title=" noise figure, dB"
       Desc=" noise figure, dB"
@@ -59,7 +58,7 @@
     <Field Name="FreqStability"
      SourceType="Column"
      SourceName="FREQSTABILITY"
-     DataType="Number.22.8"
+     DataType="Double.22.8"
      Required="false"
      Title="FreqStability, %"
      Desc="FreqStability, %"
@@ -69,28 +68,24 @@
     <Field Name="AddLoss"
      SourceType="Column"
      SourceName="ADDLOSS"
-     DataType="Number.22.8"
+     DataType="Double.22.8"
      Required="false"
      Title="Additional Loss, dB"
      Desc="Additional Loss, dB"
      Unit="Power.dB"/>
 
 
-    <Field Name="RelEquipmentSensitivites"
-              SourceType="Relation"
-              SourceName="SensorEquipent"
-              Title="Relation SensorEquipmentSensitivites to SensorEquipent" >
-      <RelationCondition JoinType="Inner">
-        <Or>
-          <And>
-            <Eq>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.SensorEquipId"/>
-            </Eq>
-          </And>
-        </Or>
-      </RelationCondition>
-    </Field>  
+
+   <Field Name="SENSOREQUIP"
+   SourceType="Reference"
+   SourceName="SensorEquipent"
+   Title="Relation SensorEquipmentSensitivites to SensorEquipent" >
+      <PrimaryKeyMapping>
+        <Map SourceName="Id" This="SensorEquipId" />
+      </PrimaryKeyMapping>
+    </Field>
+    
+    
   </Fields>
 
 

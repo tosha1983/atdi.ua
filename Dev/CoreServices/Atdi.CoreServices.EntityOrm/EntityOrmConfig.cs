@@ -16,7 +16,15 @@ namespace Atdi.CoreServices.EntityOrm
         {
             this._config = config;
             // из конфиг аберем им яфала и читаем файл конфигурации окрежения ОРМ 
+            var dataContextsParam = config["EnvironmentFileName"];
+            if (dataContextsParam != null)
+            {
+                var dataContextsString = Convert.ToString(dataContextsParam);
+                if (!string.IsNullOrEmpty(dataContextsString))
+                {
 
+                }
+            }
         }
 
         public string Name => throw new NotImplementedException();

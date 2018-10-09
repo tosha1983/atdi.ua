@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Double.22.8" DataSourceType="Database">
+  <Autonum Start="1" Step="1" />
+  <CodeVarType>Double</CodeVarType>
+  <SourceVarType>NUMBER</SourceVarType>
+  <Length>22</Length>
+  <Precision>8</Precision>
+  <Scale/>
+</DataType>

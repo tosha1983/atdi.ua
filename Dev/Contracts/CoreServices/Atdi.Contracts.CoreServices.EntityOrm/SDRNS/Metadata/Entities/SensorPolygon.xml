@@ -15,15 +15,14 @@
     <Field Name="Id" 
      SourceType="Column" 
      SourceName="ID" 
-     DataType="Number.15.0" 
-     Required="true" 
+     DataType="Counter" 
      Title="Id" 
      Desc="Id"/>
 
     <Field Name="SensorId"
     SourceType="Column"
     SourceName="SENSORID"
-    DataType="Number.15.0"
+    DataType="Int.15.0"
     Required="true"
     Title="SensorId"
     Desc="SensorId"/>
@@ -32,7 +31,7 @@
     <Field Name="Lon"
     SourceType="Column"
     SourceName="LON"
-    DataType="Number.22.8"
+    DataType="Double.22.8"
     Required="false"
     Title="Longitude, DEC"
     Desc="Longitude, DEC"
@@ -42,28 +41,22 @@
     <Field Name="Lat"
     SourceType="Column"
     SourceName="LAT"
-    DataType="Number.22.8"
+    DataType="Double.22.8"
     Required="false"
     Title="Latitude,  DEC"
     Desc="Latitude,  DEC"
     Unit="Latitude.DEC"/>
 
     
-    <Field Name="RelSensorPolygon"
-              SourceType="Relation"
-              SourceName="Sensor"
-              Title="Relation SensorPolygon to Sensor" >
-      <RelationCondition JoinType="Inner">
-        <Or>
-          <And>
-            <Eq>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.SensorId"/>
-            </Eq>
-          </And>
-        </Or>
-      </RelationCondition>
-    </Field>  
+    <Field Name="SENSOR"
+       SourceType="Reference"
+       SourceName="Sensor"
+       Title="Relation SensorPolygon to Sensor" >
+      <PrimaryKeyMapping>
+        <Map SourceName="Id" This="SensorId" />
+      </PrimaryKeyMapping>
+    </Field>
+    
   </Fields>
 
 
