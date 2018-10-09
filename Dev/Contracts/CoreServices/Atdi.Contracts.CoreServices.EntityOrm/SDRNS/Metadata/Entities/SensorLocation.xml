@@ -93,10 +93,10 @@
       <RelationCondition JoinType="Inner">
         <Or>
           <And>
-            <Eq>
+            <Equal>
               <Field Name="#source.Id"/>
               <Field Name="#this.SensorId"/>
-            </Eq>
+            </Equal>
           </And>
         </Or>
       </RelationCondition>
