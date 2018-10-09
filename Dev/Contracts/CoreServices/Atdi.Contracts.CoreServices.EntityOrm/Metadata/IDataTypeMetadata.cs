@@ -17,7 +17,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         DataType CodeVarType { get; }
 
-        string SourceVarType { get; }
+        DataSourceVarType SourceVarType { get; }
 
         int? Length { get; }
 

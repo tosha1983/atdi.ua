@@ -87,4 +87,33 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// </summary>
         SourceName
     }
+
+    public enum DataSourceVarType
+    {
+        UNDEFINED = 0,
+        INT08,
+        INT16,
+        INT32,
+        INT64,
+        NCHAR,
+        NVARCHAR,
+        NTEXT,
+        CHAR,
+        VARCHAR,
+        TEXT,
+        BOOL,
+        BIT,
+        BYTE,
+        BYTES,
+        BLOB,
+        DATE,
+        TIME,
+        DATETIME,
+        DOUBLE,
+        FLOAT,
+        DECIMAL,
+        GUID,
+        XML,
+        JSON
+    }
 }
