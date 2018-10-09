@@ -35,6 +35,7 @@ namespace XICSM.ICSControlClient
             {
                 public static readonly string Run = "Run ...";
                 public static readonly string About = "About";
+                public static readonly string MeasResults = "Meas. results";
             }
         }
 
