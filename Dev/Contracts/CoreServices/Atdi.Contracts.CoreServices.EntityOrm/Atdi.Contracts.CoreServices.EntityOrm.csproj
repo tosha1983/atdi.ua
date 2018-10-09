@@ -45,6 +45,9 @@
     <Compile Include="IEntityOrm.cs" />
     <Compile Include="IEntityOrmConfig.cs" />
     <Compile Include="Metadata\Enums.cs" />
+    <Compile Include="Metadata\IAutonumMetadata.cs" />
+    <Compile Include="Metadata\IPrimaryKeyFieldMappedMetadata.cs" />
+    <Compile Include="Metadata\IPrimaryKeyMappingMetadata.cs" />
     <Compile Include="Metadata\IRelationFieldMetadata.cs" />
     <Compile Include="Metadata\IReferenceFieldMetadata.cs" />
     <Compile Include="Metadata\IExtensionFieldMetadata.cs" />
@@ -94,6 +97,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Example\Metadata\Entities\AntennaPosition.xml" />
+    <Content Include="Example\Metadata\Entities\Property.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Example\Metadata\Entities\Types\AntennaType.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -131,13 +137,10 @@
     <Content Include="Sdrns\Metadata\Environment.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Example\Metadata\Entities\Entity.xsd">
+    <None Include="Metadata\Entity.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Example\Metadata\Units\Frequency.MHz" />
-    <None Include="Sdrns\Metadata\Entities\Entity.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Sdrns\Metadata\Units\Frequency.Hz" />
     <None Include="Sdrns\Metadata\Units\Frequency.kHz" />
     <None Include="Sdrns\Metadata\Units\Level.dBm" />

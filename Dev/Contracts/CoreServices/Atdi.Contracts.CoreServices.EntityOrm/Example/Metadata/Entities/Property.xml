@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
+        Name  = "Property"
+        Title = "Property"
+        Desc  = "The property of entities"
+        Type  = "Normal"
+        >
+  <DataSource Type="Database" Object="Table">
+    <Name>PROPERTIES</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field 
+      Name="TableName"
+      SourceType="Column"
+      SourceName="TABLE_NAME"
+      DataType="Text.50"
+      Required="true"
+      Title="Table name"/>
+
+    <Field
+      Name="TableRecId"
+      SourceType="Column"
+      SourceName="TAB_REC_ID"
+      DataType="Integer"
+      Required="true"
+      Title="Table record Id"/>
+    
+    <Field
+      Name="PropName"
+      SourceType="Column"
+      SourceName="PROP_NAME"
+      DataType="Text.250"
+      Required="true"
+      Title="Table name"/>
+    
+    <Field 
+      Name="Value" 
+      SourceType="Column"    
+      SourceName ="VALUE"  
+      DataType="Text.MAX" 
+      Required="true" 
+      Title="Value of property" />
+    
+  </Fields>
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="TableName"  SortOrder="Ascending" />
+    <FieldRef Name="TableRecId" SortOrder="Ascending" />
+    <FieldRef Name="PropName"   SortOrder="Ascending" />
+  </PrimaryKey>
+  
+</Entity>

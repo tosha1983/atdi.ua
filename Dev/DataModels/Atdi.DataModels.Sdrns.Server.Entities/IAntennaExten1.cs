@@ -15,5 +15,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string ShortName { get; set; }
 
         string FullName { get; set; }
+
+        IAntenna EXTENDED { get; set; }
     }
 }

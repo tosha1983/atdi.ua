@@ -24,6 +24,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         int? Precision { get; }
 
         int? Scale { get; }
+
+        IAutonumMetadata Autonum { get; }
+
     }
 
 }

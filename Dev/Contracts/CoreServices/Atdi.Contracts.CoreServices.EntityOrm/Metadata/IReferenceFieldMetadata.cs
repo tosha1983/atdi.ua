@@ -13,5 +13,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// </summary>
         IEntityMetadata RefEntity { get; }
 
+        /// <summary>
+        /// Мапинг полей первичного ключа сущности ссылки
+        /// </summary>
+        IPrimaryKeyMappingMetadata Mapping { get; }
     }
 }

@@ -8,7 +8,7 @@
         >
   <DataSource Type="Database" Object="Table">
     <Name>ANTENNA_POS</Name>
-    <Schema>Eqip</Schema>
+    <Schema>dbo</Schema>
   </DataSource>
 
   <Fields>

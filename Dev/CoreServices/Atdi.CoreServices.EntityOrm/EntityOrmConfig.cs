@@ -15,7 +15,7 @@ namespace Atdi.CoreServices.EntityOrm
         public EntityOrmConfig(IComponentConfig config)
         {
             this._config = config;
-            // из конфиг аберем им яфала и читаем файл конфигурации окрежения ОРМ 
+            // из конфига берем имя фала и читаем файл конфигурации окрежения ОРМ 
 
         }
 

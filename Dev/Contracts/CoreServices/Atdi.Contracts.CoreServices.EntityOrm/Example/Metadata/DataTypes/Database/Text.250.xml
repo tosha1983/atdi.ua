@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<DataType Name="Text.250" DataSourceType="Database">
-  <Autonum>false</Autonum>
+<DataType Name="Text.250" DataSourceType="Database" xmlns="http://schemas.atdi.com/orm/entity.xsd">
   <CodeVarType>String</CodeVarType>
-  <SourceVarType>UNICODE</SourceVarType>
+  <SourceVarType>NVARCHAR</SourceVarType>
   <Length>250</Length>
 </DataType>
