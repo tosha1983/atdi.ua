@@ -8,7 +8,7 @@
         >
   <DataSource Type="Database" Object="Table">
     <Name>ANTENNA_BASE</Name>
-    <Schema>Eqip</Schema>
+    <Schema>dbo</Schema>
   </DataSource>
   
   <Fields>
@@ -33,6 +33,7 @@
       SourceType="Reference" 
       SourceName ="Atdi.DataModels.SDRN.Server.Types.AntennaType" 
       Title="Antenna type" />
+      
   </Fields>
 
   <PrimaryKey Clustered="true">

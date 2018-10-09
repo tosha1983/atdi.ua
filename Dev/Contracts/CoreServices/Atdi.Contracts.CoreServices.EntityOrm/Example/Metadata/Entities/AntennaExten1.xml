@@ -9,11 +9,12 @@
         >
   <DataSource Type="Database" Object="Table">
     <Name>ANTENNA_EXT1</Name>
-    <Schema>Eqip</Schema>
+    <Schema>dbo</Schema>
   </DataSource>
   <Fields>
     <Field Name="ShortName" SourceType="Column"    SourceName ="NAME_SHT"  DataType="Text.50" Title="Antenna Short Name" />
     <Field Name="FullName"  SourceType="Column"    SourceName ="NAME_FULL" DataType="Text.250" Title="Antenna Full Name" />
-    <Field Name="PosType"   SourceType="Column"    SourceName ="NAME_FULL" DataType="Text.50" Title="Antenna position type" />
+    <Field Name="PosType"   SourceType="Column"    SourceName ="POS_TYPE" DataType="Text.50" Title="Antenna position type" />
+    
   </Fields>
 </Entity>

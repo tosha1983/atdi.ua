@@ -8,5 +8,13 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IUnitMetadata
     {
+        /// <summary>
+        /// Имя измерения
+        /// </summary>
+        string Name { get; }
+
+        string Dimension { get; }
+
+        string Category { get; }
     }
 }

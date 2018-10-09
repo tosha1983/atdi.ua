@@ -48,19 +48,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
             this._executor.Execute(insert);
 
 
-            var query = this._dataLayer.Builder
-                .From<IAntenna>()
-                .Select(
-                    c => c.EXT1.FullName,
-                    c => c.POS.PosY,
-                    c => c.TYPE.Name
-                ).Where(c => c.EXT1.ShortName, DataModels.DataConstraint.ConditionOperator.Equal, "");
+            //var query = this._dataLayer.Builder
+            //    .From<IAntennaExten1>()
+            //    .Select(
+            //        c => c.EXTENDED.Name
+            //    ).Where(c => c.EXT1.ShortName, DataModels.DataConstraint.ConditionOperator.Equal, "");
 
-            var result = this._executor.Fetch(query, reader =>
-            {
-                string fullName = reader.GetValue(c => c.EXT1.FullName);
-                return string.Empty;
-            });
+            //this._dataLayer.GetBuilder<IAntenna>().Update()
+            //    .SetValue(c => c.TYPE.Id, 25);
+
+            //var result = this._executor.Fetch(query, reader =>
+            //{
+            //    string fullName = reader.GetValue(c => c.EXT1.FullName);
+            //    reader.GetValue(c => c.TYPE.Id);   ANTENNNA
+            //    reader.GetValue(c => c.TYPE.Name); ANENTA_TYPE
+
+
+            //    return string.Empty;
+            //});
+
+            /// select 
+            ///  AT.NAME as [TYPE.Name],
+            ///  A.TYPE_ID as [TYPE.Id],
+            ///  A.TYPE_TABLE_NAME AS [TYPE.TableName]
+            /// from ANTENNA A left join ANTENNA_TYPE AT on (A.TYPE_ID = AT.ID AND A.TYPE_TABLE_NAME = AT.TABLE_NAME)
+            /// ID TABLE_NAME
+            /// 1  AnetnaBase 
+            //  23 AntneaBase
         }
     }
 }

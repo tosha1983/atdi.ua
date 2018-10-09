@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<DataType Name="Counter" DataSourceType="Database">
-  <Autonum Start="1" Step="1" />
-  <CodeVarType>int</CodeVarType>
-  <SourceVarType>INT</SourceVarType>
-  <Length></Length>
-  <Precision></Precision>
-  <Scale/>
+<DataType 
+  Name           = "Counter"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <Autonum Start="1" Step="1"/>
+  <CodeVarType>Integer</CodeVarType>
+  <SourceVarType>INT_32</SourceVarType>  
 </DataType>

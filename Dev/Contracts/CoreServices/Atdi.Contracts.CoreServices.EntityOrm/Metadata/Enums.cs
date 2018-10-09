@@ -71,4 +71,20 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// </summary>
         Simple
     }
+
+    public enum PrimaryKeyMappedMatchWith
+    {
+        /// <summary>
+        /// мапинг на значение
+        /// </summary>
+        Value = 0,
+        /// <summary>
+        /// мапиен на поле сущности
+        /// </summary>
+        Field,
+        /// <summary>
+        /// мапинг на название
+        /// </summary>
+        SourceName
+    }
 }

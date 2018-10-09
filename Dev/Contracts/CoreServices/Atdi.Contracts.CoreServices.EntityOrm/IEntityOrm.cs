@@ -10,5 +10,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
     public interface IEntityOrm
     {
         IEntityMetadata GetEntityMetadata(string entityName);
+
+        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName);
+
+        IUnitMetadata GetUnitMetadata(string unitName);
     }
 }
