@@ -387,6 +387,53 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             return Res;
         }
 
+        public int? GetIdSensor(string Name, string TechId)
+        {
+            int? res = null;
+            try
+            {
+                logger.Trace("Start procedure IsFindSensorInDB...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
+                    try
+                    {
+                        YXbsSensor s_l_sensor = new YXbsSensor();
+                        s_l_sensor.Format("*");
+                        s_l_sensor.Filter = string.Format("(ID>0) AND (NAME='{0}')", Name);
+                        s_l_sensor.Order = "[ID] DESC";
+                        for (s_l_sensor.OpenRs(); !s_l_sensor.IsEOF(); s_l_sensor.MoveNext())
+                        {
+                            Sensor it_out = new Sensor();
+                            YXbsSensorequip mpt_ = new YXbsSensorequip();
+                            mpt_.Format("*");
+                            mpt_.Filter = string.Format("(SENSORID={0}) AND (TECHID='{1}') ", s_l_sensor.m_id.Value, TechId);
+                            for (mpt_.OpenRs(); !mpt_.IsEOF(); mpt_.MoveNext())
+                            {
+                                res = mpt_.m_id;
+                                break;
+                            }
+                            mpt_.Close();
+                            mpt_.Dispose();
+                        }
+                        s_l_sensor.Close();
+                        s_l_sensor.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure IsFindSensorInDB... " + ex.Message);
+                    }
+                });
+                tsk.Start();
+                tsk.Join();
+                logger.Trace("End procedure IsFindSensorInDB.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error in procedure IsFindSensorInDB: " + ex.Message);
+            }
+            return res;
+        }
+
         public List<Sensor> LoadObjectSensor(string Name, string TechId, string status)
         {
             var val = new List<Sensor>();

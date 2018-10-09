@@ -156,41 +156,60 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 
                         MessageObject dataU = UnPackObject(messageResponse);
                         var data = dataU.Object as Atdi.DataModels.Sdrns.Device.MeasResults;
-                        Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult DbGetRes = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult>();
-                        //var data = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.MeasResults)) as Atdi.DataModels.Sdrns.Device.MeasResults;
-                        int? ID = -1;
-                        string Status_Original = data.Status;
-                        Atdi.AppServer.Contracts.Sdrns.MeasurementResults msReslts = Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassConvertToSDRResults.GenerateMeasResults2_0(data);
-                        if (msReslts.TypeMeasurements == Atdi.AppServer.Contracts.Sdrns.MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
-                        if (msReslts.MeasurementsResults != null)
+                        Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler_ = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
+                        int? SensorId = handler_.GetIdSensor(sensorName, techId);
+                        if (SensorId != null)
                         {
-                            if (msReslts.MeasurementsResults.Count() > 0)
+                            Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult DbGetRes = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult>();
+                            //var data = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.MeasResults)) as Atdi.DataModels.Sdrns.Device.MeasResults;
+                            int? ID = -1;
+                            string Status_Original = data.Status;
+                            Atdi.AppServer.Contracts.Sdrns.MeasurementResults msReslts = Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassConvertToSDRResults.GenerateMeasResults2_0(data);
+                            msReslts.StationMeasurements = new Contracts.Sdrns.StationMeasurements();
+                            msReslts.StationMeasurements.StationId = new Contracts.Sdrns.SensorIdentifier();
+                            msReslts.StationMeasurements.StationId.Value = SensorId.Value;
+                            if (msReslts.TypeMeasurements == Atdi.AppServer.Contracts.Sdrns.MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
+                            if (msReslts.MeasurementsResults != null)
                             {
-                                if (msReslts.MeasurementsResults[0] is Atdi.AppServer.Contracts.Sdrns.LevelMeasurementOnlineResult)
+                                if (msReslts.MeasurementsResults.Count() > 0)
                                 {
-                                    msReslts.Status = "O";
-                                    ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
-                                }
-                                else
-                                {
-                                    ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                                    if (msReslts.MeasurementsResults[0] is Atdi.AppServer.Contracts.Sdrns.LevelMeasurementOnlineResult)
+                                    {
+                                        msReslts.Status = "O";
+                                        ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                                    }
+                                    else
+                                    {
+                                        ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
-                        }
-                        if (ID > 0)
-                        {
-                            Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
-                            commandResSendMeasResults.Command = "SendMeasResultsConfirmed";
-                            commandResSendMeasResults.CommandId = "SendCommand";
-                            commandResSendMeasResults.SensorName = sensorName;
-                            commandResSendMeasResults.EquipmentTechId = techId;
-                            commandResSendMeasResults.SdrnServer = sdrnServer;
-                            commandResSendMeasResults.CustTxt1 = "Successfully saved Results to DB";
-                            PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
+                            else
+                            {
+                                ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                            }
+                            if (ID > 0)
+                            {
+                                Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
+                                commandResSendMeasResults.Command = "SendMeasResultsConfirmed";
+                                commandResSendMeasResults.CommandId = "SendCommand";
+                                commandResSendMeasResults.SensorName = sensorName;
+                                commandResSendMeasResults.EquipmentTechId = techId;
+                                commandResSendMeasResults.SdrnServer = sdrnServer;
+                                commandResSendMeasResults.CustTxt1 = "Successfully saved Results to DB";
+                                PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
+                            }
+                            else
+                            {
+                                Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
+                                commandResSendMeasResults.Command = "SendMeasResultsConfirmed";
+                                commandResSendMeasResults.CommandId = "SendCommand";
+                                commandResSendMeasResults.SensorName = sensorName;
+                                commandResSendMeasResults.EquipmentTechId = techId;
+                                commandResSendMeasResults.SdrnServer = sdrnServer;
+                                commandResSendMeasResults.CustTxt1 = "Error saved Results to DB";
+                                PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
+                            }
                         }
                         else
                         {

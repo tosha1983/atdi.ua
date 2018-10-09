@@ -190,7 +190,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 {
                                                     IdTsk = Create_New_Meas_Task(M, "New");
                                                 }
-                                                LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
+                                                else IdTsk = mt.Id.Value;
+                                                LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, IdTsk, ActionType);
                                                 if (LM_SDR_Device != null)
                                                 {
 

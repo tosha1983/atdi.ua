@@ -182,7 +182,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         }
 
 
-        public static List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi2_0(this MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, string Type = "New")
+        public static List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi2_0(this MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return ListMTSDR;
@@ -198,7 +198,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
                             int? IdentValueTaskSDR = ClassesDBGetTasks.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value.ToString(), SubTaskStation.StationId.Value);
-                            MTSDR.TaskId = IdentValueTaskSDR.GetValueOrDefault().ToString();
+                            MTSDR.TaskId = MeasTaskId.ToString();//IdentValueTaskSDR.GetValueOrDefault().ToString();
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
                             if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
