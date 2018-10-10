@@ -146,6 +146,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                                 if (ActionType == "New")
                                                 {
+                                                    M.CreateeasTaskSDRsApi1_0(ActionType);
                                                     IdTsk = Create_New_Meas_Task(M, "New");
                                                 }
 
@@ -188,6 +189,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             {
                                                 if (ActionType == "New")
                                                 {
+                                                    M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, IdTsk, ActionType);
                                                     IdTsk = Create_New_Meas_Task(M, "New");
                                                 }
                                                 else IdTsk = mt.Id.Value;

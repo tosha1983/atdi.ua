@@ -249,7 +249,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (MTSDR.Stations[i].Owner.OKPO == "37815221") { CodeOwener = "7"; };
                                                 }
                                                 MTSDR.Stations[i].GlobalSid = "255 " + CodeOwener + " 00000 " + string.Format("{0:00000}", task.StationsForMeasurements[i].IdStation);
-
+                                                task.StationsForMeasurements[i].GlobalSID = MTSDR.Stations[i].GlobalSid;
 
                                                 MTSDR.Stations[i].OwnerGlobalSid = task.StationsForMeasurements[i].GlobalSID;//работать с таблицей (доп. создасть в БД по GlobalSID и Standard)
                                                                                                                              //

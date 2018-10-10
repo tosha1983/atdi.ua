@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DM = Atdi.DataModels.Sdrns.Device;
 
+
 namespace Atdi.Test.Api.Sdrn.Device.BusControllerAPI2_0
 {
     class SendMeasTaskHandler : MessageHandlerBase<DM.MeasTask>
@@ -27,6 +28,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusControllerAPI2_0
                 //некоторая обработка таска
                 DM.MeasTask mt = message.Data;
                 // подтверждаем обработку
+                throw new Exception();
                 message.Result = MessageHandlingResult.Confirmed;
             }
             else

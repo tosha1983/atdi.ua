@@ -14,6 +14,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public ClassDBGetSensor(ILogger log)
         {
             if (logger == null) logger = log;
+            
         }
 
         /// <summary>

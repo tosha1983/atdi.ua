@@ -142,7 +142,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusControllerAPI2_0
             config["License.FileName"] = "LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280.lic";  // наименование файла лицензии
             config["License.OwnerId"] = "OID-BD12-A00-N00";//  OwnerId лицензии
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";// ProductKey лицензии
-            config["RabbitMQ.Host"] = "109.237.91.29";//  IP RabbitMQ
+            //config["RabbitMQ.Host"] = "109.237.91.29";//  IP RabbitMQ
+            config["RabbitMQ.Host"] = "10.1.2.129";//  IP RabbitMQ
             config["RabbitMQ.User"] = "SDR_Client";//  User Name RabbitMQ
             config["RabbitMQ.Password"] = "32Xr567";//  Password RabbitMQ
             config["SDRN.Device.SensorTechId"] = "SomeSensor"; // здесь произвольное наименование  SensorTechId
