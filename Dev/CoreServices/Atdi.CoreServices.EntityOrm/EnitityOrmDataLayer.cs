@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
+
 namespace Atdi.CoreServices.EntityOrm
 {
     public sealed class EnitityOrmDataLayer : LoggedObject, IDataLayer<EntityDataOrm>
@@ -16,10 +17,10 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IQueryBuilder _queryBuilder;
         
 
-        public EnitityOrmDataLayer(IDataLayer dataLayer, IEntityOrm entityOrm, ILogger logger) : base(logger)
+        public EnitityOrmDataLayer(IDataLayer dataLayer, ILogger logger) : base(logger)
         {
             this._dataLayer = dataLayer;
-            this._queryBuilder = new QueryBuilder(entityOrm,  logger);
+            this._queryBuilder = new QueryBuilder(logger);
         }
 
         public IQueryBuilder Builder => _queryBuilder;

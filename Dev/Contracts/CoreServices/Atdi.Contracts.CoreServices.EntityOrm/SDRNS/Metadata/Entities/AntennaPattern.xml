@@ -22,7 +22,7 @@
     <Field Name="SensorAntennaId"
      SourceType="Column"
      SourceName="SENSORANTENNA_ID"
-     DataType="Int.15.0"
+     DataType="Int64"
      Required="true"
      Title="SensorAntennaId"
      Desc="SensorAntennaId"/>
@@ -31,7 +31,7 @@
     <Field Name="Freq"
       SourceType="Column"
       SourceName="FREQ"
-      DataType="Double.22.8"
+      DataType="Double"
       Required="false"
       Title="Frequency of pattren, MHz"
       Desc="Frequency of pattren, MHz"
@@ -40,7 +40,7 @@
     <Field Name="Gain"
       SourceType="Column"
       SourceName="GAIN"
-      DataType="Double.22.8"
+      DataType="Double"
       Required="false"
       Title="Gain of Antenna, dB"
       Desc="Gain of Antenna, dB"
@@ -71,14 +71,16 @@
     Desc="DiagV - 9XV - Vertical diagram"/>
     
 
-    <Field Name="SENSORANT"
-              SourceType="Reference"
-              SourceName="SensorAntenna"
-              Title="Relation AntennaPattern to SensorAntenna" >
-      <PrimaryKeyMapping JoinType="Inner">
-        <Map SourceName="Id" This="SensorAntennaId" />
+    <Field
+     Name="SENSORANT"
+     SourceType="Reference"
+     SourceName ="SensorAntenna"
+     Title="Relation AntennaPattern to SensorAntenna" >
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorAntennaId</Mapped>
       </PrimaryKeyMapping>
-    </Field>  
+    </Field>
+    
   </Fields>
 
 

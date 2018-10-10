@@ -11,6 +11,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
     {
         public EntityDataOrm() : base("Entity ORM")
         {
+            
         }
     }
 }

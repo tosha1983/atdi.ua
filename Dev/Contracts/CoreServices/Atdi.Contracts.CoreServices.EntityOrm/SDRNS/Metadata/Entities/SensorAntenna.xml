@@ -22,7 +22,7 @@
     <Field Name="SensorId"
      SourceType="Column"
      SourceName="SENSORID"
-     DataType="Int.15.0"
+     DataType="Int64"
      Required="true"
      Title="SensorId"
      Desc="SensorId"/>
@@ -38,7 +38,7 @@
     <Field Name="Slewang"
      SourceType="Column"
      SourceName="SLEWANG"
-     DataType="Double.22.8"
+     DataType="Double"
      Required="false"
      Title="SlewAng, degree"
      Desc="SlewAng, degree"
@@ -80,7 +80,7 @@
     <Field Name="HbeamWidth"
     SourceType="Column"
     SourceName="HBEAMWIDTH"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Horizontal Beamwidth, degree"
     Desc="Horizontal Beamwidth, degree"
@@ -90,7 +90,7 @@
     <Field Name="VbeamWidth"
    SourceType="Column"
    SourceName="VBEAMWIDTH"
-   DataType="Double.22.8"
+   DataType="Double"
    Required="false"
    Title="Vertical Beamwidth, degree"
    Desc="Vertical Beamwidth, degree"
@@ -132,7 +132,7 @@
     <Field Name="GainMax"
     SourceType="Column"
     SourceName="GAINMAX"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Maximum gain of antenna, dB"
     Desc="Maximum gain of antenna, dB"
@@ -141,7 +141,7 @@
     <Field Name="LowerFreq"
     SourceType="Column"
     SourceName="LOWERFREQ"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Lower Frequency, MHz"
     Desc="Lower Frequency, MHz"
@@ -151,7 +151,7 @@
     <Field Name="UpperFreq"
     SourceType="Column"
     SourceName="UPPERFREQ"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Upper Frequency, MHz"
     Desc="Upper Frequency, MHz"
@@ -160,7 +160,7 @@
     <Field Name="AddLoss"
     SourceType="Column"
     SourceName="ADDLOSS"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Additional loss, dB"
     Desc="Additional loss, dB"
@@ -170,7 +170,7 @@
     <Field Name="Xpd"
     SourceType="Column"
     SourceName="XPD"
-    DataType="Double.22.8.22.8"
+    DataType="Double"
     Required="false"
     Title="XPD, dB"
     Desc="XPD, dB"
@@ -211,22 +211,21 @@
     <Field Name="CustNbr1"
     SourceType="Column"
     SourceName="CUSTNBR1"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="CustNbr1"
     Desc="CustNbr1"/>
     
 
-
-    <Field Name="SENSOR"
-          SourceType="Reference"
-          SourceName="Sensor"
-          Title="Relation SensorAntenna to Sensor" >
+    <Field
+    Name="SENSOR"
+    SourceType="Reference"
+    SourceName ="Sensor"
+    Title="Relation SensorAntenna to Sensor" >
       <PrimaryKeyMapping>
-        <Map SourceName="Id" This="SensorId" />
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
       </PrimaryKeyMapping>
     </Field>
-
 
   </Fields>
 

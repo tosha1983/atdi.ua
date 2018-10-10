@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<DataType Name="Int.15.0" DataSourceType="Database">
+<DataType Name="Int64" DataSourceType="Database">
   <Autonum Start="1" Step="1" />
-  <CodeVarType>Int</CodeVarType>
-  <SourceVarType>NUMBER</SourceVarType>
+  <CodeVarType>Integer</CodeVarType>
+  <SourceVarType>INT_64</SourceVarType>
   <Length>15</Length>
   <Precision>0</Precision>
   <Scale/>

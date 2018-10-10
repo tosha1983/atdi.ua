@@ -22,7 +22,7 @@
     <Field Name="SensorEquipId"
      SourceType="Column"
      SourceName="SENSOREQUIP_ID"
-     DataType="Int.15.0"
+     DataType="Int64"
      Required="false"
      Title="SensorEquipId"
      Desc="SensorEquipId"/>
@@ -31,7 +31,7 @@
     <Field Name="Freq"
       SourceType="Column"
       SourceName="FREQ"
-      DataType="Double.22.8"
+      DataType="Double"
       Required="false"
       Title="Freq, MHz"
       Desc="Freq, MHz"
@@ -40,7 +40,7 @@
     <Field Name="Ktbf"
       SourceType="Column"
       SourceName="KTBF"
-      DataType="Double.22.8"
+      DataType="Double"
       Required="false"
       Title="own noise level, dBm"
       Desc="own noise level, dBm"
@@ -49,7 +49,7 @@
     <Field Name="Noisef"
       SourceType="Column"
       SourceName="NOISEF"
-      DataType="Double.22.8"
+      DataType="Double"
       Required="false"
       Title=" noise figure, dB"
       Desc=" noise figure, dB"
@@ -58,7 +58,7 @@
     <Field Name="FreqStability"
      SourceType="Column"
      SourceName="FREQSTABILITY"
-     DataType="Double.22.8"
+     DataType="Double"
      Required="false"
      Title="FreqStability, %"
      Desc="FreqStability, %"
@@ -68,20 +68,19 @@
     <Field Name="AddLoss"
      SourceType="Column"
      SourceName="ADDLOSS"
-     DataType="Double.22.8"
+     DataType="Double"
      Required="false"
      Title="Additional Loss, dB"
      Desc="Additional Loss, dB"
      Unit="Power.dB"/>
 
-
-
-   <Field Name="SENSOREQUIP"
-   SourceType="Reference"
-   SourceName="SensorEquipent"
-   Title="Relation SensorEquipmentSensitivites to SensorEquipent" >
+    <Field
+    Name="SENSOREQUIP"
+    SourceType="Reference"
+    SourceName ="SensorEquipent"
+    Title="Relation SensorEquipmentSensitivites to SensorEquipent" >
       <PrimaryKeyMapping>
-        <Map SourceName="Id" This="SensorEquipId" />
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorEquipId</Mapped>
       </PrimaryKeyMapping>
     </Field>
     

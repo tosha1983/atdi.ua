@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//using Atdi.AppUnits.Sdrn.Server.PrimaryHandlers;
 
 namespace Atdi.AppServer.Sdrn.Server
 {
@@ -19,6 +20,7 @@ namespace Atdi.AppServer.Sdrn.Server
                 try
                 {
                     host.Start();
+                    
                 }
                 catch (Exception e)
                 {

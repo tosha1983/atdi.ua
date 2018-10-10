@@ -22,7 +22,7 @@
     <Field Name="SensorId"
      SourceType="Column"
      SourceName="SENSORID"
-     DataType="Int.15.0"
+     DataType="Int64"
      Required="true"
      Title="SensorId"
      Desc="SensorId"/>
@@ -80,7 +80,7 @@
   <Field Name="LowerFreq"
    SourceType="Column"
    SourceName="LOWERFREQ"
-   DataType="Double.22.8"
+   DataType="Double"
    Required="false"
    Title="LowerFreq, MHz"
    Desc="LowerFreq, MHz"
@@ -90,7 +90,7 @@
   <Field Name="UpperFreq"
    SourceType="Column"
    SourceName="UPPERFREQ"
-   DataType="Double.22.8"
+   DataType="Double"
    Required="false"
    Title="UpperFreq, MHz "
    Desc="UpperFreq, MHz "
@@ -100,7 +100,7 @@
    <Field Name="RbwMin"
    SourceType="Column"
    SourceName="RBWMIN"
-   DataType="Double.22.8"
+   DataType="Double"
    Required="false"
    Title="RBWMin, kHz"
    Desc="RBWMin, kHz"
@@ -109,7 +109,7 @@
    <Field Name="RbwMax"
     SourceType="Column"
     SourceName="RBWMAX"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="RBWMax, kHz"
     Desc="RBWMax, kHz"
@@ -118,7 +118,7 @@
     <Field Name="VbwMin"
     SourceType="Column"
     SourceName="VBWMIN"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="VBWMin, kHz"
     Desc="VBWMin, kHz"
@@ -127,7 +127,7 @@
     <Field Name="VbwMax"
     SourceType="Column"
     SourceName="VBWMAX"
-    DataType="Double.22."
+    DataType="Double"
     Required="false"
     Title="VBWMax, kHz"
     Desc="VBWMax, kHz"
@@ -136,7 +136,7 @@
     <Field Name="Mobility"
     SourceType="Column"
     SourceName="MOBILITY"
-    DataType="Number.1.0"
+    DataType="Int1"
     Required="false"
     Title="Mobility - true - can be mobile, false cannot be mobile"
     Desc="Mobility - true - can be mobile, false cannot be mobile"/>
@@ -144,7 +144,7 @@
     <Field Name="FftPointMax"
     SourceType="Column"
     SourceName="FFTPOINTMAX"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Maximum of points for Fast Fourier Transform"
     Desc="Maximum of points for Fast Fourier Transform"/>
@@ -153,7 +153,7 @@
     <Field Name="RefLevelDbm"
     SourceType="Column"
     SourceName="REFLEVELDBM"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Reference level in dBm"
     Desc="Reference level in dBm"
@@ -188,7 +188,7 @@
     <Field Name="TuningStep"
     SourceType="Column"
     SourceName="TUNINGSTEP"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="TuningStep, Hz"
     Desc="TuningStep, Hz"
@@ -238,21 +238,21 @@
     <Field Name="CustNbr1"
     SourceType="Column"
     SourceName="CUSTNBR1"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="CustNbr1"
     Desc="CustNbr1"/>
     
-
-
-    <Field Name="SENSOR"
-         SourceType="Reference"
-         SourceName="Sensor"
-         Title="Relation SensorEquipment to Sensor" >
+    <Field
+    Name="SENSOR"
+    SourceType="Reference"
+    SourceName ="Sensor"
+    Title="Relation SensorEquipment to Sensor" >
       <PrimaryKeyMapping>
-        <Map SourceName="Id" This="SensorId" />
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
       </PrimaryKeyMapping>
     </Field>
+    
     
   </Fields>
 

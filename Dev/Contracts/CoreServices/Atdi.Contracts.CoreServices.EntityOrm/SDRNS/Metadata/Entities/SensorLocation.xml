@@ -22,7 +22,7 @@
     <Field Name="SensorId"
     SourceType="Column"
     SourceName="SENSORID"
-    DataType="Int.15.0"
+    DataType="Int64"
     Required="true"
     Title="SensorId"
     Desc="SensorId"/>
@@ -62,7 +62,7 @@
     <Field Name="Lon"
     SourceType="Column"
     SourceName="LON"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Longitude, DEC"
     Desc="Longitude, DEC"
@@ -71,7 +71,7 @@
     <Field Name="Lat"
     SourceType="Column"
     SourceName="LAT"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Latitude, DEC"
     Desc="Latitude, DEC"
@@ -80,21 +80,21 @@
     <Field Name="Asl"
     SourceType="Column"
     SourceName="ASL"
-    DataType="Double.22.8"
+    DataType="Double"
     Required="false"
     Title="Altitude above sea level, m"
     Desc="Altitude above sea level, m"/>
     
 
-    <Field Name="SENSOR"
-         SourceType="Reference"
-         SourceName="Sensor"
-         Title="Relation SensorLocation to Sensor" >
+    <Field
+    Name="SENSOR"
+    SourceType="Reference"
+    SourceName ="Sensor"
+    Title="Relation SensorEquipment to Sensor" >
       <PrimaryKeyMapping>
-        <Map SourceName="Id" This="SensorId" />
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
       </PrimaryKeyMapping>
     </Field>
-    
     
   </Fields>
 

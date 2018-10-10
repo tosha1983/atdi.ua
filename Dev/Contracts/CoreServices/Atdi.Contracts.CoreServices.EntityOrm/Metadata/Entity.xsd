@@ -217,7 +217,7 @@
     <xs:attribute name="SourceName" type="xs:string" use ="optional" />
 
     <xs:attribute name="DataType" type="xs:string" use ="optional" />
-    <xs:attribute name="Unit" type="xs:string" use ="optional" />
+    <xs:attribute name="Unit" type="en:UnitType" use ="optional" />
     
   </xs:complexType>
 
@@ -256,6 +256,20 @@
       <xs:enumeration value="Xml" />
       <xs:enumeration value="Csv" />
       <xs:enumeration value="Excel" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="UnitType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Angle.Degree" />
+      <xs:enumeration value="Frequency.Hz" />
+      <xs:enumeration value="Frequency.kHz" />
+      <xs:enumeration value="Frequency.MHz" />
+      <xs:enumeration value="Latitude.DEC" />
+      <xs:enumeration value="Length.m" />
+      <xs:enumeration value="Level.dBm" />
+      <xs:enumeration value="Longitude.DEC" />
+      <xs:enumeration value="Power.dB" />
     </xs:restriction>
   </xs:simpleType>
 
@@ -326,6 +340,7 @@
 
   <xs:simpleType name="SourceVarType">
     <xs:restriction base="xs:string">
+      <xs:enumeration value="INT_1" />
       <xs:enumeration value="INT_8" />
       <xs:enumeration value="INT_16" />
       <xs:enumeration value="INT_32" />

@@ -11,8 +11,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Сущность расширение
         /// </summary>
-        IEntityMetadata RelatedEntity { get; }
+        IEntityMetadata RelatedEntity { get; set; }
 
-        DataModels.DataConstraint.Condition RelationCondition { get; }
+        DataModels.DataConstraint.Condition RelationCondition { get; set; }
     }
 }

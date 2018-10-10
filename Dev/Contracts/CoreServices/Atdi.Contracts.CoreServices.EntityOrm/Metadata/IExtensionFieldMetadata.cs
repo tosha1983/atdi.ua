@@ -11,7 +11,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Сущность расширение
         /// </summary>
-        IEntityMetadata ExtensionEntity { get; }
+        IEntityMetadata ExtensionEntity { get; set; }
 
     }
 }

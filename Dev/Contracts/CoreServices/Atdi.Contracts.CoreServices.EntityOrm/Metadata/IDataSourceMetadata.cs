@@ -8,12 +8,12 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IDataSourceMetadata
     {
-        string Name { get; }
+        string Name { get; set; }
 
-        string Schema { get; }
+        string Schema { get; set; }
 
-        DataSourceType Type { get; }
+        DataSourceType Type { get; set; }
 
-        DataSourceObject Object { get; }
+        DataSourceObject Object { get; set; }
     }
 }

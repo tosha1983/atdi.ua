@@ -2,6 +2,6 @@
 <DataType Name="Text.25" DataSourceType="Database">
   <Autonum>false</Autonum>
   <CodeVarType>String</CodeVarType>
-  <SourceVarType>UNICODE</SourceVarType>
+  <SourceVarType>VARCHAR</SourceVarType>
   <Length>25</Length>
 </DataType>

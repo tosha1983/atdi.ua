@@ -11,6 +11,6 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Набор мапинга значений на поля первичного ключа сущности-ссылки
         /// </summary>
-        IReadOnlyDictionary<string, IPrimaryKeyFieldMappedMetadata> Fields { get; }
+        IReadOnlyDictionary<string, IPrimaryKeyFieldMappedMetadata> Fields { get; set; }
     }
 }

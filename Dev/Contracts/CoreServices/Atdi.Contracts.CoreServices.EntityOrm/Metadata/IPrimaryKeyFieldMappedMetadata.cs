@@ -8,23 +8,23 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IPrimaryKeyFieldMappedMetadata
     {
-        IFieldMetadata KeyField { get; }
+        IFieldMetadata KeyField { get; set; }
 
-        PrimaryKeyMappedMatchWith MatchWith { get; }
+        PrimaryKeyMappedMatchWith MatchWith { get; set; }
     }
 
     public interface IValuePrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata
     {
-        object Value { get; }
+        object Value { get; set; }
     }
 
     public interface IFieldPrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata
     {
-        IFieldMetadata EntityField { get; }
+        IFieldMetadata EntityField { get; set; }
     }
 
     public interface ISourceNamePrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata
     {
-        string SourceName { get; }
+        string SourceName { get; set; }
     }
 }

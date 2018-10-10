@@ -12,7 +12,15 @@ namespace Atdi.CoreServices.EntityOrm
     internal sealed class EntityOrmConfig : IEntityOrmConfig
     {
         private readonly IComponentConfig _config;
-        public IEntityOrmConfig _ormConfig;
+        private readonly XDocument _environment;
+        public string Name { get; set; }
+        public string Version { get; set; }
+        public string RootPath { get; set; }
+        public string Assembly { get; set; }
+        public string Namespace { get; set; }
+        public string EntitiesPath { get; set; }
+        public string DataTypesPath { get; set; }
+        public string UnitsPath { get; set; }
         public EntityOrmConfig(IComponentConfig config)
         {
             this._config = config;
@@ -22,34 +30,39 @@ namespace Atdi.CoreServices.EntityOrm
                 var dataContextsString = Convert.ToString(dataContextsParam);
                 if (!string.IsNullOrEmpty(dataContextsString))
                 {
-                    XDocument xdoc = XDocument.Load(dataContextsString);
-                    XElement RootPath = xdoc.Element("Environment").Element("RootPath");
-                    XElement Assembly = xdoc.Element("Environment").Element("Assembly");
-                    XElement Namespace = xdoc.Element("Environment").Element("Namespace");
-                    XElement EntitiesPath = xdoc.Element("Environment").Element("EntitiesPath");
-                    XElement DataTypesPath = xdoc.Element("Environment").Element("DataTypesPath");
-                    if (Assembly != null)
+                    _environment = XDocument.Load(dataContextsString);
+                    if (_environment != null)
                     {
-                        _ormConfig.Assembly = 
+                        XElement xElement = _environment.Element("Environment");
+                        if (xElement.HasAttributes)
+                        {
+                            IEnumerable<XAttribute> xAttributes = xElement.Attributes();
+                            if (xAttributes != null)
+                            {
+                                XAttribute attrName = xAttributes.ToList().Find(t => t.Name == "Name");
+                                if (attrName != null)
+                                {
+                                    Name = attrName.Value;
+                                }
+                                XAttribute attrVersion = xAttributes.ToList().Find(t => t.Name == "Version");
+                                if (attrVersion != null)
+                                {
+                                    Version = attrVersion.Value;
+                                }
+                            }
+                        }
+                        RootPath =  _environment.Element("Environment").Element("RootPath").ToString();
+                        Assembly =  _environment.Element("Environment").Element("Assembly").ToString();
+                        Namespace =  _environment.Element("Environment").Element("Namespace").ToString();
+                        EntitiesPath =  _environment.Element("Environment").Element("EntitiesPath").ToString();
+                        DataTypesPath =  _environment.Element("Environment").Element("DataTypesPath").ToString();
+                        UnitsPath =  _environment.Element("Environment").Element("UnitsPath").ToString();
                     }
                 }
             }
+            EntityOrm entityOrm = new EntityOrm(this);
+            entityOrm.GetUnitMetadata("Frequency.kHz");
         }
-
-        public string Name => throw new NotImplementedException();
-
-        public string Version => throw new NotImplementedException();
-
-        public string RootPath => throw new NotImplementedException();
-
-        public string Assembly => throw new NotImplementedException();
-
-        public string Namespace => throw new NotImplementedException();
-
-        public string EntitiesPath => throw new NotImplementedException();
-
-        public string DataTypesPath => throw new NotImplementedException();
-
-        public string UnitsPath => throw new NotImplementedException();
+    
     }
 }

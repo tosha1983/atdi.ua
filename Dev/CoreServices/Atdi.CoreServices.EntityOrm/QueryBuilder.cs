@@ -11,7 +11,7 @@ namespace Atdi.CoreServices.EntityOrm
 {
     internal sealed class QueryBuilder : LoggedObject, IQueryBuilder
     {
-        public QueryBuilder(IEntityOrm entityOrm,ILogger logger) : base(logger)
+        public QueryBuilder(ILogger logger) : base(logger)
         {
         }
 
