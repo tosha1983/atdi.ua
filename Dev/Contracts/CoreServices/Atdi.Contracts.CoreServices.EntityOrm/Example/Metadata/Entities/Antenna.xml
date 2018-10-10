@@ -115,6 +115,24 @@
       SourceName ="Atdi.DataModels.SDRN.Server.Property"
       Title="Antenna type" >
     </Field>
+
+    <Field
+      Name="Prop3DataType"
+      SourceType="Column"
+      SourceName ="P3_DTYPE"
+      DataType="Enum.DataType"
+      Required="false"
+      Title="Data type of Property #3" >
+    </Field>
+
+    <Field
+      Name="DataTypeArray"
+      SourceType="Column"
+      SourceName ="DATA_TYPE_ARRAY"
+      DataType="Array.Enum.DataType"
+      Required="false"
+      Title="Array of value is type of DataType " >
+    </Field>
     
     <!--
     create table dbo.ANTENNA

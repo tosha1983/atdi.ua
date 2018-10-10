@@ -118,6 +118,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="en:CodeVarType">
+              <xs:attribute name="ClrType" type="xs:string" use ="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -127,6 +128,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="en:DataSourceVarType">
+             
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -163,6 +165,7 @@
     
     <xs:attribute name="Name" type="xs:string" use ="required" />
     <xs:attribute name="DataSourceType" type="en:DataSourceType"  use ="required" />
+    <xs:attribute name="Multiple" type="xs:boolean" use="optional" default="false"/>
   </xs:complexType>
   
   <xs:complexType name="EntityDef">
@@ -420,6 +423,20 @@
       <xs:enumeration value="Byte" />
       <xs:enumeration value="Bytes" />
       <xs:enumeration value="Guid" />
+
+      <xs:enumeration value="DateTimeOffset" />
+      <xs:enumeration value="Time" />
+      <xs:enumeration value="Date" />
+      <xs:enumeration value="Char" />
+      <xs:enumeration value="Long" />
+      <xs:enumeration value="Short" />
+      <xs:enumeration value="SignedByte" />
+      <xs:enumeration value="Guid" />
+      <xs:enumeration value="UnsignedShort" />
+      <xs:enumeration value="UnsignedInteger" />
+      <xs:enumeration value="UnsignedLong" />
+      <xs:enumeration value="ClrType" />
+      <xs:enumeration value="ClrEnum" />
     </xs:restriction>
   </xs:simpleType>
 

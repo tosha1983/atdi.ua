@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
-    
 
     public interface IDataTypeMetadata
     {
@@ -16,6 +15,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         DataSourceType DataSourceType { get;  }
 
         DataType CodeVarType { get; }
+
+        Type CodeVarClrType { get; }
 
         DataSourceVarType SourceVarType { get; }
 
@@ -26,6 +27,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         int? Scale { get; }
 
         IAutonumMetadata Autonum { get; }
+
+        bool Multiple { get; }
 
     }
 

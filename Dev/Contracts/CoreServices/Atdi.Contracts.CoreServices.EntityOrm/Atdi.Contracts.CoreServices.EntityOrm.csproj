@@ -87,6 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Example\Metadata\DataTypes\Database\Counter.xml" />
+    <Content Include="Example\Metadata\DataTypes\Database\Array.Enum.DataType.xml" />
+    <Content Include="Example\Metadata\DataTypes\Database\Enum.DataType.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.150.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.50.xml" />

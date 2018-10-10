@@ -16,5 +16,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         IAntennaExten1 EXT1 { get; }
 
         IAntennaPosition POS { get; }
+
+        DataType? Prop3DataType { get; }
+
+        DataType[] DataTypeArray { get; }
     }
 }
