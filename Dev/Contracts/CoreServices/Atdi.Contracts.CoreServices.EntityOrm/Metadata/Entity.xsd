@@ -463,12 +463,14 @@
       <xs:enumeration value="BYTES" />
       <xs:enumeration value="BLOB" />
 
-      <xs:enumeration value="DATE" />
       <xs:enumeration value="TIME" />
+      <xs:enumeration value="DATE" />
       <xs:enumeration value="DATETIME" />
-      
-      <xs:enumeration value="DOUBLE" />
+      <xs:enumeration value="DATETIMEOFFSET" />
+
+      <xs:enumeration value="MONEY" />
       <xs:enumeration value="FLOAT" />
+      <xs:enumeration value="DOUBLE" />
       <xs:enumeration value="DECIMAL" />
       
       <xs:enumeration value="GUID" />

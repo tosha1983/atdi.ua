@@ -149,7 +149,19 @@ namespace Atdi.DataModels
         /// The value of CLR Enum.
         /// </summary>
         [EnumMember]
-        ClrEnum
+        ClrEnum,
+
+        /// <summary>
+        /// The value of XML string.
+        /// </summary>
+        [EnumMember]
+        Xml,
+
+        /// <summary>
+        /// The value of JSON string.
+        /// </summary>
+        [EnumMember]
+        Json
 
     }
 }
