@@ -82,6 +82,39 @@ namespace Atdi.DataModels.DataConstraint
         /// The value is not between two values.
         /// </summary>
         [EnumMember]
-        NotBetween
+        NotBetween,
+
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        [EnumMember]
+        BeginWith,
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        [EnumMember]
+        EndWith,
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        [EnumMember]
+        Contains,
+
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        [EnumMember]
+        NotBeginWith,
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        [EnumMember]
+        NotEndWith,
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        [EnumMember]
+        NotContains
+
     }
 }

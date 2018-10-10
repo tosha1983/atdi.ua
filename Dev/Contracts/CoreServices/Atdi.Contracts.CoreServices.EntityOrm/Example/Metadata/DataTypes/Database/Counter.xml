@@ -6,5 +6,5 @@
   
   <Autonum Start="1" Step="1"/>
   <CodeVarType>Integer</CodeVarType>
-  <SourceVarType>INT_32</SourceVarType>  
+  <SourceVarType>INT32</SourceVarType>  
 </DataType>

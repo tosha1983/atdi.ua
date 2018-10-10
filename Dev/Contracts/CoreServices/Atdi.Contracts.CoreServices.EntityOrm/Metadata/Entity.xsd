@@ -118,6 +118,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="en:CodeVarType">
+              <xs:attribute name="ClrType" type="xs:string" use ="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -126,7 +127,8 @@
       <xs:element name="SourceVarType" minOccurs="1" maxOccurs="1">
         <xs:complexType>
           <xs:simpleContent>
-            <xs:extension base="en:SourceVarType">
+            <xs:extension base="en:DataSourceVarType">
+             
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -163,6 +165,7 @@
     
     <xs:attribute name="Name" type="xs:string" use ="required" />
     <xs:attribute name="DataSourceType" type="en:DataSourceType"  use ="required" />
+    <xs:attribute name="Multiple" type="xs:boolean" use="optional" default="false"/>
   </xs:complexType>
   
   <xs:complexType name="EntityDef">
@@ -217,12 +220,111 @@
     <xs:attribute name="SourceName" type="xs:string" use ="optional" />
 
     <xs:attribute name="DataType" type="xs:string" use ="optional" />
-    <xs:attribute name="Unit" type="en:UnitType" use ="optional" />
+    <xs:attribute name="Unit" type="xs:string" use ="optional" />
     
   </xs:complexType>
 
   <xs:complexType name="RelationConditionDef">
+    <xs:choice minOccurs="1">
+      <xs:element name="Or" type="ConditionExpressionDef"></xs:element>
+      <xs:element name="And" type="ConditionExpressionDef"></xs:element>
+    </xs:choice>
     <xs:attribute name="JoinType" type="en:RelationConditionJoinType" use ="required" />
+  </xs:complexType>
+
+  <xs:complexType name="ConditionExpressionDef">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="Or" type="ConditionExpressionDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="And" type="ConditionExpressionDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="Equal" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="NotEqual" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="GreaterEqual" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="GreaterThan" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="LessEqual" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="LessThan" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+        <xs:element name="IsNull" type="OneOperandOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="IsNotNull" type="OneOperandOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+        <xs:element name="Like" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="BeginWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="EndWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="Contains" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+        <xs:element name="NotLike" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="NotBeginWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="NotEndWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="NotContains" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+        <xs:element name="In" type="InOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="NotIn" type="InOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+        <xs:element name="Between" type="BetweenOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element name="NotBetween" type="BetweenOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OneOperandOperationDef">
+    <xs:choice>
+      <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+      <xs:element name="Value" type="en:ValueOperandDef"></xs:element>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="TwoOperandsOperationDef">
+    <xs:sequence>
+      <xs:choice  minOccurs="1">
+        <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+        <xs:element name="Value" type="en:ValueOperandDef"></xs:element>
+      </xs:choice>
+      <xs:choice minOccurs="1">
+        <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+        <xs:element name="Value" type="en:ValueOperandDef"></xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InOperationDef">
+    <xs:sequence>
+      <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+      <xs:element name="Values">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Value" type="en:ValueOperandDef" minOccurs="1" maxOccurs="unbounded"></xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BetweenOperationDef">
+    <xs:sequence>
+      <xs:choice  minOccurs="1">
+        <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+        <xs:element name="Value" type="en:ValueOperandDef"></xs:element>
+      </xs:choice>
+      <xs:choice minOccurs="1">
+        <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+        <xs:element name="Value" type="en:ValueOperandDef"></xs:element>
+      </xs:choice>
+      <xs:choice minOccurs="1">
+        <xs:element name="Field" type="en:FieldOperandDef"></xs:element>
+        <xs:element name="Value" type="en:ValueOperandDef"></xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FieldOperandDef">
+    <xs:attribute name="Name" type="xs:string" use ="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="ValueOperandDef">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+      </xs:extension>
+    </xs:simpleContent>
   </xs:complexType>
   
   <xs:complexType name="DataSourceDef">
@@ -256,20 +358,6 @@
       <xs:enumeration value="Xml" />
       <xs:enumeration value="Csv" />
       <xs:enumeration value="Excel" />
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="UnitType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Angle.Degree" />
-      <xs:enumeration value="Frequency.Hz" />
-      <xs:enumeration value="Frequency.kHz" />
-      <xs:enumeration value="Frequency.MHz" />
-      <xs:enumeration value="Latitude.DEC" />
-      <xs:enumeration value="Length.m" />
-      <xs:enumeration value="Level.dBm" />
-      <xs:enumeration value="Longitude.DEC" />
-      <xs:enumeration value="Power.dB" />
     </xs:restriction>
   </xs:simpleType>
 
@@ -335,16 +423,34 @@
       <xs:enumeration value="Byte" />
       <xs:enumeration value="Bytes" />
       <xs:enumeration value="Guid" />
+
+      <xs:enumeration value="DateTimeOffset" />
+      <xs:enumeration value="Time" />
+      <xs:enumeration value="Date" />
+      <xs:enumeration value="Char" />
+      <xs:enumeration value="Long" />
+      <xs:enumeration value="Short" />
+      <xs:enumeration value="SignedByte" />
+      <xs:enumeration value="Guid" />
+      <xs:enumeration value="UnsignedShort" />
+      <xs:enumeration value="UnsignedInteger" />
+      <xs:enumeration value="UnsignedLong" />
+      <xs:enumeration value="ClrType" />
+      <xs:enumeration value="ClrEnum" />
+
+      <xs:enumeration value="Xml" />
+      <xs:enumeration value="Json" />
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="SourceVarType">
+  <xs:simpleType name="DataSourceVarType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="INT_1" />
-      <xs:enumeration value="INT_8" />
-      <xs:enumeration value="INT_16" />
-      <xs:enumeration value="INT_32" />
-      <xs:enumeration value="INT_64" />
+      <xs:enumeration value="UNDEFINED"/>
+        
+      <xs:enumeration value="INT08" />
+      <xs:enumeration value="INT16" />
+      <xs:enumeration value="INT32" />
+      <xs:enumeration value="INT64" />
 
       <xs:enumeration value="NCHAR" />
       <xs:enumeration value="NVARCHAR" />
@@ -353,18 +459,21 @@
       <xs:enumeration value="CHAR" />
       <xs:enumeration value="VARCHAR" />
       <xs:enumeration value="TEXT" />
-      
+
+      <xs:enumeration value="BOOL" />
       <xs:enumeration value="BIT" />
       <xs:enumeration value="BYTE" />
       <xs:enumeration value="BYTES" />
       <xs:enumeration value="BLOB" />
 
-      <xs:enumeration value="DATE" />
       <xs:enumeration value="TIME" />
+      <xs:enumeration value="DATE" />
       <xs:enumeration value="DATETIME" />
-      
-      <xs:enumeration value="DOUBLE" />
+      <xs:enumeration value="DATETIMEOFFSET" />
+
+      <xs:enumeration value="MONEY" />
       <xs:enumeration value="FLOAT" />
+      <xs:enumeration value="DOUBLE" />
       <xs:enumeration value="DECIMAL" />
       
       <xs:enumeration value="GUID" />

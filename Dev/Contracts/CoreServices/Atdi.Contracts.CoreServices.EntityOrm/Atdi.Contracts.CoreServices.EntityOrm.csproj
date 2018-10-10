@@ -87,6 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Example\Metadata\DataTypes\Database\Counter.xml" />
+    <Content Include="Example\Metadata\DataTypes\Database\Array.Enum.DataType.xml" />
+    <Content Include="Example\Metadata\DataTypes\Database\Enum.DataType.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.150.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.50.xml" />
@@ -148,7 +150,7 @@
     <None Include="Metadata\Entity.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Example\Metadata\Units\Frequency.MHz" />
+    <Content Include="Example\Metadata\Units\Frequency.MHz.xml" />
     <None Include="Sdrns\Metadata\Units\Frequency.Hz" />
     <None Include="Sdrns\Metadata\Units\Frequency.kHz" />
     <None Include="Sdrns\Metadata\Units\Level.dBm" />
