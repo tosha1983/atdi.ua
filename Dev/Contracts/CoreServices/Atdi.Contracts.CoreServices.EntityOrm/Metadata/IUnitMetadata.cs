@@ -11,10 +11,10 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Имя измерения
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
 
-        string Dimension { get; set; }
+        string Dimension { get; }
 
-        string Category { get; set; }
+        string Category { get; }
     }
 }

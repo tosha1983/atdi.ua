@@ -7,6 +7,7 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Platform.AppComponent;
 using System.Xml.Linq;
+using Atdi.CoreServices.EntityOrm.Metadata;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -19,12 +20,12 @@ namespace Atdi.CoreServices.EntityOrm
             this._config = config;
         }
 
-        public IDataTypeMetadata GetDataTypeMetadata(string dataTypeName)
+        public IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, DataSourceType dataSourceType)
         {
-            IDataTypeMetadata dataTypeMetadata = null;
+            DataTypeMetadata dataTypeMetadata = new DataTypeMetadata();
             if (!string.IsNullOrEmpty(_config.DataTypesPath))
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(_config.DataTypesPath);
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(_config.DataTypesPath+ @"\" + dataSourceType.ToString());
                 System.IO.FileInfo[] list = di.GetFiles();
                 for (int i = 0; i < list.Length; i++)
                 {
@@ -33,9 +34,22 @@ namespace Atdi.CoreServices.EntityOrm
                         XDocument _dataTypeMetadata = XDocument.Load(list[i].FullName);
                         if (_dataTypeMetadata!=null)
                         {
+                            IEnumerable<XAttribute> attributes = _dataTypeMetadata.Element("DataType").Attributes();
+                            if (attributes != null)
+                            {
+                                XAttribute attributeNameDataType = attributes.ToList().Find(x => x.Name == "Name");
+                                if (attributeNameDataType != null)
+                                {
+                                    dataTypeMetadata.Name = attributeNameDataType.Value;
+                                }
+                                XAttribute attributeNameDataSourceType = attributes.ToList().Find(x => x.Name == "DataSourceType");
+                                if (attributeNameDataSourceType != null)
+                                {
+                                    dataTypeMetadata.Name = attributeNameDataType.Value;
+                                }
+                            }
 
-                            XAttribute attributeName = _dataTypeMetadata.Element("DataType").FirstAttribute;
-                            XAttribute attributeDataSourceType = _dataTypeMetadata.Element("DataType").LastAttribute;
+
                             XElement elementAutonum = _dataTypeMetadata.Element("DataType").Element("Autonum");
                             XAttribute attributeStart = _dataTypeMetadata.Element("Autonum").FirstAttribute;
                             XAttribute attributeStep = _dataTypeMetadata.Element("Autonum").LastAttribute;
@@ -50,20 +64,22 @@ namespace Atdi.CoreServices.EntityOrm
                                 if (attributeName.Value == dataTypeName)
                                 {
                                     dataTypeMetadata.Name = attributeName.Value;
+                                    var autonumMetadata = new AutonumMetadata();
                                     if (attributeStart != null)
                                     {
                                         if (attributeStart.Value != null)
                                         {
-                                            dataTypeMetadata.Autonum.Start = Convert.ToInt32(attributeStart.Value);
+                                            autonumMetadata.Start = Convert.ToInt32(attributeStart.Value);
                                         }
                                     }
                                     if (attributeStep != null)
                                     {
                                         if (attributeStep.Value != null)
                                         {
-                                            dataTypeMetadata.Autonum.Step = Convert.ToInt32(attributeStep.Value);
+                                            autonumMetadata.Step = Convert.ToInt32(attributeStep.Value);
                                         }
                                     }
+                                    dataTypeMetadata.Autonum = autonumMetadata;
                                     if (elementCodeVarType != null)
                                     {
                                         DataModels.DataType dataType;
@@ -74,10 +90,10 @@ namespace Atdi.CoreServices.EntityOrm
                                     }
                                     if (attributeDataSourceType != null)
                                     {
-                                        DataSourceType dataSourceType;
-                                        if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceType))
+                                        DataSourceType dataSourceTypelocal;
+                                        if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceTypelocal))
                                         {
-                                            dataTypeMetadata.DataSourceType = dataSourceType;
+                                            dataTypeMetadata.DataSourceType = dataSourceTypelocal;
                                         }
                                     }
                                     if (elementLength != null)
@@ -132,16 +148,16 @@ namespace Atdi.CoreServices.EntityOrm
                                 {
                                     if (attributeNameEntity.Value == entityName)
                                     {
-                                        entityMetadata.Name = attributeNameEntity.Value;
+                                        //entityMetadata.Name = attributeNameEntity.Value;
                                         XAttribute attributeTitle = attributes.ToList().Find(x => x.Name == "Title");
                                         if (attributeTitle!=null)
                                         {
-                                            entityMetadata.Title = attributeTitle.Value;
+                                            //entityMetadata.Title = attributeTitle.Value;
                                         }
                                         XAttribute attributeDesc = attributes.ToList().Find(x => x.Name == "Desc");
                                         if (attributeDesc!=null)
                                         {
-                                            entityMetadata.Desc = attributeDesc.Value;
+                                            //entityMetadata.Desc = attributeDesc.Value;
                                         }
                                         XAttribute attributeType = attributes.ToList().Find(x => x.Name == "Type");
                                         if (attributeType!=null)
@@ -149,7 +165,7 @@ namespace Atdi.CoreServices.EntityOrm
                                             EntityType entityType;
                                             if (Enum.TryParse(attributeType.Value, out entityType))
                                             {
-                                                entityMetadata.Type = entityType;
+                                                //entityMetadata.Type = entityType;
                                             }
                                         }
 
@@ -165,7 +181,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                 DataSourceType dataSourceType;
                                                 if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceType))
                                                 {
-                                                    dataSourceMetadata.Type = dataSourceType;
+                                                    //dataSourceMetadata.Type = dataSourceType;
                                                 }
                                             }
 
@@ -175,7 +191,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                 DataSourceObject dataSourceObject;
                                                 if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceObject))
                                                 {
-                                                    dataSourceMetadata.Object = dataSourceObject;
+                                                    //dataSourceMetadata.Object = dataSourceObject;
                                                 }
                                             }
 
@@ -184,16 +200,16 @@ namespace Atdi.CoreServices.EntityOrm
                                         XElement xElementEntityDataSourceName = _dataTypeMetadata.Element("Entity").Element("DataSource").Element("Name");
                                         if (xElementEntityDataSourceName!=null)
                                         {
-                                            dataSourceMetadata.Name = xElementEntityDataSourceName.Value;
+                                            //dataSourceMetadata.Name = xElementEntityDataSourceName.Value;
                                         }
 
                                         XElement xElementEntityDataSourceSchema = _dataTypeMetadata.Element("Entity").Element("DataSource").Element("Schema");
                                         if (xElementEntityDataSourceSchema!=null)
                                         {
-                                            dataSourceMetadata.Schema = xElementEntityDataSourceSchema.Value;
+                                            //dataSourceMetadata.Schema = xElementEntityDataSourceSchema.Value;
                                         }
 
-                                        entityMetadata.DataSource = dataSourceMetadata;
+                                        //entityMetadata.DataSource = dataSourceMetadata;
 
                                         Dictionary<string, IFieldMetadata> dic = new Dictionary<string, IFieldMetadata>();
                                         XElement xElementEntityFields = _dataTypeMetadata.Element("Entity").Element("Fields");
@@ -214,38 +230,38 @@ namespace Atdi.CoreServices.EntityOrm
                                                     XAttribute attributeEntityFieldName = attributeEntityFields.ToList().Find(x => x.Name == "Name");
                                                     if (attributeEntityFieldName!=null)
                                                     {
-                                                        fieldMetadata.Name = attributeEntityFieldName.Value;
+                                                        //fieldMetadata.Name = attributeEntityFieldName.Value;
                                                     }
                                                     XAttribute attributeEntityFieldSourceName = attributeEntityFields.ToList().Find(x => x.Name == "SourceName");
                                                     if (attributeEntityFieldSourceName!=null)
                                                     {
-                                                        fieldMetadata.SourceName = attributeEntityFieldSourceName.Value;
+                                                        //fieldMetadata.SourceName = attributeEntityFieldSourceName.Value;
                                                     }
                                                     XAttribute attributeEntityFieldDataType = attributeEntityFields.ToList().Find(x => x.Name == "DataType");
                                                     if (attributeEntityFieldDataType!=null)
                                                     {
-                                                        fieldMetadata.DataType = GetDataTypeMetadata(attributeEntityFieldDataType.Value);
+                                                        //fieldMetadata.DataType = GetDataTypeMetadata(attributeEntityFieldDataType.Value);
                                                     }
                                                     XAttribute attributeEntityFieldTitle = attributeEntityFields.ToList().Find(x => x.Name == "Title");
                                                     if (attributeEntityFieldTitle!=null)
                                                     {
-                                                        fieldMetadata.Title = attributeEntityFieldTitle.Value;
+                                                        //fieldMetadata.Title = attributeEntityFieldTitle.Value;
                                                     }
                                                     XAttribute attributeEntityFieldDesc = attributeEntityFields.ToList().Find(x => x.Name == "Desc");
                                                     if (attributeEntityFieldDesc!=null)
                                                     {
-                                                        fieldMetadata.Desc = attributeEntityFieldDesc.Value;
+                                                        //fieldMetadata.Desc = attributeEntityFieldDesc.Value;
                                                     }
                                                     XAttribute attributeEntityFieldRequired = attributeEntityFields.ToList().Find(x => x.Name == "Required");
                                                     if (attributeEntityFieldRequired!=null)
                                                     {
-                                                        fieldMetadata.Required =  attributeEntityFieldRequired.Value.ToLower()=="true" ? true : false;
+                                                        //fieldMetadata.Required =  attributeEntityFieldRequired.Value.ToLower()=="true" ? true : false;
 
                                                     }
                                                     XAttribute attributeEntityFieldUnit = attributeEntityFields.ToList().Find(x => x.Name == "Unit");
                                                     if (attributeEntityFieldUnit!=null)
                                                     {
-                                                        fieldMetadata.Unit= GetUnitMetadata(attributeEntityFieldUnit.Value);
+                                                        //fieldMetadata.Unit= GetUnitMetadata(attributeEntityFieldUnit.Value);
                                                     }
                                                     
                                                     if (attributeEntityFieldSourceType.Value == FieldSourceType.Column.ToString())
@@ -331,37 +347,32 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IUnitMetadata GetUnitMetadata(string unitName)
         {
-            IUnitMetadata unitMetadata = null;
+            UnitMetadata unitMetadata = new UnitMetadata();
             if (!string.IsNullOrEmpty(_config.UnitsPath))
             {
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(_config.UnitsPath);
                 System.IO.FileInfo[] list = di.GetFiles();
                 for (int i = 0; i < list.Length; i++)
                 {
-                    if (list[i].Extension.ToLower() == ".xml")
+                    XDocument _dataTypeMetadata = XDocument.Load(list[i].FullName);
+                    if (_dataTypeMetadata != null)
                     {
-                        XDocument _dataTypeMetadata = XDocument.Load(list[i].FullName);
-                        if (_dataTypeMetadata != null)
+                        XAttribute attributeName = _dataTypeMetadata.Element("Unit").FirstAttribute;
+                        XElement elementDimension = _dataTypeMetadata.Element("Unit").Element("Dimension");
+                        XElement elementCategory = _dataTypeMetadata.Element("Unit").Element("Category");
+
+                        if (attributeName != null)
                         {
-                            XAttribute attributeName = _dataTypeMetadata.Element("Unit").FirstAttribute;
-                            XElement elementDimension = _dataTypeMetadata.Element("Unit").Element("Dimension");
-                            XElement elementCategory = _dataTypeMetadata.Element("Unit").Element("Category");
-
-                            if (attributeName != null)
+                            if (attributeName.Value == unitName)
                             {
-                                if (attributeName.Value == unitName)
+                                unitMetadata.Name = attributeName.Value;
+                                if (elementDimension != null)
                                 {
-                                    unitMetadata.Name = attributeName.Value;
-                                   
-                                    if (elementDimension != null)
-                                    {
-                                        unitMetadata.Dimension = elementDimension.Value;
-                                    }
-
-                                    if (elementCategory != null)
-                                    {
-                                        unitMetadata.Category = elementCategory.Value;
-                                    }
+                                    unitMetadata.Dimension = elementDimension.Value;
+                                }
+                                if (elementCategory != null)
+                                {
+                                    unitMetadata.Category = elementCategory.Value;
                                 }
                             }
                         }

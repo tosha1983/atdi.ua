@@ -9,8 +9,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IPrimaryKeyFieldRefMetadata
     {
-        IPrimaryKeyFieldRefMetadata Field { get; set; }
+        IPrimaryKeyFieldRefMetadata Field { get; }
 
-        SortDirection SortOrder { get; set; }
+        SortDirection SortOrder { get; }
     }
 }

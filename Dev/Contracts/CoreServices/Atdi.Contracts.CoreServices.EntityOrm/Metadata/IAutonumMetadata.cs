@@ -8,7 +8,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IAutonumMetadata
     {
-        int Start { get; set; }
-        int Step { get; set; }
+        int Start { get; }
+        int Step { get; }
     }
 }

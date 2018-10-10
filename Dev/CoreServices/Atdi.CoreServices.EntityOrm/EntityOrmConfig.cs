@@ -11,6 +11,7 @@ namespace Atdi.CoreServices.EntityOrm
 {
     internal sealed class EntityOrmConfig : IEntityOrmConfig
     {
+        private readonly string XsdSchema = "{http://schemas.atdi.com/orm/entity.xsd}";
         private readonly IComponentConfig _config;
         private readonly XDocument _environment;
         public string Name { get; set; }
@@ -27,41 +28,47 @@ namespace Atdi.CoreServices.EntityOrm
             var dataContextsParam = config["EnvironmentFileName"];
             if (dataContextsParam != null)
             {
+                string directory = System.IO.Path.GetDirectoryName(Convert.ToString(dataContextsParam));
                 var dataContextsString = Convert.ToString(dataContextsParam);
                 if (!string.IsNullOrEmpty(dataContextsString))
                 {
                     _environment = XDocument.Load(dataContextsString);
                     if (_environment != null)
                     {
-                        XElement xElement = _environment.Element("Environment");
-                        if (xElement.HasAttributes)
+                        XElement xElement = _environment.Element(XsdSchema+"Environment");
+                        if (xElement != null)
                         {
-                            IEnumerable<XAttribute> xAttributes = xElement.Attributes();
-                            if (xAttributes != null)
+                            if (xElement.HasAttributes)
                             {
-                                XAttribute attrName = xAttributes.ToList().Find(t => t.Name == "Name");
-                                if (attrName != null)
+                                IEnumerable<XAttribute> xAttributes = xElement.Attributes();
+                                if (xAttributes != null)
                                 {
-                                    Name = attrName.Value;
-                                }
-                                XAttribute attrVersion = xAttributes.ToList().Find(t => t.Name == "Version");
-                                if (attrVersion != null)
-                                {
-                                    Version = attrVersion.Value;
+                                    XAttribute attrName = xAttributes.ToList().Find(t => t.Name == "Name");
+                                    if (attrName != null)
+                                    {
+                                        Name = attrName.Value;
+                                    }
+                                    XAttribute attrVersion = xAttributes.ToList().Find(t => t.Name == "Version");
+                                    if (attrVersion != null)
+                                    {
+                                        Version = attrVersion.Value;
+                                    }
                                 }
                             }
+                           
+                            RootPath = xElement.Element(XsdSchema + "RootPath").Value;
+                            Assembly = xElement.Element(XsdSchema + "Assembly").Value;
+                            Namespace = xElement.Element(XsdSchema + "Namespace").Value;
+                            EntitiesPath = directory + @"\"+ xElement.Element(XsdSchema + "EntitiesPath").Value;
+                            DataTypesPath = directory + @"\" + xElement.Element(XsdSchema + "DataTypesPath").Value;
+                            UnitsPath = directory + @"\" + xElement.Element(XsdSchema + "UnitsPath").Value;
                         }
-                        RootPath =  _environment.Element("Environment").Element("RootPath").ToString();
-                        Assembly =  _environment.Element("Environment").Element("Assembly").ToString();
-                        Namespace =  _environment.Element("Environment").Element("Namespace").ToString();
-                        EntitiesPath =  _environment.Element("Environment").Element("EntitiesPath").ToString();
-                        DataTypesPath =  _environment.Element("Environment").Element("DataTypesPath").ToString();
-                        UnitsPath =  _environment.Element("Environment").Element("UnitsPath").ToString();
                     }
                 }
             }
             EntityOrm entityOrm = new EntityOrm(this);
             entityOrm.GetUnitMetadata("Frequency.kHz");
+            entityOrm.GetDataTypeMetadata("Counter.xml", Atdi.Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
         }
     
     }

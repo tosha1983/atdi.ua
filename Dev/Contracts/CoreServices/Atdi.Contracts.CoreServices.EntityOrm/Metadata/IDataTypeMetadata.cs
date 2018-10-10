@@ -11,21 +11,21 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
     public interface IDataTypeMetadata
     {
-        string Name { get; set; }
+        string Name { get; }
 
-        DataSourceType DataSourceType { get; set; }
+        DataSourceType DataSourceType { get; }
 
-        DataType CodeVarType { get; set; }
+        DataType CodeVarType { get; }
 
-        string SourceVarType { get; set; }
+        string SourceVarType { get; }
 
-        int? Length { get; set; }
+        int? Length { get; }
 
-        int? Precision { get; set; }
+        int? Precision { get; }
 
-        int? Scale { get; set; }
+        int? Scale { get; }
 
-        IAutonumMetadata Autonum { get; set; }
+        IAutonumMetadata Autonum { get; }
 
     }
 

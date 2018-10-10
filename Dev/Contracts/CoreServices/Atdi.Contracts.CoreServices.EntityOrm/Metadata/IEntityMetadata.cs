@@ -11,26 +11,26 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Имя сущности
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
         /// <summary>
         /// Отображаемое название сущности
         /// </summary>
-        string Title { get; set; }
+        string Title { get; }
         /// <summary>
         /// Описание сущности и ее назначение
         /// </summary>
-        string Desc { get; set; }
+        string Desc { get; }
 
         /// <summary>
         /// Тип сущности
         /// </summary>
-        EntityType Type { get; set; }
+        EntityType Type { get; }
 
         /// <summary>
         /// Наследуемая сущность
         
         /// </summary>
-        IEntityMetadata BaseEntity { get; set; }
+        IEntityMetadata BaseEntity { get; }
 
         /// <summary>
         /// Вид наследования
@@ -39,26 +39,26 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// 2. Ролевое наследование - Базовая таблица - таблицы ролевых сущностей - Синхронизация значений для пересикающиеся по именам поля среди всех таблиц Общий первичный ключ - отношение один к одному
         /// 3. Простое наследование - Базовой таблицы нет или она не используется - Таблица наследуемой сущности получает все поля базовой сущности, включая первичный ключ - нет физических отношений так как одна таблица.
         /// </summary>
-        InheritanceType? Inheritance { get; set; }
+        InheritanceType? Inheritance { get; }
 
         /// <summary>
         /// Расширяемая сущность
         /// </summary>
-        IEntityMetadata ExtendEntity { get; set; }
+        IEntityMetadata ExtendEntity { get; }
 
         /// <summary>
         /// Описание природы источника данных
         /// </summary>
-        IDataSourceMetadata DataSource { get; set; }
+        IDataSourceMetadata DataSource { get; }
 
         /// <summary>
         ///  Описание первичного ключа сущности
         /// </summary>
-        IPrimaryKeyMetadata PrimaryKey { get; set; }
+        IPrimaryKeyMetadata PrimaryKey { get; }
 
         /// <summary>
         /// Набор полей сущности
         /// </summary>
-        IReadOnlyDictionary<string, IFieldMetadata> Fields { get; set; }
+        IReadOnlyDictionary<string, IFieldMetadata> Fields { get; }
     }
 }

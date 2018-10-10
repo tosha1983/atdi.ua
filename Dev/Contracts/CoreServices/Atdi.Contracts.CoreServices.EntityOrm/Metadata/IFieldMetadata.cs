@@ -11,36 +11,36 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Имя поля или отношения
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
         /// <summary>
         /// Отображаемое название поля или отношения
         /// </summary>
-        string Title { get; set; }
+        string Title { get; }
         /// <summary>
         /// 
         /// </summary>
-        string Desc { get; set; }
+        string Desc { get; }
         /// <summary>
         /// признак обязательности поля
         /// </summary>
-        bool Required { get; set; }
+        bool Required { get;  }
         /// <summary>
         /// Тип источника определения значения поля
         /// </summary>
-        FieldSourceType SourceType { get; set; }
+        FieldSourceType SourceType { get; }
         
         /// <summary>
         /// Описание типа поля
         /// </summary>
-        IDataTypeMetadata DataType { get; set; }
+        IDataTypeMetadata DataType { get; }
         /// <summary>
         /// Единица измерения значения поля
         /// </summary>
-        IUnitMetadata Unit { get; set; }
+        IUnitMetadata Unit { get; }
         /// <summary>
         /// Наименование поля в БД
         /// </summary>
-        string SourceName { get; set; }
+        string SourceName { get; }
 
     }
 }
