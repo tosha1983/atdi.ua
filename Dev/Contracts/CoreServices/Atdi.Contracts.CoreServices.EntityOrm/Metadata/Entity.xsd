@@ -437,6 +437,9 @@
       <xs:enumeration value="UnsignedLong" />
       <xs:enumeration value="ClrType" />
       <xs:enumeration value="ClrEnum" />
+
+      <xs:enumeration value="Xml" />
+      <xs:enumeration value="Json" />
     </xs:restriction>
   </xs:simpleType>
 
