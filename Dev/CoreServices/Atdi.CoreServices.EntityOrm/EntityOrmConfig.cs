@@ -58,8 +58,12 @@ namespace Atdi.CoreServices.EntityOrm
             entityOrm.GetDataTypeMetadata("DateTime", Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
             entityOrm.GetUnitMetadata("Frequency.kHz");
             entityOrm.GetEntityMetadata("AntennaExten1");
+            //entityOrm.GetEntityMetadata("SensorSensitivites");
+
+          
+
         }
-    
+
     }
 
 

@@ -18,12 +18,19 @@ namespace Atdi.CoreServices.EntityOrm
     {
         private readonly IEntityOrmConfig _config;
         private readonly Dictionary<string, IEntityMetadata> _cache;
+        private readonly List<string> _cashecontainerEntity;
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
             _cache = new Dictionary<string, IEntityMetadata>();
+            _cashecontainerEntity = new List<string>();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataTypeName"></param>
+        /// <param name="dataSourceType"></param>
+        /// <returns></returns>
         public IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, Atdi.Contracts.CoreServices.EntityOrm.Metadata.DataSourceType dataSourceType)
         {
             var dataTypeMetadata = new DataTypeMetadata();
@@ -116,7 +123,11 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <returns></returns>
         public IEntityMetadata GetEntityMetadata(string entityName)
         {
             var entityMetadata = new EntityMetadata();
@@ -143,11 +154,19 @@ namespace Atdi.CoreServices.EntityOrm
                             {
                                 if (!string.IsNullOrEmpty(entityObject.BaseEntity))
                                 {
-                                    entityMetadata.BaseEntity = GetEntityMetadata(entityObject.BaseEntity);
+                                    if (!_cashecontainerEntity.Contains(entityObject.BaseEntity))
+                                    {
+                                        _cashecontainerEntity.Add(entityObject.BaseEntity);
+                                        entityMetadata.BaseEntity = GetEntityMetadata(entityObject.BaseEntity);
+                                    }
                                 }
                                 if (!string.IsNullOrEmpty(entityObject.ExtendEntity))
                                 {
-                                    entityMetadata.ExtendEntity = GetEntityMetadata(entityObject.ExtendEntity);
+                                    if (!_cashecontainerEntity.Contains(entityObject.ExtendEntity))
+                                    {
+                                        _cashecontainerEntity.Add(entityObject.ExtendEntity);
+                                        entityMetadata.ExtendEntity = GetEntityMetadata(entityObject.ExtendEntity);
+                                    }
                                 }
                                 var dataSourceMetadata = new DataSourceMetadata();
                                 dataSourceMetadata.Name = entityObject.DataSource.Name;
@@ -156,7 +175,6 @@ namespace Atdi.CoreServices.EntityOrm
                                 dataSourceMetadata.Type = (DataSourceType)Enum.Parse(typeof(DataSourceType), entityObject.DataSource.Type.ToString());
                                 entityMetadata.DataSource = dataSourceMetadata;
                                 var primaryKeyMetadata = new PrimaryKeyMetadata();
-                                //Внедрить также IRelationFieldMetadata и остальные типы, наследуемые от IFieldMetadata
                                 var dictionaryFields = new Dictionary<string, IFieldMetadata>();
                                 entityMetadata.Desc = entityObject.Desc;
                                 var fieldDefs = entityObject.Fields;
@@ -186,10 +204,14 @@ namespace Atdi.CoreServices.EntityOrm
                                         {
                                             fieldMetadata.DataType = GetDataTypeMetadata(fieldDef.DataType, dataSourceMetadata.Type);
                                         }
-                                       
+
                                         if (!string.IsNullOrEmpty(fieldDef.SourceName))
                                         {
-                                            fieldMetadata.RefEntity = GetEntityMetadata(fieldDef.SourceName);
+                                            if (!_cashecontainerEntity.Contains(fieldDef.SourceName))
+                                            {
+                                                _cashecontainerEntity.Add(fieldDef.SourceName);
+                                                fieldMetadata.RefEntity = GetEntityMetadata(fieldDef.SourceName);
+                                            }
                                         }
                                         if ((fieldMetadata.RefEntity != null) && (fieldDef.PrimaryKeyMapping!=null))
                                         {
@@ -197,14 +219,17 @@ namespace Atdi.CoreServices.EntityOrm
                                             Dictionary<string, IPrimaryKeyFieldMappedMetadata> dictionary = new Dictionary<string, IPrimaryKeyFieldMappedMetadata>();
                                             foreach (var ch in fieldDef.PrimaryKeyMapping)
                                             {
-                                                var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
-                                                IFieldMetadata fieldMetadataf = new FieldMetadata();
-                                                if (fieldMetadata.RefEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldMetadataf))
+                                                if (fieldMetadata.RefEntity.Fields != null)
                                                 {
-                                                    primaryKeyFieldMappedMetadata.KeyField = fieldMetadataf;
+                                                    var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
+                                                    IFieldMetadata fieldMetadataf = new FieldMetadata();
+                                                    if (fieldMetadata.RefEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldMetadataf))
+                                                    {
+                                                        primaryKeyFieldMappedMetadata.KeyField = fieldMetadataf;
+                                                    }
+                                                    primaryKeyFieldMappedMetadata.MatchWith = (PrimaryKeyMappedMatchWith)Enum.Parse(typeof(PrimaryKeyMappedMatchWith), ch.MatchWith.ToString());
+                                                    dictionary.Add(ch.Value, primaryKeyFieldMappedMetadata);
                                                 }
-                                                primaryKeyFieldMappedMetadata.MatchWith = (PrimaryKeyMappedMatchWith)Enum.Parse(typeof(PrimaryKeyMappedMatchWith), ch.MatchWith.ToString());
-                                                dictionary.Add(ch.Value, primaryKeyFieldMappedMetadata);
                                             }
                                             primaryKeyFieldMappingMetadata.Fields = dictionary;
                                             fieldMetadata.Mapping = primaryKeyFieldMappingMetadata;
@@ -229,7 +254,11 @@ namespace Atdi.CoreServices.EntityOrm
                                         var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
                                         if (!string.IsNullOrEmpty(fieldDef.SourceName))
                                         {
-                                            fieldMetadata.ExtensionEntity = GetEntityMetadata(fieldDef.SourceName);
+                                            if (!_cashecontainerEntity.Contains(fieldDef.SourceName))
+                                            {
+                                                _cashecontainerEntity.Add(fieldDef.SourceName);
+                                                fieldMetadata.ExtensionEntity = GetEntityMetadata(fieldDef.SourceName);
+                                            }
                                         }
                                         fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
                                         fieldMetadata.Title = fieldDef.Title;
@@ -250,7 +279,11 @@ namespace Atdi.CoreServices.EntityOrm
                                         var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
                                         if (!string.IsNullOrEmpty(fieldDef.SourceName))
                                         {
-                                            fieldMetadata.RelatedEntity = GetEntityMetadata(fieldDef.SourceName);
+                                            if (!_cashecontainerEntity.Contains(fieldDef.SourceName))
+                                            {
+                                                _cashecontainerEntity.Add(fieldDef.SourceName);
+                                                fieldMetadata.RelatedEntity = GetEntityMetadata(fieldDef.SourceName);
+                                            }
                                         }
                                         fieldMetadata.RelationCondition = new DataModels.DataConstraint.ComplexCondition();
                                         ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), fieldDef.RelationCondition.ItemElementName.ToString());
@@ -284,14 +317,11 @@ namespace Atdi.CoreServices.EntityOrm
                                                                         var twoOperans = (expr.Items[z] as Atdi.CoreServices.EntityOrm.Metadata.TwoOperandsOperationDef);
                                                                         if (twoOperans != null)
                                                                         {
-
                                                                             if (twoOperans.Item is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
                                                                             {
-
                                                                                 ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
                                                                                 string Name = (twoOperans.Item as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
                                                                                 ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
-
                                                                             }
                                                                             if (twoOperans.Item is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
                                                                             {
@@ -335,7 +365,6 @@ namespace Atdi.CoreServices.EntityOrm
                                                                                 string Value = (oneOperand.Item as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
                                                                                 ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).RightOperand).Value = Value;
                                                                             }
-
                                                                         }
                                                                     }
                                                                     else if (expr.Items[z] is Atdi.CoreServices.EntityOrm.Metadata.InOperationDef)
@@ -349,9 +378,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                                                 ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
                                                                                 string Name = (oneOperand.Field as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
                                                                                 ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
-
                                                                             }
-
                                                                             if (oneOperand.Values is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef[])
                                                                             {
                                                                                 ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).RightOperand = new DataModels.DataConstraint.StringValuesOperand();
@@ -368,7 +395,6 @@ namespace Atdi.CoreServices.EntityOrm
                                                                     {
                                                                         throw new NotImplementedException();
                                                                     }
-
                                                                 }
                                                             }
                                                         }
@@ -415,7 +441,6 @@ namespace Atdi.CoreServices.EntityOrm
                                 }
                                 entityMetadata.Title = entityObject.Title;
                                 entityMetadata.Type = (EntityType)Enum.Parse(typeof(EntityType), entityObject.Type.ToString());
-                                
                                 isFinded = true;
                             }
                         }
@@ -424,14 +449,20 @@ namespace Atdi.CoreServices.EntityOrm
                     reader.Dispose();
                     if (isFinded)
                     {
-                        _cache.Add(entityName, entityMetadata);
+                        if (!_cache.ContainsKey(entityName))
+                         _cache.Add(entityName, entityMetadata);
                         break;
                     }
                 }
             }
+            _cashecontainerEntity.Clear();
             return entityMetadata;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unitName"></param>
+        /// <returns></returns>
         public IUnitMetadata GetUnitMetadata(string unitName)
         {
             var unitMetadata = new UnitMetadata();
