@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ISdrnServerEnvironment.cs" />
+    <Compile Include="SdrnPrimaryHandlerBase.cs" />
+    <Compile Include="SdrnReceivedMessage.cs" />
     <Compile Include="SdrnServerDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -64,6 +67,10 @@
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
+      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
+      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>

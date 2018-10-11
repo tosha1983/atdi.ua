@@ -34,11 +34,13 @@ namespace Atdi.Modules.Sdrn.MessageBus
         {
             var typeResolver = new MessageObjectTypeResolver();
             typeResolver.Register<DM.Sensor>("RegisterSensor");
+            typeResolver.Register<DM.Sensor>("UpdateSensor");
+
             typeResolver.Register<DM.DeviceCommandResult>("SendCommandResult");
             typeResolver.Register<DM.MeasResults>("SendMeasResults");
             typeResolver.Register<DM.Entity>("SendEntity");
             typeResolver.Register<DM.EntityPart>("SendEntityPart");
-            typeResolver.Register<DM.Sensor>("UpdateSensor");
+            
 
             typeResolver.Register<DM.SensorRegistrationResult>("SendRegistrationResult");
             typeResolver.Register<DM.SensorUpdatingResult>("SendSensorUpdatingResult");

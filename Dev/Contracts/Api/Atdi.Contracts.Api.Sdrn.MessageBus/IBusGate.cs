@@ -16,4 +16,12 @@ namespace Atdi.Contracts.Api.Sdrn.MessageBus
 
         IMessagePublisher CreatePublisher(string publisherTag, IBusEventObserver eventObserver = null);
     }
+
+    public static class BusGateExtention
+    {
+        public static IMessagePublisher CreatePublisher(this IBusGate busGate, object clientObject)
+        {
+            return busGate.CreatePublisher(clientObject.GetType().Name);
+        }
+    }
 }
