@@ -70,6 +70,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                                 XbsYXbsResmeasstation_.Format("*");
                                 XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                                XbsYXbsResmeasstation_.Order = "[ID] ASC";
                                 for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                                 {
                                     var m_fr_2 = new YXbsResmeasstation();
@@ -82,6 +83,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStLevelCar XbsYXbsResLevelMeas_ = new YXbsResStLevelCar();
                                     XbsYXbsResLevelMeas_.Format("*");
                                     XbsYXbsResLevelMeas_.Filter = string.Format("(XBS_RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                    XbsYXbsResLevelMeas_.Order = "[ID] ASC";
                                     for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
                                     {
                                         var m_fr_3 = new YXbsResStLevelCar();
@@ -97,6 +99,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                                     XbsYXbsResGeneral_.Format("*");
                                     XbsYXbsResGeneral_.Filter = string.Format("(RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                    XbsYXbsResGeneral_.Order = "[ID] ASC";
                                     for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
                                     {
                                         var m_fr_4 = new YXbsResStGeneral();
@@ -109,6 +112,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
                                         XbsYXbsResmaskBw_.Format("*");
                                         XbsYXbsResmaskBw_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                        XbsYXbsResmaskBw_.Order = "[ID] ASC";
                                         for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
                                         {
                                             var m_fr_5 = new YXbsResStMaskElm();
@@ -125,6 +129,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         YXbsResStLevelsSpect XbsYXbsLevelSpecrum_ = new YXbsResStLevelsSpect();
                                         XbsYXbsLevelSpecrum_.Format("*");
                                         XbsYXbsLevelSpecrum_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                        XbsYXbsLevelSpecrum_.Order = "[ID] ASC";
                                         for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
                                         {
                                             var m_fr_6 = new YXbsResStLevelsSpect();
@@ -147,6 +152,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
                                 XbsYXbsLevelmeasres_.Format("*");
                                 XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                                XbsYXbsLevelmeasres_.Order = "[ID] ASC";
                                 for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
                                 {
                                     var m_fr_ = new YXbsResLevels();
@@ -162,6 +168,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                                 XbsYXbsLevelmeasonlres_.Format("*");
                                 XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                                XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
                                 for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                                 {
                                     var m_fr_ = new YXbsResLevmeasonline();
@@ -177,6 +184,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                                 XbsYXbsLocationsensorm_.Format("*");
                                 XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                                XbsYXbsLocationsensorm_.Order = "[ID] ASC";
                                 for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                                 {
                                     var m_fr_ = new YXbsResLocSensorMeas();
@@ -231,12 +239,14 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         res_val.Filter = string.Format("(ID={0})", ID);
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             Route route = new Route();
                             YXbsResRoutes XbsYXbsResRoutes_ = new YXbsResRoutes();
                             XbsYXbsResRoutes_.Format("*");
                             XbsYXbsResRoutes_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResRoutes_.Order = "[ID] ASC";
                             for (XbsYXbsResRoutes_.OpenRs(); !XbsYXbsResRoutes_.IsEOF(); XbsYXbsResRoutes_.MoveNext())
                             {
                                 route.RouteId = XbsYXbsResRoutes_.m_routeid;
@@ -291,21 +301,25 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         res_val.Filter = string.Format("(ID={0})", ID);
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             YXbsResmeasstation XbsResmeasstation = new YXbsResmeasstation();
                             XbsResmeasstation.Format("*");
                             XbsResmeasstation.Filter = string.Format("(XBSRESMEASID='{0}')", res_val.m_id);
+                            XbsResmeasstation.Order = "[ID] ASC";
                             for (XbsResmeasstation.OpenRs(); !XbsResmeasstation.IsEOF(); XbsResmeasstation.MoveNext())
                             {
                                 YXbsLinkResSensor LinkResSensor = new YXbsLinkResSensor();
                                 LinkResSensor.Format("*");
                                 LinkResSensor.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsResmeasstation.m_id);
+                                LinkResSensor.Order = "[ID] ASC";
                                 for (LinkResSensor.OpenRs(); !LinkResSensor.IsEOF(); LinkResSensor.MoveNext())
                                 {
                                     YXbsSensorpolig Sensorpolig = new YXbsSensorpolig();
                                     Sensorpolig.Format("*");
                                     Sensorpolig.Filter = string.Format("(SENSORID={0})", LinkResSensor.m_id_xbs_sensor);
+                                    Sensorpolig.Order = "[ID] ASC";
                                     for (Sensorpolig.OpenRs(); !Sensorpolig.IsEOF(); Sensorpolig.MoveNext())
                                     {
                                         SensorPoligonPoint sensorPolygon = new SensorPoligonPoint();
@@ -356,6 +370,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         res_val.Filter = string.Format("(ID={0})", ID);
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -376,6 +391,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
                             XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
                                 var m_fr_1 = new YXbsResmeasstation();
@@ -421,6 +437,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         res_val.Filter = string.Format("(ID={0})", ResId);
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -441,6 +458,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
                             XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0}) AND (IDXBSSTATION={1})", res_val.m_id, StationId);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
                                 var m_fr_1 = new YXbsResmeasstation();
@@ -453,6 +471,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStLevelCar XbsYXbsResLevelMeas_ = new YXbsResStLevelCar();
                                 XbsYXbsResLevelMeas_.Format("*");
                                 XbsYXbsResLevelMeas_.Filter = string.Format("(XBS_RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResLevelMeas_.Order = "[ID] ASC";
                                 for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
                                 {
                                     var m_fr_2 = new YXbsResStLevelCar();
@@ -468,6 +487,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                                 XbsYXbsResGeneral_.Format("*");
                                 XbsYXbsResGeneral_.Filter = string.Format("(RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResGeneral_.Order = "[ID] ASC";
                                 for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
                                 {
                                     var m_fr_3 = new YXbsResStGeneral();
@@ -480,6 +500,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
                                     XbsYXbsResmaskBw_.Format("*");
                                     XbsYXbsResmaskBw_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsResmaskBw_.Order = "[ID] ASC";
                                     for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
                                     {
                                         var m_fr_4 = new YXbsResStMaskElm();
@@ -496,6 +517,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStLevelsSpect XbsYXbsLevelSpecrum_ = new YXbsResStLevelsSpect();
                                     XbsYXbsLevelSpecrum_.Format("*");
                                     XbsYXbsLevelSpecrum_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsLevelSpecrum_.Order = "[ID] ASC";
                                     for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
                                     {
                                         var m_fr_5 = new YXbsResStLevelsSpect();
@@ -550,6 +572,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     YXbsResMeas res_val = new YXbsResMeas();
                     res_val.Format("*");
                     res_val.Filter = string.Format("(ID={0})", ID);
+                    res_val.Order = "[ID] ASC";
                     for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                     {
                         ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -570,6 +593,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                         XbsYXbsResmeasstation_.Format("*");
                         XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                        XbsYXbsResmeasstation_.Order = "[ID] ASC";
                         for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                         {
                             var m_fr_1 = new YXbsResmeasstation();
@@ -582,6 +606,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResStLevelCar XbsYXbsResLevelMeas_ = new YXbsResStLevelCar();
                             XbsYXbsResLevelMeas_.Format("*");
                             XbsYXbsResLevelMeas_.Filter = string.Format("(XBS_RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            XbsYXbsResLevelMeas_.Order = "[ID] ASC";
                             for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
                             {
                                 var m_fr_2 = new YXbsResStLevelCar();
@@ -597,6 +622,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                             XbsYXbsResGeneral_.Format("*");
                             XbsYXbsResGeneral_.Filter = string.Format("(RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                            XbsYXbsResGeneral_.Order = "[ID] ASC";
                             for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
                             {
                                 var m_fr_3 = new YXbsResStGeneral();
@@ -606,9 +632,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 m_fr_3.Dispose();
 
 
-                               YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
+                                YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
                                 XbsYXbsResmaskBw_.Format("*");
                                 XbsYXbsResmaskBw_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                XbsYXbsResmaskBw_.Order = "[ID] ASC";
                                 for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
                                 {
                                     var m_fr_4 = new YXbsResStMaskElm();
@@ -625,6 +652,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStLevelsSpect XbsYXbsLevelSpecrum_ = new YXbsResStLevelsSpect();
                                 XbsYXbsLevelSpecrum_.Format("*");
                                 XbsYXbsLevelSpecrum_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                XbsYXbsLevelSpecrum_.Order = "[ID] ASC";
                                 for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
                                 {
                                     var m_fr_5 = new YXbsResStLevelsSpect();
@@ -649,6 +677,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
                         XbsYXbsLevelmeasres_.Format("*");
                         XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                        XbsYXbsLevelmeasres_.Order = "[ID] ASC";
                         for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
                         {
                             var m_fr_ = new YXbsResLevels();
@@ -665,6 +694,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                         XbsYXbsLevelmeasonlres_.Format("*");
                         XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                        XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
                         for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                         {
                             var m_fr_ = new YXbsResLevmeasonline();
@@ -679,6 +709,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                         XbsYXbsLocationsensorm_.Format("*");
                         XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                        XbsYXbsLocationsensorm_.Order = "[ID] ASC";
                         for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                         {
                             var m_fr_ = new YXbsResLocSensorMeas();
@@ -728,6 +759,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
                         res_val.Filter = string.Format("(ID>0) AND (STATUS<>'Z') AND (TYPEMEASUREMENTS='{0}')", measurementType.ToString());
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -748,6 +780,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
                             XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
                                 var m_fr_1 = new YXbsResmeasstation();
@@ -760,6 +793,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStLevelCar XbsYXbsResLevelMeas_ = new YXbsResStLevelCar();
                                 XbsYXbsResLevelMeas_.Format("*");
                                 XbsYXbsResLevelMeas_.Filter = string.Format("(XBS_RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResLevelMeas_.Order = "[ID] ASC";
                                 for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
                                 {
                                     var m_fr_2 = new YXbsResStLevelCar();
@@ -775,6 +809,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                                 XbsYXbsResGeneral_.Format("*");
                                 XbsYXbsResGeneral_.Filter = string.Format("(RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResGeneral_.Order = "[ID] ASC";
                                 for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
                                 {
                                     var m_fr_3 = new YXbsResStGeneral();
@@ -787,6 +822,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
                                     XbsYXbsResmaskBw_.Format("*");
                                     XbsYXbsResmaskBw_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsResmaskBw_.Order = "[ID] ASC";
                                     for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
                                     {
                                         var m_fr_4 = new YXbsResStMaskElm();
@@ -803,6 +839,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStLevelsSpect XbsYXbsLevelSpecrum_ = new YXbsResStLevelsSpect();
                                     XbsYXbsLevelSpecrum_.Format("*");
                                     XbsYXbsLevelSpecrum_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsLevelSpecrum_.Order = "[ID] ASC";
                                     for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
                                     {
                                         var m_fr_5 = new YXbsResStLevelsSpect();
@@ -828,6 +865,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
                             XbsYXbsLevelmeasres_.Format("*");
                             XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLevelmeasres_.Order = "[ID] ASC";
                             for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevels();
@@ -845,6 +883,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                             XbsYXbsLevelmeasonlres_.Format("*");
                             XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
                             for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevmeasonline();
@@ -860,6 +899,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                             XbsYXbsLocationsensorm_.Format("*");
                             XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLocationsensorm_.Order = "[ID] ASC";
                             for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLocSensorMeas();
@@ -909,6 +949,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
                         res_val.Filter = "(ID>0) AND (STATUS<>'Z')";
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -929,6 +970,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
                             XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
                                 var m_fr_1 = new YXbsResmeasstation();
@@ -941,6 +983,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStLevelCar XbsYXbsResLevelMeas_ = new YXbsResStLevelCar();
                                 XbsYXbsResLevelMeas_.Format("*");
                                 XbsYXbsResLevelMeas_.Filter = string.Format("(XBS_RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResLevelMeas_.Order = "[ID] ASC";
                                 for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
                                 {
                                     var m_fr_2 = new YXbsResStLevelCar();
@@ -956,6 +999,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                                 XbsYXbsResGeneral_.Format("*");
                                 XbsYXbsResGeneral_.Filter = string.Format("(RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResGeneral_.Order = "[ID] ASC";
                                 for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
                                 {
                                     var m_fr_3 = new YXbsResStGeneral();
@@ -968,6 +1012,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
                                     XbsYXbsResmaskBw_.Format("*");
                                     XbsYXbsResmaskBw_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsResmaskBw_.Order = "[ID] ASC";
                                     for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
                                     {
                                         var m_fr_4 = new YXbsResStMaskElm();
@@ -984,6 +1029,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStLevelsSpect XbsYXbsLevelSpecrum_ = new YXbsResStLevelsSpect();
                                     XbsYXbsLevelSpecrum_.Format("*");
                                     XbsYXbsLevelSpecrum_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsLevelSpecrum_.Order = "[ID] ASC";
                                     for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
                                     {
                                         var m_fr_5 = new YXbsResStLevelsSpect();
@@ -1009,6 +1055,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
                             XbsYXbsLevelmeasres_.Format("*");
                             XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLevelmeasres_.Order = "[ID] ASC";
                             for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevels();
@@ -1026,6 +1073,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                             XbsYXbsLevelmeasonlres_.Format("*");
                             XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
                             for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevmeasonline();
@@ -1041,6 +1089,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                             XbsYXbsLocationsensorm_.Format("*");
                             XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLocationsensorm_.Order = "[ID] ASC";
                             for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLocSensorMeas();
@@ -1091,6 +1140,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
                         res_val.Filter = string.Format("(MEASTASKID='{0}') AND (STATUS<>'Z')", MeasTaskId);
+                        res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
                             ClassSDRResults ICSM_T = new ClassSDRResults();
@@ -1109,6 +1159,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
                             XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
                                 var m_fr_1 = new YXbsResmeasstation();
@@ -1121,6 +1172,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStLevelCar XbsYXbsResLevelMeas_ = new YXbsResStLevelCar();
                                 XbsYXbsResLevelMeas_.Format("*");
                                 XbsYXbsResLevelMeas_.Filter = string.Format("(XBS_RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResLevelMeas_.Order = "[ID] ASC";
                                 for (XbsYXbsResLevelMeas_.OpenRs(); !XbsYXbsResLevelMeas_.IsEOF(); XbsYXbsResLevelMeas_.MoveNext())
                                 {
                                     var m_fr_2 = new YXbsResStLevelCar();
@@ -1136,6 +1188,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                                 XbsYXbsResGeneral_.Format("*");
                                 XbsYXbsResGeneral_.Filter = string.Format("(RESMEASSTATIONID={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsResGeneral_.Order = "[ID] ASC";
                                 for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
                                 {
                                     var m_fr_3 = new YXbsResStGeneral();
@@ -1148,6 +1201,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
                                     XbsYXbsResmaskBw_.Format("*");
                                     XbsYXbsResmaskBw_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsResmaskBw_.Order = "[ID] ASC";
                                     for (XbsYXbsResmaskBw_.OpenRs(); !XbsYXbsResmaskBw_.IsEOF(); XbsYXbsResmaskBw_.MoveNext())
                                     {
                                         var m_fr_4 = new YXbsResStMaskElm();
@@ -1164,6 +1218,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     YXbsResStLevelsSpect XbsYXbsLevelSpecrum_ = new YXbsResStLevelsSpect();
                                     XbsYXbsLevelSpecrum_.Format("*");
                                     XbsYXbsLevelSpecrum_.Filter = string.Format("(XBS_RESSTGENERALID={0})", XbsYXbsResGeneral_.m_id);
+                                    XbsYXbsLevelSpecrum_.Order = "[ID] ASC";
                                     for (XbsYXbsLevelSpecrum_.OpenRs(); !XbsYXbsLevelSpecrum_.IsEOF(); XbsYXbsLevelSpecrum_.MoveNext())
                                     {
                                         var m_fr_5 = new YXbsResStLevelsSpect();
@@ -1187,6 +1242,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
                             XbsYXbsLevelmeasres_.Format("*");
                             XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLevelmeasres_.Order = "[ID] ASC";
                             for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevels();
@@ -1203,6 +1259,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
                             XbsYXbsLevelmeasonlres_.Format("*");
                             XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
                             for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLevmeasonline();
@@ -1218,6 +1275,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                             XbsYXbsLocationsensorm_.Format("*");
                             XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLocationsensorm_.Order = "[ID] ASC";
                             for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
                             {
                                 var m_fr_ = new YXbsResLocSensorMeas();
