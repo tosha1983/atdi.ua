@@ -43,15 +43,7 @@
      Title="Name"
      Desc="Name"/>
 
-    <Field Name="Name"
-     SourceType="Column"
-     SourceName="NAME"
-     DataType="Text.150"
-     Required="false"
-     Title="Name"
-     Desc="Name"/>
-
-
+   
     <Field Name="Administration"
      SourceType="Column"
      SourceName="ADMINISTRATION"

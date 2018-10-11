@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.DataConstraint;
-using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
-namespace Atdi.CoreServices.EntityOrm.Metadata
+namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public class RelationFieldMetadata : IRelationFieldMetadata
     {
@@ -29,5 +28,6 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         public IUnitMetadata Unit { get; set; }
 
         public string SourceName { get; set; }
+
     }
 }

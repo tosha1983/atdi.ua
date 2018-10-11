@@ -229,11 +229,246 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class BetweenOperationDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Field", typeof(FieldOperandDef), Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute("Value", typeof(ValueOperandDef), Order=0)]
+        public object Item;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Field", typeof(FieldOperandDef), Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("Value", typeof(ValueOperandDef), Order=1)]
+        public object Item1;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Field", typeof(FieldOperandDef), Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute("Value", typeof(ValueOperandDef), Order=2)]
+        public object Item2;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class FieldOperandDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Name;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class ValueOperandDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Value;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class InOperationDef {
+        
+        /// <remarks/>
+        public FieldOperandDef Field;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayItemAttribute("Value", IsNullable=false)]
+        public ValueOperandDef[] Values;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class OneOperandOperationDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Field", typeof(FieldOperandDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Value", typeof(ValueOperandDef))]
+        public object Item;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class TwoOperandsOperationDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Field", typeof(FieldOperandDef), Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute("Value", typeof(ValueOperandDef), Order=0)]
+        public object Item;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Field", typeof(FieldOperandDef), Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("Value", typeof(ValueOperandDef), Order=1)]
+        public object Item1;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class ConditionExpressionDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("And", typeof(ConditionExpressionDef))]
+        [System.Xml.Serialization.XmlElementAttribute("BeginWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Between", typeof(BetweenOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Contains", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("EndWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Equal", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("GreaterEqual", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("GreaterThan", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("In", typeof(InOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("IsNotNull", typeof(OneOperandOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("IsNull", typeof(OneOperandOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("LessEqual", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("LessThan", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Like", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotBeginWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotBetween", typeof(BetweenOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotContains", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotEndWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotEqual", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotIn", typeof(InOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotLike", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Or", typeof(ConditionExpressionDef))]
+        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemsElementName")]
+        public object[] Items;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ItemsElementName")]
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public ItemsChoiceType[] ItemsElementName;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd", IncludeInSchema=false)]
+    public enum ItemsChoiceType {
+        
+        /// <remarks/>
+        And,
+        
+        /// <remarks/>
+        BeginWith,
+        
+        /// <remarks/>
+        Between,
+        
+        /// <remarks/>
+        Contains,
+        
+        /// <remarks/>
+        EndWith,
+        
+        /// <remarks/>
+        Equal,
+        
+        /// <remarks/>
+        GreaterEqual,
+        
+        /// <remarks/>
+        GreaterThan,
+        
+        /// <remarks/>
+        In,
+        
+        /// <remarks/>
+        IsNotNull,
+        
+        /// <remarks/>
+        IsNull,
+        
+        /// <remarks/>
+        LessEqual,
+        
+        /// <remarks/>
+        LessThan,
+        
+        /// <remarks/>
+        Like,
+        
+        /// <remarks/>
+        NotBeginWith,
+        
+        /// <remarks/>
+        NotBetween,
+        
+        /// <remarks/>
+        NotContains,
+        
+        /// <remarks/>
+        NotEndWith,
+        
+        /// <remarks/>
+        NotEqual,
+        
+        /// <remarks/>
+        NotIn,
+        
+        /// <remarks/>
+        NotLike,
+        
+        /// <remarks/>
+        Or,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
     public partial class RelationConditionDef {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("And", typeof(ConditionExpressionDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Or", typeof(ConditionExpressionDef))]
+        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName")]
+        public ConditionExpressionDef Item;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public ItemChoiceType ItemElementName;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public RelationConditionJoinType JoinType;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd", IncludeInSchema=false)]
+    public enum ItemChoiceType {
+        
+        /// <remarks/>
+        And,
+        
+        /// <remarks/>
+        Or,
     }
     
     /// <remarks/>
@@ -295,11 +530,7 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public UnitType Unit;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool UnitSpecified;
+        public string Unit;
         
         public FieldDef() {
             this.Required = false;
@@ -326,49 +557,6 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         Expression,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
-    public enum UnitType {
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Angle.Degree")]
-        AngleDegree,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Frequency.Hz")]
-        FrequencyHz,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Frequency.kHz")]
-        FrequencykHz,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Frequency.MHz")]
-        FrequencyMHz,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Latitude.DEC")]
-        LatitudeDEC,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Length.m")]
-        Lengthm,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Level.dBm")]
-        LeveldBm,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Longitude.DEC")]
-        LongitudeDEC,
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("Power.dB")]
-        PowerdB,
     }
     
     /// <remarks/>
@@ -437,6 +625,15 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public DataSourceType DataSourceType;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Multiple;
+        
+        public DataTypeDef() {
+            this.Multiple = false;
+        }
     }
     
     /// <remarks/>
@@ -463,6 +660,10 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://schemas.atdi.com/orm/entity.xsd")]
     public partial class DataTypeDefCodeVarType {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string ClrType;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
@@ -504,6 +705,52 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         Guid,
+        
+        /// <remarks/>
+        DateTimeOffset,
+        
+        /// <remarks/>
+        Time,
+        
+        /// <remarks/>
+        Date,
+        
+        /// <remarks/>
+        Char,
+        
+        /// <remarks/>
+        Long,
+        
+        /// <remarks/>
+        Short,
+        
+        /// <remarks/>
+        SignedByte,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("Guid")]
+        Guid1,
+        
+        /// <remarks/>
+        UnsignedShort,
+        
+        /// <remarks/>
+        UnsignedInteger,
+        
+        /// <remarks/>
+        UnsignedLong,
+        
+        /// <remarks/>
+        ClrType,
+        
+        /// <remarks/>
+        ClrEnum,
+        
+        /// <remarks/>
+        Xml,
+        
+        /// <remarks/>
+        Json,
     }
     
     /// <remarks/>
@@ -516,29 +763,29 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public SourceVarType Value;
+        public DataSourceVarType Value;
     }
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
-    public enum SourceVarType {
+    public enum DataSourceVarType {
         
         /// <remarks/>
-        INT_1,
+        UNDEFINED,
         
         /// <remarks/>
-        INT_8,
+        INT08,
         
         /// <remarks/>
-        INT_16,
+        INT16,
         
         /// <remarks/>
-        INT_32,
+        INT32,
         
         /// <remarks/>
-        INT_64,
+        INT64,
         
         /// <remarks/>
         NCHAR,
@@ -559,6 +806,9 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         TEXT,
         
         /// <remarks/>
+        BOOL,
+        
+        /// <remarks/>
         BIT,
         
         /// <remarks/>
@@ -571,19 +821,25 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         BLOB,
         
         /// <remarks/>
-        DATE,
+        TIME,
         
         /// <remarks/>
-        TIME,
+        DATE,
         
         /// <remarks/>
         DATETIME,
         
         /// <remarks/>
-        DOUBLE,
+        DATETIMEOFFSET,
+        
+        /// <remarks/>
+        MONEY,
         
         /// <remarks/>
         FLOAT,
+        
+        /// <remarks/>
+        DOUBLE,
         
         /// <remarks/>
         DECIMAL,

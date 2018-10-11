@@ -11,7 +11,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
     {
         IEntityMetadata GetEntityMetadata(string entityName);
 
-        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, DataSourceType dataSourceType);
+        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, Atdi.Contracts.CoreServices.EntityOrm.Metadata.DataSourceType dataSourceType);
 
         IUnitMetadata GetUnitMetadata(string unitName);
     }

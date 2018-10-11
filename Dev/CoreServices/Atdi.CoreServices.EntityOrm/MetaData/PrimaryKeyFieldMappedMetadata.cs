@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
-namespace Atdi.CoreServices.EntityOrm.Metadata
+
+namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public class PrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata
     {
         public IFieldMetadata KeyField { get; set; }
 
         public PrimaryKeyMappedMatchWith MatchWith { get; set; }
+
     }
 
     public class ValuePrimaryKeyFieldMappedMetadata : IValuePrimaryKeyFieldMappedMetadata

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
-namespace Atdi.CoreServices.EntityOrm.Metadata
+
+namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
 
 
@@ -18,7 +18,7 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
 
         public DataType CodeVarType { get; set; }
 
-        public string SourceVarType { get; set; }
+        public DataSourceVarType SourceVarType { get; set; }
 
         public int? Length { get; set; }
 
@@ -27,6 +27,11 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         public int? Scale { get; set; }
 
         public IAutonumMetadata Autonum { get; set; }
+
+        public Type CodeVarClrType { get; set; }
+
+        public bool Multiple { get; set; }
+
     }
 
 }

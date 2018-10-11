@@ -69,7 +69,6 @@
     Required="false"
     Title="DiagV - 9XV - Vertical diagram"
     Desc="DiagV - 9XV - Vertical diagram"/>
-    
 
     <Field
      Name="SENSORANT"

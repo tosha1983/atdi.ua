@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<DataType Name="DateTime" DataSourceType="Database">
+<DataType Name="DateTime" DataSourceType="Database" xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <Autonum>false</Autonum>
   <CodeVarType>DateTime</CodeVarType>
-  <SourceVarType>DATE</SourceVarType>
+  <SourceVarType>DATETIME</SourceVarType>
 </DataType>

@@ -116,6 +116,7 @@
     </Content>
     <Content Include="Sdrns\Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Counter.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.100.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.1000.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.150.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.10.xml" />

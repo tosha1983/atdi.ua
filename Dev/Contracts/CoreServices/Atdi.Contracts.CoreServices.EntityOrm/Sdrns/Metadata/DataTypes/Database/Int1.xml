@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<DataType Name="Int1" DataSourceType="Database">
+<DataType Name="Int1" DataSourceType="Database"  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <Autonum Start="1" Step="1" />
   <CodeVarType>Integer</CodeVarType>
-  <SourceVarType>INT_1</SourceVarType>
+  <SourceVarType>INT08</SourceVarType>
   <Length>1</Length>
   <Precision>0</Precision>
   <Scale/>

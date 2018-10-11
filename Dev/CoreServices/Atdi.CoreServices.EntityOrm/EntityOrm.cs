@@ -7,7 +7,10 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Platform.AppComponent;
 using System.Xml.Linq;
-using Atdi.CoreServices.EntityOrm.Metadata;
+using System.ComponentModel;
+using System.Xml.Serialization;
+using System.IO;
+
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -18,364 +21,411 @@ namespace Atdi.CoreServices.EntityOrm
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
+            _cache = new Dictionary<string, IEntityMetadata>();
         }
 
-        public IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, DataSourceType dataSourceType)
+        public IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, Atdi.Contracts.CoreServices.EntityOrm.Metadata.DataSourceType dataSourceType)
         {
-            DataTypeMetadata dataTypeMetadata = new DataTypeMetadata();
+            var dataTypeMetadata = new DataTypeMetadata();
             if (!string.IsNullOrEmpty(_config.DataTypesPath))
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(_config.DataTypesPath+ @"\" + dataSourceType.ToString());
-                System.IO.FileInfo[] list = di.GetFiles();
+                bool isFinded = false;
+                var di = new System.IO.DirectoryInfo(_config.DataTypesPath+ @"\" + dataSourceType.ToString());
+                var list = di.GetFiles();
                 for (int i = 0; i < list.Length; i++)
                 {
-                    if (list[i].Extension.ToLower() == ".xml")
+                    var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.DataTypeDef));
+                    var reader = new StreamReader(list[i].FullName);
+                    object resDataTypeDef = serializer.Deserialize(reader);
+                    if (resDataTypeDef is Atdi.CoreServices.EntityOrm.Metadata.DataTypeDef)
                     {
-                        XDocument _dataTypeMetadata = XDocument.Load(list[i].FullName);
-                        if (_dataTypeMetadata!=null)
+                        var dataTypeDef  = resDataTypeDef as Atdi.CoreServices.EntityOrm.Metadata.DataTypeDef;
+                        if (dataTypeDef != null)
                         {
-                            IEnumerable<XAttribute> attributes = _dataTypeMetadata.Element("DataType").Attributes();
-                            if (attributes != null)
+                            if (dataTypeDef.Name == dataTypeName)
                             {
-                                XAttribute attributeNameDataType = attributes.ToList().Find(x => x.Name == "Name");
-                                if (attributeNameDataType != null)
+                                var autonumMetadata = new AutonumMetadata();
+                                dataTypeMetadata.Name = dataTypeDef.Name;
+                                if (dataTypeDef.DataSourceType != null)
                                 {
-                                    dataTypeMetadata.Name = attributeNameDataType.Value;
+                                    dataTypeMetadata.DataSourceType = (DataSourceType)Enum.Parse(typeof(DataSourceType), dataTypeDef.DataSourceType.ToString());
                                 }
-                                XAttribute attributeNameDataSourceType = attributes.ToList().Find(x => x.Name == "DataSourceType");
-                                if (attributeNameDataSourceType != null)
+                                if (dataTypeDef.Autonum != null)
                                 {
-                                    dataTypeMetadata.Name = attributeNameDataType.Value;
+                                    autonumMetadata.Start = (int)dataTypeDef.Autonum.Start;
+                                    autonumMetadata.Step = (int)dataTypeDef.Autonum.Step;
                                 }
-                            }
-
-
-                            XElement elementAutonum = _dataTypeMetadata.Element("DataType").Element("Autonum");
-                            XAttribute attributeStart = _dataTypeMetadata.Element("Autonum").FirstAttribute;
-                            XAttribute attributeStep = _dataTypeMetadata.Element("Autonum").LastAttribute;
-                            XElement elementCodeVarType = _dataTypeMetadata.Element("DataType").Element("CodeVarType");
-                            XElement elementSourceVarType = _dataTypeMetadata.Element("DataType").Element("SourceVarType");
-                            XElement elementLength = _dataTypeMetadata.Element("DataType").Element("Length");
-                            XElement elementPrecision = _dataTypeMetadata.Element("DataType").Element("Precision");
-                            XElement elementScale = _dataTypeMetadata.Element("DataType").Element("Scale");
-                             
-                            if (attributeName != null)
-                            {
-                                if (attributeName.Value == dataTypeName)
+                                dataTypeMetadata.Autonum = autonumMetadata;
+                                if (dataTypeDef.CodeVarType != null)
                                 {
-                                    dataTypeMetadata.Name = attributeName.Value;
-                                    var autonumMetadata = new AutonumMetadata();
-                                    if (attributeStart != null)
+                                    if (!string.IsNullOrEmpty(dataTypeDef.CodeVarType.ClrType))
                                     {
-                                        if (attributeStart.Value != null)
-                                        {
-                                            autonumMetadata.Start = Convert.ToInt32(attributeStart.Value);
-                                        }
-                                    }
-                                    if (attributeStep != null)
-                                    {
-                                        if (attributeStep.Value != null)
-                                        {
-                                            autonumMetadata.Step = Convert.ToInt32(attributeStep.Value);
-                                        }
-                                    }
-                                    dataTypeMetadata.Autonum = autonumMetadata;
-                                    if (elementCodeVarType != null)
-                                    {
-                                        DataModels.DataType dataType;
-                                        if (Enum.TryParse(elementCodeVarType.Value, out dataType))
-                                        {
-                                            dataTypeMetadata.CodeVarType = dataType;
-                                        }
-                                    }
-                                    if (attributeDataSourceType != null)
-                                    {
-                                        DataSourceType dataSourceTypelocal;
-                                        if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceTypelocal))
-                                        {
-                                            dataTypeMetadata.DataSourceType = dataSourceTypelocal;
-                                        }
-                                    }
-                                    if (elementLength != null)
-                                    {
-                                        dataTypeMetadata.Length = (elementLength.Value!=null ? Convert.ToInt32(elementLength.Value) as int? : null);
-                                    }
-                                    if (elementPrecision != null)
-                                    {
-                                        dataTypeMetadata.Precision = (elementPrecision.Value != null ? Convert.ToInt32(elementPrecision.Value) as int? : null);
-                                    }
-                                    if (elementScale != null)
-                                    {
-                                        dataTypeMetadata.Scale = (elementScale.Value != null ? Convert.ToInt32(elementScale.Value) as int? : null);
-                                    }
-                                    if (elementSourceVarType != null)
-                                    {
-                                        dataTypeMetadata.SourceVarType = elementSourceVarType.Value;
+                                        dataTypeMetadata.CodeVarClrType = Type.GetType(dataTypeDef.CodeVarType.ClrType);
                                     }
                                 }
+                                if (dataTypeDef.CodeVarType!=null)
+                                {
+                                    dataTypeMetadata.CodeVarType = (DataModels.DataType)Enum.Parse(typeof(DataModels.DataType), dataTypeDef.CodeVarType.Value.ToString());
+                                }
+                                if (dataTypeDef.DataSourceType != null)
+                                {
+                                    dataTypeMetadata.DataSourceType = (DataSourceType)Enum.Parse(typeof(DataSourceType), dataTypeDef.DataSourceType.ToString());
+                                }
+                                if (dataTypeDef.Length!=null)
+                                {
+                                    dataTypeMetadata.Length = (int)dataTypeDef.Length.Value;
+                                }
+                                dataTypeMetadata.Multiple = dataTypeDef.Multiple;
+                                if (dataTypeDef.Precision != null)
+                                {
+                                    if (dataTypeDef.Precision.Value != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(dataTypeDef.Precision.Value))
+                                        {
+                                            dataTypeMetadata.Precision = Convert.ToInt32(dataTypeDef.Precision.Value);
+                                        }
+                                    }
+                                }
+                                if (dataTypeDef.Scale != null)
+                                {
+                                    if (dataTypeDef.Scale.Value != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(dataTypeDef.Scale.Value))
+                                        {
+                                            dataTypeMetadata.Scale = Convert.ToInt32(dataTypeDef.Scale.Value);
+                                        }
+                                    }
+                                }
+                                if (dataTypeDef.SourceVarType != null)
+                                {
+                                    dataTypeMetadata.SourceVarType = (DataSourceVarType)Enum.Parse(typeof(DataSourceVarType), dataTypeDef.SourceVarType.Value.ToString());
+                                }
+                                isFinded = true;
                             }
                         }
                     }
+                    reader.Close();
+                    reader.Dispose();
+                    if (isFinded)
+                    {
+                        break;
+                    }
                 }
-
             }
             return dataTypeMetadata;
         }
 
+
+
         public IEntityMetadata GetEntityMetadata(string entityName)
         {
-            IEntityMetadata entityMetadata = null;
+            var entityMetadata = new EntityMetadata();
             if (_cache.ContainsKey(entityName))
             {
                 return _cache[entityName];
             }
             if (!string.IsNullOrEmpty(_config.EntitiesPath))
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(_config.EntitiesPath);
-                System.IO.FileInfo[] list = di.GetFiles();
+                bool isFinded = false;
+                var di = new System.IO.DirectoryInfo(_config.EntitiesPath);
+                var list = di.GetFiles();
                 for (int i = 0; i < list.Length; i++)
                 {
-                    if (list[i].Extension.ToLower() == ".xml")
+                    var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.EntityDef));
+                    var reader = new StreamReader(list[i].FullName);
+                    object resEntity = serializer.Deserialize(reader);
+                    if (resEntity is Atdi.CoreServices.EntityOrm.Metadata.EntityDef)
                     {
-                        XDocument _dataTypeMetadata = XDocument.Load(list[i].FullName);
-                        if (_dataTypeMetadata != null)
+                        var entityObject = resEntity as Atdi.CoreServices.EntityOrm.Metadata.EntityDef;
+                        if (entityObject != null)
                         {
-                            IEnumerable<XAttribute> attributes = _dataTypeMetadata.Element("Entity").Attributes();
-                            if (attributes != null)
+                            if (entityObject.Name == entityName)
                             {
-                                XAttribute attributeNameEntity = attributes.ToList().Find(x => x.Name == "Name");
-                                if (attributeNameEntity != null)
+                                if (!string.IsNullOrEmpty(entityObject.BaseEntity))
                                 {
-                                    if (attributeNameEntity.Value == entityName)
+                                    entityMetadata.BaseEntity = GetEntityMetadata(entityObject.BaseEntity);
+                                }
+                                if (!string.IsNullOrEmpty(entityObject.ExtendEntity))
+                                {
+                                    entityMetadata.ExtendEntity = GetEntityMetadata(entityObject.ExtendEntity);
+                                }
+                                var dataSourceMetadata = new DataSourceMetadata();
+                                dataSourceMetadata.Name = entityObject.DataSource.Name;
+                                dataSourceMetadata.Schema = entityObject.DataSource.Schema;
+                                dataSourceMetadata.Object = (DataSourceObject)Enum.Parse(typeof(DataSourceObject), entityObject.DataSource.Object.ToString());
+                                dataSourceMetadata.Type = (DataSourceType)Enum.Parse(typeof(DataSourceType), entityObject.DataSource.Type.ToString());
+                                entityMetadata.DataSource = dataSourceMetadata;
+                                var primaryKeyMetadata = new PrimaryKeyMetadata();
+                                //Внедрить также IRelationFieldMetadata и остальные типы, наследуемые от IFieldMetadata
+                                var dictionaryFields = new Dictionary<string, IFieldMetadata>();
+                                entityMetadata.Desc = entityObject.Desc;
+                                var fieldDefs = entityObject.Fields;
+                                foreach (var fieldDef in fieldDefs)
+                                {
+                                    if (fieldDef.SourceType == Metadata.FieldSourceType.Column)
                                     {
-                                        //entityMetadata.Name = attributeNameEntity.Value;
-                                        XAttribute attributeTitle = attributes.ToList().Find(x => x.Name == "Title");
-                                        if (attributeTitle!=null)
+                                        var fieldMetadata = new FieldMetadata();
+                                        if (fieldDef.DataType != null)
                                         {
-                                            //entityMetadata.Title = attributeTitle.Value;
+                                            fieldMetadata.DataType = GetDataTypeMetadata(fieldDef.DataType, dataSourceMetadata.Type);
                                         }
-                                        XAttribute attributeDesc = attributes.ToList().Find(x => x.Name == "Desc");
-                                        if (attributeDesc!=null)
+
+                                        fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
+                                        fieldMetadata.Title = fieldDef.Title;
+                                        fieldMetadata.SourceType = (FieldSourceType)Enum.Parse(typeof(FieldSourceType), fieldDef.SourceType.ToString());
+                                        fieldMetadata.SourceName = fieldDef.SourceName;
+                                        fieldMetadata.Required = fieldDef.Required;
+                                        fieldMetadata.Name = fieldDef.Name;
+                                        fieldMetadata.Desc = fieldDef.Desc;
+                                        dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                                    }
+                                    else if (fieldDef.SourceType == Metadata.FieldSourceType.Reference)
+                                    {
+                                        var fieldMetadata = new ReferenceFieldMetadata();
+                                        if (fieldDef.DataType != null)
                                         {
-                                            //entityMetadata.Desc = attributeDesc.Value;
+                                            fieldMetadata.DataType = GetDataTypeMetadata(fieldDef.DataType, dataSourceMetadata.Type);
                                         }
-                                        XAttribute attributeType = attributes.ToList().Find(x => x.Name == "Type");
-                                        if (attributeType!=null)
+                                        var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
+                                        //fieldMetadata.Mapping
+                                        //fieldMetadata.RefEntity  
+                                        fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
+                                        fieldMetadata.Title = fieldDef.Title;
+                                        fieldMetadata.SourceType = (FieldSourceType)Enum.Parse(typeof(FieldSourceType), fieldDef.SourceType.ToString());
+                                        fieldMetadata.SourceName = fieldDef.SourceName;
+                                        fieldMetadata.Required = fieldDef.Required;
+                                        fieldMetadata.Name = fieldDef.Name;
+                                        fieldMetadata.Desc = fieldDef.Desc;
+                                        dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                                    }
+                                    else if (fieldDef.SourceType == Metadata.FieldSourceType.Extension)
+                                    {
+                                        var fieldMetadata = new ExtensionFieldMetadata();
+                                        if (fieldDef.DataType != null)
                                         {
-                                            EntityType entityType;
-                                            if (Enum.TryParse(attributeType.Value, out entityType))
+                                            fieldMetadata.DataType = GetDataTypeMetadata(fieldDef.DataType, dataSourceMetadata.Type);
+                                        }
+                                        var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
+                                        //fieldMetadata.ExtensionEntity
+                                        fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
+                                        fieldMetadata.Title = fieldDef.Title;
+                                        fieldMetadata.SourceType = (FieldSourceType)Enum.Parse(typeof(FieldSourceType), fieldDef.SourceType.ToString());
+                                        fieldMetadata.SourceName = fieldDef.SourceName;
+                                        fieldMetadata.Required = fieldDef.Required;
+                                        fieldMetadata.Name = fieldDef.Name;
+                                        fieldMetadata.Desc = fieldDef.Desc;
+                                        dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                                    }
+                                    else if (fieldDef.SourceType == Metadata.FieldSourceType.Relation)
+                                    {
+                                        var fieldMetadata = new RelationFieldMetadata();
+                                        if (fieldDef.DataType != null)
+                                        {
+                                            fieldMetadata.DataType = GetDataTypeMetadata(fieldDef.DataType, dataSourceMetadata.Type);
+                                        }
+                                        var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
+
+                                        DataModels.DataConstraint.ComplexCondition complexCondition = new DataModels.DataConstraint.ComplexCondition();
+                                        fieldMetadata.RelationCondition = new DataModels.DataConstraint.ComplexCondition();
+                                        ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), fieldDef.RelationCondition.ItemElementName.ToString());
+                                        
+                                        if (fieldDef.RelationCondition.Item is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef)
+                                        {
+                                            object[] items = (fieldDef.RelationCondition.Item as Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef).Items;
+                                            if (items!=null)
                                             {
-                                                //entityMetadata.Type = entityType;
-                                            }
-                                        }
-
-                                        IDataSourceMetadata dataSourceMetadata = null;
-                                        IEnumerable<XAttribute> attributesDataSource = _dataTypeMetadata.Element("Entity").Element("DataSource").Attributes();
-                                        if (attributesDataSource != null)
-                                        {
-                                            
-                                            XAttribute attributeDataSourceType = attributesDataSource.ToList().Find(x => x.Name == "Type");
-
-                                            if (attributeDataSourceType != null)
-                                            {
-                                                DataSourceType dataSourceType;
-                                                if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceType))
+                                                ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions = new DataModels.DataConstraint.ComplexCondition[items.Length];
+                                                for (int k=0; k< items.Length; k++)
                                                 {
-                                                    //dataSourceMetadata.Type = dataSourceType;
-                                                }
-                                            }
-
-                                            XAttribute attributeDataSourceObject = attributesDataSource.ToList().Find(x => x.Name == "Object");
-                                            if (attributeDataSourceObject!=null)
-                                            {
-                                                DataSourceObject dataSourceObject;
-                                                if (Enum.TryParse(attributeDataSourceType.Value, out dataSourceObject))
-                                                {
-                                                    //dataSourceMetadata.Object = dataSourceObject;
-                                                }
-                                            }
-
-
-                                        }
-                                        XElement xElementEntityDataSourceName = _dataTypeMetadata.Element("Entity").Element("DataSource").Element("Name");
-                                        if (xElementEntityDataSourceName!=null)
-                                        {
-                                            //dataSourceMetadata.Name = xElementEntityDataSourceName.Value;
-                                        }
-
-                                        XElement xElementEntityDataSourceSchema = _dataTypeMetadata.Element("Entity").Element("DataSource").Element("Schema");
-                                        if (xElementEntityDataSourceSchema!=null)
-                                        {
-                                            //dataSourceMetadata.Schema = xElementEntityDataSourceSchema.Value;
-                                        }
-
-                                        //entityMetadata.DataSource = dataSourceMetadata;
-
-                                        Dictionary<string, IFieldMetadata> dic = new Dictionary<string, IFieldMetadata>();
-                                        XElement xElementEntityFields = _dataTypeMetadata.Element("Entity").Element("Fields");
-                                        IEnumerable<XElement> xElementEntityFieldValues = xElementEntityFields.Elements("Field");
-                                        foreach (XElement elm in xElementEntityFieldValues)
-                                        {
-                                            IFieldMetadata fieldMetadata = null;
-                                            IColumnFieldMetadata columnFieldMetadata = null;
-                                            IRelationFieldMetadata relationFieldMetadata = null;
-                                            IExtensionFieldMetadata extensionFieldMetadata = null;
-                                            IReferenceFieldMetadata referenceFieldMetadata = null;
-                                            if (elm != null)
-                                            {
-                                                IEnumerable<XAttribute> attributeEntityFields = elm.Attributes();
-                                                XAttribute attributeEntityFieldSourceType = attributeEntityFields.ToList().Find(x => x.Name == "SourceType");
-                                                if (attributeEntityFieldSourceType != null)
-                                                {
-                                                    XAttribute attributeEntityFieldName = attributeEntityFields.ToList().Find(x => x.Name == "Name");
-                                                    if (attributeEntityFieldName!=null)
+                                                    ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
+                                                    if (items[k] is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef)
                                                     {
-                                                        //fieldMetadata.Name = attributeEntityFieldName.Value;
-                                                    }
-                                                    XAttribute attributeEntityFieldSourceName = attributeEntityFields.ToList().Find(x => x.Name == "SourceName");
-                                                    if (attributeEntityFieldSourceName!=null)
-                                                    {
-                                                        //fieldMetadata.SourceName = attributeEntityFieldSourceName.Value;
-                                                    }
-                                                    XAttribute attributeEntityFieldDataType = attributeEntityFields.ToList().Find(x => x.Name == "DataType");
-                                                    if (attributeEntityFieldDataType!=null)
-                                                    {
-                                                        //fieldMetadata.DataType = GetDataTypeMetadata(attributeEntityFieldDataType.Value);
-                                                    }
-                                                    XAttribute attributeEntityFieldTitle = attributeEntityFields.ToList().Find(x => x.Name == "Title");
-                                                    if (attributeEntityFieldTitle!=null)
-                                                    {
-                                                        //fieldMetadata.Title = attributeEntityFieldTitle.Value;
-                                                    }
-                                                    XAttribute attributeEntityFieldDesc = attributeEntityFields.ToList().Find(x => x.Name == "Desc");
-                                                    if (attributeEntityFieldDesc!=null)
-                                                    {
-                                                        //fieldMetadata.Desc = attributeEntityFieldDesc.Value;
-                                                    }
-                                                    XAttribute attributeEntityFieldRequired = attributeEntityFields.ToList().Find(x => x.Name == "Required");
-                                                    if (attributeEntityFieldRequired!=null)
-                                                    {
-                                                        //fieldMetadata.Required =  attributeEntityFieldRequired.Value.ToLower()=="true" ? true : false;
-
-                                                    }
-                                                    XAttribute attributeEntityFieldUnit = attributeEntityFields.ToList().Find(x => x.Name == "Unit");
-                                                    if (attributeEntityFieldUnit!=null)
-                                                    {
-                                                        //fieldMetadata.Unit= GetUnitMetadata(attributeEntityFieldUnit.Value);
-                                                    }
-                                                    
-                                                    if (attributeEntityFieldSourceType.Value == FieldSourceType.Column.ToString())
-                                                    {
-                                                        columnFieldMetadata = (IColumnFieldMetadata)fieldMetadata;
-                                                    }
-                                                    else if (attributeEntityFieldSourceType.Value == FieldSourceType.Extension.ToString())
-                                                    {
-                                                        extensionFieldMetadata = (IExtensionFieldMetadata)fieldMetadata;
-                                                    }
-                                                    else if (attributeEntityFieldSourceType.Value == FieldSourceType.Reference.ToString())
-                                                    {
-                                                        referenceFieldMetadata = (IReferenceFieldMetadata)fieldMetadata;
-                                                    }
-                                                    else if (attributeEntityFieldSourceType.Value == FieldSourceType.Relation.ToString())
-                                                    {
-                                                        relationFieldMetadata = (IRelationFieldMetadata)fieldMetadata;
-                                                    }
-                                                    else if (attributeEntityFieldSourceType.Value == FieldSourceType.Expression.ToString())
-                                                    {
-
-                                                    }
-                                                    else
-                                                    {
-                                                        throw new Exception("Unknown SourceType");
-                                                    }
-                                                }
-                                              
-
-
-                                                XElement xElementEntityFieldPrimaryKeyMapping = elm.Element("PrimaryKeyMapping");
-                                                if (xElementEntityFieldPrimaryKeyMapping != null)
-                                                {
-                                                    IEnumerable<XElement> xElementEntityFieldPrimaryKeyMappingMapped = xElementEntityFieldPrimaryKeyMapping.Elements("Mapped");
-                                                    foreach (XElement map in xElementEntityFieldPrimaryKeyMappingMapped)
-                                                    {
-                                                        if (map != null)
+                                                        ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
+                                                        var expr = items[k] as Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef;
+                                                        if (expr != null)
                                                         {
-                                                            IEnumerable<XAttribute> attributesmap = map.Attributes();
-                                                            if (attributesmap != null)
+                                                           
+                                                            if (expr.Items != null)
                                                             {
-                                                                XAttribute attributeKeyFieldName = attributesmap.ToList().Find(x => x.Name == "KeyFieldName");
-                                                                XAttribute attributeMatchWith = attributesmap.ToList().Find(x => x.Name == "MatchWith");
+                                                               
+                                                                ((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), expr.ItemsElementName[k].ToString());
+                                                                ((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions = new DataModels.DataConstraint.ConditionExpression[expr.Items.Length];
+                                                                for (int z = 0; z < expr.Items.Length; z++)
+                                                                {
+                                                                    ((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z] = new DataModels.DataConstraint.ConditionExpression();
+                                                                    if (expr.Items[z] is Atdi.CoreServices.EntityOrm.Metadata.TwoOperandsOperationDef)
+                                                                    {
+                                                                        var twoOperans = (expr.Items[z] as Atdi.CoreServices.EntityOrm.Metadata.TwoOperandsOperationDef);
+                                                                        if (twoOperans != null)
+                                                                        {
+
+                                                                            if (twoOperans.Item is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
+                                                                            {
+                                                                                ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                                                string Name = (twoOperans.Item as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
+                                                                                ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
+
+                                                                            }
+                                                                            else if (twoOperans.Item is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
+                                                                            {
+                                                                                ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.StringValueOperand();
+                                                                                string Value = (twoOperans.Item as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
+                                                                                ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).LeftOperand).Value = Value;
+                                                                            }
+
+                                                                            if (twoOperans.Item1 is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
+                                                                            {
+                                                                                ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                                                string Name = (twoOperans.Item1 as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
+                                                                                ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
+
+                                                                            }
+                                                                            else if (twoOperans.Item1 is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
+                                                                            {
+                                                                                ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.StringValueOperand();
+                                                                                string Value = (twoOperans.Item1 as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
+                                                                                ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).LeftOperand).Value = Value;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else if (expr.Items[z] is Atdi.CoreServices.EntityOrm.Metadata.OneOperandOperationDef)
+                                                                    {
+                                                                        var oneOperand = (expr.Items[z] as Atdi.CoreServices.EntityOrm.Metadata.OneOperandOperationDef);
+                                                                        if (oneOperand != null)
+                                                                        {
+
+                                                                            if (oneOperand.Item is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
+                                                                            {
+                                                                                ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                                                string Name = (oneOperand.Item as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
+                                                                                ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
+
+                                                                            }
+                                                                            else if (oneOperand.Item is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
+                                                                            {
+                                                                                ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.StringValueOperand();
+                                                                                string Value = (oneOperand.Item as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
+                                                                                ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).LeftOperand).Value = Value;
+                                                                            }
+
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
-
-                                                XElement xElementEntityFieldRelationCondition = elm.Element("RelationCondition");
-                                                if (xElementEntityFieldRelationCondition != null)
-                                                {
-
-
-                                                }
                                             }
-                                         
                                         }
 
-                                        XElement xElementEntityPrimaryKey = _dataTypeMetadata.Element("Entity").Element("PrimaryKey");
-                                        IEnumerable<XAttribute> xattrEntityPrimaryKeyClustered = xElementEntityPrimaryKey.Attributes();
-                                        if (xattrEntityPrimaryKeyClustered != null)
+                                       
+                                        /*
+                                        DataModels.DataConstraint.ComplexCondition complexCondition = new DataModels.DataConstraint.ComplexCondition();
+                                        fieldMetadata.RelationCondition = new DataModels.DataConstraint.ComplexCondition();
+                                        ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), fieldDef.RelationCondition.ItemElementName.ToString());
+                                       
+                                        ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions = new DataModels.DataConstraint.ConditionExpression[fieldDef.RelationCondition.Item.Items.Length];
+                                        for (int j=0; j< fieldDef.RelationCondition.Item.Items.Length;j++)
                                         {
-                                            XAttribute attrEntityPrimaryKeyClustered = xattrEntityPrimaryKeyClustered.ToList().Find(x => x.Name == "Clustered");
-                                        }
+                                            ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[j] = new DataModels.DataConstraint.ConditionExpression();
+                                            ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[j]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                            ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[j]).LeftOperand = new DataModels.DataConstraint.ValueOperand();
 
-                                         XElement xElementEntityPrimaryKeyFieldRef = _dataTypeMetadata.Element("Entity").Element("PrimaryKey").Element("FieldRef");
-                                        IEnumerable<XAttribute> xattrEntityPrimaryKeyFieldRef = xElementEntityPrimaryKeyFieldRef.Attributes();
-                                        if (xattrEntityPrimaryKeyFieldRef != null)
-                                        {
-                                            XAttribute attrEntityPrimaryKeyFieldRefName = xattrEntityPrimaryKeyFieldRef.ToList().Find(x => x.Name == "Name");
-                                            XAttribute attrEntityPrimaryKeyFieldRefSortOrder = xattrEntityPrimaryKeyFieldRef.ToList().Find(x => x.Name == "SortOrder");
+                                            
+
+                                            ((DataModels.DataConstraint.ColumnOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[j]).LeftOperand)).ColumnName = fieldDef.RelationCondition.Item.ItemsElementName[j].ToString();
+                                               // = fieldDef.RelationCondition.Item.Items[j]
                                         }
-                                   }
+                                        */
+
+                                        fieldMetadata.RelationCondition.Type =  DataModels.DataConstraint.ConditionType.Complex;
+                                        fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
+                                        fieldMetadata.Title = fieldDef.Title;
+                                        fieldMetadata.SourceType = (FieldSourceType)Enum.Parse(typeof(FieldSourceType), fieldDef.SourceType.ToString());
+                                        fieldMetadata.SourceName = fieldDef.SourceName;
+                                        fieldMetadata.Required = fieldDef.Required;
+                                        fieldMetadata.Name = fieldDef.Name;
+                                        fieldMetadata.Desc = fieldDef.Desc;
+                                        dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                                    }
+                                    else if (fieldDef.SourceType == Metadata.FieldSourceType.Expression)
+                                    {
+                                        throw new NotImplementedException();
+                                    }
+                                    else 
+                                    {
+                                        throw new NotImplementedException();
+                                    }
                                 }
+                                entityMetadata.Fields = dictionaryFields;
+                                entityMetadata.Inheritance = (InheritanceType)Enum.Parse(typeof(InheritanceType), entityObject.Inheritance.ToString());
+                                entityMetadata.Name = entityObject.Name;
+                                if (entityObject.PrimaryKey != null)
+                                {
+                                    primaryKeyMetadata.Clustered = entityObject.PrimaryKey.Clustered;
+                                    var dicIPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                    foreach (var fld in entityObject.PrimaryKey.FieldRef)
+                                    {
+                                        var primaryKeyFieldRefMetadata = new PrimaryKeyFieldRefMetadata();
+                                        primaryKeyFieldRefMetadata.SortOrder = (DataModels.DataConstraint.SortDirection)Enum.Parse(typeof(DataModels.DataConstraint.SortDirection), fld.SortOrder.ToString());
+                                        // здесь вопрос: что нужно присвоить в Field?
+                                        primaryKeyFieldRefMetadata.Field = primaryKeyFieldRefMetadata;
+                                        dicIPrimaryKeyFieldRefMetadata.Add(fld.Name, primaryKeyFieldRefMetadata);
+                                    }
+                                    primaryKeyMetadata.FieldRefs = dicIPrimaryKeyFieldRefMetadata;
+                                    entityMetadata.PrimaryKey = primaryKeyMetadata;
+                                }
+                                entityMetadata.Title = entityObject.Title;
+                                entityMetadata.Type = (EntityType)Enum.Parse(typeof(EntityType), entityObject.Type.ToString());
+                                
+                                isFinded = true;
                             }
                         }
                     }
+                    reader.Close();
+                    reader.Dispose();
+                    if (isFinded)
+                    {
+                        _cache.Add(entityName, entityMetadata);
+                        break;
+                    }
                 }
-                
             }
             return entityMetadata;
         }
 
         public IUnitMetadata GetUnitMetadata(string unitName)
         {
-            UnitMetadata unitMetadata = new UnitMetadata();
+            var unitMetadata = new UnitMetadata();
             if (!string.IsNullOrEmpty(_config.UnitsPath))
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(_config.UnitsPath);
-                System.IO.FileInfo[] list = di.GetFiles();
+                bool isFinded = false;
+                var di = new System.IO.DirectoryInfo(_config.UnitsPath);
+                var list = di.GetFiles();
                 for (int i = 0; i < list.Length; i++)
                 {
-                    XDocument _dataTypeMetadata = XDocument.Load(list[i].FullName);
-                    if (_dataTypeMetadata != null)
+                    var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.UnitDef));
+                    var reader = new StreamReader(list[i].FullName);
+                    object resEntity = serializer.Deserialize(reader);
+                    if (resEntity is Atdi.CoreServices.EntityOrm.Metadata.UnitDef)
                     {
-                        XAttribute attributeName = _dataTypeMetadata.Element("Unit").FirstAttribute;
-                        XElement elementDimension = _dataTypeMetadata.Element("Unit").Element("Dimension");
-                        XElement elementCategory = _dataTypeMetadata.Element("Unit").Element("Category");
-
-                        if (attributeName != null)
+                        var unitObject = resEntity as Atdi.CoreServices.EntityOrm.Metadata.UnitDef;
+                        if (unitObject != null)
                         {
-                            if (attributeName.Value == unitName)
+                            if (unitObject.Name == unitName)
                             {
-                                unitMetadata.Name = attributeName.Value;
-                                if (elementDimension != null)
-                                {
-                                    unitMetadata.Dimension = elementDimension.Value;
-                                }
-                                if (elementCategory != null)
-                                {
-                                    unitMetadata.Category = elementCategory.Value;
-                                }
+                                unitMetadata.Name = unitObject.Name;
+                                unitMetadata.Dimension = unitObject.Dimension.Value;
+                                unitMetadata.Category = unitObject.Category.Value;
+                                isFinded = true;
                             }
                         }
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                    if (isFinded)
+                    {
+                        break;
                     }
                 }
             }
