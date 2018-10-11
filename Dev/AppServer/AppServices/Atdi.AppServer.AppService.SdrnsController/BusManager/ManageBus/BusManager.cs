@@ -119,6 +119,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             autoDelete: false,
                             arguments: null);
 
+                        channel.QueueBind(queueName, exchange, routingKey);
 
                         MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
                         messageConvertSettings.UseEncryption = GlobalInit.UseEncryption;

@@ -98,6 +98,19 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                                 XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
                                                 if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
                                                 {
+                                                    BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
+                                                    if (sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status = "N", DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask))
+                                                    {
+                                                        if (System.IO.File.Exists(list[i].FullName))
+                                                        {
+                                                            System.IO.File.Delete(list[i].FullName);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        _logger.Error("Error sending sensor data from registration temp file to queue 'Sensors_List' ");
+                                                    }
+                                                    /*
                                                     BusManager<Atdi.DataModels.Sdrns.Device.Sensor> sens = new BusManager<Atdi.DataModels.Sdrns.Device.Sensor>();
                                                     if (sens.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.Sensor>("RegisterSensor", new Atdi.DataModels.Sdrns.Device.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new  DataModels.Sdrns.Device.SensorAntenna() , Status = "N", Created = CurrDate.Value, Equipment = new  DataModels.Sdrns.Device.SensorEquipment() { TechId = structXml._SensorEquipmentTechId } }, verRes.Instance, structXml._SensorEquipmentTechId, "v2.0", Guid.NewGuid().ToString()))
                                                     {
@@ -110,6 +123,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                                     {
                                                         _logger.Error("Error sending sensor data from registration temp file to queue 'Sensors_List' ");
                                                     }
+                                                    */
                                                     break;
                                                 }
                                             }
