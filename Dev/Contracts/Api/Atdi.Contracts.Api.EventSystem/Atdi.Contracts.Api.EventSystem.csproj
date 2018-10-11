@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3E641DA-37A7-4137-BBCB-151B6474A62F}</ProjectGuid>
+    <ProjectGuid>{608FAC29-91CB-43AF-A45B-1A0F31870041}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrns.Server.Entities</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrns.Server.Entities</AssemblyName>
+    <RootNamespace>Atdi.Contracts.Api.EventSystem</RootNamespace>
+    <AssemblyName>Atdi.Contracts.Api.EventSystem</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,23 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Example\IAntenna.cs" />
-    <Compile Include="Example\IAntennaBase.cs" />
-    <Compile Include="Example\IAntennaExten1.cs" />
-    <Compile Include="Example\IAntennaPosition.cs" />
-    <Compile Include="ISensor.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="EventEmittingOptions.cs" />
+    <Compile Include="IEvent.cs" />
+    <Compile Include="IEventEmitter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Example\Types\IAntennaType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
-      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
-      <Name>Atdi.DataModels.EntityOrm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

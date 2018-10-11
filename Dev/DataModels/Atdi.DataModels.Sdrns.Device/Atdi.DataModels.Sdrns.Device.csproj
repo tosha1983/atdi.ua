@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Command\DeviceCommandResult.cs" />
     <Compile Include="Command\DeviceCommand.cs" />
+    <Compile Include="DeviceBusMessages.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityPart.cs" />
     <Compile Include="Results\BandwidthMeasResult.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Sensors\SensorUpdatingResult.cs" />
     <Compile Include="Sensors\SensorRegistrationResult.cs" />
     <Compile Include="Results\StationSysInfo.cs" />
+    <Compile Include="ServerBusMessages.cs" />
     <Compile Include="Stations\StandardScanParameter.cs" />
     <Compile Include="Stations\StationLicenseInfo.cs" />
     <Compile Include="Stations\ElementsMask.cs" />

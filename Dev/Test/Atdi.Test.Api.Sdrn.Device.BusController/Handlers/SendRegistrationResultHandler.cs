@@ -8,7 +8,7 @@ using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 {
-    class SendRegistrationResultHandler : MessageHandlerBase<DM.SensorRegistrationResult>
+    class SendRegistrationResultHandler : SdrnPrimaryHandlerBase<DM.SensorRegistrationResult>
     {
         private readonly IBusGate _gate;
 

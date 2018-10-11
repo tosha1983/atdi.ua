@@ -12,4 +12,6 @@ namespace Atdi.Contracts.Api.Sdrn.MessageBus
 
         void Handle(IReceivedMessage<TObject> message);
     }
+
+
 }
