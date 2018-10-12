@@ -12,7 +12,7 @@ using Atdi.Platform.Logging;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
-    class MyTaskHandler : SdrnPrimaryHandlerBase<DM.MeasTask>
+    class MyTaskHandler : MessageHandlerBase<DM.MeasTask>
     {
         public MyTaskHandler() 
             : base("SendMeasTask")

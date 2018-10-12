@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Handlers\UpdateSensorHandler.cs" />
     <Compile Include="Handlers\RegisterSensorHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
