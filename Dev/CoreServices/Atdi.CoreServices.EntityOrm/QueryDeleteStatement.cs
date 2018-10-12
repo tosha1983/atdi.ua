@@ -6,9 +6,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Atdi.CoreServices.EntityOrm
 {
+    internal sealed class QueryDeleteStatement<TModel> : IQueryDeleteStatement<TModel>
+    {
+        private readonly Type ModelType = typeof(TModel);
+        private readonly List<Condition> _conditions;
+        private readonly string _tableName;
+
+        public QueryDeleteStatement()
+        {
+            this._tableName = ModelType.Name;
+            this._conditions = new List<Condition>();
+        }
+
+        public QueryDeleteStatement(string tableName)
+        {
+            this._tableName = tableName;
+            this._conditions = new List<Condition>();
+        }
+        public List<Condition> Conditions => this._conditions;
+        public string TableName => this._tableName;
+
+        public IQueryDeleteStatement<TModel> Where(Condition condition)
+        {
+            if (condition == null)
+            {
+                throw new ArgumentNullException(nameof(condition));
+            }
+
+            this._conditions.Add(condition);
+            return this;
+        }
+
+        public IQueryDeleteStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryDeleteStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryDeleteStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
+        {
+            throw new NotImplementedException();
+        }
+    }
     internal sealed class QueryDeleteStatement : IQueryDeleteStatement
     {
         private readonly List<Condition> _conditions;

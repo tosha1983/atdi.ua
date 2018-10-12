@@ -4,17 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Platform.Logging;
 using Atdi.Platform.AppComponent;
 using System.Xml.Linq;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
+using Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake;
+using Atdi.CoreServices.EntityOrm;
+using MD = Atdi.DataModels.Sdrns.Server.Entities;
+using Atdi.DataModels.DataConstraint;
+using Atdi.Contracts.Sdrn.Server;
 
 
 namespace Atdi.CoreServices.EntityOrm
 {
     internal sealed class EntityOrmConfig : IEntityOrmConfig
     {
+
+        
+        private IDataLayer<EntityDataOrm> _dataLayer;
+        private ILogger _logger;
+        private IEntityOrm _entityOrm;
+
+     
+        public void InitEnvironment()
+        {
+            this._dataLayer = new FakeDataLayer<EntityDataOrm>();
+            this._logger = new FakeLogger();
+        }
+
         private readonly IComponentConfig _config;
         public string Name { get; set; }
         public string Version { get; set; }
@@ -24,9 +44,6 @@ namespace Atdi.CoreServices.EntityOrm
         public string EntitiesPath { get; set; }
         public string DataTypesPath { get; set; }
         public string UnitsPath { get; set; }
-
-
-
 
 
         public EntityOrmConfig(IComponentConfig config)
@@ -60,13 +77,24 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
             }
+
+            this._dataLayer = new FakeDataLayer<EntityDataOrm>();
+            this._logger = new FakeLogger();
             var entityOrm = new EntityOrm(this);
             entityOrm.GetDataTypeMetadata("DateTime", Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
             entityOrm.GetUnitMetadata("Frequency.kHz");
-            entityOrm.GetEntityMetadata("AntennaExten1");
-            //entityOrm.GetEntityMetadata("SensorSensitivites");
+            EnitityOrmDataLayer enitityOrmDataLayer = new EnitityOrmDataLayer(this._dataLayer, entityOrm, this._logger);
+            var query = enitityOrmDataLayer.GetBuilder<MD.ISensor>()
+                     .From()
+                     .Where(c => c.Name, ConditionOperator.Equal, "1")
+                     .Where(c => c.TechId, ConditionOperator.Equal, "2")
+                     .OnTop(1);
+           
+            var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
+                .Execute(query) == 0;
 
-
+            // entityOrm.GetEntityMetadata("AntennaExten1");
+            // entityOrm.GetEntityMetadata("SensorSensitivites");
         }
 
     }

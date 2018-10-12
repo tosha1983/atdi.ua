@@ -12,6 +12,7 @@ using Atdi.Platform.Logging;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 {
+    /*
     class SendCommandHandler : MessageHandlerBase<DM.DeviceCommand>
     {
         private readonly IBusGate _gate;
@@ -31,4 +32,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
         }
 
     }
+    */
 }

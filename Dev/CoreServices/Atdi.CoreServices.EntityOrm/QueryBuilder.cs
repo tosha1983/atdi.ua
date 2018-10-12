@@ -9,12 +9,43 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.CoreServices.EntityOrm
 {
+    internal sealed class QueryBuilder<TModel> : LoggedObject, IQueryBuilder<TModel>
+    {
+        public QueryBuilder(ILogger logger) : base(logger)
+        {
+
+        }
+
+        public IQuerySelectStatement<TModel> From()
+        {
+            IQuerySelectStatement<TModel> querySelectStatement = new QuerySelectStatement<TModel>();
+            return querySelectStatement;
+        }
+
+        public IQueryInsertStatement<TModel> Insert()
+        {
+            IQueryInsertStatement<TModel> queryInsertStatement =  new QueryInsertStatement<TModel>();
+            return queryInsertStatement;
+        }
+
+        public IQueryUpdateStatement<TModel> Update()
+        {
+            IQueryUpdateStatement<TModel> queryUpdateStatement = new QueryUpdateStatement<TModel>();
+            return queryUpdateStatement;
+        }
+
+        public IQueryDeleteStatement<TModel> Delete()
+        {
+            IQueryDeleteStatement<TModel> queryDeleteStatement = new QueryDeleteStatement<TModel>();
+            return queryDeleteStatement;
+        }
+    }
+
     internal sealed class QueryBuilder : LoggedObject, IQueryBuilder
     {
-        private readonly IEntityOrm _entityOrm;
-        public QueryBuilder(IEntityOrm entityOrm, ILogger logger) : base(logger)
+        public QueryBuilder(ILogger logger) : base(logger)
         {
-            this._entityOrm = entityOrm;
+
         }
 
         public IQuerySelectStatement From(string tableName)

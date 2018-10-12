@@ -12,6 +12,7 @@ using Atdi.Platform.Logging;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 {
+    /*
     class SendMeasTaskHandler : MessageHandlerBase<DM.MeasTask>
     {
         private readonly IBusGate _gate;
@@ -21,6 +22,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
         {
             this._gate = gate;
         }
+
 
         public override void OnHandle(ISdrnReceivedMessage<MeasTask> message)
         {
@@ -32,4 +34,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 
 
     }
+    */
 }

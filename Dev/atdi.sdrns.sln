@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDRN Server", "SDRN Server", "{21E7E276-6012-498E-A58D-B5A0D0286465}"
 EndProject
@@ -138,6 +138,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 App Units", "03 App Units", "{06CF8424-8B52-4088-8AE5-9F0DBB529AE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers", "UnitTesting\AppUnits\Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers\Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.csproj", "{5BD0B400-C8A6-45B4-99D8-4BBD5CEADD32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.MessageController", "AppUnits\Atdi.AppUnits.Sdrn.MessageController\Atdi.AppUnits.Sdrn.MessageController.csproj", "{DCC8F282-B405-41F0-9079-3F45971B4CC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.CallEntityOrm", "Test\Atdi.Test.CallEntityOrm\Atdi.Test.CallEntityOrm.csproj", "{21A2F551-B0A7-41C6-B1AE-07305288D843}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.UnitTest.AppUnits.Sdrn.Server.TestOrm", "UnitTesting\AppUnits\Atdi.UnitTest.AppUnits.Sdrn.Server.TestOrm\Atdi.UnitTest.AppUnits.Sdrn.Server.TestOrm.csproj", "{F4D7C101-A2ED-45F5-8D9D-7356D04D7DFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -299,6 +305,18 @@ Global
 		{5BD0B400-C8A6-45B4-99D8-4BBD5CEADD32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BD0B400-C8A6-45B4-99D8-4BBD5CEADD32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BD0B400-C8A6-45B4-99D8-4BBD5CEADD32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A2F551-B0A7-41C6-B1AE-07305288D843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A2F551-B0A7-41C6-B1AE-07305288D843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A2F551-B0A7-41C6-B1AE-07305288D843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A2F551-B0A7-41C6-B1AE-07305288D843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4D7C101-A2ED-45F5-8D9D-7356D04D7DFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4D7C101-A2ED-45F5-8D9D-7356D04D7DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4D7C101-A2ED-45F5-8D9D-7356D04D7DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4D7C101-A2ED-45F5-8D9D-7356D04D7DFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -369,6 +387,9 @@ Global
 		{4613EA7F-1451-43AC-85CF-2D569D780F25} = {21E7E276-6012-498E-A58D-B5A0D0286465}
 		{06CF8424-8B52-4088-8AE5-9F0DBB529AE1} = {4613EA7F-1451-43AC-85CF-2D569D780F25}
 		{5BD0B400-C8A6-45B4-99D8-4BBD5CEADD32} = {06CF8424-8B52-4088-8AE5-9F0DBB529AE1}
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
+		{21A2F551-B0A7-41C6-B1AE-07305288D843} = {8489C394-6CB0-4100-A850-702CF94BAE52}
+		{F4D7C101-A2ED-45F5-8D9D-7356D04D7DFA} = {06CF8424-8B52-4088-8AE5-9F0DBB529AE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

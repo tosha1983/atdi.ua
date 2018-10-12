@@ -300,7 +300,7 @@ namespace Atdi.CoreServices.EntityOrm
 
     internal sealed class QuerySelectStatement<TModel> : IQuerySelectStatement<TModel>
     {
-        private static readonly Type ModelType = typeof(TModel);
+        private readonly Type ModelType = typeof(TModel);
         private readonly QuerySelectStatement _statement;
 
 

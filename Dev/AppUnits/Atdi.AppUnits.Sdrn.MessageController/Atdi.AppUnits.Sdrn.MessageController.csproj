@@ -91,6 +91,10 @@
       <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
       <Name>Atdi.Contracts.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.EntityOrm\Atdi.CoreServices.EntityOrm.csproj">
+      <Project>{0284cba5-d336-4a39-8519-3f2c48d433d7}</Project>
+      <Name>Atdi.CoreServices.EntityOrm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
@@ -98,6 +102,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{f3e641da-37a7-4137-bbcb-151b6474a62f}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
       <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>

@@ -23,8 +23,8 @@ namespace Atdi.AppUnits.Sdrn.MessageController
 
         protected override void OnInstall()
         {
-            //this.Container.Register<RegisterSensorFromDeviceHandler>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.RegisterInstance<RegisterSensorFromDeviceHandler>(new RegisterSensorFromDeviceHandler(), Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<RegisterSensorFromDeviceHandler>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            //this.Container.RegisterInstance<RegisterSensorFromDeviceHandler>(new RegisterSensorFromDeviceHandler(), Platform.DependencyInjection.ServiceLifetime.Singleton);
         }
     }
 }

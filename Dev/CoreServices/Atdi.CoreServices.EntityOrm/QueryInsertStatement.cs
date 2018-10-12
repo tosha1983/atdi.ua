@@ -9,6 +9,55 @@ using System.Threading.Tasks;
 
 namespace Atdi.CoreServices.EntityOrm
 {
+    internal sealed class QueryInsertStatement<TModel> : IQueryInsertStatement<TModel>
+    {
+        private readonly Type ModelType = typeof(TModel);
+        private readonly string _tableName;
+        private readonly List<ColumnValue> _columnsValues;
+
+        public QueryInsertStatement()
+        {
+            this._tableName = ModelType.Name;
+            this._columnsValues = new List<ColumnValue>();
+        }
+
+        public QueryInsertStatement(string tableName)
+        {
+            this._tableName = tableName;
+            this._columnsValues = new List<ColumnValue>();
+        }
+
+        public string TableName => this._tableName;
+
+        public List<ColumnValue> ColumnsValues => this._columnsValues;
+
+        public IQueryInsertStatement<TModel> SetValue(ColumnValue columnValue)
+        {
+            if (columnValue == null)
+            {
+                throw new ArgumentNullException(nameof(columnValue));
+            }
+
+            this._columnsValues.Add(columnValue);
+            return this;
+        }
+
+        public IQueryInsertStatement<TModel> SetValue<TValue>(System.Linq.Expressions.Expression<Func<TModel, TValue>> columnsExpression, TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
+        {
+            if (columnsValues == null)
+            {
+                throw new ArgumentNullException(nameof(columnsValues));
+            }
+
+            this._columnsValues.AddRange(columnsValues);
+            return this;
+        }
+    }
     internal sealed class QueryInsertStatement : IQueryInsertStatement
     {
         private readonly string _tableName;
@@ -47,4 +96,6 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
     }
+
+    
 }

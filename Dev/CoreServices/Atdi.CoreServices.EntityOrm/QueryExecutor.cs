@@ -26,8 +26,8 @@ namespace Atdi.CoreServices.EntityOrm
         public QueryExecutor(IDataEngine dataEngine, EntityOrmQueryBuilder icsmOrmQueryBuilder, ILogger logger) : base(logger)
         {
             this._dataEngine = dataEngine;
-            this._syntax = dataEngine.Syntax;
-            this._conditionParser = new ConditionParser(dataEngine.Syntax);
+            //this._syntax = dataEngine.Syntax;
+            //this._conditionParser = new ConditionParser(dataEngine.Syntax);
             this._icsmOrmQueryBuilder = icsmOrmQueryBuilder;
 
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
@@ -657,16 +657,22 @@ namespace Atdi.CoreServices.EntityOrm
             var command = new EngineCommand();
             if (statement is QueryInsertStatement queryInsertStatement)
             {
-                //command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
             }
             else if (statement is QueryUpdateStatement queryUpdateStatement)
             {
-                //command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
             }
             else if (statement is QueryDeleteStatement queryDeleteStatement)
             {
-                //command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
             }
+            else if (statement is QuerySelectStatement querySelectStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
+            }
+
+            string statementName = statement.GetType().Name;
 
             if (command == null)
             {
@@ -680,7 +686,7 @@ namespace Atdi.CoreServices.EntityOrm
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
             var command = new EngineCommand();
-            //command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
+            command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
 

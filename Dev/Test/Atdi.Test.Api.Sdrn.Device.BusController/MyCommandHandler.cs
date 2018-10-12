@@ -12,7 +12,8 @@ using Atdi.Platform.Logging;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
-    class MyTaskHandler : MessageHandlerBase<DM.MeasTask>
+    /*
+    class MyTaskHandler : MessageHandlerBase<MeasTask>
     {
         public MyTaskHandler() 
             : base("SendMeasTask")
@@ -44,4 +45,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         }
 
     }
+    */
 }
