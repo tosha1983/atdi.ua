@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal sealed class QueryExecutor : LoggedObject, IQueryExecutor
+    internal sealed class QueryExecutor: LoggedObject, IQueryExecutor
     {
         private sealed class DbFieldDescriptor
         {
@@ -23,7 +23,7 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly EntityOrmQueryBuilder _icsmOrmQueryBuilder;
         
 
-        public QueryExecutor(IDataEngine dataEngine, EntityOrmQueryBuilder icsmOrmQueryBuilder, ILogger logger) : base(logger)
+        public QueryExecutor(IDataEngine dataEngine, EntityOrmQueryBuilder icsmOrmQueryBuilder, ILogger logger) : base(logger) 
         {
             this._dataEngine = dataEngine;
             //this._syntax = dataEngine.Syntax;
@@ -647,6 +647,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
         }
 
+
         public int Execute(IQueryStatement statement)
         {
             if (statement == null)
@@ -672,7 +673,42 @@ namespace Atdi.CoreServices.EntityOrm
                 command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
             }
 
-            string statementName = statement.GetType().Name;
+
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            var recordsAffected = this._dataEngine.Execute(command);
+            return recordsAffected;
+        }
+        public int Execute<TModel>(IQueryStatement statement)
+        {
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
+            var command = new EngineCommand();
+            if (statement is QueryInsertStatement<TModel> queryInsertStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+            }
+            else if (statement is QueryUpdateStatement<TModel> queryUpdateStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+            }
+            else if (statement is QueryDeleteStatement<TModel> queryDeleteStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+            }
+            else if (statement is QuerySelectStatement<TModel> querySelectStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement<TModel>(querySelectStatement, command.Parameters);
+            }
+
+
 
             if (command == null)
             {

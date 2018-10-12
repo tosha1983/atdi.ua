@@ -31,10 +31,11 @@ namespace Atdi.CoreServices.EntityOrm
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
        
-         public string BuildSelectStatement(QuerySelectStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+         public string BuildSelectStatement<TModel>(QuerySelectStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters) 
          {
              try
              {
+                statement.Statement.
                  var selectedColumns = statement.Table.Columns.Values.ToArray();
                  var conditionsColumns = new List<ColumnOperand>();
                  AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
@@ -311,5 +312,7 @@ namespace Atdi.CoreServices.EntityOrm
         public void Dispose()
         {
         }
+
+
     }
 }
