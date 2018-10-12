@@ -77,6 +77,10 @@
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.csproj">
+      <Project>{dc9f7815-c9ca-495c-a383-234913fccce6}</Project>
+      <Name>Atdi.AppUnits.Sdrn.Server.PrimaryHandlers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>

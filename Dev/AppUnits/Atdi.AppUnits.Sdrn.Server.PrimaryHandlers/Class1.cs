@@ -26,7 +26,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
             this._executor = dataLayer.Executor<SdrnServerDataContext>();
         }
 
-        void OnMessage()
+        public void OnMessage()
         {
             var queryTypes = this._dataLayer.Builder
                 .From<IAntennaType>()

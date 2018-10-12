@@ -10,12 +10,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.CoreServices.EntityOrm
 {
 
     public sealed class QuerySelectStatement : IQuerySelectStatement
     {
+       
         public sealed class ColumnDescriptor
         {
             public string Table { get; set; }

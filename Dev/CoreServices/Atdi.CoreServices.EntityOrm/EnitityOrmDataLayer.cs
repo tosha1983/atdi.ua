@@ -15,12 +15,13 @@ namespace Atdi.CoreServices.EntityOrm
     {
         private readonly IDataLayer _dataLayer;
         private readonly IQueryBuilder _queryBuilder;
-        
+        private readonly IEntityOrm _entityOrm;
 
-        public EnitityOrmDataLayer(IDataLayer dataLayer, ILogger logger) : base(logger)
+        public EnitityOrmDataLayer(IDataLayer dataLayer, IEntityOrm entityOrm, ILogger logger) : base(logger)
         {
+            this._entityOrm = entityOrm;
             this._dataLayer = dataLayer;
-            this._queryBuilder = new QueryBuilder(logger);
+            this._queryBuilder = new QueryBuilder(entityOrm,logger);
         }
 
         public IQueryBuilder Builder => _queryBuilder;

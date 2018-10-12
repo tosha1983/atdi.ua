@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDRN Server", "SDRN Server", "{21E7E276-6012-498E-A58D-B5A0D0286465}"
 EndProject
@@ -130,6 +130,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.Server.PrimaryHandlers", "AppUnits\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.csproj", "{DC9F7815-C9CA-495C-A383-234913FCCCE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Contracts.Api.EventSystem", "Contracts\Api\Atdi.Contracts.Api.EventSystem\Atdi.Contracts.Api.EventSystem.csproj", "{608FAC29-91CB-43AF-A45B-1A0F31870041}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.MessageController", "AppUnits\Atdi.AppUnits.Sdrn.MessageController\Atdi.AppUnits.Sdrn.MessageController.csproj", "{DCC8F282-B405-41F0-9079-3F45971B4CC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -287,6 +289,10 @@ Global
 		{608FAC29-91CB-43AF-A45B-1A0F31870041}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{608FAC29-91CB-43AF-A45B-1A0F31870041}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{608FAC29-91CB-43AF-A45B-1A0F31870041}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -353,6 +359,7 @@ Global
 		{B6324D12-6E97-4E02-9499-31265565467A} = {63A6FB0B-388B-4046-8217-BF15794BACB4}
 		{DC9F7815-C9CA-495C-A383-234913FCCCE6} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 		{608FAC29-91CB-43AF-A45B-1A0F31870041} = {00BA3C1B-8A9B-496B-8BDD-9A5774A1B442}
+		{DCC8F282-B405-41F0-9079-3F45971B4CC4} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

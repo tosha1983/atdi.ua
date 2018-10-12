@@ -24,8 +24,14 @@ namespace Atdi.CoreServices.EntityOrm
         public string EntitiesPath { get; set; }
         public string DataTypesPath { get; set; }
         public string UnitsPath { get; set; }
+
+
+
+
+
         public EntityOrmConfig(IComponentConfig config)
         {
+          
             this._config = config;
             var dataContextsParam = config["EnvironmentFileName"];
             if (dataContextsParam != null)
@@ -60,7 +66,6 @@ namespace Atdi.CoreServices.EntityOrm
             entityOrm.GetEntityMetadata("AntennaExten1");
             //entityOrm.GetEntityMetadata("SensorSensitivites");
 
-          
 
         }
 

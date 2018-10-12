@@ -28,7 +28,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._schemasMetadata = schemasMetadata;
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
-/*
+        /*
         public string BuildSelectStatement(QuerySelectStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try
