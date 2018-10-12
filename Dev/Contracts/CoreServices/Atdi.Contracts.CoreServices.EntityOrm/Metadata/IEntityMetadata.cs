@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.CoreServices.DataLayer;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
@@ -60,5 +61,6 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// Набор полей сущности
         /// </summary>
         IReadOnlyDictionary<string, IFieldMetadata> Fields { get; }
+
     }
 }

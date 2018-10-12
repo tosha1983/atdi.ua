@@ -17,18 +17,18 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IDataEngine _dataEngine;
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
-        private readonly IEntityMetadata _schemasMetadata;
+        private readonly IEntityMetadata _entityMetadata;
 
         
-        public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityMetadata schemasMetadata, ILogger logger) : base(logger)
+        public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityMetadata entityMetadata, ILogger logger) : base(logger)
         {
             this._dataEngine = dataEngine;
             this._syntax = dataEngine.Syntax;
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
-            this._schemasMetadata = schemasMetadata;
+            this._entityMetadata = entityMetadata;
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
-        /*
+       
         public string BuildSelectStatement(QuerySelectStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try
@@ -65,7 +65,7 @@ namespace Atdi.CoreServices.EntityOrm
                     fieldPaths[index++] = column.Column.Name;
                 }
 
-                var fromExpression = this._schemasMetadata.BuildJoinStatement(this._dataEngine, statement, fieldPaths, out IFieldMetadata[] dbFields);
+                var fromExpression = this._entityMetadata.BuildJoinStatement(this._dataEngine, statement, fieldPaths, out IFieldMetadata[] dbFields);
 
               
                 index = 0;
@@ -157,8 +157,8 @@ namespace Atdi.CoreServices.EntityOrm
                 AppendColumnsFromConditions(statement.Conditions, columns);
                 var columnsArray = columns.ToArray();
 
-                var sourceExpression = this._syntax.EncodeTableName(_schemasMetadata.DataSource.Schema, statement.TableName);
-                var fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out IFieldMetadata[] dbFields);
+                var sourceExpression = this._syntax.EncodeTableName(_entityMetadata.DataSource.Schema, statement.TableName);
+                var fromStatement = this._entityMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out IFieldMetadata[] dbFields);
 
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
@@ -182,7 +182,7 @@ namespace Atdi.CoreServices.EntityOrm
         {
             try
             {
-                var sourceExpression = this._syntax.EncodeTableName(_schemasMetadata.DataSource.Schema, statement.TableName);
+                var sourceExpression = this._syntax.EncodeTableName(_entityMetadata.DataSource.Schema, statement.TableName);
                 var changedColumns = new string[statement.ColumnsValues.Count];
                 var selectedParameters = new string[statement.ColumnsValues.Count];
 
@@ -222,9 +222,9 @@ namespace Atdi.CoreServices.EntityOrm
                 AppendColumnsFromConditions(statement.Conditions, columns);
                 var columnsArray = columns.ToArray();
 
-                var sourceExpression = this._syntax.EncodeTableName(_schemasMetadata.DataSource.Schema, statement.TableName);
+                var sourceExpression = this._syntax.EncodeTableName(_entityMetadata.DataSource.Schema, statement.TableName);
                 var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
-                var fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out IFieldMetadata[] dbFields);
+                var fromStatement = this._entityMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out IFieldMetadata[] dbFields);
 
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
@@ -292,7 +292,7 @@ namespace Atdi.CoreServices.EntityOrm
                 columns.Add(columnOperand);
             }
         }
-*/
+
         public void Dispose()
         {
         }
