@@ -37,23 +37,28 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 throw new ArgumentNullException(nameof(columnValue));
             }
-
             this._columnsValues.Add(columnValue);
             return this;
         }
 
         public IQueryInsertStatement<TModel> SetValue<TValue>(System.Linq.Expressions.Expression<Func<TModel, TValue>> columnsExpression, TValue value)
         {
-            throw new NotImplementedException();
+            var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
+            return this;
         }
 
+      
         public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
         {
             if (columnsValues == null)
             {
                 throw new ArgumentNullException(nameof(columnsValues));
             }
-
             this._columnsValues.AddRange(columnsValues);
             return this;
         }

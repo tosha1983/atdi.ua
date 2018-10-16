@@ -13,6 +13,7 @@ namespace Atdi.CoreServices.EntityOrm
 {
     internal sealed class QueryUpdateStatement<TModel> : IQueryUpdateStatement<TModel>
     {
+       
         private readonly Type ModelType = typeof(TModel);
         private readonly List<Condition> _conditions;
         private readonly string _tableName;
@@ -38,9 +39,17 @@ namespace Atdi.CoreServices.EntityOrm
 
         public List<ColumnValue> ColumnsValues => this._columnsValues;
 
+
+      
         public IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value)
         {
-            throw new NotImplementedException();
+            var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
+            return this;
         }
 
         public IQueryUpdateStatement<TModel> Where(Condition condition)
@@ -56,17 +65,20 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IQueryUpdateStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
         {
-            throw new NotImplementedException();
+            this.Where(Atdi.CoreServices.EntityOrm.QuerySelectStatement<TModel>.ParseConditionExpression(expression));
+            return this;
         }
 
         public IQueryUpdateStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
         {
-            throw new NotImplementedException();
+            this.Where(Atdi.CoreServices.EntityOrm.QuerySelectStatement<TModel>.ParseConditionExpression(expression));
+            return this;
         }
 
         public IQueryUpdateStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
         {
-            throw new NotImplementedException();
+            this.Where(Atdi.CoreServices.EntityOrm.QuerySelectStatement<TModel>.ParseCondition(columnExpression, conditionOperator, values));
+            return this;
         }
 
         IQueryUpdateStatement<TModel> SetValue(ColumnValue columnValue)

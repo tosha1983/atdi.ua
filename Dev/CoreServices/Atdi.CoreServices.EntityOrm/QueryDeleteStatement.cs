@@ -43,17 +43,20 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IQueryDeleteStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
         {
-            throw new NotImplementedException();
+            this.Where(Atdi.CoreServices.EntityOrm.QuerySelectStatement<TModel>.ParseConditionExpression(expression));
+            return this;
         }
 
         public IQueryDeleteStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
         {
-            throw new NotImplementedException();
+            this.Where(Atdi.CoreServices.EntityOrm.QuerySelectStatement<TModel>.ParseConditionExpression(expression));
+            return this;
         }
 
         public IQueryDeleteStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
         {
-            throw new NotImplementedException();
+            this.Where(Atdi.CoreServices.EntityOrm.QuerySelectStatement<TModel>.ParseCondition(columnExpression, conditionOperator, values));
+            return this;
         }
     }
     internal sealed class QueryDeleteStatement : IQueryDeleteStatement

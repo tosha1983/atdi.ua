@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal sealed class QueryExecutor: LoggedObject, IQueryExecutor
+    internal sealed class QueryExecutor : LoggedObject, IQueryExecutor
     {
         private sealed class DbFieldDescriptor
         {
@@ -601,35 +601,13 @@ namespace Atdi.CoreServices.EntityOrm
             return dataSet;
         }
 
-        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Atdi.Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
-        {
-            try
-            {
-                var objectStatment = statement as QuerySelectStatement;
-                var command = this.BuildSelectCommand(objectStatment);
-
-                var result = default(TResult);
-                _dataEngine.Execute(command, reader =>
-                {
-                    var columnsMapper = objectStatment.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
-                    var typedReader = new QueryDataReader(reader, columnsMapper);
-                    result = handler(typedReader);
-                });
-                return result;
-            }
-            catch(Exception e)
-            {
-                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.FetchingData, e);
-                throw;
-            }
-        }
 
         public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
             try
             {
                 var objectStatment = statement as QuerySelectStatement<TModel>;
-                var command = this.BuildSelectCommand(objectStatment.Statement);
+                var command = this.BuildSelectCommand(objectStatment);
 
                 var result = default(TResult);
                 _dataEngine.Execute(command, reader =>
@@ -647,7 +625,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
         }
 
-
+        /*
         public int Execute(IQueryStatement statement)
         {
             if (statement == null)
@@ -683,6 +661,8 @@ namespace Atdi.CoreServices.EntityOrm
             var recordsAffected = this._dataEngine.Execute(command);
             return recordsAffected;
         }
+        */
+      
         public int Execute<TModel>(IQueryStatement statement)
         {
             if (statement == null)
@@ -705,10 +685,8 @@ namespace Atdi.CoreServices.EntityOrm
             }
             else if (statement is QuerySelectStatement<TModel> querySelectStatement)
             {
-                command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement<TModel>(querySelectStatement, command.Parameters);
+                command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
             }
-
-
 
             if (command == null)
             {
@@ -719,13 +697,56 @@ namespace Atdi.CoreServices.EntityOrm
             return recordsAffected;
         }
 
-        private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
+
+        private EngineCommand BuildSelectCommand<TModel>(QuerySelectStatement<TModel> statement)
         {
             var command = new EngineCommand();
             command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
 
+        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        
+        public int Execute(IQueryStatement statement)
+        {
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
+            
+
+            var command = new EngineCommand();
+            if (statement is QueryInsertStatement queryInsertStatement)
+            {
+                //command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+            }
+            else if (statement is QueryUpdateStatement queryUpdateStatement)
+            {
+                //command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+            }
+            else if (statement is QueryDeleteStatement queryDeleteStatement)
+            {
+                //command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+            }
+            else if (statement.GetType().IsGenericType && statement.GetType().GetGenericTypeDefinition().Equals(typeof(QuerySelectStatement<>)))
+            {
+                //command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
+            }
+
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            var recordsAffected = this._dataEngine.Execute(command);
+            return recordsAffected;
+        }
     }
 }
 

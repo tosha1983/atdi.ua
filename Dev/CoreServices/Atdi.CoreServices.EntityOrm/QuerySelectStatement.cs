@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Contracts.CoreServices.EntityOrm;
+using Atdi.DataModels;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -21,6 +22,8 @@ namespace Atdi.CoreServices.EntityOrm
         public sealed class ColumnDescriptor
         {
             public string Table { get; set; }
+
+            public string DBTable { get; set; }
 
             public string Name { get; set; }
 
@@ -302,7 +305,7 @@ namespace Atdi.CoreServices.EntityOrm
     {
         private readonly Type ModelType = typeof(TModel);
         private readonly QuerySelectStatement _statement;
-
+        private static IFormatProvider CultureEnUs = new System.Globalization.CultureInfo("en-US");
 
         public QuerySelectStatement Statement => _statement;
 
@@ -469,6 +472,7 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 
+
         private static ValueOperand ParseValueOperand<TValue>(TValue value)
         {
             var type = typeof(TValue);
@@ -552,7 +556,7 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 
-        private static Condition ParseCondition<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
+        public static Condition ParseCondition<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
         {
             var condition = new ConditionExpression
             {
@@ -616,13 +620,13 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        private static Condition ParseConditionExpression(Expression<Func<TModel, bool>> expression)
+        public static Condition ParseConditionExpression(Expression<Func<TModel, bool>> expression)
         {
             var body = expression.Body;
             return ParseExpression(body);
         }
 
-        private static Condition ParseConditionExpression(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
+        public static Condition ParseConditionExpression(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
         {
             var body = expression.Body;
             return ParseExpression(body);
@@ -968,7 +972,99 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ExpressionNodeTypeNotSupported.With(expression.NodeType.ToString()));
         }
 
-        private static string GetMemberName<TValue>(Expression<Func<TModel, TValue>> expression)
+        public static ColumnValue GetColumnValue(object value, string nameColumn)
+        {
+            ColumnValue result = null;
+            switch (value.GetType().ToString())
+            {
+                case "System.String":
+                    result = new StringColumnValue
+                    {
+                        Value = value.ToString() ?? null,
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Boolean":
+                    bool valueBool = false; int valueInt = 0;
+                    if (bool.TryParse(value.ToString(), out valueBool))
+                    {
+                        result = new BooleanColumnValue
+                        {
+                            Value = (value == null) ? (bool?)null : valueBool as bool?,
+                            Name = nameColumn
+                        };
+                    }
+                    else if (int.TryParse(value.ToString(), out valueInt))
+                    {
+                        result = new BooleanColumnValue
+                        {
+                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Name = nameColumn
+                        };
+                    }
+                    break;
+                case "System.Integer":
+                    result = new IntegerColumnValue
+                    {
+                        Value = (value == null) ? (int?)null : (int.Parse(value.ToString(), CultureEnUs) as int?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.DateTime":
+                    result = new DateTimeColumnValue
+                    {
+                        Value = (value == null) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Double":
+                    result = new DoubleColumnValue
+                    {
+                        Value = (value == null) ? (double?)null : (double.Parse(value.ToString(), CultureEnUs) as double?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Float":
+                    result = new FloatColumnValue
+                    {
+                        Value = (value == null) ? (float?)null : (float.Parse(value.ToString(), CultureEnUs) as float?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Decimal":
+                    result = new DecimalColumnValue
+                    {
+                        Value = (value == null) ? (decimal?)null : (decimal.Parse(value.ToString(), CultureEnUs) as decimal?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Byte":
+                    result = new ByteColumnValue
+                    {
+                        Value = (value == null) ? (byte?)null : Convert.ToByte(value) as byte?,
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Bytes":
+                    result = new BytesColumnValue
+                    {
+                        Value = (value == null) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value.ToString()),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Guid":
+                    result = new GuidColumnValue
+                    {
+                        Value = (value == null) ? (Guid?)null : (Guid.Parse(value.ToString()) as Guid?),
+                        Name = nameColumn
+                    };
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
+            }
+            return result;
+        }
+        public static string GetMemberName<TValue>(Expression<Func<TModel, TValue>> expression)
         {
             //if (ModelType != expression.Body.Type)
             //{

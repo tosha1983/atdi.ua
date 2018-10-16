@@ -76,6 +76,7 @@
     <Compile Include="QueryInsertStatement.cs" />
     <Compile Include="QuerySelectStatement.cs" />
     <Compile Include="QueryUpdateStatement.cs" />
+    <Compile Include="SchemasMetadata.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>

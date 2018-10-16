@@ -173,6 +173,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
                 return 0;
             }
 
+            public int Execute<TModel>(IQueryStatement statement)
+            {
+                throw new NotImplementedException();
+            }
+
             public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)
             {
                 return default(TResult);
@@ -313,7 +318,7 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         {
             public IDataEngineConfig Config => throw new NotImplementedException();
 
-            public IEngineSyntax Syntax => throw new NotImplementedException();
+            public IEngineSyntax Syntax =>  throw new NotImplementedException();
 
             public void Execute(EngineCommand command, Action<System.Data.IDataReader> handler)
             {

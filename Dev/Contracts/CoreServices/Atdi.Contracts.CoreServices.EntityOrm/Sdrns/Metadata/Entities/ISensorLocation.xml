@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "SensorLocation" 
+  Name        = "ISensorLocation" 
   Title       = "SensorLocation" 
   Desc        = "The sensor location"
   Type        = "Normal"
@@ -89,7 +89,7 @@
     <Field
     Name="SENSOR"
     SourceType="Reference"
-    SourceName ="Sensor"
+    SourceName ="ISensor"
     Title="Relation SensorEquipment to Sensor" >
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>

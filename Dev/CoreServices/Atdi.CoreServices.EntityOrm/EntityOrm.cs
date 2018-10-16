@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
+using System.Reflection;
 
 
 namespace Atdi.CoreServices.EntityOrm
@@ -19,11 +20,13 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IEntityOrmConfig _config;
         private readonly Dictionary<string, IEntityMetadata> _cache;
         private readonly List<string> _cashecontainerEntity;
+        private readonly List<IEntityMetadata> _cashecontainerEntityList;
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
             _cache = new Dictionary<string, IEntityMetadata>();
             _cashecontainerEntity = new List<string>();
+            _cashecontainerEntityList = new List<IEntityMetadata>();
         }
         /// <summary>
         /// 
@@ -158,6 +161,11 @@ namespace Atdi.CoreServices.EntityOrm
                                     {
                                         _cashecontainerEntity.Add(entityObject.BaseEntity);
                                         entityMetadata.BaseEntity = GetEntityMetadata(entityObject.BaseEntity);
+                                        _cashecontainerEntityList.Add(entityMetadata.BaseEntity);
+                                    }
+                                    else
+                                    {
+                                        entityMetadata.BaseEntity = _cashecontainerEntityList.Find(t=>t.Name == entityObject.BaseEntity);
                                     }
                                 }
                                 if (!string.IsNullOrEmpty(entityObject.ExtendEntity))
@@ -166,6 +174,11 @@ namespace Atdi.CoreServices.EntityOrm
                                     {
                                         _cashecontainerEntity.Add(entityObject.ExtendEntity);
                                         entityMetadata.ExtendEntity = GetEntityMetadata(entityObject.ExtendEntity);
+                                        _cashecontainerEntityList.Add(entityMetadata.ExtendEntity);
+                                    }
+                                    else
+                                    {
+                                        entityMetadata.ExtendEntity = _cashecontainerEntityList.Find(t => t.Name == entityObject.ExtendEntity);
                                     }
                                 }
                                 var dataSourceMetadata = new DataSourceMetadata();
@@ -211,6 +224,11 @@ namespace Atdi.CoreServices.EntityOrm
                                             {
                                                 _cashecontainerEntity.Add(fieldDef.SourceName);
                                                 fieldMetadata.RefEntity = GetEntityMetadata(fieldDef.SourceName);
+                                                _cashecontainerEntityList.Add(fieldMetadata.RefEntity);
+                                            }
+                                            else
+                                            {
+                                                fieldMetadata.RefEntity = _cashecontainerEntityList.Find(t => t.Name == fieldDef.SourceName);
                                             }
                                         }
                                         if ((fieldMetadata.RefEntity != null) && (fieldDef.PrimaryKeyMapping!=null))
@@ -258,6 +276,11 @@ namespace Atdi.CoreServices.EntityOrm
                                             {
                                                 _cashecontainerEntity.Add(fieldDef.SourceName);
                                                 fieldMetadata.ExtensionEntity = GetEntityMetadata(fieldDef.SourceName);
+                                                _cashecontainerEntityList.Add(fieldMetadata.ExtensionEntity);
+                                            }
+                                            else
+                                            {
+                                                fieldMetadata.ExtensionEntity = _cashecontainerEntityList.Find(t => t.Name == fieldDef.SourceName);
                                             }
                                         }
                                         fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
@@ -283,6 +306,11 @@ namespace Atdi.CoreServices.EntityOrm
                                             {
                                                 _cashecontainerEntity.Add(fieldDef.SourceName);
                                                 fieldMetadata.RelatedEntity = GetEntityMetadata(fieldDef.SourceName);
+                                                _cashecontainerEntityList.Add(fieldMetadata.RelatedEntity);
+                                            }
+                                            else
+                                            {
+                                                fieldMetadata.RelatedEntity = _cashecontainerEntityList.Find(t => t.Name == fieldDef.SourceName);
                                             }
                                         }
                                         fieldMetadata.RelationCondition = new DataModels.DataConstraint.ComplexCondition();
@@ -451,13 +479,38 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (!_cache.ContainsKey(entityName))
                          _cache.Add(entityName, entityMetadata);
+                        else
+                        {
+                            AddMissingPropertyValues(typeof(EntityMetadata), entityMetadata, _cache[entityName]);
+                        }
                         break;
                     }
                 }
             }
             _cashecontainerEntity.Clear();
+            _cashecontainerEntityList.Clear();
             return entityMetadata;
         }
+
+
+        private bool AddMissingPropertyValues(Type type, object source, object destination)
+        {
+            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var readableNonIndexers = properties.Where(p => p.CanWrite && p.GetIndexParameters().Length == 0);
+            foreach (var propertyInfo in readableNonIndexers)
+            {
+                var a = propertyInfo.GetValue(source, null);
+                var b = propertyInfo.GetValue(destination, null);
+                if ((b == null) || (!b.Equals(a)))
+                {
+                    propertyInfo.SetValue(destination, a);
+                }
+            }
+            return true;
+        }
+
+
+      
         /// <summary>
         /// 
         /// </summary>

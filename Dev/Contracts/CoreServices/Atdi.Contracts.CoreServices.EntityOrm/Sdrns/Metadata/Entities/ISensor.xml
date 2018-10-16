@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "Sensor" 
+  Name        = "ISensor" 
   Title       = "Sensor" 
   Desc        = "The sensor"
   Type        = "Normal"

@@ -25,7 +25,7 @@ C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.Mea
 C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\bin\Debug\Atdi.DataModels.Sdrns.Device.pdb
 C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\bin\Debug\Atdi.DataModels.Sdrns.pdb
 C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\bin\Debug\Atdi.DataModels.pdb
-C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\obj\Debug\Atdi.Test.MeasTasksBus.WcfClient.csprojResolveAssemblyReference.cache
 C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\obj\Debug\Atdi.Test.MeasTasksBus.WcfClient.csproj.CoreCompileInputs.cache
 C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\obj\Debug\Atdi.Test.MeasTasksBus.WcfClient.exe
 C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\obj\Debug\Atdi.Test.MeasTasksBus.WcfClient.pdb
+C:\projects\reposApi2\Dev\Delivery\Atdi.Sdrn\Device\WcfClient\Test\Atdi.Test.MeasTasksBus.WcfClient\obj\Debug\Atdi.Test.MeasTasksBus.WcfClient.csprojResolveAssemblyReference.cache

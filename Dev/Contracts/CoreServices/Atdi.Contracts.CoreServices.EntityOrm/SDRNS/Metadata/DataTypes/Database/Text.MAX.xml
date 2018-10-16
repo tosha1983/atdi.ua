@@ -3,5 +3,5 @@
   <Autonum>false</Autonum>
   <CodeVarType>String</CodeVarType>
   <SourceVarType>TEXT</SourceVarType>
-  <Length>MAX</Length>
+  <Length>4000</Length>
 </DataType>
