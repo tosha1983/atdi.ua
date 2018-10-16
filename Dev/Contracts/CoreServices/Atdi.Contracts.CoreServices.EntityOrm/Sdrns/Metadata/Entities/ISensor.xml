@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "Sensor" 
+  Name        = "ISensor" 
   Title       = "Sensor" 
   Desc        = "The sensor"
   Type        = "Normal"
@@ -15,15 +15,14 @@
     <Field Name="Id" 
      SourceType="Column" 
      SourceName="ID" 
-     DataType="Number.15.0" 
-     Required="true" 
+     DataType="Counter" 
      Title="Id" 
      Desc="Id"/>
 
     <Field Name="SensorIdentifierId"
      SourceType="Column"
      SourceName="SENSORIDENTIFIER_ID"
-     DataType="Number.15.0"
+     DataType="Int32"
      Required="false"
      Title="SensorIdentifierId"
      Desc="SensorIdentifierId"/>
@@ -44,15 +43,7 @@
      Title="Name"
      Desc="Name"/>
 
-    <Field Name="Name"
-     SourceType="Column"
-     SourceName="NAME"
-     DataType="Text.150"
-     Required="false"
-     Title="Name"
-     Desc="Name"/>
-
-
+   
     <Field Name="Administration"
      SourceType="Column"
      SourceName="ADMINISTRATION"
@@ -97,7 +88,7 @@
     <Field Name="Azimuth"
      SourceType="Column"
      SourceName="AZIMUTH"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="Azimuth, degree"
      Desc="Azimuth, Azimuth"
@@ -106,7 +97,7 @@
     <Field Name="Elevation"
      SourceType="Column"
      SourceName="ELEVATION"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="Elevation, degree"
      Desc="Elevation, degree"
@@ -115,7 +106,7 @@
     <Field Name="Agl"
      SourceType="Column"
      SourceName="AGL"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="Altitude above ground level, m"
      Desc="Altitude above ground level, m"
@@ -142,7 +133,7 @@
     <Field Name="StepMeasTime"
      SourceType="Column"
      SourceName="STEPMEASTIME"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="StepMeasTime"
      Desc="StepMeasTime"/>
@@ -150,7 +141,7 @@
     <Field Name="RxLoss"
      SourceType="Column"
      SourceName="RXLOSS"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="RxLoss, dB"
      Desc="RxLoss, dB"
@@ -159,7 +150,7 @@
     <Field Name="OpHhFr"
      SourceType="Column"
      SourceName="OPHHFR"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="Operation HH From"
      Desc="Operation HH From"/>
@@ -167,7 +158,7 @@
     <Field Name="OpHhTo"
      SourceType="Column"
      SourceName="OPHHTO"
-     DataType="Number.22.8"
+     DataType="Double"
      Required="false"
      Title="Operation HH To"
      Desc="Operation HH To"/>
@@ -194,7 +185,7 @@
    <Field Name="CustNbr1"
     SourceType="Column"
     SourceName="CUSTNBR1"
-    DataType="Number.22.8"
+    DataType="Double"
     Required="false"
     Title="CustNbr1"
     Desc="CustNbr1"/>

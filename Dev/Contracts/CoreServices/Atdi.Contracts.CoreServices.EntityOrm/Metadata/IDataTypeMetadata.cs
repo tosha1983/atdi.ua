@@ -12,7 +12,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
     {
         string Name { get; }
 
-        DataSourceType DataSourceType { get;  }
+        DataSourceType DataSourceType { get; }
 
         DataType CodeVarType { get; }
 

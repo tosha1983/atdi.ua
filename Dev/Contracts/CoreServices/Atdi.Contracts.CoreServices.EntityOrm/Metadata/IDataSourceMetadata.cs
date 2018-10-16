@@ -14,6 +14,6 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         DataSourceType Type { get; }
 
-        DataSourceObject Object { get; }
+        DataSourceObject Object { get;  }
     }
 }

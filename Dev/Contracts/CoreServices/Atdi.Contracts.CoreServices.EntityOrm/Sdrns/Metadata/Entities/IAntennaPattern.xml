@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "AntennaPattern" 
+  Name        = "IAntennaPattern" 
   Title       = "AntennaPattern" 
   Desc        = "The antenna pattern"
   Type        = "Normal"
@@ -15,24 +15,23 @@
     <Field Name="Id" 
      SourceType="Column" 
      SourceName="ID" 
-     DataType="Number.15.0" 
-     Required="true" 
+     DataType="Counter" 
      Title="Id" 
      Desc="Id"/>
 
     <Field Name="SensorAntennaId"
-       SourceType="Column"
-       SourceName="SENSORANTENNA_ID"
-       DataType="Number.15.0"
-       Required="false"
-       Title="SensorAntennaId"
-       Desc="SensorAntennaId"/>
+     SourceType="Column"
+     SourceName="SENSORANTENNA_ID"
+     DataType="Int64"
+     Required="true"
+     Title="SensorAntennaId"
+     Desc="SensorAntennaId"/>
 
    
     <Field Name="Freq"
       SourceType="Column"
       SourceName="FREQ"
-      DataType="Number.22.8"
+      DataType="Double"
       Required="false"
       Title="Frequency of pattren, MHz"
       Desc="Frequency of pattren, MHz"
@@ -41,7 +40,7 @@
     <Field Name="Gain"
       SourceType="Column"
       SourceName="GAIN"
-      DataType="Number.22.8"
+      DataType="Double"
       Required="false"
       Title="Gain of Antenna, dB"
       Desc="Gain of Antenna, dB"
@@ -70,23 +69,17 @@
     Required="false"
     Title="DiagV - 9XV - Vertical diagram"
     Desc="DiagV - 9XV - Vertical diagram"/>
-    
 
-    <Field Name="RelPatternAntenna"
-              SourceType="Relation"
-              SourceName="SensorAntenna"
-              Title="Relation AntennaPattern to SensorAntenna" >
-      <RelationCondition JoinType="Inner">
-        <Or>
-          <And>
-            <Eq>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.SensorAntennaId"/>
-            </Eq>
-          </And>
-        </Or>
-      </RelationCondition>
-    </Field>  
+    <Field
+     Name="SENSORANT"
+     SourceType="Reference"
+     SourceName ="ISensorAntenna"
+     Title="Relation AntennaPattern to SensorAntenna" >
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorAntennaId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    
   </Fields>
 
 

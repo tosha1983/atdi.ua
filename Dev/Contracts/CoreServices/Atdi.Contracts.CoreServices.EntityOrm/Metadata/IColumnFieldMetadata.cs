@@ -11,7 +11,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Имя источника определения значения поля
         /// </summary>
-        string SourceName { get; }
+        string SourceName { get;  }
 
     }
 }

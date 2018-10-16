@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "SensorPolygon" 
+  Name        = "ISensorPolygon" 
   Title       = "SensorPolygon" 
   Desc        = "The sensor polygon"
   Type        = "Normal"
@@ -15,15 +15,14 @@
     <Field Name="Id" 
      SourceType="Column" 
      SourceName="ID" 
-     DataType="Number.15.0" 
-     Required="true" 
+     DataType="Counter" 
      Title="Id" 
      Desc="Id"/>
 
     <Field Name="SensorId"
     SourceType="Column"
     SourceName="SENSORID"
-    DataType="Number.15.0"
+    DataType="Int64"
     Required="true"
     Title="SensorId"
     Desc="SensorId"/>
@@ -32,7 +31,7 @@
     <Field Name="Lon"
     SourceType="Column"
     SourceName="LON"
-    DataType="Number.22.8"
+    DataType="Double"
     Required="false"
     Title="Longitude, DEC"
     Desc="Longitude, DEC"
@@ -42,28 +41,23 @@
     <Field Name="Lat"
     SourceType="Column"
     SourceName="LAT"
-    DataType="Number.22.8"
+    DataType="Double"
     Required="false"
     Title="Latitude,  DEC"
     Desc="Latitude,  DEC"
     Unit="Latitude.DEC"/>
 
     
-    <Field Name="RelSensorPolygon"
-              SourceType="Relation"
-              SourceName="Sensor"
-              Title="Relation SensorPolygon to Sensor" >
-      <RelationCondition JoinType="Inner">
-        <Or>
-          <And>
-            <Eq>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.SensorId"/>
-            </Eq>
-          </And>
-        </Or>
-      </RelationCondition>
-    </Field>  
+    <Field
+    Name="SENSOR"
+    SourceType="Reference"
+    SourceName ="ISensor"
+    Title="Relation SensorPolygon to Sensor" >
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    
   </Fields>
 
 

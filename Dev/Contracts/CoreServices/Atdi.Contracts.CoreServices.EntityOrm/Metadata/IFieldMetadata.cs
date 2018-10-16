@@ -23,7 +23,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// признак обязательности поля
         /// </summary>
-        bool Required { get; }
+        bool Required { get;  }
         /// <summary>
         /// Тип источника определения значения поля
         /// </summary>
@@ -37,6 +37,10 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// Единица измерения значения поля
         /// </summary>
         IUnitMetadata Unit { get; }
+        /// <summary>
+        /// Наименование поля в БД
+        /// </summary>
+        string SourceName { get; }
 
     }
 }

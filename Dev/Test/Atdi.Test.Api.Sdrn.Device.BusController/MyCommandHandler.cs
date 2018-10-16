@@ -1,21 +1,26 @@
-﻿using System;
+﻿using Atdi.Contracts.Api.Sdrn.MessageBus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Contracts.Api.Sdrn.MessageBus;
 using DM = Atdi.DataModels.Sdrns.Device;
+using Atdi.Contracts.Sdrn.Server;
+using Atdi.Contracts.Api.EventSystem;
+using Atdi.DataModels.Sdrns.Device;
+using Atdi.Platform.Logging;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
-    class MyTaskHandler : MessageHandlerBase<DM.MeasTask>
+    /*
+    class MyTaskHandler : MessageHandlerBase<MeasTask>
     {
         public MyTaskHandler() 
             : base("SendMeasTask")
         {
         }
 
-        public override void OnHandle(IReceivedMessage<DM.MeasTask> message)
+        public override void OnHandle(ISdrnReceivedMessage<MeasTask> message)
         {
             // тут код обработки сообщения
 
@@ -38,5 +43,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 message.ReasonFailure = e.Message;
             }
         }
+
     }
+    */
 }

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Text.200" DataSourceType="Database"  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <Autonum>false</Autonum>
+  <CodeVarType>String</CodeVarType>
+  <SourceVarType>VARCHAR</SourceVarType>
+  <Length>200</Length>
+</DataType>

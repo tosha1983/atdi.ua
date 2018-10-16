@@ -93,8 +93,12 @@
     <Content Include="Example\Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Example\Metadata\DataTypes\Database\Text.MAX.xml" />
-    <Content Include="Example\Metadata\Entities\Antenna.xml" />
-    <Content Include="Example\Metadata\Entities\AntennaBase.xml" />
+    <Content Include="Example\Metadata\Entities\Antenna.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Example\Metadata\Entities\AntennaBase.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Example\Metadata\Entities\AntennaExten1.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -106,36 +110,39 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Example\Metadata\Environment.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Array.Enum.DataType.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Double.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Enum.DataType.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Int1.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Int32.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Int64.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Sdrns\Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Counter.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.100.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.1000.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.150.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.10.xml" />
+    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.200.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.25.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Sdrns\Metadata\DataTypes\Database\Text.MAX.xml" />
-    <Content Include="Sdrns\Metadata\Entities\SensorPolygon.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\Entities\SensorLocation.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\Entities\SensorEquipmentSensitivites.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\Entities\AntennaPattern.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\Entities\SensorEquipment.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\Entities\SensorAntenna.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\Entities\Sensor.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Sdrns\Metadata\Entities\IAntenna.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IAntennaBase.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IAntennaExten1.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IAntennaPattern.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IAntennaPosition.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IAntennaType.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IPropertyBase.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IProperty.xml" />
+    <Content Include="Sdrns\Metadata\Entities\ISensor.xml" />
+    <Content Include="Sdrns\Metadata\Entities\ISensorAntenna.xml" />
+    <Content Include="Sdrns\Metadata\Entities\ISensorEquipment.xml" />
+    <Content Include="Sdrns\Metadata\Entities\ISensorLocation.xml" />
+    <Content Include="Sdrns\Metadata\Entities\ISensorPolygon.xml" />
+    <Content Include="Sdrns\Metadata\Entities\ISensorSensitivites.xml" />
     <Content Include="Sdrns\Metadata\Environment.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +155,9 @@
     <None Include="Sdrns\Metadata\Units\Level.dBm" />
     <None Include="Sdrns\Metadata\Units\Power.dB" />
     <None Include="Sdrns\Metadata\Units\Length.m" />
-    <None Include="Sdrns\Metadata\Units\Angle.Degree" />
+    <None Include="Sdrns\Metadata\Units\Angle.Degree">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Sdrns\Metadata\Units\Latitude.DEC" />
     <None Include="Sdrns\Metadata\Units\Longitude.DEC" />
     <None Include="Sdrns\Metadata\Units\Frequency.MHz" />

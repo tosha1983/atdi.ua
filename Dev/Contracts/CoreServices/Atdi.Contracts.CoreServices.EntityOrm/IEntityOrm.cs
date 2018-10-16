@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.CoreServices.DataLayer;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm
 {
@@ -11,7 +12,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
     {
         IEntityMetadata GetEntityMetadata(string entityName);
 
-        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName);
+        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, Atdi.Contracts.CoreServices.EntityOrm.Metadata.DataSourceType dataSourceType);
 
         IUnitMetadata GetUnitMetadata(string unitName);
     }

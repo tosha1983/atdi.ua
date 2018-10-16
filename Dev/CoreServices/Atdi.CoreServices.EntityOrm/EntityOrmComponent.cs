@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.AppComponent;
-
+using Atdi.Platform.DependencyInjection;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -23,7 +23,6 @@ namespace Atdi.CoreServices.EntityOrm
         protected override void OnInstall()
         {
             var entityOrmConfig = new EntityOrmConfig(this.Config);
-
             this.Container.RegisterInstance<IEntityOrmConfig>(entityOrmConfig);
             this.Container.Register<IEntityOrm, EntityOrm>(Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<IDataLayer<EntityDataOrm>, EnitityOrmDataLayer>(Platform.DependencyInjection.ServiceLifetime.PerThread);

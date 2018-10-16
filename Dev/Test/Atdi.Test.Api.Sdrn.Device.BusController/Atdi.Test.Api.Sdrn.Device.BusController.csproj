@@ -60,9 +60,17 @@
       <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
       <Name>Atdi.Api.Sdrn.Device.BusController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EventSystem\Atdi.Contracts.Api.EventSystem.csproj">
+      <Project>{608fac29-91cb-43af-a45b-1a0f31870041}</Project>
+      <Name>Atdi.Contracts.Api.EventSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
       <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
       <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj">
+      <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
+      <Name>Atdi.Contracts.Sdrn.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
@@ -75,6 +83,14 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

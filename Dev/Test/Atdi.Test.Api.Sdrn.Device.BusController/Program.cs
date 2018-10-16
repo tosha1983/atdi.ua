@@ -13,11 +13,12 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
-            Test1();
+            //Test1();
         }
-
+        /*
         static void Test()
         {
             //var mSettiongs = new MessageConvertSettings
@@ -294,5 +295,6 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             return config;
         }
+        */
     }
 }

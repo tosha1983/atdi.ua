@@ -9,4 +9,5 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     public interface IQueryStatement
     {
     }
+
 }

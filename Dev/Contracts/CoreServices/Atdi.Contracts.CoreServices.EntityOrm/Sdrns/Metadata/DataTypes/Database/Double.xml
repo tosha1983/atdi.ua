@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Double" DataSourceType="Database" xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <Autonum Start="1" Step="1" />
+  <CodeVarType>Double</CodeVarType>
+  <SourceVarType>DOUBLE</SourceVarType>
+  <Length>22</Length>
+  <Precision>8</Precision>
+  <Scale/>
+</DataType>
