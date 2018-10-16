@@ -135,6 +135,7 @@
     <Content Include="Sdrns\Metadata\Entities\IAntennaPattern.xml" />
     <Content Include="Sdrns\Metadata\Entities\IAntennaPosition.xml" />
     <Content Include="Sdrns\Metadata\Entities\IAntennaType.xml" />
+    <Content Include="Sdrns\Metadata\Entities\IPropertyBase.xml" />
     <Content Include="Sdrns\Metadata\Entities\IProperty.xml" />
     <Content Include="Sdrns\Metadata\Entities\ISensor.xml" />
     <Content Include="Sdrns\Metadata\Entities\ISensorAntenna.xml" />

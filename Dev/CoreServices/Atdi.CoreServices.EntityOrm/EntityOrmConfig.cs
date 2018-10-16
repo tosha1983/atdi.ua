@@ -112,13 +112,15 @@ namespace Atdi.CoreServices.EntityOrm
           .From()
           .Select( c=> c.FrequencyMHz,
                    c => c.POS.Id,
+                   c => c.Name,
                    //c=> c.POS.PosType,
                    //c => c.EXT1.FullName,
                    //c => c.EXT1.ShortName,
-                   c => c.EXT1.EXTENDED.EXT1.EXTENDED.EXT1,
-                   c => c.PROP1
+                   //c => c.EXT1.EXTENDED.EXT1.EXTENDED.EXT1,
+                   c => c.PROP1.NamePropertyBase,
                  //c => c.EXT1.FullName,
-                 //c => c.EXT1.EXTENDED.Name
+                 c => c.PROP2.PropName,
+                 c => c.EXT1.EXTENDED.PROP2.NamePropertyBase
                  //c => c.EXT1.EXTENDED
                  //c => c.Name
                  )

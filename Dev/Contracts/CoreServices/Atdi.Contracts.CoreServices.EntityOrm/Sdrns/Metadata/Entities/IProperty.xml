@@ -5,7 +5,9 @@
         Title = "Property"
         Desc  = "The property of entities"
         Type  = "Normal"
+        BaseEntity  = "IPropertyBase"
         >
+
   <DataSource Type="Database" Object="Table">
     <Name>PROPERTIES</Name>
     <Schema>dbo</Schema>

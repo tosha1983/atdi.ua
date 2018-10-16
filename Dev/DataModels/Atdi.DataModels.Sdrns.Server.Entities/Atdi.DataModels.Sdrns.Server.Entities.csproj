@@ -45,6 +45,7 @@
     <Compile Include="Example\IAntennaBase.cs" />
     <Compile Include="Example\IAntennaExten1.cs" />
     <Compile Include="Example\IAntennaPosition.cs" />
+    <Compile Include="Example\IPropertyBase.cs" />
     <Compile Include="Example\IProperty.cs" />
     <Compile Include="ISensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
