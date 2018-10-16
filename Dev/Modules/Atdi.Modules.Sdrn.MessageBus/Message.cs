@@ -10,6 +10,8 @@ namespace Atdi.Modules.Sdrn.MessageBus
     {
         public string Id { get; set; }
 
+        public string AppId { get; set; }
+
         public string Type { get; set; }
 
         public string ContentType { get; set; }

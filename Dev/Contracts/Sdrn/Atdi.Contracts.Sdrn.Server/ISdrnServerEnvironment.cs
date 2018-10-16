@@ -9,5 +9,18 @@ namespace Atdi.Contracts.Sdrn.Server
     public interface ISdrnServerEnvironment
     {
         string ServerInstance { get;  }
+
+        string LicenseNumber { get; }
+
+        DateTime LicenseDateStop { get; }
+    }
+
+    public static class SdrnServerEnvironmentExtentions
+    {
+
+        public static string GetAppName(this ISdrnServerEnvironment environment)
+        {
+            return $"[SDRN.Server].[{environment.ServerInstance}]";
+        }
     }
 }

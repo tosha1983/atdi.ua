@@ -45,6 +45,8 @@
     <Compile Include="EventEmittingOptions.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventEmitter.cs" />
+    <Compile Include="IEventSite.cs" />
+    <Compile Include="IEventSiteConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

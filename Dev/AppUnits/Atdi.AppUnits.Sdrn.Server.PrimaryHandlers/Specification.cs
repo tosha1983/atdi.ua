@@ -10,7 +10,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
     static class Contexts
     {
         public static readonly EventContext ThisComponent = "SDRN Server Bus Messages Primary Handlers Component";
-        public static readonly EventContext PrimaryHandler = "SDRN Server Primary Handler";
+        public static readonly EventContext PrimaryHandler = "SDRN.PrimaryHandler";
     }
 
     static class Categories

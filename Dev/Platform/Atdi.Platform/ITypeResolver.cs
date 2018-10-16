@@ -20,5 +20,7 @@ namespace Atdi.Platform
         Type[] ResolveTypes(Assembly assembly, Type baseType);
 
         TBase CreateInstance<TBase>(AssemblyName name);
+
+        IEnumerable<Type> ForeachInAllAssemblies(Func<Type, bool> predicate);
     }
 }

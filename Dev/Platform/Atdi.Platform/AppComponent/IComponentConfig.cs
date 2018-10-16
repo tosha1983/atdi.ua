@@ -74,5 +74,32 @@ namespace Atdi.Platform.AppComponent
 
             return "true".Equals(stringValue, StringComparison.OrdinalIgnoreCase);
         }
+
+        public static int? GetParameterAsInteger(this IComponentConfig config, string paramName)
+        {
+            if (config == null)
+            {
+                return null;
+            }
+
+            var realValue = config[paramName];
+            if (realValue == null)
+            {
+                return null;
+            }
+
+            var stringValue = Convert.ToString(realValue);
+            if (string.IsNullOrEmpty(stringValue))
+            {
+                return null;
+            }
+
+            if (int.TryParse(stringValue, out int result))
+            {
+                return result;
+            }
+
+            return null;
+        }
     }
 }

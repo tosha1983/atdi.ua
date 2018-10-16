@@ -10,5 +10,9 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
     class FakeSdrnServerEnvironment : ISdrnServerEnvironment
     {
         public string ServerInstance => "TestInstance";
+
+        public string LicenseNumber => throw new NotImplementedException();
+
+        public DateTime LicenseDateStop => throw new NotImplementedException();
     }
 }
