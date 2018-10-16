@@ -22,7 +22,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         {
             //var mSettiongs = new MessageConvertSettings
             //{
-            //    UseСompression = true,
+            //    UseCompression = true,
             //    UseEncryption = false
             //};
 
@@ -96,7 +96,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             // Шифрование и компресия сообщений
             config["SDRN.MessageConvertor.UseEncryption"] = "true";
-            config["SDRN.MessageConvertor.UseСompression"] = "true";
+            config["SDRN.MessageConvertor.UseCompression"] = "true";
 
             // создание гейта к шине
             // Важно гейт = один сенсор
@@ -290,7 +290,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
             config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
             config["SDRN.MessageConvertor.UseEncryption"] = "true";
-            config["SDRN.MessageConvertor.UseСompression"] = "true";
+            config["SDRN.MessageConvertor.UseCompression"] = "true";
 
             return config;
         }

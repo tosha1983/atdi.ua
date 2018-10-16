@@ -31,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             var convertorSettings = new MessageConvertSettings
             {
                 UseEncryption = this._busControllerConfig.UseEncryption,
-                UseСompression = this._busControllerConfig.UseСompression
+                UseCompression = this._busControllerConfig.UseCompression
             };
             var typeResolver = MessageObjectTypeResolver.CreateForApi20();
             var messageConvertor = new MessageConverter(convertorSettings, typeResolver);

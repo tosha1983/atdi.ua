@@ -41,15 +41,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventDispatcher.cs" />
     <Compile Include="EventEmitter.cs" />
+    <Compile Include="EventObserver\EventSystemEventLevel.cs" />
+    <Compile Include="EventObserver\EventSystemEvents.cs" />
+    <Compile Include="EventObserver\IEventSystemEvent.cs" />
+    <Compile Include="EventObserver\IEventSystemObserver.cs" />
     <Compile Include="EventSite.cs" />
     <Compile Include="EventSiteConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AmqpBrokerObserver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EventSystem\Atdi.Contracts.Api.EventSystem.csproj">
       <Project>{608fac29-91cb-43af-a45b-1a0f31870041}</Project>
       <Name>Atdi.Contracts.Api.EventSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.AmqpBroker\Atdi.Modules.AmqpBroker.csproj">
+      <Project>{714f342f-3838-4088-80e5-a54c4173b0ea}</Project>
+      <Name>Atdi.Modules.AmqpBroker</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

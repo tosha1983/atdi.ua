@@ -29,7 +29,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public string SdrnDeviceQueueNamePart { get; set; }
 
         public bool SdrnMessageConvertorUseEncryption { get; set; }
-        public bool SdrnMessageConvertorUseСompression { get; set; }
+        public bool SdrnMessageConvertorUseCompression { get; set; }
 
         public string SdrnDeviceMessagesBindings
         {

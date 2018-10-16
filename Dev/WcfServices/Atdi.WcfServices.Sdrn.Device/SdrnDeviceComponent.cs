@@ -69,7 +69,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             var convertorSettings = new MMB.MessageConvertSettings
             {
                 UseEncryption = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseEncryption"),
-                UseСompression = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.ompression")
+                UseCompression = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseCompression")
             };
             var typeResolver = MMB.MessageObjectTypeResolver.CreateForApi20();
             var messageConvertor = new MMB.MessageConverter(convertorSettings, typeResolver);

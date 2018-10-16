@@ -23,6 +23,11 @@ namespace Atdi.Api.EventSystem
             return (T)this._data[name];
         }
 
+        public void SetValue<T>(string name, T value)
+        {
+            this._data[name] = value;
+        }
+
         public bool TryGetValue<T>(string name, out T value)
         {
             value = default(T);
@@ -34,5 +39,22 @@ namespace Atdi.Api.EventSystem
             }
             return false;
         }
+
+        public static readonly string ApiVersion = "ApiVersion";
+        public static readonly string AppName = "AppName";
+        public static readonly string EventBusHost = "EventBus.Host";
+        public static readonly string EventBusVirtualHost = "EventBus.VirtualHost";
+        public static readonly string EventBusPort = "EventBus.Port";
+        public static readonly string EventBusUser = "EventBus.User";
+        public static readonly string EventBusPassword = "EventBus.Password";
+        public static readonly string EventExchange = "EventExchange";
+        public static readonly string EventQueueNamePart = "EventQueueNamePart";
+        public static readonly string ErrorsQueueName = "ErrorsQueueName";
+        public static readonly string LogQueueName = "LogQueueName";
+        public static readonly string UseEncryption = "UseEncryption";
+        public static readonly string UseCompression = "UseCompression";
+
+        
+
     }
 }

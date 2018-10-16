@@ -15,7 +15,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
 
     static class Categories
     {
-        public static readonly EventCategory MessageProcessing = "Message processing";
+        public static readonly EventCategory MessageProcessing = "Processing";
+        public static readonly EventCategory Notify = "Notify";
     }
 
     static class Events

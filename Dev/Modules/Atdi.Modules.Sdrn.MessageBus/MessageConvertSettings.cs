@@ -10,6 +10,6 @@ namespace Atdi.Modules.Sdrn.MessageBus
     {
         public bool UseEncryption { get; set; }
 
-        public bool UseСompression { get; set; }
+        public bool UseCompression { get; set; }
     }
 }

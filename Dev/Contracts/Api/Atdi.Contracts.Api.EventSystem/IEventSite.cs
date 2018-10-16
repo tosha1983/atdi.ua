@@ -9,5 +9,7 @@ namespace Atdi.Contracts.Api.EventSystem
     public interface IEventSite : IDisposable
     {
         IEventEmitter GetEmitter();
+
+        IEventDispatcher GetDispatcher();
     }
 }

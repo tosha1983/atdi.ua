@@ -50,6 +50,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnServerPrimaryHandlersComponent.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Subscribes\OnUpdatedSensor.cs" />
+    <Compile Include="Subscribes\OnRegisteredNewSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">

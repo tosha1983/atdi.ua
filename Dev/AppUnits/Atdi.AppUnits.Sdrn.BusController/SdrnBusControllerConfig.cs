@@ -44,7 +44,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.ServerQueueus = serverQueues;
 
             this.UseEncryption = config.GetParameterAsBoolean("MessageConvertor.UseEncryption");
-            this.UseСompression = config.GetParameterAsBoolean("MessageConvertor.UseСompression");
+            this.UseCompression = config.GetParameterAsBoolean("MessageConvertor.UseCompression");
 
             
             
@@ -137,7 +137,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         public bool UseEncryption { get; set; }
 
-        public bool UseСompression { get; set; }
+        public bool UseCompression { get; set; }
 
         public IDictionary<string, ServerQueueDecriptor> ServerQueueus { get; set; }
 

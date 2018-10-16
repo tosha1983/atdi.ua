@@ -39,6 +39,6 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public static readonly string SdrnDeviceMessagesBindings = "SDRN.Device.MessagesBindings";
 
         public static readonly string SdrnMessageConvertorUseEncryption = "SDRN.MessageConvertor.UseEncryption";
-        public static readonly string SdrnMessageConvertorUseСompression = "SDRN.MessageConvertor.UseСompression";
+        public static readonly string SdrnMessageConvertorUseCompression = "SDRN.MessageConvertor.UseCompression";
     }
 }

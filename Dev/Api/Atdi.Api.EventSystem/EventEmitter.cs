@@ -18,7 +18,7 @@ namespace Atdi.Api.EventSystem
 
         public void Dispose()
         {
-
+            
         }
 
         public Guid Emit(IEvent @event, EventEmittingOptions options)
