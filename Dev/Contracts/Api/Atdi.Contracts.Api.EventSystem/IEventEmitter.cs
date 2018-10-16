@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Api.EventSystem
 {
-    public interface IEventEmitter 
+    public interface IEventEmitter : IDisposable
     {
         Guid Emit(IEvent @event, EventEmittingOptions options);
     }

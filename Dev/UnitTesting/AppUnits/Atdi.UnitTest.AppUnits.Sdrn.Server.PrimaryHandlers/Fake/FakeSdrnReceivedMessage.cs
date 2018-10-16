@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 {
-    class FakeSdrnReceivedMessage<TObject> : ISdrnReceivedMessage<TObject>
+    class FakeSdrnReceivedMessage<TObject> //: ISdrnReceivedMessage<TObject>
     {
         class FakeMessageToken : IMessageToken
         {

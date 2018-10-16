@@ -63,7 +63,45 @@ namespace Atdi.Platform.Logging.EventsConsumers
             this.Write($"]");
 
             // the part of context
-            this.Write(" " + this._resourceResolver.Resolve(@event.Context.Name));
+            var contextCategorySectionSize = 35;
+            var contextName = this._resourceResolver.Resolve(@event.Context.Name);
+            if (contextName.Length > contextCategorySectionSize)
+            {
+                contextName = contextName.Substring(0, contextCategorySectionSize);
+                contextCategorySectionSize = 0;
+            }
+            else
+            {
+                contextCategorySectionSize -= contextName.Length;
+            }
+            this.Write(" " + contextName);
+
+            if (!string.IsNullOrEmpty(@event.Category.Name) && contextCategorySectionSize > 2)
+            {
+                var category = _resourceResolver.Resolve(@event.Category.Name);
+                
+                // the part of category
+                if (!string.IsNullOrEmpty(category))
+                {
+                    if (category.Length + 2 > contextCategorySectionSize)
+                    {
+                        category = category.Substring(0, contextCategorySectionSize - 2);
+                        contextCategorySectionSize = 0;
+                    }
+                    else
+                    {
+                        contextCategorySectionSize -= category.Length + 2;
+                    }
+                    this.Write("(", ConsoleColor.White);
+                    this.Write(category, ConsoleColor.DarkGray);
+                    this.Write(")", ConsoleColor.White);
+                }
+            }
+
+            if (contextCategorySectionSize > 0)
+            {
+                this.Write("".PadRight(contextCategorySectionSize, ' '), ConsoleColor.White);
+            }
 
             string eventText = null;
             var text = @event.Text;
@@ -72,18 +110,6 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 eventText = this._resourceResolver.Resolve(text.Text, text.Args);
             }
 
-            if (!string.IsNullOrEmpty(@event.Category.Name))
-            {
-                var category = _resourceResolver.Resolve(@event.Category.Name);
-                // the part of category
-                if (!string.IsNullOrEmpty(category))
-                {
-                    this.Write("(", ConsoleColor.White);
-                    this.Write(category, ConsoleColor.DarkGray);
-                    this.Write(")", ConsoleColor.White);
-                }
-            }
-            
             // the part of trace
             if (@event is ITraceEvent traceEvent)
             {

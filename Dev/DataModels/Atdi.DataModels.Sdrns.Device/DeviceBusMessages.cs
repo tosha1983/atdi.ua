@@ -1,47 +1,60 @@
-﻿using System;
+﻿using Atdi.DataModels.Sdrns.Device;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Device
+namespace Atdi.DataModels.Sdrns.BusMessages
 {
-    public static class DeviceBusMessages
+    namespace Device
     {
-        public static class RegisterSensorMessage
+        public class RegisterSensorMessage : SdrnBusMessageType<Sensor>
         {
-            public readonly static string Name = "RegisterSensor";
-            public readonly static Type SendObjectType = typeof(Sensor);
+            public RegisterSensorMessage()
+                : base("RegisterSensor")
+            {
+            }
         }
 
-        public static class UpdateSensorMessage
+        public class UpdateSensorMessage : SdrnBusMessageType<Sensor>
         {
-            public readonly static string Name = "UpdateSensor";
-            public readonly static Type SendObjectType = typeof(Sensor);
+            public UpdateSensorMessage()
+                : base("UpdateSensor")
+            {
+            }
         }
 
-        public static class SendCommandResultMessage
+        public class SendCommandResultMessage : SdrnBusMessageType<DeviceCommandResult>
         {
-            public readonly static string Name = "SendCommandResult";
-            public readonly static Type SendObjectType = typeof(DeviceCommandResult);
+            public SendCommandResultMessage()
+                : base("SendCommandResult")
+            {
+            }
         }
 
-        public static class SendMeasResultsMessage
+        public class SendMeasResultsMessage : SdrnBusMessageType<MeasResults>
         {
-            public readonly static string Name = "SendMeasResults";
-            public readonly static Type SendObjectType = typeof(MeasResults);
+            public SendMeasResultsMessage()
+                : base("SendMeasResults")
+            {
+            }
         }
 
-        public static class SendEntityMessage
+        public class SendEntityMessage : SdrnBusMessageType<Entity>
         {
-            public readonly static string Name = "SendEntity";
-            public readonly static Type SendObjectType = typeof(Entity);
+            public SendEntityMessage()
+                : base("SendEntity")
+            {
+            }
         }
 
-        public static class SendEntityPartMessage
+        public class SendEntityPartMessage : SdrnBusMessageType<EntityPart>
         {
-            public readonly static string Name = "SendEntityPart";
-            public readonly static Type SendObjectType = typeof(EntityPart);
+            public SendEntityPartMessage()
+                : base("SendEntityPart")
+            {
+            }
         }
     }
 }

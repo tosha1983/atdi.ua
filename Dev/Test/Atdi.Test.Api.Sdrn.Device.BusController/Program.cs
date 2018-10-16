@@ -7,7 +7,7 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Api.Sdrn.Device.BusController;
 
 using DM = Atdi.DataModels.Sdrns.Device;
-
+using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
@@ -224,12 +224,12 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             var gateFactory = BusGateFactory.Create();
             var gate = CreateGate(gateFactory);
 
-            var dispatcher = gate.CreateDispatcher("main");
-            dispatcher.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            dispatcher.RegistryHandler(new Handlers.SendCommandHandler(gate));
-            dispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
-            dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
-            dispatcher.Activate();
+            //var dispatcher = gate.CreateDispatcher("main");
+            //dispatcher.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+            //dispatcher.RegistryHandler(new Handlers.SendCommandHandler(gate));
+            //dispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
+            //dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
+            //dispatcher.Activate();
 
 
             var publisher = gate.CreatePublisher("main");
@@ -243,15 +243,21 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 }
             };
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 publisher.Send("RegisterSensor", sensor, "Some Correlation ID #" + i.ToString());
+                publisher.Send("UpdateSensor", sensor, "Some Correlation ID #" + i.ToString());
+
+                publisher.Send("SendCommandResult", new DeviceCommandResult(), "Some Correlation ID #" + i.ToString());
+                publisher.Send("SendMeasResults", new MeasResults(), "Some Correlation ID #" + i.ToString());
+                publisher.Send("SendEntity", new Entity(), "Some Correlation ID #" + i.ToString());
+                publisher.Send("SendEntityPart", new EntityPart(), "Some Correlation ID #" + i.ToString());
             }
 
             // обязательно все почистить
             publisher.Dispose();
-            dispatcher.Deactivate();
-            dispatcher.Dispose();
+            //dispatcher.Deactivate();
+            //dispatcher.Dispose();
 
             Console.ReadLine();
         }

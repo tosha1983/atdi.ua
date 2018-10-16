@@ -49,20 +49,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsumersBusConnector.cs" />
+    <Compile Include="SdrnBrokerObserver.cs" />
+    <Compile Include="Old\ConsumersBusConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PublisherBusConnector.cs" />
+    <Compile Include="Old\PublisherBusConnector.cs" />
+    <Compile Include="SdrnHandlerLibrary.cs" />
+    <Compile Include="SdrnIncomingEnvelope.cs" />
+    <Compile Include="SdrnMessageHandlingResult.cs" />
+    <Compile Include="SdrnQueueConsumer.cs" />
     <Compile Include="ServerQueueDecriptor.cs" />
-    <Compile Include="QueueConsumer.cs" />
+    <Compile Include="Old\QueueConsumer.cs" />
     <Compile Include="QueueDescriptor.cs" />
-    <Compile Include="RabbitMQConnection.cs" />
+    <Compile Include="Old\RabbitMQConnection.cs" />
     <Compile Include="SdrnBusControllerComponent.cs" />
-    <Compile Include="SdrnServerDescriptor.cs" />
+    <Compile Include="SdrnBusControllerConfig.cs" />
+    <Compile Include="SdrnMessageDispatcher.cs" />
+    <Compile Include="SdrnMessagePublisher.cs" />
+    <Compile Include="SdrnOutgoingEnvelope.cs" />
+    <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EventSystem\Atdi.Contracts.Api.EventSystem.csproj">
+      <Project>{608fac29-91cb-43af-a45b-1a0f31870041}</Project>
+      <Name>Atdi.Contracts.Api.EventSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj">
+      <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
+      <Name>Atdi.Contracts.Sdrn.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
@@ -75,6 +92,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.AmqpBroker\Atdi.Modules.Sdrn.AmqpBroker.csproj">
+      <Project>{40db43b1-2836-4495-af60-e81ac0c96713}</Project>
+      <Name>Atdi.Modules.Sdrn.AmqpBroker</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.MessageBus\Atdi.Modules.Sdrn.MessageBus.csproj">
       <Project>{b44eaf91-883a-4bb5-b9e8-fea420afcca3}</Project>
