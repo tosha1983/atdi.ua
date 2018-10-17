@@ -8,6 +8,8 @@ namespace Atdi.Contracts.Api.EventSystem
 {
     public interface IEventSite : IDisposable
     {
+        IEventSiteConfig Config { get; }
+
         IEventEmitter GetEmitter();
 
         IEventDispatcher GetDispatcher();

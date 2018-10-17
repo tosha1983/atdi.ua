@@ -23,6 +23,7 @@ namespace Atdi.Modules.AmqpBroker
         public static readonly int DisposeChannelException = 12;
         public static readonly int PublishException = 13;
         public static readonly int UnjoinConsumersException = 14;
+        public static readonly int DeclareQueueBindingException = 15;
 
 
     }

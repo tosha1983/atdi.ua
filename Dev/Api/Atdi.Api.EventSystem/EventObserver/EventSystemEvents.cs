@@ -11,10 +11,11 @@ namespace Atdi.Api.EventSystem
         public static readonly int VebouseEvent = 0;
         public static readonly int ExceptionEvent = 1;
         public static readonly int ConfigParameterError = 2;
-        public static readonly int NotEstablishConnectionToRabbit = 3;
-        public static readonly int NotEstablishRabbitSharedChannel = 4;
-        public static readonly int NotDeclareExchange = 5;
-        public static readonly int NotCreateConsumer = 6;
+        public static readonly int EventSiteDisposeExeption = 3;
+        public static readonly int EventEmitterDisposeExeption = 4;
+        public static readonly int EmitEvent = 5;
+
+        
 
 
     }

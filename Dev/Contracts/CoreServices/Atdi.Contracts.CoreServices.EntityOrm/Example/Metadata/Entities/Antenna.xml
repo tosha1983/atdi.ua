@@ -29,7 +29,7 @@
            Title="Antenna extention"  />
     
     <Field Name="POS" 
-           SourceType="Relation" 
+           SourceType="Column" 
            SourceName="AntennaPosition" 
            Title="Antenna position" >
       <RelationCondition JoinType="Outer">

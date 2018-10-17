@@ -3,7 +3,4 @@
   <Autonum Start="1" Step="1" />
   <CodeVarType>Integer</CodeVarType>
   <SourceVarType>INT64</SourceVarType>
-  <Length>15</Length>
-  <Precision>0</Precision>
-  <Scale/>
 </DataType>

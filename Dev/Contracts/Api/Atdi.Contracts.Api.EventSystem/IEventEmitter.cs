@@ -8,12 +8,12 @@ namespace Atdi.Contracts.Api.EventSystem
 {
     public interface IEventEmitter : IDisposable
     {
-        Guid Emit(IEvent @event, EventEmittingOptions options);
+        void Emit(IEvent @event, EventEmittingOptions options);
     }
 
     public static class EventEmitterExtension
     {
-        public static Guid Emit(this IEventEmitter emitter, string eventName, string source = null)
+        public static void Emit(this IEventEmitter emitter, string eventName, string source = null)
         {
             var options = new EventEmittingOptions
             {
@@ -21,7 +21,7 @@ namespace Atdi.Contracts.Api.EventSystem
             };
 
             var @event = new Event(eventName, source);
-            return emitter.Emit(@event, options);
+            emitter.Emit(@event, options);
         }
     }
 }

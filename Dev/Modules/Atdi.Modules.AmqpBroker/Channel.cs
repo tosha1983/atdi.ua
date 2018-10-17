@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -179,6 +180,23 @@ namespace Atdi.Modules.AmqpBroker
             }
         }
 
+        public void DeclareBinding(string queue, string exchange, string routingKey)
+        {
+            try
+            {
+                this.EstablishChannel();
+
+                _channel.QueueBind(queue, exchange, routingKey, null);
+
+                this._logger.Verbouse("RabbitMQ.DeclareBinding", $"The queue with name '{queue}' is declared successfully: Routing key = '{routingKey}', Exchange name: '{exchange}'", this);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(BrokerEvents.DeclareQueueBindingException, "RabbitMQ.DeclareBinding", e, this);
+                throw new InvalidOperationException($"The queue binding is not declared: Queue name ='{queue}', Routing key = '{routingKey}', Exchange name = '{exchange}'", e);
+            }
+        }
+
         public void DeclareDurableQueue(string queueName)
         {
             try
@@ -258,6 +276,42 @@ namespace Atdi.Modules.AmqpBroker
                 this._logger.Exception(BrokerEvents.PublishException, "RabbitMQ.PublisheMessage", e, this);
                 throw new InvalidOperationException($"The message with type '{message.Type}' is not published", e);
             }
+        }
+
+        public void PackDeliveryObject(IDeliveryMessage message, object deliveryObject, bool useCompression, bool useEncryption)
+        {
+            var json = JsonConvert.SerializeObject(deliveryObject);
+            var encoding = new Stack<string>();
+            if (useCompression)
+            {
+                encoding.Push("compressed");
+                json = Compressor.Compress(json);
+            }
+            if (useEncryption)
+            {
+                encoding.Push("encrypted");
+                json = Encryptor.Encrypt(json);
+            }
+            message.Body = Encoding.UTF8.GetBytes(json);
+            message.ContentEncoding = string.Join(", ", encoding.ToArray());
+        }
+
+        public object UnpackDeliveryObject(IDeliveryMessage message, Type deliveryObjectType)
+        {
+            var json = Encoding.UTF8.GetString(message.Body);
+            if (!string.IsNullOrEmpty(message.ContentEncoding))
+            {
+                if (message.ContentEncoding.Contains("encrypted"))
+                {
+                    json = Encryptor.Decrypt(json);
+                }
+                if (message.ContentEncoding.Contains("compressed"))
+                {
+                    json = Compressor.Decompress(json);
+                }
+            }
+            var deliveryObject = JsonConvert.DeserializeObject(json, deliveryObjectType);
+            return deliveryObject;
         }
 
         public void JoinConsumer(string queue, string tag, IDeliveryHandler handler)

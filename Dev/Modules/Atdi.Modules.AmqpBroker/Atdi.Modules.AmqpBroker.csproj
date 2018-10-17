@@ -51,10 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel.cs" />
+    <Compile Include="Compressor.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionFactory.cs" />
     <Compile Include="ConnectionConfig.cs" />
     <Compile Include="DeliveryMessage.cs" />
+    <Compile Include="Encryptor.cs" />
     <Compile Include="EventObserver\BrokerEventLevel.cs" />
     <Compile Include="EventObserver\BrokerEvents.cs" />
     <Compile Include="EventObserver\IBrokerEvent.cs" />
