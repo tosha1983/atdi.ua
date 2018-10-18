@@ -253,6 +253,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return _cache[entityName];
             }
+            
             if (!string.IsNullOrEmpty(_config.EntitiesPath))
             {
                 bool isFinded = false;
@@ -816,6 +817,20 @@ namespace Atdi.CoreServices.EntityOrm
                                         dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
 
 
+                                        if (fieldMetadata.RefEntity!=null)
+                                        {
+                                            if (this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
+                                            {
+                                                this._referenceFieldMetadata.Add(fieldMetadata, fieldMetadata.RefEntity.DataSource.Name);
+                                            }
+                                            else
+                                            {
+                                                this._referenceFieldMetadata.Remove(this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
+                                                this._referenceFieldMetadata.Add(fieldMetadata, fieldMetadata.RefEntity.DataSource.Name);
+                                            }
+                                        }
+
+                                        /*
                                         if (this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
                                         {
                                             this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
@@ -825,6 +840,7 @@ namespace Atdi.CoreServices.EntityOrm
                                             this._referenceFieldMetadata.Remove(this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
                                             this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
                                         }
+                                        */
                                     }
                                     else if (fieldDef.SourceType == Metadata.FieldSourceType.Extension)
                                     {
