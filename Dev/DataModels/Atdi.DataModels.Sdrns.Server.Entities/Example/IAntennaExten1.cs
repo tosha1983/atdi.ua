@@ -10,7 +10,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IAntennaExten1
     {
-        int Id { get; }
 
         string ShortName { get; set; }
 

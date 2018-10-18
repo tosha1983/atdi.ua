@@ -28,7 +28,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         Reference,
         Extension,
         Relation,
-        Expression
+        Expression,
+        All
     }
 
     public enum EntityType

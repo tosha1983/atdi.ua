@@ -33,6 +33,10 @@ namespace Atdi.CoreServices.EntityOrm
 
             public string Expression { get; set; }
 
+            public DataModels.DataConstraint.ComplexCondition RelationCondition = new ComplexCondition();
+
+            public Dictionary<string, IPrimaryKeyFieldMappedMetadata> ReferenceMapped = new Dictionary<string, IPrimaryKeyFieldMappedMetadata>();
+
         }
 
         public sealed class TableDescriptor

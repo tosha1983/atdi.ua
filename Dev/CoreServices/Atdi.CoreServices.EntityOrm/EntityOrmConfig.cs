@@ -83,8 +83,10 @@ namespace Atdi.CoreServices.EntityOrm
 
             /// НЕ ЗАБУДЬ УДАЛИТЬ
             var entityOrm = new EntityOrm(this);
-            entityOrm.GetEntityMetadata("IAntennaExten1");
-            entityOrm.GetEntityMetadata("ISensorSensitivites");
+            
+            //entityOrm.GetEntityMetadata("IAntennaType");
+            //entityOrm.GetEntityMetadata("IAntennaExten1");
+            //entityOrm.GetEntityMetadata("ISensorSensitivites");
 
             this._dataLayer = new FakeDataLayer<EntityDataOrm>();
             this._logger = new FakeLogger();
@@ -112,16 +114,20 @@ namespace Atdi.CoreServices.EntityOrm
           .From()
           .Select( c=> c.FrequencyMHz,
                    c => c.POS.Id,
+                   c => c.Id,
                    c => c.Name,
                    //c=> c.POS.PosType,
                    //c => c.EXT1.FullName,
                    //c => c.EXT1.ShortName,
                    //c => c.EXT1.EXTENDED.EXT1.EXTENDED.EXT1,
-                   c => c.PROP1.NamePropertyBase,
+                 c => c.PROP1.NamePropertyBase,
+                 c => c.PROP1.PropName,
                  //c => c.EXT1.FullName,
                  c => c.PROP2.PropName,
-                 c => c.EXT1.EXTENDED.PROP2.NamePropertyBase
-                 //c => c.EXT1.EXTENDED
+                 c => c.EXT1.EXTENDED.PROP2.NamePropertyBase,
+                 c => c.PROP1,
+                 c => c.EXT1.FullName,
+                 c => c.PROP3
                  //c => c.Name
                  )
           .OrderByDesc(x=>x.FrequencyMHz)

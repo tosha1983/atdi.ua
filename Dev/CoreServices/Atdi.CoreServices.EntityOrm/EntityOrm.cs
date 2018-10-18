@@ -11,23 +11,43 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
 using System.Reflection;
-
+using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.CoreServices.EntityOrm
 {
     public class EntityOrm : IEntityOrm
     {
+        public readonly Dictionary<IRelationFieldMetadata, string> _relationFieldMetadata;
+        public readonly Dictionary<IReferenceFieldMetadata, string> _referenceFieldMetadata;
+        public readonly Dictionary<IExtensionFieldMetadata, string> _extensionFieldMetadata;
+        public readonly Dictionary<IFieldMetadata, string> _columnFieldMetadata;
         private readonly IEntityOrmConfig _config;
         private readonly Dictionary<string, IEntityMetadata> _cache;
         private readonly List<string> _cashecontainerEntity;
         private readonly List<IEntityMetadata> _cashecontainerEntityList;
+
+
+        public IReadOnlyDictionary<IRelationFieldMetadata, string> RelationFieldMetadata => this._relationFieldMetadata;
+
+        public IReadOnlyDictionary<IReferenceFieldMetadata, string> ReferenceFieldMetadata => this._referenceFieldMetadata;
+
+        public IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata => this._extensionFieldMetadata;
+
+        public IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata => this._columnFieldMetadata;
+
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
+            this._columnFieldMetadata = new Dictionary<IFieldMetadata, string>();
+            this._extensionFieldMetadata = new Dictionary<IExtensionFieldMetadata, string>();
+            this._relationFieldMetadata = new Dictionary<IRelationFieldMetadata, string>();
+            this._referenceFieldMetadata = new Dictionary<IReferenceFieldMetadata, string>();
             _cache = new Dictionary<string, IEntityMetadata>();
             _cashecontainerEntity = new List<string>();
             _cashecontainerEntityList = new List<IEntityMetadata>();
         }
+
+        
         /// <summary>
         /// 
         /// </summary>
@@ -125,12 +145,107 @@ namespace Atdi.CoreServices.EntityOrm
             return dataTypeMetadata;
         }
 
+       
 
+        /// <summary>
+        /// Добавление сведений об "отсутствующих" первичных ключах из расширяемой сущности в сущность расширения
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        private void AddedMissingPrimaryKeyExtension(IEntityMetadata entityMetadata)
+        {
+            if (entityMetadata.PrimaryKey != null)
+            {
+                if (entityMetadata.ExtendEntity != null)
+                {
+                    if (entityMetadata.ExtendEntity.PrimaryKey != null)
+                    {
+                        (entityMetadata.PrimaryKey as PrimaryKeyMetadata).FieldRefs = (entityMetadata.ExtendEntity.PrimaryKey as PrimaryKeyMetadata).FieldRefs;
+                    }
+                }
+                
+                if (entityMetadata.Fields != null)
+                {
+                    var dicMetaData = new Dictionary<string, IFieldMetadata>();
+                    foreach (var x in entityMetadata.Fields.Values)
+                    {
+                        if (x is ExtensionFieldMetadata)
+                        {
+                            if ((x as ExtensionFieldMetadata).ExtensionEntity != null)
+                            {
+                                ((x as ExtensionFieldMetadata).ExtensionEntity.PrimaryKey as PrimaryKeyMetadata).FieldRefs = entityMetadata.PrimaryKey.FieldRefs;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+       
+    
+        private bool AddMissingPropertyValues(Type type, object source, object destination)
+        {
+            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var readableNonIndexers = properties.Where(p => p.CanWrite && p.GetIndexParameters().Length == 0);
+            foreach (var propertyInfo in readableNonIndexers)
+            {
+                var a = propertyInfo.GetValue(source, null);
+                var b = propertyInfo.GetValue(destination, null);
+                if ((b == null) || (!b.Equals(a)))
+                {
+                    if (a != null)
+                    {
+                        propertyInfo.SetValue(destination, a);
+                    }
+                }
+            }
+            return true;
+        }
+
+
+      
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="entityName"></param>
+        /// <param name="unitName"></param>
         /// <returns></returns>
+        public IUnitMetadata GetUnitMetadata(string unitName)
+        {
+            var unitMetadata = new UnitMetadata();
+            if (!string.IsNullOrEmpty(_config.UnitsPath))
+            {
+                bool isFinded = false;
+                var di = new System.IO.DirectoryInfo(_config.UnitsPath);
+                var list = di.GetFiles();
+                for (int i = 0; i < list.Length; i++)
+                {
+                    var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.UnitDef));
+                    var reader = new StreamReader(list[i].FullName);
+                    object resEntity = serializer.Deserialize(reader);
+                    if (resEntity is Atdi.CoreServices.EntityOrm.Metadata.UnitDef)
+                    {
+                        var unitObject = resEntity as Atdi.CoreServices.EntityOrm.Metadata.UnitDef;
+                        if (unitObject != null)
+                        {
+                            if (unitObject.Name == unitName)
+                            {
+                                unitMetadata.Name = unitObject.Name;
+                                unitMetadata.Dimension = unitObject.Dimension.Value;
+                                unitMetadata.Category = unitObject.Category.Value;
+                                isFinded = true;
+                            }
+                        }
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                    if (isFinded)
+                    {
+                        break;
+                    }
+                }
+            }
+            return unitMetadata;
+        }
+
+
         public IEntityMetadata GetEntityMetadata(string entityName)
         {
             var entityMetadata = new EntityMetadata();
@@ -165,7 +280,7 @@ namespace Atdi.CoreServices.EntityOrm
                                     }
                                     else
                                     {
-                                        entityMetadata.BaseEntity = _cashecontainerEntityList.Find(t=>t.Name == entityObject.BaseEntity);
+                                        entityMetadata.BaseEntity = _cashecontainerEntityList.Find(t => t.Name == entityObject.BaseEntity);
                                     }
                                 }
                                 if (!string.IsNullOrEmpty(entityObject.ExtendEntity))
@@ -190,6 +305,8 @@ namespace Atdi.CoreServices.EntityOrm
                                 var primaryKeyMetadata = new PrimaryKeyMetadata();
                                 var dictionaryFields = new Dictionary<string, IFieldMetadata>();
                                 entityMetadata.Desc = entityObject.Desc;
+
+
                                 var fieldDefs = entityObject.Fields;
                                 foreach (var fieldDef in fieldDefs)
                                 {
@@ -209,6 +326,16 @@ namespace Atdi.CoreServices.EntityOrm
                                         fieldMetadata.Name = fieldDef.Name;
                                         fieldMetadata.Desc = fieldDef.Desc;
                                         dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+
+                                        if (this._columnFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
+                                        {
+                                            this._columnFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
+                                        else
+                                        {
+                                            this._columnFieldMetadata.Remove(this._columnFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
+                                            this._columnFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
                                     }
                                     else if (fieldDef.SourceType == Metadata.FieldSourceType.Reference)
                                     {
@@ -225,13 +352,20 @@ namespace Atdi.CoreServices.EntityOrm
                                                 _cashecontainerEntity.Add(fieldDef.SourceName);
                                                 fieldMetadata.RefEntity = GetEntityMetadata(fieldDef.SourceName);
                                                 _cashecontainerEntityList.Add(fieldMetadata.RefEntity);
+
+                                                if (_cache.ContainsKey(fieldDef.SourceName))
+                                                {
+                                                    _cache.Remove(fieldDef.SourceName);
+                                                    _cache.Add(fieldDef.SourceName, fieldMetadata.RefEntity);
+                                                }
+
                                             }
                                             else
                                             {
                                                 fieldMetadata.RefEntity = _cashecontainerEntityList.Find(t => t.Name == fieldDef.SourceName);
                                             }
                                         }
-                                        if ((fieldMetadata.RefEntity != null) && (fieldDef.PrimaryKeyMapping!=null))
+                                        if ((fieldMetadata.RefEntity != null) && (fieldDef.PrimaryKeyMapping != null))
                                         {
                                             var primaryKeyFieldMappingMetadata = new PrimaryKeyMappingMetadata();
                                             Dictionary<string, IPrimaryKeyFieldMappedMetadata> dictionary = new Dictionary<string, IPrimaryKeyFieldMappedMetadata>();
@@ -239,14 +373,433 @@ namespace Atdi.CoreServices.EntityOrm
                                             {
                                                 if (fieldMetadata.RefEntity.Fields != null)
                                                 {
-                                                    var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
-                                                    IFieldMetadata fieldMetadataf = new FieldMetadata();
-                                                    if (fieldMetadata.RefEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldMetadataf))
+                                                    if (ch.MatchWith == Metadata.PrimaryKeyMappedMatchWith.Value)
                                                     {
-                                                        primaryKeyFieldMappedMetadata.KeyField = fieldMetadataf;
+                                                        var valueprimaryKeyFieldMappedMetadata = new ValuePrimaryKeyFieldMappedMetadata();
+                                                        IFieldMetadata fieldMetadataf = new FieldMetadata();
+                                                        if (fieldMetadata.RefEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldMetadataf))
+                                                        {
+                                                            valueprimaryKeyFieldMappedMetadata.KeyField = fieldMetadataf;
+                                                            (valueprimaryKeyFieldMappedMetadata as ValuePrimaryKeyFieldMappedMetadata).Value = ch.Value;
+                                                            IFieldMetadata fieldEntityMetadataf = new FieldMetadata();
+                                                            if (_cache.ContainsKey(entityObject.Name))
+                                                            {
+                                                                if (!_cache[entityObject.Name].Fields.TryGetValue(ch.KeyFieldName, out fieldEntityMetadataf))
+                                                                {
+                                                                    EntityMetadata entityMetadataOverride = _cache[entityObject.Name] as EntityMetadata;
+                                                                    if (entityMetadataOverride.BaseEntity != null)
+                                                                    {
+                                                                        var dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                        var savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                        foreach (var v in savedOldFields)
+                                                                        {
+                                                                            dictionaryFieldsMissing.Add(v.Name, v);
+                                                                        }
+                                                                        IFieldMetadata fieldEntityMetadataBase = new FieldMetadata();
+                                                                        if (entityMetadataOverride.BaseEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldEntityMetadataBase))
+                                                                        {
+
+                                                                            var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                            if (primaryKeyMetadata.FieldRefs != null)
+                                                                            {
+                                                                                var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                                foreach (var v in FieldRefs)
+                                                                                {
+                                                                                    dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                                }
+                                                                            }
+
+                                                                            PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                            primaryKeyMetadataF.Clustered = entityMetadataOverride.BaseEntity.PrimaryKey.Clustered;
+                                                                            dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, entityMetadataOverride.BaseEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                            primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                            dictionaryFieldsMissing.Add(fieldEntityMetadataBase.Name, fieldEntityMetadataBase);
+
+                                                                            entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                            primaryKeyMetadata = primaryKeyMetadataF;
+                                                                            if (entityMetadataOverride != null)
+                                                                            {
+                                                                                EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                                entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                                _cache.Remove(entityObject.Name);
+                                                                                _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                                dictionaryFields.Add(fieldEntityMetadataBase.Name, fieldEntityMetadataBase);
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                            savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                            foreach (var v in savedOldFields)
+                                                                            {
+                                                                                dictionaryFieldsMissing.Add(v.Name, v);
+                                                                            }
+                                                                            IFieldMetadata fieldMetadataMiss = fieldMetadataf;
+
+                                                                            var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                            if (primaryKeyMetadata.FieldRefs != null)
+                                                                            {
+                                                                                var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                                foreach (var v in FieldRefs)
+                                                                                {
+                                                                                    dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                                }
+                                                                            }
+
+
+                                                                            PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                            primaryKeyMetadataF.Clustered = fieldMetadata.RefEntity.PrimaryKey.Clustered;
+                                                                            dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, fieldMetadata.RefEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                            primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                            dictionaryFieldsMissing.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+
+                                                                            entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                            primaryKeyMetadata = primaryKeyMetadataF;
+                                                                            if (entityMetadataOverride != null)
+                                                                            {
+                                                                                EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                                entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                                _cache.Remove(entityObject.Name);
+                                                                                _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                                dictionaryFields.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                        var savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                        foreach (var v in savedOldFields)
+                                                                        {
+                                                                            dictionaryFieldsMissing.Add(v.Name, v);
+                                                                        }
+                                                                        IFieldMetadata fieldMetadataMiss = fieldMetadataf;
+
+
+                                                                        var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                        if (primaryKeyMetadata.FieldRefs != null)
+                                                                        {
+                                                                            var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                            foreach (var v in FieldRefs)
+                                                                            {
+                                                                                dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                            }
+                                                                        }
+
+                                                                        PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                        primaryKeyMetadataF.Clustered = fieldMetadata.RefEntity.PrimaryKey.Clustered;
+                                                                        dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, fieldMetadata.RefEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                        primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                        dictionaryFieldsMissing.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+
+                                                                        entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                        primaryKeyMetadata = primaryKeyMetadataF;
+                                                                        if (entityMetadataOverride != null)
+                                                                        {
+                                                                            EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                            entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                            _cache.Remove(entityObject.Name);
+                                                                            _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                            dictionaryFields.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        valueprimaryKeyFieldMappedMetadata.MatchWith = (PrimaryKeyMappedMatchWith)Enum.Parse(typeof(PrimaryKeyMappedMatchWith), ch.MatchWith.ToString());
+                                                        //dictionary.Add(valueprimaryKeyFieldMappedMetadata.KeyField.SourceName, valueprimaryKeyFieldMappedMetadata);
+                                                        dictionary.Add(ch.Value, valueprimaryKeyFieldMappedMetadata);
+                                                        
                                                     }
-                                                    primaryKeyFieldMappedMetadata.MatchWith = (PrimaryKeyMappedMatchWith)Enum.Parse(typeof(PrimaryKeyMappedMatchWith), ch.MatchWith.ToString());
-                                                    dictionary.Add(ch.Value, primaryKeyFieldMappedMetadata);
+                                                    else if (ch.MatchWith == Metadata.PrimaryKeyMappedMatchWith.Field)
+                                                    {
+                                                        var fieldprimaryKeyFieldMappedMetadata = new FieldPrimaryKeyFieldMappedMetadata();
+                                                        IFieldMetadata fieldMetadataf = new FieldMetadata();
+                                                        if (fieldMetadata.RefEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldMetadataf))
+                                                        {
+                                                            fieldprimaryKeyFieldMappedMetadata.KeyField = fieldMetadataf;
+                                                            (fieldprimaryKeyFieldMappedMetadata as FieldPrimaryKeyFieldMappedMetadata).KeyField = fieldMetadataf;
+                                                            IFieldMetadata fieldEntityMetadataf = new FieldMetadata();
+
+
+                                                            if (_cache.ContainsKey(entityObject.Name))
+                                                            {
+                                                                if (_cache[entityObject.Name].Fields.TryGetValue(ch.Value, out fieldEntityMetadataf))
+                                                                {
+                                                                    (fieldprimaryKeyFieldMappedMetadata as FieldPrimaryKeyFieldMappedMetadata).EntityField = fieldEntityMetadataf;
+                                                                }
+                                                                else
+                                                                {
+                                                                    EntityMetadata entityMetadataOverride = _cache[entityObject.Name] as EntityMetadata;
+                                                                    if (entityMetadataOverride.BaseEntity != null)
+                                                                    {
+                                                                        var dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                        var savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                        foreach (var v in savedOldFields)
+                                                                        {
+                                                                            dictionaryFieldsMissing.Add(v.Name, v);
+                                                                        }
+                                                                        IFieldMetadata fieldEntityMetadataBase = new FieldMetadata();
+                                                                        if (entityMetadataOverride.BaseEntity.Fields.TryGetValue(ch.Value, out fieldEntityMetadataBase))
+                                                                        {
+
+                                                                            var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                            if (primaryKeyMetadata.FieldRefs != null)
+                                                                            {
+                                                                                var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                                foreach (var v in FieldRefs)
+                                                                                {
+                                                                                    dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                                }
+                                                                            }
+
+                                                                            PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                            primaryKeyMetadataF.Clustered = entityMetadataOverride.BaseEntity.PrimaryKey.Clustered;
+                                                                            dictionaryPrimaryKeyFieldRefMetadata.Add(ch.Value, entityMetadataOverride.BaseEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.Value).Value);
+                                                                            primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                            dictionaryFieldsMissing.Add(fieldEntityMetadataBase.Name, fieldEntityMetadataBase);
+
+                                                                            entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                            primaryKeyMetadata = primaryKeyMetadataF;
+                                                                            if (entityMetadataOverride != null)
+                                                                            {
+                                                                                EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                                entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                                _cache.Remove(entityObject.Name);
+                                                                                _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                                dictionaryFields.Add(fieldEntityMetadataBase.Name, fieldEntityMetadataBase);
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                            savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                            foreach (var v in savedOldFields)
+                                                                            {
+                                                                                dictionaryFieldsMissing.Add(v.Name, v);
+                                                                            }
+                                                                            IFieldMetadata fieldMetadataMiss = fieldMetadataf;
+
+                                                                            var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                            if (primaryKeyMetadata.FieldRefs != null)
+                                                                            {
+                                                                                var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                                foreach (var v in FieldRefs)
+                                                                                {
+                                                                                    dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                                }
+                                                                            }
+
+                                                                            PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                            primaryKeyMetadataF.Clustered = fieldMetadata.RefEntity.PrimaryKey.Clustered;
+                                                                            dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, fieldMetadata.RefEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                            primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                            dictionaryFieldsMissing.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+
+                                                                            entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                            primaryKeyMetadata = primaryKeyMetadataF;
+                                                                            if (entityMetadataOverride != null)
+                                                                            {
+                                                                                EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                                entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                                _cache.Remove(entityObject.Name);
+                                                                                _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                                dictionaryFields.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                        var savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                        foreach (var v in savedOldFields)
+                                                                        {
+                                                                            dictionaryFieldsMissing.Add(v.Name, v);
+                                                                        }
+                                                                        IFieldMetadata fieldMetadataMiss = fieldMetadataf;
+
+
+                                                                        var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                        if (primaryKeyMetadata.FieldRefs != null)
+                                                                        {
+                                                                            var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                            foreach (var v in FieldRefs)
+                                                                            {
+                                                                                dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                            }
+                                                                        }
+
+                                                                        PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                        primaryKeyMetadataF.Clustered = fieldMetadata.RefEntity.PrimaryKey.Clustered;
+                                                                        dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, fieldMetadata.RefEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                        primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                        dictionaryFieldsMissing.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+
+                                                                        entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                        primaryKeyMetadata = primaryKeyMetadataF;
+                                                                        if (entityMetadataOverride != null)
+                                                                        {
+                                                                            EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                            entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                            _cache.Remove(entityObject.Name);
+                                                                            _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                            dictionaryFields.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        }
+                                                        fieldprimaryKeyFieldMappedMetadata.MatchWith = (PrimaryKeyMappedMatchWith)Enum.Parse(typeof(PrimaryKeyMappedMatchWith), ch.MatchWith.ToString());
+                                                        //dictionary.Add(fieldprimaryKeyFieldMappedMetadata.KeyField.SourceName, fieldprimaryKeyFieldMappedMetadata);
+                                                        dictionary.Add(ch.Value, fieldprimaryKeyFieldMappedMetadata);
+                                                        
+                                                    }
+                                                    else if (ch.MatchWith == Metadata.PrimaryKeyMappedMatchWith.SourceName)
+                                                    {
+                                                        var sourceprimaryKeyFieldMappedMetadata = new SourceNamePrimaryKeyFieldMappedMetadata();
+                                                        IFieldMetadata fieldMetadataf = new FieldMetadata();
+                                                        if (fieldMetadata.RefEntity.Fields.TryGetValue(ch.KeyFieldName, out fieldMetadataf))
+                                                        {
+                                                            sourceprimaryKeyFieldMappedMetadata.KeyField = fieldMetadataf;
+                                                            (sourceprimaryKeyFieldMappedMetadata as SourceNamePrimaryKeyFieldMappedMetadata).SourceName = ch.Value;
+                                                            IFieldMetadata fieldEntityMetadataf = new FieldMetadata();
+                                                            if (_cache.ContainsKey(entityObject.Name))
+                                                            {
+                                                                fieldEntityMetadataf = _cache[entityObject.Name].Fields.ToList().Find(z => z.Value.SourceName == ch.Value).Value;
+                                                                if (fieldEntityMetadataf == null)
+                                                                {
+                                                                    EntityMetadata entityMetadataOverride = _cache[entityObject.Name] as EntityMetadata;
+                                                                    if (entityMetadataOverride.BaseEntity != null)
+                                                                    {
+                                                                        var dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                        var savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                        foreach (var v in savedOldFields)
+                                                                        {
+                                                                            dictionaryFieldsMissing.Add(v.Name, v);
+                                                                        }
+                                                                        IFieldMetadata fieldEntityMetadataBase = new FieldMetadata();
+                                                                        fieldEntityMetadataBase = entityMetadataOverride.BaseEntity.Fields.ToList().Find(z => z.Value.SourceName == ch.Value).Value;
+                                                                        if (fieldEntityMetadataBase != null)
+                                                                        {
+                                                                            var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                            if (primaryKeyMetadata.FieldRefs != null)
+                                                                            {
+                                                                                var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                                foreach (var v in FieldRefs)
+                                                                                {
+                                                                                    dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                                }
+                                                                            }
+
+
+                                                                            PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                            primaryKeyMetadataF.Clustered = entityMetadataOverride.BaseEntity.PrimaryKey.Clustered;
+                                                                            dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, entityMetadataOverride.BaseEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                            primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                            dictionaryFieldsMissing.Add(fieldEntityMetadataBase.Name, fieldEntityMetadataBase);
+
+                                                                            entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                            primaryKeyMetadata = primaryKeyMetadataF;
+                                                                            if (entityMetadataOverride != null)
+                                                                            {
+                                                                                EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                                entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                                _cache.Remove(entityObject.Name);
+                                                                                _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                                dictionaryFields.Add(fieldEntityMetadataBase.Name, fieldEntityMetadataBase);
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                            savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                            foreach (var v in savedOldFields)
+                                                                            {
+                                                                                dictionaryFieldsMissing.Add(v.Name, v);
+                                                                            }
+
+                                                                            if (fieldMetadataf != null)
+                                                                            {
+                                                                                FieldMetadata fieldMetadataMiss = fieldMetadataf as FieldMetadata;
+                                                                                fieldMetadataMiss.SourceName = ch.Value;
+
+                                                                                var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                                if (primaryKeyMetadata.FieldRefs != null)
+                                                                                {
+                                                                                    var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                                    foreach (var v in FieldRefs)
+                                                                                    {
+                                                                                        dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                                    }
+                                                                                }
+
+                                                                                PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                                primaryKeyMetadataF.Clustered = fieldMetadata.RefEntity.PrimaryKey.Clustered;
+                                                                                dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, fieldMetadata.RefEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                                primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                                dictionaryFieldsMissing.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+
+
+                                                                                entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                                primaryKeyMetadata = primaryKeyMetadataF;
+                                                                                if (entityMetadataOverride != null)
+                                                                                {
+                                                                                    EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                                    entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                                    _cache.Remove(entityObject.Name);
+                                                                                    _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                                    dictionaryFields.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var dictionaryFieldsMissing = new Dictionary<string, IFieldMetadata>();
+                                                                        var savedOldFields = _cache[entityObject.Name].Fields.Values;
+                                                                        foreach (var v in savedOldFields)
+                                                                        {
+                                                                            dictionaryFieldsMissing.Add(v.Name, v);
+                                                                        }
+                                                                        IFieldMetadata fieldMetadataMiss = fieldMetadataf;
+
+
+                                                                        var dictionaryPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                                                                        if (primaryKeyMetadata.FieldRefs != null)
+                                                                        {
+                                                                            var FieldRefs = primaryKeyMetadata.FieldRefs;
+                                                                            foreach (var v in FieldRefs)
+                                                                            {
+                                                                                dictionaryPrimaryKeyFieldRefMetadata.Add(v.Key, v.Value);
+                                                                            }
+                                                                        }
+
+                                                                        PrimaryKeyMetadata primaryKeyMetadataF = new PrimaryKeyMetadata();
+                                                                        primaryKeyMetadataF.Clustered = fieldMetadata.RefEntity.PrimaryKey.Clustered;
+                                                                        dictionaryPrimaryKeyFieldRefMetadata.Add(ch.KeyFieldName, fieldMetadata.RefEntity.PrimaryKey.FieldRefs.ToList().Find(z => z.Key == ch.KeyFieldName).Value);
+                                                                        primaryKeyMetadataF.FieldRefs = dictionaryPrimaryKeyFieldRefMetadata;
+                                                                        dictionaryFieldsMissing.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+
+                                                                        entityMetadataOverride.PrimaryKey = primaryKeyMetadataF;
+                                                                        primaryKeyMetadata = primaryKeyMetadataF;
+                                                                        if (entityMetadataOverride != null)
+                                                                        {
+                                                                            EntityMetadata entityMetadataOverridex = (entityMetadataOverride as EntityMetadata);
+                                                                            entityMetadataOverridex.Fields = dictionaryFieldsMissing;
+                                                                            _cache.Remove(entityObject.Name);
+                                                                            _cache.Add(entityObject.Name, entityMetadataOverridex);
+                                                                            dictionaryFields.Add(fieldMetadataMiss.Name, fieldMetadataMiss);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        sourceprimaryKeyFieldMappedMetadata.MatchWith = (PrimaryKeyMappedMatchWith)Enum.Parse(typeof(PrimaryKeyMappedMatchWith), ch.MatchWith.ToString());
+                                                        //dictionary.Add(sourceprimaryKeyFieldMappedMetadata.KeyField.SourceName, sourceprimaryKeyFieldMappedMetadata);
+                                                        dictionary.Add(ch.Value, sourceprimaryKeyFieldMappedMetadata);
+                                                        
+                                                    }
                                                 }
                                             }
                                             primaryKeyFieldMappingMetadata.Fields = dictionary;
@@ -261,6 +814,17 @@ namespace Atdi.CoreServices.EntityOrm
                                         fieldMetadata.Name = fieldDef.Name;
                                         fieldMetadata.Desc = fieldDef.Desc;
                                         dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+
+
+                                        if (this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
+                                        {
+                                            this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
+                                        else
+                                        {
+                                            this._referenceFieldMetadata.Remove(this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
+                                            this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
                                     }
                                     else if (fieldDef.SourceType == Metadata.FieldSourceType.Extension)
                                     {
@@ -269,6 +833,7 @@ namespace Atdi.CoreServices.EntityOrm
                                         {
                                             fieldMetadata.DataType = GetDataTypeMetadata(fieldDef.DataType, dataSourceMetadata.Type);
                                         }
+
                                         var primaryKeyFieldMappedMetadata = new PrimaryKeyFieldMappedMetadata();
                                         if (!string.IsNullOrEmpty(fieldDef.SourceName))
                                         {
@@ -277,12 +842,33 @@ namespace Atdi.CoreServices.EntityOrm
                                                 _cashecontainerEntity.Add(fieldDef.SourceName);
                                                 fieldMetadata.ExtensionEntity = GetEntityMetadata(fieldDef.SourceName);
                                                 _cashecontainerEntityList.Add(fieldMetadata.ExtensionEntity);
+
+                                                if (_cache.ContainsKey(fieldDef.SourceName))
+                                                {
+                                                    _cache.Remove(fieldDef.SourceName);
+                                                    _cache.Add(fieldDef.SourceName, fieldMetadata.ExtensionEntity);
+                                                }
                                             }
                                             else
                                             {
                                                 fieldMetadata.ExtensionEntity = _cashecontainerEntityList.Find(t => t.Name == fieldDef.SourceName);
                                             }
                                         }
+                                       
+                                        //в расширяемую сущность переносим все данные по первичному ключу с сущности, которую расширяем
+                                        /*
+                                        if (entityMetadata.PrimaryKey != null)
+                                        {
+                                            if (fieldMetadata.ExtensionEntity != null)
+                                            {
+                                                if (fieldMetadata.ExtensionEntity.PrimaryKey != null)
+                                                {
+                                                    (fieldMetadata.ExtensionEntity.PrimaryKey as PrimaryKeyMetadata).FieldRefs = entityMetadata.PrimaryKey.FieldRefs;
+                                                }
+                                            }
+                                        }
+                                        */
+
                                         fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
                                         fieldMetadata.Title = fieldDef.Title;
                                         fieldMetadata.SourceType = (FieldSourceType)Enum.Parse(typeof(FieldSourceType), fieldDef.SourceType.ToString());
@@ -291,6 +877,18 @@ namespace Atdi.CoreServices.EntityOrm
                                         fieldMetadata.Name = fieldDef.Name;
                                         fieldMetadata.Desc = fieldDef.Desc;
                                         dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+
+
+                                        if (this._extensionFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
+                                        {
+                                            this._extensionFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
+                                        else
+                                        {
+                                            this._extensionFieldMetadata.Remove(this._extensionFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
+                                            this._extensionFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
+
                                     }
                                     else if (fieldDef.SourceType == Metadata.FieldSourceType.Relation)
                                     {
@@ -307,6 +905,12 @@ namespace Atdi.CoreServices.EntityOrm
                                                 _cashecontainerEntity.Add(fieldDef.SourceName);
                                                 fieldMetadata.RelatedEntity = GetEntityMetadata(fieldDef.SourceName);
                                                 _cashecontainerEntityList.Add(fieldMetadata.RelatedEntity);
+
+                                                if (_cache.ContainsKey(fieldDef.SourceName))
+                                                {
+                                                    _cache.Remove(fieldDef.SourceName);
+                                                    _cache.Add(fieldDef.SourceName, fieldMetadata.RelatedEntity);
+                                                }
                                             }
                                             else
                                             {
@@ -315,14 +919,14 @@ namespace Atdi.CoreServices.EntityOrm
                                         }
                                         fieldMetadata.RelationCondition = new DataModels.DataConstraint.ComplexCondition();
                                         ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), fieldDef.RelationCondition.ItemElementName.ToString());
-                                        
+
                                         if (fieldDef.RelationCondition.Item is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef)
                                         {
                                             object[] items = (fieldDef.RelationCondition.Item as Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef).Items;
-                                            if (items!=null)
+                                            if (items != null)
                                             {
                                                 ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions = new DataModels.DataConstraint.ComplexCondition[items.Length];
-                                                for (int k=0; k< items.Length; k++)
+                                                for (int k = 0; k < items.Length; k++)
                                                 {
                                                     ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
                                                     if (items[k] is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef)
@@ -331,7 +935,6 @@ namespace Atdi.CoreServices.EntityOrm
                                                         var expr = items[k] as Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef;
                                                         if (expr != null)
                                                         {
-                                                           
                                                             if (expr.Items != null)
                                                             {
                                                                 ((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions = new DataModels.DataConstraint.ConditionExpression[expr.Items.Length];
@@ -430,7 +1033,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                 }
                                             }
                                         }
-                                        fieldMetadata.RelationCondition.Type =  DataModels.DataConstraint.ConditionType.Complex;
+                                        fieldMetadata.RelationCondition.Type = DataModels.DataConstraint.ConditionType.Complex;
                                         fieldMetadata.Unit = GetUnitMetadata(fieldDef.Unit);
                                         fieldMetadata.Title = fieldDef.Title;
                                         fieldMetadata.SourceType = (FieldSourceType)Enum.Parse(typeof(FieldSourceType), fieldDef.SourceType.ToString());
@@ -439,12 +1042,22 @@ namespace Atdi.CoreServices.EntityOrm
                                         fieldMetadata.Name = fieldDef.Name;
                                         fieldMetadata.Desc = fieldDef.Desc;
                                         dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+
+                                        if (this._relationFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
+                                        {
+                                            this._relationFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
+                                        else
+                                        {
+                                            this._relationFieldMetadata.Remove(this._relationFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
+                                            this._relationFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
+                                        }
                                     }
                                     else if (fieldDef.SourceType == Metadata.FieldSourceType.Expression)
                                     {
                                         throw new NotImplementedException();
                                     }
-                                    else 
+                                    else
                                     {
                                         throw new NotImplementedException();
                                     }
@@ -452,21 +1065,29 @@ namespace Atdi.CoreServices.EntityOrm
                                 entityMetadata.Fields = dictionaryFields;
                                 entityMetadata.Inheritance = (InheritanceType)Enum.Parse(typeof(InheritanceType), entityObject.Inheritance.ToString());
                                 entityMetadata.Name = entityObject.Name;
+
+                                var dicIPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
                                 if (entityObject.PrimaryKey != null)
                                 {
                                     primaryKeyMetadata.Clustered = entityObject.PrimaryKey.Clustered;
-                                    var dicIPrimaryKeyFieldRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
                                     foreach (var fld in entityObject.PrimaryKey.FieldRef)
                                     {
                                         var primaryKeyFieldRefMetadata = new PrimaryKeyFieldRefMetadata();
                                         primaryKeyFieldRefMetadata.SortOrder = (DataModels.DataConstraint.SortDirection)Enum.Parse(typeof(DataModels.DataConstraint.SortDirection), fld.SortOrder.ToString());
-                                        // здесь вопрос: что нужно присвоить в Field?
                                         primaryKeyFieldRefMetadata.Field = primaryKeyFieldRefMetadata;
                                         dicIPrimaryKeyFieldRefMetadata.Add(fld.Name, primaryKeyFieldRefMetadata);
                                     }
-                                    primaryKeyMetadata.FieldRefs = dicIPrimaryKeyFieldRefMetadata;
-                                    entityMetadata.PrimaryKey = primaryKeyMetadata;
                                 }
+                                if (primaryKeyMetadata.FieldRefs != null)
+                                {
+                                    foreach (var c in primaryKeyMetadata.FieldRefs)
+                                    {
+                                        dicIPrimaryKeyFieldRefMetadata.Add(c.Key, c.Value);
+                                    }
+                                }
+                                primaryKeyMetadata.FieldRefs = dicIPrimaryKeyFieldRefMetadata;
+                                entityMetadata.PrimaryKey = primaryKeyMetadata;
+
                                 entityMetadata.Title = entityObject.Title;
                                 entityMetadata.Type = (EntityType)Enum.Parse(typeof(EntityType), entityObject.Type.ToString());
                                 isFinded = true;
@@ -477,8 +1098,10 @@ namespace Atdi.CoreServices.EntityOrm
                     reader.Dispose();
                     if (isFinded)
                     {
+                        AddedMissingPrimaryKeyExtension(entityMetadata);
+
                         if (!_cache.ContainsKey(entityName))
-                         _cache.Add(entityName, entityMetadata);
+                            _cache.Add(entityName, entityMetadata);
                         else
                         {
                             AddMissingPropertyValues(typeof(EntityMetadata), entityMetadata, _cache[entityName]);
@@ -487,71 +1110,10 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
             }
+
             _cashecontainerEntity.Clear();
             _cashecontainerEntityList.Clear();
             return entityMetadata;
-        }
-
-
-        private bool AddMissingPropertyValues(Type type, object source, object destination)
-        {
-            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            var readableNonIndexers = properties.Where(p => p.CanWrite && p.GetIndexParameters().Length == 0);
-            foreach (var propertyInfo in readableNonIndexers)
-            {
-                var a = propertyInfo.GetValue(source, null);
-                var b = propertyInfo.GetValue(destination, null);
-                if ((b == null) || (!b.Equals(a)))
-                {
-                    propertyInfo.SetValue(destination, a);
-                }
-            }
-            return true;
-        }
-
-
-      
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="unitName"></param>
-        /// <returns></returns>
-        public IUnitMetadata GetUnitMetadata(string unitName)
-        {
-            var unitMetadata = new UnitMetadata();
-            if (!string.IsNullOrEmpty(_config.UnitsPath))
-            {
-                bool isFinded = false;
-                var di = new System.IO.DirectoryInfo(_config.UnitsPath);
-                var list = di.GetFiles();
-                for (int i = 0; i < list.Length; i++)
-                {
-                    var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.UnitDef));
-                    var reader = new StreamReader(list[i].FullName);
-                    object resEntity = serializer.Deserialize(reader);
-                    if (resEntity is Atdi.CoreServices.EntityOrm.Metadata.UnitDef)
-                    {
-                        var unitObject = resEntity as Atdi.CoreServices.EntityOrm.Metadata.UnitDef;
-                        if (unitObject != null)
-                        {
-                            if (unitObject.Name == unitName)
-                            {
-                                unitMetadata.Name = unitObject.Name;
-                                unitMetadata.Dimension = unitObject.Dimension.Value;
-                                unitMetadata.Category = unitObject.Category.Value;
-                                isFinded = true;
-                            }
-                        }
-                    }
-                    reader.Close();
-                    reader.Dispose();
-                    if (isFinded)
-                    {
-                        break;
-                    }
-                }
-            }
-            return unitMetadata;
         }
     }
 }
