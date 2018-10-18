@@ -41,7 +41,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB(options.measurementType)).ToList();
                     foreach (MeasurementResults msrt in LST_MeasurementResults)
                     {
-                        ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.Value, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
+                        ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N!=null ? msrt.N.Value : -1, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
                         if (msrt.LocationSensorMeasurement != null)
                         {
                             if (msrt.LocationSensorMeasurement.Count() > 0)

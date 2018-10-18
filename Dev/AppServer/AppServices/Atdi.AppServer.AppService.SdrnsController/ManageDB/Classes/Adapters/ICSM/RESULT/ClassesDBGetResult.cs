@@ -457,7 +457,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             /////
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
-                            XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0}) AND (IDXBSSTATION={1})", res_val.m_id, StationId);
+                            //XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0}) AND (IDXBSSTATION={1})", res_val.m_id, StationId);
+                            XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0}) AND (IDSTATION={1})", res_val.m_id, StationId);
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {

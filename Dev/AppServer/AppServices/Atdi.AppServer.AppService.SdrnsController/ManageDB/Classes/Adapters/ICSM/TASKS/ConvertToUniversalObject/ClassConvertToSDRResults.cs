@@ -188,7 +188,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         s_out.GlobalSID = flevmeas.m_globalsid;
                                         s_out.MeasGlobalSID = flevmeas.m_measglobalsid;
                                         s_out.Status = flevmeas.m_status;
-
                                         List<SiteStationForMeas> ListStationSite = new  List<SiteStationForMeas>();
                                         YXbsStation Station = new YXbsStation();
                                         Station.Format("*");
