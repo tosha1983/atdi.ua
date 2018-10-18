@@ -57,9 +57,9 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
                     consumerDescriptor.Consumer = new QueueConsumer(consumerDescriptor.Queue, consumerDescriptor.Tag, channel, consumerDescriptor.Handler);
                     consumerDescriptor.Consumer.Join();
 
-                    this._logger.Verbouse("RabbitMQ.RestoreConsumer", $"The consumer '{consumerDescriptor.Tag}' was restored: Queueu: '{consumerDescriptor.Queue}'", this);
+                    this._logger.Verbouse("SDRN.RabbitMQ.RestoreConsumer", $"The consumer '{consumerDescriptor.Tag}' was restored: Queueu: '{consumerDescriptor.Queue}'", this);
                 }
-                this._logger.Verbouse("RabbitMQ.RestoreConsumers", $"The consumers were restored", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.RestoreConsumers", $"The consumers were restored", this);
             }
         }
 
@@ -86,30 +86,30 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
                 this._connection.RecoverySucceeded += _connection_RecoverySucceeded;
                 this.RestoreConsumers();
 
-                this._logger.Verbouse("RabbitMQ.EstablishConnection", $"The connection '{this._config.ConnectionName}' is established successfully", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.EstablishConnection", $"The connection '{this._config.ConnectionName}' is established successfully", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotEstablishConnectionToRabbit, "RabbitMQ.EstablishConnection", e, this);
+                this._logger.Exception(BrokerEvents.NotEstablishConnectionToRabbit, "SDRN.RabbitMQ.EstablishConnection", e, this);
                 throw new InvalidOperationException($"The connection '{this._config.ConnectionName}'to RabbitMQ is not established", e);
             }
         }
 
         private void _connection_ConnectionRecoveryError(object sender, ConnectionRecoveryErrorEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ConnectionRecoveryError", $"The exception is occurred: Connection: '{this._config.ConnectionName}', Message: '{e.Exception.Message}'", this);
-            this._logger.Exception(BrokerEvents.ExceptionEvent, "RabbitMQ.ConnectionRecoveryError", e.Exception, this);
+            this._logger.Verbouse("SDRN.RabbitMQ.ConnectionRecoveryError", $"The exception is occurred: Connection: '{this._config.ConnectionName}', Message: '{e.Exception.Message}'", this);
+            this._logger.Exception(BrokerEvents.ExceptionEvent, "SDRN.RabbitMQ.ConnectionRecoveryError", e.Exception, this);
         }
 
         private void _connection_CallbackException(object sender, CallbackExceptionEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.CallbackException", $"The exception is occurred: Connection: '{this._config.ConnectionName}', Message: '{e.Exception.Message}'", this);
-            this._logger.Exception(BrokerEvents.ExceptionEvent, "RabbitMQ.CallbackException", e.Exception, this);
+            this._logger.Verbouse("SDRN.RabbitMQ.CallbackException", $"The exception is occurred: Connection: '{this._config.ConnectionName}', Message: '{e.Exception.Message}'", this);
+            this._logger.Exception(BrokerEvents.ExceptionEvent, "SDRN.RabbitMQ.CallbackException", e.Exception, this);
         }
 
         private void _connection_RecoverySucceeded(object sender, EventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.RecoveryConnection", $"The connection '{this._config.ConnectionName}' is recovered successfully", this);
+            this._logger.Verbouse("SDRN.RabbitMQ.RecoveryConnection", $"The connection '{this._config.ConnectionName}' is recovered successfully", this);
         }
 
         private void CloseSharedChannel(string reason)
@@ -142,7 +142,7 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
 
         private void _connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ShutdownConnection", $"The connection '{this._config.ConnectionName}' is shutted down: Initiator: '{e.Initiator}', Reasone: '{e.ReplyText}', Code: #{e.ReplyCode}", this);
+            this._logger.Verbouse("SDRN.RabbitMQ.ShutdownConnection", $"The connection '{this._config.ConnectionName}' is shutted down: Initiator: '{e.Initiator}', Reasone: '{e.ReplyText}', Code: #{e.ReplyCode}", this);
         }
 
         public void EstablishSharedChannel()
@@ -162,11 +162,11 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
 
                 this._sharedChannel = this._connection.CreateModel();
 
-                this._logger.Verbouse("RabbitMQ.EstablishChannel", $"The shared channel is established successfully", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.EstablishChannel", $"The shared channel is established successfully", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotEstablishRabbitSharedChannel, "RabbitMQ.EstablishChannel", e, this);
+                this._logger.Exception(BrokerEvents.NotEstablishRabbitSharedChannel, "SDRN.RabbitMQ.EstablishChannel", e, this);
                 throw new InvalidOperationException("The shared channel to RabbitMQ is not established", e);
             }
         }
@@ -254,11 +254,11 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
                         durable: true
                     );
 
-                this._logger.Verbouse("RabbitMQ.DeclareExchange", $"The exchange with name '{exchangeName}' is declared successfully: Type = 'Direct', Durable: true", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.DeclareExchange", $"The exchange with name '{exchangeName}' is declared successfully: Type = 'Direct', Durable: true", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotDeclareExchange, "RabbitMQ.DeclareExchange", e, this);
+                this._logger.Exception(BrokerEvents.NotDeclareExchange, "SDRN.RabbitMQ.DeclareExchange", e, this);
                 throw new InvalidOperationException($"The exchange with name '{exchangeName}' is not declared", e);
             }
         }
@@ -278,7 +278,7 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
 
                 _sharedChannel.QueueBind(queue, exchange, routingKey);
 
-                this._logger.Verbouse("RabbitMQ.DeclareQueue", $"The queue with name '{queue}' is declared successfully: Routing key = '{routingKey}', Exchange name: '{exchange}'", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.DeclareQueue", $"The queue with name '{queue}' is declared successfully: Routing key = '{routingKey}', Exchange name: '{exchange}'", this);
             }
             catch (Exception e)
             {
@@ -300,11 +300,11 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
                            autoDelete: false,
                            arguments: null);
 
-                this._logger.Verbouse("RabbitMQ.DeclareQueue", $"The queue with name '{queueName}' is declared successfully", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.DeclareQueue", $"The queue with name '{queueName}' is declared successfully", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotDeclareExchange, "RabbitMQ.DeclareQueue", e, this);
+                this._logger.Exception(BrokerEvents.NotDeclareExchange, "SDRN.RabbitMQ.DeclareQueue", e, this);
                 throw new InvalidOperationException($"The queue with name '{queueName}' is not declared", e);
             }
         }
@@ -352,13 +352,13 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
 
                 this._sharedChannel.BasicPublish(exchange, routingKey, props, message.Body);
 
-                this._logger.Verbouse("RabbitMQ.PublisheMessage", $"The message '{message.Type}' is published successfully: Exchange: '{exchange}', Routing= '{routingKey}', Id = '{message.Id}'", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.PublisheMessage", $"The message '{message.Type}' is published successfully: Exchange: '{exchange}', Routing= '{routingKey}', Id = '{message.Id}'", this);
 
                 return message.Id;
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotDeclareExchange, "RabbitMQ.PublisheMessage", e, this);
+                this._logger.Exception(BrokerEvents.NotDeclareExchange, "SDRN.RabbitMQ.PublisheMessage", e, this);
                 throw new InvalidOperationException($"The message with type '{message.Type}' is not published", e);
             }
         }
@@ -380,11 +380,11 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
                 this._consumers.Add(descriptor);
                 descriptor.Consumer.Join();
 
-                this._logger.Verbouse("RabbitMQ.JoinConsumer", $"The consumer '{tag}' is joined successfully: Queue: '{queue}', Handler: '{handler.GetType().FullName}'", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.JoinConsumer", $"The consumer '{tag}' is joined successfully: Queue: '{queue}', Handler: '{handler.GetType().FullName}'", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotCreateConsumer, "RabbitMQ.JoinConsumer", e, this);
+                this._logger.Exception(BrokerEvents.NotCreateConsumer, "SDRN.RabbitMQ.JoinConsumer", e, this);
                 throw new InvalidOperationException($"The consumer '{tag}' is not joined fully", e);
             }
         }
@@ -407,11 +407,11 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
 
                 }
 
-                this._logger.Verbouse("RabbitMQ.UnjoinConsumer", $"The consumer '{tag}' is unjoined successfully: Queue: '{queue}', Handler: '{handler.GetType().FullName}'", this);
+                this._logger.Verbouse("SDRN.RabbitMQ.UnjoinConsumer", $"The consumer '{tag}' is unjoined successfully: Queue: '{queue}', Handler: '{handler.GetType().FullName}'", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.NotCreateConsumer, "RabbitMQ.UnjoinConsumer", e, this);
+                this._logger.Exception(BrokerEvents.NotCreateConsumer, "SDRN.RabbitMQ.UnjoinConsumer", e, this);
                 throw new InvalidOperationException($"The consumer '{tag}' is not unjoined fully", e);
             }
         }

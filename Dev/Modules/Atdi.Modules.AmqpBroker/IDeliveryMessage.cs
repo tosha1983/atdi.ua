@@ -24,4 +24,25 @@ namespace Atdi.Modules.AmqpBroker
 
         byte[] Body { get; set; }
     }
+
+    public static class DeliveryMessageExtantion
+    {
+        public static string GetHeaderValue(this IDeliveryMessage message, string key)
+        {
+            if (message == null)
+            {
+                return null;
+            }
+            if (message.Headers == null)
+            {
+                return null;
+            }
+            var headers = message.Headers;
+            if (!headers.ContainsKey(key))
+            {
+                return null;
+            }
+            return Convert.ToString(Encoding.UTF8.GetString(((byte[])headers[key])));
+        }
+    }
 }

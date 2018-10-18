@@ -13,12 +13,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
-            //Test1();
+            Test1();
         }
-        /*
+
         static void Test()
         {
             //var mSettiongs = new MessageConvertSettings
@@ -148,11 +147,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                         // есть третий вариант, проигнорировать его, тогда сообщение поступить в обработку на другой диспетчер
                         m.Result = MessageHandlingResult.Ignore;
                         // четвертый вариант проигнорировать обработку не меняя стаутс тогда в рамках одного диспетчера сообщение будет пердано следующему обработчику
-                        
+
                     }
-                    
+
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     // в даннмо случаи от ряда факторов мы можем переправить сообщение в очередь содержаших ошиюочные сообщения
                     m.Result = MessageHandlingResult.Error;
@@ -163,12 +162,12 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
                     m.ReasonFailure = e.Message;
                 }
-                
+
             });
 
 
             // пример подключения обработчка ввиде отдельного класса, 
-            messageDispatcher.RegistryHandler(new MyTaskHandler());
+           // messageDispatcher.RegistryHandler(new MyTaskHandler());
 
 
             // отправка сообщение осуществляется через публикатор
@@ -209,7 +208,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             // можно вызывать несколько раз, главное вызывать в том потоке в котром он создан был на базе гейта
             messageDispatcher.Dispose();
 
-            
+
 
             // при выгрузки приложения, явно закрыть гейт
             // можно вызывать несколько раз
@@ -236,14 +235,14 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             var sensor = new DM.Sensor
             {
-                Name = "SENSOR-DBD12-A00-1280", 
+                Name = "SENSOR-DBD12-A00-1280",
                 Equipment = new DM.SensorEquipment
                 {
                     TechId = "SomeSensor 2.3 SN:00009093"
                 }
             };
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 5; i++)
             {
                 publisher.Send("RegisterSensor", sensor, "Some Correlation ID #" + i.ToString());
                 publisher.Send("UpdateSensor", sensor, "Some Correlation ID #" + i.ToString());
@@ -252,6 +251,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 publisher.Send("SendMeasResults", new MeasResults(), "Some Correlation ID #" + i.ToString());
                 publisher.Send("SendEntity", new Entity(), "Some Correlation ID #" + i.ToString());
                 publisher.Send("SendEntityPart", new EntityPart(), "Some Correlation ID #" + i.ToString());
+
+                //Console.WriteLine($"Press [Enter] to next testing ...");
+                //Console.ReadLine();
+
+                Console.WriteLine($"Step: #" + i);
             }
 
             // обязательно все почистить
@@ -295,6 +299,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             return config;
         }
-        */
     }
 }

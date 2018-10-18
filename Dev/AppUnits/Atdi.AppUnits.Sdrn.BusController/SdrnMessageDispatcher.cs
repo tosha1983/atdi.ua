@@ -22,6 +22,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private BusConnection _busConnection;
         private readonly string _deviceExchangeName;
         private readonly string _serverExchangeName;
+        private readonly string _serverInnerExchangeName;
         private readonly SdrnHandlerLibrary _handlerLibrary;
         private readonly List<BusConnection> _consumerConnections;
         private readonly SdrnQueueConsumer[] _consumers; 
@@ -57,9 +58,11 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
             this._deviceExchangeName = this._busControllerConfig.GetDeviceExchangeName(); // $"{this._busControllerConfig.DeviceExchange}.[v{this._busControllerConfig.ApiVersion}]";
             this._serverExchangeName = this._busControllerConfig.GetServerExchangeName(); // $"{this._busControllerConfig.ServerExchange}.[v{this._busControllerConfig.ApiVersion}]";
+            this._serverInnerExchangeName = this._busControllerConfig.GetServerInnerExchangeName();
 
             this._busConnection.DeclareDurableDirectExchange(this._deviceExchangeName);
             this._busConnection.DeclareDurableDirectExchange(this._serverExchangeName);
+            this._busConnection.DeclareDurableDirectExchange(this._serverInnerExchangeName);
 
             this._consumers = this.DeclareConsumers();
         }
@@ -71,19 +74,19 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
             foreach (var serverQueueDescriptor in serverQueues)
             {
-                var queue = new QueueDescriptor
+                var workQueue = new QueueDescriptor
                 {
                     Name = _busControllerConfig.BuildServerQueueName(serverQueueDescriptor.RoutingKey), // $"{this._busControllerConfig.ServerQueueNamePart}.[{this._environment.ServerInstance}].[{serverQueueDescriptor.RoutingKey}].[v{this._busControllerConfig.ApiVersion}]",
                     RoutingKey = _busControllerConfig.BuildServerQueueRoute(serverQueueDescriptor.RoutingKey), //  $"[{this._environment.ServerInstance}].[{serverQueueDescriptor.RoutingKey}]",
                     Exchange = this._deviceExchangeName
                 };
-                this._busConnection.DeclareDurableQueue(queue.Name, queue.Exchange, queue.RoutingKey);
+                this._busConnection.DeclareDurableQueue(workQueue.Name, workQueue.Exchange, workQueue.RoutingKey);
 
                 var unprocessedQueue = new QueueDescriptor
                 {
                     Name = _busControllerConfig.BuildServerUnprocessedQueueName(serverQueueDescriptor.RoutingKey),
                     RoutingKey = _busControllerConfig.BuildServerUnprocessedQueueRoute(serverQueueDescriptor.RoutingKey),
-                    Exchange = this._serverExchangeName
+                    Exchange = this._serverInnerExchangeName
                 };
                 this._busConnection.DeclareDurableQueue(unprocessedQueue.Name, unprocessedQueue.Exchange, unprocessedQueue.RoutingKey);
 
@@ -91,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 {
                     Name = _busControllerConfig.BuildServerRejectedQueueName(serverQueueDescriptor.RoutingKey),
                     RoutingKey = _busControllerConfig.BuildServerRejectedQueueRoute(serverQueueDescriptor.RoutingKey),
-                    Exchange = this._serverExchangeName
+                    Exchange = this._serverInnerExchangeName
                 };
                 this._busConnection.DeclareDurableQueue(rejectedQueue.Name, rejectedQueue.Exchange, rejectedQueue.RoutingKey);
 
@@ -99,7 +102,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 {
                     Name = _busControllerConfig.BuildServerErrorsQueueName(serverQueueDescriptor.RoutingKey),
                     RoutingKey = _busControllerConfig.BuildServerErrorQueueRoute(serverQueueDescriptor.RoutingKey),
-                    Exchange = this._serverExchangeName
+                    Exchange = this._serverInnerExchangeName
                 };
                 this._busConnection.DeclareDurableQueue(errorsQueue.Name, errorsQueue.Exchange, errorsQueue.RoutingKey);
 
@@ -107,7 +110,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 {
                     Name = _busControllerConfig.BuildServerTrashQueueName(serverQueueDescriptor.RoutingKey),
                     RoutingKey = _busControllerConfig.BuildServerTrashQueueRoute(serverQueueDescriptor.RoutingKey),
-                    Exchange = this._serverExchangeName
+                    Exchange = this._serverInnerExchangeName
                 };
                 this._busConnection.DeclareDurableQueue(trashQueue.Name, trashQueue.Exchange, trashQueue.RoutingKey);
 
@@ -132,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                     var consumer = new SdrnQueueConsumer(
                         tag: $"CS.[{serverQueueDescriptor.RoutingKey}].[#{i}]",
                         routingKey: serverQueueDescriptor.RoutingKey,
-                        queue: queue.Name,
+                        queue: workQueue.Name,
                         messageConverter: _messageConverter,
                         handlerLibrary: _handlerLibrary,
                         busConnection: consumerConnection,

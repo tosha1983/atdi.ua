@@ -75,8 +75,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             {
                 try
                 {
-                    dispatcher.RegistryHandler(handlerType);
                     this.Container.Register(handlerType, handlerType, ServiceLifetime.PerThread);
+                    dispatcher.RegistryHandler(handlerType);
                     Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.HandlerTypeWasRegistred.With(handlerType.AssemblyQualifiedName)); 
                 }
                 catch(Exception e)

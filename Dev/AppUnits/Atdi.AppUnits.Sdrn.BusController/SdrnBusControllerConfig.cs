@@ -71,6 +71,12 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             return BuildServerQueueName(routingKey, "rejected");
         }
+
+        internal string GetServerInnerExchangeName()
+        {
+            return $"{this.ServerExchange}.[inner].[v{this.ApiVersion}]";
+        }
+
         public string BuildServerErrorsQueueName(string routingKey)
         {
             return BuildServerQueueName(routingKey, "errors");
@@ -99,7 +105,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         }
         public string BuildServerErrorQueueRoute(string routingKey)
         {
-            return BuildServerQueueRoute(routingKey, "error");
+            return BuildServerQueueRoute(routingKey, "errors");
         }
         public string BuildServerTrashQueueRoute(string routingKey)
         {

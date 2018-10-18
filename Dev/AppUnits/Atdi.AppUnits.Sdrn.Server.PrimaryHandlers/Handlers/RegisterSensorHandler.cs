@@ -32,9 +32,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnRegisterSensor", "RegisterSensorProcess");
-                System.Threading.Thread.Sleep(200);
-                result.Status = SdrnMessageHandlingStatus.Confirmed;
+                this._eventEmitter.Emit("OnEvent1", "RegisterSensorProcess");
+                result.Status = SdrnMessageHandlingStatus.Rejected;
                 //var sensorRegistration = false;
                 //var sensorExistsInDb = false;
 
@@ -86,12 +85,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 //{
                 //    // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
                 //    // формируем объект подтвержденяи регистрации
-                //    var registrationResult = new SensorRegistrationResult
-                //    {
-                //        EquipmentTechId = incomingEnvelope.SensorTechId,
-                //        SensorName = incomingEnvelope.SensorName,
-                //        SdrnServer = this._environment.ServerInstance
-                //    };
+                var registrationResult = new SensorRegistrationResult
+                {
+                    EquipmentTechId = incomingEnvelope.SensorTechId,
+                    SensorName = incomingEnvelope.SensorName,
+                    SdrnServer = this._environment.ServerInstance
+                };
 
                 //    if (result.Status == SdrnMessageHandlingStatus.Error)
                 //    {
@@ -105,7 +104,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 //    }
                 //    else if (sensorRegistration)
                 //    {
-                //        registrationResult.Status = "OK";
+                registrationResult.Status = "OK";
                 //    }
                 //    else
                 //    {
@@ -113,19 +112,17 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 //        registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
                 //    }
 
-                //    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
+                var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
 
-                //    envelop.SensorName = incomingEnvelope.SensorName;
-                //    envelop.SensorTechId = incomingEnvelope.SensorTechId;
-                //    envelop.DeliveryObject = registrationResult;
-                    
-                //    _messagePublisher.Send(envelop);
-                //}
+                envelop.SensorName = incomingEnvelope.SensorName;
+                envelop.SensorTechId = incomingEnvelope.SensorTechId;
+                envelop.DeliveryObject = registrationResult;
+
+                _messagePublisher.Send(envelop);
+            
+                // }
             }
         }
-
-       
-
         
     }
 }

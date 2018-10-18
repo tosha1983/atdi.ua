@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Api.EventSystem
 {
-    public interface IEventDispatcher
+    public interface IEventDispatcher : IDisposable
     {
-        void Subscribe(string eventName, Type type);
+        void Subscribe(string eventName, Type type, string subscriberName = null);
 
-        void Unsubscribe(string eventName, Type type);
+        void Unsubscribe(string eventName, Type type, string subscriberName = null);
     }
 
     public static class EventDispatcherExtantion
     {
-        public static void Subscribe(this IEventDispatcher dispatcher, Type type)
+        public static void Subscribe(this IEventDispatcher dispatcher, Type type, string subscriberName = null)
         {
-            var eventNames = type.GetAttributesValues((SubscriptionEventAttribute a) => a.EventName);
+            var eventNames = type.GetAttributesValues((SubscriptionEventAttribute a) => new { a.EventName, a.SubscriberName });
             if (eventNames != null && eventNames.Length > 0)
             {
                 for (int i = 0; i < eventNames.Length; i++)
                 {
-                    dispatcher.Subscribe(eventNames[i], type);
+                    dispatcher.Subscribe(eventNames[i].EventName, type, eventNames[i].SubscriberName);
                 }
             }
             else

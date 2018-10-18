@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
-
+    [SubscriptionEvent(EventName = "OnEvent7", SubscriberName = "Subscriber7")]
     public class OnUpdatedSensor : IEventSubscriber<Event>
     {
         private readonly ILogger _logger;

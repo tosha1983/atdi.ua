@@ -40,6 +40,7 @@ namespace Atdi.Api.EventSystem
             return false;
         }
 
+
         public static readonly string ApiVersion = "ApiVersion";
         public static readonly string AppName = "AppName";
         public static readonly string EventBusHost = "EventBus.Host";
@@ -55,6 +56,8 @@ namespace Atdi.Api.EventSystem
         public static readonly string UseCompression = "UseCompression";
 
         
+
+
 
     }
 }

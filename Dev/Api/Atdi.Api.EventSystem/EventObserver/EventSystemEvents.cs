@@ -14,8 +14,10 @@ namespace Atdi.Api.EventSystem
         public static readonly int EventSiteDisposeExeption = 3;
         public static readonly int EventEmitterDisposeExeption = 4;
         public static readonly int EmitEvent = 5;
+        public static readonly int EventDeliveryHandlerDisposeExeption = 6;
+        public static readonly int EventDispatcherDisposeExeption = 7;
 
-        
+
 
 
     }

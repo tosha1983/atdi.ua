@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.Server
             {
                 eventSiteConfig.SetValue(name, this.Config.GetParameterAsInteger($"EventSystem.{name}"));
             }
-            if (typeof(T) == typeof(bool))
+            else if (typeof(T) == typeof(bool))
             {
                 eventSiteConfig.SetValue(name, this.Config.GetParameterAsBoolean($"EventSystem.{name}"));
             }
@@ -103,6 +103,7 @@ namespace Atdi.AppUnits.Sdrn.Server
             {
                 try
                 {
+                    this.Container.Register(subscriberType, subscriberType, ServiceLifetime.PerThread);
                     eventDispatcher.Subscribe(subscriberType);
                     Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.HandlerTypeWasRegistred.With(subscriberType.AssemblyQualifiedName));
                 }

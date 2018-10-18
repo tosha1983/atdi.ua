@@ -15,6 +15,8 @@ namespace Atdi.Api.EventSystem
         private readonly object _declaratorConnectionLocker = new object();
 
         private readonly IEventSiteConfig _config;
+        private readonly EventSystemConfig _sysConfig;
+
         private readonly ISubscriberActivator _activator;
         private readonly IEventSystemObserver _observer;
         private readonly ConnectionFactory _connectionFactory;
@@ -22,20 +24,20 @@ namespace Atdi.Api.EventSystem
         private Connection _dispatcherConnection;
         private Connection _declaratorConnection;
 
-        private readonly string _commonLogQueue;
         public EventSite(IEventSiteConfig config, ISubscriberActivator activator, IEventSystemObserver observer)
         {
             this._config = config;
+            this._sysConfig = new EventSystemConfig(_config);
+
             this._activator = activator;
             this._observer = observer;
             this._connectionFactory = new ConnectionFactory(new AmqpBrokerObserver(observer));
             this._observer.Verbouse("EventSystem.Initialize", $"The event system is initialized successfully", this);
-            this._commonLogQueue = $"{config.GetValue<string>(EventSiteConfig.EventQueueNamePart)}.[Events].[log]";
 
             using (var declaratorChannel = this.DeclaratorConnection.CreateChannel())
             {
-                declaratorChannel.DeclareDurableDirectExchange(config.GetValue<string>(EventSiteConfig.EventExchange));
-                declaratorChannel.DeclareDurableQueue(this._commonLogQueue);
+                declaratorChannel.DeclareDurableDirectExchange(this._sysConfig.BuildEventExchangeName());
+                declaratorChannel.DeclareDurableQueue(this._sysConfig.BuildCommonLogQueueName());
             }
         }
 
@@ -100,8 +102,6 @@ namespace Atdi.Api.EventSystem
             }
         }
 
-        internal string CommonLogQueueName { get => this._commonLogQueue; }
-
         internal ISubscriberActivator Activator { get => _activator; }
 
         internal Connection EmitterConnection
@@ -161,6 +161,8 @@ namespace Atdi.Api.EventSystem
             }
         }
 
+        internal EventSystemConfig SysConfig => _sysConfig;
+
         public IEventSiteConfig Config => _config;
 
         private Connection CreateConnection(string name)
@@ -168,12 +170,12 @@ namespace Atdi.Api.EventSystem
             var config = new ConnectionConfig
             {
                 AutoRecovery = true,
-                ConnectionName = $"EventSystem.[{_config.GetValue<string>(EventSiteConfig.AppName)}].[{name}].[v{_config.GetValue<string>(EventSiteConfig.ApiVersion)}]",
-                HostName = _config.GetValue<string>(EventSiteConfig.EventBusHost),
-                VirtualHost = _config.GetValue<string>(EventSiteConfig.EventBusVirtualHost),
-                Port = _config.GetValue<int?>(EventSiteConfig.EventBusPort),
-                UserName = _config.GetValue<string>(EventSiteConfig.EventBusUser),
-                Password = _config.GetValue<string>(EventSiteConfig.EventBusPassword)
+                ConnectionName = $"EventSystem.[{_sysConfig.AppName}].[{name}].[v{_sysConfig.ApiVersion}]",
+                HostName = _sysConfig.EventBusHost,
+                VirtualHost = _sysConfig.EventBusVirtualHost,
+                Port = _sysConfig.EventBusPort,
+                UserName = _sysConfig.EventBusUser,
+                Password = _sysConfig.EventBusPassword
             };
 
             return _connectionFactory.Create(config);
@@ -181,7 +183,7 @@ namespace Atdi.Api.EventSystem
 
         public IEventDispatcher GetDispatcher()
         {
-            return new EventDispatcher(this);
+            return new EventDispatcher(this, _observer);
         }
 
         public IEventEmitter GetEmitter()
