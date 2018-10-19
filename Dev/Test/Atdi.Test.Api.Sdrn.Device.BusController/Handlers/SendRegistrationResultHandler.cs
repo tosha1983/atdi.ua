@@ -5,10 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DM = Atdi.DataModels.Sdrns.Device;
-using Atdi.Contracts.Sdrn.Server;
-using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Sdrns.Device;
-using Atdi.Platform.Logging;
 
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers

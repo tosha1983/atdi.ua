@@ -26,6 +26,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public static readonly string LicenseProductKey = "License.ProductKey";
 
         public static readonly string RabbitMQHost = "RabbitMQ.Host";
+        public static readonly string RabbitMQVirtualHost = "RabbitMQ.VirtualHost";
         public static readonly string RabbitMQUser = "RabbitMQ.User";
         public static readonly string RabbitMQPassword = "RabbitMQ.Password";
 

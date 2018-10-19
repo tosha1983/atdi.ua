@@ -114,6 +114,15 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
+            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQVirtualHost, out paramValue, logger))
+            {
+                descriptor.RabbitMQVirtualHost = paramValue;
+            }
+            else
+            {
+                descriptor.RabbitMQVirtualHost = "/";
+            }
+
             if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQUser, out paramValue, logger))
             {
                 descriptor.RabbitMQUser = paramValue;
@@ -227,7 +236,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             using (var rabbitBus = new RabbitMQBus("Declaring", descriptor, logger))
             {
-                logger.Verbouse("Rabbit MQ: Declaring", $"The connection to Rabbit MQ Server was checked successfully: Host = '{descriptor.RabbitMQHost}'", this);
+                logger.Verbouse("Rabbit MQ: Declaring", $"The connection to Rabbit MQ Server was checked successfully: Host = '{descriptor.RabbitMQHost}', VirtualHost = {descriptor.RabbitMQVirtualHost}", this);
 
                 var deviceExchangeName = descriptor.BuildDeviceExchangeName();
                 rabbitBus.DeclareDurableDirectExchange(deviceExchangeName);
