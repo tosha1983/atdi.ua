@@ -89,7 +89,6 @@ namespace Atdi.CoreServices.EntityOrm
                 }
             }
             /// НЕ ЗАБУДЬ УДАЛИТЬ
-<<<<<<< HEAD
             var entityOrm = new EntityOrm(this);
             //entityOrm.GetEntityMetadata("IAntennaType");
             //entityOrm.GetEntityMetadata("IAntennaExten1");
@@ -190,7 +189,7 @@ namespace Atdi.CoreServices.EntityOrm
             */
             var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
             .Execute<MD.IAntenna>(query) == 0;
-=======
+
             /// ЗАБЫЛ!!!
         //    var entityOrm = new EntityOrm(this);
         //    entityOrm.GetEntityMetadata("IAntennaExten1");
@@ -240,7 +239,6 @@ namespace Atdi.CoreServices.EntityOrm
 
         //var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
         //    .Execute<MD.IAntenna>(query) == 0;
->>>>>>> d06fefe9ef19a476213669275ea4a2a427ab4812
             
         }
 
