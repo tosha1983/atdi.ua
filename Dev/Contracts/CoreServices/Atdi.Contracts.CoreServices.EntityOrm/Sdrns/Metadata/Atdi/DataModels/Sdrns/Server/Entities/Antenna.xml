@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "IAntenna" 
+  Name        = "Antenna" 
   Title       = "Antenna" 
   Desc        = "The antenna"
   Inheritance = "Prototype"
-  BaseEntity  = "IAntennaBase"
+  BaseEntity  = "Atdi.DataModels.Sdrns.Server.AntennaBase"
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   
@@ -14,6 +14,7 @@
   </DataSource>
   
   <Fields>
+
     <Field Name="FrequencyMHz" 
            SourceType="Column" 
            SourceName="FREQ_MHz" 
@@ -25,12 +26,12 @@
     
     <Field Name="EXT1" 
            SourceType="Extension" 
-           SourceName ="IAntennaExten1" 
+           SourceName ="Atdi.DataModels.Sdrns.Server.AntennaExten1" 
            Title="Antenna extention"  />
     
     <Field Name="POS" 
            SourceType="Relation" 
-           SourceName="IAntennaPosition" 
+           SourceName="AntennaPosition" 
            Title="Antenna position" >
       <RelationCondition JoinType="Outer">
         <Or>
@@ -87,7 +88,7 @@
     <Field
       Name="PROP1"
       SourceType="Reference"
-      SourceName ="IProperty"
+      SourceName ="Property"
       Title="Antenna type" >
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="TableName"  MatchWith="Value">ANTENNA</Mapped>
@@ -100,7 +101,7 @@
     <Field
       Name="PROP2"
       SourceType="Reference"
-      SourceName ="IProperty"
+      SourceName ="Property"
       Title="Antenna type" >
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="TableName"  MatchWith="Value">ANTENNA</Mapped>
@@ -112,7 +113,7 @@
     <Field
       Name="PROP3"
       SourceType="Reference"
-      SourceName ="IProperty"
+      SourceName ="Property"
       Title="Antenna type" >
     </Field>
 

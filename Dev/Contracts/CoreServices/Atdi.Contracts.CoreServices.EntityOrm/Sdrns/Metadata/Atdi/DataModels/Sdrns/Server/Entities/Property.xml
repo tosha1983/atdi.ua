@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
-        Name  = "IProperty"
+        Name  = "Property"
         Title = "Property"
         Desc  = "The property of entities"
         Type  = "Normal"
-        BaseEntity  = "IPropertyBase"
+        BaseEntity  = "PropertyBase"
         >
 
   <DataSource Type="Database" Object="Table">

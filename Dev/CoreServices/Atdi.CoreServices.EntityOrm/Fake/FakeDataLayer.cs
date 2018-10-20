@@ -318,7 +318,7 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         {
             public IDataEngineConfig Config => throw new NotImplementedException();
 
-            public IEngineSyntax Syntax =>  throw new NotImplementedException();
+            public IEngineSyntax Syntax => new Atdi.CoreServices.DataLayer.OracleEngineSyntax();
 
             public void Execute(EngineCommand command, Action<System.Data.IDataReader> handler)
             {

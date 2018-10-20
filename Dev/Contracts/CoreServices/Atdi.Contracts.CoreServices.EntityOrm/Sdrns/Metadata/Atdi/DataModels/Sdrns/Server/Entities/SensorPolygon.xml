@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "ISensorPolygon" 
+  Name        = "SensorPolygon" 
   Title       = "SensorPolygon" 
   Desc        = "The sensor polygon"
   Type        = "Normal"
@@ -51,7 +51,7 @@
     <Field
     Name="SENSOR"
     SourceType="Reference"
-    SourceName ="ISensor"
+    SourceName ="Sensor"
     Title="Relation SensorPolygon to Sensor" >
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>

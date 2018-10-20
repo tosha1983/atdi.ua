@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Entity xmlns        = "http://schemas.atdi.com/orm/entity.xsd"
+        Name         = "AntennaExten2"
+        Title        = "Antenna exten 2"
+        Desc         = "The antenna exten 2"
+        Type         = "Extention"
+        ExtendEntity = "Antenna"
+        >
+  <DataSource Type="Database" Object="Table">
+    <Name>ANTENNA_EXT2</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="ShortName2" SourceType="Column"    SourceName ="NAME_SHT2"  DataType="Text.50" Title="Antenna Short Name" />
+    <Field Name="FullName2"  SourceType="Column"    SourceName ="NAME_FULL2" DataType="Text.250" Title="Antenna Full Name" />
+    <Field Name="PosType2"   SourceType="Column"    SourceName ="POS_TYPE2" DataType="Text.50" Title="Antenna position type" />
+    <Field Name="EXT2"      SourceType="Extension" SourceName ="Atdi.DataModels.Sdrns.Server.AntennaExten2"  Title="Antenna extention"  />
+  </Fields>
+
+
+</Entity>

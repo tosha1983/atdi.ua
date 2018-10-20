@@ -21,6 +21,8 @@ namespace Atdi.CoreServices.DataLayer
 
         string IConstraintEngineSyntax.LikeAnyChar => "%";
 
+        public int MaxAliasLenth => throw new NotImplementedException();
+
         public string SortedColumn(string expression, SortDirection direction)
         {
             switch (direction)

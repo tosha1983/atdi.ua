@@ -43,10 +43,13 @@
   <ItemGroup>
     <Compile Include="Example\IAntenna.cs" />
     <Compile Include="Example\IAntennaBase.cs" />
+    <Compile Include="Example\IAntennaExten2.cs" />
     <Compile Include="Example\IAntennaExten1.cs" />
+    <Compile Include="Example\IAntennaPosition2.cs" />
     <Compile Include="Example\IAntennaPosition.cs" />
     <Compile Include="Example\IPropertyBase.cs" />
     <Compile Include="Example\IProperty.cs" />
+    <Compile Include="Example\Types\IAntennaType3.cs" />
     <Compile Include="Example\Types\IAntennaType2.cs" />
     <Compile Include="ISensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

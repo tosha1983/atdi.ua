@@ -33,9 +33,6 @@ namespace Atdi.CoreServices.EntityOrm
 
             public string Expression { get; set; }
 
-            public DataModels.DataConstraint.ComplexCondition RelationCondition = new ComplexCondition();
-
-            public Dictionary<string, IPrimaryKeyFieldMappedMetadata> ReferenceMapped = new Dictionary<string, IPrimaryKeyFieldMappedMetadata>();
 
         }
 
@@ -315,7 +312,8 @@ namespace Atdi.CoreServices.EntityOrm
 
         public QuerySelectStatement()
         {
-            this._statement = new QuerySelectStatement(ModelType.Name); 
+            string modelTypeName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
+            this._statement = new QuerySelectStatement(modelTypeName); 
         }
 
         public IQuerySelectStatement<TModel> Distinct()

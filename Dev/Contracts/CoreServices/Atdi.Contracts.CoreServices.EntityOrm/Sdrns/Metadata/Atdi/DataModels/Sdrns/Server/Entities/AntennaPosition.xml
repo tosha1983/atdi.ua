@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
+        Name  = "AntennaPosition"
+        Title = "Antenna position entity"
+        Desc  = "The antenna position entity"
+        Type  = "Normal"
+        >
+  <DataSource Type="Database" Object="Table">
+    <Name>ANTENNA_POS</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+
+  <Fields>
+    <Field
+      Name="Id"
+      SourceType="Column"
+      SourceName="ID"
+      DataType="Int64"
+      Required="true"
+      Title="Pos ID"/>
+
+    <Field
+      Name="TableName"
+      SourceType="Column"
+      SourceName ="TABLE_NAME"
+      DataType="Text.50"
+      Required="true"
+      Title="Table Name" />
+
+    <Field
+      Name="PosType"
+      SourceType="Column"
+      SourceName ="POS_TYPE"
+      DataType="Text.50"
+      Required="true"
+      Title="Table Name" />
+
+    <Field
+      Name="PosX"
+      SourceType="Column"
+      SourceName ="POS_X"
+      Required="false"
+      DataType="Double"
+      Title="Pos X" />
+    <Field
+      Name="PosY"
+      SourceType="Column"
+      SourceName ="POS_Y"
+      Required="false"
+      DataType="Double"
+      Title="Pos X" />
+
+ <Field Name="PSS2" 
+           SourceType="Relation" 
+           SourceName="AntennaPosition2" 
+           Title="Antenna position" >
+      <RelationCondition JoinType="Outer">
+        <Or>
+          <And>
+            <Equal>
+              <Field Name="#source.Id"/>
+              <Field Name="#this.Id"/>
+            </Equal>
+          </And>
+        </Or>
+      </RelationCondition>
+    </Field>
+  </Fields>
+
+
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+    <FieldRef Name="TableName"/>
+    <FieldRef Name="PosType"/>
+  </PrimaryKey>
+
+</Entity>

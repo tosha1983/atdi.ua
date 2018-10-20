@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities.Types
 {
     [Entity]
-    public interface IAntennaType2
+    public interface IAntennaType3
     {
-        int Id2 { get; }
+        int Id3 { get; }
 
-        string Name2 { get; set; }
+        string Name3 { get; set; }
 
-        Types.IAntennaType3 TYPE3 { get; }
     }
 }

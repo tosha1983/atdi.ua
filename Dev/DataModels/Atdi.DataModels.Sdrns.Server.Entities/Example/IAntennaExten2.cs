@@ -8,16 +8,14 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [Entity]
-    public interface IAntennaExten1
+    public interface IAntennaExten2
     {
 
-        string ShortName { get; set; }
+        string ShortName2 { get; set; }
 
-        string FullName { get; set; }
+        string FullName2 { get; set; }
 
-        string PosType { get; set; }
-
-        IAntennaExten2 EXT2 { get; }
+        string PosType2 { get; set; }
 
         IAntenna EXTENDED { get; set; }
     }

@@ -19,5 +19,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? PosX { get; set; }
 
         double? PosY { get; set; }
+        IAntennaPosition PSS2 { get; }
     }
 }

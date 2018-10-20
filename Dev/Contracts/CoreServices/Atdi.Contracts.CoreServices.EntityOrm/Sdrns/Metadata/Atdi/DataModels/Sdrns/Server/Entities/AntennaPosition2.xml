@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
-        Name  = "IAntennaPosition"
-        Title = "Antenna position entity"
-        Desc  = "The antenna position entity"
+        Name  = "AntennaPosition2"
+        Title = "Antenna position entity2"
+        Desc  = "The antenna position entity2"
         Type  = "Normal"
         >
   <DataSource Type="Database" Object="Table">
-    <Name>ANTENNA_POS</Name>
+    <Name>ANTENNA_POS2</Name>
     <Schema>dbo</Schema>
   </DataSource>
 
@@ -50,7 +50,25 @@
       Required="false"
       DataType="Double"
       Title="Pos X" />
+
+ <Field Name="POS2" 
+           SourceType="Relation" 
+           SourceName="AntennaPosition2" 
+           Title="Antenna position" >
+      <RelationCondition JoinType="Outer">
+        <Or>
+          <And>
+            <Equal>
+              <Field Name="#source.Id"/>
+              <Field Name="#this.Id"/>
+            </Equal>
+          </And>
+        </Or>
+      </RelationCondition>
+    </Field>
   </Fields>
+
+
 
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

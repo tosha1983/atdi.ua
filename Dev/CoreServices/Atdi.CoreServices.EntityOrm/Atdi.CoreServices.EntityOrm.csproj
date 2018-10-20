@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FieldProperties.cs" />
     <Compile Include="ConditionParser.cs" />
     <Compile Include="EnitityOrmDataLayer.cs" />
     <Compile Include="EntityOrm.cs" />
@@ -76,7 +77,7 @@
     <Compile Include="QueryInsertStatement.cs" />
     <Compile Include="QuerySelectStatement.cs" />
     <Compile Include="QueryUpdateStatement.cs" />
-    <Compile Include="SchemasMetadata.cs" />
+    <Compile Include="AliasField.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +116,10 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
+      <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
+      <Name>Atdi.CoreServices.DataLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

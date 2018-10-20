@@ -38,6 +38,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         string EncodeValue(decimal value);
 
         IConstraintEngineSyntax Constraint { get; }
+        int MaxAliasLenth { get; }
 
         string ColumnExpression(string expression, string alias);
 

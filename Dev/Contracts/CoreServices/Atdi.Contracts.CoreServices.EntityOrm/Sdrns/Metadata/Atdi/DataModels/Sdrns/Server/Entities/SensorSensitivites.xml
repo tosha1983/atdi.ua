@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "ISensorSensitivites" 
+  Name        = "SensorSensitivites" 
   Title       = "SensorSensitivites" 
   Desc        = "The sensor equipment sensitivites"
   Type        = "Normal"
@@ -77,7 +77,7 @@
     <Field
     Name="SENSOREQUIP"
     SourceType="Reference"
-    SourceName ="ISensorEquipment"
+    SourceName ="SensorEquipment"
     Title="Relation SensorEquipmentSensitivites to SensorEquipment" >
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorEquipId</Mapped>

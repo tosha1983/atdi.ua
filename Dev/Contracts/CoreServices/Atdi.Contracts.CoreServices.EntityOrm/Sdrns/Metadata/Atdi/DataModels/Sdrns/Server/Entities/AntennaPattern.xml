@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity 
-  Name        = "IAntennaPattern" 
+  Name        = "AntennaPattern" 
   Title       = "AntennaPattern" 
   Desc        = "The antenna pattern"
   Type        = "Normal"
@@ -73,7 +73,7 @@
     <Field
      Name="SENSORANT"
      SourceType="Reference"
-     SourceName ="ISensorAntenna"
+     SourceName ="SensorAntenna"
      Title="Relation AntennaPattern to SensorAntenna" >
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorAntennaId</Mapped>

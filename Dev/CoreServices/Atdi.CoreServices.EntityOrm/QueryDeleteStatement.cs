@@ -18,7 +18,7 @@ namespace Atdi.CoreServices.EntityOrm
 
         public QueryDeleteStatement()
         {
-            this._tableName = ModelType.Name;
+            this._tableName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
             this._conditions = new List<Condition>();
         }
 

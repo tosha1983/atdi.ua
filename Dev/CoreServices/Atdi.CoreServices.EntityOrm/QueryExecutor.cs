@@ -26,8 +26,8 @@ namespace Atdi.CoreServices.EntityOrm
         public QueryExecutor(IDataEngine dataEngine, EntityOrmQueryBuilder icsmOrmQueryBuilder, ILogger logger) : base(logger) 
         {
             this._dataEngine = dataEngine;
-            //this._syntax = dataEngine.Syntax;
-            //this._conditionParser = new ConditionParser(dataEngine.Syntax);
+            this._syntax = dataEngine.Syntax;
+            this._conditionParser = new ConditionParser(dataEngine.Syntax);
             this._icsmOrmQueryBuilder = icsmOrmQueryBuilder;
 
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
-        Name  = "IAntennaBase"
+        Name  = "AntennaBase"
         Title = "Antenna base entity"
         Desc  = "The antenna base entity"
         Type  = "Normal"
@@ -31,7 +31,7 @@
     <Field 
       Name="TYPE" 
       SourceType="Reference" 
-      SourceName ="IAntennaType" 
+      SourceName ="Atdi.DataModels.Sdrns.Server.Types.AntennaType" 
       Title="Antenna type" />
       
   </Fields>
