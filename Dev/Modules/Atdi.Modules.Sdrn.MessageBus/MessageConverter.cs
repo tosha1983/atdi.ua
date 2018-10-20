@@ -68,7 +68,7 @@ namespace Atdi.Modules.Sdrn.MessageBus
             var json = JsonConvert.SerializeObject(messageBody);
 
             var encoding = new Stack<string>();
-            if (this._settings.UseСompression)
+            if (this._settings.UseCompression)
             {
                 encoding.Push("compressed");
                 json = Compressor.Compress(json);

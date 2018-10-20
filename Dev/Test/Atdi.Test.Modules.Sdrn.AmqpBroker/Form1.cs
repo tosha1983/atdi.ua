@@ -9,17 +9,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Modules.Sdrn.AmqpBroker;
-using Atdi.Modules.Sdrn.MessageBus;
-using Message = Atdi.Modules.Sdrn.MessageBus.Message;
+using Atdi.Modules.AmqpBroker;
+
 
 namespace Atdi.Test.Modules.Sdrn.AmqpBroker
 {
-    public partial class Form1 : Form, IBrokerObserver, IMessageHandler
+    public partial class Form1 : Form, IBrokerObserver , IDeliveryHandler
     {
-        private BusConnectionFactory _factory;
-        private BusConnection _consumersConnection = null;
-        private BusConnection _publisherConnection = null;
+        private ConnectionFactory _factory;
+        private Connection _consumersConnection = null;
+        private Connection _publisherConnection = null;
+        private Channel _consumersChannel1 = null;
+        private Channel _consumersChannel2 = null;
+        private Channel _consumersChannel3 = null;
+        private Channel _publisherChannel = null;
         private SynchronizationContext _synchronizationContext;
 
         public Form1()
@@ -29,7 +32,7 @@ namespace Atdi.Test.Modules.Sdrn.AmqpBroker
             button2.Enabled = false;
             button3.Enabled = false;
 
-            _factory = new BusConnectionFactory(this);
+            _factory = new ConnectionFactory(this);
         }
 
         public void OnEvent(IBrokerEvent busEvent)
@@ -42,24 +45,24 @@ namespace Atdi.Test.Modules.Sdrn.AmqpBroker
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var config = new BusConnectionConfig
+            var config = new ConnectionConfig
             {
                 HostName = txtRabbitMQHost.Text,
                 VirtualHost = txtRabbitMQVisrtHost.Text,
-                ApplicationName = txtRabbitMQAppName.Text,
-                ConnectionName = txtRabbitMQConnectName.Text + ".[Publisher]",
+               // ApplicationName = txtRabbitMQAppName.Text,
+                ConnectionName = txtRabbitMQConnectName.Text + ".[Publishers]",
                 UserName = txtRabbitMQUser.Text,
                 Password = txtRabbitMQPassword.Text
             };
 
             this._publisherConnection = _factory.Create(config);
-
+            this._publisherChannel = this._publisherConnection.CreateChannel();
            
-            config = new BusConnectionConfig
+            config = new ConnectionConfig
             {
                 HostName = txtRabbitMQHost.Text,
                 VirtualHost = txtRabbitMQVisrtHost.Text,
-                ApplicationName = txtRabbitMQAppName.Text,
+               // ApplicationName = txtRabbitMQAppName.Text,
                 ConnectionName = txtRabbitMQConnectName.Text + ".[Consumers]",
                 UserName = txtRabbitMQUser.Text,
                 Password = txtRabbitMQPassword.Text
@@ -78,6 +81,12 @@ namespace Atdi.Test.Modules.Sdrn.AmqpBroker
             button1.Enabled = true;
             button2.Enabled = false;
             button3.Enabled = false;
+
+            if (_publisherChannel != null)
+            {
+                _publisherChannel.Dispose();
+                _publisherChannel = null;
+            }
 
             if (_publisherConnection != null)
             {
@@ -113,54 +122,95 @@ namespace Atdi.Test.Modules.Sdrn.AmqpBroker
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (_publisherConnection != null)
+            if (_publisherChannel != null)
             {
-                _publisherConnection.DeclareDurableDirectExchange(txtExchange.Text);
+                _publisherChannel.DeclareDurableDirectExchange(txtExchange.Text);
             }
                 
         }
 
-        Atdi.Modules.Sdrn.AmqpBroker.MessageHandlingResult IMessageHandler.Handle(Atdi.Modules.Sdrn.MessageBus.Message message, IDeliveryContext deliveryContext)
-        {
-            var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
-            _synchronizationContext.Post(
-            (o) => 
-            {
-                txtMsg.AppendText($"#{tid} >>> Consumer: '{deliveryContext.ConsumerTag}'; DeliveryTag: '{deliveryContext.DeliveryTag}'; Exchange: '{deliveryContext.Exchange}'; RoutingKey: '{deliveryContext.RoutingKey}'; AppID: '{message.AppId}'; Message ID: '{message.Id}'" + Environment.NewLine);
+        //Atdi.Modules.Sdrn.AmqpBroker.MessageHandlingResult IMessageHandler.Handle(Atdi.Modules.Sdrn.MessageBus.Message message, IDeliveryContext deliveryContext)
+        //{
+        //    var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        //    _synchronizationContext.Post(
+        //    (o) => 
+        //    {
+        //        txtMsg.AppendText($"#{tid} >>> Consumer: '{deliveryContext.ConsumerTag}'; DeliveryTag: '{deliveryContext.DeliveryTag}'; Exchange: '{deliveryContext.Exchange}'; RoutingKey: '{deliveryContext.RoutingKey}'; AppID: '{message.AppId}'; Message ID: '{message.Id}'" + Environment.NewLine);
 
-            }, null);
+        //    }, null);
 
             
 
-            return Atdi.Modules.Sdrn.AmqpBroker.MessageHandlingResult.Confirm;
-        }
+        //    return Atdi.Modules.Sdrn.AmqpBroker.MessageHandlingResult.Confirm;
+        //}
 
         private void button4_Click(object sender, EventArgs e)
         {
             if (_consumersConnection != null)
             {
-                _consumersConnection.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#1]", this);
-                _consumersConnection.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#2]", this);
-                _consumersConnection.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#3]", this);
+                _consumersChannel1 = _consumersConnection.CreateChannel();
+                _consumersChannel2 = _consumersConnection.CreateChannel();
+                _consumersChannel3 = _consumersConnection.CreateChannel();
+
+                _consumersChannel1.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#1]", this);
+                _consumersChannel1.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#2]", this);
+                _consumersChannel1.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#3]", this);
+
+                _consumersChannel2.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#1]", this);
+                _consumersChannel2.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#2]", this);
+                _consumersChannel2.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#3]", this);
+
+                _consumersChannel3.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#1]", this);
+                _consumersChannel3.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#2]", this);
+                _consumersChannel3.JoinConsumer("Q.SDRN.Server.[Test]", "CS.[Test].[#3]", this);
             }
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            if (_publisherConnection != null)
+            if (_publisherChannel != null)
             {
-                var msg = new Message
+                var msg = new DeliveryMessage
                 {
                     Id = Guid.NewGuid().ToString(),
                     Type = "SomeType",
-                    AppId = "Test: "  + Guid.NewGuid().ToString()
+                    AppId = "Test: " + Guid.NewGuid().ToString()
                 };
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     msg.AppId = $"[#{i}]";
-                    _publisherConnection.Publish("[SDRN.Test].[1]", "RK.[Test]", msg);
+                    _publisherChannel.Publish("[SDRN.Test].[1]", "RK.[Test]", msg);
                 }
-                
+
+            }
+        }
+
+        HandlingResult IDeliveryHandler.Handle(IDeliveryMessage message, IDeliveryContext deliveryContext)
+        {
+            var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            _synchronizationContext.Post(
+            (o) =>
+            {
+                txtMsg.AppendText($"#{tid} >>>[Channel #{deliveryContext.Channel.Number}].Consumer: '{deliveryContext.ConsumerTag}'; DeliveryTag: '{deliveryContext.DeliveryTag}'; Exchange: '{deliveryContext.Exchange}'; RoutingKey: '{deliveryContext.RoutingKey}'; AppID: '{message.AppId}'; Message ID: '{message.Id}'" + Environment.NewLine);
+
+            }, null);
+
+
+
+            return Atdi.Modules.AmqpBroker.HandlingResult.Confirm;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_publisherConnection != null)
+            {
+                _publisherConnection.Dispose();
+                _publisherConnection = null;
+            }
+            if (_consumersConnection != null)
+            {
+                _consumersConnection.Dispose();
+                _consumersConnection = null;
             }
         }
     }

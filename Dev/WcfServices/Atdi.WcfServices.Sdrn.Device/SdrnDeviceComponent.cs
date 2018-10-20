@@ -69,7 +69,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             var convertorSettings = new MMB.MessageConvertSettings
             {
                 UseEncryption = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseEncryption"),
-                UseСompression = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.ompression")
+                UseCompression = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseCompression")
             };
             var typeResolver = MMB.MessageObjectTypeResolver.CreateForApi20();
             var messageConvertor = new MMB.MessageConverter(convertorSettings, typeResolver);
@@ -91,10 +91,15 @@ namespace Atdi.WcfServices.Sdrn.Device
                     Password = this._serverDescriptor.RabbitMqPassword
                 };
 
+                if (!string.IsNullOrEmpty(this._serverDescriptor.RabbitMqVirtualHost))
+                {
+                    factory.VirtualHost = this._serverDescriptor.RabbitMqVirtualHost;
+                }
+
                 using (var connection = factory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (Declaring) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                 using (var channel = connection.CreateModel())
                 {
-                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfully: Host = '{this._serverDescriptor.RabbitMqHost}'");
+                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfully: Host = '{this._serverDescriptor.RabbitMqHost}', VirtualHost: '{factory.VirtualHost}'");
 
                     var deviceExchange = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
 

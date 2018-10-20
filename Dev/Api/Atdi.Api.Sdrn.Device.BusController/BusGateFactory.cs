@@ -114,6 +114,15 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
+            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQVirtualHost, out paramValue, logger))
+            {
+                descriptor.RabbitMQVirtualHost = paramValue;
+            }
+            else
+            {
+                descriptor.RabbitMQVirtualHost = "/";
+            }
+
             if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQUser, out paramValue, logger))
             {
                 descriptor.RabbitMQUser = paramValue;
@@ -196,9 +205,9 @@ namespace Atdi.Api.Sdrn.Device.BusController
             {
                 descriptor.SdrnMessageConvertorUseEncryption = "true".Equals(paramValue, StringComparison.OrdinalIgnoreCase);
             }
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnMessageConvertorUseСompression, out paramValue, logger))
+            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnMessageConvertorUseCompression, out paramValue, logger))
             {
-                descriptor.SdrnMessageConvertorUseСompression = "true".Equals(paramValue, StringComparison.OrdinalIgnoreCase);
+                descriptor.SdrnMessageConvertorUseCompression = "true".Equals(paramValue, StringComparison.OrdinalIgnoreCase);
             }
 
             if (hasParamError)
@@ -227,7 +236,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             using (var rabbitBus = new RabbitMQBus("Declaring", descriptor, logger))
             {
-                logger.Verbouse("Rabbit MQ: Declaring", $"The connection to Rabbit MQ Server was checked successfully: Host = '{descriptor.RabbitMQHost}'", this);
+                logger.Verbouse("Rabbit MQ: Declaring", $"The connection to Rabbit MQ Server was checked successfully: Host = '{descriptor.RabbitMQHost}', VirtualHost = {descriptor.RabbitMQVirtualHost}", this);
 
                 var deviceExchangeName = descriptor.BuildDeviceExchangeName();
                 rabbitBus.DeclareDurableDirectExchange(deviceExchangeName);
@@ -279,7 +288,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 var convertorSettings = new MessageConvertSettings
                 {
                     UseEncryption = descriptor.SdrnMessageConvertorUseEncryption,
-                    UseСompression = descriptor.SdrnMessageConvertorUseСompression
+                    UseCompression = descriptor.SdrnMessageConvertorUseCompression
                 };
                 //var typeResolver = MessageObjectTypeResolver.CreateForApi20();
                 var messageConvertor = new MessageConverter(convertorSettings);

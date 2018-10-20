@@ -32,6 +32,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
             this._connectionFactory = new ConnectionFactory()
             {
                 HostName = this._environmentDescriptor.RabbitMQHost,
+                VirtualHost = this._environmentDescriptor.RabbitMQVirtualHost,
                 UserName = this._environmentDescriptor.RabbitMQUser,
                 Password = this._environmentDescriptor.RabbitMQPassword,
             };

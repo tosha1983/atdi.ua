@@ -215,7 +215,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
             //using (var busConnection = factory.Create(busConfig))
             {
-                _busConnection.Publish(_busControllerConfig.GetServerExchangeName(), routingKey, redirectedMessage);
+                _busConnection.Publish(_busControllerConfig.GetServerInnerExchangeName(), routingKey, redirectedMessage);
             }
         }
 

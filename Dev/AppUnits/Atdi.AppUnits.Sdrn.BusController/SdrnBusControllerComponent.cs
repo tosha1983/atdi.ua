@@ -31,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             var convertorSettings = new MessageConvertSettings
             {
                 UseEncryption = this._busControllerConfig.UseEncryption,
-                UseСompression = this._busControllerConfig.UseСompression
+                UseCompression = this._busControllerConfig.UseCompression
             };
             var typeResolver = MessageObjectTypeResolver.CreateForApi20();
             var messageConvertor = new MessageConverter(convertorSettings, typeResolver);
@@ -75,8 +75,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             {
                 try
                 {
-                    dispatcher.RegistryHandler(handlerType);
                     this.Container.Register(handlerType, handlerType, ServiceLifetime.PerThread);
+                    dispatcher.RegistryHandler(handlerType);
                     Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.HandlerTypeWasRegistred.With(handlerType.AssemblyQualifiedName)); 
                 }
                 catch(Exception e)

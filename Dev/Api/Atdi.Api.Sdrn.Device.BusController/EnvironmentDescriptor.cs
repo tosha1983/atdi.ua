@@ -18,6 +18,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public IBusGateConfig GateConfig { get; private set; }
 
         public string RabbitMQHost { get; set; }
+        public string RabbitMQVirtualHost { get; set; }
         public string RabbitMQUser { get; set; }
         public string RabbitMQPassword { get; set; }
         public string SdrnApiVersion { get; set; }
@@ -29,7 +30,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public string SdrnDeviceQueueNamePart { get; set; }
 
         public bool SdrnMessageConvertorUseEncryption { get; set; }
-        public bool SdrnMessageConvertorUseСompression { get; set; }
+        public bool SdrnMessageConvertorUseCompression { get; set; }
 
         public string SdrnDeviceMessagesBindings
         {
@@ -60,7 +61,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public override string ToString()
         {
-            return $"{this.SdrnApiVersion}: {this.SdrnDeviceSensorName} <=({this.RabbitMQHost})=> {this.SdrnServerInstance}";
+            return $"{this.SdrnApiVersion}: {this.SdrnDeviceSensorName} <=({this.RabbitMQHost}({this.RabbitMQVirtualHost}))=> {this.SdrnServerInstance}";
         }
 
         public string BuildDeviceExchangeName()

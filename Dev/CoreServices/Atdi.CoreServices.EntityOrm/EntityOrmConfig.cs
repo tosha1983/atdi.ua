@@ -89,6 +89,7 @@ namespace Atdi.CoreServices.EntityOrm
                 }
             }
             /// НЕ ЗАБУДЬ УДАЛИТЬ
+<<<<<<< HEAD
             var entityOrm = new EntityOrm(this);
             //entityOrm.GetEntityMetadata("IAntennaType");
             //entityOrm.GetEntityMetadata("IAntennaExten1");
@@ -189,6 +190,57 @@ namespace Atdi.CoreServices.EntityOrm
             */
             var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
             .Execute<MD.IAntenna>(query) == 0;
+=======
+            /// ЗАБЫЛ!!!
+        //    var entityOrm = new EntityOrm(this);
+        //    entityOrm.GetEntityMetadata("IAntennaExten1");
+        //    entityOrm.GetEntityMetadata("ISensorSensitivites");
+
+        //    this._dataLayer = new FakeDataLayer<EntityDataOrm>();
+        //    this._logger = new FakeLogger();
+
+           
+           
+        //    entityOrm.GetDataTypeMetadata("DateTime", Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
+        //    entityOrm.GetUnitMetadata("Frequency.kHz");
+        //    EnitityOrmDataLayer enitityOrmDataLayer = new EnitityOrmDataLayer(this._dataLayer, entityOrm, this._logger);
+        //    /*
+        //    var query = enitityOrmDataLayer.GetBuilder<MD.ISensor>()
+        //             .From()
+        //             .Select(c => c.Name)
+        //             //.Delete()
+        //             //.SetValue(c => c.Name, "Value");
+        //             .Where(c => c.Name, ConditionOperator.Equal, "1")
+        //             .Where(c => c.TechId, ConditionOperator.Equal, "2")
+        //             .OnTop(1);
+           
+        //    var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
+        //        .Execute<MD.ISensor>(query) == 0;
+        //   */
+         
+        //var query = enitityOrmDataLayer.GetBuilder<MD.IAntenna>()
+        //  .From()
+        //  .Select( c=> c.FrequencyMHz,
+        //           c => c.POS.Id,
+        //           c => c.Name,
+        //           //c=> c.POS.PosType,
+        //           //c => c.EXT1.FullName,
+        //           //c => c.EXT1.ShortName,
+        //           //c => c.EXT1.EXTENDED.EXT1.EXTENDED.EXT1,
+        //           c => c.PROP1.NamePropertyBase,
+        //         //c => c.EXT1.FullName,
+        //         c => c.PROP2.PropName,
+        //         c => c.EXT1.EXTENDED.PROP2.NamePropertyBase
+        //         //c => c.EXT1.EXTENDED
+        //         //c => c.Name
+        //         )
+        //  .OrderByDesc(x=>x.FrequencyMHz)
+        //  .Where(c => c.POS.PosX, ConditionOperator.Equal, 2.35)
+        //  .OnTop(1);
+
+        //var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
+        //    .Execute<MD.IAntenna>(query) == 0;
+>>>>>>> d06fefe9ef19a476213669275ea4a2a427ab4812
             
         }
 

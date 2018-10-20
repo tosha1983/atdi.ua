@@ -44,7 +44,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.ServerQueueus = serverQueues;
 
             this.UseEncryption = config.GetParameterAsBoolean("MessageConvertor.UseEncryption");
-            this.UseСompression = config.GetParameterAsBoolean("MessageConvertor.UseСompression");
+            this.UseCompression = config.GetParameterAsBoolean("MessageConvertor.UseCompression");
 
             
             
@@ -71,6 +71,12 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             return BuildServerQueueName(routingKey, "rejected");
         }
+
+        internal string GetServerInnerExchangeName()
+        {
+            return $"{this.ServerExchange}.[inner].[v{this.ApiVersion}]";
+        }
+
         public string BuildServerErrorsQueueName(string routingKey)
         {
             return BuildServerQueueName(routingKey, "errors");
@@ -99,7 +105,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         }
         public string BuildServerErrorQueueRoute(string routingKey)
         {
-            return BuildServerQueueRoute(routingKey, "error");
+            return BuildServerQueueRoute(routingKey, "errors");
         }
         public string BuildServerTrashQueueRoute(string routingKey)
         {
@@ -137,7 +143,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         public bool UseEncryption { get; set; }
 
-        public bool UseСompression { get; set; }
+        public bool UseCompression { get; set; }
 
         public IDictionary<string, ServerQueueDecriptor> ServerQueueus { get; set; }
 

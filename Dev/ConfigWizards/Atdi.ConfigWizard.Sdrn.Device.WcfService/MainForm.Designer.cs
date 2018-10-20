@@ -29,32 +29,34 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtLicenseFileName = new System.Windows.Forms.TextBox();
-            this.txtLicenseOwnerId = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.txtLicenseProductKey = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.txtLicenseOwnerId = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtLicenseFileName = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtRabbitMQPassword = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtRabbitMQUser = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtRabbitMQHost = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtSdrnDeviceQueueNamePart = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.txtSdrnServerQueueNamePart = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtSdrnMessagesExchange = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtSdrnServerInstance = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.txtSdrnDeviceQueueNamePart = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.txtWcfBindings = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.txtRabbitMQVirtualHost = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -76,53 +78,21 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "  License  ";
             // 
-            // groupBox2
+            // txtLicenseProductKey
             // 
-            this.groupBox2.Controls.Add(this.txtRabbitMQPassword);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.txtRabbitMQUser);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.txtRabbitMQHost);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(12, 140);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(397, 112);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "  Rabbit MQ Server  ";
+            this.txtLicenseProductKey.Location = new System.Drawing.Point(77, 77);
+            this.txtLicenseProductKey.Name = "txtLicenseProductKey";
+            this.txtLicenseProductKey.Size = new System.Drawing.Size(303, 20);
+            this.txtLicenseProductKey.TabIndex = 5;
             // 
-            // groupBox3
+            // label3
             // 
-            this.groupBox3.Controls.Add(this.txtSdrnDeviceQueueNamePart);
-            this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.txtSdrnServerQueueNamePart);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.txtSdrnMessagesExchange);
-            this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.txtSdrnServerInstance);
-            this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Location = new System.Drawing.Point(12, 258);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(397, 137);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "  SDRN Bus Settings  ";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "File name";
-            // 
-            // txtLicenseFileName
-            // 
-            this.txtLicenseFileName.Location = new System.Drawing.Point(77, 25);
-            this.txtLicenseFileName.Name = "txtLicenseFileName";
-            this.txtLicenseFileName.Size = new System.Drawing.Size(303, 20);
-            this.txtLicenseFileName.TabIndex = 1;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 80);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Product Key";
             // 
             // txtLicenseOwnerId
             // 
@@ -140,25 +110,42 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Owner ID";
             // 
-            // txtLicenseProductKey
+            // txtLicenseFileName
             // 
-            this.txtLicenseProductKey.Location = new System.Drawing.Point(77, 77);
-            this.txtLicenseProductKey.Name = "txtLicenseProductKey";
-            this.txtLicenseProductKey.Size = new System.Drawing.Size(303, 20);
-            this.txtLicenseProductKey.TabIndex = 5;
+            this.txtLicenseFileName.Location = new System.Drawing.Point(77, 25);
+            this.txtLicenseFileName.Name = "txtLicenseFileName";
+            this.txtLicenseFileName.Size = new System.Drawing.Size(303, 20);
+            this.txtLicenseFileName.TabIndex = 1;
             // 
-            // label3
+            // label1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 80);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Product Key";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 28);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "File name";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.txtRabbitMQVirtualHost);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Controls.Add(this.txtRabbitMQPassword);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.txtRabbitMQUser);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.txtRabbitMQHost);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Location = new System.Drawing.Point(12, 140);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(397, 130);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "  Rabbit MQ Server  ";
             // 
             // txtRabbitMQPassword
             // 
-            this.txtRabbitMQPassword.Location = new System.Drawing.Point(77, 71);
+            this.txtRabbitMQPassword.Location = new System.Drawing.Point(77, 98);
             this.txtRabbitMQPassword.Name = "txtRabbitMQPassword";
             this.txtRabbitMQPassword.Size = new System.Drawing.Size(303, 20);
             this.txtRabbitMQPassword.TabIndex = 11;
@@ -167,7 +154,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 74);
+            this.label4.Location = new System.Drawing.Point(6, 101);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 13);
             this.label4.TabIndex = 10;
@@ -175,7 +162,7 @@
             // 
             // txtRabbitMQUser
             // 
-            this.txtRabbitMQUser.Location = new System.Drawing.Point(77, 45);
+            this.txtRabbitMQUser.Location = new System.Drawing.Point(77, 72);
             this.txtRabbitMQUser.Name = "txtRabbitMQUser";
             this.txtRabbitMQUser.Size = new System.Drawing.Size(303, 20);
             this.txtRabbitMQUser.TabIndex = 9;
@@ -183,7 +170,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 48);
+            this.label5.Location = new System.Drawing.Point(6, 75);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 13);
             this.label5.TabIndex = 8;
@@ -204,6 +191,39 @@
             this.label6.Size = new System.Drawing.Size(29, 13);
             this.label6.TabIndex = 6;
             this.label6.Text = "Host";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.txtSdrnDeviceQueueNamePart);
+            this.groupBox3.Controls.Add(this.label10);
+            this.groupBox3.Controls.Add(this.txtSdrnServerQueueNamePart);
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Controls.Add(this.txtSdrnMessagesExchange);
+            this.groupBox3.Controls.Add(this.label8);
+            this.groupBox3.Controls.Add(this.txtSdrnServerInstance);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Location = new System.Drawing.Point(12, 307);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(397, 137);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "  SDRN Bus Settings  ";
+            // 
+            // txtSdrnDeviceQueueNamePart
+            // 
+            this.txtSdrnDeviceQueueNamePart.Location = new System.Drawing.Point(138, 97);
+            this.txtSdrnDeviceQueueNamePart.Name = "txtSdrnDeviceQueueNamePart";
+            this.txtSdrnDeviceQueueNamePart.Size = new System.Drawing.Size(242, 20);
+            this.txtSdrnDeviceQueueNamePart.TabIndex = 13;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 100);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(129, 13);
+            this.label10.TabIndex = 12;
+            this.label10.Text = "Device Queue Name Part";
             // 
             // txtSdrnServerQueueNamePart
             // 
@@ -253,26 +273,10 @@
             this.label9.TabIndex = 6;
             this.label9.Text = "Server Instance";
             // 
-            // txtSdrnDeviceQueueNamePart
-            // 
-            this.txtSdrnDeviceQueueNamePart.Location = new System.Drawing.Point(138, 97);
-            this.txtSdrnDeviceQueueNamePart.Name = "txtSdrnDeviceQueueNamePart";
-            this.txtSdrnDeviceQueueNamePart.Size = new System.Drawing.Size(242, 20);
-            this.txtSdrnDeviceQueueNamePart.TabIndex = 13;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 100);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(129, 13);
-            this.label10.TabIndex = 12;
-            this.label10.Text = "Device Queue Name Part";
-            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.txtWcfBindings);
-            this.groupBox4.Location = new System.Drawing.Point(12, 401);
+            this.groupBox4.Location = new System.Drawing.Point(12, 450);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(507, 122);
             this.groupBox4.TabIndex = 3;
@@ -310,13 +314,29 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // txtRabbitMQVirtualHost
+            // 
+            this.txtRabbitMQVirtualHost.Location = new System.Drawing.Point(77, 46);
+            this.txtRabbitMQVirtualHost.Name = "txtRabbitMQVirtualHost";
+            this.txtRabbitMQVirtualHost.Size = new System.Drawing.Size(303, 20);
+            this.txtRabbitMQVirtualHost.TabIndex = 13;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 49);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(59, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "Virtual host";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button2;
-            this.ClientSize = new System.Drawing.Size(531, 528);
+            this.ClientSize = new System.Drawing.Size(531, 584);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox4);
@@ -370,6 +390,8 @@
         private System.Windows.Forms.TextBox txtWcfBindings;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox txtRabbitMQVirtualHost;
+        private System.Windows.Forms.Label label11;
     }
 }
 

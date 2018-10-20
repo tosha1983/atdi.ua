@@ -37,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                System.Threading.Thread.Sleep(200);
+                this._eventEmitter.Emit("OnEvent5", "SendMeasResultsProcess");
                 result.Status = SdrnMessageHandlingStatus.Confirmed;
                 //var sensorRegistration = false;
                 //var sensorExistsInDb = false;

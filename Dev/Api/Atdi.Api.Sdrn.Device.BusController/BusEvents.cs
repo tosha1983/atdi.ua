@@ -26,6 +26,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public static readonly string LicenseProductKey = "License.ProductKey";
 
         public static readonly string RabbitMQHost = "RabbitMQ.Host";
+        public static readonly string RabbitMQVirtualHost = "RabbitMQ.VirtualHost";
         public static readonly string RabbitMQUser = "RabbitMQ.User";
         public static readonly string RabbitMQPassword = "RabbitMQ.Password";
 
@@ -39,6 +40,6 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public static readonly string SdrnDeviceMessagesBindings = "SDRN.Device.MessagesBindings";
 
         public static readonly string SdrnMessageConvertorUseEncryption = "SDRN.MessageConvertor.UseEncryption";
-        public static readonly string SdrnMessageConvertorUseСompression = "SDRN.MessageConvertor.UseСompression";
+        public static readonly string SdrnMessageConvertorUseCompression = "SDRN.MessageConvertor.UseCompression";
     }
 }
