@@ -16,8 +16,8 @@ namespace Atdi.CoreServices.EntityOrm
         public string Alias { get; set; }
         public string DBTableName { get; set; }
         public string EntityName { get; set; }
-        public bool isReplaced { get; set; }
-        public List<IEntityMetadata> entityMetadataLinks { get; set; }
+        public bool IsReplaced { get; set; }
+        public List<IEntityMetadata> EntityMetadataLinks { get; set; }
     }
 }
 
