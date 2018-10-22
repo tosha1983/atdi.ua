@@ -60,6 +60,14 @@
       <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
       <Name>Atdi.Api.Sdrn.Device.BusController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.BusController\Atdi.AppUnits.Sdrn.BusController.csproj">
+      <Project>{6ae823e9-2c99-4fff-a94c-c5ee46b74c69}</Project>
+      <Name>Atdi.AppUnits.Sdrn.BusController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Server\Atdi.AppUnits.Sdrn.Server.csproj">
+      <Project>{12abd3c4-f328-465b-ac49-c4fabbfe187c}</Project>
+      <Name>Atdi.AppUnits.Sdrn.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
       <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
       <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>

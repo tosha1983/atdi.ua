@@ -10,7 +10,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 {
-    /*
+
     class SendRegistrationResultHandler : MessageHandlerBase<DM.SensorRegistrationResult>
     {
         private readonly IBusGate _gate;
@@ -21,7 +21,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
             this._gate = gate;
         }
 
-        public override void OnHandle(ISdrnReceivedMessage<SensorRegistrationResult> message)
+        public override void OnHandle(IReceivedMessage<SensorRegistrationResult> message)
         {
             Console.WriteLine($"{message.CorrelationToken}: Recieved registration info '{message.Data.Status}'");
 
@@ -44,5 +44,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
         }
 
     }
-    */
+
 }

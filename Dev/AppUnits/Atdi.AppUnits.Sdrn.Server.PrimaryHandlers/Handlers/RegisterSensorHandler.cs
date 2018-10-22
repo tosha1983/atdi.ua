@@ -8,6 +8,7 @@ using Atdi.Platform.Logging;
 using System;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using System.Collections.Generic;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 {
@@ -37,17 +38,99 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 //var sensorRegistration = false;
                 //var sensorExistsInDb = false;
 
+                ///////////////////////////////////
+              /*
+                    var query = this._dataLayer.GetBuilder<MD.IAntenna>()
+                      .From()
+                      .Select(c => c.FrequencyMHz,
+                               //c => c.POS.Id,
+                               c => c.Name,
+                               c => c.EXT1.FullName,
+                               c => c.EXT1.EXT2.FullName2,
+                               c => c.TYPE.TYPE2.TYPE3.Name3,
+                               //c => c.EXT1.EXTENDED.EXT1.FullName,
+                               c => c.PROP1.TableName,
+                               c => c.POS.PosX,
+                               c => c.POS.PSS2.PosType
+                             )
+                      .OrderByDesc(x => x.FrequencyMHz)
+                      //.Where(c => c.POS.PosX, ConditionOperator.Equal, 2.35)
+                      //.Where(c => c.PROP1.PropName, ConditionOperator.Equal, "i")
+                      .Where(c => c.Id, ConditionOperator.Equal, 2)
+                      .OnTop(1);
+
+
+                var sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+                  .Execute<MD.IAntenna>(query)
+                  ;
+                 */
+             
+                //.Where(c => c.POS.PosX, ConditionOperator.Equal, 2.35);
+
+
+
+
+
+                ///////////////////////////////////
+
+
                 //try
                 //{
                 //    // поиск сенсора в БД
-                //    var query = this._dataLayer.GetBuilder<MD.ISensor>()
-                //        .From()
-                //        .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
-                //        .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
-                //        .OnTop(1);
+               /*
+                    var query = this._dataLayer.GetBuilder<MD.ISensorAntenna>()
+                        .From()
+                        .Select(c=>c.Name)
+                        .Select(c => c.Id)
+                        .Select(c => c.TechId)
+                        .Select(c => c.SENSOR.Name)
+                        .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
+                        //.Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
+                        .OnTop(1);
+                        */
+            
+                   var query = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
+                       .From()
+                       .Select(c => c.Gain)
+                       .Select(c => c.Id)
+                       .Select(c => c.SENSORANT.SENSOR.Name)
+                       .Where(c => c.Id, ConditionOperator.Equal, 182)
+                       .OnTop(1);
 
-                //    sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                //        .Execute(query) == 0;
+               
+
+               string Name = "";
+
+
+               var sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+                   .Fetch<MD.IAntennaPattern, string>(query, reader =>
+                   {
+                       while (reader.Read())
+                       {
+                           Name = reader.GetValue(c=>c.Gain).ToString();
+                       }
+                       return Name;
+                   });
+                
+                  /*
+                var query = this._dataLayer.GetBuilder<MD.ISensor>()
+                      .Update()
+                      .SetValue(c => c.Name, "NEW1")
+                      .SetValue(c => c.TechId, "TECH1")
+                      .Where(c => c.Id, ConditionOperator.Equal, 341);
+                      ;
+
+  */
+
+
+                //.Execute<MD.ISensor>(query);
+
+
+
+
+
+                //var sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+                //    .Execute<MD.ISensor>(query);
 
                 //    if (!sensorExistsInDb)
                 //    {

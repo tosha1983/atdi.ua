@@ -29,9 +29,45 @@ namespace Atdi.CoreServices.EntityOrm
             this._syntax = dataEngine.Syntax;
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
             this._icsmOrmQueryBuilder = icsmOrmQueryBuilder;
-
-            logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
+            logger.Debug(Contexts.LegacyServicesEntity, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
         }
+
+
+        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Atdi.Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        {
+            /*
+            try
+            {
+                var objectStatment = statement as QuerySelectStatement;
+                var command = this.BuildSelectCommand(objectStatment);
+
+                var result = default(TResult);
+                _dataEngine.Execute(command, reader =>
+                {
+                    var columnsMapper = objectStatment.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
+                    var typedReader = new QueryDataReader(reader, columnsMapper);
+                    result = handler(typedReader);
+                });
+                return result;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.FetchingData, e);
+                throw;
+            }
+            */
+            throw new Exception();
+        }
+
+        /*
+        private EngineCommand BuildSelectCommand<TModel>(QuerySelectStatement<TModel> statement)
+        {
+            var command = new EngineCommand();
+            command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement<TModel>(statement, command.Parameters);
+            return command;
+        }
+        */
+      
 
         public DataModels.DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure)
         {
@@ -607,7 +643,7 @@ namespace Atdi.CoreServices.EntityOrm
             try
             {
                 var objectStatment = statement as QuerySelectStatement<TModel>;
-                var command = this.BuildSelectCommand(objectStatment);
+                var command = this.BuildSelectCommand<TModel>(objectStatment);
 
                 var result = default(TResult);
                 _dataEngine.Execute(command, reader =>
@@ -620,7 +656,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch(Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.FetchingData, e);
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.FetchingData, e);
                 throw;
             }
         }
@@ -704,21 +740,14 @@ namespace Atdi.CoreServices.EntityOrm
             command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
+       
 
-        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
-        {
-            throw new NotImplementedException();
-        }
-
-        
         public int Execute(IQueryStatement statement)
         {
             if (statement == null)
             {
                 throw new ArgumentNullException(nameof(statement));
             }
-
-            
 
             var command = new EngineCommand();
             if (statement is QueryInsertStatement queryInsertStatement)
@@ -738,7 +767,6 @@ namespace Atdi.CoreServices.EntityOrm
                 //command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             }
 
-
             if (command == null)
             {
                 throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
@@ -747,6 +775,8 @@ namespace Atdi.CoreServices.EntityOrm
             var recordsAffected = this._dataEngine.Execute(command);
             return recordsAffected;
         }
+
+
     }
 }
 

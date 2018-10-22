@@ -9,7 +9,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 {
-    /*
+ 
     class SendMeasTaskHandler : MessageHandlerBase<DM.MeasTask>
     {
         private readonly IBusGate _gate;
@@ -21,7 +21,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
         }
 
 
-        public override void OnHandle(ISdrnReceivedMessage<MeasTask> message)
+        public override void OnHandle(IReceivedMessage<MeasTask> message)
         {
             Console.WriteLine($"Recieved meas task with ID = '{message.Data.TaskId}'");
 
@@ -31,5 +31,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 
 
     }
-    */
+  
 }

@@ -54,7 +54,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
                     }
             }
-            catch (Exception ex) { is_Success = false;
+            catch (Exception) { is_Success = false;
                 //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message);
             }
             return is_Success;

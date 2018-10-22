@@ -684,6 +684,10 @@ namespace Atdi.LegacyServices.Icsm
             return command;
         }
 
+        public int Execute<TModel>(IQueryStatement statement)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

@@ -38,13 +38,9 @@ namespace Atdi.LegacyServices.Icsm
                 var conditionsColumns = new List<ColumnOperand>();
                 AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
                 var whereColumns = conditionsColumns.ToArray();
-
                 var sortColumns = statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Orders.ToArray();
-
-
                 var fieldCount = selectedColumns.Length + whereColumns.Length + sortColumns.Length;
                 var fieldPaths = new string[fieldCount];
-                
                 int index = 0;
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
@@ -65,22 +61,16 @@ namespace Atdi.LegacyServices.Icsm
                     var column = sortColumns[i];
                     fieldPaths[index++] = column.Column.Name;
                 }
-
                 var fromExpression = this._schemasMetadata.BuildJoinStatement(this._dataEngine, statement, fieldPaths, out Orm.DbField[] dbFields);
-
                 //var rootStatement = this._schemasMetadata.BuildSelectStatement(_dataEngine, statement, fieldPaths);
                 //var fromExpression = this._dataEngine.Syntax.FromExpression(rootStatement, "A");
-
                 index = 0;
-
                 // to build the select columns section
                 var columnExpressions = new string[selectedColumns.Length];
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
-
                     var column = selectedColumns[i];
                     var dbField = dbFields[index++];
-                    
                     if (dbField is Orm.DbExpressionField)
                     {
                         columnExpressions[i] = this._syntax.ColumnExpression(dbField.m_logFld, column.Alias);
@@ -100,8 +90,6 @@ namespace Atdi.LegacyServices.Icsm
                 {
                     var column = whereColumns[i];
                     var dbField = dbFields[index++];
-                    
-
                     if (dbField is Orm.DbExpressionField)
                     {
                         column.ColumnName = dbField.m_logFld;
@@ -116,7 +104,6 @@ namespace Atdi.LegacyServices.Icsm
                     {
                         throw new InvalidOperationException(string.Format(Exceptions.NotRecognizeTypeField, dbField.GetType()));
                     }
-
                 }
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
 
@@ -146,7 +133,6 @@ namespace Atdi.LegacyServices.Icsm
                 var limit = statement.Limit;
 
                 // add group by
-
                 var selectStatement = this._syntax.SelectExpression(columnExpressions, fromExpression, whereExpression, orderByColumns, limit);
                 return selectStatement;
             }

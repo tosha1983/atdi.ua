@@ -22,7 +22,7 @@ namespace Atdi.CoreServices.DataLayer
         public OracleCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger) 
             : base(logger)
         {
-            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.ManagedDataAccess.dll");
+            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.DataAccess.dll");
             this._connection =  _dbProviderFactory.CreateConnection();
             this._connection.ConnectionString = _engineConfig.ConnectionString;
             this._connection.Open();

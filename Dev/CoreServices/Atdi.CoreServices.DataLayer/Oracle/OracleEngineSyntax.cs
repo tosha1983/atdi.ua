@@ -12,18 +12,16 @@ using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.CoreServices.DataLayer
 {
-    public sealed class OracleEngineSyntax : IEngineSyntax, IConstraintEngineSyntax
+    internal sealed class OracleEngineSyntax : IEngineSyntax, IConstraintEngineSyntax
     {
         private const string IDENT = "    ";
         private readonly IFormatProvider _formatProvider = System.Globalization.CultureInfo.InvariantCulture;
-        private const int MaxCountLenthAlias = 128;
 
         public IConstraintEngineSyntax Constraint => this;
 
         string IConstraintEngineSyntax.LikeAnyChar => "%";
 
-        public int MaxAliasLenth => MaxCountLenthAlias;
-
+       
         public string SortedColumn(string expression, SortDirection direction)
         {
             switch (direction)

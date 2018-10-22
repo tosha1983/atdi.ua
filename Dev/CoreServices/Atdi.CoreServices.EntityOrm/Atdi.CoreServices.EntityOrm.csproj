@@ -52,8 +52,6 @@
     <Compile Include="EntityOrmConfig.cs" />
     <Compile Include="ExpressionExtensions.cs" />
     <Compile Include="EntityOrmQueryBuilder.cs" />
-    <Compile Include="Fake\FakeDataLayer.cs" />
-    <Compile Include="Fake\FakeLogger.cs" />
     <Compile Include="MetaData\AutonumMetadata.cs" />
     <Compile Include="MetaData\ColumnFieldMetadata.cs" />
     <Compile Include="MetaData\DataSourceMetadata.cs" />

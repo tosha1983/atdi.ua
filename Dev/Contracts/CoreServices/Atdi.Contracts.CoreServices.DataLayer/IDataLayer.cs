@@ -11,6 +11,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         IDataEngine GetDataEngine<TContext>()
             where TContext : IDataContext, new();
+           
     }
 
 
@@ -19,10 +20,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         IQueryBuilder Builder { get; }
 
-        IQueryBuilder<TModel> GetBuilder<TModel>();
-
         IQueryExecutor Executor<TContext>() 
             where TContext : IDataContext, new();
-        
+        IQueryBuilder<TModel> GetBuilder<TModel>();
     }
 }
