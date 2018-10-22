@@ -12,7 +12,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 {
     public class SdrnsControllerWcfClient : WcfServiceClientBase<ISdrnsController, SdrnsControllerWcfClient>
     {
-        public SdrnsControllerWcfClient() 
+        public SdrnsControllerWcfClient()
             : base("SdrnsController")
         {
         }
@@ -124,7 +124,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             };
 
             var result = Execute(contract => contract.GetMeasTask(new MeasTaskIdentifier { Value = taskId }, otherArgs));
-            
+
             return result;
         }
 
@@ -138,7 +138,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             var id = new MeasurementResultsIdentifier
             {
                 MeasSdrResultsId = measSdrResultsId,
-                MeasTaskId= new MeasTaskIdentifier {  Value = measTaskId },
+                MeasTaskId = new MeasTaskIdentifier { Value = measTaskId },
                 SubMeasTaskId = subMeasTaskId,
                 SubMeasTaskStationId = subMeasTaskStationId
             };
@@ -156,10 +156,90 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             };
 
             var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }, otherArgs));
-            
+
+            return result;
+        }
+        public static ShortMeasurementResults[] GetShortMeasResultsSpecial(MeasurementType measurementType)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+            var result = Execute(contract => contract.GetShortMeasResultsSpecial(measurementType, otherArgs));
+
+            if (result == null)
+            {
+                return new ShortMeasurementResults[] { };
+            }
             return result;
         }
 
+        public static ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+            var result = Execute(contract => contract.GetShortMeasResStation(MeasResultsId, otherArgs));
+
+            if (result == null)
+            {
+                return new ShortResultsMeasurementsStation[] { };
+            }
+            return result;
+        }
+
+        public static Route[] GetRoutes(int MeasResultsId)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+            var result = Execute(contract => contract.GetRoutes(MeasResultsId, otherArgs));
+
+            if (result == null)
+            {
+                return new Route[] { };
+            }
+            return result;
+        }
+
+        public static SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+            var result = Execute(contract => contract.GetSensorPoligonPoint(MeasResultsId, otherArgs));
+
+            if (result == null)
+            {
+                return new SensorPoligonPoint[] { };
+            }
+            return result;
+        }
+        public static ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+            var result = Execute(contract => contract.GetResMeasStation(MeasResultsId, StationId, otherArgs));
+
+            if (result == null)
+            {
+                return new ResultsMeasurementsStation[] { };
+            }
+            return result;
+        }
+
+
+        
 
         public static void DeleteMeasTaskById(int taskId)
         {

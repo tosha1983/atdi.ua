@@ -724,7 +724,10 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 Color = System.Windows.Media.Brushes.Green,
                 Fill = System.Windows.Media.Brushes.ForestGreen,
-                Location = new Models.Location(lon, lat)
+                Location = new Models.Location(lon, lat),
+                Opacity = 0.85,
+                Width = 10,
+                Height = 10
             };
         }
 
@@ -734,7 +737,10 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
                 Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat)
+                Location = new Models.Location(lon, lat),
+                Opacity = 0.85,
+                Width = 10,
+                Height = 10
             };
         }
 

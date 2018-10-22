@@ -153,6 +153,7 @@
     <Compile Include="Models\Views\SensorViewModel.cs" />
     <Compile Include="Models\Views\ShortMeasTaskViewModel.cs" />
     <Compile Include="Models\Views\ShortMeasurementResultsViewModel.cs" />
+    <Compile Include="Models\Views\ShortResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\ShortSensorViewModel.cs" />
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\Mappers.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasTaskDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasurementResultsDataAdatper.cs" />
+    <Compile Include="Models\WcfDataApadters\ShortResultsMeasurementsStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortSensorDataAdatper.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Handlers\PluginCommands.cs" />
