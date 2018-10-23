@@ -66,10 +66,10 @@
     <Folder Include="Example\Metadata\DataTypes\Excel\" />
     <Folder Include="Example\Metadata\DataTypes\Json\" />
     <Folder Include="Example\Metadata\DataTypes\Xml\" />
-    <Folder Include="Sdrns\Metadata\DataTypes\Csv\" />
-    <Folder Include="Sdrns\Metadata\DataTypes\Excel\" />
-    <Folder Include="Sdrns\Metadata\DataTypes\Json\" />
-    <Folder Include="Sdrns\Metadata\DataTypes\Xml\" />
+    <Folder Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Csv\" />
+    <Folder Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Excel\" />
+    <Folder Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Json\" />
+    <Folder Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Xml\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
@@ -110,39 +110,42 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Example\Metadata\Environment.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Array.Enum.DataType.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Double.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Enum.DataType.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Int1.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Int32.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Int64.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Sdrns\Metadata\DataTypes\Database\DateTime.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Counter.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.100.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.1000.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.150.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.10.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.200.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.250.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.25.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.50.xml" />
-    <Content Include="Sdrns\Metadata\DataTypes\Database\Text.MAX.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IAntenna.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IAntennaBase.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IAntennaExten1.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IAntennaPattern.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IAntennaPosition.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IAntennaType.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IPropertyBase.xml" />
-    <Content Include="Sdrns\Metadata\Entities\IProperty.xml" />
-    <Content Include="Sdrns\Metadata\Entities\ISensor.xml" />
-    <Content Include="Sdrns\Metadata\Entities\ISensorAntenna.xml" />
-    <Content Include="Sdrns\Metadata\Entities\ISensorEquipment.xml" />
-    <Content Include="Sdrns\Metadata\Entities\ISensorLocation.xml" />
-    <Content Include="Sdrns\Metadata\Entities\ISensorPolygon.xml" />
-    <Content Include="Sdrns\Metadata\Entities\ISensorSensitivites.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Array.Enum.DataType.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Counter.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\DateTime.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Double.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Enum.DataType.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int1.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int32.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int64.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.10.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.100.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.1000.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.150.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.200.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.25.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.250.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.50.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Antenna.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaBase.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaExten1.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaExten2.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaPattern.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaPosition.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaPosition2.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Entity.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Property.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\PropertyBase.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Sensor.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorAntenna.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorEquipment.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorLocation.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorPolygon.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorSensitivites.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Types\AntennaType.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Types\AntennaType2.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Types\AntennaType3.xml" />
     <Content Include="Sdrns\Metadata\Environment.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -150,17 +153,15 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Example\Metadata\Units\Frequency.MHz.xml" />
-    <None Include="Sdrns\Metadata\Units\Frequency.Hz" />
-    <None Include="Sdrns\Metadata\Units\Frequency.kHz" />
-    <None Include="Sdrns\Metadata\Units\Level.dBm" />
-    <None Include="Sdrns\Metadata\Units\Power.dB" />
-    <None Include="Sdrns\Metadata\Units\Length.m" />
-    <None Include="Sdrns\Metadata\Units\Angle.Degree">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Sdrns\Metadata\Units\Latitude.DEC" />
-    <None Include="Sdrns\Metadata\Units\Longitude.DEC" />
-    <None Include="Sdrns\Metadata\Units\Frequency.MHz" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Angle.Degree" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Frequency.Hz" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Frequency.kHz" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Frequency.MHz" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Latitude.DEC" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Length.m" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Level.dBm" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Longitude.DEC" />
+    <None Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Units\Power.dB" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

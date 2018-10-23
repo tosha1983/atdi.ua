@@ -39,6 +39,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IConstraintEngineSyntax Constraint { get; }
 
+        int MaxLengthAlias { get; }
+
         string ColumnExpression(string expression, string alias);
 
         string SortedColumn(string expression, SortDirection direction);

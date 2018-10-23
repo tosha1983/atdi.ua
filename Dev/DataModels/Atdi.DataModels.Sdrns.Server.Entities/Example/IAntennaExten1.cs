@@ -10,11 +10,14 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IAntennaExten1
     {
-        int Id { get; }
 
         string ShortName { get; set; }
 
         string FullName { get; set; }
+
+        string PosType { get; set; }
+
+        IAntennaExten2 EXT2 { get; }
 
         IAntenna EXTENDED { get; set; }
     }

@@ -8,6 +8,35 @@ using System.Threading.Tasks;
 
 namespace Atdi.LegacyServices.Icsm
 {
+    internal sealed class QueryBuilder<TModel> : LoggedObject, IQueryBuilder<TModel>
+    {
+        public QueryBuilder(ILogger logger) : base(logger)
+        {
+
+        }
+
+        public IQuerySelectStatement<TModel> From()
+        {
+            IQuerySelectStatement<TModel> querySelectStatement = new QuerySelectStatement<TModel>();
+            return querySelectStatement;
+        }
+
+        public IQueryInsertStatement<TModel> Insert()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryUpdateStatement<TModel> Update()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryDeleteStatement<TModel> Delete()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     internal sealed class QueryBuilder : LoggedObject, IQueryBuilder
     {
         public QueryBuilder(ILogger logger) : base(logger)

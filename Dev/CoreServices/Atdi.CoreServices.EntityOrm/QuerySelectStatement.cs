@@ -33,6 +33,7 @@ namespace Atdi.CoreServices.EntityOrm
 
             public string Expression { get; set; }
 
+
         }
 
         public sealed class TableDescriptor
@@ -311,7 +312,8 @@ namespace Atdi.CoreServices.EntityOrm
 
         public QuerySelectStatement()
         {
-            this._statement = new QuerySelectStatement(ModelType.Name); 
+            string modelTypeName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
+            this._statement = new QuerySelectStatement(modelTypeName); 
         }
 
         public IQuerySelectStatement<TModel> Distinct()
@@ -1045,10 +1047,10 @@ namespace Atdi.CoreServices.EntityOrm
                         Name = nameColumn
                     };
                     break;
-                case "System.Bytes":
+                case "System.Byte[]":
                     result = new BytesColumnValue
                     {
-                        Value = (value == null) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value.ToString()),
+                        Value = (value == null) ? (byte[])null : value as byte[],
                         Name = nameColumn
                     };
                     break;

@@ -11,7 +11,6 @@ using System.Xml.Linq;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
-using Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake;
 using Atdi.CoreServices.EntityOrm;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.DataConstraint;
@@ -22,20 +21,6 @@ namespace Atdi.CoreServices.EntityOrm
 {
     internal sealed class EntityOrmConfig : IEntityOrmConfig
     {
-
-        /// <summary>
-        /// НЕ ЗАБУДЬ УДАЛИТЬ
-        /// </summary>
-        private IDataLayer<EntityDataOrm> _dataLayer;
-        private ILogger _logger;
-        private IEntityOrm _entityOrm;
-
-     
-        public void InitEnvironment()
-        {
-            this._dataLayer = new FakeDataLayer<EntityDataOrm>();
-            this._logger = new FakeLogger();
-        }
 
         private readonly IComponentConfig _config;
         public string Name { get; set; }
@@ -50,94 +35,50 @@ namespace Atdi.CoreServices.EntityOrm
 
         public EntityOrmConfig(IComponentConfig config)
         {
-          
-            this._config = config;
-            var dataContextsParam = config["EnvironmentFileName"];
-            if (dataContextsParam != null)
+            try
             {
-                string directory = System.IO.Path.GetDirectoryName(Convert.ToString(dataContextsParam));
-                var dataContextsString = Convert.ToString(dataContextsParam);
-                if (!string.IsNullOrEmpty(dataContextsString))
+                this._config = config;
+                var dataContextsParam = config["EnvironmentFileName"];
+                if (dataContextsParam != null)
                 {
-                    var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef));
-                    var reader = new StreamReader(dataContextsString);
-                    object resenvironment = serializer.Deserialize(reader);
-                    if (resenvironment is Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef)
+                    string directory = System.IO.Path.GetDirectoryName(Convert.ToString(dataContextsParam));
+                    var dataContextsString = Convert.ToString(dataContextsParam);
+                    if (!string.IsNullOrEmpty(dataContextsString))
                     {
-                        var environment = resenvironment as Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef;
-                        if (environment != null)
+                        var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef));
+                        var reader = new StreamReader(dataContextsString);
+                        object resenvironment = serializer.Deserialize(reader);
+                        if (resenvironment is Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef)
                         {
-                            Name = environment.Name;
-                            Version = environment.Version;
-                            RootPath = environment.RootPath.Value;
-                            Assembly = environment.Assembly.Value;
-                            Namespace = environment.Namespace.Value;
-                            EntitiesPath = string.Format(@"{0}\{1}", directory, environment.EntitiesPath.Value);
-                            DataTypesPath = string.Format(@"{0}\{1}", directory, environment.DataTypesPath.Value);
-                            UnitsPath = string.Format(@"{0}\{1}", directory, environment.UnitsPath.Value);
+                            var environment = resenvironment as Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef;
+                            if (environment != null)
+                            {
+                                Name = environment.Name;
+                                Version = environment.Version;
+                                RootPath = environment.RootPath.Value.Replace(".", @"\");
+                                Assembly = environment.Assembly.Value;
+                                Namespace = environment.Namespace.Value;
+                                if (RootPath != @"\")
+                                {
+                                    EntitiesPath = string.Format(@"{0}\{1}\{2}", directory, RootPath, environment.EntitiesPath.Value);
+                                    DataTypesPath = string.Format(@"{0}\{1}\{2}", directory, RootPath, environment.DataTypesPath.Value);
+                                    UnitsPath = string.Format(@"{0}\{1}\{2}", directory, RootPath, environment.UnitsPath.Value);
+                                }
+                                else
+                                {
+                                    EntitiesPath = string.Format(@"{0}\{1}", directory, environment.EntitiesPath.Value);
+                                    DataTypesPath = string.Format(@"{0}\{1}", directory, environment.DataTypesPath.Value);
+                                    UnitsPath = string.Format(@"{0}\{1}", directory, environment.UnitsPath.Value);
+                                }
+                            }
                         }
                     }
                 }
             }
-
-
-            /// НЕ ЗАБУДЬ УДАЛИТЬ
-            /// ЗАБЫЛ!!!
-        //    var entityOrm = new EntityOrm(this);
-        //    entityOrm.GetEntityMetadata("IAntennaExten1");
-        //    entityOrm.GetEntityMetadata("ISensorSensitivites");
-
-        //    this._dataLayer = new FakeDataLayer<EntityDataOrm>();
-        //    this._logger = new FakeLogger();
-
-           
-           
-        //    entityOrm.GetDataTypeMetadata("DateTime", Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
-        //    entityOrm.GetUnitMetadata("Frequency.kHz");
-        //    EnitityOrmDataLayer enitityOrmDataLayer = new EnitityOrmDataLayer(this._dataLayer, entityOrm, this._logger);
-        //    /*
-        //    var query = enitityOrmDataLayer.GetBuilder<MD.ISensor>()
-        //             .From()
-        //             .Select(c => c.Name)
-        //             //.Delete()
-        //             //.SetValue(c => c.Name, "Value");
-        //             .Where(c => c.Name, ConditionOperator.Equal, "1")
-        //             .Where(c => c.TechId, ConditionOperator.Equal, "2")
-        //             .OnTop(1);
-           
-        //    var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
-        //        .Execute<MD.ISensor>(query) == 0;
-        //   */
-         
-        //var query = enitityOrmDataLayer.GetBuilder<MD.IAntenna>()
-        //  .From()
-        //  .Select( c=> c.FrequencyMHz,
-        //           c => c.POS.Id,
-        //           c => c.Name,
-        //           //c=> c.POS.PosType,
-        //           //c => c.EXT1.FullName,
-        //           //c => c.EXT1.ShortName,
-        //           //c => c.EXT1.EXTENDED.EXT1.EXTENDED.EXT1,
-        //           c => c.PROP1.NamePropertyBase,
-        //         //c => c.EXT1.FullName,
-        //         c => c.PROP2.PropName,
-        //         c => c.EXT1.EXTENDED.PROP2.NamePropertyBase
-        //         //c => c.EXT1.EXTENDED
-        //         //c => c.Name
-        //         )
-        //  .OrderByDesc(x=>x.FrequencyMHz)
-        //  .Where(c => c.POS.PosX, ConditionOperator.Equal, 2.35)
-        //  .OnTop(1);
-
-        //var sensorExistsInDb = enitityOrmDataLayer.Executor<SdrnServerDataContext>()
-        //    .Execute<MD.IAntenna>(query) == 0;
-            
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(string.Format(Exceptions.ErrorLoadEnvironment, e.Message));
+            }
         }
-
     }
-
-
-
-
-    
 }

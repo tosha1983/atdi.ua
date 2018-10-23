@@ -9,7 +9,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
 {
-    /*
+
     class SendCommandHandler : MessageHandlerBase<DM.DeviceCommand>
     {
         private readonly IBusGate _gate;
@@ -20,7 +20,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
             this._gate = gate;
         }
 
-        public override void OnHandle(ISdrnReceivedMessage<DeviceCommand> message)
+        public override void OnHandle(IReceivedMessage<DeviceCommand> message)
         {
             Console.WriteLine($"Recieved command '{message.Data.Command}'");
 
@@ -29,5 +29,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.Handlers
         }
 
     }
-    */
+  
 }

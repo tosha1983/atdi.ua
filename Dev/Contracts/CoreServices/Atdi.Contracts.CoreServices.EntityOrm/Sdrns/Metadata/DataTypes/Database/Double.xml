@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<DataType Name="Double" DataSourceType="Database" xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
-  <CodeVarType>Double</CodeVarType>
-  <SourceVarType>DOUBLE</SourceVarType>
-</DataType>

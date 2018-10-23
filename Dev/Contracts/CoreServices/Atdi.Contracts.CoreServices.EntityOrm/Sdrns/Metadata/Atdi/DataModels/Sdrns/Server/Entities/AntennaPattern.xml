@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "AntennaPattern" 
+  Title       = "AntennaPattern" 
+  Desc        = "The antenna pattern"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_ANTENNAPATTERN</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field Name="Id" 
+     SourceType="Column" 
+     SourceName="ID" 
+     DataType="Counter" 
+     Title="Id" 
+     Desc="Id"/>
+
+    <Field Name="SensorAntennaId"
+     SourceType="Column"
+     SourceName="SENSORANTENNA_ID"
+     DataType="Int64"
+     Required="true"
+     Title="SensorAntennaId"
+     Desc="SensorAntennaId"/>
+
+   
+    <Field Name="Freq"
+      SourceType="Column"
+      SourceName="FREQ"
+      DataType="Double"
+      Required="false"
+      Title="Frequency of pattren, MHz"
+      Desc="Frequency of pattren, MHz"
+      Unit="Frequency.MHz"/>
+
+    <Field Name="Gain"
+      SourceType="Column"
+      SourceName="GAIN"
+      DataType="Double"
+      Required="false"
+      Title="Gain of Antenna, dB"
+      Desc="Gain of Antenna, dB"
+      Unit="Power.dB"/>
+
+    <Field Name="DiagA"
+    SourceType="Column"
+    SourceName="DIAGA"
+    DataType="Text.1000"
+    Required="false"
+    Title="DiagA - 9X - Antenna pattern"
+    Desc="DiagA - 9X - Antenna pattern"/>
+
+    <Field Name="DiagH"
+    SourceType="Column"
+    SourceName="DIAGH"
+    DataType="Text.1000"
+    Required="false"
+    Title="DiagH - 9XH - Horizontal diagram"
+    Desc="DiagH - 9XH - Horizontal diagram"/>
+
+    <Field Name="DiagV"
+    SourceType="Column"
+    SourceName="DIAGV"
+    DataType="Text.1000"
+    Required="false"
+    Title="DiagV - 9XV - Vertical diagram"
+    Desc="DiagV - 9XV - Vertical diagram"/>
+
+    <Field
+     Name="SENSORANT"
+     SourceType="Reference"
+     SourceName ="SensorAntenna"
+     Title="Relation AntennaPattern to SensorAntenna" >
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorAntennaId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    
+  </Fields>
+
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id" SortOrder="Descending" />
+  </PrimaryKey>
+
+  </Entity>

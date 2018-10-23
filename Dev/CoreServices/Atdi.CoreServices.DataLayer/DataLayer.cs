@@ -17,6 +17,7 @@ namespace Atdi.CoreServices.DataLayer
             this._config = config;
         }
 
+
         public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
         {
             var engineConfig = this._config.GetEngineConfig<TContext>();
@@ -32,5 +33,6 @@ namespace Atdi.CoreServices.DataLayer
             }
 
         }
+
     }
 }

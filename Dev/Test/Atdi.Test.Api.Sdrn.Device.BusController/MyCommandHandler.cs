@@ -10,7 +10,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
-    /*
+   
     class MyTaskHandler : MessageHandlerBase<MeasTask>
     {
         public MyTaskHandler() 
@@ -18,7 +18,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         {
         }
 
-        public override void OnHandle(ISdrnReceivedMessage<MeasTask> message)
+        public override void OnHandle(IReceivedMessage<MeasTask> message)
         {
             // тут код обработки сообщения
 
@@ -43,5 +43,5 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         }
 
     }
-    */
+   
 }

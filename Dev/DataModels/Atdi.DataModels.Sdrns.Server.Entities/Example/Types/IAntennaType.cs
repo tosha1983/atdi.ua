@@ -13,5 +13,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.Types
         int Id { get; }
 
         string Name { get; set; }
+
+        Types.IAntennaType2 TYPE2 { get; }
     }
 }

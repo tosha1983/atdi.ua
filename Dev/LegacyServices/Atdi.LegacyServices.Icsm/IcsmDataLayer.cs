@@ -46,9 +46,10 @@ namespace Atdi.LegacyServices.Icsm
             return executor;
         }
 
+
         public IQueryBuilder<TModel> GetBuilder<TModel>()
         {
-            throw new NotImplementedException();
+            return new QueryBuilder<TModel>(this.Logger);
         }
 
         public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()

@@ -311,7 +311,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
             }
             catch (Exception ex)
             {
-                logger.Trace("Error in procedure CheckActivitySensor.");
+                logger.Trace(ex,"Error in procedure CheckActivitySensor.");
             }
         }
      

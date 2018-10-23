@@ -13,10 +13,20 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventContext DataLayerCoreServices = "DataLayer Core Services";
         public static readonly EventContext SqlServerEngine = "SQL Server Engine";
         public static readonly EventContext OracleEngine = "Oracle Engine";
-        public static readonly EventContext LegacyServicesIcsm = "EntityOrm Legacy Services";
+        public static readonly EventContext LegacyServicesEntity = "EntityOrm Legacy Services";
+        public static readonly EventContext BuidJoinRelation = "Build Join Releation";
+        public static readonly EventContext BuidJoinExtension= "Build Join Extension";
+        public static readonly EventContext BuidJoinReference = "Build Join Reference";
     }
 
-
+    static class Templates
+    {
+        public static readonly string CommmentsBuildJoin = " /* This Join is Base type between  '{0}' and '{1}'  */";
+        public static readonly string CommmentsBuildJoinExtension = " /* This Join is Extension type between  '{0}' and '{1}'  */";
+        public static readonly string CommmentsBuildJoinRelation = " /* This Join is Relation type between  '{0}' and '{1}'  */";
+        public static readonly string CommmentsBuildJoinReference = " /* This Join is Reference type between  '{0}' and '{1}'  */";
+       
+    }
 
 
 
@@ -75,6 +85,14 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly ExceptionText UndefinedParameter = "Undefined parameter with name '{0}'";
         public static readonly ExceptionText QueryStatementNotSupported = "The type of query statement with name '{0}' is not supported.";
         public static readonly ExceptionText NotRecognizeTypeField = "The type filed {0} not found";
+        public static readonly ExceptionText NotSupportedOperation = "Supported operation for Condition - only InOperation, OneOperandOperation, TwoOperandsOperation";
+        public static readonly ExceptionText HandlerTypeExpressionNotSupported = "Handler for type Expession not supported";
+        public static readonly ExceptionText UnknownDataSourceType = "Unknown DataSourceType - '{0}'";
+        public static readonly ExceptionText FileNotFound = "File {0} not found";
+        public static readonly ExceptionText NameOrPathisNotSpecified = "Name of the entity or its path is not specified";
+        public static readonly ExceptionText ErrorLoadEnvironment = "Error load Environment.xml - {0}";
+        public static readonly ExceptionText NotFoundAlias = "Not found alias for - '{0}'";
+        public static readonly ExceptionText NotFoundDetailInformation = "Not found detail information for '{0}'";
     }
 
     static class ConfigParameters

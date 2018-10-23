@@ -20,976 +20,1251 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
         private readonly IEntityOrm _entityMetadata;
+        private readonly List<FieldProperties> _listFieldProperties;
+        
 
         public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityOrm entityMetadata, ILogger logger) : base(logger)
         {
+            this._listFieldProperties = new List<FieldProperties>();
             this._entityMetadata = entityMetadata;
             this._dataEngine = dataEngine;
-            //this._syntax = dataEngine.Syntax;
-            //this._conditionParser = new ConditionParser(dataEngine.Syntax);
-            logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
+            this._syntax = dataEngine.Syntax;
+            this._conditionParser = new ConditionParser(dataEngine.Syntax);
+            logger.Debug(Contexts.LegacyServicesEntity, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
 
-        private void BuildSelectStatement<TModel>(QuerySelectStatement<TModel> statement, string[] fields, out List<QuerySelectStatement.ColumnDescriptor> listColumnDescriptor, out List<IFieldMetadata> listFieldMetadata, out List<IFieldMetadata> listFieldMissingMetadata)
+        /// <summary>
+        /// Формирование JOIN для связей типа "Entity-BaseEntity"
+        /// </summary>
+        /// <param name="TableName1"></param>
+        /// <param name="TableName2"></param>
+        /// <returns></returns>
+        private string BuildJoinBase(AliasField TableName1, AliasField TableName2)
         {
-            const string ExtendedName = "EXTENDED";
-            var entityMetadata = _entityMetadata.GetEntityMetadata(statement.Statement.Table.Name);
-            var oldentityMetadata = entityMetadata;
-            listColumnDescriptor = new List<QuerySelectStatement.ColumnDescriptor>();
-            listFieldMetadata = new List<IFieldMetadata>();
-            listFieldMissingMetadata = new List<IFieldMetadata>();
-
-            for (int i = 0; i < fields.Length; i++)
+            string resultJoin = "";
+            try
             {
-                var fieldName = new KeyValuePair<string, IFieldMetadata>();
-                string[] nextNames = fields[i].Split(new char[] { '.' });
-                for (int j = 0; j < nextNames.Length; j++)
+                var entityMetadata1 = _entityMetadata.GetEntityMetadata(TableName1.EntityName);
+                var entityMetadata2 = _entityMetadata.GetEntityMetadata(TableName2.EntityName);
+                if ((entityMetadata1 != null) && (entityMetadata2 != null))
                 {
-                    if (nextNames[j] == ExtendedName)
+                    if (entityMetadata1.BaseEntity != null)
                     {
-                        if (entityMetadata.ExtendEntity != null)
+                        if (entityMetadata1.BaseEntity.Name == TableName2.EntityName)
                         {
-                            bool LastObject = false;
-                            entityMetadata = entityMetadata.ExtendEntity;
-                            if (j < nextNames.Length - 1)
+                            StringBuilder stringBuilder = new StringBuilder();
+                            foreach (var c in entityMetadata1.PrimaryKey.FieldRefs)
                             {
-                                j++;
-                            }
-                            else
-                            {
-                                LastObject = true;
-                            }
-                            var fieldMetadataFind = entityMetadata.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                            if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                            {
-                                var fieldMetadataFindx1 = entityMetadata.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                if (fieldMetadataFindx1 == null)
+                                string PrimaryKeyTable1 = c.Key;
+                                KeyValuePair<string, IPrimaryKeyFieldRefMetadata> keyValuePairKeyFieldRefMetadata = entityMetadata2.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
+                                if (keyValuePairKeyFieldRefMetadata.Key != null)
                                 {
-                                    bool isAddedField = false;
-                                    var oldEntityMetadataPrev = entityMetadata;
-                                    entityMetadata = entityMetadata.BaseEntity;
-                                    if (entityMetadata != null)
+                                    stringBuilder.Append(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key).SourceName)));
+                                }
+                            }
+                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            {
+                                resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoin, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
+                                resultJoin += string.Format(" INNER JOIN {0}  {1}  ON ({2}) ", entityMetadata2.DataSource.Schema + "." + entityMetadata2.DataSource.Name, this._syntax.EncodeFieldName(TableName2.Alias), string.Join(" AND ", stringBuilder).ToString());
+                            }
+                        }
+                    }
+                    else if (entityMetadata2.BaseEntity != null)
+                    {
+                        if (entityMetadata2.BaseEntity.Name == TableName1.EntityName)
+                        {
+                            StringBuilder stringBuilder = new StringBuilder();
+                            foreach (var c in entityMetadata2.PrimaryKey.FieldRefs)
+                            {
+                                string PrimaryKeyTable1 = c.Key;
+                                KeyValuePair<string, IPrimaryKeyFieldRefMetadata> keyValuePairKeyFieldRefMetadata = entityMetadata1.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
+                                if (keyValuePairKeyFieldRefMetadata.Key != null)
+                                {
+                                    stringBuilder.Append(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key).SourceName)));
+                                }
+                            }
+                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            {
+                                resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoin, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
+                                resultJoin += string.Format(" INNER JOIN {0} {1}  ON ({2}) ", entityMetadata2.DataSource.Schema + "." + entityMetadata2.DataSource.Name, this._syntax.EncodeFieldName(TableName2.Alias), string.Join(" AND ", stringBuilder).ToString());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
+            return resultJoin;
+        }
+
+        /// <summary>
+        /// Формирование JOIN для связей типа "Entity-Extension"
+        /// </summary>
+        /// <param name="TableName1"></param>
+        /// <param name="TableName2"></param>
+        /// <returns></returns>
+        private string BuildJoinExtension(AliasField TableName1, AliasField TableName2)
+        {
+            string resultJoin = "";
+            try
+            {
+                var entityMetadata1 = _entityMetadata.GetEntityMetadata(TableName1.EntityName);
+                var entityMetadata2 = _entityMetadata.GetEntityMetadata(TableName2.EntityName);
+                if ((entityMetadata1 != null) && (entityMetadata2 != null))
+                {
+                    if (entityMetadata1.ExtendEntity != null)
+                    {
+                        if (entityMetadata1.ExtendEntity.Name == TableName2.EntityName)
+                        {
+                            List<string> stringBuilder = new List<string>();
+                            foreach (var c in entityMetadata1.ExtendEntity.PrimaryKey.FieldRefs)
+                            {
+                                string PrimaryKeyTable1 = c.Key;
+                                stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName)));
+                            }
+                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            {
+                                resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoinExtension, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
+                                resultJoin += string.Format(" INNER JOIN {0} {1}  ON ({2}) ", entityMetadata1.DataSource.Schema + "." + entityMetadata1.DataSource.Name, this._syntax.EncodeFieldName(TableName1.Alias), string.Join(" AND ", stringBuilder).ToString());
+                            }
+                        }
+                    }
+                    else if (entityMetadata2.ExtendEntity != null)
+                    {
+                        if (entityMetadata2.ExtendEntity.Name == TableName1.EntityName)
+                        {
+                            List<string> stringBuilder = new List<string>();
+                            foreach (var c in entityMetadata2.ExtendEntity.PrimaryKey.FieldRefs)
+                            {
+                                string PrimaryKeyTable1 = c.Key;
+                                stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName)));
+                            }
+                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            {
+                                resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoinExtension, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
+                                resultJoin += string.Format(" INNER JOIN {0} {1}  ON ({2}) ", entityMetadata2.DataSource.Schema + "." + entityMetadata2.DataSource.Name, this._syntax.EncodeFieldName(TableName2.Alias), string.Join(" AND ", stringBuilder).ToString());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
+            return resultJoin;
+        }
+
+        /// <summary>
+        /// Формирование JOIN для связей типа "Relation"
+        /// </summary>
+        /// <param name="TableName1"></param>
+        /// <param name="TableName2"></param>
+        /// <returns></returns>
+        private string BuidJoinRelation<TModel>(string EntityName, string SpecialFld, IDictionary<string, EngineCommandParameter> parameters, List<AliasField> aliasFields, string schemaTable)
+        {
+            string resultJoin = "";
+            try
+            {
+                BuildSelectStatement<TModel>(EntityName, new string[] { SpecialFld }, FieldSourceType.Relation, true);
+                var fieldProperties = this._listFieldProperties.Find(z => z.Alias.StartsWith(SpecialFld + ".") && (z.SourceType == FieldSourceType.Relation));
+                if (fieldProperties != null)
+                {
+                    string RelTableNameTo = "";
+                    string RelTableNameFrom = "";
+                    IRelationFieldMetadata relationFieldMetadataFnd = null;
+                    bool isSuccessBuildRelation = false;
+                    RelTableNameTo = fieldProperties.DBTableName;
+                    var aliasFieldFind = aliasFields.Find(z => z.DBTableName == RelTableNameTo && z.IsReplaced == false);
+                    if (aliasFieldFind != null)
+                    {
+                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
+                        {
+                            aliasFieldFind.Alias = SpecialFld;
+                            aliasFieldFind.IsReplaced = true;
+                        }
+                    }
+                    foreach (var x in _entityMetadata.RelationFieldMetadata.ToList())
+                    {
+                        if (x.Key.RelatedEntity != null)
+                        {
+                            if (x.Key.RelatedEntity.DataSource.Name == RelTableNameTo)
+                            {
+                                relationFieldMetadataFnd = x.Key;
+                                RelTableNameFrom = x.Value;
+                            }
+                        }
+                    }
+
+                    string reJoins = this.BuildWhereExpression(new List<Condition> { relationFieldMetadataFnd.RelationCondition }, parameters);
+                    if (relationFieldMetadataFnd != null)
+                    {
+                        IEntityMetadata metadataRelEntity = relationFieldMetadataFnd.RelatedEntity;
+                        if (metadataRelEntity != null)
+                        {
+                            bool isFindedBlock = false;
+                            do
+                            {
+                                if (reJoins.IndexOf("#source") > 0)
+                                {
+                                    isFindedBlock = true;
+                                    int zeroIdx = reJoins.IndexOf("#source");
+                                    int idxStart = zeroIdx + 7;
+                                    reJoins = reJoins.Remove(zeroIdx, idxStart - zeroIdx);
+                                    reJoins = reJoins.Insert(zeroIdx, SpecialFld + "\"");
+                                    idxStart = zeroIdx + SpecialFld.Length + 2;
+                                    string rsVal = reJoins.Substring(idxStart, reJoins.Length - idxStart);
+                                    if (rsVal.IndexOf("\"") > 0)
                                     {
-                                        var fieldMetadataFindx = entityMetadata.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                        if (fieldMetadataFindx == null)
+                                        int idxEnd = rsVal.IndexOf("\"");
+                                        rsVal = reJoins.Substring(idxStart, idxEnd);
+                                        var dataField = metadataRelEntity.Fields.ToList().Find(z => z.Value.Name == rsVal);
+                                        IFieldMetadata fieldMeta = dataField.Value;
+                                        if (fieldMeta != null)
                                         {
-                                            for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                            {
-                                                var column = new QuerySelectStatement.ColumnDescriptor();
-                                                if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Column)
-                                                {
-                                                    column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                                    if (string.IsNullOrEmpty(column.Alias))
-                                                    {
-                                                        var Alias = new StringBuilder();
-                                                        for (int t = 0; t < j - 1; t++)
-                                                        {
-                                                            Alias.Append(nextNames[t]).Append(".");
-                                                        }
-                                                        Alias.Append(ExtendedName).Append(".");
-                                                        column.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                                    }
-                                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                    {
-                                                        listColumnDescriptor.Add(column);
-                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                                        isAddedField = true;
-                                                    }
-                                                }
-                                                else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Extension)
-                                                {
-                                                    var extensionMetaData = ((ExtensionFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).ExtensionEntity;
-                                                    if (extensionMetaData != null)
-                                                    {
-                                                        entityMetadata = extensionMetaData;
-                                                        IFieldMetadata fieldMetadataFindExt = extensionMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                        if (fieldMetadataFindExt != null)
-                                                        {
-                                                            var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFindExt.SourceName, Table = entityMetadata.Name };
-                                                            if (string.IsNullOrEmpty(columnExt.Alias))
-                                                            {
-                                                                StringBuilder Alias = new StringBuilder();
-                                                                for (int t = 0; t < j - 1; t++)
-                                                                {
-                                                                    Alias.Append(nextNames[t]).Append(".");
-                                                                }
-                                                                Alias.Append(ExtendedName).Append(".");
-                                                                columnExt.Alias = Alias.ToString() + entityMetadata.Name;
-                                                            }
-                                                            if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                            {
-                                                                listColumnDescriptor.Add(columnExt);
-                                                                listFieldMetadata.Add(fieldMetadataFindExt);
-                                                                isAddedField = true;
-                                                            }
-                                                        }
-                                                        else if ((fieldMetadataFindExt == null) && (j == nextNames.Length - 1))
-                                                        {
-                                                            for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                            {
-                                                                var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                {
-                                                                    StringBuilder Alias = new StringBuilder();
-                                                                    for (int t = 0; t < j - 1; t++)
-                                                                    {
-                                                                        Alias.Append(nextNames[t]).Append(".");
-                                                                    }
-                                                                    Alias.Append(ExtendedName).Append(".");
-                                                                    columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                }
-                                                                if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                {
-                                                                    listColumnDescriptor.Add(columnExt);
-                                                                    listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                    isAddedField = true;
-                                                                }
-                                                            }
-                                                            entityMetadata = oldentityMetadata;
-                                                        }
-                                                    }
-                                                }
-                                                else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Reference)
-                                                {
-                                                    var refMetaData = ((ReferenceFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RefEntity;
-                                                    if (refMetaData != null)
-                                                    {
-                                                        if (refMetaData.Name != null)
-                                                        {
-                                                            entityMetadata = refMetaData;
-                                                            var fieldMetadataFindRef = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                            if ((fieldMetadataFindRef == null) && (j == nextNames.Length - 1))
-                                                            {
-                                                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                                {
-                                                                    var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                    if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                    {
-                                                                        StringBuilder Alias = new StringBuilder();
-                                                                        for (int t = 0; t < j - 1; t++)
-                                                                        {
-                                                                            Alias.Append(nextNames[t]).Append(".");
-                                                                        }
-                                                                        Alias.Append(ExtendedName).Append(".");
-                                                                        columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                    }
-                                                                    if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                    {
-                                                                        listColumnDescriptor.Add(columnExt);
-                                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                        isAddedField = true;
-                                                                    }
-                                                                }
-                                                                entityMetadata = oldentityMetadata;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Relation)
-                                                {
-                                                    var relMetaData = ((RelationFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RelatedEntity;
-                                                    if (relMetaData != null)
-                                                    {
-                                                        if (relMetaData.Name != null)
-                                                        {
-                                                            entityMetadata = relMetaData;
-                                                            var fieldMetadataFindRel = relMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                            if ((fieldMetadataFindRel == null) && (j == nextNames.Length - 1))
-                                                            {
-                                                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                                {
-                                                                    var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                    if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                    {
-                                                                        StringBuilder Alias = new StringBuilder();
-                                                                        for (int t = 0; t < j - 1; t++)
-                                                                        {
-                                                                            Alias.Append(nextNames[t]).Append(".");
-                                                                        }
-                                                                        Alias.Append(ExtendedName).Append(".");
-                                                                        columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                    }
-                                                                    if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                    {
-                                                                        listColumnDescriptor.Add(columnExt);
-                                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                        isAddedField = true;
-                                                                    }
-                                                                }
-                                                                entityMetadata = oldentityMetadata;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            reJoins = reJoins.Remove(idxStart, idxEnd);
+                                            reJoins = reJoins.Insert(idxStart, "\"" + fieldMeta.SourceName);
                                         }
                                         else
                                         {
-                                            var column = new QuerySelectStatement.ColumnDescriptor();
-                                            column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFindx.SourceName, Table = entityMetadata.Name };
-                                            if (string.IsNullOrEmpty(column.Alias))
-                                            {
-                                                StringBuilder Alias = new StringBuilder();
-                                                for (int t = 0; t < j - 1; t++)
-                                                {
-                                                    Alias.Append(nextNames[t]).Append(".");
-                                                }
-                                                Alias.Append(ExtendedName).Append(".");
-                                                column.Alias = Alias.ToString() + fieldMetadataFindx.Name;
-                                            }
-                                            if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                            {
-                                                listColumnDescriptor.Add(column);
-                                                listFieldMetadata.Add(fieldMetadataFindx);
-                                                isAddedField = true;
-                                            }
-                                        }
-                                        if ((LastObject == true) || (isAddedField == false))
-                                        {
-                                            entityMetadata = oldEntityMetadataPrev;
-                                            for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                            {
-                                                var column = new QuerySelectStatement.ColumnDescriptor();
-                                                if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Column)
-                                                {
-                                                    column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                                    if (string.IsNullOrEmpty(column.Alias))
-                                                    {
-                                                        StringBuilder Alias = new StringBuilder();
-                                                        for (int t = 0; t < j - 1; t++)
-                                                        {
-                                                            Alias.Append(nextNames[t]).Append(".");
-                                                        }
-                                                        Alias.Append(ExtendedName).Append(".");
-                                                        column.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                                    }
-                                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                    {
-                                                        listColumnDescriptor.Add(column);
-                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                                    }
-                                                }
-                                                else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Extension)
-                                                {
-                                                    var extensionMetaData = ((ExtensionFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).ExtensionEntity;
-                                                    if (extensionMetaData != null)
-                                                    {
-                                                        if (extensionMetaData.Name != null)
-                                                        {
-                                                            entityMetadata = extensionMetaData;
-                                                            var fieldMetadataFindExt = extensionMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                            if ((fieldMetadataFindExt == null) && (j == nextNames.Length - 1))
-                                                            {
-                                                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                                {
-                                                                    var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                    if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                    {
-                                                                        StringBuilder Alias = new StringBuilder();
-                                                                        for (int t = 0; t < j - 1; t++)
-                                                                        {
-                                                                            Alias.Append(nextNames[t]).Append(".");
-                                                                        }
-                                                                        Alias.Append(ExtendedName).Append(".");
-                                                                        columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                    }
-                                                                    if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                    {
-                                                                        listColumnDescriptor.Add(columnExt);
-                                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                    }
-                                                                }
-                                                                entityMetadata = oldentityMetadata;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Reference)
-                                                {
-                                                    var refMetaData = ((ReferenceFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RefEntity;
-                                                    if (refMetaData != null)
-                                                    {
-                                                        if (refMetaData.Name != null)
-                                                        {
-                                                            entityMetadata = refMetaData;
-                                                            var fieldMetadataFindRef = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                            if ((fieldMetadataFindRef == null) && (j == nextNames.Length - 1))
-                                                            {
-                                                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                                {
-                                                                    var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                    if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                    {
-                                                                        StringBuilder Alias = new StringBuilder();
-                                                                        for (int t = 0; t < j - 1; t++)
-                                                                        {
-                                                                            Alias.Append(nextNames[t]).Append(".");
-                                                                        }
-                                                                        Alias.Append(ExtendedName).Append(".");
-                                                                        columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                    }
-                                                                    if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                    {
-                                                                        listColumnDescriptor.Add(columnExt);
-                                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                    }
-                                                                }
-                                                                entityMetadata = oldentityMetadata;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Relation)
-                                                {
-                                                    var relMetaData = ((RelationFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RelatedEntity;
-                                                    if (relMetaData != null)
-                                                    {
-                                                        if (relMetaData.Name != null)
-                                                        {
-                                                            entityMetadata = relMetaData;
-                                                            var fieldMetadataFindRel = relMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                            if ((fieldMetadataFindRel == null) && (j == nextNames.Length - 1))
-                                                            {
-                                                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                                {
-                                                                    var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                    if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                    {
-                                                                        StringBuilder Alias = new StringBuilder();
-                                                                        for (int t = 0; t < j - 1; t++)
-                                                                        {
-                                                                            Alias.Append(nextNames[t]).Append(".");
-                                                                        }
-                                                                        Alias.Append(ExtendedName).Append(".");
-                                                                        columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                    }
-                                                                    if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                    {
-                                                                        listColumnDescriptor.Add(columnExt);
-                                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                    }
-                                                                }
-                                                                entityMetadata = oldentityMetadata;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            isFindedBlock = false;
                                         }
                                     }
-                                    else
+                                }
+                                else if (reJoins.IndexOf("#this") > 0)
+                                {
+                                    isFindedBlock = true;
+                                    int zeroIdx = reJoins.IndexOf("#this");
+                                    int idxStart = zeroIdx + 5;
+                                    reJoins = reJoins.Remove(zeroIdx, idxStart - zeroIdx);
+                                    var aliasField = aliasFields.Find(p => p.DBTableName == RelTableNameFrom);
+                                    string prefix = aliasField != null ? aliasField.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RelTableNameFrom));
+                                    reJoins = reJoins.Insert(zeroIdx, prefix + "\"");
+                                    idxStart = zeroIdx + prefix.Length + 2;
+                                    string rsVal = reJoins.Substring(idxStart, reJoins.Length - idxStart);
+                                    if (rsVal.IndexOf("\"") > 0)
                                     {
-                                        entityMetadata = oldEntityMetadataPrev;
-                                        for (int l = 0; l < entityMetadata.Fields.Count; l++)
+                                        int idxEnd = rsVal.IndexOf("\"");
+                                        rsVal = reJoins.Substring(idxStart, idxEnd);
+                                        var dataField = metadataRelEntity.Fields.ToList().Find(z => z.Value.Name == rsVal);
+                                        IFieldMetadata fieldMeta = dataField.Value;
+                                        if (fieldMeta != null)
                                         {
-                                            var column = new QuerySelectStatement.ColumnDescriptor();
-                                            if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Column)
+                                            reJoins = reJoins.Remove(idxStart, idxEnd);
+                                            reJoins = reJoins.Insert(idxStart, "\"" + fieldMeta.SourceName);
+                                        }
+                                        else
+                                        {
+                                            string[] wrds = rsVal.Split(new char[] { '.' });
+                                            List<string> concatString = new List<string>();
+                                            if (wrds != null)
                                             {
-                                                column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                                if (string.IsNullOrEmpty(column.Alias))
+                                                if (wrds.Length > 1)
                                                 {
-                                                    StringBuilder Alias = new StringBuilder();
-                                                    for (int t = 0; t < j - 1; t++)
+                                                    for (int x = 0; x < wrds.Length - 1; x++)
                                                     {
-                                                        Alias.Append(nextNames[t]).Append(".");
+                                                        concatString.Add(wrds[x]);
                                                     }
-                                                    Alias.Append(ExtendedName).Append(".");
-                                                    column.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
                                                 }
-                                                if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
+                                                if (wrds.Length > 0)
                                                 {
-                                                    listColumnDescriptor.Add(column);
-                                                    listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
+                                                    var dataFieldBlock = metadataRelEntity.Fields.ToList().Find(z => z.Value.Name == wrds[wrds.Length - 1]);
+                                                    fieldMeta = dataFieldBlock.Value;
+                                                    if (fieldMeta != null)
+                                                    {
+                                                        reJoins = reJoins.Remove(idxStart, idxEnd);
+                                                        reJoins = reJoins.Insert(idxStart, "\"" + fieldMeta.SourceName);
+                                                        reJoins = reJoins.Remove(idxStart - prefix.Length - 2, prefix.Length);
+                                                        reJoins = reJoins.Insert(idxStart - prefix.Length - 2, string.Join(".", concatString));
+                                                    }
+                                                    else
+                                                    {
+                                                        isFindedBlock = false;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    isFindedBlock = false;
                                                 }
                                             }
-                                            else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Extension)
+                                            else
                                             {
-                                                var extensionMetaData = ((ExtensionFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).ExtensionEntity;
-                                                if (extensionMetaData != null)
-                                                {
-                                                    if (extensionMetaData.Name != null)
-                                                    {
-                                                        entityMetadata = extensionMetaData;
-                                                        var fieldMetadataFindExt = extensionMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                        if ((fieldMetadataFindExt == null) && (j == nextNames.Length - 1))
-                                                        {
-                                                            for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                            {
-                                                                var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                {
-                                                                    StringBuilder Alias = new StringBuilder();
-                                                                    for (int t = 0; t < j - 1; t++)
-                                                                    {
-                                                                        Alias.Append(nextNames[t]).Append(".");
-                                                                    }
-                                                                    Alias.Append(ExtendedName).Append(".");
-                                                                    columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                }
-                                                                if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                {
-                                                                    listColumnDescriptor.Add(columnExt);
-                                                                    listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                }
-                                                            }
-                                                            entityMetadata = oldentityMetadata;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Reference)
-                                            {
-                                                var refMetaData = ((ReferenceFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RefEntity;
-                                                if (refMetaData != null)
-                                                {
-                                                    if (refMetaData.Name != null)
-                                                    {
-                                                        entityMetadata = refMetaData;
-                                                        var fieldMetadataFindRef = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                        if ((fieldMetadataFindRef == null) && (j == nextNames.Length - 1))
-                                                        {
-                                                            for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                            {
-                                                                var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                {
-                                                                    StringBuilder Alias = new StringBuilder();
-                                                                    for (int t = 0; t < j - 1; t++)
-                                                                    {
-                                                                        Alias.Append(nextNames[t]).Append(".");
-                                                                    }
-                                                                    Alias.Append(ExtendedName).Append(".");
-                                                                    columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                }
-                                                                if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                {
-                                                                    listColumnDescriptor.Add(columnExt);
-                                                                    listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                }
-                                                            }
-                                                            entityMetadata = oldentityMetadata;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Relation)
-                                            {
-                                                var relMetaData = ((RelationFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RelatedEntity;
-                                                if (relMetaData != null)
-                                                {
-                                                    if (relMetaData.Name != null)
-                                                    {
-                                                        entityMetadata = relMetaData;
-                                                        var fieldMetadataFindRel = relMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                                        if ((fieldMetadataFindRel == null) && (j == nextNames.Length - 1))
-                                                        {
-                                                            for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
-                                                            {
-                                                                var columnExt = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceName, Table = entityMetadata.Name };
-                                                                if (string.IsNullOrEmpty(columnExt.Alias))
-                                                                {
-                                                                    StringBuilder Alias = new StringBuilder();
-                                                                    for (int t = 0; t < j - 1; t++)
-                                                                    {
-                                                                        Alias.Append(nextNames[t]).Append(".");
-                                                                    }
-                                                                    Alias.Append(ExtendedName).Append(".");
-                                                                    columnExt.Alias = Alias.ToString() + entityMetadata.Fields.Values.ToList().ElementAt(lx).Name;
-                                                                }
-                                                                if (listColumnDescriptor.Find(b => b.Alias == columnExt.Alias) == null)
-                                                                {
-                                                                    listColumnDescriptor.Add(columnExt);
-                                                                    listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(lx));
-                                                                }
-                                                            }
-                                                            entityMetadata = oldentityMetadata;
-                                                        }
-                                                    }
-                                                }
+                                                isFindedBlock = false;
                                             }
                                         }
                                     }
-
                                 }
                                 else
                                 {
-                                    var column = new QuerySelectStatement.ColumnDescriptor();
-                                    column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFindx1.SourceName, Table = entityMetadata.Name };
+                                    isFindedBlock = false;
+                                }
+                                isSuccessBuildRelation = true;
+                            }
+                            while (isFindedBlock == true);
+                        }
+                    }
+                    if (isSuccessBuildRelation)
+                    {
+                        if (!string.IsNullOrEmpty(reJoins))
+                        {
+                            resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoinRelation, RelTableNameTo, RelTableNameFrom) + Environment.NewLine;
+                            resultJoin += string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + RelTableNameTo, this._syntax.EncodeFieldName(SpecialFld), reJoins);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
+            return resultJoin;
+        }
 
-                                    if (string.IsNullOrEmpty(column.Alias))
+        /// <summary>
+        /// Переименование Alias 
+        /// </summary>
+        /// <param name="countSubLevels"></param>
+        /// <param name="aliasFieldFind"></param>
+        /// <param name="RefTableNameTo"></param>
+        /// <param name="SpecialFld"></param>
+        /// <param name="aliasFields"></param>
+        private void RenameAliases(int countSubLevels, AliasField aliasFieldFind, string RefTableNameTo, string SpecialFld, ref  List<AliasField> aliasFields)
+        {
+            do
+            {
+                if (((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0)) == false)
+                {
+                    RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
+                    if (countSubLevels < aliasFieldFind.EntityMetadataLinks.Count - 1)
+                    {
+                        string[] wrds = SpecialFld.Split(new char[] { '.' });
+                        if (wrds != null)
+                        {
+                            if (wrds.Length > 0)
+                            {
+                                if (aliasFieldFind != null)
+                                {
+                                    SpecialFld = SpecialFld.Replace("." + wrds[wrds.Length - 1], "");
+                                    var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
+                                    if (aliasFieldCheck != null)
                                     {
-                                        StringBuilder Alias = new StringBuilder();
-                                        for (int t = 0; t < j - 1; t++)
+                                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
                                         {
-                                            Alias.Append(nextNames[t]).Append(".");
+                                            aliasFieldCheck.Alias = SpecialFld;
                                         }
-                                        Alias.Append(ExtendedName).Append(".");
-                                        column.Alias = Alias.ToString() + entityMetadata.Name;
                                     }
-                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
+                                }
+                            }
+                        }
+                    }
+                }
+                --countSubLevels;
+            }
+            while (countSubLevels > 0);
+        }
+
+        /// <summary>
+        /// Формирование JOIN для связей типа "Reference"
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="EntityName"></param>
+        /// <param name="SpecialFld"></param>
+        /// <param name="aliasFields"></param>
+        /// <param name="schemaTable"></param>
+        /// <returns></returns>
+        private string BuidJoinReference<TModel>(string EntityName, string SpecialFld,  List<AliasField> aliasFields, string schemaTable)
+        {
+            string resultJoin = "";
+            try
+            {
+                string RefTableNameTo = "";
+                string RefTableNameFrom = "";
+                IReferenceFieldMetadata referenceFieldMetadataFnd = null;
+                BuildSelectStatement<TModel>(EntityName, new string[] { SpecialFld }, FieldSourceType.Reference, true);
+                var fieldProperties = this._listFieldProperties.Find(z => z.Alias.StartsWith(SpecialFld + ".") && z.SourceType == FieldSourceType.Reference);
+                if (fieldProperties != null)
+                {
+                    RefTableNameTo = fieldProperties.DBTableName;
+                    var aliasFieldFind = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
+                    if (aliasFieldFind != null)
+                    {
+                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
+                        {
+                            aliasFieldFind.Alias = SpecialFld;
+                            aliasFieldFind.IsReplaced = true;
+                        }
+                        else
+                        {
+                            aliasFieldFind.IsReplaced = true;
+                        }
+                    }
+                    int countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                    RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref  aliasFields);
+                    var stringBuilderRefGlobal = new List<string>();
+                    countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                    RefTableNameTo = fieldProperties.DBTableName;
+                    do
+                    {
+                        if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0))
+                        {
+                            referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
+                            RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
+                        }
+                        else
+                        {
+                            RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
+                            referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
+                            var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo);
+                            if (aliasFieldCheck != null)
+                            {
+                                SpecialFld = aliasFieldCheck.Alias;
+                            }
+                            RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
+                        }
+                        if (referenceFieldMetadataFnd != null)
+                        {
+                            string DataSource = "";
+                            if (referenceFieldMetadataFnd.Mapping == null)
+                            {
+                                IEntityMetadata metadataRefEntity = referenceFieldMetadataFnd.RefEntity;
+                                if (metadataRefEntity != null)
+                                {
+                                    DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
+                                    var stringBuilderRef = new List<string>();
+                                    if (metadataRefEntity.PrimaryKey != null)
                                     {
-                                        listColumnDescriptor.Add(column);
-                                        listFieldMetadata.Add(fieldMetadataFindx1);
+                                        foreach (var FieldRef in metadataRefEntity.PrimaryKey.FieldRefs)
+                                        {
+                                            if (FieldRef.Key != null)
+                                            {
+                                                IFieldMetadata fieldMetadataDb2 = metadataRefEntity.Fields.ToList().Find(z => z.Key == FieldRef.Key).Value;
+                                                var aliasFieldTo = aliasFields.Find(v => v.DBTableName == RefTableNameTo);
+                                                var aliasFieldFrom = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
+                                                if ((entityMetadataRefTableName != null) && (fieldMetadataDb2 != null))
+                                                {
+                                                    foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
+                                                    {
+                                                        string columnFrom = FieldRefV.Key;
+                                                        IFieldMetadata fieldMetadata = entityMetadataRefTableName.Fields.ToList().Find(v => v.Key == columnFrom).Value;
+                                                        if (fieldMetadata != null)
+                                                        {
+                                                            var Db1Val = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                            var Db2Val = aliasFields.Find(v => v.DBTableName == metadataRefEntity.DataSource.Name);
+
+                                                            string Db1 = Db1Val != null ? Db1Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom));
+                                                            string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataRefEntity.DataSource.Name));
+
+                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
+                                    {
+                                        stringBuilderRefGlobal.Add(Environment.NewLine + string.Format(Templates.CommmentsBuildJoinReference, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString()));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (referenceFieldMetadataFnd.Mapping != null)
+                                {
+                                    DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
+                                    var stringBuilderRef = new List<string>();
+                                    foreach (var FieldRef in referenceFieldMetadataFnd.Mapping.Fields)
+                                    {
+                                        if (FieldRef.Value != null)
+                                        {
+                                            if (FieldRef.Value is ValuePrimaryKeyFieldMappedMetadata)
+                                            {
+                                                ValuePrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as ValuePrimaryKeyFieldMappedMetadata);
+                                                if (valuefieldMetaDataRef != null)
+                                                {
+                                                    IFieldMetadata FieldKeyMetadata = valuefieldMetaDataRef.KeyField;
+                                                    if (FieldKeyMetadata != null)
+                                                    {
+                                                        string TableNameFrom = fieldProperties.DBTableName;
+                                                        string FieldNameFrom = fieldProperties.FieldName;
+                                                        if (valuefieldMetaDataRef.Value.GetType() == typeof(System.String))
+                                                        {
+                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = '{2}') ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, valuefieldMetaDataRef.Value));
+                                                        }
+                                                        else
+                                                        {
+                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, valuefieldMetaDataRef.Value));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (FieldRef.Value is FieldPrimaryKeyFieldMappedMetadata)
+                                            {
+                                                FieldPrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as FieldPrimaryKeyFieldMappedMetadata);
+                                                if (valuefieldMetaDataRef != null)
+                                                {
+                                                    if (valuefieldMetaDataRef.KeyField != null)
+                                                    {
+                                                        IFieldMetadata FieldKeyMetadata = valuefieldMetaDataRef.KeyField;
+                                                        string FieldName = FieldRef.Key;
+                                                        string FieldNameFrom = fieldProperties.DBFieldName;
+                                                        var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                        var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(DbValx != null ? DbValx.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)));
+                                                        if (entityMetadataRefTableName != null)
+                                                        {
+                                                            string columnFrom = entityMetadataRefTableName.Fields.ToList().Find(z => z.Key == FieldName).Value.SourceName;
+                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), columnFrom));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (FieldRef.Value is SourceNamePrimaryKeyFieldMappedMetadata)
+                                            {
+                                                SourceNamePrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as SourceNamePrimaryKeyFieldMappedMetadata);
+                                                if (valuefieldMetaDataRef != null)
+                                                {
+                                                    string Refsourcename = valuefieldMetaDataRef.SourceName;
+                                                    string NameBase = FieldRef.Key;
+
+                                                    string FieldNameFrom = fieldProperties.FieldName;
+                                                    var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                    stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), Refsourcename));
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
+                                    {
+                                        stringBuilderRefGlobal.Add(Environment.NewLine + string.Format(Templates.CommmentsBuildJoinReference, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString()));
+                                    }
+                                }
+                            }
+                        }
+                        --countSubLevels;
+                    }
+                    while (countSubLevels > 0);
+                    stringBuilderRefGlobal.Reverse();
+                    foreach (string d in stringBuilderRefGlobal)
+                    {
+                        resultJoin += d;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
+            return resultJoin;
+        }
+
+        /// <summary>
+        /// Основной обработчик генерации JOIN'ов
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="EntityName"></param>
+        /// <param name="fieldPath"></param>
+        /// <param name="parameters"></param>
+        /// <param name="aliasFields"></param>
+        /// <returns></returns>
+        private string BuildJoinStatement<TModel>(string EntityName, string[] fieldPath, IDictionary<string, EngineCommandParameter> parameters, out List<AliasField> aliasFields)
+        {
+            var resJoinBaseTable = "";
+            const string PrefixTableName = "Tcaz_";
+            var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
+            var schemaTable = entityMetadata.DataSource.Schema;
+            var selectedColumns = fieldPath;
+            BuildSelectStatement<TModel>(EntityName, selectedColumns);
+            aliasFields = new List<AliasField>();
+            for (int i = 0; i < this._listFieldProperties.Count; i++)
+            {
+                var dbTableName = this._listFieldProperties[i].DBTableName;
+                if (aliasFields.Find(z => z.EntityName == this._listFieldProperties[i].TableName) == null)
+                {
+                    aliasFields.Add(new AliasField() { Alias = PrefixTableName + (aliasFields.Count + 1).ToString(), DBTableName = this._listFieldProperties[i].DBTableName, EntityName = this._listFieldProperties[i].TableName, EntityMetadataLinks = this._listFieldProperties[i].entityMetadataLinks });
+                }
+                if (this._listFieldProperties[i].entityMetadataLinks != null)
+                {
+                    for (int j = 0; j < this._listFieldProperties[i].entityMetadataLinks.Count; j++)
+                    {
+                        if (aliasFields.Find(z => z.EntityName == this._listFieldProperties[i].entityMetadataLinks[j].Name) == null)
+                        {
+                            aliasFields.Add(new AliasField() { Alias = PrefixTableName + (aliasFields.Count + 1).ToString(), DBTableName = this._listFieldProperties[i].entityMetadataLinks[j].DataSource.Name, EntityName = this._listFieldProperties[i].entityMetadataLinks[j].Name });
+                        }
+                    }
+                }
+            }
+            var valSelectedFlds = selectedColumns;
+            var valSpecialFlds = new List<string>();
+            foreach (string val in valSelectedFlds)
+            {
+                if (val.Contains("."))
+                {
+                    if (val.LastIndexOf(".") > 0)
+                    {
+                        var EndIndex = val.LastIndexOf(".");
+                        var valResStr = val.Substring(0, EndIndex);
+                        if (!valSpecialFlds.Contains(valResStr))
+                        {
+                            valSpecialFlds.Add(valResStr);
+                        }
+                    }
+                }
+                else if ((val.ToCharArray().ToList().FindAll(z => char.IsUpper(z) || char.IsDigit(z)).Count == val.ToCharArray().Length) && (!val.Contains(".")))
+                {
+                    valSpecialFlds.Add(val);
+                }
+            }
+            var resultJoin = "";
+            for (int i = 0; i < valSpecialFlds.Count; i++)
+            {
+                bool isSuccess = false;
+                var joinString = BuidJoinRelation<TModel>(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable);
+                if (!string.IsNullOrEmpty(joinString))
+                {
+                    resultJoin += joinString;
+                    isSuccess = true;
+                }
+                if (!isSuccess)
+                {
+                    joinString =  BuidJoinReference<TModel>(EntityName, valSpecialFlds[i], aliasFields, schemaTable);
+                    if (!string.IsNullOrEmpty(joinString))
+                    {
+                        resultJoin += joinString;
+                        isSuccess = true;
+                    }
+                }
+                if (!isSuccess)
+                {
+                    var fieldProperties = new FieldProperties();
+                    string ExtTableNameTo = "";
+                    BuildSelectStatement<TModel>(EntityName, new string[] { valSpecialFlds[i] }, FieldSourceType.Extension, false);
+                    fieldProperties = this._listFieldProperties.Find(z => z.Alias.StartsWith(valSpecialFlds[i] + ".") && z.SourceType== FieldSourceType.Extension);
+                    if (fieldProperties != null)
+                    {
+                        ExtTableNameTo = fieldProperties.DBTableName;
+                        var aliasFieldFind = aliasFields.Find(z => z.DBTableName == ExtTableNameTo && z.IsReplaced == false);
+                        if (aliasFieldFind != null)
+                        {
+                            if (valSpecialFlds[i].Length < this._syntax.MaxLengthAlias)
+                            {
+                                aliasFieldFind.Alias = valSpecialFlds[i];
+                                aliasFieldFind.IsReplaced = true;
+                            }
+                        }
+                        //extensionFieldMetadataFnd = _entityMetadata.ExtensionFieldMetadata.ToList().Find(z => z.Key.ExtensionEntity.DataSource.Name == listColumnDescriptorSelected[0].DBTable).Key;
+                        //ExtTableNameFrom = _entityMetadata.ExtensionFieldMetadata.ToList().Find(z => z.Key.ExtensionEntity.DataSource.Name == listColumnDescriptorSelected[0].DBTable).Value;
+                        // Реализован в методе BuildJoinExtension
+                        //throw new NotImplementedException();
+                        isSuccess = true;
+                    }
+                }
+            }
+
+            /////// Формирование JOINS для Extension и BaseEntity
+            ///Перебор всех воможных комбинаций
+            for (int i = 0; i < aliasFields.Count - 1; i++)
+            {
+                for (int j = 1; j < aliasFields.Count; j++)
+                {
+                    resJoinBaseTable += BuildJoinBase(aliasFields[i], aliasFields[j]);
+                    resJoinBaseTable += BuildJoinExtension(aliasFields[i], aliasFields[j]);
+                }
+            }
+            resJoinBaseTable += resultJoin;
+            var DbVal = aliasFields.Find(v => v.EntityName == entityMetadata.Name);
+            return  string.Format(" {0}.{1}  {2} ", schemaTable,  entityMetadata.DataSource.Name, this._syntax.EncodeFieldName((DbVal != null ? DbVal.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, entityMetadata.Name))))) + resJoinBaseTable;
+        }
+
+        /// <summary>
+        /// Добавление данных о поле в кєш
+        /// </summary>
+        /// <param name="fieldMetadataColumn"></param>
+        /// <param name="entityMetadata"></param>
+        /// <param name="index"></param>
+        /// <param name="nextNames"></param>
+        /// <param name="fieldSourceTypeFilter"></param>
+        /// <returns></returns>
+        private bool AddNewFieldProperties(IFieldMetadata fieldMetadataColumn, IEntityMetadata entityMetadata, int index, string[] nextNames, FieldSourceType fieldSourceTypeFilter)
+        {
+            const string ExtendedName = "EXTENDED";
+            bool isAdded = false;
+            if (fieldMetadataColumn != null)
+            {
+                var sourceName = fieldMetadataColumn.SourceName;
+                var name = fieldMetadataColumn.Name;
+                if (fieldMetadataColumn is FieldMetadata)
+                {
+                    var alias = new StringBuilder();
+                    for (int t = 0; t < index - 1; t++)
+                    {
+                        alias.Append(nextNames[t]).Append(".");
+                    }
+                    var aliasValue = (alias.Append(ExtendedName).Append(".")).ToString() + name;
+                    if (this._listFieldProperties.Find(b => b.Alias == aliasValue && b.SourceType== fieldSourceTypeFilter) == null)
+                    {
+                        this._listFieldProperties.Add(new FieldProperties() { Alias = aliasValue, DBFieldName = sourceName, DBTableName = entityMetadata.DataSource.Name, FieldName = name, TableName = entityMetadata.Name, SourceType = fieldSourceTypeFilter });
+                        isAdded = true;
+                    }
+                    else
+                    {
+                        isAdded = true;
+                    }
+                }
+            }
+            return isAdded;
+        }
+
+        /// <summary>
+        /// Добавление данных о поле в кєш
+        /// </summary>
+        /// <param name="fieldMetadataColumn"></param>
+        /// <param name="entityMetadata"></param>
+        /// <param name="NameField"></param>
+        /// <param name="fieldSourceTypeFilter"></param>
+        private void AddNewFieldProperties(IFieldMetadata fieldMetadataColumn, IEntityMetadata entityMetadata, string NameField, FieldSourceType  fieldSourceTypeFilter, ref List<IEntityMetadata> listEntityMetaDataLinks)
+        {
+            if (fieldMetadataColumn != null)
+            {
+                string sourceName = fieldMetadataColumn.SourceName;
+                string name = fieldMetadataColumn.Name;
+
+                //if ((fieldMetadataColumn is FieldMetadata) || (fieldMetadataColumn is RelationFieldMetadata) || (fieldMetadataColumn is ExtensionFieldMetadata) || (fieldMetadataColumn is ReferenceFieldMetadata))
+                if (fieldMetadataColumn is FieldMetadata)
+                {
+                    if (this._listFieldProperties.Find(b => b.Alias == NameField && b.SourceType == fieldSourceTypeFilter) == null)
+                    {
+                        this._listFieldProperties.Add(new FieldProperties() { Alias = NameField, DBFieldName = sourceName, DBTableName = entityMetadata.DataSource.Name, FieldName = name, TableName = entityMetadata.Name, SourceType = fieldSourceTypeFilter, entityMetadataLinks = listEntityMetaDataLinks });
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Поиск полей для добавления в кєш
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        /// <param name="oldentityMetadata"></param>
+        /// <param name="index"></param>
+        /// <param name="nextNames"></param>
+        /// <param name="fieldSourceTypeFilter"></param>
+        /// <returns></returns>
+        private bool ScanFields(ref IEntityMetadata entityMetadata, IEntityMetadata oldentityMetadata, int index, string[] nextNames, FieldSourceType fieldSourceTypeFilter)
+        {
+            bool isAddedField = false;
+            for (int l = 0; l < entityMetadata.Fields.Count; l++)
+            {
+                if ((entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                {
+                    IFieldMetadata fieldMetadataColumn = entityMetadata.Fields.Values.ToList().ElementAt(l);
+                    if (fieldMetadataColumn != null)
+                    {
+                        if (AddNewFieldProperties(fieldMetadataColumn, entityMetadata, index, nextNames, entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType))
+                        {
+                            isAddedField = true;
+                        }
+                    }
+                }
+                else if ((entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                {
+                    var extensionMetaData = ((ExtensionFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).ExtensionEntity;
+                    if (extensionMetaData != null)
+                    {
+                        entityMetadata = extensionMetaData;
+                        var fieldMetadataColumn = extensionMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[index]);
+                        if (fieldMetadataColumn != null)
+                        {
+                            if (AddNewFieldProperties(fieldMetadataColumn, entityMetadata, index, nextNames, entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType))
+                            {
+                                isAddedField = true;
+                            }
+                        }
+                        else if ((fieldMetadataColumn == null) && (index == nextNames.Length - 1))
+                        {
+                            for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
+                            {
+                                if ((entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                {
+                                    fieldMetadataColumn = entityMetadata.Fields.Values.ToList().ElementAt(lx);
+                                    if (fieldMetadataColumn != null)
+                                    {
+                                        if (AddNewFieldProperties(fieldMetadataColumn, entityMetadata, index, nextNames, entityMetadata.Fields.Values.ToList().ElementAt(lx).SourceType))
+                                        {
+                                            isAddedField = true;
+                                        }
+                                    }
+                                }
+                            }
+                            entityMetadata = oldentityMetadata;
+                        }
+                    }
+                }
+                else if ((entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                {
+                    var refMetaData = ((ReferenceFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RefEntity;
+                    if (refMetaData != null)
+                    {
+                        if (refMetaData.Name != null)
+                        {
+                            entityMetadata = refMetaData;
+                            var fieldMetadataFindRef = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[index]);
+                            if ((fieldMetadataFindRef == null) && (index == nextNames.Length - 1))
+                            {
+                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
+                                {
+                                    var fieldMetadataColumn = entityMetadata.Fields.Values.ToList().ElementAt(lx);
+                                    if (fieldMetadataColumn != null)
+                                    {
+                                        if (AddNewFieldProperties(fieldMetadataColumn, entityMetadata, index, nextNames, entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType))
+                                        {
+                                            isAddedField = true;
+                                        }
                                     }
                                 }
                                 entityMetadata = oldentityMetadata;
                             }
                         }
                     }
-                    fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == nextNames[j]);
-                    if (fieldName.Value != null)
+                }
+                else if ((entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                {
+                    var relMetaData = ((RelationFieldMetadata)(entityMetadata.Fields.Values.ToList().ElementAt(l))).RelatedEntity;
+                    if (relMetaData != null)
                     {
-                        if (fieldName.Value.SourceType == FieldSourceType.Column)
+                        if (relMetaData.Name != null)
                         {
-                            var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldName.Value.SourceName, Table = entityMetadata.Name };
-                            if (string.IsNullOrEmpty(column.Alias))
+                            entityMetadata = relMetaData;
+                            var fieldMetadataFindRel = relMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[index]);
+                            if ((fieldMetadataFindRel == null) && (index == nextNames.Length - 1))
                             {
-                                column.Alias = fields[i];
-                            }
-                            if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                            {
-                                listColumnDescriptor.Add(column);
-                                listFieldMetadata.Add(fieldName.Value);
-                            }
-                            entityMetadata = oldentityMetadata;
-                        }
-                        else if (fieldName.Value.SourceType == FieldSourceType.Extension)
-                        {
-                            var extensionMetaData = ((ExtensionFieldMetadata)(fieldName.Value)).ExtensionEntity;
-                            if (extensionMetaData != null)
-                            {
-                                if (extensionMetaData.Name != null)
+                                for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
                                 {
-                                    entityMetadata = extensionMetaData;
-                                    var fieldMetadataFind = extensionMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                    if (fieldMetadataFind != null)
+                                    var fieldMetadataColumn = entityMetadata.Fields.Values.ToList().ElementAt(lx);
+                                    if (fieldMetadataColumn != null)
                                     {
-                                        var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFind.SourceName, Table = entityMetadata.Name };
-                                        if (string.IsNullOrEmpty(column.Alias))
+                                        if (AddNewFieldProperties(fieldMetadataColumn, entityMetadata, index, nextNames, entityMetadata.Fields.Values.ToList().ElementAt(l).SourceType))
                                         {
-                                            column.Alias = fields[i];
+                                            isAddedField = true;
                                         }
-                                        if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                        {
-                                            listColumnDescriptor.Add(column);
-                                            listFieldMetadata.Add(fieldMetadataFind);
-                                        }
-                                    }
-                                    else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                                    {
-                                        for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                        {
-                                            var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                            if (string.IsNullOrEmpty(column.Alias))
-                                            {
-                                                column.Alias = fields[i] + "." + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                            }
-                                            if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                            {
-                                                listColumnDescriptor.Add(column);
-                                                listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                            }
-                                        }
-                                        entityMetadata = oldentityMetadata;
                                     }
                                 }
+                                entityMetadata = oldentityMetadata;
                             }
                         }
-                        else if (fieldName.Value.SourceType == FieldSourceType.Reference)
-                        {
-                            IEntityMetadata refMetaData = ((ReferenceFieldMetadata)(fieldName.Value)).RefEntity;
-                            if (refMetaData != null)
-                            {
-                                if (refMetaData.Name != null)
-                                {
-                                    entityMetadata = refMetaData;
-                                    var fieldMetadataFind = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                    if (fieldMetadataFind != null)
-                                    {
-                                        if ((refMetaData as ReferenceFieldMetadata).Mapping != null)
-                                        {
-                                            foreach (var FieldRef in (refMetaData as ReferenceFieldMetadata).Mapping.Fields)
-                                            {
-                                                if (FieldRef.Value != null)
-                                                {
-                                                    IFieldMetadata fieldMetaDataRef = (FieldRef.Value as PrimaryKeyFieldMappedMetadata).KeyField;
-                                                    PrimaryKeyMappedMatchWith primaryKeyMappedMatchWith = (FieldRef.Value as PrimaryKeyFieldMappedMetadata).MatchWith;
-                                                }
-                                            }
-                                        }
+                    }
+                }
+            }
+            return isAddedField;
+        }
 
-                                        var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFind.SourceName, Table = entityMetadata.Name };
-                                        if (string.IsNullOrEmpty(column.Alias))
-                                        {
-                                            column.Alias = fields[i];
-                                        }
-                                        if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                        {
-                                            listColumnDescriptor.Add(column);
-                                            listFieldMetadata.Add(fieldMetadataFind);
-                                        }
-                                    }
-                                    else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                                    {
-                                        for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                        {
-                                            var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                            if (string.IsNullOrEmpty(column.Alias))
-                                            {
-                                                column.Alias = fields[i] + "." + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                            }
-                                            if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                            {
-                                                listColumnDescriptor.Add(column);
-                                                listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                            }
-                                        }
-                                        entityMetadata = oldentityMetadata;
-                                    }
-                                }
-                            }
-                        }
-                        else if (fieldName.Value.SourceType == FieldSourceType.Relation)
+
+        /// <summary>
+        /// Поиск полей для добавления в кєш
+        /// </summary>
+        /// <param name="refMetaData"></param>
+        /// <param name="fieldMetadata"></param>
+        /// <param name="entityMetadata"></param>
+        /// <param name="oldentityMetadata"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="fields"></param>
+        /// <param name="nextNames"></param>
+        /// <param name="isPrimaryKeyOnly"></param>
+        /// <returns></returns>
+        private bool RescanFieldsManul(IEntityMetadata refMetaData,  IFieldMetadata fieldMetadata, ref IEntityMetadata entityMetadata, IEntityMetadata oldentityMetadata, int i, int j, string[] fields, string[] nextNames,  bool isPrimaryKeyOnly, ref List<IEntityMetadata> listEntityMetaDataLinks)
+        {
+            bool isAddedField = false;
+            if (refMetaData != null)
+            {
+                if (refMetaData.Name != null)
+                {
+                    entityMetadata = refMetaData;
+                    var fieldMetadataFind = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
+                    if (fieldMetadataFind != null)
+                    {
+                        if ((fieldMetadataFind is FieldMetadata) || (fieldMetadataFind is RelationFieldMetadata) || (fieldMetadataFind is ExtensionFieldMetadata) || (fieldMetadataFind is ReferenceFieldMetadata))
                         {
-                            var relatedMetaData = ((RelationFieldMetadata)(fieldName.Value)).RelatedEntity;
-                            if (relatedMetaData != null)
+                            if (isPrimaryKeyOnly)
                             {
-                                if (relatedMetaData.Name != null)
+                                if (entityMetadata.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == fieldMetadataFind.Name).Value == null)
                                 {
-                                    entityMetadata = relatedMetaData;
-                                    var fieldMetadataFind = relatedMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                    if (fieldMetadataFind != null)
-                                    {
-                                        var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFind.SourceName, Table = entityMetadata.Name };
-                                        if (string.IsNullOrEmpty(column.Alias))
-                                        {
-                                            column.Alias = fields[i];
-                                        }
-                                        if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                        {
-                                            listColumnDescriptor.Add(column);
-                                            listFieldMetadata.Add(fieldMetadataFind);
-                                        }
-                                    }
-                                    else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                                    {
-                                        for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                        {
-                                            var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                            if (string.IsNullOrEmpty(column.Alias))
-                                            {
-                                                column.Alias = fields[i] + "." + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                            }
-                                            if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                            {
-                                                listColumnDescriptor.Add(column);
-                                                listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                            }
-                                        }
-                                        entityMetadata = oldentityMetadata;
-                                    }
+                                    return false;
                                 }
                             }
+
+                            AddNewFieldProperties(fieldMetadataFind, entityMetadata, fields[i], fieldMetadata.SourceType, ref listEntityMetaDataLinks);
+                            isAddedField = true;
                         }
-                        else if (fieldName.Value.SourceType == FieldSourceType.Expression)
+                        else
                         {
-                            throw new NotImplementedException();
+                            if (listEntityMetaDataLinks.Count == 0)
+                            {
+                                listEntityMetaDataLinks.Add(oldentityMetadata);
+                            }
+                            listEntityMetaDataLinks.Add(entityMetadata);
                         }
+                    }
+                    else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
+                    {
+                        for (int l = 0; l < entityMetadata.Fields.Count; l++)
+                        {
+                            var SourceField = entityMetadata.Fields.Values.ToList().ElementAt(l);
+                            if ((SourceField is FieldMetadata) || (SourceField is RelationFieldMetadata) || (SourceField is ExtensionFieldMetadata) || (SourceField is ReferenceFieldMetadata))
+                            {
+                                if (isPrimaryKeyOnly)
+                                {
+                                    if (entityMetadata.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == SourceField.Name).Value == null)
+                                    {
+                                        continue;
+                                    }
+                                }
+                                AddNewFieldProperties(SourceField, entityMetadata, fields[i] + "." + SourceField.Name, fieldMetadata.SourceType, ref listEntityMetaDataLinks);
+                                isAddedField = true;
+                            }
+                            else
+                            {
+                                if (listEntityMetaDataLinks.Count == 0)
+                                {
+                                    listEntityMetaDataLinks.Add(oldentityMetadata);
+                                }
+                                listEntityMetaDataLinks.Add(entityMetadata);
+                            }
+                        }
+                        entityMetadata = oldentityMetadata;
                     }
                     else
                     {
-                        var oldEntityMetadataPrev = entityMetadata;
-                        entityMetadata = entityMetadata.BaseEntity;
+                        if (listEntityMetaDataLinks.Count==0)
+                        {
+                            listEntityMetaDataLinks.Add(oldentityMetadata);
+                        }
+                        listEntityMetaDataLinks.Add(entityMetadata);
+                    }
+                }
+            }
+            return isAddedField;
+        }
+
+        /// <summary>
+        /// Поиск полей для добавления в кєш
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="EntityName"></param>
+        /// <param name="fields"></param>
+        /// <param name="fieldSourceTypeFilter"></param>
+        /// <param name="isPrimaryKeyOnly"></param>
+        private void BuildSelectStatement<TModel>(string EntityName, string[] fields, FieldSourceType fieldSourceTypeFilter = FieldSourceType.All, bool isPrimaryKeyOnly = false)
+        {
+            try
+            {
+                const string ExtendedName = "EXTENDED";
+                var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
+                var oldentityMetadata = entityMetadata;
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var listEntityMetaDataLinks = new List<IEntityMetadata>();
+                    entityMetadata = oldentityMetadata;
+                    var fieldName = new KeyValuePair<string, IFieldMetadata>();
+                    string[] nextNames = fields[i].Split(new char[] { '.' });
+                    for (int j = 0; j < nextNames.Length; j++)
+                    {
+                        if (nextNames[j] == ExtendedName)
+                        {
+                            if (entityMetadata.ExtendEntity != null)
+                            {
+                                bool LastObject = false;
+                                entityMetadata = entityMetadata.ExtendEntity;
+                                if (j < nextNames.Length - 1)
+                                {
+                                    j++;
+                                }
+                                else
+                                {
+                                    LastObject = true;
+                                }
+                                var fieldMetadataFind = entityMetadata.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
+                                if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
+                                {
+                                    var fieldMetadataFindx1 = entityMetadata.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
+                                    if (fieldMetadataFindx1 == null)
+                                    {
+                                        bool isAddedField = false;
+                                        var oldEntityMetadataPrev = entityMetadata;
+                                        entityMetadata = entityMetadata.BaseEntity;
+                                        if (entityMetadata != null)
+                                        {
+                                            var fieldMetadataFindx = entityMetadata.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
+                                            if (fieldMetadataFindx == null)
+                                            {
+                                                if (ScanFields(ref entityMetadata, oldentityMetadata, j, nextNames, fieldSourceTypeFilter))
+                                                {
+                                                    isAddedField = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (fieldMetadataFindx.SourceType == FieldSourceType.Column && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                                {
+                                                    if (AddNewFieldProperties(fieldMetadataFindx, entityMetadata, j, nextNames, fieldMetadataFindx.SourceType))
+                                                    {
+                                                        isAddedField = true;
+                                                    }
+                                                }
+                                            }
+                                            if ((LastObject == true) || (isAddedField == false))
+                                            {
+                                                entityMetadata = oldEntityMetadataPrev;
+                                                if (ScanFields(ref entityMetadata, oldentityMetadata, j, nextNames, fieldSourceTypeFilter))
+                                                {
+                                                    isAddedField = true;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            entityMetadata = oldEntityMetadataPrev;
+                                            if (ScanFields(ref entityMetadata, oldentityMetadata, j, nextNames, fieldSourceTypeFilter))
+                                            {
+                                                isAddedField = true;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if ((fieldMetadataFindx1.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        {
+                                            AddNewFieldProperties(fieldMetadataFindx1, entityMetadata, j, nextNames, fieldMetadataFindx1.SourceType);
+                                        }
+                                    }
+                                    entityMetadata = oldentityMetadata;
+                                }
+                            }
+                        }
                         if (entityMetadata != null)
                         {
                             fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == nextNames[j]);
                             if (fieldName.Value != null)
                             {
-                                if (fieldName.Value.SourceType == FieldSourceType.Column)
+                                if ((fieldName.Value.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
                                 {
-                                    var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldName.Value.SourceName, Table = entityMetadata.Name };
-                                    if (string.IsNullOrEmpty(column.Alias))
+                                    if (isPrimaryKeyOnly)
                                     {
-                                        column.Alias = fields[i];
+                                        if (entityMetadata.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == fieldName.Value.Name).Value == null)
+                                        {
+                                            continue;
+                                        }
                                     }
-                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                    {
-                                        listColumnDescriptor.Add(column);
-                                        listFieldMetadata.Add(fieldName.Value);
-                                    }
+                                    AddNewFieldProperties(fieldName.Value, entityMetadata, fields[i], fieldName.Value.SourceType, ref listEntityMetaDataLinks);
                                     entityMetadata = oldentityMetadata;
                                 }
-                                else if (fieldName.Value.SourceType == FieldSourceType.Extension)
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension) || (fieldSourceTypeFilter == FieldSourceType.All)))
                                 {
                                     var extensionMetaData = ((ExtensionFieldMetadata)(fieldName.Value)).ExtensionEntity;
-                                    if (extensionMetaData != null)
-                                    {
-                                        if (extensionMetaData.Name != null)
-                                        {
-                                            entityMetadata = extensionMetaData;
-                                            var fieldMetadataFind = extensionMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                            if (fieldMetadataFind != null)
-                                            {
-                                                var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFind.SourceName, Table = entityMetadata.Name };
-                                                if (string.IsNullOrEmpty(column.Alias))
-                                                {
-                                                    column.Alias = fields[i];
-                                                }
-                                                if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                {
-                                                    listColumnDescriptor.Add(column);
-                                                    listFieldMetadata.Add(fieldMetadataFind);
-                                                }
-                                            }
-                                            else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                                            {
-                                                for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                                {
-                                                    var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                                    if (string.IsNullOrEmpty(column.Alias))
-                                                    {
-                                                        column.Alias = fields[i] + "." + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                                    }
-                                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                    {
-                                                        listColumnDescriptor.Add(column);
-                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                                    }
-                                                }
-                                                entityMetadata = oldentityMetadata;
-                                            }
-                                        }
-                                    }
+                                    IFieldMetadata fieldMetadata = fieldName.Value;
+                                    RescanFieldsManul(extensionMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks);
                                 }
-                                else if (fieldName.Value.SourceType == FieldSourceType.Reference)
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
                                 {
                                     IEntityMetadata refMetaData = ((ReferenceFieldMetadata)(fieldName.Value)).RefEntity;
-                                    if (refMetaData != null)
-                                    {
-                                        if (refMetaData.Name != null)
-                                        {
-                                            entityMetadata = refMetaData;
-                                            var fieldMetadataFind = refMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                            if (fieldMetadataFind != null)
-                                            {
-                                                if ((refMetaData as ReferenceFieldMetadata).Mapping != null)
-                                                {
-                                                    foreach (var FieldRef in (refMetaData as ReferenceFieldMetadata).Mapping.Fields)
-                                                    {
-                                                        if (FieldRef.Value != null)
-                                                        {
-                                                            IFieldMetadata fieldMetaDataRef = (FieldRef.Value as PrimaryKeyFieldMappedMetadata).KeyField;
-                                                            PrimaryKeyMappedMatchWith primaryKeyMappedMatchWith = (FieldRef.Value as PrimaryKeyFieldMappedMetadata).MatchWith;
-                                                        }
-                                                    }
-                                                }
-
-                                                var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFind.SourceName, Table = entityMetadata.Name };
-                                                if (string.IsNullOrEmpty(column.Alias))
-                                                {
-                                                    column.Alias = fields[i];
-                                                }
-                                                if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                {
-                                                    listColumnDescriptor.Add(column);
-                                                    listFieldMetadata.Add(fieldMetadataFind);
-                                                }
-                                            }
-                                            else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                                            {
-                                                for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                                {
-                                                    var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                                    if (string.IsNullOrEmpty(column.Alias))
-                                                    {
-                                                        column.Alias = fields[i] + "." + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                                    }
-                                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                    {
-                                                        listColumnDescriptor.Add(column);
-                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                                    }
-                                                }
-                                                entityMetadata = oldentityMetadata;
-                                            }
-                                        }
-                                    }
+                                    IFieldMetadata fieldMetadata = fieldName.Value;
+                                    RescanFieldsManul(refMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks);
                                 }
-                                else if (fieldName.Value.SourceType == FieldSourceType.Relation)
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation) || (fieldSourceTypeFilter == FieldSourceType.All)))
                                 {
                                     var relatedMetaData = ((RelationFieldMetadata)(fieldName.Value)).RelatedEntity;
-                                    if (relatedMetaData != null)
+                                    IFieldMetadata fieldMetadata = fieldName.Value;
+                                    RescanFieldsManul(relatedMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks);
+                                }
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Expression) && ((fieldSourceTypeFilter == FieldSourceType.Expression) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                {
+                                    throw new NotImplementedException(Exceptions.HandlerTypeExpressionNotSupported);
+                                }
+                            }
+                            else
+                            {
+                                var oldEntityMetadataPrev = entityMetadata;
+                                entityMetadata = entityMetadata.BaseEntity;
+                                if (entityMetadata != null)
+                                {
+                                    fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == nextNames[j]);
+                                    if (fieldName.Value != null)
                                     {
-                                        if (relatedMetaData.Name != null)
+                                        if ((fieldName.Value.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
                                         {
-                                            entityMetadata = relatedMetaData;
-                                            var fieldMetadataFind = relatedMetaData.Fields.Values.ToList().Find(u => u.Name == nextNames[j]);
-                                            if (fieldMetadataFind != null)
+                                            if (isPrimaryKeyOnly)
                                             {
-                                                var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = fieldMetadataFind.SourceName, Table = entityMetadata.Name };
-                                                if (string.IsNullOrEmpty(column.Alias))
+                                                if (entityMetadata.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == fieldName.Value.Name).Value == null)
                                                 {
-                                                    column.Alias = fields[i];
-                                                }
-                                                if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                {
-                                                    listColumnDescriptor.Add(column);
-                                                    listFieldMetadata.Add(fieldMetadataFind);
+                                                    continue;
                                                 }
                                             }
-                                            else if ((fieldMetadataFind == null) && (j == nextNames.Length - 1))
-                                            {
-                                                for (int l = 0; l < entityMetadata.Fields.Count; l++)
-                                                {
-                                                    var column = new QuerySelectStatement.ColumnDescriptor() { DBTable = entityMetadata.DataSource.Name, Name = entityMetadata.Fields.Values.ToList().ElementAt(l).SourceName, Table = entityMetadata.Name };
-                                                    if (string.IsNullOrEmpty(column.Alias))
-                                                    {
-                                                        column.Alias = fields[i] + "." + entityMetadata.Fields.Values.ToList().ElementAt(l).Name;
-                                                    }
-                                                    if (listColumnDescriptor.Find(b => b.Alias == column.Alias) == null)
-                                                    {
-                                                        listColumnDescriptor.Add(column);
-                                                        listFieldMetadata.Add(entityMetadata.Fields.Values.ToList().ElementAt(l));
-                                                    }
-                                                }
-                                                entityMetadata = oldentityMetadata;
-                                            }
+                                            AddNewFieldProperties(fieldName.Value, entityMetadata, fields[i], fieldName.Value.SourceType, ref listEntityMetaDataLinks);
+                                            entityMetadata = oldentityMetadata;
+                                        }
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        {
+                                            var extensionMetaData = ((ExtensionFieldMetadata)(fieldName.Value)).ExtensionEntity;
+                                            IFieldMetadata fieldMetadata = fieldName.Value;
+                                            RescanFieldsManul(extensionMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks);
+                                        }
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        {
+                                            IEntityMetadata refMetaData = ((ReferenceFieldMetadata)(fieldName.Value)).RefEntity;
+                                            IFieldMetadata fieldMetadata = fieldName.Value;
+                                            RescanFieldsManul(refMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks);
+                                        }
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        {
+                                            var relatedMetaData = ((RelationFieldMetadata)(fieldName.Value)).RelatedEntity;
+                                            IFieldMetadata fieldMetadata = fieldName.Value;
+                                            RescanFieldsManul(relatedMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks);
+
+                                        }
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Expression) && ((fieldSourceTypeFilter == FieldSourceType.Expression) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        {
+                                            throw new NotImplementedException(Exceptions.HandlerTypeExpressionNotSupported);
                                         }
                                     }
-                                }
-                                else if (fieldName.Value.SourceType == FieldSourceType.Expression)
-                                {
-                                    throw new NotImplementedException();
                                 }
                             }
                         }
-                        entityMetadata = oldEntityMetadataPrev;
                     }
                 }
             }
-
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
         }
-      
+
+
         /// <summary>
-        /// 
+        /// Генератор SQL запросов для Select
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="statement"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public string BuildSelectStatement<TModel>(QuerySelectStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters) 
-         {
+        public string BuildSelectStatement<TModel>(QuerySelectStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
             try
             {
-                const string PrefixTableName = "Tcaz_";
-                var dicPrefixTables = new Dictionary<string, string>();
-                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.Statement.Table.Name);
-                var schemasMetadata = new SchemasMetadata<TModel>(entityMetadata);
                 var selectedColumns = statement.Statement.Table.Columns.Values.ToArray();
+                var listAlias = new List<AliasField>();
+                var fromExpression = BuildJoinStatement<TModel>(statement.Statement.Table.Name, selectedColumns.Select(t => t.Name).ToArray(), parameters, out listAlias);
+
+                for (int i = 0; i < selectedColumns.Length; i++)
+                {
+                    var column = selectedColumns[i];
+                    var dbField = this._listFieldProperties.Find(z => z.FieldName == selectedColumns[i].Name);
+                    if (dbField != null)
+                    {
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == this._listFieldProperties[i].DBTableName);
+                        if (aliasField != null)
+                        {
+                            //column.Name = dbField.DBFieldName;
+                            //column.DBTable = dbField.DBTableName;
+                            column.Alias = dbField.Alias;// this._syntax.EncodeFieldName(aliasField.Alias);
+                        }
+                    }
+                }
+
+
                 var conditionsColumns = new List<ColumnOperand>();
                 AppendColumnsFromConditions(statement.Statement.Conditions, conditionsColumns);
                 var whereColumns = conditionsColumns.ToArray();
                 var sortColumns = statement.Statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Statement.Orders.ToArray();
                 var fieldCount = whereColumns.Length + sortColumns.Length;
 
-                var listColumnDescriptorSelected = new List<QuerySelectStatement.ColumnDescriptor>();
-                var listFieldMetadataSelected = new List<IFieldMetadata>();
-                var listFieldMissingMetadataSelected = new List<IFieldMetadata>();
+                BuildSelectStatement<TModel>(statement.Statement.Table.Name, sortColumns.Select(t => t.Column.Name).ToArray());
+                BuildSelectStatement<TModel>(statement.Statement.Table.Name, selectedColumns.Select(t => t.Name).ToArray());
 
-                var listColumnDescriptorWhere = new List<QuerySelectStatement.ColumnDescriptor>();
-                var listFieldMetadataWhere = new List<IFieldMetadata>();
-                var listFieldMissingMetadataWhere = new List<IFieldMetadata>();
-
-                var listColumnDescriptorSort = new List<QuerySelectStatement.ColumnDescriptor>();
-                var listFieldMetadataSort = new List<IFieldMetadata>();
-                var listFieldMissingMetadataSort = new List<IFieldMetadata>();
-
-                BuildSelectStatement<TModel>(statement, selectedColumns.Select(t => t.Name).ToArray(), out listColumnDescriptorSelected, out listFieldMetadataSelected, out listFieldMissingMetadataSelected);
-                
-
-                List<string> distinctTableNames = new List<string>();
-                fieldCount += listColumnDescriptorSelected.Count;
-                var fieldPaths = new string[fieldCount];
-                int index = 0;
-                for (int i=0; i< listColumnDescriptorSelected.Count; i++)
+                var selExpressions = new List<string>();
+                foreach (var d in selectedColumns)
                 {
-                    fieldPaths[index++] = listColumnDescriptorSelected[i].Name;
-                    var dbTableName = entityMetadata.DataSource.Schema + "." + listColumnDescriptorSelected[i].DBTable;
-                    if (!dicPrefixTables.ContainsKey(dbTableName))
+                    var dbField = this._listFieldProperties.Find(z => z.Alias == d.Name);
+                    if (dbField != null)
                     {
-                        dicPrefixTables.Add(dbTableName, PrefixTableName + (dicPrefixTables.Count + 1).ToString());
+                        selExpressions.Add(dbField.DBFieldName);
                     }
                 }
 
-                
-                BuildSelectStatement<TModel>(statement, whereColumns.Select(t => t.ColumnName).ToArray(), out listColumnDescriptorWhere, out listFieldMetadataWhere, out listFieldMissingMetadataWhere);
-                for (int i = 0; i < listColumnDescriptorWhere.Count; i++)
+                var columnExpressions = new List<string>();
+                for (int i = 0; i < selExpressions.Count; i++)
                 {
-                    fieldPaths[index++] = listColumnDescriptorWhere[i].Name;
-                    var dbTableName = entityMetadata.DataSource.Schema + "." + listColumnDescriptorWhere[i].DBTable;
-                    if (!dicPrefixTables.ContainsKey(dbTableName))
+                    var dbField = this._listFieldProperties.Find(z => z.DBFieldName == selExpressions[i]);
+                    if (dbField != null)
                     {
-                        dicPrefixTables.Add(dbTableName, PrefixTableName + (dicPrefixTables.Count + 1).ToString());
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                        if (aliasField != null)
+                        {
+                            columnExpressions.Add(this._syntax.ColumnExpression(this._syntax.EncodeFieldName(aliasField.Alias) + "." + this._syntax.EncodeFieldName(dbField.DBFieldName), dbField.Alias));
+                        }
                     }
                 }
-               
 
-                BuildSelectStatement<TModel>(statement, sortColumns.Select(t => t.Column.Name).ToArray(), out listColumnDescriptorSort, out listFieldMetadataSort, out listFieldMissingMetadataSort);
-                for (int i = 0; i < listColumnDescriptorSort.Count; i++)
-                {
-                    fieldPaths[index++] = listColumnDescriptorSort[i].Name;
-                    var dbTableName = entityMetadata.DataSource.Schema + "." + listColumnDescriptorSort[i].DBTable;
-                    if (!dicPrefixTables.ContainsKey(dbTableName))
-                    {
-                        dicPrefixTables.Add(dbTableName, PrefixTableName + (dicPrefixTables.Count+1).ToString());
-                    }
-                }
-               
-                //Генератор JOIN's
-                var fromExpression = schemasMetadata.BuildJoinStatement(this._dataEngine, fieldPaths, out IFieldMetadata[] dbFields);
-                index = 0;
-
-                var columnExpressions = new string[listColumnDescriptorSelected.Count];
-                for (int i = 0; i < listColumnDescriptorSelected.Count; i++)
-                {
-                    var dbField = dbFields[index++];
-                    columnExpressions[i] = this._syntax.ColumnExpression(this._syntax.EncodeFieldName(dbField.SourceName), listColumnDescriptorSelected[i].Alias);
-                }
 
                 // to build the where section
                 for (int i = 0; i < whereColumns.Length; i++)
                 {
                     var column = whereColumns[i];
-                    var dbField = dbFields[index++];
-                    column.ColumnName = dbField.Name;
+                    var  dbField = this._listFieldProperties.Find(z => z.Alias == whereColumns[i].ColumnName);
+                    if (dbField != null)
+                    {
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                        if (aliasField != null)
+                        {
+                            column.ColumnName = dbField.DBFieldName;
+                            if (this._dataEngine.Config.Type == DataEngineType.Oracle)
+                            {
+                                column.Source = this._syntax.EncodeFieldName(aliasField.Alias);
+                            }
+                            else
+                            {
+                                column.Source = aliasField.Alias;
+                            }
+                        }
+                    }
                 }
-                var whereExpression = this.BuildWhereExpression(statement.Statement.Conditions, parameters);
 
+                var whereExpression = this.BuildWhereExpression(statement.Statement.Conditions, parameters);
                 // to build the order by section
                 var orderByColumns = new string[sortColumns.Length];
                 for (int i = 0; i < sortColumns.Length; i++)
                 {
                     var column = sortColumns[i];
-                    var dbField = dbFields[index++];
+                    var dbField = this._listFieldProperties.Find(z => z.Alias == sortColumns[i].Column.Name);
                     var encodeColumn = "";
-                    encodeColumn = this._syntax.EncodeFieldName(dbField.Name);
-                    orderByColumns[i] = _syntax.SortedColumn(encodeColumn, column.Direction);
+                    encodeColumn = this._syntax.EncodeFieldName(dbField.DBFieldName);
+                    AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                    if (aliasField != null)
+                    {
+                        //column.Column.Name = dbField.DBFieldName;
+                        encodeColumn = this._syntax.EncodeFieldName(aliasField.Alias) + "." + encodeColumn;
+                        orderByColumns[i] = _syntax.SortedColumn(encodeColumn, column.Direction);
+                    }
                 }
-
                 // add on top (n)
                 var limit = statement.Statement.Limit;
 
                 // add group by
-
-                var selectStatement = this._syntax.SelectExpression(columnExpressions, fromExpression, whereExpression, orderByColumns, limit);
+                var selectStatement = this._syntax.SelectExpression(columnExpressions.ToArray(), fromExpression, whereExpression, orderByColumns, limit);
                 return selectStatement;
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
-         }
+        }
 
        
 
@@ -1028,7 +1303,14 @@ namespace Atdi.CoreServices.EntityOrm
              return result;
          }
 
-         public string BuildDeleteStatement<TModel>(QueryDeleteStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+        /// <summary>
+        /// Генератор SQL запросов для Delete
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string BuildDeleteStatement<TModel>(QueryDeleteStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
          {
              try
              {
@@ -1037,30 +1319,38 @@ namespace Atdi.CoreServices.EntityOrm
                 var columns = new List<ColumnOperand>();
                 AppendColumnsFromConditions(statement.Conditions, columns);
                 var columnsArray = columns.ToArray();
-                var schemasMetadata = new SchemasMetadata<TModel>(entityMetadata);
-                var fromStatement = schemasMetadata.BuildJoinStatement(this._syntax, entityMetadata.DataSource.Name, columnsArray.Select(c => c.ColumnName).ToArray(), out IFieldMetadata[] dbFields);
+                var listAlias = new List<AliasField>();
+                var fromStatement = BuildJoinStatement<TModel>(statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), parameters, out listAlias);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                      var column = columnsArray[i];
-                     var dbField = dbFields[i];
-                     column.ColumnName = dbField.Name;
-                 }
-                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
-                 var deleteStatement = this._syntax.DeleteExpression(sourceExpression, fromStatement, whereExpression);
-                 return deleteStatement;
+                     var dbField = entityMetadata.Fields.Values.ToList().Find(z => z.Name == column.ColumnName);
+                     column.ColumnName = dbField.SourceName;
+                }
+
+                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                var deleteStatement = this._syntax.DeleteExpression(sourceExpression, fromStatement, whereExpression);
+                return deleteStatement;
              }
              catch (Exception e)
              {
-                 this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
                  throw new InvalidOperationException(Exceptions.AbortedBuildDeleteStatement, e);
              }
          }
 
-      
+        /// <summary>
+        /// Генератор SQL запросов для Insert
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public string BuildInsertStatement<TModel>(QueryInsertStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
          {
              try
              {
+                 var listAlias = new List<AliasField>();
                  var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
                  var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
                  var changedColumns = new string[statement.ColumnsValues.Count];
@@ -1082,6 +1372,10 @@ namespace Atdi.CoreServices.EntityOrm
                         selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
                         changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
                     }
+                    else
+                    {
+                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." +statement.ColumnsValues[i].Name));
+                    }
                  }
 
                  var columnsExpression = string.Join(", ", changedColumns);
@@ -1091,12 +1385,19 @@ namespace Atdi.CoreServices.EntityOrm
              }
              catch (Exception e)
              {
-                 this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
                  throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
              }
          }
 
-         public string BuildUpdateStatement<TModel>(QueryUpdateStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+        /// <summary>
+        ///  Генератор SQL запросов для Update
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string BuildUpdateStatement<TModel>(QueryUpdateStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
          {
             try
             {
@@ -1105,14 +1406,27 @@ namespace Atdi.CoreServices.EntityOrm
                 var columnsArray = columns.ToArray();
                 IEntityMetadata entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
                 var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
+                for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                {
+                    var column = statement.ColumnsValues[i];
+                    var dbField = entityMetadata.Fields.Values.ToList().Find(z => z.Name == column.Name);
+                    if (dbField!=null)
+                    {
+                        column.Name = dbField.SourceName;
+                    }
+                    else
+                    {
+                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + column.Name));
+                    }
+                }
                 var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
-                var schemasMetadata = new SchemasMetadata<TModel>(entityMetadata);
-                var fromStatement = schemasMetadata.BuildJoinStatement(this._syntax, entityMetadata.DataSource.Name, columnsArray.Select(c => c.ColumnName).ToArray(), out IFieldMetadata[] dbFields);
+                var listAlias = new List<AliasField>();
+                var fromStatement = BuildJoinStatement<TModel>(statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), parameters, out listAlias);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                     var column = columnsArray[i];
-                    var dbField = dbFields[i];
-                    column.ColumnName = dbField.Name;
+                    var dbField = entityMetadata.Fields.Values.ToList().Find(z=>z.Name== column.ColumnName);
+                    column.ColumnName = dbField.SourceName;
                 }
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
                 var updateStatement = this._syntax.UpdateExpression(sourceExpression, valuesExpression, fromStatement, whereExpression);
@@ -1120,7 +1434,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
             }
          }

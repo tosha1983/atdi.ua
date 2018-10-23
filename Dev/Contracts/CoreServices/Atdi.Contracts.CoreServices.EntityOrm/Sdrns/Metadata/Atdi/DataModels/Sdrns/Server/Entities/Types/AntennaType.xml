@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
+        Name  = "AntennaType"
+        Title = "Antenna type"
+        Desc  = "The type of antenna"
+        Type  = "Normal"
+        >
+  <DataSource Type="Database" Object="Table">
+    <Name>ANTENNA_TYPES</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field 
+      Name="Id"
+      SourceType="Column"
+      SourceName="ID"
+      DataType="Int64"
+      Required="true"
+      Title="Type ID"/>
+    
+    <Field 
+      Name="Name" 
+      SourceType="Column"    
+      SourceName ="NAME"  
+      DataType="Text.150" 
+      Required="true" 
+      Title="Type Name" />
+
+     <Field 
+      Name="TYPE2" 
+      SourceType="Reference" 
+      SourceName ="Types.AntennaType2" 
+      Title="Antenna type2" />
+    
+
+  </Fields>
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id" SortOrder="Descending" />
+  </PrimaryKey>
+  
+</Entity>

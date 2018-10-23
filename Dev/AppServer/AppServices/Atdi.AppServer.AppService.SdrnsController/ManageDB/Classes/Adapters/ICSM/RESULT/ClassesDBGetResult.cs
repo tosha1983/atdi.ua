@@ -33,7 +33,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public List<ClassSDRResults> ReadResultFromDB(MeasurementResultsIdentifier obj)
         {
-            const int MaxExecuteParameters = 800;
             List<ClassSDRResults> L_IN = new List<ClassSDRResults>();
             string sql = "";
             try

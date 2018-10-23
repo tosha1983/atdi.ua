@@ -16,10 +16,13 @@ namespace Atdi.CoreServices.DataLayer
     {
         private const string IDENT = "    ";
         private readonly IFormatProvider _formatProvider = System.Globalization.CultureInfo.InvariantCulture;
+        
 
         public IConstraintEngineSyntax Constraint => this;
 
         string IConstraintEngineSyntax.LikeAnyChar => "%";
+
+        public int MaxLengthAlias => 128;
 
         public string SortedColumn(string expression, SortDirection direction)
         {
@@ -378,5 +381,6 @@ namespace Atdi.CoreServices.DataLayer
             statement.AppendLine(")" + Environment.NewLine);
             return statement.ToString();
         }
+
     }
 }

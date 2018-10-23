@@ -17,7 +17,7 @@ namespace Atdi.CoreServices.EntityOrm
 
         public QueryInsertStatement()
         {
-            this._tableName = ModelType.Name;
+            this._tableName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
             this._columnsValues = new List<ColumnValue>();
         }
 
