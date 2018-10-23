@@ -21,7 +21,8 @@ namespace Atdi.CoreServices.DataLayer
 
         string IConstraintEngineSyntax.LikeAnyChar => "%";
 
-     
+        public int MaxLengthAlias => 128;
+
         public string SortedColumn(string expression, SortDirection direction)
         {
             switch (direction)
@@ -330,5 +331,6 @@ namespace Atdi.CoreServices.DataLayer
         {
             return $"{columnExpression} = {valueExpression}";
         }
+
     }
 }

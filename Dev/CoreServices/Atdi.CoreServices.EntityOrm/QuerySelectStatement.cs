@@ -1047,10 +1047,10 @@ namespace Atdi.CoreServices.EntityOrm
                         Name = nameColumn
                     };
                     break;
-                case "System.Bytes":
+                case "System.Byte[]":
                     result = new BytesColumnValue
                     {
-                        Value = (value == null) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value.ToString()),
+                        Value = (value == null) ? (byte[])null : value as byte[],
                         Name = nameColumn
                     };
                     break;

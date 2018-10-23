@@ -21,7 +21,7 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly ConditionParser _conditionParser;
         private readonly IEntityOrm _entityMetadata;
         private readonly List<FieldProperties> _listFieldProperties;
-        private const int MaxAliasLenth = 128;
+        
 
         public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityOrm entityMetadata, ILogger logger) : base(logger)
         {
@@ -182,7 +182,7 @@ namespace Atdi.CoreServices.EntityOrm
                     var aliasFieldFind = aliasFields.Find(z => z.DBTableName == RelTableNameTo && z.IsReplaced == false);
                     if (aliasFieldFind != null)
                     {
-                        if (SpecialFld.Length < MaxAliasLenth)
+                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
                         {
                             aliasFieldFind.Alias = SpecialFld;
                             aliasFieldFind.IsReplaced = true;
@@ -325,6 +325,48 @@ namespace Atdi.CoreServices.EntityOrm
             return resultJoin;
         }
 
+        /// <summary>
+        /// Переименование Alias 
+        /// </summary>
+        /// <param name="countSubLevels"></param>
+        /// <param name="aliasFieldFind"></param>
+        /// <param name="RefTableNameTo"></param>
+        /// <param name="SpecialFld"></param>
+        /// <param name="aliasFields"></param>
+        private void RenameAliases(int countSubLevels, AliasField aliasFieldFind, string RefTableNameTo, string SpecialFld, ref  List<AliasField> aliasFields)
+        {
+            do
+            {
+                if (((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0)) == false)
+                {
+                    RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
+                    if (countSubLevels < aliasFieldFind.EntityMetadataLinks.Count - 1)
+                    {
+                        string[] wrds = SpecialFld.Split(new char[] { '.' });
+                        if (wrds != null)
+                        {
+                            if (wrds.Length > 0)
+                            {
+                                if (aliasFieldFind != null)
+                                {
+                                    SpecialFld = SpecialFld.Replace("." + wrds[wrds.Length - 1], "");
+                                    var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
+                                    if (aliasFieldCheck != null)
+                                    {
+                                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
+                                        {
+                                            aliasFieldCheck.Alias = SpecialFld;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                --countSubLevels;
+            }
+            while (countSubLevels > 0);
+        }
 
         /// <summary>
         /// Формирование JOIN для связей типа "Reference"
@@ -351,7 +393,7 @@ namespace Atdi.CoreServices.EntityOrm
                     var aliasFieldFind = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
                     if (aliasFieldFind != null)
                     {
-                        if (SpecialFld.Length < MaxAliasLenth)
+                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
                         {
                             aliasFieldFind.Alias = SpecialFld;
                             aliasFieldFind.IsReplaced = true;
@@ -362,40 +404,10 @@ namespace Atdi.CoreServices.EntityOrm
                         }
                     }
                     int countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
-                    do
-                    {
-                        if (((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0)) == false)
-                        {
-                            RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
-                            if (countSubLevels < aliasFieldFind.EntityMetadataLinks.Count - 1)
-                            {
-                                string[] wrds = SpecialFld.Split(new char[] { '.' });
-                                if (wrds != null)
-                                {
-                                    if (wrds.Length > 0)
-                                    {
-                                        if (aliasFieldFind != null)
-                                        {
-                                            SpecialFld = SpecialFld.Replace("." + wrds[wrds.Length - 1], "");
-                                            var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
-                                            if (aliasFieldCheck != null)
-                                            {
-                                                if (SpecialFld.Length < MaxAliasLenth)
-                                                {
-                                                    aliasFieldCheck.Alias = SpecialFld;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        --countSubLevels;
-                    }
-                    while (countSubLevels > 0);
-
-                    List<string> stringBuilderRefGlobal = new List<string>();
+                    RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref  aliasFields);
+                    var stringBuilderRefGlobal = new List<string>();
                     countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                    RefTableNameTo = fieldProperties.DBTableName;
                     do
                     {
                         if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0))
@@ -423,7 +435,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 if (metadataRefEntity != null)
                                 {
                                     DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
-                                    List<string> stringBuilderRef = new List<string>();
+                                    var stringBuilderRef = new List<string>();
                                     if (metadataRefEntity.PrimaryKey != null)
                                     {
                                         foreach (var FieldRef in metadataRefEntity.PrimaryKey.FieldRefs)
@@ -466,7 +478,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 if (referenceFieldMetadataFnd.Mapping != null)
                                 {
                                     DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
-                                    List<string> stringBuilderRef = new List<string>();
+                                    var stringBuilderRef = new List<string>();
                                     foreach (var FieldRef in referenceFieldMetadataFnd.Mapping.Fields)
                                     {
                                         if (FieldRef.Value != null)
@@ -564,10 +576,10 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         private string BuildJoinStatement<TModel>(string EntityName, string[] fieldPath, IDictionary<string, EngineCommandParameter> parameters, out List<AliasField> aliasFields)
         {
-            string resJoinBaseTable = "";
+            var resJoinBaseTable = "";
             const string PrefixTableName = "Tcaz_";
             var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
-            string schemaTable = entityMetadata.DataSource.Schema;
+            var schemaTable = entityMetadata.DataSource.Schema;
             var selectedColumns = fieldPath;
             BuildSelectStatement<TModel>(EntityName, selectedColumns);
             aliasFields = new List<AliasField>();
@@ -589,16 +601,16 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
             }
-            string[] valSelectedFlds = selectedColumns;
-            List<string> valSpecialFlds = new List<string>();
+            var valSelectedFlds = selectedColumns;
+            var valSpecialFlds = new List<string>();
             foreach (string val in valSelectedFlds)
             {
                 if (val.Contains("."))
                 {
                     if (val.LastIndexOf(".") > 0)
                     {
-                        int EndIndex = val.LastIndexOf(".");
-                        string valResStr = val.Substring(0, EndIndex);
+                        var EndIndex = val.LastIndexOf(".");
+                        var valResStr = val.Substring(0, EndIndex);
                         if (!valSpecialFlds.Contains(valResStr))
                         {
                             valSpecialFlds.Add(valResStr);
@@ -610,11 +622,11 @@ namespace Atdi.CoreServices.EntityOrm
                     valSpecialFlds.Add(val);
                 }
             }
-            string resultJoin = "";
+            var resultJoin = "";
             for (int i = 0; i < valSpecialFlds.Count; i++)
             {
                 bool isSuccess = false;
-                string joinString = BuidJoinRelation<TModel>(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable);
+                var joinString = BuidJoinRelation<TModel>(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable);
                 if (!string.IsNullOrEmpty(joinString))
                 {
                     resultJoin += joinString;
@@ -641,7 +653,7 @@ namespace Atdi.CoreServices.EntityOrm
                         var aliasFieldFind = aliasFields.Find(z => z.DBTableName == ExtTableNameTo && z.IsReplaced == false);
                         if (aliasFieldFind != null)
                         {
-                            if (valSpecialFlds[i].Length < MaxAliasLenth)
+                            if (valSpecialFlds[i].Length < this._syntax.MaxLengthAlias)
                             {
                                 aliasFieldFind.Alias = valSpecialFlds[i];
                                 aliasFieldFind.IsReplaced = true;
@@ -686,8 +698,8 @@ namespace Atdi.CoreServices.EntityOrm
             bool isAdded = false;
             if (fieldMetadataColumn != null)
             {
-                string sourceName = fieldMetadataColumn.SourceName;
-                string name = fieldMetadataColumn.Name;
+                var sourceName = fieldMetadataColumn.SourceName;
+                var name = fieldMetadataColumn.Name;
                 if (fieldMetadataColumn is FieldMetadata)
                 {
                     var alias = new StringBuilder();
@@ -695,7 +707,7 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         alias.Append(nextNames[t]).Append(".");
                     }
-                    string aliasValue = (alias.Append(ExtendedName).Append(".")).ToString() + name;
+                    var aliasValue = (alias.Append(ExtendedName).Append(".")).ToString() + name;
                     if (this._listFieldProperties.Find(b => b.Alias == aliasValue && b.SourceType== fieldSourceTypeFilter) == null)
                     {
                         this._listFieldProperties.Add(new FieldProperties() { Alias = aliasValue, DBFieldName = sourceName, DBTableName = entityMetadata.DataSource.Name, FieldName = name, TableName = entityMetadata.Name, SourceType = fieldSourceTypeFilter });
@@ -1191,7 +1203,7 @@ namespace Atdi.CoreServices.EntityOrm
                     var dbField = this._listFieldProperties.Find(z => z.DBFieldName == selExpressions[i]);
                     if (dbField != null)
                     {
-                        AliasField aliasField = listAlias.Find(z => z.DBTableName == this._listFieldProperties[i].DBTableName);
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
                         if (aliasField != null)
                         {
                             columnExpressions.Add(this._syntax.ColumnExpression(this._syntax.EncodeFieldName(aliasField.Alias) + "." + this._syntax.EncodeFieldName(dbField.DBFieldName), dbField.Alias));
@@ -1204,10 +1216,10 @@ namespace Atdi.CoreServices.EntityOrm
                 for (int i = 0; i < whereColumns.Length; i++)
                 {
                     var column = whereColumns[i];
-                    var dbField = this._listFieldProperties.Find(z => z.FieldName == whereColumns[i].ColumnName);
+                    var  dbField = this._listFieldProperties.Find(z => z.Alias == whereColumns[i].ColumnName);
                     if (dbField != null)
                     {
-                        AliasField aliasField = listAlias.Find(z => z.DBTableName == this._listFieldProperties[i].DBTableName);
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
                         if (aliasField != null)
                         {
                             column.ColumnName = dbField.DBFieldName;
@@ -1229,7 +1241,7 @@ namespace Atdi.CoreServices.EntityOrm
                 for (int i = 0; i < sortColumns.Length; i++)
                 {
                     var column = sortColumns[i];
-                    var dbField = this._listFieldProperties.Find(z => z.FieldName == sortColumns[i].Column.Name);
+                    var dbField = this._listFieldProperties.Find(z => z.Alias == sortColumns[i].Column.Name);
                     var encodeColumn = "";
                     encodeColumn = this._syntax.EncodeFieldName(dbField.DBFieldName);
                     AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
@@ -1312,12 +1324,13 @@ namespace Atdi.CoreServices.EntityOrm
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                      var column = columnsArray[i];
-                     //var dbField = dbFields[i];
-                     //column.ColumnName = dbField.Name;
-                 }
-                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
-                 var deleteStatement = this._syntax.DeleteExpression(sourceExpression, fromStatement, whereExpression);
-                 return deleteStatement;
+                     var dbField = entityMetadata.Fields.Values.ToList().Find(z => z.Name == column.ColumnName);
+                     column.ColumnName = dbField.SourceName;
+                }
+
+                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                var deleteStatement = this._syntax.DeleteExpression(sourceExpression, fromStatement, whereExpression);
+                return deleteStatement;
              }
              catch (Exception e)
              {

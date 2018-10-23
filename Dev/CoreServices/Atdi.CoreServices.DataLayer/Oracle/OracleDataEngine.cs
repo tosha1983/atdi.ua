@@ -13,6 +13,7 @@ namespace Atdi.CoreServices.DataLayer
     {
         private readonly IDataEngineConfig _engineConfig;
         private readonly IEngineSyntax _syntax;
+       
 
         public OracleDataEngine(IDataEngineConfig engineConfig, ILogger logger) : base(logger)
         {

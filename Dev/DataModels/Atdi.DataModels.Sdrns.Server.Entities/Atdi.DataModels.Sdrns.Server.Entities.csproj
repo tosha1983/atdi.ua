@@ -52,6 +52,7 @@
     <Compile Include="Example\Types\IAntennaType3.cs" />
     <Compile Include="Example\Types\IAntennaType2.cs" />
     <Compile Include="IAntennaPattern.cs" />
+    <Compile Include="IEntity.cs" />
     <Compile Include="ISensorAntenna.cs" />
     <Compile Include="ISensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
