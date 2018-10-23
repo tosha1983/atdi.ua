@@ -55,10 +55,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
+    <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
+    <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.100.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.150.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.25.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.200.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.450.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.4000.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.2000.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
