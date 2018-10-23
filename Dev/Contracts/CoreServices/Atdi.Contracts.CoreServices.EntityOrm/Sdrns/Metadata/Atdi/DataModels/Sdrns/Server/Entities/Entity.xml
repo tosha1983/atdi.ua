@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "Entity" 
+  Title       = "Entity" 
+  Desc        = "The Entity"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_ENTITY</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field Name="Id" 
+     SourceType="Column" 
+     SourceName="ID" 
+     DataType="Counter" 
+     Title="Id" 
+     Desc="Id"/>
+
+    <Field Name="EntityId"
+     SourceType="Column"
+     SourceName="ENTITYID"
+     DataType="Text.250"
+     Required="false"
+     Title="EntityId"
+     Desc="EntityId"/>
+
+    <Field Name="Name"
+     SourceType="Column"
+     SourceName="NAME"
+     DataType="Text.250"
+     Required="false"
+     Title="Name"
+     Desc="Name"/>
+
+    <Field Name="Description"
+     SourceType="Column"
+     SourceName="DESCRIPTION"
+     DataType="Text.MAX"
+     Required="false"
+     Title="Description"
+     Desc="Description"/>
+
+    <Field Name="ParentId"
+     SourceType="Column"
+     SourceName="PARENTID"
+     DataType="Text.250"
+     Required="false"
+     Title="ParentId"
+     Desc="ParentId"/>
+
+    <Field Name="ParentType"
+     SourceType="Column"
+     SourceName="PARENTTYPE"
+     DataType="Text.250"
+     Required="false"
+     Title="ParentType"
+     Desc="ParentType"/>
+
+
+    <Field Name="ContentType"
+     SourceType="Column"
+     SourceName="CONTENTTYPE"
+     DataType="Text.250"
+     Required="false"
+     Title="ContentTypee"
+     Desc="ContentType"/>
+
+
+    <Field Name="Encoding"
+     SourceType="Column"
+     SourceName="ENCODING"
+     DataType="Text.250"
+     Required="false"
+     Title="Encoding"
+     Desc="Encoding"/>
+
+ 
+    <Field Name="HashAlgoritm"
+     SourceType="Column"
+     SourceName="HASHALGORITM"
+     DataType="Text.250"
+     Required="false"
+     Title="HashAlgoritm"
+     Desc="HashAlgoritm"/> 
+
+
+    <Field Name="HashCode"
+     SourceType="Column"
+     SourceName="HASHCODE"
+     DataType="Text.MAX"
+     Required="false"
+     Title="HashCode"
+     Desc="HashCode"/> 
+
+    <Field Name="PartIndex"
+     SourceType="Column"
+     SourceName="PARTINDEX"
+     DataType="Int32"
+     Required="false"
+     Title="PartIndex"
+     Desc="PartIndex"/>
+
+    <Field Name="Eof"
+     SourceType="Column"
+     SourceName="EOF"
+     DataType="Int1"
+     Required="false"
+     Title="Eof"
+     Desc="Eof"/> 
+
+    <Field Name="Content"
+     SourceType="Column"
+     SourceName="CONTENT"
+     DataType="DateTime"
+     Required="false"
+     Title="Content"
+     Desc="Content"/>
+  
+
+  </Fields>
+
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id" SortOrder="Descending" />
+  </PrimaryKey>
+
+  </Entity>

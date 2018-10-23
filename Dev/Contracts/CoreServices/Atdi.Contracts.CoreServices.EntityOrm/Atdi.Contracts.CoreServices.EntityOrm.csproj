@@ -134,6 +134,7 @@
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaPattern.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaPosition.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\AntennaPosition2.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Entity.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Property.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\PropertyBase.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Sensor.xml" />
