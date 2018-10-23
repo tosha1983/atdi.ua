@@ -49,7 +49,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                      ;
 
                      sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                        .Execute<MD.ISensor>(query)==1;
+                        .Execute(query)==1;
 
                     if (!sensorExistsInDb)
                     {
