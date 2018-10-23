@@ -516,31 +516,24 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (this.CurrentLevelMeasurements.Lon.HasValue && this.CurrentLevelMeasurements.Lat.HasValue)
                 {
                     System.Windows.Media.Brush pointBrush = System.Windows.Media.Brushes.GreenYellow;
-                    if (this.CurrentLevelMeasurements.LeveldBmkVm.HasValue)
+                    if (this.CurrentLevelMeasurements.LeveldBmkVm.HasValue && this.CurrentLevelMeasurements.LeveldBmkVm.Value != 0)
                     {
                         pointBrush = GetBrushColor(10, 80, this.CurrentLevelMeasurements.LeveldBmkVm.Value);
                     }
-                    else if (this.CurrentLevelMeasurements.LeveldBm.HasValue)
+                    else if (this.CurrentLevelMeasurements.LeveldBm.HasValue && this.CurrentLevelMeasurements.LeveldBm.Value != 0)
                     {
                         pointBrush = GetBrushColor(-100, -30, this.CurrentLevelMeasurements.LeveldBm.Value);
                     }
 
-                    points.Add(new MP.MapDrawingDataPoint() { Location = new Location(this.CurrentLevelMeasurements.Lon.Value, this.CurrentLevelMeasurements.Lat.Value), Opacity = 0.5, Height = 1, Width = 1, Fill = pointBrush, Color = pointBrush });
+                    points.Add(new MP.MapDrawingDataPoint() { Location = new Location(this.CurrentLevelMeasurements.Lon.Value, this.CurrentLevelMeasurements.Lat.Value), Opacity = 0.5, Height = 5, Width = 5, Fill = pointBrush, Color = pointBrush });
                 }
             }
 
-
-
-
-
-
             var currentMeasTaskResultStation = this.CurrentResultsMeasurementsStation;
             var currentMeasTaskResult = this.CurrentMeasurementResults;
-            ////var currentMeasTaskStation = this.CurrentMeasTaskStation;
             var currentMeasTask = SVC.SdrnsControllerWcfClient.GetMeasTaskById(CurrentMeasurementResults.MeasTaskId);
 
             //// To define station points
-
             if (currentMeasTaskResultStation != null)
             {
                 if (currentMeasTask != null && currentMeasTaskResultStation.StationId != null)
@@ -594,30 +587,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
             }
-            ////    else if (currentMeasTaskStation != null)
-            ////    {
-            ////        if (currentMeasTaskStation.SiteLon.HasValue && currentMeasTaskStation.SiteLat.HasValue)
-            ////        {
-            ////            points.Add(this.MakeDrawingPointForStation(currentMeasTaskStation.SiteLon.Value, currentMeasTaskStation.SiteLat.Value));
-            ////        }
-            ////    }
-            ////    else if (currentMeasTask != null)
-            ////    {
-            ////        var taskStations = currentMeasTask.StationsForMeasurements;
-            ////        if (taskStations != null && taskStations.Length > 0)
-            ////        {
-            ////            var stationPoints = taskStations
-            ////                .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
-            ////                .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
-            ////                .ToArray();
-
-            ////            if (stationPoints.Length > 0)
-            ////            {
-            ////                points.AddRange(stationPoints);
-            ////            }
-            ////        }
-            ////    }
-
 
             data.Routes = routes.ToArray();
             data.Polygons = polygons.ToArray();
@@ -647,8 +616,5 @@ namespace XICSM.ICSControlClient.ViewModels
 
             return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(a, a, b));
         }
-
-
-
     }
 }
