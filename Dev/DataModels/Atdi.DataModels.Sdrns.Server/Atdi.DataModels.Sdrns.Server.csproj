@@ -66,6 +66,7 @@
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.100.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.1000.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.150.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.25.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.10.xml" />
@@ -76,11 +77,24 @@
     <Content Include="Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\AntennaPattern.xml" />
+    <Content Include="Metadata\Entities\Sensor.xml" />
+    <Content Include="Metadata\Entities\SensorAntenna.xml" />
+    <Content Include="Metadata\Entities\SensorEquipment.xml" />
+    <Content Include="Metadata\Entities\SensorLocation.xml" />
+    <Content Include="Metadata\Entities\SensorPolygon.xml" />
+    <Content Include="Metadata\Entities\SensorSensitivites.xml" />
     <Content Include="Metadata\Environment.xml" />
+    <Content Include="Metadata\Units\Angle.Degree.xml" />
+    <Content Include="Metadata\Units\Frequency.Hz.xml" />
+    <Content Include="Metadata\Units\Latitude.DEC.xml" />
+    <Content Include="Metadata\Units\Length.m.xml" />
+    <Content Include="Metadata\Units\Longitude.DEC.xml" />
+    <Content Include="Metadata\Units\Power.dB.xml" />
+    <Content Include="Metadata\Units\Frequency.MHz.xml" />
+    <Content Include="Metadata\Units\Level.dBm.xml" />
+    <Content Include="Metadata\Units\Frequency.kHz.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Metadata\Entities\" />
-    <Folder Include="Metadata\Units\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
