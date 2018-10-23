@@ -668,7 +668,7 @@ namespace Atdi.CoreServices.EntityOrm
 
         public int Execute<TModel>(IQuerySelectStatement<TModel> statement)
         {
-            int RecordCount = 0;
+            int recordCount = 0;
             if (statement == null)
             {
                 throw new ArgumentNullException(nameof(statement));
@@ -683,10 +683,10 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 while (reader.Read())
                 {
-                    RecordCount++;
+                    recordCount++;
                 }
             });
-            return RecordCount;
+            return recordCount;
         }
 
         public int Execute<TModel>(IQueryInsertStatement<TModel> statement)
