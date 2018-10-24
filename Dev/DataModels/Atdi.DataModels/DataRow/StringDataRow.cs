@@ -105,6 +105,76 @@ namespace Atdi.DataModels
                          Value = (value == null) ? (Guid?)null : (Guid.Parse(value) as Guid?)
                     };
                     break;
+
+                case DataType.Char:
+                    result = new CharColumnValue
+                    {
+                        Value = (value == null) ? (char?)null : Convert.ToChar(value) as char?
+                    };
+                    break;
+                case DataType.Short:
+                    result = new ShortColumnValue
+                    {
+                        Value = (value == null) ? (Int16?)null : Int16.Parse(value) as Int16?
+                    };
+                    break;
+                case DataType.UnsignedShort:
+                    result = new UnsignedShortColumnValue
+                    {
+                        Value = (value == null) ? (UInt16?)null : UInt16.Parse(value) as UInt16?
+                    };
+                    break;
+                case DataType.UnsignedInteger:
+                    result = new UnsignedIntegerColumnValue
+                    {
+                        Value = (value == null) ? (UInt32?)null : UInt32.Parse(value) as UInt32?
+                    };
+                    break;
+                case DataType.Long:
+                    result = new LongColumnValue
+                    {
+                        Value = (value == null) ? (Int64?)null : Int64.Parse(value) as Int64?
+                    };
+                    break;
+                case DataType.UnsignedLong:
+                    result = new UnsignedLongColumnValue
+                    {
+                        Value = (value == null) ? (UInt64?)null : UInt64.Parse(value) as UInt64?
+                    };
+                    break;
+                case DataType.SignedByte:
+                    result = new SignedByteColumnValue
+                    {
+                        Value = (value == null) ? (sbyte?)null : sbyte.Parse(value) as sbyte?
+                    };
+                    break;
+                case DataType.Time:
+                    result = new TimeColumnValue
+                    {
+                        Value = (value == null) ? (TimeSpan?)null : TimeSpan.Parse(value) as TimeSpan?
+                    };
+                    break;
+                case DataType.Date:
+                    result = new DateColumnValue
+                    {
+                        Value = (value == null) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                    };
+                    break;
+                case DataType.DateTimeOffset:
+                    result = new DateTimeOffsetColumnValue
+                    {
+                        Value = (value == null) ? (DateTimeOffset?)null : DateTimeOffset.Parse(value.ToString()) as DateTimeOffset?
+                    };
+                    break;
+                case DataType.Xml:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
+                case DataType.Json:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
+                case DataType.ClrEnum:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
+                case DataType.ClrType:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
+
                 default:
                     throw new InvalidOperationException($"Unsupported data type with name '{dataType}'");
             }
@@ -119,6 +189,11 @@ namespace Atdi.DataModels
                 resultColumns[i] = row.GetColumnValue(dataSetColumns[i]);
             }
             return resultColumns;
+        }
+
+        public static T ToEnum<T>(string enumString)
+        {
+            return (T)Enum.Parse(typeof(T), enumString);
         }
     }
 }

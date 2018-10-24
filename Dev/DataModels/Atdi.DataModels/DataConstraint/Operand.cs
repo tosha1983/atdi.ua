@@ -32,6 +32,21 @@ namespace Atdi.DataModels.DataConstraint
     [KnownType(typeof(ByteValuesOperand))]
     [KnownType(typeof(BytesValuesOperand))]
     [KnownType(typeof(GuidValuesOperand))]
+    [KnownType(typeof(CharValuesOperand))]
+    [KnownType(typeof(ShortValuesOperand))]
+    [KnownType(typeof(UnsignedShortValuesOperand))]
+    [KnownType(typeof(UnsignedIntegerValuesOperand))]
+    [KnownType(typeof(LongValuesOperand))]
+    [KnownType(typeof(UnsignedLongValuesOperand))]
+    [KnownType(typeof(SignedByteValuesOperand))]
+    [KnownType(typeof(TimeValuesOperand))]
+    [KnownType(typeof(DateValuesOperand))]
+    [KnownType(typeof(DateTimeOffsetValuesOperand))]
+    [KnownType(typeof(XmlValuesOperand))]
+    [KnownType(typeof(JsonValuesOperand))]
+    [KnownType(typeof(ClrEnumValuesOperand))]
+    [KnownType(typeof(ClrTypeValuesOperand))]
+
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class Operand
     {

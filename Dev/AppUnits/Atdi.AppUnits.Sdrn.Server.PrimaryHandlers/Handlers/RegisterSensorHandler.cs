@@ -40,6 +40,115 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 try
                 {
 
+                    var query2 = this._dataLayer.GetBuilder<MD.ITest>()
+                  .From()
+                  .Select(c => c.BOOLEAN_TYPE,
+                  c => c.BYTES_TYPE,
+                  c => c.BYTE_TYPE,
+                  c => c.DATETIME_TYPE,
+                  c => c.DECIMAL_TYPE,
+                  c => c.DOUBLE_TYPE,
+                  c => c.FLOAT_TYPE,
+                  c => c.GUID_TYPE,
+                  c => c.ID,
+                  c => c.INTEGER_TYPE,
+                  c => c.STRING_TYPE,
+                  c => c.INT16,
+                   c => c.INT08
+                  )
+                  .OrderByDesc(x => x.GUID_TYPE)
+                  .Where(c => c.ID, ConditionOperator.Equal, 151)
+                  .OnTop(1)
+                  ;
+
+
+                    var sensorExistsInDbV = this._dataLayer.Executor<SdrnServerDataContext>()
+                        .Fetch(query2, reader =>
+                        {
+                            while (reader.Read())
+                            {
+                               byte[]  NN = reader.GetValue(c => c.BYTES_TYPE);
+                               double? doubl = reader.GetValue(c => c.DOUBLE_TYPE);
+                                int? integer = reader.GetValue(c => c.INTEGER_TYPE);
+                                decimal? dec = reader.GetValue(c => c.DECIMAL_TYPE);
+                                byte? byt = reader.GetValue(c => c.BYTE_TYPE);
+                                bool? boolean = reader.GetValue(c => c.BOOLEAN_TYPE);
+                                DateTime? date = reader.GetValue(c => c.DATETIME_TYPE);
+                                float? flt = reader.GetValue(c => c.FLOAT_TYPE);
+                                Guid? gd = reader.GetValue(c => c.GUID_TYPE);
+                                string str = reader.GetValue(c => c.STRING_TYPE);
+                                Int16? itn16 = reader.GetValue(c => c.INT16);
+                                sbyte? sb = reader.GetValue(c => c.INT08);
+
+                            }
+                            return 1;
+                        });
+
+
+                    ////////////////////////////////////////
+                    /*
+                    var query2 = this._dataLayer.GetBuilder<MD.IAntenna>()
+                     .From()
+                     .Select(c => c.FrequencyMHz,
+                              //c => c.POS.Id,
+                              c => c.Name,
+                              c => c.EXT1.FullName,
+                              c => c.EXT1.EXT2.FullName2,
+                              c => c.TYPE.TYPE2.TYPE3.Name3,
+                              //c => c.EXT1.EXTENDED.EXT1.FullName,
+                              c => c.PROP1.TableName,
+                              c => c.POS.PosX,
+                              c => c.POS.PSS2.PosType,
+                              c => c.EXT1.EXTENDED.POS.PosY,
+                              c => c.EXT1.EXTENDED.POS.PSS2.PosX
+                            )
+                     .OrderByDesc(x => x.EXT1.PosType)
+                     //.Where(c => c.POS.PosX, ConditionOperator.Equal, 2.35)
+                     //.Where(c => c.PROP1.PropName, ConditionOperator.Equal, "i")
+                     .Where(c => c.POS.PSS2.Id, ConditionOperator.Equal, 2)
+                     .OnTop(1)
+                     .OrderByDesc(c=>c.POS.PSS2.Id);
+
+
+                    var sensorExistsInDbV = this._dataLayer.Executor<SdrnServerDataContext>()
+                      .Execute(query2)
+                      ;
+                    */
+
+                    /*
+                    var query2 = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
+                    .From()
+                    .Select(c => c.Freq,
+                    c=>c.Id,
+                    c=>c.SENSORANT.SENSOR.Name,
+                    c => c.SENSORANT.SensorId
+                    )
+                    .OrderByDesc(x => x.SENSORANT.SENSOR.Name)
+                    .Where(c => c.SENSORANT.SENSOR.Status, ConditionOperator.Equal, "S")
+                    //.Where(c => c.PROP1.PropName, ConditionOperator.Equal, "i")
+                    .Where(c => c.SENSORANT.SensorId, ConditionOperator.Equal,322)
+                    .OnTop(1)
+                    .OrderByDesc(c => c.SENSORANT.SENSOR.SensorIdentifierId);
+
+
+                    var sensorExistsInDbV = this._dataLayer.Executor<SdrnServerDataContext>()
+                    .Execute(query2);
+                    */
+
+
+
+                    //var  sensorExistsInDbqueryIEntity = this._dataLayer.Executor<SdrnServerDataContext>()
+                    //    .Fetch(queryIEntityInset, reader=>
+                    //    {
+                    //            while (reader.Read())
+                    ///            {  
+                    //               NN = reader.GetValue(c => c.Content).ToString();
+                    //            }
+                    //            return NN;
+                    //    });
+
+                    ////////////////////////////////////////
+
                     var query = this._dataLayer.GetBuilder<MD.ISensor>()
                      .From()
                      .Select(c => c.Name)
