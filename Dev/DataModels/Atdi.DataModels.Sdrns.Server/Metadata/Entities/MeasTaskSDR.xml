@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "MeasTaskSDR"
+  Title       = "MeasTaskSDR"
+  Desc        = "The MeasTaskSDR"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_MEASTASK_SDR</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEASTASKID" SourceType="Column" Required="true"/>
+    <Field Desc="MeasSubTaskId" Title="MeasSubTaskId" Name="MeasSubTaskId" DataType="Integer.64" SourceName="MEASSUBTASKID" SourceType="Column" Required="true"/>
+    <Field Desc="MeasSubTaskStaId" Title="MeasSubTaskStaId" Name="MeasSubTaskStaId" DataType="Integer.64" SourceName="MEASSUBTASKSTATIONID" SourceType="Column" Required="true"/>
+    <Field Desc="Num" Title="Num" Name="Num" DataType="Integer.64" SourceName="NUM" SourceType="Column" Required="false"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="true"/>
+    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasTaskSDR to MeasTask">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    <Field Name="MEASSUBTASK" SourceType="Reference" SourceName="MeasSubTask" Title="Relation MeasTaskSDR to MeasSubTask">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    <Field Name="MEASSUBTASKSTA" SourceType="Reference" SourceName="MeasSubTaskSta" Title="Relation MeasTaskSDR to MeasSubTaskSta">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskStaId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation MeasSubTaskSTA to Sensor">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

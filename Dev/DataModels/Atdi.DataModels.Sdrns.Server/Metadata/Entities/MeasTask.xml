@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "MeasTask"
+  Title       = "MeasTask"
+  Desc        = "The MeasTask"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_MEASTASK</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Desc="OrderId" Title="OrderId" Name="OrderId" DataType="Integer.32" SourceName="ORDERID" SourceType="Column" Required="false"/>
+    <Field Desc="Type" Title="Type" Name="Type" DataType="Text.50" SourceName="TYPE" SourceType="Column" Required="false"/>
+    <Field Desc="Name" Title="Name" Name="Name" DataType="Text.100" SourceName="NAME" SourceType="Column" Required="false"/>
+    <Field Desc="ExecutionMode" Title="ExecutionMode" Name="ExecutionMode" DataType="Text.50" SourceName="EXECUTIONMODE" SourceType="Column" Required="false"/>
+    <Field Desc="Task" Title="Task" Name="Task" DataType="Text.50" SourceName="TASK" SourceType="Column" Required="false"/>
+    <Field Desc="Prio" Title="Prio" Name="Prio" DataType="Integer.32" SourceName="PRIO" SourceType="Column" Required="false"/>
+    <Field Desc="ResultType" Title="ResultType" Name="ResultType" DataType="Text.50" SourceName="RESULTTYPE" SourceType="Column" Required="false"/>
+    <Field Desc="MaxTimeBs" Title="MaxTimeBs" Name="MaxTimeBs" DataType="Integer.32" SourceName="MAXTIMEBS" SourceType="Column" Required="false"/>
+    <Field Desc="DateCreated" Title="DateCreated" Name="DateCreated" DataType="DateTime" SourceName="DATECREATED" SourceType="Column" Required="false"/>
+    <Field Desc="CreatedBy" Title="CreatedBy" Name="CreatedBy" DataType="Text.50" SourceName="CREATEDBY" SourceType="Column" Required="false"/>
+    <Field Desc="IdStart" Title="IdStart" Name="IdStart" DataType="Text.50" SourceName="ID_START" SourceType="Column" Required="false"/>
+    <Field Desc="PerStart" Title="PerStart" Name="PerStart" DataType="DateTime" SourceName="PERSTART" SourceType="Column" Required="false"/>
+    <Field Desc="PerStop" Title="PerStop" Name="PerStop" DataType="DateTime" SourceName="PERSTOP" SourceType="Column" Required="false"/>
+    <Field Desc="TimeStart" Title="TimeStart" Name="TimeStart" DataType="DateTime" SourceName="TIMESTART" SourceType="Column" Required="false"/>
+    <Field Desc="TimeStop" Title="TimeStop" Name="TimeStop" DataType="DateTime" SourceName="TIMESTOP" SourceType="Column" Required="false"/>
+    <Field Desc="Days" Title="Days" Name="Days" DataType="Text.250" SourceName="DAYS" SourceType="Column" Required="false"/>
+    <Field Desc="PerInterval" Title="PerInterval" Name="PerInterval" DataType="Decimal.22.8" SourceName="PERINTERVAL" SourceType="Column" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

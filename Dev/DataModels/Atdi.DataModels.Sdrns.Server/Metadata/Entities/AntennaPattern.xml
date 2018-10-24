@@ -17,7 +17,7 @@
     <Field Desc="DiagA - 9X - Antenna pattern" Title="DiagA - 9X - Antenna pattern" Name="DiagA" DataType="Text.1000" SourceName="DIAGA" SourceType="Column" Required="false"/>
     <Field Desc="DiagH - 9XH - Horizontal diagram" Title="DiagH - 9XH - Horizontal diagram" Name="DiagH" DataType="Text.1000" SourceName="DIAGH" SourceType="Column" Required="false"/>
     <Field Desc="DiagV - 9XV - Vertical diagram" Title="DiagV - 9XV - Vertical diagram" Name="DiagV" DataType="Text.1000" SourceName="DIAGV" SourceType="Column" Required="false"/>
-    <Field Name="SENSORANT" SourceType="Reference" SourceName="SensorAntenna" Title="Relation AntennaPattern to SensorAntenna">
+    <Field Name="SENSORANTENNA" SourceType="Reference" SourceName="SensorAntenna" Title="Relation AntennaPattern to SensorAntenna">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorAntennaId</Mapped>
       </PrimaryKeyMapping>
