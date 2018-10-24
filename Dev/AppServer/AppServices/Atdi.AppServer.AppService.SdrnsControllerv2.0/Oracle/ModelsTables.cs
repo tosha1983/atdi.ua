@@ -8,6 +8,46 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
+
+    public class YXvUnit2 : Yyy
+    {
+        public YXvUnit2()
+        {
+            TableName = "XV_UNIT2";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXvUnit2)));
+        }
+        public double? m_lon { get { return getDouble(0); } set { setDouble(0, value); } }
+        public double? m_lat { get { return getDouble(1); } set { setDouble(1, value); } }
+        public double? m_leveldbm { get { return getDouble(2); } set { setDouble(2, value); } }
+        public double? m_centralfrequency { get { return getDouble(3); } set { setDouble(3, value); } }
+        public DateTime? m_timeofmeasurements { get { return getDateTime(4); } set { setDateTime(4, value); } }
+        public double? m_bw { get { return getDouble(5); } set { setDouble(5, value); } }
+        public int? m_idstation { get { return getInt(6); } set { setInt(6, value); } }
+        public double? m_specrumsteps { get { return getDouble(7); } set { setDouble(7, value); } }
+        public int? m_t1 { get { return getInt(8); } set { setInt(8, value); } }
+        public int? m_t2 { get { return getInt(9); } set { setInt(9, value); } }
+        public int? m_id { get { return getInt(10); } set { setInt(10, value); } }
+    }
+
+    public class YXvUnit1 : Yyy
+    {
+        public YXvUnit1()
+        {
+            TableName = "XV_UNIT1";
+            getAllFields.AddRange(Utils.GetAllProps(typeof(YXvUnit1)));
+        }
+        public double? m_lon { get { return getDouble(0); } set { setDouble(0, value); } }
+        public double? m_lat { get { return getDouble(1); } set { setDouble(1, value); } }
+        public double? m_leveldbm { get { return getDouble(2); } set { setDouble(2, value); } }
+        public double? m_centralfrequency { get { return getDouble(3); } set { setDouble(3, value); } }
+        public DateTime? m_timeofmeasurements { get { return getDateTime(4); } set { setDateTime (4, value); } }
+        public double? m_bw { get { return getDouble(5); } set { setDouble(5, value); } }
+        public int? m_idstation { get { return getInt(6); } set { setInt(6, value); } }
+        public double? m_specrumsteps { get { return getDouble(7); } set { setDouble(7, value); } }
+        public int? m_t1 { get { return getInt(8); } set { setInt(8, value); } }
+        public int? m_t2 { get { return getInt(9); } set { setInt(9, value); } }
+    }
+
     public class YXbsResSysInfoBlocks : Yyy
     {
         public YXbsResSysInfoBlocks()

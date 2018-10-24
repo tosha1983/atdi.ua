@@ -129,7 +129,9 @@
     <Compile Include="GetSensorsAppOperationHandler.cs" />
     <Compile Include="GetShortMeasResultsAppOperationHandler.cs" />
     <Compile Include="GetShortMeasTasksAppOperationHandler.cs" />
+    <Compile Include="GetSOformMeasResultStationAppOperationHandler.cs" />
     <Compile Include="GetShortSensorsAppOperationHandler.cs" />
+    <Compile Include="ManageDB\Classes\Adapters\ICSM\Analitics\ClassConvertTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\RESULT\ClassesDBGetResult.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\SENSOR\ClassDBGetSensor.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\Constants.cs" />

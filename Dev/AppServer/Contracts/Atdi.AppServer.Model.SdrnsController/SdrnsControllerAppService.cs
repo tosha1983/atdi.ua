@@ -123,6 +123,12 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetSOformMeasResultStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetSOformMeasResultStationAppOperation() : base("GetSOformMeasResultStation")
+            { }
+        }
+
 
 
         public SdrnsControllerAppService() 
@@ -148,7 +154,8 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResultsAppOperation(),
                      new GetShortMeasResultsByIdAppOperation(),
                      new GetShortMeasResultsByTaskIdAppOperation(),
-                     new DeleteMeasResultsAppOperation()
+                     new DeleteMeasResultsAppOperation(),
+                     new GetSOformMeasResultStationAppOperation()
                     }
                 );
         }
