@@ -2636,7 +2636,8 @@ namespace Atdi.CoreServices.EntityOrm
                 case "ClrType":
                     throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
                 default:
-                    throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
+                    break;
+
                    
             }
             return result;
@@ -2695,7 +2696,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "ClrType":
                     throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
                 default:
-                    throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
+                    break;
 
             }
             return result;
