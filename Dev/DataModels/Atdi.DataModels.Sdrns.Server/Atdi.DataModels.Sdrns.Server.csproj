@@ -55,18 +55,64 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
+    <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
+    <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.100.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.1000.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.150.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.20.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.25.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.200.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.450.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.4000.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.2000.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\AntennaPattern.xml" />
+    <Content Include="Metadata\Entities\LinkMeasStation.xml" />
+    <Content Include="Metadata\Entities\MaskElements.xml" />
+    <Content Include="Metadata\Entities\MeasDtParam.xml" />
+    <Content Include="Metadata\Entities\MeasFreq.xml" />
+    <Content Include="Metadata\Entities\MeasFreqParam.xml" />
+    <Content Include="Metadata\Entities\MeasOther.xml" />
+    <Content Include="Metadata\Entities\MeasStation.xml" />
+    <Content Include="Metadata\Entities\MeasSubTaskSta.xml" />
+    <Content Include="Metadata\Entities\MeasTaskSDR.xml" />
+    <Content Include="Metadata\Entities\Sector.xml" />
+    <Content Include="Metadata\Entities\SectorFreq.xml" />
+    <Content Include="Metadata\Entities\Sensor.xml" />
+    <Content Include="Metadata\Entities\SensorAntenna.xml" />
+    <Content Include="Metadata\Entities\SensorEquipment.xml" />
+    <Content Include="Metadata\Entities\SensorLocation.xml" />
+    <Content Include="Metadata\Entities\SensorPolygon.xml" />
+    <Content Include="Metadata\Entities\SensorSensitivites.xml" />
+    <Content Include="Metadata\Entities\MeasLocationParam.xml" />
+    <Content Include="Metadata\Entities\Station.xml" />
+    <Content Include="Metadata\Entities\StationSite.xml" />
+    <Content Include="Metadata\Entities\MeasTask.xml" />
+    <Content Include="Metadata\Entities\OwnerData.xml" />
+    <Content Include="Metadata\Entities\MeasSubTask.xml" />
     <Content Include="Metadata\Environment.xml" />
+    <Content Include="Metadata\Units\Angle.Degree.xml" />
+    <Content Include="Metadata\Units\Frequency.Hz.xml" />
+    <Content Include="Metadata\Units\Latitude.DEC.xml" />
+    <Content Include="Metadata\Units\Length.m.xml" />
+    <Content Include="Metadata\Units\Longitude.DEC.xml" />
+    <Content Include="Metadata\Units\Power.dB.xml" />
+    <Content Include="Metadata\Units\Frequency.MHz.xml" />
+    <Content Include="Metadata\Units\Level.dBm.xml" />
+    <Content Include="Metadata\Units\Frequency.kHz.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Metadata\Entities\" />
-    <Folder Include="Metadata\Units\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
