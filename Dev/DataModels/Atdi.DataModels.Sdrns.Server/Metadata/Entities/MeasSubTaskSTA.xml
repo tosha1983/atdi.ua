@@ -21,7 +21,7 @@
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
       </PrimaryKeyMapping>
     </Field>
-    <Field Name="MEASSUBTASK" SourceType="Reference" SourceName="MeasSubTask" Title="Relation MeasSubTaskSTA to MeasSubTask">
+    <Field Name="MEASSUBTASK" SourceType="Reference" SourceName="MeasSubTask" Title="Relation MeasSubTaskSta to MeasSubTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskId</Mapped>
       </PrimaryKeyMapping>
