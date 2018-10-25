@@ -43,6 +43,50 @@ namespace Atdi.DataModels
 
         [DataMember]
         public Guid?[] GuidCells { get; set; }
+
+
+        [DataMember]
+        public Char?[] CharCells { get; set; }
+
+        [DataMember]
+        public Int16?[] ShortCells { get; set; }
+
+        [DataMember]
+        public UInt16?[] UnsignedShortCells { get; set; }
+
+        [DataMember]
+        public UInt32?[] UnsignedIntegerCells { get; set; }
+
+        [DataMember]
+        public Int64?[] LongCells { get; set; }
+
+        [DataMember]
+        public UInt64?[] UnsignedLongCells { get; set; }
+
+        [DataMember]
+        public sbyte?[] SignedByteCells { get; set; }
+
+        [DataMember]
+        public TimeSpan?[] TimeCells { get; set; }
+
+        [DataMember]
+        public DateTime?[] DateCells { get; set; }
+
+        [DataMember]
+        public DateTimeOffset?[] DateTimeOffsetCells { get; set; }
+
+        [DataMember]
+        public string[] XmlCells { get; set; }
+
+        [DataMember]
+        public string[] JsonCells { get; set; }
+
+        [DataMember]
+        public Enum[] ClrEnumCells { get; set; }
+
+        [DataMember]
+        public Object[] ClrTypeCells { get; set; }
+
     }
 
     public static class TypedDataRowExtensions
@@ -117,6 +161,91 @@ namespace Atdi.DataModels
                     result = new GuidColumnValue
                     {
                         Value = row.GuidCells[index]
+                    };
+                    break;
+
+                case DataType.Char:
+                    result = new CharColumnValue
+                    {
+                        Value = row.CharCells[index]
+                    };
+                    break;
+                case DataType.Short:
+                    result = new ShortColumnValue
+                    {
+                        Value = row.ShortCells[index]
+                    };
+                    break;
+                case DataType.UnsignedShort:
+                    result = new UnsignedShortColumnValue
+                    {
+                        Value = row.UnsignedShortCells[index]
+                    };
+                    break;
+                case DataType.UnsignedInteger:
+                    result = new UnsignedIntegerColumnValue
+                    {
+                        Value = row.UnsignedIntegerCells[index]
+                    };
+                    break;
+                case DataType.Long:
+                    result = new LongColumnValue
+                    {
+                        Value = row.LongCells[index]
+                    };
+                    break;
+                case DataType.UnsignedLong:
+                    result = new UnsignedLongColumnValue
+                    {
+                        Value = row.UnsignedLongCells[index]
+                    };
+                    break;
+                case DataType.SignedByte:
+                    result = new SignedByteColumnValue
+                    {
+                        Value = row.SignedByteCells[index]
+                    };
+                    break;
+                case DataType.Time:
+                    result = new TimeColumnValue
+                    {
+                        Value = row.TimeCells[index]
+                    };
+                    break;
+                case DataType.Date:
+                    result = new DateColumnValue
+                    {
+                        Value = row.DateCells[index]
+                    };
+                    break;
+                case DataType.DateTimeOffset:
+                    result = new DateTimeOffsetColumnValue
+                    {
+                        Value = row.DateTimeOffsetCells[index]
+                    };
+                    break;
+                case DataType.Xml:
+                    result = new XmlColumnValue
+                    {
+                        Value = row.XmlCells[index]
+                    };
+                    break;
+                case DataType.Json:
+                    result = new JsonColumnValue
+                    {
+                        Value = row.JsonCells[index]
+                    };
+                    break;
+                case DataType.ClrEnum:
+                    result = new ClrEnumColumnValue
+                    {
+                        Value = row.ClrEnumCells[index]
+                    };
+                    break;
+                case DataType.ClrType:
+                    result = new ClrTypeColumnValue
+                    {
+                        Value = row.ClrTypeCells[index]
                     };
                     break;
                 default:

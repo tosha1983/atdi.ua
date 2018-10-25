@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Entity xmlns = "http://schemas.atdi.com/orm/entity.xsd"
+        Name  = "Test"
+        Title = "Test"
+        Desc  = "The property of Test"
+        Type  = "Normal"
+        BaseEntity  = "PropertyBase"
+        >
+
+  <DataSource Type="Database" Object="Table">
+    <Name>XWEBTEST</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  
+  <Fields>
+    <Field 
+      Name="STRING_TYPE"
+      SourceType="Column"
+      SourceName="STRING_TYPE"
+      DataType="Text.200"
+      Required="true"
+      Title="Table name"/>
+
+    <Field
+      Name="BOOLEAN_TYPE"
+      SourceType="Column"
+      SourceName="BOOLEAN_TYPE"
+      DataType="Int1"
+      Required="true"
+      Title="Table record Id"/>
+    
+    <Field
+      Name="INTEGER_TYPE"
+      SourceType="Column"
+      SourceName="INTEGER_TYPE"
+      DataType="Int32"
+      Required="true"
+      Title="Table name"/>
+    
+    <Field 
+      Name="DATETIME_TYPE" 
+      SourceType="Column"    
+      SourceName ="DATETIME_TYPE"  
+      DataType="DateTime" 
+      Required="true" 
+      Title="Value of property" />
+
+    <Field 
+      Name="DOUBLE_TYPE" 
+      SourceType="Column"    
+      SourceName ="DOUBLE_TYPE"  
+      DataType="Double" 
+      Required="true" 
+      Title="Value of property" />
+
+    <Field 
+      Name="FLOAT_TYPE" 
+      SourceType="Column"    
+      SourceName ="FLOAT_TYPE"  
+      DataType="Float" 
+      Required="true" 
+      Title="Value of property" />
+
+    <Field 
+      Name="BYTES_TYPE" 
+      SourceType="Column"    
+      SourceName ="BYTES_TYPE"  
+      DataType="Blob" 
+      Required="true" 
+      Title="Value of property" />
+
+    <Field 
+      Name="GUID_TYPE" 
+      SourceType="Column"    
+      SourceName ="GUID_TYPE"  
+      DataType="Guid" 
+      Required="true" 
+      Title="Value of property" />
+    
+
+    <Field 
+      Name="ID" 
+      SourceType="Column"    
+      SourceName ="ID"  
+      DataType="Counter" 
+      Required="true" 
+      Title="Value of property" />
+
+  <Field 
+      Name="DECIMAL_TYPE" 
+      SourceType="Column"    
+      SourceName ="DECIMAL_TYPE"  
+      DataType="Decimal" 
+      Required="true" 
+      Title="Value of property" />
+
+  <Field 
+      Name="BYTE_TYPE" 
+      SourceType="Column"    
+      SourceName ="BYTE_TYPE"  
+      DataType="Byte" 
+      Required="true" 
+      Title="Value of property" />
+
+  <Field 
+      Name="INT16" 
+      SourceType="Column"    
+      SourceName ="INT16"  
+      DataType="Int16" 
+      Required="true" 
+      Title="Value of property" />
+
+  <Field 
+      Name="INT08" 
+      SourceType="Column"    
+      SourceName ="INT08"  
+      DataType="Int08" 
+      Required="true" 
+      Title="Value of property" />
+
+  </Fields>
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="ID"  SortOrder="Ascending" />
+  </PrimaryKey>
+  
+</Entity>

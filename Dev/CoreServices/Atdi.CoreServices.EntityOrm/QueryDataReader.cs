@@ -54,6 +54,35 @@ namespace Atdi.CoreServices.EntityOrm
                     return this.GetValueAsByte(fieldDbType, ordinal);
                 case DataModels.DataType.Bytes:
                     return this.GetValueAsBytes(fieldDbType, ordinal);
+                case DataModels.DataType.Char:
+                    return this.GetValueAsChar(fieldDbType, ordinal);
+                case DataModels.DataType.Short:
+                    return this.GetValueAsShort(fieldDbType, ordinal);
+                case DataModels.DataType.UnsignedShort:
+                    return this.GetValueAsUnsignedShort(fieldDbType, ordinal);
+                case DataModels.DataType.UnsignedInteger:
+                    return this.GetValueAsUnsignedInteger(fieldDbType, ordinal);
+                case DataModels.DataType.Long:
+                    return this.GetValueAsLong(fieldDbType, ordinal);
+                case DataModels.DataType.UnsignedLong:
+                    return this.GetValueAsUnsignedLong(fieldDbType, ordinal);
+                case DataModels.DataType.SignedByte:
+                    return this.GetValueAsSignedByte(fieldDbType, ordinal);
+                case DataModels.DataType.Time:
+                    return this.GetValueAsTime(fieldDbType, ordinal).ToString();
+                case DataModels.DataType.Date:
+                    return this.GetValueAsDate(fieldDbType, ordinal);
+                case DataModels.DataType.DateTimeOffset:
+                    return this.GetValueAsDateTimeOffset(fieldDbType, ordinal);
+                case DataModels.DataType.Xml:
+                    return this.GetValueAsXml(fieldDbType, ordinal);
+                case DataModels.DataType.Json:
+                    return this.GetValueAsJson(fieldDbType, ordinal);
+                case DataModels.DataType.ClrEnum:
+                    return this.GetValueAsClrEnum(fieldDbType, ordinal);
+                case DataModels.DataType.ClrType:
+                    return this.GetValueAsClrType(fieldDbType, ordinal);
+
                 default:
                     throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(ordinal)));
             }
@@ -88,9 +117,873 @@ namespace Atdi.CoreServices.EntityOrm
                     return this.GetValueAsByte(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 case DataModels.DataType.Bytes:
                     return UTF8Encoding.UTF8.GetString(this.GetValueAsBytes(fieldDbType, ordinal));
+                case DataModels.DataType.Char:
+                    return this.GetValueAsChar(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.Short:
+                    return this.GetValueAsShort(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.UnsignedShort:
+                    return this.GetValueAsUnsignedShort(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.UnsignedInteger:
+                    return this.GetValueAsUnsignedInteger(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.Long:
+                    return this.GetValueAsLong(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.UnsignedLong:
+                    return this.GetValueAsUnsignedLong(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.SignedByte:
+                    return this.GetValueAsSignedByte(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.Time:
+                    return this.GetValueAsTime(fieldDbType, ordinal).ToString();
+                case DataModels.DataType.Date:
+                    return this.GetValueAsDate(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.DateTimeOffset:
+                    return this.GetValueAsDateTimeOffset(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.Xml:
+                    return this.GetValueAsXml(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.Json:
+                    return this.GetValueAsJson(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                case DataModels.DataType.ClrEnum:
+                    return this.GetValueAsClrEnum(fieldDbType, ordinal).ToString();
+                case DataModels.DataType.ClrType:
+                    return this.GetValueAsClrType(fieldDbType, ordinal).ToString();
+
                 default:
                     throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(ordinal)));
             }
+        }
+
+        public char? GetNullableValueAsChar(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsChar(fieldDbType, ordinal);
+        }
+
+        public char GetValueAsChar(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToChar(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToChar(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToChar(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToChar(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToChar(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToChar(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToChar(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToChar(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToChar(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(DateTime))
+            {
+                return Convert.ToChar(_dataReader.GetDateTime(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToChar(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToChar(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToChar(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToChar(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToChar(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(Guid))
+            {
+                return Convert.ToChar(_dataReader.GetGuid(ordinal));
+            }
+
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToChar(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToChar(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public short? GetNullableValueAsShort(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsShort(fieldDbType, ordinal);
+        }
+
+        public short GetValueAsShort(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToInt16(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToInt16(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToInt16(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToInt16(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToInt16(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToInt16(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToInt16(_dataReader.GetByte(ordinal));
+            }
+         
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToInt16(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToInt16(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToInt16(_dataReader.GetInt64(ordinal));
+            }
+
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToInt16(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToInt16(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public UInt16? GetNullableValueAsUnsignedShort(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsUnsignedShort(fieldDbType, ordinal);
+        }
+
+
+        public UInt16 GetValueAsUnsignedShort(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToUInt16(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToUInt16(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToUInt16(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToUInt16(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToUInt16(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToUInt16(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToUInt16(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToUInt16(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToUInt16(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToUInt16(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public UInt32? GetNullableValueAsUnsignedInteger(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsUnsignedInteger(fieldDbType, ordinal);
+        }
+
+        public UInt32 GetValueAsUnsignedInteger(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToUInt32(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToUInt32(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToUInt32(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToUInt32(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToUInt32(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToUInt32(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToUInt32(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToUInt32(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToUInt32(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToUInt32(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public long? GetNullableValueAsLong(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsLong(fieldDbType, ordinal);
+        }
+
+        public long GetValueAsLong(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToInt64(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToInt64(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToInt64(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToInt64(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToInt64(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToInt64(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToInt64(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToInt64(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public UInt64? GetNullableValueAsUnsignedLong(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsUnsignedLong(fieldDbType, ordinal);
+        }
+
+        public UInt64 GetValueAsUnsignedLong(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToUInt64(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToUInt64(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToUInt64(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToUInt64(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToUInt64(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToUInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToUInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToUInt64(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToUInt64(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToUInt64(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public sbyte? GetNullableValueAsSignedByte(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsSignedByte(fieldDbType, ordinal);
+        }
+
+        public sbyte GetValueAsSignedByte(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToSByte(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToSByte(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToSByte(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToSByte(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToSByte(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToSByte(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToSByte(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToSByte(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToSByte(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToSByte(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToSByte(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToSByte(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToSByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToSByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToSByte(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToSByte(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public TimeSpan? GetNullableValueAsTime(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsTime(fieldDbType, ordinal);
+        }
+        public TimeSpan GetValueAsTime(Type fieldDbType, int ordinal)
+        {
+            if (fieldDbType == typeof(DateTime))
+            {
+                return DateTimeToTimeSpan(Convert.ToDateTime(_dataReader.GetInt32(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public DateTime? GetNullableValueAsDate(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsDate(fieldDbType, ordinal);
+        }
+
+        public DateTime GetValueAsDate(Type fieldDbType, int ordinal)
+        {
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public DateTimeOffset? GetNullableValueAsDateTimeOffset(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsDateTimeOffset(fieldDbType, ordinal);
+        }
+
+        public DateTimeOffset GetValueAsDateTimeOffset(Type fieldDbType, int ordinal)
+        {
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public string GetNullableValueAsXml(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsXml(fieldDbType, ordinal);
+        }
+
+        public string GetValueAsXml(Type fieldDbType, int ordinal)
+        {
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public string GetNullableValueAsJson(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsJson(fieldDbType, ordinal);
+        }
+
+        public string GetValueAsJson(Type fieldDbType, int ordinal)
+        {
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public Enum GetNullableValueAsClrEnum(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsClrEnum(fieldDbType, ordinal);
+        }
+
+        public Enum GetValueAsClrEnum(Type fieldDbType, int ordinal)
+        {
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public Object GetNullableValueAsClrType(Type fieldDbType, int ordinal)
+        {
+            if (_dataReader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            return this.GetValueAsClrType(fieldDbType, ordinal);
+        }
+
+        public Object GetValueAsClrType(Type fieldDbType, int ordinal)
+        {
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         public bool? GetNullableValueAsBoolean(Type fieldDbType, int ordinal)
@@ -128,6 +1021,61 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
             }
+
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
+            }
+
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToBoolean(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToBoolean(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToBoolean(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToBoolean(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
+            }
+
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
@@ -143,6 +1091,10 @@ namespace Atdi.CoreServices.EntityOrm
         public int GetValueAsInt32(Type fieldDbType, int ordinal)
         {
             if (fieldDbType == typeof(int))
+            {
+                return _dataReader.GetInt32(ordinal);
+            }
+            if (fieldDbType == typeof(UInt32))
             {
                 return _dataReader.GetInt32(ordinal);
             }
@@ -170,6 +1122,10 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToInt32(_dataReader.GetByte(ordinal));
             }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToInt32(_dataReader.GetByte(ordinal));
+            }
             if (fieldDbType == typeof(DateTime))
             {
                 return Convert.ToInt32(_dataReader.GetDateTime(ordinal));
@@ -182,11 +1138,51 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToInt32(_dataReader.GetInt16(ordinal));
             }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToInt32(_dataReader.GetInt16(ordinal));
+            }
             if (fieldDbType == typeof(long))
             {
                 return Convert.ToInt32(_dataReader.GetInt64(ordinal));
             }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToInt32(_dataReader.GetInt64(ordinal));
+            }
+
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToInt32(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToInt32(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public TimeSpan DateTimeToTimeSpan(DateTime? ts)
+        {
+            if (!ts.HasValue) return TimeSpan.Zero;
+            else return new TimeSpan(0, ts.Value.Hour, ts.Value.Minute, ts.Value.Second, ts.Value.Millisecond);
         }
 
         public float? GetNullableValueAsFloat(Type fieldDbType, int ordinal)
@@ -200,17 +1196,21 @@ namespace Atdi.CoreServices.EntityOrm
 
         public float GetValueAsFloat(Type fieldDbType, int ordinal)
         {
+            if (fieldDbType == typeof(bool))
+            {
+                return (float)Convert.ToSingle(_dataReader.GetBoolean(ordinal));
+            }
             if (fieldDbType == typeof(float))
             {
                 return _dataReader.GetFloat(ordinal);
             }
             if (fieldDbType == typeof(string))
             {
-                return (float)Convert.ToDouble(_dataReader.GetString(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetString(ordinal));
             }
             if (fieldDbType == typeof(decimal))
             {
-                return (float)Convert.ToDouble(_dataReader.GetDecimal(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetDecimal(ordinal));
             }
             if (fieldDbType == typeof(double))
             {
@@ -218,27 +1218,31 @@ namespace Atdi.CoreServices.EntityOrm
             }
             if (fieldDbType == typeof(int))
             {
-                return (float)Convert.ToDouble(_dataReader.GetInt32(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetInt32(ordinal));
             }
-            if (fieldDbType == typeof(byte))
+            if (fieldDbType == typeof(UInt32))
             {
-                return (float)Convert.ToDouble(_dataReader.GetByte(ordinal));
-            }
-            if (fieldDbType == typeof(DateTime))
-            {
-                return (float)Convert.ToDouble(_dataReader.GetDateTime(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetInt32(ordinal));
             }
             if (fieldDbType == typeof(char))
             {
-                return (float)Convert.ToDouble(_dataReader.GetChar(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetChar(ordinal));
             }
             if (fieldDbType == typeof(short))
             {
-                return (float)Convert.ToDouble(_dataReader.GetInt16(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(ushort))
+            {
+                return (float)Convert.ToSingle(_dataReader.GetInt16(ordinal));
             }
             if (fieldDbType == typeof(long))
             {
-                return (float)Convert.ToDouble(_dataReader.GetInt64(ordinal));
+                return (float)Convert.ToSingle(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return (float)Convert.ToSingle(_dataReader.GetInt64(ordinal));
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
@@ -254,6 +1258,10 @@ namespace Atdi.CoreServices.EntityOrm
 
         public double GetValueAsDouble(Type fieldDbType, int ordinal)
         {
+            if (fieldDbType == typeof(bool))
+            {
+                return (double)Convert.ToDouble(_dataReader.GetBoolean(ordinal));
+            }
             if (fieldDbType == typeof(double))
             {
                 return _dataReader.GetDouble(ordinal);
@@ -274,13 +1282,9 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToDouble(_dataReader.GetInt32(ordinal));
             }
-            if (fieldDbType == typeof(byte))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToDouble(_dataReader.GetByte(ordinal));
-            }
-            if (fieldDbType == typeof(DateTime))
-            {
-                return Convert.ToDouble(_dataReader.GetDateTime(ordinal));
+                return Convert.ToDouble(_dataReader.GetInt32(ordinal));
             }
             if (fieldDbType == typeof(char))
             {
@@ -290,7 +1294,15 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToDouble(_dataReader.GetInt16(ordinal));
             }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToDouble(_dataReader.GetInt16(ordinal));
+            }
             if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDouble(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
             {
                 return Convert.ToDouble(_dataReader.GetInt64(ordinal));
             }
@@ -308,6 +1320,14 @@ namespace Atdi.CoreServices.EntityOrm
 
         public decimal GetValueAsDecimal(Type fieldDbType, int ordinal)
         {
+            if (fieldDbType == typeof(bool))
+            {
+                return (decimal)Convert.ToDecimal(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToDecimal(_dataReader.GetChar(ordinal));
+            }
             if (fieldDbType == typeof(decimal))
             {
                 return _dataReader.GetDecimal(ordinal);
@@ -328,23 +1348,23 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToDecimal(_dataReader.GetInt32(ordinal));
             }
-            if (fieldDbType == typeof(byte))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToDecimal(_dataReader.GetByte(ordinal));
-            }
-            if (fieldDbType == typeof(DateTime))
-            {
-                return Convert.ToDecimal(_dataReader.GetDateTime(ordinal));
-            }
-            if (fieldDbType == typeof(char))
-            {
-                return Convert.ToDecimal(_dataReader.GetChar(ordinal));
+                return Convert.ToDecimal(_dataReader.GetInt32(ordinal));
             }
             if (fieldDbType == typeof(short))
             {
                 return Convert.ToDecimal(_dataReader.GetInt16(ordinal));
             }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToDecimal(_dataReader.GetInt16(ordinal));
+            }
             if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDecimal(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
             {
                 return Convert.ToDecimal(_dataReader.GetInt64(ordinal));
             }
@@ -364,6 +1384,10 @@ namespace Atdi.CoreServices.EntityOrm
 
         public string GetValueAsString(Type fieldDbType, int ordinal)
         {
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToString(_dataReader.GetBoolean(ordinal));
+            }
             if (fieldDbType == typeof(string))
             {
                 return _dataReader.GetString(ordinal);
@@ -384,7 +1408,15 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToString(_dataReader.GetInt32(ordinal));
             }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToString(_dataReader.GetInt32(ordinal));
+            }
             if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToString(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
             {
                 return Convert.ToString(_dataReader.GetByte(ordinal));
             }
@@ -400,10 +1432,52 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToString(_dataReader.GetInt16(ordinal));
             }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToString(_dataReader.GetInt16(ordinal));
+            }
             if (fieldDbType == typeof(long))
             {
                 return Convert.ToString(_dataReader.GetInt64(ordinal));
             }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToString(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(Guid))
+            {
+                return Convert.ToString(_dataReader.GetGuid(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToString(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToString(_dataReader.GetDateTime(ordinal));
+            }
+
+            if (fieldDbType == typeof(DateTimeOffset))
+            {
+                return Convert.ToString(_dataReader.GetDateTime(ordinal));
+            }
+
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
@@ -438,7 +1512,15 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToDateTime(_dataReader.GetInt32(ordinal));
             }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt32(ordinal));
+            }
             if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToDateTime(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
             {
                 return Convert.ToDateTime(_dataReader.GetByte(ordinal));
             }
@@ -446,17 +1528,46 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToDateTime(_dataReader.GetDecimal(ordinal));
             }
-            if (fieldDbType == typeof(char))
-            {
-                return Convert.ToDateTime(_dataReader.GetChar(ordinal));
-            }
+         
             if (fieldDbType == typeof(short))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
             {
                 return Convert.ToDateTime(_dataReader.GetInt16(ordinal));
             }
             if (fieldDbType == typeof(long))
             {
                 return Convert.ToDateTime(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(DateTimeOffset))
+            {
+                return _dataReader.GetDateTime(ordinal);
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToDateTime(result[0]);
+                }
             }
 
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
@@ -473,9 +1584,21 @@ namespace Atdi.CoreServices.EntityOrm
 
         public byte GetValueAsByte(Type fieldDbType, int ordinal)
         {
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToByte(_dataReader.GetBoolean(ordinal));
+            }
             if (fieldDbType == typeof(byte))
             {
                 return _dataReader.GetByte(ordinal);
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return _dataReader.GetByte(ordinal);
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                return Convert.ToByte(_dataReader.GetString(ordinal));
             }
             if (fieldDbType == typeof(string))
             {
@@ -490,6 +1613,10 @@ namespace Atdi.CoreServices.EntityOrm
                 return Convert.ToByte(_dataReader.GetFloat(ordinal));
             }
             if (fieldDbType == typeof(int))
+            {
+                return Convert.ToByte(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
             {
                 return Convert.ToByte(_dataReader.GetInt32(ordinal));
             }
@@ -509,7 +1636,15 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return Convert.ToByte(_dataReader.GetInt16(ordinal));
             }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToByte(_dataReader.GetInt16(ordinal));
+            }
             if (fieldDbType == typeof(long))
+            {
+                return Convert.ToByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
             {
                 return Convert.ToByte(_dataReader.GetInt64(ordinal));
             }
@@ -593,9 +1728,21 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return new byte[] { _dataReader.GetByte(ordinal) };
             }
-            if (fieldDbType == typeof(string))
+            if (fieldDbType == typeof(sbyte))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetString(ordinal)) };
+                return new byte[] { _dataReader.GetByte(ordinal) };
+            }
+            if (fieldDbType == typeof(Guid))
+            {
+                return _dataReader.GetGuid(ordinal).ToByteArray();
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(string.Format("Type {0} conversion not supported ", fieldDbType.ToString()));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(string.Format("Type {0} conversion not supported ", fieldDbType.ToString()));
             }
             if (fieldDbType == typeof(double))
             {
@@ -609,6 +1756,10 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetInt32(ordinal)) };
             }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt32(ordinal)) };
+            }
             if (fieldDbType == typeof(DateTime))
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetDateTime(ordinal)) };
@@ -617,10 +1768,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetDecimal(ordinal)) };
             }
-            if (fieldDbType == typeof(Guid))
-            {
-                return _dataReader.GetGuid(ordinal).ToByteArray();
-            }
+          
             if (fieldDbType == typeof(char))
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetChar(ordinal)) };
@@ -629,7 +1777,15 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetInt16(ordinal)) };
             }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt16(ordinal)) };
+            }
             if (fieldDbType == typeof(long))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt64(ordinal)) };
+            }
+            if (fieldDbType == typeof(UInt64))
             {
                 return new byte[] { Convert.ToByte(_dataReader.GetInt64(ordinal)) };
             }
@@ -668,433 +1824,1457 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool GetValueAsBoolean(int columnIndex)
+        private bool GetValueAsBoolean(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(bool))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(bool))
             {
-                return _dataReader.GetBoolean(columnIndex);
+                return _dataReader.GetBoolean(ordinal);
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(int))
             {
-                return Convert.ToBoolean(_dataReader.GetInt32(columnIndex));
+                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToBoolean(_dataReader.GetString(columnIndex));
+                return Convert.ToBoolean(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(char))
             {
-                return Convert.ToBoolean(_dataReader.GetChar(columnIndex));
+                return Convert.ToBoolean(_dataReader.GetChar(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(short))
             {
-                return Convert.ToBoolean(_dataReader.GetInt16(columnIndex));
+                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(long))
             {
-                return Convert.ToBoolean(_dataReader.GetInt64(columnIndex));
+                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
+            }
+
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToBoolean(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToBoolean(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToBoolean(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToBoolean(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetValueAsInt32(int columnIndex)
+        private int GetValueAsInt32(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(int))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
             {
-                return _dataReader.GetInt32(columnIndex);
+                return _dataReader.GetInt32(ordinal);
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToInt32(_dataReader.GetString(columnIndex));
+                return _dataReader.GetInt32(ordinal);
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToInt32(_dataReader.GetDecimal(columnIndex));
+                return Convert.ToInt32(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(decimal))
             {
-                return Convert.ToInt32(_dataReader.GetDouble(columnIndex));
+                return Convert.ToInt32(_dataReader.GetDecimal(ordinal));
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(double))
             {
-                return Convert.ToInt32(_dataReader.GetFloat(columnIndex));
+                return Convert.ToInt32(_dataReader.GetDouble(ordinal));
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(float))
             {
-                return Convert.ToInt32(_dataReader.GetByte(columnIndex));
+                return Convert.ToInt32(_dataReader.GetFloat(ordinal));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(bool))
             {
-                return Convert.ToInt32(_dataReader.GetDateTime(columnIndex));
+                return Convert.ToInt32(_dataReader.GetBoolean(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(byte))
             {
-                return Convert.ToInt32(_dataReader.GetChar(columnIndex));
+                return Convert.ToInt32(_dataReader.GetByte(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(sbyte))
             {
-                return Convert.ToInt32(_dataReader.GetInt16(columnIndex));
+                return Convert.ToInt32(_dataReader.GetByte(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(DateTime))
             {
-                return Convert.ToInt32(_dataReader.GetInt64(columnIndex));
+                return Convert.ToInt32(_dataReader.GetDateTime(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToInt32(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToInt32(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToInt32(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToInt32(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToInt32(_dataReader.GetInt64(ordinal));
+            }
+
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToInt32(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToInt32(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        public TimeSpan DateTimeToTimeSpan(DateTime? ts)
+        {
+            if (!ts.HasValue) return TimeSpan.Zero;
+            else return new TimeSpan(0, ts.Value.Hour, ts.Value.Minute, ts.Value.Second, ts.Value.Millisecond);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private float GetValueAsFloat(int columnIndex)
+        private float GetValueAsFloat(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(float))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(bool))
             {
-                return _dataReader.GetFloat(columnIndex);
+                return (float)Convert.ToSingle(_dataReader.GetBoolean(ordinal));
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(float))
             {
-                return (float)Convert.ToDouble(_dataReader.GetString(columnIndex));
+                return _dataReader.GetFloat(ordinal);
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(string))
             {
-                return (float)Convert.ToDouble(_dataReader.GetDecimal(columnIndex));
+                return (float)Convert.ToSingle(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(decimal))
             {
-                return (float)_dataReader.GetDouble(columnIndex);
+                return (float)Convert.ToSingle(_dataReader.GetDecimal(ordinal));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(double))
             {
-                return (float)Convert.ToDouble(_dataReader.GetInt32(columnIndex));
+                return (float)_dataReader.GetDouble(ordinal);
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(int))
             {
-                return (float)Convert.ToDouble(_dataReader.GetByte(columnIndex));
+                return (float)Convert.ToSingle(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(UInt32))
             {
-                return (float)Convert.ToDouble(_dataReader.GetDateTime(columnIndex));
+                return (float)Convert.ToSingle(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(char))
             {
-                return (float)Convert.ToDouble(_dataReader.GetChar(columnIndex));
+                return (float)Convert.ToSingle(_dataReader.GetChar(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(short))
             {
-                return (float)Convert.ToDouble(_dataReader.GetInt16(columnIndex));
+                return (float)Convert.ToSingle(_dataReader.GetInt16(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(ushort))
             {
-                return (float)Convert.ToDouble(_dataReader.GetInt64(columnIndex));
+                return (float)Convert.ToSingle(_dataReader.GetInt16(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(long))
+            {
+                return (float)Convert.ToSingle(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return (float)Convert.ToSingle(_dataReader.GetInt64(ordinal));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private double GetValueAsDouble(int columnIndex)
+        private double GetValueAsDouble(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(double))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(bool))
             {
-                return _dataReader.GetDouble(columnIndex);
+                return (double)Convert.ToDouble(_dataReader.GetBoolean(ordinal));
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(double))
             {
-                return _dataReader.GetFloat(columnIndex);
+                return _dataReader.GetDouble(ordinal);
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(float))
             {
-                return Convert.ToDouble(_dataReader.GetString(columnIndex));
+                return _dataReader.GetFloat(ordinal);
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToDouble(_dataReader.GetDecimal(columnIndex));
+                return Convert.ToDouble(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(decimal))
             {
-                return Convert.ToDouble(_dataReader.GetInt32(columnIndex));
+                return Convert.ToDouble(_dataReader.GetDecimal(ordinal));
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(int))
             {
-                return Convert.ToDouble(_dataReader.GetByte(columnIndex));
+                return Convert.ToDouble(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToDouble(_dataReader.GetDateTime(columnIndex));
+                return Convert.ToDouble(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(char))
             {
-                return Convert.ToDouble(_dataReader.GetChar(columnIndex));
+                return Convert.ToDouble(_dataReader.GetChar(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(short))
             {
-                return Convert.ToDouble(_dataReader.GetInt16(columnIndex));
+                return Convert.ToDouble(_dataReader.GetInt16(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(UInt16))
             {
-                return Convert.ToDouble(_dataReader.GetInt64(columnIndex));
+                return Convert.ToDouble(_dataReader.GetInt16(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDouble(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToDouble(_dataReader.GetInt64(ordinal));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private decimal GetValueAsDecimal(int columnIndex)
+        private decimal GetValueAsDecimal(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(decimal))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(bool))
             {
-                return _dataReader.GetDecimal(columnIndex);
+                return (decimal)Convert.ToDecimal(_dataReader.GetBoolean(ordinal));
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(char))
             {
-                return Convert.ToDecimal(_dataReader.GetString(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetChar(ordinal));
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(decimal))
             {
-                return Convert.ToDecimal(_dataReader.GetDouble(columnIndex));
+                return _dataReader.GetDecimal(ordinal);
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToDecimal(_dataReader.GetFloat(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(double))
             {
-                return Convert.ToDecimal(_dataReader.GetInt32(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetDouble(ordinal));
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(float))
             {
-                return Convert.ToDecimal(_dataReader.GetByte(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetFloat(ordinal));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(int))
             {
-                return Convert.ToDecimal(_dataReader.GetDateTime(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToDecimal(_dataReader.GetChar(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(short))
             {
-                return Convert.ToDecimal(_dataReader.GetInt16(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetInt16(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(UInt16))
             {
-                return Convert.ToDecimal(_dataReader.GetInt64(columnIndex));
+                return Convert.ToDecimal(_dataReader.GetInt16(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDecimal(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToDecimal(_dataReader.GetInt64(ordinal));
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string GetValueAsString(int columnIndex)
+        private string GetValueAsString(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(string))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(bool))
             {
-                return _dataReader.GetString(columnIndex);
+                return Convert.ToString(_dataReader.GetBoolean(ordinal));
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToString(_dataReader.GetDouble(columnIndex));
+                return _dataReader.GetString(ordinal);
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(double))
             {
-                return Convert.ToString(_dataReader.GetDecimal(columnIndex));
+                return Convert.ToString(_dataReader.GetDouble(ordinal));
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(decimal))
             {
-                return Convert.ToString(_dataReader.GetFloat(columnIndex));
+                return Convert.ToString(_dataReader.GetDecimal(ordinal));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(float))
             {
-                return Convert.ToString(_dataReader.GetInt32(columnIndex));
+                return Convert.ToString(_dataReader.GetFloat(ordinal));
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(int))
             {
-                return Convert.ToString(_dataReader.GetByte(columnIndex));
+                return Convert.ToString(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToString(_dataReader.GetDateTime(columnIndex));
+                return Convert.ToString(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(byte))
             {
-                return Convert.ToString(_dataReader.GetChar(columnIndex));
+                return Convert.ToString(_dataReader.GetByte(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(sbyte))
             {
-                return Convert.ToString(_dataReader.GetInt16(columnIndex));
+                return Convert.ToString(_dataReader.GetByte(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(DateTime))
             {
-                return Convert.ToString(_dataReader.GetInt64(columnIndex));
+                return Convert.ToString(_dataReader.GetDateTime(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToString(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToString(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToString(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToString(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToString(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(Guid))
+            {
+                return Convert.ToString(_dataReader.GetGuid(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToString(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToString(_dataReader.GetDateTime(ordinal));
+            }
+
+            if (fieldDbType == typeof(DateTimeOffset))
+            {
+                return Convert.ToString(_dataReader.GetDateTime(ordinal));
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private DateTime GetValueAsDateTime(int columnIndex)
+        private DateTime GetValueAsDateTime(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(DateTime))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(DateTime))
             {
-                return _dataReader.GetDateTime(columnIndex);
+                return _dataReader.GetDateTime(ordinal);
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToDateTime(_dataReader.GetString(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(double))
             {
-                return Convert.ToDateTime(_dataReader.GetDouble(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetDouble(ordinal));
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(float))
             {
-                return Convert.ToDateTime(_dataReader.GetFloat(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetFloat(ordinal));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(int))
             {
-                return Convert.ToDateTime(_dataReader.GetInt32(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToDateTime(_dataReader.GetByte(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(byte))
             {
-                return Convert.ToDateTime(_dataReader.GetDecimal(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetByte(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(sbyte))
             {
-                return Convert.ToDateTime(_dataReader.GetChar(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetByte(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(decimal))
             {
-                return Convert.ToDateTime(_dataReader.GetInt16(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetDecimal(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(short))
             {
-                return Convert.ToDateTime(_dataReader.GetInt64(columnIndex));
+                return Convert.ToDateTime(_dataReader.GetInt16(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToDateTime(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(DateTimeOffset))
+            {
+                return _dataReader.GetDateTime(ordinal);
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToDateTime(result[0]);
+                }
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte GetValueAsByte(int columnIndex)
+        private byte GetValueAsByte(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(byte))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(bool))
             {
-                return _dataReader.GetByte(columnIndex);
+                return Convert.ToByte(_dataReader.GetBoolean(ordinal));
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(byte))
             {
-                return Convert.ToByte(_dataReader.GetString(columnIndex));
+                return _dataReader.GetByte(ordinal);
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(sbyte))
             {
-                return Convert.ToByte(_dataReader.GetDouble(columnIndex));
+                return _dataReader.GetByte(ordinal);
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(Enum))
             {
-                return Convert.ToByte(_dataReader.GetFloat(columnIndex));
+                return Convert.ToByte(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(string))
             {
-                return Convert.ToByte(_dataReader.GetInt32(columnIndex));
+                return Convert.ToByte(_dataReader.GetString(ordinal));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(double))
             {
-                return Convert.ToByte(_dataReader.GetDateTime(columnIndex));
+                return Convert.ToByte(_dataReader.GetDouble(ordinal));
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(float))
             {
-                return Convert.ToByte(_dataReader.GetDecimal(columnIndex));
+                return Convert.ToByte(_dataReader.GetFloat(ordinal));
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(int))
             {
-                return Convert.ToByte(_dataReader.GetChar(columnIndex));
+                return Convert.ToByte(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(UInt32))
             {
-                return Convert.ToByte(_dataReader.GetInt16(columnIndex));
+                return Convert.ToByte(_dataReader.GetInt32(ordinal));
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(DateTime))
             {
-                return Convert.ToByte(_dataReader.GetInt64(columnIndex));
+                return Convert.ToByte(_dataReader.GetDateTime(ordinal));
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToByte(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToByte(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToByte(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToByte(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return result[0];
+                }
+
+                return default(byte);
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte[] GetValueAsBytes(int columnIndex)
+        private byte[] GetValueAsBytes(int ordinal)
         {
-            var columnType = _dataReader.GetFieldType(columnIndex);
-            if (columnType == typeof(byte[]))
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(byte[]))
             {
-                var size = _dataReader.GetBytes(columnIndex, 0, null, 0, 0); 
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
                 var result = new byte[size];
                 const int lehght = 1024;
                 long readBytes = 0;
                 int offset = 0;
                 while (readBytes < size)
                 {
-                    if (lehght<= size- readBytes)
-                        readBytes += _dataReader.GetBytes(columnIndex, offset, result, offset, lehght);
-                    else readBytes += _dataReader.GetBytes(columnIndex, offset, result, offset, (int)(size - readBytes));
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
 
                     offset += lehght;
                 }
 
                 return result;
             }
-            if (columnType == typeof(byte))
+            if (fieldDbType == typeof(byte))
             {
-                return new byte[] { _dataReader.GetByte(columnIndex) };
+                return new byte[] { _dataReader.GetByte(ordinal) };
             }
-            if (columnType == typeof(string))
+            if (fieldDbType == typeof(sbyte))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetString(columnIndex)) };
+                return new byte[] { _dataReader.GetByte(ordinal) };
             }
-            if (columnType == typeof(double))
+            if (fieldDbType == typeof(Guid))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetDouble(columnIndex)) };
+                return _dataReader.GetGuid(ordinal).ToByteArray();
             }
-            if (columnType == typeof(float))
+            if (fieldDbType == typeof(Enum))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetFloat(columnIndex)) };
+                throw new InvalidOperationException(string.Format("Type {0} conversion not supported ", fieldDbType.ToString()));
             }
-            if (columnType == typeof(int))
+            if (fieldDbType == typeof(Object))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetInt32(columnIndex)) };
+                throw new InvalidOperationException(string.Format("Type {0} conversion not supported ", fieldDbType.ToString()));
             }
-            if (columnType == typeof(DateTime))
+            if (fieldDbType == typeof(double))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetDateTime(columnIndex)) };
+                return new byte[] { Convert.ToByte(_dataReader.GetDouble(ordinal)) };
             }
-            if (columnType == typeof(decimal))
+            if (fieldDbType == typeof(float))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetDecimal(columnIndex)) };
+                return new byte[] { Convert.ToByte(_dataReader.GetFloat(ordinal)) };
             }
-            if (columnType == typeof(Guid))
+            if (fieldDbType == typeof(int))
             {
-                return _dataReader.GetGuid(columnIndex).ToByteArray();
+                return new byte[] { Convert.ToByte(_dataReader.GetInt32(ordinal)) };
             }
-            if (columnType == typeof(char))
+            if (fieldDbType == typeof(UInt32))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetChar(columnIndex)) };
+                return new byte[] { Convert.ToByte(_dataReader.GetInt32(ordinal)) };
             }
-            if (columnType == typeof(short))
+            if (fieldDbType == typeof(DateTime))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetInt16(columnIndex)) };
+                return new byte[] { Convert.ToByte(_dataReader.GetDateTime(ordinal)) };
             }
-            if (columnType == typeof(long))
+            if (fieldDbType == typeof(decimal))
             {
-                return new byte[] { Convert.ToByte(_dataReader.GetInt64(columnIndex)) };
+                return new byte[] { Convert.ToByte(_dataReader.GetDecimal(ordinal)) };
             }
+
+            if (fieldDbType == typeof(char))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetChar(ordinal)) };
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt16(ordinal)) };
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt16(ordinal)) };
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt64(ordinal)) };
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return new byte[] { Convert.ToByte(_dataReader.GetInt64(ordinal)) };
+            }
+
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public char GetValueAsChar(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToChar(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToChar(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToChar(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToChar(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToChar(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToChar(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToChar(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToChar(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToChar(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(DateTime))
+            {
+                return Convert.ToChar(_dataReader.GetDateTime(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToChar(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToChar(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToChar(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToChar(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToChar(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(Guid))
+            {
+                return Convert.ToChar(_dataReader.GetGuid(ordinal));
+            }
+
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToChar(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToChar(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public short GetValueAsShort(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToInt16(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToInt16(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToInt16(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToInt16(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToInt16(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToInt16(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToInt16(_dataReader.GetByte(ordinal));
+            }
+
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToInt16(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToInt16(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToInt16(_dataReader.GetInt64(ordinal));
+            }
+
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToInt16(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToInt16(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public UInt16 GetValueAsUnsignedShort(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToUInt16(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToUInt16(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToUInt16(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToUInt16(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToUInt16(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToUInt16(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToUInt16(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToUInt16(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToUInt16(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToUInt16(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToUInt16(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public UInt32 GetValueAsUnsignedInteger(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToUInt32(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToUInt32(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToUInt32(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToUInt32(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToUInt32(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToUInt32(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToUInt32(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToUInt32(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToUInt32(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToUInt32(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToUInt32(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long GetValueAsLong(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToInt64(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToInt64(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToInt64(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToInt64(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToInt64(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToInt64(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToInt64(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToInt64(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
             
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public UInt64 GetValueAsUnsignedLong(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToUInt64(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToUInt64(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToUInt64(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToUInt64(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToUInt64(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToUInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToUInt64(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToUInt64(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToUInt64(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToUInt64(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToUInt64(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public sbyte GetValueAsSignedByte(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(int))
+            {
+                return Convert.ToSByte(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(UInt32))
+            {
+                return Convert.ToSByte(_dataReader.GetInt32(ordinal));
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return Convert.ToSByte(_dataReader.GetString(ordinal));
+            }
+            if (fieldDbType == typeof(decimal))
+            {
+                return Convert.ToSByte(_dataReader.GetDecimal(ordinal));
+            }
+            if (fieldDbType == typeof(double))
+            {
+                return Convert.ToSByte(_dataReader.GetDouble(ordinal));
+            }
+            if (fieldDbType == typeof(float))
+            {
+                return Convert.ToSByte(_dataReader.GetFloat(ordinal));
+            }
+            if (fieldDbType == typeof(bool))
+            {
+                return Convert.ToSByte(_dataReader.GetBoolean(ordinal));
+            }
+            if (fieldDbType == typeof(byte))
+            {
+                return Convert.ToSByte(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(sbyte))
+            {
+                return Convert.ToSByte(_dataReader.GetByte(ordinal));
+            }
+            if (fieldDbType == typeof(char))
+            {
+                return Convert.ToSByte(_dataReader.GetChar(ordinal));
+            }
+            if (fieldDbType == typeof(short))
+            {
+                return Convert.ToSByte(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(UInt16))
+            {
+                return Convert.ToSByte(_dataReader.GetInt16(ordinal));
+            }
+            if (fieldDbType == typeof(long))
+            {
+                return Convert.ToSByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(UInt64))
+            {
+                return Convert.ToSByte(_dataReader.GetInt64(ordinal));
+            }
+            if (fieldDbType == typeof(byte[]))
+            {
+                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
+                var result = new byte[size];
+                const int lehght = 1;
+                long readBytes = 0;
+                int offset = 0;
+                while (readBytes < size)
+                {
+                    if (lehght <= size - readBytes)
+                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
+                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
+
+                    offset += lehght;
+                }
+                if (result.Length > 0)
+                {
+                    return Convert.ToSByte(result[0]);
+                }
+            }
+            if (fieldDbType == typeof(TimeSpan))
+            {
+                return Convert.ToSByte(DateTimeToTimeSpan(_dataReader.GetDateTime(ordinal)));
+            }
+            if (fieldDbType == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            if (fieldDbType == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+           
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TimeSpan GetValueAsTime(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            if (fieldDbType == typeof(DateTime))
+            {
+                return DateTimeToTimeSpan(Convert.ToDateTime(_dataReader.GetInt32(ordinal)));
+            }
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DateTime GetValueAsDate(int ordinal)
+        {
+            return GetValueAsDateTime(ordinal);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DateTimeOffset GetValueAsDateTimeOffset(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string GetValueAsXml(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string GetValueAsJson(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Enum GetValueAsClrEnum(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Object GetValueAsClrType(int ordinal)
+        {
+            var fieldDbType = _dataReader.GetFieldType(ordinal);
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1111,6 +3291,316 @@ namespace Atdi.CoreServices.EntityOrm
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
+
+
+
+
+        public char GetValue(Expression<Func<TModel, char>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsChar(columnIndex);
+        }
+
+        public char? GetValue(Expression<Func<TModel, char?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsChar(columnIndex);
+        }
+
+
+        public short GetValue(Expression<Func<TModel, short>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsShort(columnIndex);
+        }
+
+
+        public short? GetValue(Expression<Func<TModel, short?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsShort(columnIndex);
+        }
+
+
+        public UInt16 GetValue(Expression<Func<TModel, UInt16>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsUnsignedShort(columnIndex);
+        }
+
+        public UInt16? GetValue(Expression<Func<TModel, UInt16?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsUnsignedShort(columnIndex);
+        }
+
+        public UInt32 GetValue(Expression<Func<TModel, UInt32>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsUnsignedInteger(columnIndex);
+        }
+
+        public UInt32? GetValue(Expression<Func<TModel, UInt32?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsUnsignedInteger(columnIndex);
+        }
+
+        public long GetValue(Expression<Func<TModel, long>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsLong(columnIndex);
+        }
+
+        public long? GetValue(Expression<Func<TModel, long?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsLong(columnIndex);
+        }
+
+        public UInt64 GetValue(Expression<Func<TModel, UInt64>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsUnsignedLong(columnIndex);
+        }
+
+        public UInt64? GetValue(Expression<Func<TModel, UInt64?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsUnsignedLong(columnIndex);
+        }
+
+        public sbyte GetValue(Expression<Func<TModel, sbyte>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsSignedByte(columnIndex);
+        }
+
+        public sbyte? GetValue(Expression<Func<TModel, sbyte?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsSignedByte(columnIndex);
+        }
+
+
+        public TimeSpan GetValue(Expression<Func<TModel, TimeSpan>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsTime(columnIndex);
+        }
+
+        public TimeSpan? GetValue(Expression<Func<TModel, TimeSpan?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsTime(columnIndex);
+        }
+
+        public DateTime GetValue(Expression<Func<TModel, DateTime>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsDate(columnIndex);
+        }
+        public DateTime? GetValue(Expression<Func<TModel, DateTime?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsDate(columnIndex);
+        }
+
+        public DateTimeOffset GetValue(Expression<Func<TModel, DateTimeOffset>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsDateTimeOffset(columnIndex);
+        }
+
+        public DateTimeOffset? GetValue(Expression<Func<TModel, DateTimeOffset?>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            if (_dataReader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+            return GetValueAsDateTimeOffset(columnIndex);
+        }
+
+        public Enum GetValue(Expression<Func<TModel, Enum>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsClrEnum(columnIndex);
+        }
+
+        public Object GetValue(Expression<Func<TModel, Object>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            return GetValueAsClrType(columnIndex);
+        }
+
 
         public bool GetValue(Expression<Func<TModel, bool>> columnExpression)
         {
@@ -1257,34 +3747,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsDecimal(columnIndex);
         }
 
-        public DateTime GetValue(Expression<Func<TModel, DateTime>> columnExpression)
-        {
-            if (columnExpression == null)
-            {
-                throw new ArgumentNullException(nameof(columnExpression));
-            }
-
-            var columnName = columnExpression.Body.GetMemberName();
-            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
-            return GetValueAsDateTime(columnIndex);
-        }
-
-        public DateTime? GetValue(Expression<Func<TModel, DateTime?>> columnExpression)
-        {
-            if (columnExpression == null)
-            {
-                throw new ArgumentNullException(nameof(columnExpression));
-            }
-
-            var columnName = columnExpression.Body.GetMemberName();
-            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
-            if (_dataReader.IsDBNull(columnIndex))
-            {
-                return null;
-            }
-
-            return GetValueAsDateTime(columnIndex);
-        }
 
         public string GetValue(Expression<Func<TModel, string>> columnExpression)
         {
@@ -1384,610 +3846,4 @@ namespace Atdi.CoreServices.EntityOrm
         }
     }
 
-    //public static class DataReaderExtenstions
-    //{
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static object GetValueAsObject(this IDataReader dataReader, DataModels.DataType columnType, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-
-    //        switch (columnType)
-    //        {
-    //            case DataModels.DataType.String:
-    //                return dataReader.GetValueAsString(fieldDbType, ordinal);
-    //            case DataModels.DataType.Boolean:
-    //                return dataReader.GetValueAsBoolean(fieldDbType, ordinal);
-    //            case DataModels.DataType.Integer:
-    //                return dataReader.GetValueAsInt32(fieldDbType, ordinal);
-    //            case DataModels.DataType.DateTime:
-    //                return dataReader.GetValueAsDateTime(fieldDbType, ordinal);
-    //            case DataModels.DataType.Double:
-    //                return dataReader.GetValueAsDouble(fieldDbType, ordinal);
-    //            case DataModels.DataType.Float:
-    //                return dataReader.GetValueAsFloat(fieldDbType, ordinal);
-    //            case DataModels.DataType.Decimal:
-    //                return dataReader.GetValueAsDecimal(fieldDbType, ordinal);
-    //            case DataModels.DataType.Byte:
-    //                return dataReader.GetValueAsByte(fieldDbType, ordinal);
-    //            case DataModels.DataType.Bytes:
-    //                return dataReader.GetValueAsBytes(fieldDbType, ordinal);
-    //            default:
-    //                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, dataReader.GetName(ordinal)));
-    //        }
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static string GetValueAsString(this IDataReader dataReader, DataModels.DataType columnType, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-
-    //        switch (columnType)
-    //        {
-    //            case DataModels.DataType.String:
-    //                return dataReader.GetValueAsString(fieldDbType, ordinal);
-    //            case DataModels.DataType.Boolean:
-    //                return dataReader.GetValueAsBoolean(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    //            case DataModels.DataType.Integer:
-    //                return dataReader.GetValueAsInt32(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    //            case DataModels.DataType.DateTime:
-    //                return dataReader.GetValueAsDateTime(fieldDbType, ordinal).ConvertToISO8601DateTimeString();
-    //            case DataModels.DataType.Double:
-    //                return dataReader.GetValueAsDouble(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    //            case DataModels.DataType.Float:
-    //                return dataReader.GetValueAsFloat(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    //            case DataModels.DataType.Decimal:
-    //                return dataReader.GetValueAsDecimal(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    //            case DataModels.DataType.Byte:
-    //                return dataReader.GetValueAsByte(fieldDbType, ordinal).ToString(System.Globalization.CultureInfo.InvariantCulture);
-    //            case DataModels.DataType.Bytes:
-    //                return UTF8Encoding.UTF8.GetString(dataReader.GetValueAsBytes(fieldDbType, ordinal));
-    //            default:
-    //                throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, dataReader.GetName(ordinal)));
-    //        }
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static bool? GetNullableValueAsBoolean(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsBoolean(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static bool GetValueAsBoolean(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(bool))
-    //        {
-    //            return dataReader.GetBoolean(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return Convert.ToBoolean(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Convert.ToBoolean(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToBoolean(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToBoolean(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToBoolean(dataReader.GetInt64(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static int? GetNullableValueAsInt32(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsInt32(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static int GetValueAsInt32(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return dataReader.GetInt32(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetDecimal(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetDouble(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetFloat(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetByte(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetDateTime(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToInt32(dataReader.GetInt64(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static float? GetNullableValueAsFloat(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsFloat(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static float GetValueAsFloat(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return dataReader.GetFloat(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetDecimal(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return (float)dataReader.GetDouble(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetByte(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetDateTime(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return (float)Convert.ToDouble(dataReader.GetInt64(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static double? GetNullableValueAsDouble(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsDouble(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static double GetValueAsDouble(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return dataReader.GetDouble(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return dataReader.GetFloat(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetDecimal(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetByte(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetDateTime(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToDouble(dataReader.GetInt64(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static decimal? GetNullableValueAsDecimal(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsDecimal(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static decimal GetValueAsDecimal(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return dataReader.GetDecimal(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetDouble(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetFloat(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetByte(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetDateTime(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToDecimal(dataReader.GetInt64(ordinal));
-    //        }
-
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static string GetNullableValueAsString(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsString(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static string GetValueAsString(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return dataReader.GetString(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return Convert.ToString(dataReader.GetDouble(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return Convert.ToString(dataReader.GetDecimal(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return Convert.ToString(dataReader.GetFloat(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return Convert.ToString(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return Convert.ToString(dataReader.GetByte(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return Convert.ToString(dataReader.GetDateTime(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToString(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToString(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToString(dataReader.GetInt64(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static DateTime? GetNullableValueAsDateTime(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsDateTime(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static DateTime GetValueAsDateTime(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return dataReader.GetDateTime(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetDouble(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetFloat(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetByte(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetDecimal(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToDateTime(dataReader.GetInt64(ordinal));
-    //        }
-
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static byte? GetNullableValueAsByte(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsByte(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static byte GetValueAsByte(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return dataReader.GetByte(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Convert.ToByte(dataReader.GetString(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return Convert.ToByte(dataReader.GetDouble(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return Convert.ToByte(dataReader.GetFloat(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return Convert.ToByte(dataReader.GetInt32(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return Convert.ToByte(dataReader.GetDateTime(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return Convert.ToByte(dataReader.GetDecimal(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return Convert.ToByte(dataReader.GetChar(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return Convert.ToByte(dataReader.GetInt16(ordinal));
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return Convert.ToByte(dataReader.GetInt64(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static Guid? GetNullableValueAsGuid(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsGuid(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static Guid GetValueAsGuid(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(Guid))
-    //        {
-    //            return dataReader.GetGuid(ordinal);
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return Guid.Parse(dataReader.GetString(ordinal));
-    //        }
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static byte[] GetNullableValueAsBytes(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (dataReader.IsDBNull(ordinal))
-    //        {
-    //            return null;
-    //        }
-    //        return dataReader.GetValueAsBytes(fieldDbType, ordinal);
-    //    }
-
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //    public static byte[] GetValueAsBytes(this IDataReader dataReader, Type fieldDbType, int ordinal)
-    //    {
-    //        if (fieldDbType == typeof(byte[]))
-    //        {
-    //            var size = dataReader.GetBytes(ordinal, 0, null, 0, 0);
-    //            var result = new byte[size];
-    //            const int lehght = 1024;
-    //            long readBytes = 0;
-    //            int offset = 0;
-    //            while (readBytes < size)
-    //            {
-    //                if (lehght <= size - readBytes)
-    //                    readBytes += dataReader.GetBytes(ordinal, offset, result, offset, lehght);
-    //                else readBytes += dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
-
-    //                offset += lehght;
-    //            }
-
-    //            return result;
-    //        }
-    //        if (fieldDbType == typeof(byte))
-    //        {
-    //            return new byte[] { dataReader.GetByte(ordinal) };
-    //        }
-    //        if (fieldDbType == typeof(string))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetString(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(double))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetDouble(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(float))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetFloat(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(int))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetInt32(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(DateTime))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetDateTime(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(decimal))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetDecimal(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(Guid))
-    //        {
-    //            return dataReader.GetGuid(ordinal).ToByteArray();
-    //        }
-    //        if (fieldDbType == typeof(char))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetChar(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(short))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetInt16(ordinal)) };
-    //        }
-    //        if (fieldDbType == typeof(long))
-    //        {
-    //            return new byte[] { Convert.ToByte(dataReader.GetInt64(ordinal)) };
-    //        }
-            
-    //        throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
-    //    }
-    //}
 }
