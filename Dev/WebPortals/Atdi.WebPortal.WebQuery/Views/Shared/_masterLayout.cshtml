@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        @RenderSection("DevStylesheets", required: false)
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        @RenderSection("ProdStylesheets", required: false)
+    </environment>
+
+</head>
+<body>
+    @RenderBody()
+
+    <environment include="Development">
+        @RenderSection("DevScripts", required: false)
+    </environment>
+    <environment exclude="Development">
+        @RenderSection("ProdScripts", required: false)
+    </environment>
+</body>
+</html>

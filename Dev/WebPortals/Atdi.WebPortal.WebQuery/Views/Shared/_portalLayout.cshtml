@@ -1,0 +1,19 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_masterLayout.cshtml";
+}
+<header>
+    <nav>
+        <div>Company logo image</div>
+        <div>Company name</div>
+        <div>Portal description</div>
+
+        <div>User name</div>
+        <div>Sign Out Action</div>
+    </nav>
+</header>
+<section>    
+    @RenderBody()
+</section>
+<footer>
+    <p>&copy; @DateTime.Now.Year.ToString() - WebQuery</p>
+</footer>
