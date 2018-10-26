@@ -15,7 +15,26 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public decimal? CentralFrequency; // из class LevelMeasurementsCar
         public double? BW; // из class LevelMeasurementsCar если значение <= 0, то вытаскивать из MeasurementsParameterGeneral причем = SpecrumSteps*(T2-T1);
         public int? Idstation; // из class ResultsMeasurementsStation
+        public int? Id; // из class ResultsMeasurementsStation
+        public string globalSid;
     }
+
+    public class Hit
+    {
+        public DateTime? dateTime;
+        public int? Id;
+        public string globalSid= "";
+    }
+
+    public class SOFrequencyTemp
+    {
+        public double Frequency_MHz;
+        public int hit = 0;
+        public List<string> StantionIDs = new List<string>();
+        public int[] HitByHuors = new int[24];
+        public List<string> measglobalsid = new List<string>();
+    }
+
 
 
     public class AnaliticsUnit1 : IDisposable
@@ -39,206 +58,195 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             GC.SuppressFinalize(this);
         }
 
-        
-        public SOFrequency[] CalcAppUnit2(List<double> Frequencies_MHz, double? BW_kHz, List<int> MeasResultID, double? LonMax, double? LonMin,  double? LatMax, double? LatMin, double? TrLevel_dBm)
+
+        public SOFrequency[] CalcAppUnit2(List<double> Frequencies_MHz, double BW_kHz, List<int> MeasResultID, double LonMax, double LonMin, double LatMax, double LatMin, double TrLevel_dBm)
         {
             List<SOFrequency> L_OUT = new List<SOFrequency>();
             try
             {
-                System.Threading.Thread thread = new System.Threading.Thread(()=>
+                System.Threading.Thread thread = new System.Threading.Thread(() =>
                 {
-                logger.Trace("Start procedure ConvertTo_MEAS_TASKObjects...");
+                    logger.Trace("Start procedure CalcAppUnit2...");
                     try
                     {
+                        int count = Frequencies_MHz.Count;
+                        List<Hit> HitVal = new List<Hit>();
+                        List<SOFrequencyTemp> listLevelMeasFreq = new List<SOFrequencyTemp>();
                         for (int i = 0; i < Frequencies_MHz.Count; i++)
                         {
-                            List<LevelMeasurementsCarForSO> listLevelMeas = new List<LevelMeasurementsCarForSO>();
-                            string SQL = string.Format("(LON{0}) AND (LON{1}) AND (LAT{2}) AND (LAT{3}) AND (LEVELDBM{4}) AND (ID IN ({5}))", LonMin.HasValue ? ">=" + LonMin.ToString().Replace(",", ".") : " IS NULL", LonMax.HasValue ? "<=" + LonMax.ToString().Replace(",", ".") : " IS NULL", LatMin.HasValue ? ">=" + LatMin.ToString().Replace(",", ".") : " IS NULL", LatMax.HasValue ? "<=" + LatMax.ToString().Replace(",", ".") : " IS NULL", TrLevel_dBm.HasValue ? ">" + TrLevel_dBm.ToString().Replace(",", ".") : " IS NULL", string.Join(",", MeasResultID));
-                            YXvUnit2 XvAppUnit2 = new YXvUnit2();
-                            XvAppUnit2.Format("*");
-                            XvAppUnit2.Filter = SQL;
-
-                            for (XvAppUnit2.OpenRs(); !XvAppUnit2.IsEOF(); XvAppUnit2.MoveNext())
+                            listLevelMeasFreq.Add(new SOFrequencyTemp() { Frequency_MHz = Frequencies_MHz[i] });
+                        }
+                        
+                        List<LevelMeasurementsCarForSO> listLevelMeas2 = new List<LevelMeasurementsCarForSO>();
+                        double? MaxFreq = Frequencies_MHz.Max();
+                        double? MinFreq = Frequencies_MHz.Min();
+                        string SQL = string.Format("(LON{0}) AND (LON{1}) AND (LAT{2}) AND (LAT{3}) AND  (ID IN ({4})) AND ({5} > CENTRALFREQUENCY) AND ({6} < CENTRALFREQUENCY )", ">='" + LonMin.ToString()+"'", "<='" + LonMax.ToString()+"'", ">='" + LatMin.ToString()+"'", "<='" + LatMax.ToString()+"'", string.Join(",", MeasResultID),"'"+ (MaxFreq + (BW_kHz / 2000)).ToString()+"'", "'"+ (MinFreq - (BW_kHz / 2000)).ToString()+"'");
+                        var XvAppUnit2 = new YXvUnit2();
+                        XvAppUnit2.Format("*");
+                        XvAppUnit2.Filter = SQL;
+                        for (XvAppUnit2.OpenRs(); !XvAppUnit2.IsEOF(); XvAppUnit2.MoveNext())
+                        {
+                            double? BW = null;
+                            if ((XvAppUnit2.m_bw != null) && (XvAppUnit2.m_bw <= 0) && (XvAppUnit2.m_specrumsteps != null) && (XvAppUnit2.m_t1 != null) && (XvAppUnit2.m_t2 != null))
                             {
+                                BW = XvAppUnit2.m_specrumsteps * (XvAppUnit2.m_t2 - XvAppUnit2.m_t1);
+                            }
+                            else if ((XvAppUnit2.m_bw != null) && (XvAppUnit2.m_bw > 0))
+                            {
+                                BW = XvAppUnit2.m_bw;
+                            }
+                            else
+                            {
+                                BW = BW_kHz;
+                            }
+
+                            if (BW != null)
+                            {
+                                var prm = new LevelMeasurementsCarForSO()
+                                {
+                                    BW = BW,
+                                    CentralFrequency = (decimal?)XvAppUnit2.m_centralfrequency,
+                                    Idstation = XvAppUnit2.m_idstation,
+                                    TimeOfMeasurements = XvAppUnit2.m_timeofmeasurements,
+                                    Id = XvAppUnit2.m_id,
+                                    globalSid = XvAppUnit2.m_measglobalsid
+                                };
+                                listLevelMeas2.Add(prm);
+                            }
+                            for (int i = 0; i < Frequencies_MHz.Count; i++)
+                            {
+                                BW = null;
                                 if ((XvAppUnit2.m_bw != null) && (XvAppUnit2.m_bw <= 0) && (XvAppUnit2.m_specrumsteps != null) && (XvAppUnit2.m_t1 != null) && (XvAppUnit2.m_t2 != null))
                                 {
-                                    double? BW = XvAppUnit2.m_specrumsteps * (XvAppUnit2.m_t2 - XvAppUnit2.m_t1);
-                                    if (BW != null)
-                                    {
-                                        if ((((XvAppUnit2.m_centralfrequency - (BW / 2000)) < Frequencies_MHz[i]) && ((XvAppUnit2.m_centralfrequency + (BW / 2000)) > Frequencies_MHz[i]))
-                                        || (((Frequencies_MHz[i] - (BW_kHz / 2000)) < XvAppUnit2.m_centralfrequency) && ((Frequencies_MHz[i] + (BW_kHz / 2000)) > XvAppUnit2.m_centralfrequency)))
-                                        {
-                                            var prm = new LevelMeasurementsCarForSO()
-                                            {
-                                                BW = BW,
-                                                CentralFrequency = (decimal?)XvAppUnit2.m_centralfrequency,
-                                                Idstation = XvAppUnit2.m_idstation,
-                                                TimeOfMeasurements = XvAppUnit2.m_timeofmeasurements
-                                            };
-                                            listLevelMeas.Add(prm);
-                                        }
-                                    }
+                                    BW = XvAppUnit2.m_specrumsteps * (XvAppUnit2.m_t2 - XvAppUnit2.m_t1);
                                 }
                                 else if ((XvAppUnit2.m_bw != null) && (XvAppUnit2.m_bw > 0))
                                 {
-                                    double? BW = XvAppUnit2.m_bw;
-                                    if (BW != null)
-                                    {
-                                        if ((((XvAppUnit2.m_centralfrequency - (BW / 2000)) < Frequencies_MHz[i]) && ((XvAppUnit2.m_centralfrequency + (BW / 2000)) > Frequencies_MHz[i]))
-                                        || (((Frequencies_MHz[i] - (BW_kHz / 2000)) < XvAppUnit2.m_centralfrequency) && ((Frequencies_MHz[i] + (BW_kHz / 2000)) > XvAppUnit2.m_centralfrequency)))
-                                        {
-                                            var prm = new LevelMeasurementsCarForSO()
-                                            {
-                                                BW = BW,
-                                                CentralFrequency = (decimal?)XvAppUnit2.m_centralfrequency,
-                                                Idstation = XvAppUnit2.m_idstation,
-                                                TimeOfMeasurements = XvAppUnit2.m_timeofmeasurements
-                                            };
-                                            listLevelMeas.Add(prm);
-                                        }
-                                    }
-                                }
-                            }
-                            XvAppUnit2.Close();
-                            XvAppUnit2.Dispose();
-
-
-                            double? MaxFreq = Frequencies_MHz.Max();
-                            double? MinFreq = Frequencies_MHz.Min();
-                            int[] listTimeHours24 = new int[24];
-
-
-                            List<DateTime?> DiffVal = new List<DateTime?>();
-                            List<LevelMeasurementsCarForSO> listLevelMeas2 = new List<LevelMeasurementsCarForSO>();
-
-                            SQL = string.Format("(LON{0}) AND (LON{1}) AND (LAT{2}) AND (LAT{3}) AND  (ID IN ({4}))", LonMin.HasValue ? ">=" + LonMin.ToString().Replace(",", ".") : " IS NULL", LonMax.HasValue ? "<=" + LonMax.ToString().Replace(",", ".") : " IS NULL", LatMin.HasValue ? ">=" + LatMin.ToString().Replace(",", ".") : " IS NULL", LatMax.HasValue ? "<=" + LatMax.ToString().Replace(",", ".") : " IS NULL", string.Join(",", MeasResultID));
-                            XvAppUnit2 = new YXvUnit2();
-                            XvAppUnit2.Format("*");
-                            XvAppUnit2.Filter = SQL;
-
-                            for (XvAppUnit2.OpenRs(); !XvAppUnit2.IsEOF(); XvAppUnit2.MoveNext())
-                            {
-                                if ((XvAppUnit2.m_bw != null) && (XvAppUnit2.m_bw <= 0) && (XvAppUnit2.m_specrumsteps != null) && (XvAppUnit2.m_t1 != null) && (XvAppUnit2.m_t2 != null))
-                                {
-                                    double? BW = XvAppUnit2.m_specrumsteps * (XvAppUnit2.m_t2 - XvAppUnit2.m_t1);
-                                    if (BW != null)
-                                    {
-                                        if ((((XvAppUnit2.m_centralfrequency - (BW / 2000)) < Frequencies_MHz[i]) && ((XvAppUnit2.m_centralfrequency + (BW / 2000)) > Frequencies_MHz[i]))
-                                         || ((MaxFreq + (BW_kHz / 2000)) > XvAppUnit2.m_centralfrequency) && ((MinFreq - (BW_kHz / 2000)) < XvAppUnit2.m_centralfrequency))
-                                        {
-                                            var prm = new LevelMeasurementsCarForSO()
-                                            {
-                                                BW = BW,
-                                                CentralFrequency = (decimal?)XvAppUnit2.m_centralfrequency,
-                                                Idstation = XvAppUnit2.m_idstation,
-                                                TimeOfMeasurements = XvAppUnit2.m_timeofmeasurements
-                                            };
-                                            if (DiffVal.Find(z => z.Value.Subtract(XvAppUnit2.m_timeofmeasurements.Value).Seconds <= 3) == null)
-                                            {
-                                                DiffVal.Add(XvAppUnit2.m_timeofmeasurements);
-                                            }
-                                            listLevelMeas2.Add(prm);
-                                        }
-                                    }
-                                }
-                                else if ((XvAppUnit2.m_bw != null) && (XvAppUnit2.m_bw > 0))
-                                {
-                                    double? BW = XvAppUnit2.m_bw;
-                                    if (BW != null)
-                                    {
-                                        if ((((XvAppUnit2.m_centralfrequency - (BW / 2000)) < Frequencies_MHz[i]) && ((XvAppUnit2.m_centralfrequency + (BW / 2000)) > Frequencies_MHz[i]))
-                                         || ((MaxFreq + (BW_kHz / 2000)) > XvAppUnit2.m_centralfrequency) && ((MinFreq - (BW_kHz / 2000)) < XvAppUnit2.m_centralfrequency))
-                                        {
-                                            var prm = new LevelMeasurementsCarForSO()
-                                            {
-                                                BW = BW,
-                                                CentralFrequency = (decimal?)XvAppUnit2.m_centralfrequency,
-                                                Idstation = XvAppUnit2.m_idstation,
-                                                TimeOfMeasurements = XvAppUnit2.m_timeofmeasurements
-                                            };
-
-                                            listLevelMeas2.Add(prm);
-                                        }
-                                    }
-                                }
-                            }
-                            XvAppUnit2.Close();
-                            XvAppUnit2.Dispose();
-
-
-                            for (int k = 0; k < listLevelMeas2.Count; k++)
-                            {
-                                if (DiffVal.Find(z => z.Value.Subtract(listLevelMeas2[k].TimeOfMeasurements.Value).Seconds <= 3) == null)
-                                {
-                                    DiffVal.Add(listLevelMeas2[k].TimeOfMeasurements.Value);
-                                }
-                            }
-                            int sumHit = DiffVal.Count();
-
-                            for (int t = 0; t < 24; t++)
-                            {
-                                var DiffValCheck = new List<DateTime?>();
-                                for (int k = 0; k < listLevelMeas2.Count; k++)
-                                {
-                                    if ((DiffValCheck.Find(z => z.Value.Subtract(listLevelMeas2[k].TimeOfMeasurements.Value).Seconds <= 3) == null) && (listLevelMeas2[k].TimeOfMeasurements.Value.Hour == t))
-                                    {
-                                        DiffValCheck.Add(listLevelMeas2[k].TimeOfMeasurements.Value);
-                                    }
-                                }
-                                listTimeHours24[t] = DiffValCheck.Count;
-                            }
-
-                            SOFrequency soFreq = new SOFrequency();
-                            soFreq.Frequency_MHz = Frequencies_MHz[i];
-                            soFreq.hit = listLevelMeas.Count;
-                            soFreq.Occupation =  sumHit!=0 ?  100 * soFreq.hit / sumHit : 0;
-                            if (soFreq.Occupation > 100) soFreq.Occupation = 100;
-
-                            List<int?> distinctStation = new List<int?>();
-                            for (int p=0; p< listLevelMeas.Count; p++)
-                            {
-                                if (!distinctStation.Contains(listLevelMeas[p].Idstation))
-                                    distinctStation.Add(listLevelMeas[p].Idstation);
-                            }
-                            soFreq.StantionIDs = string.Join(";", distinctStation);
-                            soFreq.countStation = distinctStation.Count;
-
-                            string[] hit_00_23 = new string[24];
-                            for (int t = 0; t < 24; t++)
-                            {
-                                if (listTimeHours24[t] != 0)
-                                {
-                                    double? v = Math.Round((double)(100 * listLevelMeas.Count / listTimeHours24[t]), 2);
-                                    if (v>100)
-                                    {
-                                        v = 100;
-                                    }
-                                    hit_00_23[t] = v.ToString();
+                                    BW = XvAppUnit2.m_bw;
                                 }
                                 else
                                 {
-                                    hit_00_23[t] = "----";
+                                    // костыль
+                                    BW = BW_kHz;
+                                }
+                                if (BW != null)
+                                {
+                                    if (((((XvAppUnit2.m_centralfrequency - (BW / 2000)) < Frequencies_MHz[i]) && ((XvAppUnit2.m_centralfrequency + (BW / 2000)) > Frequencies_MHz[i]))
+                                    || (((Frequencies_MHz[i] - (BW_kHz / 2000)) < XvAppUnit2.m_centralfrequency) && ((Frequencies_MHz[i] + (BW_kHz / 2000)) > XvAppUnit2.m_centralfrequency))) && ((XvAppUnit2.m_leveldbm > TrLevel_dBm)))
+                                    {
+                                        listLevelMeasFreq[i].hit++;
+                                        if ((XvAppUnit2.m_idstation.HasValue) && (XvAppUnit2.m_idstation.Value != 0))
+                                        {
+                                            if (listLevelMeasFreq[i].StantionIDs.Find(z => z == XvAppUnit2.m_idstation.Value.ToString()) == null)
+                                            {
+                                                listLevelMeasFreq[i].StantionIDs.Add(XvAppUnit2.m_idstation.Value.ToString());
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(XvAppUnit2.m_measglobalsid))
+                                            {
+                                                if (listLevelMeasFreq[i].measglobalsid.Find(z => z == XvAppUnit2.m_measglobalsid) == null)
+                                                {
+                                                    listLevelMeasFreq[i].measglobalsid.Add(XvAppUnit2.m_measglobalsid);
+                                                }
+                                            }
+                                        }
+                                        for (int t = 0; t < 24; t++)
+                                        {
+                                            if (XvAppUnit2.m_timeofmeasurements.Value.Hour == t)
+                                            {
+                                                listLevelMeasFreq[i].HitByHuors[t]++;
+                                                break;
+                                            }
+
+                                        }
+                                    }
                                 }
                             }
-                            soFreq.OccupationByHuors = string.Join(";", hit_00_23);
-                            L_OUT.Add(soFreq);
+                        }
+                        XvAppUnit2.Close();
+                        XvAppUnit2.Dispose();
+                        for (int k = 0; k < listLevelMeas2.Count; k++)
+                        {
+                            var hitValue = new Hit();
+                            hitValue.dateTime = listLevelMeas2[k].TimeOfMeasurements.Value;
+                            hitValue.Id = listLevelMeas2[k].Id;
+                            hitValue.globalSid = listLevelMeas2[k].globalSid;
+
+                            if (HitVal.Find(z => Math.Abs(z.dateTime.Value.Subtract(hitValue.dateTime.Value).Seconds) <= 3 && z.Id.Value == hitValue.Id.Value) == null)
+                            {
+                                HitVal.Add(hitValue);
+                            }
+
+                        }
+                        int sumHit = HitVal.Count();
+                        int[] listTimeHours24 = new int[24];
+                        for (int m = 0; m < HitVal.Count; m++)
+                        {
+                            for (int t = 0; t < 24; t++)
+                            {
+                                if (HitVal[m].dateTime.Value.Hour == t)
+                                {
+                                    listTimeHours24[t] = listTimeHours24[t] + 1;
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        for (int i = 0; i < Frequencies_MHz.Count; i++)
+                        {
+                            var freqOut = new SOFrequency();
+                            freqOut.Frequency_MHz = listLevelMeasFreq[i].Frequency_MHz;
+                            freqOut.StantionIDs = string.Join(";", listLevelMeasFreq[i].StantionIDs);
+                            if (freqOut.StantionIDs.Length > 300) freqOut.StantionIDs = freqOut.StantionIDs.Substring(0, 300);
+                            freqOut.countStation = listLevelMeasFreq[i].StantionIDs.Count + listLevelMeasFreq[i].measglobalsid.Count;
+                            listLevelMeasFreq[i].hit = 0;
+                            List<double> stringByHours = new List<double>();
+                            for (int t = 0; t < 24; t++)
+                            {
+                                double val = -1;
+                                if (listTimeHours24[t] != 0)
+                                {
+                                    
+                                    if (listTimeHours24[t] < listLevelMeasFreq[i].HitByHuors[t])
+                                    {
+                                        listLevelMeasFreq[i].HitByHuors[t] = listTimeHours24[t];
+                                    }
+                                    listLevelMeasFreq[i].hit = listLevelMeasFreq[i].hit + listLevelMeasFreq[i].HitByHuors[t];
+                                    val =  (100 * listLevelMeasFreq[i].HitByHuors[t] / listTimeHours24[t]) ;
+                                   
+                                }
+                                stringByHours.Add(val);
+                            }
+                            freqOut.hit = listLevelMeasFreq[i].hit;
+                            if (sumHit == 0)
+                                freqOut.Occupation = -1;
+                            else
+                                freqOut.Occupation = 100 * freqOut.hit / sumHit;
+                            if (freqOut.Occupation > 100) freqOut.Occupation = 100;
+
+                            freqOut.OccupationByHuors = string.Join(";", stringByHours);
+                            L_OUT.Add(freqOut);
                         }
                     }
                     catch (Exception ex)
                     {
-                        logger.Trace("Error in procedure CalcAppUnit1... " + ex.Message);
+                        logger.Trace("Error in procedure CalcAppUnit2... " + ex.Message);
                     }
-                logger.Trace("End procedure CalcAppUnit1...");
+                    logger.Trace("End procedure CalcAppUnit2...");
                 });
                 thread.Start();
                 thread.Join();
             }
             catch (Exception ex)
             {
-                logger.Error("Error in procedure CalcAppUnit1..." + ex.Message);
+                logger.Error("Error in procedure CalcAppUnit2..." + ex.Message);
             }
             return L_OUT.ToArray();
         }
 
     }
 }
+

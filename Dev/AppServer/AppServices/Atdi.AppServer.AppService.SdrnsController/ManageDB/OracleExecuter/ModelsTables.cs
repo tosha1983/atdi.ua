@@ -45,6 +45,7 @@ namespace Atdi.Oracle.DataAccess
         public int? m_t1 { get { return getInt(8); } set { setInt(8, value); } }
         public int? m_t2 { get { return getInt(9); } set { setInt(9, value); } }
         public int? m_id { get { return getInt(10); } set { setInt(10, value); } }
+        public string m_measglobalsid { get { return getString(11); } set { setString(11, 250, value); } }
     }
 
     public class YXbsResSysInfoBlocks : Yyy
