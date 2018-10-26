@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "ResStation"
-  Title       = "ResStation"
-  Desc        = "The ResStation"
+  Name        = "ResMeasStation"
+  Title       = "ResMeasStation"
+  Desc        = "The ResMeasStation"
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
@@ -19,17 +19,17 @@
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
     <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
     <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="IDXBSSTATION" SourceType="Column" Required="false"/>
-    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation ResStation to Sector">
+    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation ResMeasStation to Sector">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SectorId</Mapped>
       </PrimaryKeyMapping>
     </Field>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResStation to ResMeas">
+    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResMeasStation to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
       </PrimaryKeyMapping>
     </Field>
-    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation ResStation to Station">
+    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation ResMeasStation to Station">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">StationId</Mapped>
       </PrimaryKeyMapping>

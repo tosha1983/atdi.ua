@@ -90,9 +90,13 @@
     <Content Include="Metadata\Entities\ResLocSensorMeas.xml" />
     <Content Include="Metadata\Entities\ResMeas.xml" />
     <Content Include="Metadata\Entities\ResRoutes.xml" />
-    <Content Include="Metadata\Entities\ResStation.xml" />
+    <Content Include="Metadata\Entities\ResMeasStation.xml" />
     <Content Include="Metadata\Entities\ResStGeneral.xml" />
+    <Content Include="Metadata\Entities\ResStLevelCar.xml" />
     <Content Include="Metadata\Entities\ResStLevelsSpect.xml" />
+    <Content Include="Metadata\Entities\ResStMaskElement.xml" />
+    <Content Include="Metadata\Entities\ResSysInfo.xml" />
+    <Content Include="Metadata\Entities\ResSysInfoBlocks.xml" />
     <Content Include="Metadata\Entities\SectorMaskElement.xml" />
     <Content Include="Metadata\Entities\MeasDtParam.xml" />
     <Content Include="Metadata\Entities\MeasFreq.xml" />

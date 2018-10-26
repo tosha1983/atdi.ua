@@ -18,7 +18,7 @@
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
       </PrimaryKeyMapping>
     </Field>
-    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResStation" Title="Relation LinkResSensor to ResStation">
+    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStation" Title="Relation LinkResSensor to ResMeasStation">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>
       </PrimaryKeyMapping>

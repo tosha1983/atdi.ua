@@ -25,7 +25,7 @@
     <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Decimal.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
     <Field Desc="Correctnessestim" Title="Correctnessestim" Name="Correctnessestim" DataType="boolean" SourceName="СORRECTNESSESTIM" SourceType="Column" Required="false"/>
     <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
-    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResStation" Title="Relation ResStGeneral to ResStation">
+    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStGeneral to ResMeasStation">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>
       </PrimaryKeyMapping>
