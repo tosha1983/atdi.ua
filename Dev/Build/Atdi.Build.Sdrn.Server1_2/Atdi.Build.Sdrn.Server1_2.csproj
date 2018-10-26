@@ -52,6 +52,8 @@ copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(Config
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsControllerv2_0.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
 
 

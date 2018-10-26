@@ -407,5 +407,22 @@ namespace Atdi.AppServer.Services.Sdrns
 
             return result;
         }
+
+        SOFrequency[] ISdrnsController.GetSOformMeasResultStation(GetSOformMeasResultStationValue options, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetSOformMeasResultStationAppOperation, SOFrequency[]>()
+                    .Invoke(
+                        new GetSOformMeasResultStationAppOperationOptions
+                        {
+                            val = options, 
+                            
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
     }
 }
