@@ -182,7 +182,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         }
 
 
-        public static List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi2_0(this MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, string Type = "New")
+        public static List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi2_0(this MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return ListMTSDR;
@@ -198,7 +198,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
                             int? IdentValueTaskSDR = ClassesDBGetTasks.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value.ToString(), SubTaskStation.StationId.Value);
-                            MTSDR.TaskId = IdentValueTaskSDR.GetValueOrDefault().ToString();
+                            MTSDR.TaskId = MeasTaskId.ToString();//IdentValueTaskSDR.GetValueOrDefault().ToString();
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
                             if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
@@ -249,7 +249,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (MTSDR.Stations[i].Owner.OKPO == "37815221") { CodeOwener = "7"; };
                                                 }
                                                 MTSDR.Stations[i].GlobalSid = "255 " + CodeOwener + " 00000 " + string.Format("{0:00000}", task.StationsForMeasurements[i].IdStation);
-
+                                                task.StationsForMeasurements[i].GlobalSID = MTSDR.Stations[i].GlobalSid;
 
                                                 MTSDR.Stations[i].OwnerGlobalSid = task.StationsForMeasurements[i].GlobalSID;//работать с таблицей (доп. создасть в БД по GlobalSID и Standard)
                                                                                                                              //
@@ -326,6 +326,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             return ListMTSDR;
         }
+
 
         /// <summary>
         /// Функция обновления статуса MeasTask,MeasSubTask,MeasSubTaskStation
