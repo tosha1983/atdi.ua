@@ -155,6 +155,12 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetSOformMeasResultStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetSOformMeasResultStationAppOperation() : base("GetSOformMeasResultStation")
+            { }
+        }
+
 
 
         public SdrnsControllerAppService() 
@@ -185,7 +191,10 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResStationAppOperation(),
                      new GetRoutesAppOperation(),
                      new GetSensorPoligonPointAppOperation(),
-                     new GetResMeasStationAppOperation()
+                     new GetResMeasStationAppOperation(),
+                     new GetSOformMeasResultStationAppOperation()
+
+
                  }
                 );
         }

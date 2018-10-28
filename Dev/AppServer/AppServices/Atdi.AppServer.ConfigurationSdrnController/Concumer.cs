@@ -18,6 +18,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             var messageType = message.BasicProperties.Type;
             if (messageType == null)
             {
+                channel.BasicAck(message.DeliveryTag, false);
                 return;
             }
 

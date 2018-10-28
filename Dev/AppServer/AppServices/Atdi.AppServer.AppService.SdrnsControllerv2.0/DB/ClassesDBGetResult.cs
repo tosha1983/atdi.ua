@@ -119,10 +119,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                         measResStation.m_xbsresmeasid = ID;
                                         if (api2Result.StationResults != null)
                                         {
-                                                rFinded = api2Result.StationResults.ToList().Find(t => t.StationId == station.Idstation.ToString() && t.SectorId == station.IdSector.ToString() && t.RealGlobalSid == station.MeasGlobalSID && t.TaskGlobalSid == station.GlobalSID);
-                                                if (rFinded != null)
+                                                if ((station.Idstation != null) && (station.IdSector!=null))
                                                 {
-                                                    measResStation.m_standard = rFinded.Standard;
+                                                    rFinded = api2Result.StationResults.ToList().Find(t => t.StationId == station.Idstation.ToString() && t.SectorId == station.IdSector.ToString() && t.RealGlobalSid == station.MeasGlobalSID && t.TaskGlobalSid == station.GlobalSID);
+                                                    if (rFinded != null)
+                                                    {
+                                                        measResStation.m_standard = rFinded.Standard;
+                                                    }
                                                 }
                                          }
         
