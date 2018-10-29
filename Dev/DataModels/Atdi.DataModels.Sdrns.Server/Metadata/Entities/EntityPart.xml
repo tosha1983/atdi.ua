@@ -12,8 +12,8 @@
   <Fields>
     <Field Desc="EntityId" Title="Id" Name="Id" DataType="Text.250" SourceName="ENTITYID" SourceType="Column" Required="true"/>
     <Field Desc="PartIndex" Title="PartIndex" Name="PartIndex" DataType="Integer.32" SourceName="PARTINDEX" SourceType="Column" Required="true"/>
-    <Field Desc="Eof" Title="Eof" Name="Eof" DataType="Integer.64" SourceName="EOF" SourceType="Column" Required="true"/>
-    <Field Desc="Content" Title="Content" Name="Content" DataType="Bytes.MAX" SourceName="CONTENT" SourceType="Column" Required="true"/>
+    <Field Desc="Eof" Title="Eof" Name="Eof" DataType="Boolean" SourceName="EOF" SourceType="Column" Required="false"/>
+    <Field Desc="Content" Title="Content" Name="Content" DataType="Bytes.MAX" SourceName="CONTENT" SourceType="Column" Required="false"/>
     <Field Name="ENTITY" SourceType="Reference" SourceName="Entity" Title="Relation EntityPart to Entity">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">EntityId</Mapped>

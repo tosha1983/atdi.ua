@@ -41,7 +41,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IAntennaPattern.cs" />
+    <Compile Include="Entities\IEntityPart.cs" />
+    <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Entities\ILinkMeasStation.cs" />
+    <Compile Include="Entities\ILinkResSensor.cs" />
+    <Compile Include="Entities\ILinkSectorFreq.cs" />
+    <Compile Include="Entities\ILinkSectorMaskElement.cs" />
+    <Compile Include="Entities\IMeasDtParam.cs" />
+    <Compile Include="Entities\IMeasFreq.cs" />
+    <Compile Include="Entities\IMeasFreqParam.cs" />
+    <Compile Include="Entities\IMeasLocationParam.cs" />
+    <Compile Include="Entities\IMeasOther.cs" />
+    <Compile Include="Entities\IMeasStation.cs" />
+    <Compile Include="Entities\IMeasSubTask.cs" />
+    <Compile Include="Entities\IMeasSubTaskSta.cs" />
+    <Compile Include="Entities\IMeasTask.cs" />
+    <Compile Include="Entities\IMeasTaskSDR.cs" />
+    <Compile Include="Entities\IOwnerData.cs" />
+    <Compile Include="Entities\IResLevels.cs" />
+    <Compile Include="Entities\IResLevMeasOnline.cs" />
+    <Compile Include="Entities\IResLocSensorMeas.cs" />
+    <Compile Include="Entities\IResMeas.cs" />
+    <Compile Include="Entities\IResMeasStation.cs" />
+    <Compile Include="Entities\IResRoutes.cs" />
+    <Compile Include="Entities\IResStGeneral.cs" />
+    <Compile Include="Entities\IResStLevelCar.cs" />
+    <Compile Include="Entities\IResStLevelsSpect.cs" />
+    <Compile Include="Entities\IResStMaskElement.cs" />
+    <Compile Include="Entities\IResSysInfo.cs" />
+    <Compile Include="Entities\IResSysInfoBlocks.cs" />
+    <Compile Include="Entities\ISector.cs" />
+    <Compile Include="Entities\ISectorFreq.cs" />
+    <Compile Include="Entities\ISectorMaskElement.cs" />
     <Compile Include="Entities\ISensor.cs" />
+    <Compile Include="Entities\ISensorAntenna.cs" />
+    <Compile Include="Entities\ISensorEquipment.cs" />
+    <Compile Include="Entities\ISensorLocation.cs" />
+    <Compile Include="Entities\ISensorPolygon.cs" />
+    <Compile Include="Entities\ISensorSensitivites.cs" />
+    <Compile Include="Entities\IStation.cs" />
+    <Compile Include="Entities\IStationSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
