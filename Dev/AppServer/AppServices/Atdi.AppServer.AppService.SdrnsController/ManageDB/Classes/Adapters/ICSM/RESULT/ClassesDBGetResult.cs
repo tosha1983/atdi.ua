@@ -759,7 +759,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
-                        res_val.Filter = string.Format("(ID>0) AND (STATUS<>'Z') AND (TYPEMEASUREMENTS='{0}')", measurementType.ToString());
+                        res_val.Filter = string.Format("(ID>0) AND ((STATUS<>'Z') OR (STATUS IS NULL)) AND (TYPEMEASUREMENTS='{0}')", measurementType.ToString());
                         res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
@@ -949,7 +949,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
-                        res_val.Filter = "(ID>0) AND (STATUS<>'Z')";
+                        res_val.Filter = "(ID>0) AND ((STATUS<>'Z') OR (STATUS IS NULL))";
                         res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
@@ -1140,7 +1140,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         YXbsResMeas res_val = new YXbsResMeas();
                         res_val.Format("*");
                         // выбирать только таски, для которых STATUS не NULL
-                        res_val.Filter = string.Format("(MEASTASKID='{0}') AND (STATUS<>'Z')", MeasTaskId);
+                        res_val.Filter = string.Format("(MEASTASKID='{0}') AND ((STATUS<>'Z') OR (STATUS IS NULL)) ", MeasTaskId);
                         res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
