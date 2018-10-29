@@ -9,16 +9,16 @@ using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
-    public class GetShortMeasResultsAppOperationHandler
+    public class GetShortMeasResultsByDateAppOperationHandler
         : AppOperationHandlerBase
         <
             SdrnsControllerAppService,
-            SdrnsControllerAppService.GetShortMeasResultsAppOperation,
-            GetShortMeasResultsAppOperationOptions,
+            SdrnsControllerAppService.GetShortMeasResultsByDatesAppOperation,
+            GetShortMeasResultsByDateAppOperationOptions,
             ShortMeasurementResults[]
         >
     {
-        public GetShortMeasResultsAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
+        public GetShortMeasResultsByDateAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <param name="options"></param>
         /// <param name="operationContext"></param>
         /// <returns></returns>
-        public override ShortMeasurementResults[] Handle(GetShortMeasResultsAppOperationOptions options, IAppOperationContext operationContext)
+        public override ShortMeasurementResults[] Handle(GetShortMeasResultsByDateAppOperationOptions options, IAppOperationContext operationContext)
         {
             List<ShortMeasurementResults> ShortMeas = new List<ShortMeasurementResults>();
             ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
@@ -38,8 +38,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             {
                 try
                 {
-                    //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList();
-                    List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultShortFromDB()).ToList();
+                    
+                    List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB(options.options.Start.Value, options.options.End.Value)).ToList();
                     foreach (MeasurementResults msrt in LST_MeasurementResults)
                     {
                         ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.HasValue ? msrt.N.Value : -1, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };

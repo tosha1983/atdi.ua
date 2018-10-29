@@ -119,6 +119,7 @@
     <Compile Include="GetMeasResultsAppOperationHandler.cs" />
     <Compile Include="GetMeasTaskAppOperationHandler.cs" />
     <Compile Include="GetMeasTasksAppOperationHandler.cs" />
+    <Compile Include="GetShortMeasResultsByDateAppOperationHandler.cs" />
     <Compile Include="GetShortSensorAppOperationHandler.cs" />
     <Compile Include="GetShortMeasTaskAppOperationHandler.cs" />
     <Compile Include="GetMeasResultsByIdAppOperationHandler.cs" />

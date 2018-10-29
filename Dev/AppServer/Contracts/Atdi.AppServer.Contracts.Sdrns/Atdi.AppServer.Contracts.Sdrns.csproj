@@ -58,6 +58,7 @@
     <Compile Include="Enums\AntennaPolarization.cs" />
     <Compile Include="Enums\AntennaDirectional.cs" />
     <Compile Include="ISdrnsController.cs" />
+    <Compile Include="Models\Analitics\GetShortMeasResultsByDateValue.cs" />
     <Compile Include="Models\Analitics\GetSOformMeasResultStation.cs" />
     <Compile Include="Models\Analitics\SOFrequency.cs" />
     <Compile Include="Models\Devices\BB60C\FSemples.cs" />

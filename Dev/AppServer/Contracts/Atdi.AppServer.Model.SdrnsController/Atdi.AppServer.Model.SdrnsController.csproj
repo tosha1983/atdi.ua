@@ -46,6 +46,7 @@
     <Compile Include="Options\GetMeasResultsAppOperationOptions.cs" />
     <Compile Include="Options\GetMeasTaskAppOperationOptions.cs" />
     <Compile Include="Options\GetMeasTasksAppOperationOptions.cs" />
+    <Compile Include="Options\GetShortMeasResultsByDateAppOperationOptions.cs" />
     <Compile Include="Options\GetSOformMeasResultStationAppOperationOptions.cs" />
     <Compile Include="Options\GetShortSensorAppOperationOptions.cs" />
     <Compile Include="Options\GetShortMeasTaskAppOperationOptions.cs" />
