@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "MaskElements"
-  Title       = "MaskElements"
-  Desc        = "The MaskElements"
+  Name        = "SectorMaskElement"
+  Title       = "SectorMaskElement"
+  Desc        = "The SectorMaskElement"
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
