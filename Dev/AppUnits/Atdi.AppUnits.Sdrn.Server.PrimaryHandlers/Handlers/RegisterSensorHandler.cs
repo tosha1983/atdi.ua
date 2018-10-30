@@ -48,8 +48,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                      .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
                      ;
 
-                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                        .Execute(query)==1;
+                    sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+                    .Execute(query)==1;
 
                     if (!sensorExistsInDb)
                     {

@@ -32,19 +32,18 @@ namespace Atdi.CoreServices.EntityOrm
             logger.Debug(Contexts.LegacyServicesEntity, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
         }
 
-
-        public TResult Fetch<TModel,TResult>(IQuerySelectStatement<TModel> statement, Func<Atdi.Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
             try
             {
                 var objectStatment = statement as QuerySelectStatement<TModel>;
-                var command = this.BuildSelectCommand<TModel>(objectStatment);
+                var command = this.BuildSelectCommand(objectStatment.Statement);
 
                 var result = default(TResult);
                 _dataEngine.Execute(command, reader =>
                 {
                     var columnsMapper = objectStatment.Statement.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
-                    var typedReader = new QueryDataReader(reader, columnsMapper);
+                    var typedReader = new QueryDataReader<TModel>(reader, columnsMapper);
                     result = handler(typedReader);
                 });
                 return result;
@@ -56,34 +55,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
         }
 
-     
-
-        public DataModels.DataSet Fetch<TModel>(IQuerySelectStatement<TModel> statement, DataSetColumn[] columns, DataSetStructure structure)
-        {
-            var dataSet =
-                this.Fetch<TModel, DataModels.DataSet>(statement, reader =>
-                {
-                    switch (structure)
-                    {
-                        case DataSetStructure.TypedCells:
-                            return (DataModels.DataSet)ReadToTypedCellsDataSet(reader, columns);
-                        case DataSetStructure.StringCells:
-                            return (DataModels.DataSet)ReadToStringCellsDataSet(reader, columns);
-                        case DataSetStructure.ObjectCells:
-                            return (DataModels.DataSet)ReadToObjectCellsDataSet(reader, columns);
-                        case DataSetStructure.TypedRows:
-                            return (DataModels.DataSet)ReadToTypedRowsDataSet(reader, columns);
-                        case DataSetStructure.StringRows:
-                            return (DataModels.DataSet)ReadToStringRowsDataSet(reader, columns);
-                        case DataSetStructure.ObjectRows:
-                            return (DataModels.DataSet)ReadToObjectRowsDataSet(reader, columns);
-                        default:
-                            throw new InvalidOperationException(Exceptions.DataSetStructureNotSupported.With(structure));
-                    }
-                });
-
-            return dataSet;
-        }
 
         private TypedCellsDataSet ReadToTypedCellsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         {
@@ -627,135 +598,147 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
 
-        public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
-        {
-            try
-            {
-                var objectStatment = statement as QuerySelectStatement<TModel>;
-                var command = this.BuildSelectCommand<TModel>(objectStatment);
 
-                var result = default(TResult);
-                _dataEngine.Execute(command, reader =>
-                {
-                    var columnsMapper = objectStatment.Statement.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
-                    var typedReader = new QueryDataReader<TModel>(reader, columnsMapper);
-                    result = handler(typedReader);
-                });
-                return result;
-            }
-            catch(Exception e)
-            {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.FetchingData, e);
-                throw;
-            }
-        }
+      
 
-
-        private EngineCommand BuildSelectCommand<TModel>(QuerySelectStatement<TModel> statement)
+        private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
             var command = new EngineCommand();
             command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
 
-        private EngineCommand BuildSelectCommand<TModel>(IQuerySelectStatement statement)
-        {
-            var c = statement as QuerySelectStatement<TModel>;
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(c, command.Parameters);
-            return command;
-        }
 
-        public int Execute<TModel>(IQuerySelectStatement<TModel> statement)
-        {
-            int recordCount = 0;
-            if (statement == null)
-            {
-                throw new ArgumentNullException(nameof(statement));
-            }
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement as QuerySelectStatement<TModel>, command.Parameters);
-            if (command == null)
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
-            }
-            this._dataEngine.Execute(command, reader =>
-            {
-                while (reader.Read())
-                {
-                    recordCount++;
-                }
-            });
-            return recordCount;
-        }
 
-        public int Execute<TModel>(IQueryInsertStatement<TModel> statement)
-        {
-            if (statement == null)
-            {
-                throw new ArgumentNullException(nameof(statement));
-            }
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(statement as QueryInsertStatement<TModel>, command.Parameters);
-            if (command == null)
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
-            }
-            var recordsAffected = this._dataEngine.Execute(command);
-            return recordsAffected;
-        }
 
-        public int Execute<TModel>(IQueryUpdateStatement<TModel> statement)
-        {
-            if (statement == null)
-            {
-                throw new ArgumentNullException(nameof(statement));
-            }
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(statement as QueryUpdateStatement<TModel>, command.Parameters);
-            if (command == null)
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
-            }
-            var recordsAffected = this._dataEngine.Execute(command);
-            return recordsAffected;
-        }
-
-        public int Execute<TModel>(IQueryDeleteStatement<TModel> statement)
-        {
-            if (statement == null)
-            {
-                throw new ArgumentNullException(nameof(statement));
-            }
-            var command = new EngineCommand();
-            command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(statement as QueryDeleteStatement<TModel>, command.Parameters);
-            if (command == null)
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
-            }
-            var recordsAffected = this._dataEngine.Execute(command);
-            return recordsAffected;
-        }
-
-        public int Execute(IQueryStatement statement)
-        {
-            throw new NotImplementedException();
-        }
-
-        EngineCommand IQueryExecutor.BuildSelectCommand<TModel>(IQuerySelectStatement statement)
-        {
-            throw new NotImplementedException();
-        }
 
         public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objectStatment = statement as QuerySelectStatement;
+                var command = this.BuildSelectCommand(objectStatment);
+
+                var result = default(TResult);
+                _dataEngine.Execute(command, reader =>
+                {
+                    var columnsMapper = objectStatment.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
+                    var typedReader = new QueryDataReader(reader, columnsMapper);
+                    result = handler(typedReader);
+                });
+                return result;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.FetchingData, e);
+                throw;
+            }
+
         }
 
         public DataModels.DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure)
         {
-            throw new NotImplementedException();
+            var dataSet =
+               this.Fetch<DataModels.DataSet>(statement, reader =>
+               {
+                   switch (structure)
+                   {
+                       case DataSetStructure.TypedCells:
+                           return (DataModels.DataSet)ReadToTypedCellsDataSet(reader, columns);
+                       case DataSetStructure.StringCells:
+                           return (DataModels.DataSet)ReadToStringCellsDataSet(reader, columns);
+                       case DataSetStructure.ObjectCells:
+                           return (DataModels.DataSet)ReadToObjectCellsDataSet(reader, columns);
+                       case DataSetStructure.TypedRows:
+                           return (DataModels.DataSet)ReadToTypedRowsDataSet(reader, columns);
+                       case DataSetStructure.StringRows:
+                           return (DataModels.DataSet)ReadToStringRowsDataSet(reader, columns);
+                       case DataSetStructure.ObjectRows:
+                           return (DataModels.DataSet)ReadToObjectRowsDataSet(reader, columns);
+                       default:
+                           throw new InvalidOperationException(Exceptions.DataSetStructureNotSupported.With(structure));
+                   }
+               });
+
+            return dataSet;
         }
+
+        public int Execute<TModel>(IQueryStatement statement)
+        {
+            throw new Exception();
+        }
+
+        public int Execute(IQueryStatement statement)
+        {
+            var propertyName = "Statement";
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
+            var extractType = statement.GetType();
+
+            if (extractType.Name.Contains(typeof(QuerySelectStatement).Name))
+            {
+                statement = extractType.GetProperty(propertyName).GetValue(statement, null) as QuerySelectStatement;
+            }
+            else if (extractType.Name.Contains(typeof(QueryDeleteStatement).Name))
+            {
+                statement = extractType.GetProperty(propertyName).GetValue(statement, null) as QueryDeleteStatement;
+            }
+            else if (extractType.Name.Contains(typeof(QueryInsertStatement).Name))
+            {
+                statement = extractType.GetProperty(propertyName).GetValue(statement, null) as QueryInsertStatement;
+            }
+            else if (extractType.Name.Contains(typeof(QueryUpdateStatement).Name))
+            {
+                statement = extractType.GetProperty(propertyName).GetValue(statement, null) as QueryUpdateStatement;
+            }
+
+
+            var command = new EngineCommand();
+
+            if (statement is QueryInsertStatement queryInsertStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+            }
+            else if (statement is QueryUpdateStatement queryUpdateStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+            }
+            else if (statement is QueryDeleteStatement queryDeleteStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+            }
+            else if (statement is QuerySelectStatement querySelectStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
+            }
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            int recordsAffected = 0;
+            if (statement is QuerySelectStatement)
+            {
+                this._dataEngine.Execute(command, reader =>
+                {
+                    while (reader.Read())
+                    {
+                        recordsAffected++;
+                    }
+                });
+            }
+            else
+            {
+                recordsAffected = this._dataEngine.Execute(command);
+            }
+            return recordsAffected;
+        }
+
+
     }
 }
 

@@ -52,17 +52,22 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (entityMetadata1.BaseEntity.Name == TableName2.EntityName)
                         {
-                            var stringBuilder = new StringBuilder();
+                            var stringBuilder = new List<string>();
                             foreach (var c in entityMetadata1.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
                                 var keyValuePairKeyFieldRefMetadata = entityMetadata2.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
                                 if (keyValuePairKeyFieldRefMetadata.Key != null)
                                 {
-                                    stringBuilder.Append(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key).SourceName)));
+                                    IFieldMetadata fieldMetadata1 = entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1);
+                                    IFieldMetadata fieldMetadata2 = entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key);
+                                    if ((fieldMetadata1 != null) && (fieldMetadata2 != null))
+                                    {
+                                        stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(fieldMetadata1.SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(fieldMetadata2.SourceName)));
+                                    }
                                 }
                             }
-                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            if (stringBuilder.Count > 0)
                             {
                                 resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoin, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
                                 resultJoin += string.Format(" INNER JOIN {0}  {1}  ON ({2}) ", entityMetadata2.DataSource.Schema + "." + entityMetadata2.DataSource.Name, this._syntax.EncodeFieldName(TableName2.Alias), string.Join(" AND ", stringBuilder).ToString());
@@ -73,17 +78,22 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (entityMetadata2.BaseEntity.Name == TableName1.EntityName)
                         {
-                            var stringBuilder = new StringBuilder();
+                            var stringBuilder = new List<string>();
                             foreach (var c in entityMetadata2.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
                                 var keyValuePairKeyFieldRefMetadata = entityMetadata1.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
                                 if (keyValuePairKeyFieldRefMetadata.Key != null)
                                 {
-                                    stringBuilder.Append(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key).SourceName)));
+                                    IFieldMetadata fieldMetadata1 = entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1);
+                                    IFieldMetadata fieldMetadata2 = entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key);
+                                    if ((fieldMetadata1 != null) && (fieldMetadata2 != null))
+                                    {
+                                        stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(fieldMetadata1.SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(fieldMetadata2.SourceName)));
+                                    }
                                 }
                             }
-                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            if (stringBuilder.Count > 0)
                             {
                                 resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoin, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
                                 resultJoin += string.Format(" INNER JOIN {0} {1}  ON ({2}) ", entityMetadata2.DataSource.Schema + "." + entityMetadata2.DataSource.Name, this._syntax.EncodeFieldName(TableName2.Alias), string.Join(" AND ", stringBuilder).ToString());
@@ -123,9 +133,13 @@ namespace Atdi.CoreServices.EntityOrm
                             foreach (var c in entityMetadata1.ExtendEntity.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
-                                stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName)));
+                                IFieldMetadata fieldMetadata = entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1);
+                                if (fieldMetadata != null)
+                                {
+                                    stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(fieldMetadata.SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(fieldMetadata.SourceName)));
+                                }
                             }
-                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            if (stringBuilder.Count > 0)
                             {
                                 resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoinExtension, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
                                 resultJoin += string.Format(" INNER JOIN {0} {1}  ON ({2}) ", entityMetadata1.DataSource.Schema + "." + entityMetadata1.DataSource.Name, this._syntax.EncodeFieldName(TableName1.Alias), string.Join(" AND ", stringBuilder).ToString());
@@ -140,9 +154,13 @@ namespace Atdi.CoreServices.EntityOrm
                             foreach (var c in entityMetadata2.ExtendEntity.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
-                                stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName)));
+                                IFieldMetadata fieldMetadata = entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1);
+                                if (fieldMetadata != null)
+                                {
+                                    stringBuilder.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(fieldMetadata.SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(fieldMetadata.SourceName)));
+                                }
                             }
-                            if (!string.IsNullOrEmpty(stringBuilder.ToString()))
+                            if (stringBuilder.Count>0)
                             {
                                 resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoinExtension, this._syntax.EncodeFieldName(TableName1.DBTableName), this._syntax.EncodeFieldName(TableName2.DBTableName)) + Environment.NewLine;
                                 resultJoin += string.Format(" INNER JOIN {0} {1}  ON ({2}) ", entityMetadata2.DataSource.Schema + "." + entityMetadata2.DataSource.Name, this._syntax.EncodeFieldName(TableName2.Alias), string.Join(" AND ", stringBuilder).ToString());
@@ -165,12 +183,12 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="TableName1"></param>
         /// <param name="TableName2"></param>
         /// <returns></returns>
-        private string BuidJoinRelation<TModel>(string EntityName, string SpecialFld, IDictionary<string, EngineCommandParameter> parameters, List<AliasField> aliasFields, string schemaTable, string resultJoinValue)
+        private string BuidJoinRelation(string EntityName, string SpecialFld, IDictionary<string, EngineCommandParameter> parameters, List<AliasField> aliasFields, string schemaTable, string resultJoinValue)
         {
             string resultJoin = "";
             try
             {
-                BuildSelectStatement<TModel>(EntityName, new string[] { SpecialFld }, FieldSourceType.Relation, true);
+                BuildSelectStatement(EntityName, new string[] { SpecialFld }, FieldSourceType.Relation, true);
                 var fieldProperties = this._listFieldProperties.Find(z => z.Alias.StartsWith(SpecialFld + ".") && (z.SourceType == FieldSourceType.Relation));
                 if (fieldProperties != null)
                 {
@@ -381,7 +399,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="aliasFields"></param>
         /// <param name="schemaTable"></param>
         /// <returns></returns>
-        private string BuidJoinReference<TModel>(string EntityName, string SpecialFld,  List<AliasField> aliasFields, string schemaTable, string resultJoinValue)
+        private string BuidJoinReference(string EntityName, string SpecialFld,  List<AliasField> aliasFields, string schemaTable, string resultJoinValue)
         {
             string resultJoin = "";
             try
@@ -389,7 +407,7 @@ namespace Atdi.CoreServices.EntityOrm
                 string RefTableNameTo = "";
                 string RefTableNameFrom = "";
                 IReferenceFieldMetadata referenceFieldMetadataFnd = null;
-                BuildSelectStatement<TModel>(EntityName, new string[] { SpecialFld }, FieldSourceType.Reference, true);
+                BuildSelectStatement(EntityName, new string[] { SpecialFld }, FieldSourceType.Reference, true);
                 var fieldProperties = this._listFieldProperties.Find(z => z.Alias.StartsWith(SpecialFld + ".") && z.SourceType == FieldSourceType.Reference);
                 if (fieldProperties != null)
                 {
@@ -588,14 +606,14 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="parameters"></param>
         /// <param name="aliasFields"></param>
         /// <returns></returns>
-        private string BuildJoinStatement<TModel>(string EntityName, string[] fieldPath, IDictionary<string, EngineCommandParameter> parameters, out List<AliasField> aliasFields)
+        private string BuildJoinStatement(string EntityName, string[] fieldPath, IDictionary<string, EngineCommandParameter> parameters, out List<AliasField> aliasFields)
         {
             var resJoinBaseTable = "";
             const string PrefixTableName = "Tcaz_";
             var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
             var schemaTable = entityMetadata.DataSource.Schema;
             var selectedColumns = fieldPath;
-            BuildSelectStatement<TModel>(EntityName, selectedColumns);
+            BuildSelectStatement(EntityName, selectedColumns);
             aliasFields = new List<AliasField>();
             for (int i = 0; i < this._listFieldProperties.Count; i++)
             {
@@ -640,7 +658,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int i = 0; i < valSpecialFlds.Count; i++)
             {
                 bool isSuccess = false;
-                var joinString = BuidJoinRelation<TModel>(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable, resultJoin);
+                var joinString = BuidJoinRelation(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable, resultJoin);
                 if (!string.IsNullOrEmpty(joinString))
                 {
                     if (!resultJoin.Contains(joinString))
@@ -651,7 +669,7 @@ namespace Atdi.CoreServices.EntityOrm
                 }
                 if (!isSuccess)
                 {
-                    joinString =  BuidJoinReference<TModel>(EntityName, valSpecialFlds[i], aliasFields, schemaTable, resultJoin);
+                    joinString =  BuidJoinReference(EntityName, valSpecialFlds[i], aliasFields, schemaTable, resultJoin);
                     if (!string.IsNullOrEmpty(joinString))
                     {
                         if (!resultJoin.Contains(joinString))
@@ -665,7 +683,7 @@ namespace Atdi.CoreServices.EntityOrm
                 {
                     var fieldProperties = new FieldProperties();
                     string ExtTableNameTo = "";
-                    BuildSelectStatement<TModel>(EntityName, new string[] { valSpecialFlds[i] }, FieldSourceType.Extension, false);
+                    BuildSelectStatement(EntityName, new string[] { valSpecialFlds[i] }, FieldSourceType.Extension, false);
                     fieldProperties = this._listFieldProperties.Find(z => z.Alias.StartsWith(valSpecialFlds[i] + ".") && z.SourceType== FieldSourceType.Extension);
                     if (fieldProperties != null)
                     {
@@ -980,7 +998,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="fields"></param>
         /// <param name="fieldSourceTypeFilter"></param>
         /// <param name="isPrimaryKeyOnly"></param>
-        private void BuildSelectStatement<TModel>(string EntityName, string[] fields, FieldSourceType fieldSourceTypeFilter = FieldSourceType.All, bool isPrimaryKeyOnly = false)
+        private void BuildSelectStatement(string EntityName, string[] fields, FieldSourceType fieldSourceTypeFilter = FieldSourceType.All, bool isPrimaryKeyOnly = false)
         {
             try
             {
@@ -1170,20 +1188,14 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
 
-        /// <summary>
-        /// Генератор SQL запросов для Select
-        /// </summary>
-        /// <typeparam name="TModel"></typeparam>
-        /// <param name="statement"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public string BuildSelectStatement<TModel>(QuerySelectStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+
+        public string BuildSelectStatement(QuerySelectStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try
             {
-                var selectedColumns = statement.Statement.Table.Columns.Values.ToArray();
+                var selectedColumns = statement.Table.Columns.Values.ToArray();
                 var listAlias = new List<AliasField>();
-                var fromExpression = BuildJoinStatement<TModel>(statement.Statement.Table.Name, selectedColumns.Select(t => t.Name).ToArray(), parameters, out listAlias);
+                var fromExpression = BuildJoinStatement(statement.Table.Name, selectedColumns.Select(t => t.Name).ToArray(), parameters, out listAlias);
 
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
@@ -1203,13 +1215,13 @@ namespace Atdi.CoreServices.EntityOrm
 
 
                 var conditionsColumns = new List<ColumnOperand>();
-                AppendColumnsFromConditions(statement.Statement.Conditions, conditionsColumns);
+                AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
                 var whereColumns = conditionsColumns.ToArray();
-                var sortColumns = statement.Statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Statement.Orders.ToArray();
+                var sortColumns = statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Orders.ToArray();
                 var fieldCount = whereColumns.Length + sortColumns.Length;
 
-                BuildSelectStatement<TModel>(statement.Statement.Table.Name, sortColumns.Select(t => t.Column.Name).ToArray());
-                BuildSelectStatement<TModel>(statement.Statement.Table.Name, selectedColumns.Select(t => t.Name).ToArray());
+                BuildSelectStatement(statement.Table.Name, sortColumns.Select(t => t.Column.Name).ToArray());
+                BuildSelectStatement(statement.Table.Name, selectedColumns.Select(t => t.Name).ToArray());
 
                 var selExpressions = new List<string>();
                 foreach (var d in selectedColumns)
@@ -1240,7 +1252,7 @@ namespace Atdi.CoreServices.EntityOrm
                 for (int i = 0; i < whereColumns.Length; i++)
                 {
                     var column = whereColumns[i];
-                    var  dbField = this._listFieldProperties.Find(z => z.Alias == whereColumns[i].ColumnName);
+                    var dbField = this._listFieldProperties.Find(z => z.Alias == whereColumns[i].ColumnName);
                     if (dbField != null)
                     {
                         AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
@@ -1259,7 +1271,7 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
 
-                var whereExpression = this.BuildWhereExpression(statement.Statement.Conditions, parameters);
+                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
                 // to build the order by section
                 var orderByColumns = new string[sortColumns.Length];
                 for (int i = 0; i < sortColumns.Length; i++)
@@ -1277,7 +1289,7 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
                 // add on top (n)
-                var limit = statement.Statement.Limit;
+                var limit = statement.Limit;
 
                 // add group by
                 var selectStatement = this._syntax.SelectExpression(columnExpressions.ToArray(), fromExpression, whereExpression, orderByColumns, limit);
@@ -1289,8 +1301,6 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
         }
-
-       
 
         public string BuildWhereExpression(List<Condition> conditions, IDictionary<string, EngineCommandParameter> parameters)
          {
@@ -1334,7 +1344,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="statement"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public string BuildDeleteStatement<TModel>(QueryDeleteStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+        public string BuildDeleteStatement(QueryDeleteStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
              try
              {
@@ -1344,7 +1354,7 @@ namespace Atdi.CoreServices.EntityOrm
                 AppendColumnsFromConditions(statement.Conditions, columns);
                 var columnsArray = columns.ToArray();
                 var listAlias = new List<AliasField>();
-                var fromStatement = BuildJoinStatement<TModel>(statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), parameters, out listAlias);
+                var fromStatement = BuildJoinStatement(statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), parameters, out listAlias);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                      var column = columnsArray[i];
@@ -1370,7 +1380,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="statement"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public string BuildInsertStatement<TModel>(QueryInsertStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+        public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
              try
              {
@@ -1385,8 +1395,8 @@ namespace Atdi.CoreServices.EntityOrm
                     if (fieldName.Value != null)
                     {
                         var column = statement.ColumnsValues[i];
-                        var columnValueReplaced = QuerySelectStatement<TModel>.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
-                        column = columnValueReplaced;
+                        //var columnValueReplaced =  QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                        //column = columnValueReplaced;
                         column.Name = fieldName.Value.SourceName;
                         var parameter = new EngineCommandParameter
                         {
@@ -1424,7 +1434,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="statement"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public string BuildUpdateStatement<TModel>(QueryUpdateStatement<TModel> statement, IDictionary<string, EngineCommandParameter> parameters)
+        public string BuildUpdateStatement(QueryUpdateStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
             try
             {
@@ -1439,8 +1449,8 @@ namespace Atdi.CoreServices.EntityOrm
                     var dbField = entityMetadata.Fields.Values.ToList().Find(z => z.Name == column.Name);
                     if (dbField!=null)
                     {
-                        var columnValueReplaced = QuerySelectStatement<TModel>.GetColumnValue(column.GetValue(), column.Name, dbField.DataType as DataTypeMetadata);
-                        column = columnValueReplaced;
+                        //var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, dbField.DataType as DataTypeMetadata);
+                        //column = columnValueReplaced;
                         column.Name = dbField.SourceName;
                     }
                     else
@@ -1450,7 +1460,7 @@ namespace Atdi.CoreServices.EntityOrm
                 }
                 var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
                 var listAlias = new List<AliasField>();
-                var fromStatement = BuildJoinStatement<TModel>(statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), parameters, out listAlias);
+                var fromStatement = BuildJoinStatement(statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), parameters, out listAlias);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                     var column = columnsArray[i];

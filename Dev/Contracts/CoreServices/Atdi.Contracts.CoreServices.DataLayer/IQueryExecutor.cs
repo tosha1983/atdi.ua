@@ -11,27 +11,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     public interface IQueryExecutor
     {
 
-        DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure);
-
-        EngineCommand BuildSelectCommand<TModel>(IQuerySelectStatement statement);
-
-        TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<Atdi.Contracts.CoreServices.DataLayer.IDataReader, TResult> handler);
-
         TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler);
 
         TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler);
 
-        DataSet Fetch<TModel>(IQuerySelectStatement<TModel> statement, DataSetColumn[] columns, DataSetStructure structure);
+        DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure);
 
         int Execute(IQueryStatement statement);
 
-        int Execute<TModel>(IQuerySelectStatement<TModel> statement);
-
-        int Execute<TModel>(IQueryDeleteStatement<TModel> statement);
-
-        int Execute<TModel>(IQueryInsertStatement<TModel> statement);
-
-        int Execute<TModel>(IQueryUpdateStatement<TModel> statement);
+        int Execute<TModel>(IQueryStatement statement);
     }
 
     public interface IDataReader

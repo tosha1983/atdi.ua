@@ -20,12 +20,16 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly List<Condition> _conditions;
         private readonly string _tableName;
         private readonly List<ColumnValue> _columnsValues;
+        private readonly QueryUpdateStatement _statement;
+        public QueryUpdateStatement Statement => _statement;
+
 
         public QueryUpdateStatement()
         {
             this._tableName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
             this._conditions = new List<Condition>();
             this._columnsValues = new List<ColumnValue>();
+            this._statement = new QueryUpdateStatement(this._tableName);
         }
 
         public QueryUpdateStatement(string tableName)
@@ -36,9 +40,7 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
         public List<Condition> Conditions => this._conditions;
-
         public string TableName => this._tableName;
-
         public List<ColumnValue> ColumnsValues => this._columnsValues;
 
 
@@ -51,6 +53,7 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new ArgumentNullException(nameof(value));
             }
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
+            this._statement.ColumnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             return this;
         }
 
@@ -62,6 +65,7 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new ArgumentNullException(nameof(value));
             }
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName, dataTypeMetadata));
+            this._statement.ColumnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName, dataTypeMetadata));
             return this;
         }
 
@@ -76,6 +80,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             this._conditions.Add(condition);
+            this._statement.Conditions.Add(condition);
             return this;
         }
 
@@ -105,6 +110,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             this._columnsValues.Add(columnValue);
+            this.Statement.ColumnsValues.Add(columnValue);
             return this;
         }
 
@@ -116,6 +122,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             this._columnsValues.AddRange(columnsValues);
+            this.Statement.ColumnsValues.AddRange(columnsValues);
             return this;
         }
     }
