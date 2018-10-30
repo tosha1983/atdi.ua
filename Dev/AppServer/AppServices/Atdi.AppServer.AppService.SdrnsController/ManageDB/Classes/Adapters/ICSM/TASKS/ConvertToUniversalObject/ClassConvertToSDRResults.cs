@@ -525,11 +525,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         private T Deserialize<T>(byte[] param)
         {
-            using (MemoryStream ms = new MemoryStream(param))
+            T val = default(T);
+            if (param != null)
             {
-                BinaryFormatter br = new BinaryFormatter();
-                return (T)br.Deserialize(ms);
+                using (MemoryStream ms = new MemoryStream(param))
+                {
+                    BinaryFormatter br = new BinaryFormatter();
+                    val = (T)br.Deserialize(ms);
+                }
             }
+            return val;
         }
     }
 }
