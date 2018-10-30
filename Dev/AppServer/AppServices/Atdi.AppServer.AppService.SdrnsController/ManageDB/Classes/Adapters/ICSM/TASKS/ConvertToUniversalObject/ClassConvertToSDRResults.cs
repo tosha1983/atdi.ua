@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
-
+using System.Runtime.Serialization.Formatters.Binary;
 using Atdi.AppServer.Contracts.Sdrns;
+using System.IO;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -102,6 +103,20 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (x.m_timefinishmeas != null) ResultsMeasStation.GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
                                                     if (x.m_timestartmeasdate != null) ResultsMeasStation.GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
 
+
+                                                    object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
+                                                    if (m_resstmaskelm != null)
+                                                    {
+                                                        ResultsMeasStation.GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
+                                                    }
+
+                                                    object m_resstlevelsspect = Deserialize<float[]> (x.m_resstlevelsspect);
+                                                    if (m_resstlevelsspect != null)
+                                                    {
+                                                        ResultsMeasStation.GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
+                                                    }
+
+                                                    /*
                                                     if (obj.XbsResmaskBw != null)
                                                     {
                                                         List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
@@ -134,6 +149,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                             }
                                                         }
                                                     }
+                                                    */
 
                                                 }
                                             }
@@ -405,20 +421,33 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         List<YXbsResStGeneral> resF = obj.XbsResGeneral.FindAll(t => t.m_resmeasstationid == flevmeas.m_id);
                                         if (resF!=null)
                                         {
-                                            foreach (YXbsResStGeneral x in resF)
-                                            {
-                                                if (x.m_centralfrequency!=null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequency = x.m_centralfrequency;
-                                                if (x.m_centralfrequencymeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequencyMeas = x.m_centralfrequencymeas;
-                                                if (x.m_durationmeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.DurationMeas = x.m_durationmeas;
-                                                if (x.m_markerindex!=null) s_out.ResultsMeasStation[ii].GeneralResult.MarkerIndex = x.m_markerindex;
-                                                if (x.m_offsetfrequency!=null) s_out.ResultsMeasStation[ii].GeneralResult.OffsetFrequency = x.m_offsetfrequency;
-                                                if (x.m_specrumstartfreq!=null) s_out.ResultsMeasStation[ii].GeneralResult.SpecrumStartFreq = (decimal?)x.m_specrumstartfreq;
-                                                if (x.m_specrumsteps!=null) s_out.ResultsMeasStation[ii].GeneralResult.SpecrumSteps = (decimal?)x.m_specrumsteps;
-                                                if (x.m_t1!=null) s_out.ResultsMeasStation[ii].GeneralResult.T1 = x.m_t1;
-                                                if (x.m_t2!=null) s_out.ResultsMeasStation[ii].GeneralResult.T2 = x.m_t2;
-                                                if (x.m_timefinishmeas!=null) s_out.ResultsMeasStation[ii].GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
-                                                if (x.m_timestartmeasdate!=null)  s_out.ResultsMeasStation[ii].GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
+                                                foreach (YXbsResStGeneral x in resF)
+                                                {
+                                                    if (x.m_centralfrequency != null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequency = x.m_centralfrequency;
+                                                    if (x.m_centralfrequencymeas != null) s_out.ResultsMeasStation[ii].GeneralResult.CentralFrequencyMeas = x.m_centralfrequencymeas;
+                                                    if (x.m_durationmeas != null) s_out.ResultsMeasStation[ii].GeneralResult.DurationMeas = x.m_durationmeas;
+                                                    if (x.m_markerindex != null) s_out.ResultsMeasStation[ii].GeneralResult.MarkerIndex = x.m_markerindex;
+                                                    if (x.m_offsetfrequency != null) s_out.ResultsMeasStation[ii].GeneralResult.OffsetFrequency = x.m_offsetfrequency;
+                                                    if (x.m_specrumstartfreq != null) s_out.ResultsMeasStation[ii].GeneralResult.SpecrumStartFreq = (decimal?)x.m_specrumstartfreq;
+                                                    if (x.m_specrumsteps != null) s_out.ResultsMeasStation[ii].GeneralResult.SpecrumSteps = (decimal?)x.m_specrumsteps;
+                                                    if (x.m_t1 != null) s_out.ResultsMeasStation[ii].GeneralResult.T1 = x.m_t1;
+                                                    if (x.m_t2 != null) s_out.ResultsMeasStation[ii].GeneralResult.T2 = x.m_t2;
+                                                    if (x.m_timefinishmeas != null) s_out.ResultsMeasStation[ii].GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
+                                                    if (x.m_timestartmeasdate != null) s_out.ResultsMeasStation[ii].GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
 
+                                                    object m_resstmaskelm = Deserialize<MaskElements[]> (x.m_resstmaskelm);
+                                                    if (m_resstmaskelm != null)
+                                                    {
+                                                        s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
+                                                    }
+
+                                                    object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
+                                                    if (m_resstlevelsspect != null)
+                                                    {
+                                                        s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
+                                                    }
+
+                                                    /*
                                                 if (obj.XbsResmaskBw != null)
                                                 {
                                                     List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
@@ -451,16 +480,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         }
                                                     }
                                                 }
+                                                */
 
-                                            }
+                                                }
                                         }
                                     }
                                     ii++;
                                 }
-
-                                
-
-
                             }
                         }
  
@@ -495,6 +521,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             MeasurementResults res = new MeasurementResults();
             if (sdr_t!=null) res = sdr_t.CreateMeasurementResults();
             return res;
+        }
+
+        private T Deserialize<T>(byte[] param)
+        {
+            using (MemoryStream ms = new MemoryStream(param))
+            {
+                BinaryFormatter br = new BinaryFormatter();
+                return (T)br.Deserialize(ms);
+            }
         }
     }
 }

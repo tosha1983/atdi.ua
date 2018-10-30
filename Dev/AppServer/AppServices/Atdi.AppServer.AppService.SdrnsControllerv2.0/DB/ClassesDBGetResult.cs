@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Atdi.AppServer.Contracts.Sdrns;
 using System.Data.Common;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 {
@@ -163,6 +165,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resmeasstationid = IDStation;
+                                                    measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
+                                                    measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
+
 
                                                     if (rFinded != null)
                                                     {
@@ -259,6 +264,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                 }
                                                             }
                                                         }
+                                                        /*
                                                         if (station.GeneralResult.MaskBW != null)
                                                         {
                                                             if (station.GeneralResult.MaskBW.Length > 0)
@@ -296,6 +302,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                 }
                                                             }
                                                         }
+                                                        */
                                                     }
                                                     if (station.LevelMeasurements != null)
                                                     {
@@ -528,6 +535,19 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             return ID;
         }
-        
+
+        public byte[] ObjectToByteArray(object obj)
+        {
+            if (obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
+            return null;
+        }
     }
+
 }

@@ -5,6 +5,8 @@ using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Oracle.DataAccess;
 using Atdi.AppServer;
 using System.Data.Common;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 {
@@ -1672,10 +1674,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resmeasstationid = IDStation;
+                                                    measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
+                                                    measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
                                                     int? IDResGeneral = measResGeneral.Save(dbConnect, transaction);
                                                     measResGeneral.Close();
                                                     measResGeneral.Dispose();
 
+                                                    /*
                                                     if (IDResGeneral > 0)
                                                     {
                                                         if (station.GeneralResult.MaskBW != null)
@@ -1719,6 +1724,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         }
 
                                                     }
+                                                    */
 
                                                     if (station.LevelMeasurements != null)
                                                     {
@@ -1939,6 +1945,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             }
             return ID;
         }
-        
+        public byte[] ObjectToByteArray(object obj)
+        {
+            if (obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
+            return null;
+        }
     }
 }

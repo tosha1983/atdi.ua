@@ -233,7 +233,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 {
                     try
                     {
-                        consumer.HandleMessage(channel, ea, _container, StartName,  ExchangePoint, connection, ExchangePointFromServer, StartNameQueueDevice);
+                        consumer.HandleMessage(channel, ea, _container, StartName,  ExchangePoint, connection, ExchangePointFromServer, StartNameQueueDevice, _logger);
                     }
                     catch (Exception e)
                     {

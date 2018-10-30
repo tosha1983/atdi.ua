@@ -13,12 +13,13 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 {
     public class Concumer
     {
-        public void HandleMessage(RabbitMQ.Client.IModel channel, RabbitMQ.Client.Events.BasicDeliverEventArgs message, IWindsorContainer container, string StartName, string Exchangepoint, IConnection connection, string ExchangePointFromServer, string StartNameQueueDevice)
+        private ILogger _logger { get; set; }
+        public void HandleMessage(RabbitMQ.Client.IModel channel, RabbitMQ.Client.Events.BasicDeliverEventArgs message, IWindsorContainer container, string StartName, string Exchangepoint, IConnection connection, string ExchangePointFromServer, string StartNameQueueDevice, ILogger logger)
         {
+            this._logger = logger;
             var messageType = message.BasicProperties.Type;
             if (messageType == null)
             {
-                channel.BasicAck(message.DeliveryTag, false);
                 return;
             }
 
@@ -329,6 +330,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             catch (Exception e)
             {
                 result = false;
+                this._logger.Error(e.Message);
             }
 
             // подтверждение обработки сообщения
@@ -404,9 +406,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         isSendSuccess = true;
                   
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 isSendSuccess = false;
+                this._logger.Error(e.Message);
             }
             return isSendSuccess;
 
