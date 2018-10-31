@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Forms;
 using ICSM;
 //using DM = XICSM.ICSControlClient.Models.SynchroInspections;
@@ -71,6 +72,7 @@ namespace XICSM.ICSControlClient.Forms
         }
         private string ConvertPoints(string inputPoints, string csys)
         {
+            string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             string outputPoints = "";
             if (string.IsNullOrEmpty(inputPoints))
                 return outputPoints;
@@ -88,10 +90,10 @@ namespace XICSM.ICSControlClient.Forms
                         {
                             double k1;
                             double k2;
-                            if (double.TryParse(b[0].Replace('.', ','), out k1) && double.TryParse(b[1].Replace('.', ','), out k2))
+                            if (double.TryParse(b[0].Replace(".", sep), out k1) && double.TryParse(b[1].Replace(".", sep), out k2))
                             {
-                                coord1 = IMPosition.Dms2Dec(k1).ToString().Replace(',', '.');
-                                coord2 = IMPosition.Dms2Dec(k2).ToString().Replace(',', '.');
+                                coord1 = IMPosition.Dms2Dec(k1).ToString().Replace(sep, ".");
+                                coord2 = IMPosition.Dms2Dec(k2).ToString().Replace(sep, ".");
                             }
                         }
                         else
