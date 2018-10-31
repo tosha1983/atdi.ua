@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Guid" DataSourceType="Database" xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <Autonum Start="1" Step="1" />
+  <CodeVarType>Guid</CodeVarType>
+  <SourceVarType>GUID</SourceVarType>
+  <Length>16</Length>
+  <Precision>0</Precision>
+  <Scale/>
+</DataType>

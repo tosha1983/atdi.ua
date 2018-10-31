@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -52,7 +54,23 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-      
+        /*
+        public IQueryInsertStatement<TModel> SetValueExtended<TValue>(System.Linq.Expressions.Expression<Func<TModel, TValue>> columnsExpression, TValue value)
+        {
+          
+            var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            
+            //this._tableName
+            this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
+            return this;
+        }
+        */
+
+
         public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
         {
             if (columnsValues == null)

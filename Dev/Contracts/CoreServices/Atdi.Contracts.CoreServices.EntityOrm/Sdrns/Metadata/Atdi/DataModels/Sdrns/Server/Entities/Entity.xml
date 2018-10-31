@@ -114,7 +114,7 @@
     <Field Name="Content"
      SourceType="Column"
      SourceName="CONTENT"
-     DataType="DateTime"
+     DataType="Blob"
      Required="false"
      Title="Content"
      Desc="Content"/>

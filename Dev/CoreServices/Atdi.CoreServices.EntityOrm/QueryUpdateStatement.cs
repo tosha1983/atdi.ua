@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -51,6 +53,20 @@ namespace Atdi.CoreServices.EntityOrm
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             return this;
         }
+
+        public IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value, DataTypeMetadata dataTypeMetadata)
+        {
+            var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName, dataTypeMetadata));
+            return this;
+        }
+
+        
+
 
         public IQueryUpdateStatement<TModel> Where(Condition condition)
         {

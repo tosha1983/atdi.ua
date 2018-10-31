@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "AntennaPattern" 
+  Title       = "AntennaPattern" 
+  Desc        = "The antenna pattern"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_ANTENNAPATTERN</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="SensorAntennaId" Title="SensorAntennaId" Name="SensorAntennaId" DataType="Integer.64" SourceName="SENSORANTENNA_ID" SourceType="Column" Required="true"/>
+    <Field Desc="Frequency of pattren, MHz" Title="Frequency of pattren, MHz" Name="Freq" DataType="Decimal.22.8" SourceName="FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="Gain of Antenna, dB" Title="Gain of Antenna, dB" Name="Gain" DataType="Double" SourceName="GAIN" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Desc="DiagA - 9X - Antenna pattern" Title="DiagA - 9X - Antenna pattern" Name="DiagA" DataType="Text.1000" SourceName="DIAGA" SourceType="Column" Required="false"/>
+    <Field Desc="DiagH - 9XH - Horizontal diagram" Title="DiagH - 9XH - Horizontal diagram" Name="DiagH" DataType="Text.1000" SourceName="DIAGH" SourceType="Column" Required="false"/>
+    <Field Desc="DiagV - 9XV - Vertical diagram" Title="DiagV - 9XV - Vertical diagram" Name="DiagV" DataType="Text.1000" SourceName="DIAGV" SourceType="Column" Required="false"/>
+    <Field Name="SENSORANTENNA" SourceType="Reference" SourceName="SensorAntenna" Title="Relation AntennaPattern to SensorAntenna">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorAntennaId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

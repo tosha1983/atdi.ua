@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Int16" DataSourceType="Database"  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <Autonum Start="1" Step="1" />
+  <CodeVarType>Byte</CodeVarType>
+  <SourceVarType>INT16</SourceVarType>
+  <Length>5</Length>
+  <Precision>0</Precision>
+  <Scale/>
+</DataType>

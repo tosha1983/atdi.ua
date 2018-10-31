@@ -111,11 +111,18 @@
     </Content>
     <Content Include="Example\Metadata\Environment.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Array.Enum.DataType.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Blob.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Byte.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Counter.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\DateTime.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Decimal.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Double.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Enum.DataType.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Float.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Guid.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int08.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int1.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int16.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int32.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Int64.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\DataTypes\Database\Text.10.xml" />
@@ -143,6 +150,7 @@
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorLocation.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorPolygon.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\SensorSensitivites.xml" />
+    <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Test.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Types\AntennaType.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Types\AntennaType2.xml" />
     <Content Include="Sdrns\Metadata\Atdi\DataModels\Sdrns\Server\Entities\Types\AntennaType3.xml" />

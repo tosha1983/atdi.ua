@@ -73,6 +73,7 @@
     <Compile Include="QueryDeleteStatement.cs" />
     <Compile Include="QueryExecutor.cs" />
     <Compile Include="QueryInsertStatement.cs" />
+    <Compile Include="Conversion.cs" />
     <Compile Include="QuerySelectStatement.cs" />
     <Compile Include="QueryUpdateStatement.cs" />
     <Compile Include="AliasField.cs" />

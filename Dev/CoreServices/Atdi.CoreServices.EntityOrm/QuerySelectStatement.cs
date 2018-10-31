@@ -471,6 +471,98 @@ namespace Atdi.CoreServices.EntityOrm
                     Values = values.Select(o => (Guid?)(object)o).ToArray()
                 };
             }
+            if (type == typeof(char) || type == typeof(char?))
+            {
+                return new CharValuesOperand
+                {
+                    Values = values.Select(o => (char?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(short) || type == typeof(short?))
+            {
+                return new ShortValuesOperand
+                {
+                    Values = values.Select(o => (short?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(UInt16) || type == typeof(UInt16?))
+            {
+                return new UnsignedShortValuesOperand
+                {
+                    Values = values.Select(o => (UInt16?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(UInt32) || type == typeof(UInt32?))
+            {
+                return new UnsignedIntegerValuesOperand
+                {
+                    Values = values.Select(o => (UInt32?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(long) || type == typeof(long?))
+            {
+                return new LongValuesOperand
+                {
+                    Values = values.Select(o => (long?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(UInt64) || type == typeof(UInt64?))
+            {
+                return new UnsignedLongValuesOperand
+                {
+                    Values = values.Select(o => (UInt64?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(sbyte) || type == typeof(sbyte?))
+            {
+                return new SignedByteValuesOperand
+                {
+                    Values = values.Select(o => (sbyte?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+            {
+                return new TimeValuesOperand
+                {
+                    Values = values.Select(o => (TimeSpan?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
+            {
+                return new DateValuesOperand
+                {
+                    Values = values.Select(o => (DateTime?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                return new DateTimeOffsetValuesOperand
+                {
+                    Values = values.Select(o => (DateTimeOffset?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                return new DateTimeOffsetValuesOperand
+                {
+                    Values = values.Select(o => (DateTimeOffset?)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(Enum))
+            {
+                return new ClrEnumValuesOperand
+                {
+                    Values = values.Select(o => (Enum)(object)o).ToArray()
+                };
+            }
+            if (type == typeof(Object))
+            {
+                return new ClrTypeValuesOperand
+                {
+                    Values = values.Select(o => (Object)(object)o).ToArray()
+                };
+            }
+
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
 
@@ -554,6 +646,84 @@ namespace Atdi.CoreServices.EntityOrm
                 {
                     Value = (Guid?)(object)value
                 };
+            }
+            if (type == typeof(char) || type == typeof(char?))
+            {
+                return new CharValueOperand
+                {
+                    Value = (char?)(object)value
+                };
+            }
+            if (type == typeof(char) || type == typeof(char?))
+            {
+                return new CharValueOperand
+                {
+                    Value = (char?)(object)value
+                };
+            }
+            if (type == typeof(short) || type == typeof(short?))
+            {
+                return new ShortValueOperand
+                {
+                    Value = (short?)(object)value
+                };
+            }
+            if (type == typeof(UInt16) || type == typeof(UInt16?))
+            {
+                return new UnsignedShortValueOperand
+                {
+                    Value = (UInt16?)(object)value
+                };
+            }
+            if (type == typeof(UInt32) || type == typeof(UInt32?))
+            {
+                return new UnsignedIntegerValueOperand
+                {
+                    Value = (UInt32?)(object)value
+                };
+            }
+            if (type == typeof(long) || type == typeof(long?))
+            {
+                return new LongValueOperand
+                {
+                    Value = (long?)(object)value
+                };
+            }
+            if (type == typeof(UInt64) || type == typeof(UInt64?))
+            {
+                return new UnsignedLongValueOperand
+                {
+                    Value = (UInt64?)(object)value
+                };
+            }
+            if (type == typeof(sbyte) || type == typeof(sbyte?))
+            {
+                return new SignedByteValueOperand
+                {
+                    Value = (sbyte?)(object)value
+                };
+            }
+            if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+            {
+                return new TimeValueOperand
+                {
+                    Value = (TimeSpan?)(object)value
+                };
+            }
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                return new DateTimeOffsetValueOperand
+                {
+                    Value = (DateTimeOffset?)(object)value
+                };
+            }
+            if (type == typeof(Enum) || type == typeof(Enum))
+            {
+                throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
+            }
+            if (type == typeof(Object) || type == typeof(Object))
+            {
+                throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
             }
             throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(type));
         }
@@ -878,6 +1048,86 @@ namespace Atdi.CoreServices.EntityOrm
                         Value = (Guid?)constantExpression.Value
                     };
                 }
+
+                if (constantExpression.Type == typeof(char) || constantExpression.Type == typeof(char?))
+                {
+                    return new CharValueOperand
+                    {
+                        Value = (char?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(char) || constantExpression.Type == typeof(char?))
+                {
+                    return new CharValueOperand
+                    {
+                        Value = (char?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(short) || constantExpression.Type == typeof(short?))
+                {
+                    return new ShortValueOperand
+                    {
+                        Value = (short?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(UInt16) || constantExpression.Type == typeof(UInt16?))
+                {
+                    return new UnsignedShortValueOperand
+                    {
+                        Value = (UInt16?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(UInt32) || constantExpression.Type == typeof(UInt32?))
+                {
+                    return new UnsignedIntegerValueOperand
+                    {
+                        Value = (UInt32?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(long) || constantExpression.Type == typeof(long?))
+                {
+                    return new LongValueOperand
+                    {
+                        Value = (long?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(UInt64) || constantExpression.Type == typeof(UInt64?))
+                {
+                    return new UnsignedLongValueOperand
+                    {
+                        Value = (UInt64?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(sbyte) || constantExpression.Type == typeof(sbyte?))
+                {
+                    return new SignedByteValueOperand
+                    {
+                        Value = (sbyte?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(TimeSpan) || constantExpression.Type == typeof(TimeSpan?))
+                {
+                    return new TimeValueOperand
+                    {
+                        Value = (TimeSpan?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(DateTimeOffset) || constantExpression.Type == typeof(DateTimeOffset?))
+                {
+                    return new DateTimeOffsetValueOperand
+                    {
+                        Value = (DateTimeOffset?)(object)constantExpression.Value
+                    };
+                }
+                if (constantExpression.Type == typeof(Enum) || constantExpression.Type == typeof(Enum))
+                {
+                    throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(constantExpression.Type));
+                }
+                if (constantExpression.Type == typeof(Object) || constantExpression.Type == typeof(Object))
+                {
+                    throw new InvalidOperationException(Exceptions.ValueTypeNotSupported.With(constantExpression.Type));
+                }
+
                 throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(constantExpression.Type));
             }
 
@@ -968,12 +1218,198 @@ namespace Atdi.CoreServices.EntityOrm
                         Values = constantExpressions.Select(o => (Guid?)o.Value).ToArray()
                     };
                 }
+
+                if (constantExpression.Type == typeof(char) || constantExpression.Type == typeof(char?))
+                {
+                    return new CharValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (char?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(short) || constantExpression.Type == typeof(short?))
+                {
+                    return new ShortValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (short?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(UInt16) || constantExpression.Type == typeof(UInt16?))
+                {
+                    return new UnsignedShortValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (UInt16?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(UInt32) || constantExpression.Type == typeof(UInt32?))
+                {
+                    return new UnsignedIntegerValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (UInt32?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(long) || constantExpression.Type == typeof(long?))
+                {
+                    return new LongValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (long?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(UInt64) || constantExpression.Type == typeof(UInt64?))
+                {
+                    return new UnsignedLongValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (UInt64?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(sbyte) || constantExpression.Type == typeof(sbyte?))
+                {
+                    return new SignedByteValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (sbyte?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(TimeSpan) || constantExpression.Type == typeof(TimeSpan?))
+                {
+                    return new TimeValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (TimeSpan?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(DateTime) || constantExpression.Type == typeof(DateTime?))
+                {
+                    return new DateValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (DateTime?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(DateTimeOffset) || constantExpression.Type == typeof(DateTimeOffset?))
+                {
+                    return new DateTimeOffsetValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (DateTimeOffset?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(DateTimeOffset) || constantExpression.Type == typeof(DateTimeOffset?))
+                {
+                    return new DateTimeOffsetValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (DateTimeOffset?)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(Enum))
+                {
+                    return new ClrEnumValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (Enum)(object)o).ToArray()
+                    };
+                }
+                if (constantExpression.Type == typeof(Object))
+                {
+                    return new ClrTypeValuesOperand
+                    {
+                        Values = constantExpressions.Select(o => (Object)(object)o).ToArray()
+                    };
+                }
+
+
                 throw new InvalidOperationException(Exceptions.ExpressionTypeNotSupported.With(constantExpression.Type));
             }
 
             throw new InvalidOperationException(Exceptions.ExpressionNodeTypeNotSupported.With(expression.NodeType.ToString()));
         }
 
+
+        public static ColumnValue GetColumnValue(object value, string nameColumn, DataTypeMetadata dataTypeMetadata)
+        {
+            ColumnValue result = null;
+            switch (dataTypeMetadata.SourceVarType.ToString())
+            {
+                case "BOOL":
+                    result = Convesrion.ConversionBool(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BIT":
+                    result = Convesrion.ConversionBit(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BYTE":
+                    result = Convesrion.ConversionByte(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BYTES":
+                    result = Convesrion.ConversionBytes (value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BLOB":
+                    result = Convesrion.ConversionBlob(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT08":
+                    result = Convesrion.ConversionInt08(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT16":
+                    result = Convesrion.ConversionInt16(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT32":
+                    result = Convesrion.ConversionInt32(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT64":
+                    result = Convesrion.ConversionInt64(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NCHAR":
+                    result = Convesrion.ConversionNchar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NVARCHAR":
+                    result = Convesrion.ConversionNvarChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NTEXT":
+                    result = Convesrion.ConversionNText(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "CHAR":
+                    result = Convesrion.ConversionChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "VARCHAR":
+                    result = Convesrion.ConversionVarChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "TEXT":
+                    result = Convesrion.ConversionText(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "TIME":
+                    result = Convesrion.ConversionTime(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATE":
+                    result = Convesrion.ConversionDate(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATETIME":
+                    result = Convesrion.ConversionDateTime(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATETIMEOFFSET":
+                    result = Convesrion.ConversionDateTimeOffset(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "MONEY":
+                    result = Convesrion.ConversionMoney(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "FLOAT":
+                    result = Convesrion.ConversionFloat(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DOUBLE":
+                    result = Convesrion.ConversionDouble(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DECIMAL":
+                    result = Convesrion.ConversionDecimal(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "GUID":
+                    result = Convesrion.ConversionGuid(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "XML":
+                    result = Convesrion.ConversionXml(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "JSON":
+                    result = Convesrion.ConversionJson(value, nameColumn, dataTypeMetadata);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataTypeMetadata.SourceVarType.ToString()}'");
+            }
+            return result;
+        }
+
+
+       
         public static ColumnValue GetColumnValue(object value, string nameColumn)
         {
             ColumnValue result = null;
@@ -1027,6 +1463,7 @@ namespace Atdi.CoreServices.EntityOrm
                     };
                     break;
                 case "System.Float":
+                case "System.Single":
                     result = new FloatColumnValue
                     {
                         Value = (value == null) ? (float?)null : (float.Parse(value.ToString(), CultureEnUs) as float?),
@@ -1061,11 +1498,80 @@ namespace Atdi.CoreServices.EntityOrm
                         Name = nameColumn
                     };
                     break;
+                   
+                case "System.Char":
+                    result = new CharColumnValue
+                    {
+                        Value = (value == null) ? (char?)null : (char.Parse(value.ToString()) as char?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Int16":
+                    result = new ShortColumnValue
+                    {
+                        Value = (value == null) ? (Int16?)null : (Int16.Parse(value.ToString()) as Int16?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.UInt16":
+                    result = new UnsignedShortColumnValue
+                    {
+                        Value = (value == null) ? (UInt16?)null : (UInt16.Parse(value.ToString()) as UInt16?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.UInt32":
+                    result = new UnsignedIntegerColumnValue
+                    {
+                        Value = (value == null) ? (UInt32?)null : (UInt32.Parse(value.ToString()) as UInt32?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Int64":
+                    result = new LongColumnValue
+                    {
+                        Value = (value == null) ? (Int64?)null : (Int64.Parse(value.ToString()) as Int64?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.UInt64":
+                    result = new UnsignedLongColumnValue
+                    {
+                        Value = (value == null) ? (UInt64?)null : (UInt64.Parse(value.ToString()) as UInt64?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.SByte":
+                    result = new SignedByteColumnValue
+                    {
+                        Value = (value == null) ? (sbyte?)null : (System.SByte.Parse(value.ToString()) as sbyte?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.TimeSpan":
+                    result = new TimeColumnValue
+                    {
+                        Value = (value == null) ? (TimeSpan?)null : (System.TimeSpan.Parse(value.ToString()) as TimeSpan?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.DateTimeOffset":
+                    result = new DateTimeOffsetColumnValue
+                    {
+                        Value = (value == null) ? (DateTimeOffset?)null : (System.DateTimeOffset.Parse(value.ToString()) as DateTimeOffset?),
+                        Name = nameColumn
+                    };
+                    break;
+                case "System.Object":
+                    throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
+                case "System.Enum":
+                    throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
                 default:
                     throw new InvalidOperationException($"Unsupported data type with name '{value.GetType().ToString()}'");
             }
             return result;
         }
+       
         public static string GetMemberName<TValue>(Expression<Func<TModel, TValue>> expression)
         {
             //if (ModelType != expression.Body.Type)

@@ -17,6 +17,22 @@ namespace Atdi.DataModels
     [KnownType(typeof(ByteColumnValue))]
     [KnownType(typeof(BytesColumnValue))]
     [KnownType(typeof(GuidColumnValue))]
+    [KnownType(typeof(CharColumnValue))]
+    [KnownType(typeof(ShortColumnValue))]
+    [KnownType(typeof(UnsignedShortColumnValue))]
+    [KnownType(typeof(UnsignedIntegerColumnValue))]
+    [KnownType(typeof(LongColumnValue))]
+    [KnownType(typeof(SignedByteColumnValue))]
+    [KnownType(typeof(UnsignedLongColumnValue))]
+    [KnownType(typeof(TimeColumnValue))]
+    [KnownType(typeof(DateColumnValue))]
+    [KnownType(typeof(DateTimeOffsetColumnValue))]
+    [KnownType(typeof(XmlColumnValue))]
+    [KnownType(typeof(JsonColumnValue))]
+    [KnownType(typeof(ClrEnumColumnValue))]
+    [KnownType(typeof(ClrTypeColumnValue))]
+
+
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class ColumnValue 
     {
@@ -75,7 +91,7 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public int? Value { get; set; }
+        public Int32? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -99,7 +115,7 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public float? Value { get; set; }
+        public Single? Value { get; set; }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -150,6 +166,175 @@ namespace Atdi.DataModels
         public Guid? Value { get; set; }
     }
 
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class CharColumnValue : ColumnValue
+    {
+        public CharColumnValue()
+        {
+            this.DataType = DataType.Char;
+        }
+
+        [DataMember]
+        public Char? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ShortColumnValue : ColumnValue
+    {
+        public ShortColumnValue()
+        {
+            this.DataType = DataType.Short;
+        }
+
+        [DataMember]
+        public Int16? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class UnsignedShortColumnValue : ColumnValue
+    {
+        public UnsignedShortColumnValue()
+        {
+            this.DataType = DataType.UnsignedShort;
+        }
+
+        [DataMember]
+        public UInt16? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class UnsignedIntegerColumnValue : ColumnValue
+    {
+        public UnsignedIntegerColumnValue()
+        {
+            this.DataType = DataType.UnsignedInteger;
+        }
+
+        [DataMember]
+        public UInt32? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class LongColumnValue : ColumnValue
+    {
+        public LongColumnValue()
+        {
+            this.DataType = DataType.Long;
+        }
+
+        [DataMember]
+        public Int64? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class UnsignedLongColumnValue : ColumnValue
+    {
+        public UnsignedLongColumnValue()
+        {
+            this.DataType = DataType.UnsignedLong;
+        }
+
+        [DataMember]
+        public UInt64? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class SignedByteColumnValue : ColumnValue
+    {
+        public SignedByteColumnValue()
+        {
+            this.DataType = DataType.SignedByte;
+        }
+
+        [DataMember]
+        public sbyte? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class TimeColumnValue : ColumnValue
+    {
+        public TimeColumnValue()
+        {
+            this.DataType = DataType.Time;
+        }
+
+        [DataMember]
+        public TimeSpan? Value { get; set; }
+    }
+
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class DateColumnValue : ColumnValue
+    {
+        public DateColumnValue()
+        {
+            this.DataType = DataType.Date;
+        }
+
+        [DataMember]
+        public DateTime? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class DateTimeOffsetColumnValue : ColumnValue
+    {
+        public DateTimeOffsetColumnValue()
+        {
+            this.DataType = DataType.DateTimeOffset;
+        }
+
+        [DataMember]
+        public DateTimeOffset? Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class XmlColumnValue : ColumnValue
+    {
+        public XmlColumnValue()
+        {
+            this.DataType = DataType.Xml;
+        }
+
+        [DataMember]
+        public string Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class JsonColumnValue : ColumnValue
+    {
+        public JsonColumnValue()
+        {
+            this.DataType = DataType.Json;
+        }
+
+        [DataMember]
+        public string Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ClrEnumColumnValue : ColumnValue
+    {
+        public ClrEnumColumnValue()
+        {
+            this.DataType = DataType.ClrEnum;
+        }
+
+        [DataMember]
+        public Enum Value { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ClrTypeColumnValue : ColumnValue
+    {
+        public ClrTypeColumnValue()
+        {
+            this.DataType = DataType.ClrType;
+        }
+
+        [DataMember]
+        public Object Value { get; set; }
+    }
+
     public static class ColumnValueExtensions
     {
         public static object GetValue(this ColumnValue column)
@@ -176,6 +361,34 @@ namespace Atdi.DataModels
                     return ((BytesColumnValue)column).Value;
                 case DataType.Guid:
                     return ((GuidColumnValue)column).Value;
+                case DataType.Char:
+                    return ((CharColumnValue)column).Value;
+                case DataType.Short:
+                    return ((ShortColumnValue)column).Value;
+                case DataType.UnsignedShort:
+                    return ((UnsignedShortColumnValue)column).Value;
+                case DataType.UnsignedInteger:
+                    return ((UnsignedIntegerColumnValue)column).Value;
+                case DataType.Long:
+                    return ((LongColumnValue)column).Value;
+                case DataType.UnsignedLong:
+                    return ((UnsignedLongColumnValue)column).Value;
+                case DataType.SignedByte:
+                    return ((SignedByteColumnValue)column).Value;
+                case DataType.Time:
+                    return ((TimeColumnValue)column).Value;
+                case DataType.Date:
+                    return ((DateColumnValue)column).Value;
+                case DataType.DateTimeOffset:
+                    return ((DateTimeOffsetColumnValue)column).Value;
+                case DataType.Xml:
+                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                case DataType.Json:
+                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                case DataType.ClrEnum:
+                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                case DataType.ClrType:
+                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
                 default:
                     throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
             }

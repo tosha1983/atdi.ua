@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResSysInfoBlocks"
+  Title       = "ResSysInfoBlocks"
+  Desc        = "The ResSysInfoBlocks"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_RESSYSINFOBLOCKS</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="Data" Title="Data" Name="Data" DataType="Text.1000" SourceName="DATA" SourceType="Column" Required="false"/>
+    <Field Desc="Type" Title="Type" Name="Type" DataType="Text.50" SourceName="TYPE" SourceType="Column" Required="false"/>
+    <Field Desc="ResSysInfoId" Title="ResSysInfoId" Name="ResSysInfoId" DataType="Integer.64" SourceName="XBS_RESSYSINFO_ID" SourceType="Column" Required="false"/>
+    <Field Name="RESSYSINFO" SourceType="Reference" SourceName="ResSysInfo" Title="Relation ResSysInfoBlocks to ResSysInfo">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResSysInfoId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

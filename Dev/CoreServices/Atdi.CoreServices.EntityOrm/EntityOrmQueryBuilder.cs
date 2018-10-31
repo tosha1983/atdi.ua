@@ -52,11 +52,11 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (entityMetadata1.BaseEntity.Name == TableName2.EntityName)
                         {
-                            StringBuilder stringBuilder = new StringBuilder();
+                            var stringBuilder = new StringBuilder();
                             foreach (var c in entityMetadata1.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
-                                KeyValuePair<string, IPrimaryKeyFieldRefMetadata> keyValuePairKeyFieldRefMetadata = entityMetadata2.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
+                                var keyValuePairKeyFieldRefMetadata = entityMetadata2.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
                                 if (keyValuePairKeyFieldRefMetadata.Key != null)
                                 {
                                     stringBuilder.Append(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key).SourceName)));
@@ -73,11 +73,11 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (entityMetadata2.BaseEntity.Name == TableName1.EntityName)
                         {
-                            StringBuilder stringBuilder = new StringBuilder();
+                            var stringBuilder = new StringBuilder();
                             foreach (var c in entityMetadata2.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
-                                KeyValuePair<string, IPrimaryKeyFieldRefMetadata> keyValuePairKeyFieldRefMetadata = entityMetadata1.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
+                                var keyValuePairKeyFieldRefMetadata = entityMetadata1.PrimaryKey.FieldRefs.ToList().Find(v => v.Key == PrimaryKeyTable1);
                                 if (keyValuePairKeyFieldRefMetadata.Key != null)
                                 {
                                     stringBuilder.Append(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(TableName1.Alias), this._syntax.EncodeFieldName(entityMetadata1.Fields.Values.ToList().Find(z => z.Name == PrimaryKeyTable1).SourceName), this._syntax.EncodeFieldName(TableName2.Alias), this._syntax.EncodeFieldName(entityMetadata2.Fields.Values.ToList().Find(z => z.Name == keyValuePairKeyFieldRefMetadata.Key).SourceName)));
@@ -119,7 +119,7 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (entityMetadata1.ExtendEntity.Name == TableName2.EntityName)
                         {
-                            List<string> stringBuilder = new List<string>();
+                            var stringBuilder = new List<string>();
                             foreach (var c in entityMetadata1.ExtendEntity.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
@@ -136,7 +136,7 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (entityMetadata2.ExtendEntity.Name == TableName1.EntityName)
                         {
-                            List<string> stringBuilder = new List<string>();
+                            var stringBuilder = new List<string>();
                             foreach (var c in entityMetadata2.ExtendEntity.PrimaryKey.FieldRefs)
                             {
                                 string PrimaryKeyTable1 = c.Key;
@@ -165,7 +165,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="TableName1"></param>
         /// <param name="TableName2"></param>
         /// <returns></returns>
-        private string BuidJoinRelation<TModel>(string EntityName, string SpecialFld, IDictionary<string, EngineCommandParameter> parameters, List<AliasField> aliasFields, string schemaTable)
+        private string BuidJoinRelation<TModel>(string EntityName, string SpecialFld, IDictionary<string, EngineCommandParameter> parameters, List<AliasField> aliasFields, string schemaTable, string resultJoinValue)
         {
             string resultJoin = "";
             try
@@ -311,8 +311,12 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (!string.IsNullOrEmpty(reJoins))
                         {
-                            resultJoin += Environment.NewLine + string.Format(Templates.CommmentsBuildJoinRelation, RelTableNameTo, RelTableNameFrom) + Environment.NewLine;
-                            resultJoin += string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + RelTableNameTo, this._syntax.EncodeFieldName(SpecialFld), reJoins);
+                            string joinVal = Environment.NewLine + string.Format(Templates.CommmentsBuildJoinRelation, RelTableNameTo, RelTableNameFrom) + Environment.NewLine;
+                            joinVal+= string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + RelTableNameTo, this._syntax.EncodeFieldName(SpecialFld), reJoins);
+                            if (!resultJoinValue.Contains(joinVal))
+                            {
+                                resultJoin += joinVal;
+                            }
                         }
                     }
                 }
@@ -377,7 +381,7 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="aliasFields"></param>
         /// <param name="schemaTable"></param>
         /// <returns></returns>
-        private string BuidJoinReference<TModel>(string EntityName, string SpecialFld,  List<AliasField> aliasFields, string schemaTable)
+        private string BuidJoinReference<TModel>(string EntityName, string SpecialFld,  List<AliasField> aliasFields, string schemaTable, string resultJoinValue)
         {
             string resultJoin = "";
             try
@@ -402,158 +406,168 @@ namespace Atdi.CoreServices.EntityOrm
                         {
                             aliasFieldFind.IsReplaced = true;
                         }
-                    }
-                    int countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
-                    RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref  aliasFields);
-                    var stringBuilderRefGlobal = new List<string>();
-                    countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
-                    RefTableNameTo = fieldProperties.DBTableName;
-                    do
-                    {
-                        if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0))
-                        {
-                            referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
-                            RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
-                        }
-                        else
-                        {
-                            RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
-                            referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
-                            var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo);
-                            if (aliasFieldCheck != null)
-                            {
-                                SpecialFld = aliasFieldCheck.Alias;
-                            }
-                            RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
-                        }
-                        if (referenceFieldMetadataFnd != null)
-                        {
-                            string DataSource = "";
-                            if (referenceFieldMetadataFnd.Mapping == null)
-                            {
-                                IEntityMetadata metadataRefEntity = referenceFieldMetadataFnd.RefEntity;
-                                if (metadataRefEntity != null)
-                                {
-                                    DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
-                                    var stringBuilderRef = new List<string>();
-                                    if (metadataRefEntity.PrimaryKey != null)
-                                    {
-                                        foreach (var FieldRef in metadataRefEntity.PrimaryKey.FieldRefs)
-                                        {
-                                            if (FieldRef.Key != null)
-                                            {
-                                                IFieldMetadata fieldMetadataDb2 = metadataRefEntity.Fields.ToList().Find(z => z.Key == FieldRef.Key).Value;
-                                                var aliasFieldTo = aliasFields.Find(v => v.DBTableName == RefTableNameTo);
-                                                var aliasFieldFrom = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
-                                                if ((entityMetadataRefTableName != null) && (fieldMetadataDb2 != null))
-                                                {
-                                                    foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
-                                                    {
-                                                        string columnFrom = FieldRefV.Key;
-                                                        IFieldMetadata fieldMetadata = entityMetadataRefTableName.Fields.ToList().Find(v => v.Key == columnFrom).Value;
-                                                        if (fieldMetadata != null)
-                                                        {
-                                                            var Db1Val = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                            var Db2Val = aliasFields.Find(v => v.DBTableName == metadataRefEntity.DataSource.Name);
 
-                                                            string Db1 = Db1Val != null ? Db1Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom));
-                                                            string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataRefEntity.DataSource.Name));
-
-                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
-                                    {
-                                        stringBuilderRefGlobal.Add(Environment.NewLine + string.Format(Templates.CommmentsBuildJoinReference, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString()));
-                                    }
-                                }
+                        int countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref aliasFields);
+                        var stringBuilderRefGlobal = new List<string>();
+                        countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        RefTableNameTo = fieldProperties.DBTableName;
+                        do
+                        {
+                            if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0))
+                            {
+                                referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
+                                RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
                             }
                             else
                             {
-                                if (referenceFieldMetadataFnd.Mapping != null)
+                                RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
+                                referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
+                                var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo);
+                                if (aliasFieldCheck != null)
                                 {
-                                    DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
-                                    var stringBuilderRef = new List<string>();
-                                    foreach (var FieldRef in referenceFieldMetadataFnd.Mapping.Fields)
+                                    SpecialFld = aliasFieldCheck.Alias;
+                                }
+                                RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
+                            }
+                            if (referenceFieldMetadataFnd != null)
+                            {
+                                string DataSource = "";
+                                if (referenceFieldMetadataFnd.Mapping == null)
+                                {
+                                    IEntityMetadata metadataRefEntity = referenceFieldMetadataFnd.RefEntity;
+                                    if (metadataRefEntity != null)
                                     {
-                                        if (FieldRef.Value != null)
+                                        DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
+                                        var stringBuilderRef = new List<string>();
+                                        if (metadataRefEntity.PrimaryKey != null)
                                         {
-                                            if (FieldRef.Value is ValuePrimaryKeyFieldMappedMetadata)
+                                            foreach (var FieldRef in metadataRefEntity.PrimaryKey.FieldRefs)
                                             {
-                                                ValuePrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as ValuePrimaryKeyFieldMappedMetadata);
-                                                if (valuefieldMetaDataRef != null)
+                                                if (FieldRef.Key != null)
                                                 {
-                                                    IFieldMetadata FieldKeyMetadata = valuefieldMetaDataRef.KeyField;
-                                                    if (FieldKeyMetadata != null)
+                                                    IFieldMetadata fieldMetadataDb2 = metadataRefEntity.Fields.ToList().Find(z => z.Key == FieldRef.Key).Value;
+                                                    var aliasFieldTo = aliasFields.Find(v => v.DBTableName == RefTableNameTo);
+                                                    var aliasFieldFrom = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                    var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
+                                                    if ((entityMetadataRefTableName != null) && (fieldMetadataDb2 != null))
                                                     {
-                                                        string TableNameFrom = fieldProperties.DBTableName;
-                                                        string FieldNameFrom = fieldProperties.FieldName;
-                                                        if (valuefieldMetaDataRef.Value.GetType() == typeof(System.String))
+                                                        foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
                                                         {
-                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = '{2}') ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, valuefieldMetaDataRef.Value));
-                                                        }
-                                                        else
-                                                        {
-                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, valuefieldMetaDataRef.Value));
+                                                            string columnFrom = FieldRefV.Key;
+                                                            IFieldMetadata fieldMetadata = entityMetadataRefTableName.Fields.ToList().Find(v => v.Key == columnFrom).Value;
+                                                            if (fieldMetadata != null)
+                                                            {
+                                                                var Db1Val = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                                var Db2Val = aliasFields.Find(v => v.DBTableName == metadataRefEntity.DataSource.Name);
+
+                                                                string Db1 = Db1Val != null ? Db1Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom));
+                                                                string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataRefEntity.DataSource.Name));
+
+                                                                stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            }
-                                            else if (FieldRef.Value is FieldPrimaryKeyFieldMappedMetadata)
-                                            {
-                                                FieldPrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as FieldPrimaryKeyFieldMappedMetadata);
-                                                if (valuefieldMetaDataRef != null)
-                                                {
-                                                    if (valuefieldMetaDataRef.KeyField != null)
-                                                    {
-                                                        IFieldMetadata FieldKeyMetadata = valuefieldMetaDataRef.KeyField;
-                                                        string FieldName = FieldRef.Key;
-                                                        string FieldNameFrom = fieldProperties.DBFieldName;
-                                                        var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                        var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(DbValx != null ? DbValx.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)));
-                                                        if (entityMetadataRefTableName != null)
-                                                        {
-                                                            string columnFrom = entityMetadataRefTableName.Fields.ToList().Find(z => z.Key == FieldName).Value.SourceName;
-                                                            stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), columnFrom));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (FieldRef.Value is SourceNamePrimaryKeyFieldMappedMetadata)
-                                            {
-                                                SourceNamePrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as SourceNamePrimaryKeyFieldMappedMetadata);
-                                                if (valuefieldMetaDataRef != null)
-                                                {
-                                                    string Refsourcename = valuefieldMetaDataRef.SourceName;
-                                                    string NameBase = FieldRef.Key;
-
-                                                    string FieldNameFrom = fieldProperties.FieldName;
-                                                    var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                    stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), Refsourcename));
-
                                                 }
                                             }
                                         }
+                                        if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
+                                        {
+                                            stringBuilderRefGlobal.Add(Environment.NewLine + string.Format(Templates.CommmentsBuildJoinReference, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString()));
+                                        }
                                     }
-                                    if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
+                                }
+                                else
+                                {
+                                    if (referenceFieldMetadataFnd.Mapping != null)
                                     {
-                                        stringBuilderRefGlobal.Add(Environment.NewLine + string.Format(Templates.CommmentsBuildJoinReference, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString()));
+                                        DataSource = referenceFieldMetadataFnd.RefEntity.DataSource.Name;
+                                        var stringBuilderRef = new List<string>();
+                                        foreach (var FieldRef in referenceFieldMetadataFnd.Mapping.Fields)
+                                        {
+                                            if (FieldRef.Value != null)
+                                            {
+                                                if (FieldRef.Value is ValuePrimaryKeyFieldMappedMetadata)
+                                                {
+                                                    ValuePrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as ValuePrimaryKeyFieldMappedMetadata);
+                                                    if (valuefieldMetaDataRef != null)
+                                                    {
+                                                        IFieldMetadata FieldKeyMetadata = valuefieldMetaDataRef.KeyField;
+                                                        if (FieldKeyMetadata != null)
+                                                        {
+                                                            string TableNameFrom = fieldProperties.DBTableName;
+                                                            string FieldNameFrom = fieldProperties.FieldName;
+                                                            if (valuefieldMetaDataRef.Value.GetType() == typeof(System.String))
+                                                            {
+                                                                stringBuilderRef.Add(string.Format(" ({0}.{1} = '{2}') ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, valuefieldMetaDataRef.Value));
+                                                            }
+                                                            else
+                                                            {
+                                                                stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, valuefieldMetaDataRef.Value));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (FieldRef.Value is FieldPrimaryKeyFieldMappedMetadata)
+                                                {
+                                                    FieldPrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as FieldPrimaryKeyFieldMappedMetadata);
+                                                    if (valuefieldMetaDataRef != null)
+                                                    {
+                                                        if (valuefieldMetaDataRef.KeyField != null)
+                                                        {
+                                                            IFieldMetadata FieldKeyMetadata = valuefieldMetaDataRef.KeyField;
+                                                            string FieldName = FieldRef.Key;
+                                                            string FieldNameFrom = fieldProperties.DBFieldName;
+                                                            var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                            var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(DbValx != null ? DbValx.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)));
+                                                            if (entityMetadataRefTableName != null)
+                                                            {
+                                                                string columnFrom = entityMetadataRefTableName.Fields.ToList().Find(z => z.Key == FieldName).Value.SourceName;
+                                                                stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), columnFrom));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (FieldRef.Value is SourceNamePrimaryKeyFieldMappedMetadata)
+                                                {
+                                                    SourceNamePrimaryKeyFieldMappedMetadata valuefieldMetaDataRef = (FieldRef.Value as SourceNamePrimaryKeyFieldMappedMetadata);
+                                                    if (valuefieldMetaDataRef != null)
+                                                    {
+                                                        string Refsourcename = valuefieldMetaDataRef.SourceName;
+                                                        string NameBase = FieldRef.Key;
+
+                                                        string FieldNameFrom = fieldProperties.FieldName;
+                                                        var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                        stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), Refsourcename));
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
+                                        {
+                                            string joinVal = Environment.NewLine + string.Format(Templates.CommmentsBuildJoinReference, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString());
+                                            if (!stringBuilderRefGlobal.Contains(joinVal))
+                                            {
+                                                if (!resultJoinValue.Contains(joinVal))
+                                                {
+                                                    stringBuilderRefGlobal.Add(joinVal);
+                                                }
+                                               
+                                            }
+                                        }
                                     }
                                 }
                             }
+                            --countSubLevels;
                         }
-                        --countSubLevels;
-                    }
-                    while (countSubLevels > 0);
-                    stringBuilderRefGlobal.Reverse();
-                    foreach (string d in stringBuilderRefGlobal)
-                    {
-                        resultJoin += d;
+                        while (countSubLevels > 0);
+
+                        stringBuilderRefGlobal.Reverse();
+                        foreach (string d in stringBuilderRefGlobal)
+                        {
+                            resultJoin += d;
+                        }
                     }
                 }
             }
@@ -626,19 +640,25 @@ namespace Atdi.CoreServices.EntityOrm
             for (int i = 0; i < valSpecialFlds.Count; i++)
             {
                 bool isSuccess = false;
-                var joinString = BuidJoinRelation<TModel>(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable);
+                var joinString = BuidJoinRelation<TModel>(EntityName, valSpecialFlds[i], parameters, aliasFields, schemaTable, resultJoin);
                 if (!string.IsNullOrEmpty(joinString))
                 {
-                    resultJoin += joinString;
-                    isSuccess = true;
-                }
-                if (!isSuccess)
-                {
-                    joinString =  BuidJoinReference<TModel>(EntityName, valSpecialFlds[i], aliasFields, schemaTable);
-                    if (!string.IsNullOrEmpty(joinString))
+                    if (!resultJoin.Contains(joinString))
                     {
                         resultJoin += joinString;
                         isSuccess = true;
+                    }
+                }
+                if (!isSuccess)
+                {
+                    joinString =  BuidJoinReference<TModel>(EntityName, valSpecialFlds[i], aliasFields, schemaTable, resultJoin);
+                    if (!string.IsNullOrEmpty(joinString))
+                    {
+                        if (!resultJoin.Contains(joinString))
+                        {
+                            resultJoin += joinString;
+                            isSuccess = true;
+                        }
                     }
                 }
                 if (!isSuccess)
@@ -1049,6 +1069,10 @@ namespace Atdi.CoreServices.EntityOrm
                         }
                         if (entityMetadata != null)
                         {
+                            if (nextNames[j] == ExtendedName)
+                            {
+                                j++;
+                            }
                             fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == nextNames[j]);
                             if (fieldName.Value != null)
                             {
@@ -1361,6 +1385,8 @@ namespace Atdi.CoreServices.EntityOrm
                     if (fieldName.Value != null)
                     {
                         var column = statement.ColumnsValues[i];
+                        var columnValueReplaced = QuerySelectStatement<TModel>.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                        column = columnValueReplaced;
                         column.Name = fieldName.Value.SourceName;
                         var parameter = new EngineCommandParameter
                         {
@@ -1368,6 +1394,7 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = "v_" + column.Name,
                             Value = column.GetValue()
                         };
+
                         parameters.Add(parameter.Name, parameter);
                         selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
                         changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
@@ -1412,6 +1439,8 @@ namespace Atdi.CoreServices.EntityOrm
                     var dbField = entityMetadata.Fields.Values.ToList().Find(z => z.Name == column.Name);
                     if (dbField!=null)
                     {
+                        var columnValueReplaced = QuerySelectStatement<TModel>.GetColumnValue(column.GetValue(), column.Name, dbField.DataType as DataTypeMetadata);
+                        column = columnValueReplaced;
                         column.Name = dbField.SourceName;
                     }
                     else

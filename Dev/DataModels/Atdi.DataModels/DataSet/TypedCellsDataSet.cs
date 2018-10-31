@@ -34,7 +34,7 @@ namespace Atdi.DataModels
         public double?[][] DoubleCells { get; set; }
 
         [DataMember]
-        public float?[][] FloatCells { get; set; }
+        public Single?[][] FloatCells { get; set; }
 
         [DataMember]
         public decimal?[][] DecimalCells { get; set; }
@@ -47,5 +47,47 @@ namespace Atdi.DataModels
 
         [DataMember]
         public Guid?[][] GuidCells { get; set; }
+
+        [DataMember]
+        public Char?[][] CharCells { get; set; }
+
+        [DataMember]
+        public Int16?[][] ShortCells { get; set; }
+
+        [DataMember]
+        public UInt16?[][] UnsignedShortCells { get; set; }
+
+        [DataMember]
+        public UInt32?[][] UnsignedIntegerCells { get; set; }
+
+        [DataMember]
+        public Int64?[][] LongCells { get; set; }
+
+        [DataMember]
+        public UInt64?[][] UnsignedLongCells { get; set; }
+
+        [DataMember]
+        public sbyte?[][][] SignedByteCells { get; set; }
+
+        [DataMember]
+        public TimeSpan?[][] TimeCells { get; set; }
+
+        [DataMember]
+        public DateTime?[][] DateCells { get; set; }
+
+        [DataMember]
+        public DateTimeOffset?[][] DateTimeOffsetCells { get; set; }
+
+        [DataMember]
+        public string[][] XmlCells { get; set; }
+
+        [DataMember]
+        public string[][] JsonCells { get; set; }
+
+        [DataMember]
+        public Enum[][] ClrEnumCells { get; set; }
+
+        [DataMember]
+        public Object[][] ClrTypeCells { get; set; }
     }
 }

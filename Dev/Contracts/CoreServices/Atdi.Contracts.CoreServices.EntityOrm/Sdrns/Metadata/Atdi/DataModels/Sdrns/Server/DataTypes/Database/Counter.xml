@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <DataType Name="Counter" DataSourceType="Database" xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <Autonum Start="1" Step="1" />
-  <CodeVarType>Integer</CodeVarType>
+  <CodeVarType>Long</CodeVarType>
   <SourceVarType>INT64</SourceVarType>
   <Length>15</Length>
   <Precision>0</Precision>

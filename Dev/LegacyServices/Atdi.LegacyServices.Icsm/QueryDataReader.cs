@@ -656,6 +656,146 @@ namespace Atdi.LegacyServices.Icsm
         {
             return this._dataReader.IsDBNull(ordinal);
         }
+
+        public char? GetNullableValueAsChar(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public char GetValueAsChar(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short? GetNullableValueAsShort(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short GetValueAsShort(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort? GetNullableValueAsUnsignedShort(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort GetValueAsUnsignedShort(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint? GetNullableValueAsUnsignedInteger(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint GetValueAsUnsignedInteger(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long? GetNullableValueAsLong(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long GetValueAsLong(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong? GetNullableValueAsUnsignedLong(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong GetValueAsUnsignedLong(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte? GetNullableValueAsSignedByte(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte GetValueAsSignedByte(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan? GetNullableValueAsTime(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan GetValueAsTime(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime? GetNullableValueAsDate(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime GetValueAsDate(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset? GetNullableValueAsDateTimeOffset(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset GetValueAsDateTimeOffset(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetNullableValueAsXml(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetValueAsXml(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetNullableValueAsJson(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetValueAsJson(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetNullableValueAsClrType(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetValueAsClrType(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Enum GetNullableValueAsClrEnum(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Enum GetValueAsClrEnum(Type fieldDbType, int ordinal)
+        {
+            throw new NotImplementedException();
+        }
     }
     internal sealed class QueryDataReader<TModel> : IDataReader<TModel>
     {
@@ -1381,6 +1521,106 @@ namespace Atdi.LegacyServices.Icsm
                 return null;
             }
             return GetValueAsBytes(columnIndex);
+        }
+
+        public char GetValue(Expression<Func<TModel, char>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public char? GetValue(Expression<Func<TModel, char?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short GetValue(Expression<Func<TModel, short>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short? GetValue(Expression<Func<TModel, short?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort GetValue(Expression<Func<TModel, ushort>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort? GetValue(Expression<Func<TModel, ushort?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint GetValue(Expression<Func<TModel, uint>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint? GetValue(Expression<Func<TModel, uint?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long GetValue(Expression<Func<TModel, long>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long? GetValue(Expression<Func<TModel, long?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong GetValue(Expression<Func<TModel, ulong>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong? GetValue(Expression<Func<TModel, ulong?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte GetValue(Expression<Func<TModel, sbyte>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte? GetValue(Expression<Func<TModel, sbyte?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan GetValue(Expression<Func<TModel, TimeSpan>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan? GetValue(Expression<Func<TModel, TimeSpan?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset GetValue(Expression<Func<TModel, DateTimeOffset>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset? GetValue(Expression<Func<TModel, DateTimeOffset?>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Enum GetValue(Expression<Func<TModel, Enum>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetValue(Expression<Func<TModel, object>> columnExpression)
+        {
+            throw new NotImplementedException();
         }
     }
 
