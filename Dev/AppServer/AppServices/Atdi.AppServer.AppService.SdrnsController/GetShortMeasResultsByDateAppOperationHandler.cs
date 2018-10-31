@@ -15,7 +15,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             SdrnsControllerAppService,
             SdrnsControllerAppService.GetShortMeasResultsByDatesAppOperation,
             GetShortMeasResultsByDateAppOperationOptions,
-            ShortMeasurementResults[]
+            ShortMeasurementResultsExtend[]
         >
     {
         public GetShortMeasResultsByDateAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
@@ -28,9 +28,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <param name="options"></param>
         /// <param name="operationContext"></param>
         /// <returns></returns>
-        public override ShortMeasurementResults[] Handle(GetShortMeasResultsByDateAppOperationOptions options, IAppOperationContext operationContext)
+        public override ShortMeasurementResultsExtend[] Handle(GetShortMeasResultsByDateAppOperationOptions options, IAppOperationContext operationContext)
         {
-            List<ShortMeasurementResults> ShortMeas = new List<ShortMeasurementResults>();
+            List<ShortMeasurementResultsExtend> ShortMeas = new List<ShortMeasurementResultsExtend>();
             ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
             Logger.Trace(this, options, operationContext);
@@ -38,17 +38,17 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             {
                 try
                 {
-                    
-                    List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB(options.options.Start.Value, options.options.End.Value)).ToList();
-                    foreach (MeasurementResults msrt in LST_MeasurementResults)
+
+                    List<KeyValuePair<MeasurementResults, int>> LST_MeasurementResults = conv.ConvertTo_SDRObjectsExt(resDb.ReadlAllResultFromDB(options.options.Start.Value, options.options.End.Value)).ToList();
+                    foreach (var msrt in LST_MeasurementResults)
                     {
-                        ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = msrt.DataRank, Id = msrt.Id, Number = msrt.N.HasValue ? msrt.N.Value : -1, Status = msrt.Status, TimeMeas = msrt.TimeMeas, TypeMeasurements = msrt.TypeMeasurements };
-                        if (msrt.LocationSensorMeasurement != null)
+                        ShortMeasurementResultsExtend ShMsrt = new ShortMeasurementResultsExtend { DataRank = msrt.Key.DataRank, Id = msrt.Key.Id, Number = msrt.Key.N.HasValue ? msrt.Key.N.Value : -1, Status = msrt.Key.Status, TimeMeas = msrt.Key.TimeMeas, TypeMeasurements = msrt.Key.TypeMeasurements, SensorId = msrt.Value };
+                        if (msrt.Key.LocationSensorMeasurement != null)
                         {
-                            if (msrt.LocationSensorMeasurement.Count() > 0)
+                            if (msrt.Key.LocationSensorMeasurement.Count() > 0)
                             {
-                                ShMsrt.CurrentLat = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lat;
-                                ShMsrt.CurrentLon = msrt.LocationSensorMeasurement[msrt.LocationSensorMeasurement.Count() - 1].Lon;
+                                ShMsrt.CurrentLat = msrt.Key.LocationSensorMeasurement[msrt.Key.LocationSensorMeasurement.Count() - 1].Lat;
+                                ShMsrt.CurrentLon = msrt.Key.LocationSensorMeasurement[msrt.Key.LocationSensorMeasurement.Count() - 1].Lon;
                             }
                         }
                         ShortMeas.Add(ShMsrt);

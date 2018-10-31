@@ -17,6 +17,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public List<YXbsResLevmeasonline> level_meas_onl_res { get; set; }
 
         public List<YXbsResmeasstation> XbsResmeasstation { get; set; }
+
+        public List<YXbsLinkResSensor> XbsLinkResSensor { get; set; }
         public List<YXbsResStGeneral> XbsResGeneral { get; set; }
         public List<YXbsResStLevelCar> XbsResLevelMeas { get; set; }
         public List<YXbsResStMaskElm> XbsResmaskBw { get; set; }
@@ -48,6 +50,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             XbsResLevelMeas = new List<YXbsResStLevelCar>();
             XbsResmaskBw = new List<YXbsResStMaskElm>();
             XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+            XbsLinkResSensor = new List<YXbsLinkResSensor>();
     }
 
        

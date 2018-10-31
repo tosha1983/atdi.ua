@@ -201,6 +201,6 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        ShortMeasurementResults[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue constraint, CommonOperationArguments otherArgs);
+        ShortMeasurementResultsExtend[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue constraint, CommonOperationArguments otherArgs);
     }
 }

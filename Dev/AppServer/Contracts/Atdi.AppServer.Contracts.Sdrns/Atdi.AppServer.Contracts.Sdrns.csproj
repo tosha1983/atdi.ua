@@ -70,6 +70,7 @@
     <Compile Include="Models\Devices\BB60C\MeasSdrTask.cs" />
     <Compile Include="Models\Measurements\MeasurementResultsIdentifier.cs" />
     <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementOnlineResult.cs" />
+    <Compile Include="Models\Measurements\ShortMeasurementResultsExtend.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />

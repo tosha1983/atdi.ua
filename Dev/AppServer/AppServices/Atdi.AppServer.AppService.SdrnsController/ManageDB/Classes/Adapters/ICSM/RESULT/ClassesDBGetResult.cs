@@ -61,10 +61,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                                 ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                                 ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                                ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
+
 
                                 var m_fr = new YXbsResMeas();
                                 m_fr.CopyDataFrom(res_val);
                                 ICSM_T.meas_res = m_fr;
+
+
+                              
 
                                 /////
                                 YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
@@ -73,6 +78,24 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 XbsYXbsResmeasstation_.Order = "[ID] ASC";
                                 for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                                 {
+                                    /*
+                                    YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                    XbsYXbsLinkResSensor_.Format("*");
+                                    XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                    XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                    for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                    {
+                                        var m_fr_cv = new YXbsLinkResSensor();
+                                        m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                        ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                        m_fr_cv.Close();
+                                        m_fr_cv.Dispose();
+                                        break;
+                                    }
+                                    XbsYXbsLinkResSensor_.Close();
+                                    XbsYXbsLinkResSensor_.Dispose();
+                                    */
+
                                     var m_fr_2 = new YXbsResmeasstation();
                                     m_fr_2.CopyDataFrom(XbsYXbsResmeasstation_);
                                     ICSM_T.XbsResmeasstation.Add(m_fr_2);
@@ -317,6 +340,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -329,6 +353,25 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+                                /*
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                    break;
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+
+                                */
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);
@@ -384,6 +427,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -396,6 +440,24 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+                                /*
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                    break;
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+                                */
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);
@@ -519,6 +581,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -531,6 +594,25 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+                                /*
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                    break;
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+                                */
+
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);
@@ -706,6 +788,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -718,6 +801,25 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+                                /*
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                    break;
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+                                */
+
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);
@@ -896,6 +998,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -908,6 +1011,25 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+                                /*
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                    break;
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+                                */
+
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);
@@ -1086,6 +1208,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -1277,10 +1400,38 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
                             ICSM_T.meas_res = m_fr;
+
+                            YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                            XbsYXbsResmeasstation_.Format("*");
+                            XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
+                            for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                            {
+
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                    break;
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+                                break;
+                            }
+                            XbsYXbsResmeasstation_.Close();
+                            XbsYXbsResmeasstation_.Dispose();
 
                             /*
                             /////
@@ -1290,6 +1441,22 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+
+                              YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);
@@ -1469,6 +1636,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
                             ICSM_T.meas_res = m_fr;
@@ -1479,6 +1647,24 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Order = "[ID] ASC";
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
+                                /*
+                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                XbsYXbsLinkResSensor_.Format("*");
+                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                {
+                                    var m_fr_cv = new YXbsLinkResSensor();
+                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                    m_fr_cv.Close();
+                                    m_fr_cv.Dispose();
+                                }
+                                XbsYXbsLinkResSensor_.Close();
+                                XbsYXbsLinkResSensor_.Dispose();
+                                */
+
+
                                 var m_fr_1 = new YXbsResmeasstation();
                                 m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
                                 ICSM_T.XbsResmeasstation.Add(m_fr_1);

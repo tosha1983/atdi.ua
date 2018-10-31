@@ -341,10 +341,10 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        public ShortMeasurementResults[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue options, CommonOperationArguments otherArgs)
+        public ShortMeasurementResultsExtend[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue options, CommonOperationArguments otherArgs)
         {
             var result =
-               Operation<SdrnsControllerAppService.GetShortMeasResultsByDatesAppOperation, ShortMeasurementResults[]>()
+               Operation<SdrnsControllerAppService.GetShortMeasResultsByDatesAppOperation, ShortMeasurementResultsExtend[]>()
                    .Invoke(
                        new GetShortMeasResultsByDateAppOperationOptions
                        {
