@@ -50,9 +50,6 @@ namespace XICSM.ICSControlClient.Forms
                 }
             }
 
-
-
-
             SDR.SOFrequency[] soFrequency = new SDR.SOFrequency[] { };
             for (int i = 0; i < _planIds.Count(); i++ )
             {
@@ -127,10 +124,10 @@ namespace XICSM.ICSControlClient.Forms
                 }
                 else
                 {
-                    LonMax = 33;
-                    LonMin = 26;
                     LatMax = 52;
-                    LatMin = 47;
+                    LatMin = 44;
+                    LonMax = 40;
+                    LonMin = 22;
                 }
 
                 //using (StreamWriter outputFile = new StreamWriter(Path.Combine(@"C:\", "ICSMPluginLog.txt")))
