@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 try
                 {
 
-
+                   
                     var query = this._dataLayer.GetBuilder<MD.IAntenna>()
                 .From()
                 .Select(c => c.Id)
@@ -48,13 +48,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 .Select(c => c.Name)
                 .Select(c => c.POS.PosX)
                 .Select(c => c.PROP1.PropName)
+                .Select(c => c.PROP2.TableRecId)
+                .Select(c => c.PROP3.Value)
                 .Select(c => c.TYPE.Name)
-                .Select(c => c.EXT1.EXT2.FullName2)
+                .Select(c => c.EXT1.FullName)
                 .Where(c => c.Id, ConditionOperator.Equal, 185)
 
                 ;
+                
 
-                    /*
+                 /*
                                         var query = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
                                        .From()
                                        .Select(c=>c.Id)
@@ -62,10 +65,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                        .Select(c => c.SENSORANT.Id)
                                        .Select(c => c.SENSORANT.SENSOR.Name)
                                        .Select(c => c.SensorAntennaId)
-                                       .Where(c => c.Id, ConditionOperator.Equal, 185)
+                                       .Where(c => c.Id, ConditionOperator.Equal, 182)
 
                                        ;
-                                       */
+                   */                    
 
                     /*
                     var query = this._dataLayer.GetBuilder<MD.ISensor>()
