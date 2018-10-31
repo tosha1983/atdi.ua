@@ -1003,6 +1003,10 @@ namespace Atdi.CoreServices.EntityOrm
             try
             {
                 const string ExtendedName = "EXTENDED";
+                if (this._listFieldProperties.Find(b => (fields.ToList().Find(c=>(b.Alias.Contains(c)))!=null) && b.TableName== EntityName) != null)
+                {
+                    return;
+                }
                 var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
                 var oldentityMetadata = entityMetadata;
                 for (int i = 0; i < fields.Length; i++)
@@ -1395,8 +1399,8 @@ namespace Atdi.CoreServices.EntityOrm
                     if (fieldName.Value != null)
                     {
                         var column = statement.ColumnsValues[i];
-                        //var columnValueReplaced =  QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
-                        //column = columnValueReplaced;
+                        var columnValueReplaced =  QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                        column = columnValueReplaced;
                         column.Name = fieldName.Value.SourceName;
                         var parameter = new EngineCommandParameter
                         {
@@ -1449,8 +1453,8 @@ namespace Atdi.CoreServices.EntityOrm
                     var dbField = entityMetadata.Fields.Values.ToList().Find(z => z.Name == column.Name);
                     if (dbField!=null)
                     {
-                        //var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, dbField.DataType as DataTypeMetadata);
-                        //column = columnValueReplaced;
+                        var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, dbField.DataType as DataTypeMetadata);
+                        column = columnValueReplaced;
                         column.Name = dbField.SourceName;
                     }
                     else

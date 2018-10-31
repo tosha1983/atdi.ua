@@ -177,6 +177,96 @@ namespace Atdi.CoreServices.EntityOrm
 
         public DataLimit Limit => this._limit;
 
+
+        public static ColumnValue GetColumnValue(object value, string nameColumn, DataTypeMetadata dataTypeMetadata)
+        {
+            ColumnValue result = null;
+            switch (dataTypeMetadata.SourceVarType.ToString())
+            {
+                case "BOOL":
+                    result = Convesrion.ConversionBool(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BIT":
+                    result = Convesrion.ConversionBit(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BYTE":
+                    result = Convesrion.ConversionByte(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BYTES":
+                    result = Convesrion.ConversionBytes(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BLOB":
+                    result = Convesrion.ConversionBlob(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT08":
+                    result = Convesrion.ConversionInt08(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT16":
+                    result = Convesrion.ConversionInt16(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT32":
+                    result = Convesrion.ConversionInt32(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT64":
+                    result = Convesrion.ConversionInt64(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NCHAR":
+                    result = Convesrion.ConversionNchar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NVARCHAR":
+                    result = Convesrion.ConversionNvarChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NTEXT":
+                    result = Convesrion.ConversionNText(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "CHAR":
+                    result = Convesrion.ConversionChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "VARCHAR":
+                    result = Convesrion.ConversionVarChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "TEXT":
+                    result = Convesrion.ConversionText(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "TIME":
+                    result = Convesrion.ConversionTime(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATE":
+                    result = Convesrion.ConversionDate(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATETIME":
+                    result = Convesrion.ConversionDateTime(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATETIMEOFFSET":
+                    result = Convesrion.ConversionDateTimeOffset(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "MONEY":
+                    result = Convesrion.ConversionMoney(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "FLOAT":
+                    result = Convesrion.ConversionFloat(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DOUBLE":
+                    result = Convesrion.ConversionDouble(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DECIMAL":
+                    result = Convesrion.ConversionDecimal(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "GUID":
+                    result = Convesrion.ConversionGuid(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "XML":
+                    result = Convesrion.ConversionXml(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "JSON":
+                    result = Convesrion.ConversionJson(value, nameColumn, dataTypeMetadata);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataTypeMetadata.SourceVarType.ToString()}'");
+            }
+            return result;
+        }
+
         public IQuerySelectStatement OnTop(int count)
         {
             if (count < 0)

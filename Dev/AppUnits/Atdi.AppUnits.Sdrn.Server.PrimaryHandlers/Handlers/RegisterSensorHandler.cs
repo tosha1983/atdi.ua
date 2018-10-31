@@ -40,6 +40,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 try
                 {
 
+
+                    var query = this._dataLayer.GetBuilder<MD.ISensor>()
+                   .Update()
+                   .SetValue(c=>c.Name,"bbb")
+                   .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
+                   .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
+                   ;
+
+                    /*
                     var query = this._dataLayer.GetBuilder<MD.ISensor>()
                      .From()
                      .Select(c => c.Name)
@@ -47,9 +56,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                      .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
                      .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
                      ;
+                     */
 
-                    sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                    .Execute(query)==1;
+                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+                    .Execute(query) == 1;
+                   
 
                     if (!sensorExistsInDb)
                     {
