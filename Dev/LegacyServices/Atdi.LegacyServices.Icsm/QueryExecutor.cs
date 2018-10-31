@@ -685,10 +685,40 @@ namespace Atdi.LegacyServices.Icsm
         }
 
 
-        public int Execute<TModel>(IQueryStatement statement)
-        {
-            throw new NotImplementedException();
-        }
+        //public EngineCommand BuildSelectCommand<TModel>(IQuerySelectStatement statement)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public DataModels.DataSet Fetch<TModel>(IQuerySelectStatement<TModel> statement, DataSetColumn[] columns, DataSetStructure structure)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public int Execute<TModel>(IQuerySelectStatement<TModel> statement)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public int Execute<TModel>(IQueryDeleteStatement<TModel> statement)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public int Execute<TModel>(IQueryInsertStatement<TModel> statement)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public int Execute<TModel>(IQueryUpdateStatement<TModel> statement)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
 
