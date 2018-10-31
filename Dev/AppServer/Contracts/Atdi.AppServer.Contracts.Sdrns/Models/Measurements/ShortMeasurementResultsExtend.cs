@@ -17,7 +17,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// Identifier of measurements results
         /// </summary>
         [DataMember]
-        public int SensorId;
+        public string SensorName;
 
     }
 }

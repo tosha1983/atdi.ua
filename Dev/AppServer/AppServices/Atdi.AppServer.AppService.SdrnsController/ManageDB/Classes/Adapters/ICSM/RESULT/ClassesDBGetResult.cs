@@ -1401,6 +1401,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
                             ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
+                            ICSM_T.SensorName = "";
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -1424,6 +1425,19 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
                                     m_fr_cv.Close();
                                     m_fr_cv.Dispose();
+
+
+                                    YXbsSensor XbsSensor_ = new YXbsSensor();
+                                    XbsSensor_.Format("*");
+                                    XbsSensor_.Filter = string.Format("(ID={0})", XbsYXbsLinkResSensor_.m_id_xbs_sensor);
+                                    XbsSensor_.Order = "[ID] ASC";
+                                    for (XbsSensor_.OpenRs(); !XbsSensor_.IsEOF(); XbsSensor_.MoveNext())
+                                    {
+                                        ICSM_T.SensorName = XbsSensor_.m_name;
+                                    }
+                                    XbsSensor_.Close();
+                                    XbsSensor_.Dispose();
+
                                     break;
                                 }
                                 XbsYXbsLinkResSensor_.Close();

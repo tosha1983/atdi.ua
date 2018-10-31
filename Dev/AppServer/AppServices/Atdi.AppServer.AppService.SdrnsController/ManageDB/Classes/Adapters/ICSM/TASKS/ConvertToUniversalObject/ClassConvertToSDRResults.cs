@@ -265,10 +265,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         }
 
 
-        public List<KeyValuePair<MeasurementResults,int>> ConvertTo_SDRObjectsExt(List<ClassSDRResults> objs)
+        public List<KeyValuePair<MeasurementResults,string>> ConvertTo_SDRObjectsExt(List<ClassSDRResults> objs)
         {
-            List<KeyValuePair<MeasurementResults, int>> L_OUT = new List<KeyValuePair<MeasurementResults, int>>();
-            int IdSensor = 0;
+            List<KeyValuePair<MeasurementResults, string>> L_OUT = new List<KeyValuePair<MeasurementResults, string>>();
+            string SensorName = "";
             try
             {
                 logger.Trace("Start procedure ConvertTo_SDRObjects...");
@@ -376,16 +376,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
 
                             //////////////////////////////////////////////
-                            if (obj.XbsLinkResSensor != null)
+                            if (obj.SensorName != null)
                             {
-                                if (obj.XbsLinkResSensor.Count > 0)
-                                {
-                                    foreach (YXbsLinkResSensor flevmeas in obj.XbsLinkResSensor.ToArray())
-                                    {
-                                        IdSensor = flevmeas.m_id_xbs_sensor.Value;
-                                        break;
-                                    }
-                                }
+                               SensorName = obj.SensorName;
                             }
 
                             if (obj.XbsResmeasstation != null)
@@ -496,7 +489,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                             s_out.MeasurementsResults = L_MSR.ToArray();
 
-                            L_OUT.Add(new KeyValuePair<MeasurementResults, int>(s_out, IdSensor));
+                            L_OUT.Add(new KeyValuePair<MeasurementResults, string>(s_out, SensorName));
                         }
                     }
                     catch (Exception ex)

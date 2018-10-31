@@ -39,10 +39,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 try
                 {
 
-                    List<KeyValuePair<MeasurementResults, int>> LST_MeasurementResults = conv.ConvertTo_SDRObjectsExt(resDb.ReadlAllResultFromDB(options.options.Start.Value, options.options.End.Value)).ToList();
+                    List<KeyValuePair<MeasurementResults, string>> LST_MeasurementResults = conv.ConvertTo_SDRObjectsExt(resDb.ReadlAllResultFromDB(options.options.Start.Value, options.options.End.Value)).ToList();
                     foreach (var msrt in LST_MeasurementResults)
                     {
-                        ShortMeasurementResultsExtend ShMsrt = new ShortMeasurementResultsExtend { DataRank = msrt.Key.DataRank, Id = msrt.Key.Id, Number = msrt.Key.N.HasValue ? msrt.Key.N.Value : -1, Status = msrt.Key.Status, TimeMeas = msrt.Key.TimeMeas, TypeMeasurements = msrt.Key.TypeMeasurements, SensorId = msrt.Value };
+                        ShortMeasurementResultsExtend ShMsrt = new ShortMeasurementResultsExtend { DataRank = msrt.Key.DataRank, Id = msrt.Key.Id, Number = msrt.Key.N.HasValue ? msrt.Key.N.Value : -1, Status = msrt.Key.Status, TimeMeas = msrt.Key.TimeMeas, TypeMeasurements = msrt.Key.TypeMeasurements, SensorName = msrt.Value };
                         if (msrt.Key.LocationSensorMeasurement != null)
                         {
                             if (msrt.Key.LocationSensorMeasurement.Count() > 0)
