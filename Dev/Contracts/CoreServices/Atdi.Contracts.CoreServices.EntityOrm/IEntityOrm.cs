@@ -10,10 +10,10 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
 {
     public interface IEntityOrm
     {
-        IReadOnlyDictionary<IRelationFieldMetadata, string> RelationFieldMetadata { get; }
-        IReadOnlyDictionary<IReferenceFieldMetadata, string> ReferenceFieldMetadata { get; }
-        IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata { get; }
-        IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata { get; }
+     //   IReadOnlyDictionary<IRelationFieldMetadata, string> RelationFieldMetadata { get; }
+     //   IReadOnlyDictionary<IReferenceFieldMetadata, string> ReferenceFieldMetadata { get; }
+     //   IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata { get; }
+    //    IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata { get; }
 
         IEntityMetadata GetEntityMetadata(string entityName);
 

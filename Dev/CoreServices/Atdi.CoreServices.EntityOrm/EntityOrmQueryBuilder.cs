@@ -206,14 +206,21 @@ namespace Atdi.CoreServices.EntityOrm
                             aliasFieldFind.IsReplaced = true;
                         }
                     }
-                    foreach (var x in _entityMetadata.RelationFieldMetadata.ToList())
+
+                    var entityObject = _entityMetadata.GetEntityMetadata(EntityName);
+                    RelTableNameFrom = entityObject.DataSource.Name;
+                    var findReferenceMetaData = entityObject.Fields;
+                    var fndMeta = findReferenceMetaData.ToList().FindAll(z =>  z.Value.SourceType == FieldSourceType.Relation).Select(c=>c.Value);
+                    foreach (var x in fndMeta)
                     {
-                        if (x.Key.RelatedEntity != null)
+                        if (x is RelationFieldMetadata rel)
                         {
-                            if (x.Key.RelatedEntity.DataSource.Name == RelTableNameTo)
+                            if (rel.RelatedEntity != null)
                             {
-                                relationFieldMetadataFnd = x.Key;
-                                RelTableNameFrom = x.Value;
+                                if (rel.RelatedEntity.DataSource.Name == RelTableNameTo)
+                                {
+                                    relationFieldMetadataFnd = rel;
+                                }
                             }
                         }
                     }
@@ -224,6 +231,7 @@ namespace Atdi.CoreServices.EntityOrm
                         IEntityMetadata metadataRelEntity = relationFieldMetadataFnd.RelatedEntity;
                         if (metadataRelEntity != null)
                         {
+                           
                             bool isFindedBlock = false;
                             do
                             {
@@ -390,6 +398,11 @@ namespace Atdi.CoreServices.EntityOrm
             while (countSubLevels > 0);
         }
 
+        private int GetIndexTable(List<IEntityMetadata> listEntityMetaData, string Name)
+        {
+           return listEntityMetaData.FindIndex(c => c.DataSource.Name == Name);
+        }
+
         /// <summary>
         /// Формирование JOIN для связей типа "Reference"
         /// </summary>
@@ -424,29 +437,47 @@ namespace Atdi.CoreServices.EntityOrm
                         {
                             aliasFieldFind.IsReplaced = true;
                         }
-
                         int countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
                         RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref aliasFields);
                         var stringBuilderRefGlobal = new List<string>();
                         countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
                         RefTableNameTo = fieldProperties.DBTableName;
+                        RefTableNameFrom = EntityName;
                         do
                         {
                             if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0))
                             {
-                                referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
-                                RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
+                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].DataSource.Name;
+                                string name = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].Name;
+                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                IFieldMetadata fndMeta = findReferenceMetaData.ToList().Find(z => (z.Value is ReferenceFieldMetadata) ? (z.Value as ReferenceFieldMetadata).RefEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Reference).Value;
+                                string fndMetaName = findReferenceMetaData.ToList().Find(z => (z.Value is ReferenceFieldMetadata) ? (z.Value as ReferenceFieldMetadata).RefEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Reference).Key;
+                                if (fndMeta != null)
+                                {
+                                    referenceFieldMetadataFnd = fndMeta as ReferenceFieldMetadata;
+                                }
                             }
                             else
                             {
+
                                 RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
-                                referenceFieldMetadataFnd = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Key;
+                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].DataSource.Name;
+                                string name = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].Name;
+                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                IFieldMetadata fndMeta = findReferenceMetaData.ToList().Find(z => (z.Value is ReferenceFieldMetadata) ? (z.Value as ReferenceFieldMetadata).RefEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Reference).Value;
+                                string fndMetaName = findReferenceMetaData.ToList().Find(z => (z.Value is ReferenceFieldMetadata) ? (z.Value as ReferenceFieldMetadata).RefEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Reference).Key;
+                                if (fndMeta != null)
+                                {
+                                    referenceFieldMetadataFnd = fndMeta as ReferenceFieldMetadata;
+                                    
+                                }
+
                                 var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo);
                                 if (aliasFieldCheck != null)
                                 {
                                     SpecialFld = aliasFieldCheck.Alias;
                                 }
-                                RefTableNameFrom = _entityMetadata.ReferenceFieldMetadata.ToList().Find(z => z.Key.RefEntity.DataSource.Name == RefTableNameTo).Value;
+
                             }
                             if (referenceFieldMetadataFnd != null)
                             {
@@ -483,6 +514,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                                 string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataRefEntity.DataSource.Name));
 
                                                                 stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
+
                                                             }
                                                         }
                                                     }

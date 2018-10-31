@@ -17,28 +17,28 @@ namespace Atdi.CoreServices.EntityOrm
 {
     public class EntityOrm : IEntityOrm
     {
-        public readonly Dictionary<IRelationFieldMetadata, string> _relationFieldMetadata;
-        public readonly Dictionary<IReferenceFieldMetadata, string> _referenceFieldMetadata;
-        public readonly Dictionary<IExtensionFieldMetadata, string> _extensionFieldMetadata;
-        public readonly Dictionary<IFieldMetadata, string> _columnFieldMetadata;
+        //public readonly Dictionary<IRelationFieldMetadata, string> _relationFieldMetadata;
+        //public readonly Dictionary<IReferenceFieldMetadata, string> _referenceFieldMetadata;
+        //public readonly Dictionary<IExtensionFieldMetadata, string> _extensionFieldMetadata;
+        //public readonly Dictionary<IFieldMetadata, string> _columnFieldMetadata;
         private readonly IEntityOrmConfig _config;
         private readonly Dictionary<string, IEntityMetadata> _cache;
         private readonly List<string> _cashecontainerEntity;
         private readonly List<IEntityMetadata> _cashecontainerEntityList;
 
 
-        public IReadOnlyDictionary<IRelationFieldMetadata, string> RelationFieldMetadata => this._relationFieldMetadata;
-        public IReadOnlyDictionary<IReferenceFieldMetadata, string> ReferenceFieldMetadata => this._referenceFieldMetadata;
-        public IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata => this._extensionFieldMetadata;
-        public IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata => this._columnFieldMetadata;
+        //public IReadOnlyDictionary<IRelationFieldMetadata, string> RelationFieldMetadata => this._relationFieldMetadata;
+        //public IReadOnlyDictionary<IReferenceFieldMetadata, string> ReferenceFieldMetadata => this._referenceFieldMetadata;
+        //public IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata => this._extensionFieldMetadata;
+        //public IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata => this._columnFieldMetadata;
 
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
-            this._columnFieldMetadata = new Dictionary<IFieldMetadata, string>();
-            this._extensionFieldMetadata = new Dictionary<IExtensionFieldMetadata, string>();
-            this._relationFieldMetadata = new Dictionary<IRelationFieldMetadata, string>();
-            this._referenceFieldMetadata = new Dictionary<IReferenceFieldMetadata, string>();
+            //this._columnFieldMetadata = new Dictionary<IFieldMetadata, string>();
+            //this._extensionFieldMetadata = new Dictionary<IExtensionFieldMetadata, string>();
+            //this._relationFieldMetadata = new Dictionary<IRelationFieldMetadata, string>();
+            //this._referenceFieldMetadata = new Dictionary<IReferenceFieldMetadata, string>();
             _cache = new Dictionary<string, IEntityMetadata>();
             _cashecontainerEntity = new List<string>();
             _cashecontainerEntityList = new List<IEntityMetadata>();
@@ -996,6 +996,7 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
 
+                            /*
                             if (this._columnFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
                             {
                                 this._columnFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
@@ -1005,6 +1006,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 this._columnFieldMetadata.Remove(this._columnFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
                                 this._columnFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
                             }
+                            */
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Reference)
                         {
@@ -1047,7 +1049,7 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
-
+                            /*
                             if (this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
                             {
                                 this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
@@ -1057,7 +1059,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 this._referenceFieldMetadata.Remove(this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
                                 this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
                             }
-
+                            */
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Extension)
                         {
@@ -1099,6 +1101,7 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            /*
                             if (this._extensionFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
                             {
                                 this._extensionFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
@@ -1108,6 +1111,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 this._extensionFieldMetadata.Remove(this._extensionFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
                                 this._extensionFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
                             }
+                            */
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Relation)
                         {
@@ -1150,7 +1154,7 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
-
+                            /*
                             if (this._relationFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
                             {
                                 this._relationFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
@@ -1160,6 +1164,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 this._relationFieldMetadata.Remove(this._relationFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
                                 this._relationFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
                             }
+                            */
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Expression)
                         {
