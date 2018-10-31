@@ -17,7 +17,7 @@ namespace XICSM.ICSControlClient.Forms
 {
     public partial class CalcSODlg2Form : Form
     {
-        public SDR.ShortMeasurementResults[] _shortMeasResults;
+        public SDR.ShortMeasurementResultsExtend[] _shortMeasResults;
         public int[] _planIds;
         public string[] _points;
         public int[] _allIds;
@@ -30,8 +30,8 @@ namespace XICSM.ICSControlClient.Forms
         {
             for (int i = 0; i < _shortMeasResults.Count(); i++)
             {
-                var ms = _shortMeasResults[i] as SDR.ShortMeasurementResults;
-                dataGrid.Rows.Add(ms.Id.MeasSdrResultsId, ms.TimeMeas, ms.DataRank, ms.Number, ms.Status, ms.TypeMeasurements, ms.CurrentLon, ms.CurrentLat);
+                var ms = _shortMeasResults[i] as SDR.ShortMeasurementResultsExtend;
+                dataGrid.Rows.Add(ms.Id.MeasSdrResultsId, ms.TimeMeas, ms.DataRank, ms.Number, ms.Status, ms.TypeMeasurements, ms.CurrentLon, ms.CurrentLat, ms.SensorName);
             }
         }
 

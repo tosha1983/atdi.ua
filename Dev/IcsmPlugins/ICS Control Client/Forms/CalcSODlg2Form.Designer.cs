@@ -40,13 +40,14 @@
             this.TypeMeasurements = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentLon = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentLat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SensorName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(805, 468);
+            this.btnCancel.Location = new System.Drawing.Point(967, 468);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 9;
@@ -57,7 +58,7 @@
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(705, 468);
+            this.btnOk.Location = new System.Drawing.Point(867, 468);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 8;
@@ -93,12 +94,13 @@
             this.Status,
             this.TypeMeasurements,
             this.CurrentLon,
-            this.CurrentLat});
+            this.CurrentLat,
+            this.SensorName});
             this.dataGrid.Location = new System.Drawing.Point(0, -4);
             this.dataGrid.Name = "dataGrid";
             this.dataGrid.ReadOnly = true;
             this.dataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGrid.Size = new System.Drawing.Size(895, 455);
+            this.dataGrid.Size = new System.Drawing.Size(1057, 455);
             this.dataGrid.TabIndex = 11;
             // 
             // Id
@@ -149,11 +151,18 @@
             this.CurrentLat.Name = "CurrentLat";
             this.CurrentLat.ReadOnly = true;
             // 
+            // SensorName
+            // 
+            this.SensorName.HeaderText = "SensorName";
+            this.SensorName.Name = "SensorName";
+            this.SensorName.ReadOnly = true;
+            this.SensorName.Width = 150;
+            // 
             // CalcSODlg2Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(895, 503);
+            this.ClientSize = new System.Drawing.Size(1057, 503);
             this.Controls.Add(this.dataGrid);
             this.Controls.Add(this.btnSelectAll);
             this.Controls.Add(this.btnCancel);
@@ -180,5 +189,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn TypeMeasurements;
         private System.Windows.Forms.DataGridViewTextBoxColumn CurrentLon;
         private System.Windows.Forms.DataGridViewTextBoxColumn CurrentLat;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SensorName;
     }
 }

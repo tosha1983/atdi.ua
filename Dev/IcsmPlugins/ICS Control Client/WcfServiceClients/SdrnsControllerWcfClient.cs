@@ -98,7 +98,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             return result;
         }
-        public static ShortMeasurementResults[] GetShortMeasResultsByDates(DateTime startDate, DateTime stopDate)
+        public static ShortMeasurementResultsExtend[] GetShortMeasResultsByDates(DateTime startDate, DateTime stopDate)
         {
             var otherArgs = new CommonOperationArguments()
             {
@@ -115,7 +115,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             if (result == null)
             {
-                return new ShortMeasurementResults[] { };
+                return new ShortMeasurementResultsExtend[] { };
             }
             return result;
         }
