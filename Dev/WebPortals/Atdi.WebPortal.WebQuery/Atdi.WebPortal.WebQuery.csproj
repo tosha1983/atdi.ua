@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Content Include="Utility\WebApiClient.cs" />
   </ItemGroup>
 
   <ItemGroup>
