@@ -39,38 +39,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 var sensorExistsInDb = false;
                 try
                 {
-
-                   
-                    var query = this._dataLayer.GetBuilder<MD.IAntenna>()
-                .From()
-                .Select(c => c.Id)
-                .Select(c => c.FrequencyMHz)
-                .Select(c => c.Name)
-                .Select(c => c.POS.PosX)
-                .Select(c => c.PROP1.PropName)
-                .Select(c => c.PROP2.TableRecId)
-                .Select(c => c.PROP3.Value)
-                .Select(c => c.TYPE.Name)
-                .Select(c => c.EXT1.FullName)
-                .Where(c => c.Id, ConditionOperator.Equal, 185)
-
-                ;
-                
-
-                 /*
-                                        var query = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
-                                       .From()
-                                       .Select(c=>c.Id)
-                                       .Select(c => c.Gain)
-                                       .Select(c => c.SENSORANT.Id)
-                                       .Select(c => c.SENSORANT.SENSOR.Name)
-                                       .Select(c => c.SensorAntennaId)
-                                       .Where(c => c.Id, ConditionOperator.Equal, 182)
-
-                                       ;
-                   */                    
-
-                    /*
                     var query = this._dataLayer.GetBuilder<MD.ISensor>()
                      .From()
                      .Select(c => c.Name)
@@ -78,7 +46,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                      .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
                      .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
                      ;
-                     */
 
                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
                     .Execute(query) == 1;
