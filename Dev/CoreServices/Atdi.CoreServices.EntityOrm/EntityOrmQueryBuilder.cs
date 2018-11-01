@@ -187,7 +187,7 @@ namespace Atdi.CoreServices.EntityOrm
             try
             {
                 var listFieldProperties =  BuildSelectStatement(EntityName, new string[] { SpecialFld }, FieldSourceType.Relation, true);
-                var fieldProperties = listFieldProperties.Find(z => z.Alias.StartsWith(SpecialFld + ".") && (z.SourceType == FieldSourceType.Relation));
+                var fieldProperties = listFieldProperties.Find(z => (z.Alias.StartsWith(SpecialFld + ".") || (z.Alias == SpecialFld)) && (z.SourceType == FieldSourceType.Relation));
                 if (fieldProperties != null)
                 {
                     string RelTableNameTo = "";
@@ -365,25 +365,28 @@ namespace Atdi.CoreServices.EntityOrm
         {
             do
             {
-                if (((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0)) == false)
+                if (aliasFieldFind.EntityMetadataLinks != null)
                 {
-                    RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
-                    if (countSubLevels < aliasFieldFind.EntityMetadataLinks.Count - 1)
+                    if (((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0)) == false)
                     {
-                        string[] wrds = SpecialFld.Split(new char[] { '.' });
-                        if (wrds != null)
+                        RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
+                        if (countSubLevels < aliasFieldFind.EntityMetadataLinks.Count - 1)
                         {
-                            if (wrds.Length > 0)
+                            string[] wrds = SpecialFld.Split(new char[] { '.' });
+                            if (wrds != null)
                             {
-                                if (aliasFieldFind != null)
+                                if (wrds.Length > 0)
                                 {
-                                    SpecialFld = SpecialFld.Replace("." + wrds[wrds.Length - 1], "");
-                                    var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
-                                    if (aliasFieldCheck != null)
+                                    if (aliasFieldFind != null)
                                     {
-                                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
+                                        SpecialFld = SpecialFld.Replace("." + wrds[wrds.Length - 1], "");
+                                        var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
+                                        if (aliasFieldCheck != null)
                                         {
-                                            aliasFieldCheck.Alias = SpecialFld;
+                                            if (SpecialFld.Length < this._syntax.MaxLengthAlias)
+                                            {
+                                                aliasFieldCheck.Alias = SpecialFld;
+                                            }
                                         }
                                     }
                                 }
@@ -400,6 +403,175 @@ namespace Atdi.CoreServices.EntityOrm
         {
            return listEntityMetaData.FindIndex(c => c.DataSource.Name == Name);
         }
+
+        private bool isContainField(string inStr, string checkStr)
+        {
+            bool isContain = false;
+            if (inStr.Contains(checkStr))
+            {
+                var countchInStr = inStr.Count(chr => chr == '.');
+                var countcheckStr = checkStr.Count(chr => chr == '.');
+                if (countchInStr== countcheckStr)
+                {
+                    isContain = true;
+                }
+            }
+            return isContain;
+        }
+
+        private string BuidJoinExtension(string EntityName, string SpecialFld, List<AliasField> aliasFields, string schemaTable, string resultJoinValue, List<FieldProperties> listFieldProperties)
+        {
+            string resultJoin = "";
+            try
+            {
+                string RefTableNameTo = "";
+                string RefTableNameFrom = "";
+                IExtensionFieldMetadata referenceFieldMetadataFnd = null;
+                var fieldProperties = listFieldProperties.Find(z => z.Alias== SpecialFld);
+                if (fieldProperties == null)
+                {
+                    fieldProperties = listFieldProperties.Find(z => isContainField(z.Alias,(SpecialFld + ".")));
+                }
+                if (fieldProperties != null)
+                {
+                    RefTableNameTo = fieldProperties.DBTableName;
+                    var aliasFieldFind = aliasFields.Find(z => z.DBTableName == RefTableNameTo && z.IsReplaced == false);
+                    if (aliasFieldFind != null)
+                    {
+                        if (SpecialFld.Length < this._syntax.MaxLengthAlias)
+                        {
+                            aliasFieldFind.Alias = SpecialFld;
+                            aliasFieldFind.IsReplaced = true;
+                        }
+                        else
+                        {
+                            aliasFieldFind.IsReplaced = true;
+                        }
+                        int countSubLevels = 0;
+                        if (aliasFieldFind.EntityMetadataLinks != null)
+                        {
+                            countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        }
+                        RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref aliasFields);
+                        var stringBuilderRefGlobal = new List<string>();
+                        if (aliasFieldFind.EntityMetadataLinks != null)
+                        {
+                            countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        }
+                        RefTableNameTo = fieldProperties.DBTableName;
+                        RefTableNameFrom = EntityName;
+                        do
+                        {
+                            if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks == null))
+                            {
+                                string name = RefTableNameFrom;
+                                RefTableNameFrom = _entityMetadata.GetEntityMetadata(name).DataSource.Name;
+                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                IFieldMetadata fndMeta = findReferenceMetaData.ToList().Find(z => (z.Value is ExtensionFieldMetadata) ? (z.Value as ExtensionFieldMetadata).ExtensionEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Extension).Value;
+                                string fndMetaName = findReferenceMetaData.ToList().Find(z => (z.Value is ExtensionFieldMetadata) ? (z.Value as ExtensionFieldMetadata).ExtensionEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Extension).Key;
+                                if (fndMeta != null)
+                                {
+                                    referenceFieldMetadataFnd = fndMeta as ExtensionFieldMetadata;
+                                }
+                            }
+                            else
+                            {
+
+                                RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
+                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].DataSource.Name;
+                                string name = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].Name;
+                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                IFieldMetadata fndMeta = findReferenceMetaData.ToList().Find(z => (z.Value is ExtensionFieldMetadata) ? (z.Value as ExtensionFieldMetadata).ExtensionEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Extension).Value;
+                                string fndMetaName = findReferenceMetaData.ToList().Find(z => (z.Value is ExtensionFieldMetadata) ? (z.Value as ExtensionFieldMetadata).ExtensionEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Extension).Key;
+                                if (fndMeta != null)
+                                {
+                                    referenceFieldMetadataFnd = fndMeta as ExtensionFieldMetadata;
+
+                                }
+
+                                var aliasFieldCheck = aliasFields.Find(z => z.DBTableName == RefTableNameTo);
+                                if (aliasFieldCheck != null)
+                                {
+                                    SpecialFld = aliasFieldCheck.Alias;
+                                }
+
+                            }
+                            if (referenceFieldMetadataFnd != null)
+                            {
+                                string DataSource = "";
+
+                                IEntityMetadata metadataExtEntity = referenceFieldMetadataFnd.ExtensionEntity;
+                                if (metadataExtEntity != null)
+                                {
+                                    IEntityMetadata metadataExtendedEntity = metadataExtEntity.ExtendEntity;
+                                    DataSource = referenceFieldMetadataFnd.ExtensionEntity.DataSource.Name;
+                                    var stringBuilderRef = new List<string>();
+                                    if (metadataExtEntity.PrimaryKey != null)
+                                    {
+                                        foreach (var FieldRef in metadataExtEntity.PrimaryKey.FieldRefs)
+                                        {
+                                            if (FieldRef.Key != null)
+                                            {
+                                                if (metadataExtendedEntity != null)
+                                                {
+                                                    IFieldMetadata fieldMetadataDb2 = metadataExtendedEntity.Fields.ToList().Find(z => z.Key == FieldRef.Key).Value;
+                                                    var aliasFieldTo = aliasFields.Find(v => v.DBTableName == RefTableNameTo);
+                                                    var aliasFieldFrom = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                    var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
+                                                    if ((entityMetadataRefTableName != null) && (fieldMetadataDb2 != null))
+                                                    {
+                                                        foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
+                                                        {
+                                                            if (FieldRef.Key == FieldRefV.Key)
+                                                            {
+                                                                string columnFrom = FieldRefV.Key;
+                                                                IFieldMetadata fieldMetadata = entityMetadataRefTableName.Fields.ToList().Find(v => v.Key == columnFrom).Value;
+                                                                if (fieldMetadata != null)
+                                                                {
+                                                                    var Db1Val = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                                    var Db2Val = aliasFields.Find(v => v.DBTableName == metadataExtEntity.DataSource.Name);
+
+                                                                    string Db1 = Db1Val != null ? Db1Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom));
+                                                                    string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataExtEntity.DataSource.Name));
+
+                                                                    stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
+
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!string.IsNullOrEmpty(stringBuilderRef.ToString()))
+                                    {
+                                        stringBuilderRefGlobal.Add(Environment.NewLine + string.Format(Templates.CommmentsBuildJoinExtension, RefTableNameTo, RefTableNameFrom) + Environment.NewLine + string.Format(" LEFT JOIN {0} {1}  ON ({2}) ", schemaTable + "." + DataSource, this._syntax.EncodeFieldName(SpecialFld), string.Join(" AND ", stringBuilderRef).ToString()));
+                                    }
+                                }
+
+                            }
+                        
+                            --countSubLevels;
+                        }
+                        while (countSubLevels > 0);
+
+                        stringBuilderRefGlobal.Reverse();
+                        foreach (string d in stringBuilderRefGlobal)
+                        {
+                            resultJoin += d;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
+            return resultJoin;
+        }
+
 
         /// <summary>
         /// Формирование JOIN для связей типа "Reference"
@@ -419,7 +591,7 @@ namespace Atdi.CoreServices.EntityOrm
                 string RefTableNameFrom = "";
                 IReferenceFieldMetadata referenceFieldMetadataFnd = null;
                 var listFieldProperties = BuildSelectStatement(EntityName, new string[] { SpecialFld }, FieldSourceType.Reference, true);
-                var fieldProperties = listFieldProperties.Find(z => z.Alias.StartsWith(SpecialFld + ".") && z.SourceType == FieldSourceType.Reference);
+                var fieldProperties = listFieldProperties.Find(z => (z.Alias.StartsWith(SpecialFld + ".") || (z.Alias == SpecialFld)) && z.SourceType == FieldSourceType.Reference);
                 if (fieldProperties != null)
                 {
                     RefTableNameTo = fieldProperties.DBTableName;
@@ -435,18 +607,25 @@ namespace Atdi.CoreServices.EntityOrm
                         {
                             aliasFieldFind.IsReplaced = true;
                         }
-                        int countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        int countSubLevels = 0;
+                        if (aliasFieldFind.EntityMetadataLinks != null)
+                        {
+                            countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        }
                         RenameAliases(countSubLevels, aliasFieldFind, RefTableNameTo, SpecialFld, ref aliasFields);
                         var stringBuilderRefGlobal = new List<string>();
-                        countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        if (aliasFieldFind.EntityMetadataLinks != null)
+                        {
+                            countSubLevels = aliasFieldFind.EntityMetadataLinks.Count - 1;
+                        }
                         RefTableNameTo = fieldProperties.DBTableName;
                         RefTableNameFrom = EntityName;
                         do
                         {
-                            if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks.Count == 0))
+                            if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks == null))
                             {
-                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].DataSource.Name;
-                                string name = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].Name;
+                                string name = RefTableNameFrom;
+                                RefTableNameFrom = _entityMetadata.GetEntityMetadata(name).DataSource.Name;
                                 var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = findReferenceMetaData.ToList().Find(z => (z.Value is ReferenceFieldMetadata) ? (z.Value as ReferenceFieldMetadata).RefEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Reference).Value;
                                 string fndMetaName = findReferenceMetaData.ToList().Find(z => (z.Value is ReferenceFieldMetadata) ? (z.Value as ReferenceFieldMetadata).RefEntity.DataSource.Name == RefTableNameTo : string.IsNullOrEmpty(RefTableNameTo) && z.Value.SourceType == FieldSourceType.Reference).Key;
@@ -501,18 +680,21 @@ namespace Atdi.CoreServices.EntityOrm
                                                     {
                                                         foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
                                                         {
-                                                            string columnFrom = FieldRefV.Key;
-                                                            IFieldMetadata fieldMetadata = entityMetadataRefTableName.Fields.ToList().Find(v => v.Key == columnFrom).Value;
-                                                            if (fieldMetadata != null)
+                                                            if (FieldRef.Key == FieldRefV.Key)
                                                             {
-                                                                var Db1Val = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                                var Db2Val = aliasFields.Find(v => v.DBTableName == metadataRefEntity.DataSource.Name);
+                                                                string columnFrom = FieldRefV.Key;
+                                                                IFieldMetadata fieldMetadata = entityMetadataRefTableName.Fields.ToList().Find(v => v.Key == columnFrom).Value;
+                                                                if (fieldMetadata != null)
+                                                                {
+                                                                    var Db1Val = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
+                                                                    var Db2Val = aliasFields.Find(v => v.DBTableName == metadataRefEntity.DataSource.Name);
 
-                                                                string Db1 = Db1Val != null ? Db1Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom));
-                                                                string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataRefEntity.DataSource.Name));
+                                                                    string Db1 = Db1Val != null ? Db1Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom));
+                                                                    string Db2 = Db2Val != null ? Db2Val.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, metadataRefEntity.DataSource.Name));
 
-                                                                stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
+                                                                    stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(Db1), fieldMetadata.SourceName, this._syntax.EncodeFieldName(Db2), fieldMetadataDb2.SourceName));
 
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -714,13 +896,33 @@ namespace Atdi.CoreServices.EntityOrm
                 }
                 if (!isSuccess)
                 {
+
+                    joinString = BuidJoinExtension(EntityName, valSpecialFlds[i], aliasFields, schemaTable, resultJoin, listFieldPropertiesOut);
+                    if (!string.IsNullOrEmpty(joinString))
+                    {
+                        if (!resultJoin.Contains(joinString))
+                        {
+                            resultJoin += joinString;
+                            isSuccess = true;
+                        }
+                    }
+                    /*
                     var fieldProperties = new FieldProperties();
                     string ExtTableNameTo = "";
+
+
                     listFieldProperties = BuildSelectStatement(EntityName, new string[] { valSpecialFlds[i] }, FieldSourceType.Extension, false);
                     listFieldPropertiesOut.AddRange(listFieldProperties);
-                    fieldProperties = listFieldProperties.Find(z => z.Alias.StartsWith(valSpecialFlds[i] + ".") && z.SourceType== FieldSourceType.Extension);
+                    fieldProperties = listFieldPropertiesOut.Find(z => z.Alias.StartsWith(valSpecialFlds[i] + "."));
+                    //fieldProperties = listFieldPropertiesOut.Find(z => z.Alias.StartsWith(valSpecialFlds[i] + ".") && z.SourceType== FieldSourceType.Extension);
                     if (fieldProperties != null)
                     {
+                        var entityMetadatax = fieldProperties.entityMetadataLinks.Find(x => x.DataSource.Name == fieldProperties.DBTableName);
+                        if (entityMetadatax!=null)
+                        {
+
+                        }
+
                         ExtTableNameTo = fieldProperties.DBTableName;
                         var aliasFieldFind = aliasFields.Find(z => z.DBTableName == ExtTableNameTo && z.IsReplaced == false);
                         if (aliasFieldFind != null)
@@ -737,6 +939,7 @@ namespace Atdi.CoreServices.EntityOrm
                         //throw new NotImplementedException();
                         isSuccess = true;
                     }
+                    */
                 }
             }
 
@@ -748,7 +951,7 @@ namespace Atdi.CoreServices.EntityOrm
                 for (int j = 1; j < aliasFields.Count; j++)
                 {
                     resJoinBaseTable += BuildJoinBase(aliasFields[i], aliasFields[j]);
-                    resJoinBaseTable += BuildJoinExtension(aliasFields[i], aliasFields[j]);
+                    //resJoinBaseTable += BuildJoinExtension(aliasFields[i], aliasFields[j]);
                 }
             }
             resJoinBaseTable += resultJoin;
