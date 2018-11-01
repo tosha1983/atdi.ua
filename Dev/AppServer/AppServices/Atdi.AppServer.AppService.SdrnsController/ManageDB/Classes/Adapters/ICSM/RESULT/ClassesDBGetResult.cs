@@ -1372,6 +1372,12 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return L_IN;
         }
 
+        public static string ToDDsMMsYYYY(DateTime dat) // "", "DD/MM/YYYY" 
+        {
+            if (dat.Ticks == 0) return "";
+            return string.Format("{0:00}/{1:00}/{2:0000}", dat.Day, dat.Month, dat.Year);
+        }
+
 
         public List<ClassSDRResults> ReadlAllResultFromDB(DateTime Start, DateTime End)
         {
@@ -1387,7 +1393,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         YXbsResMeas res_val = new YXbsResMeas();
                         // выбирать только таски, для которых STATUS не NULL
-                        res_val.Filter = string.Format("(ID>0) AND (STATUS<>'Z') AND (TIMEMEAS>= TO_DATE('{0}', 'dd.mm.yyyy'))  AND (TIMEMEAS<= TO_DATE('{1}', 'dd.mm.yyyy'))", Start.ToShortDateString(), End.ToShortDateString());
+
+                        res_val.Filter = string.Format("(ID>0) AND (STATUS<>'Z') AND (TIMEMEAS>= TO_DATE('{0}', 'dd.mm.yyyy'))  AND (TIMEMEAS<= TO_DATE('{1}', 'dd.mm.yyyy'))", ToDDsMMsYYYY(Start), ToDDsMMsYYYY(End));
                         res_val.Order = "[ID] ASC";
                         for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
