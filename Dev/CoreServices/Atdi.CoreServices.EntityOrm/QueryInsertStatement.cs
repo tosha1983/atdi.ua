@@ -16,11 +16,17 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly Type ModelType = typeof(TModel);
         private readonly string _tableName;
         private readonly List<ColumnValue> _columnsValues;
+        private readonly QueryInsertStatement _statement;
+
+
+        public QueryInsertStatement Statement => _statement;
+
 
         public QueryInsertStatement()
         {
             this._tableName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
             this._columnsValues = new List<ColumnValue>();
+            this._statement = new QueryInsertStatement(this._tableName);
         }
 
         public QueryInsertStatement(string tableName)
@@ -40,6 +46,7 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new ArgumentNullException(nameof(columnValue));
             }
             this._columnsValues.Add(columnValue);
+            this._statement.ColumnsValues.Add(columnValue);
             return this;
         }
 
@@ -51,24 +58,10 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new ArgumentNullException(nameof(value));
             }
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
+            this._statement.ColumnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             return this;
         }
 
-        /*
-        public IQueryInsertStatement<TModel> SetValueExtended<TValue>(System.Linq.Expressions.Expression<Func<TModel, TValue>> columnsExpression, TValue value)
-        {
-          
-            var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-            
-            //this._tableName
-            this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
-            return this;
-        }
-        */
 
 
         public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
@@ -78,6 +71,7 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new ArgumentNullException(nameof(columnsValues));
             }
             this._columnsValues.AddRange(columnsValues);
+            this._statement.ColumnsValues.AddRange(columnsValues);
             return this;
         }
     }

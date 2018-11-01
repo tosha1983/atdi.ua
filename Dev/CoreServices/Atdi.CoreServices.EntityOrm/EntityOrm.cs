@@ -17,28 +17,15 @@ namespace Atdi.CoreServices.EntityOrm
 {
     public class EntityOrm : IEntityOrm
     {
-        public readonly Dictionary<IRelationFieldMetadata, string> _relationFieldMetadata;
-        public readonly Dictionary<IReferenceFieldMetadata, string> _referenceFieldMetadata;
-        public readonly Dictionary<IExtensionFieldMetadata, string> _extensionFieldMetadata;
-        public readonly Dictionary<IFieldMetadata, string> _columnFieldMetadata;
         private readonly IEntityOrmConfig _config;
         private readonly Dictionary<string, IEntityMetadata> _cache;
         private readonly List<string> _cashecontainerEntity;
         private readonly List<IEntityMetadata> _cashecontainerEntityList;
 
 
-        public IReadOnlyDictionary<IRelationFieldMetadata, string> RelationFieldMetadata => this._relationFieldMetadata;
-        public IReadOnlyDictionary<IReferenceFieldMetadata, string> ReferenceFieldMetadata => this._referenceFieldMetadata;
-        public IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata => this._extensionFieldMetadata;
-        public IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata => this._columnFieldMetadata;
-
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
-            this._columnFieldMetadata = new Dictionary<IFieldMetadata, string>();
-            this._extensionFieldMetadata = new Dictionary<IExtensionFieldMetadata, string>();
-            this._relationFieldMetadata = new Dictionary<IRelationFieldMetadata, string>();
-            this._referenceFieldMetadata = new Dictionary<IReferenceFieldMetadata, string>();
             _cache = new Dictionary<string, IEntityMetadata>();
             _cashecontainerEntity = new List<string>();
             _cashecontainerEntityList = new List<IEntityMetadata>();
@@ -795,107 +782,111 @@ namespace Atdi.CoreServices.EntityOrm
         private void BuildConditionForRelation(ref RelationFieldMetadata fieldMetadata, Metadata.FieldDef fieldDef)
         {
             fieldMetadata.RelationCondition = new DataModels.DataConstraint.ComplexCondition();
-            ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), fieldDef.RelationCondition.ItemElementName.ToString());
-
-            if (fieldDef.RelationCondition.Item is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef)
+            var complexConditionDataConstraint = ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition));
+            complexConditionDataConstraint.Operator = (DataModels.DataConstraint.LogicalOperator)Enum.Parse(typeof(DataModels.DataConstraint.LogicalOperator), fieldDef.RelationCondition.ItemElementName.ToString());
+            if (fieldDef.RelationCondition.Item is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef conditionExpressionDef)
             {
-                object[] items = (fieldDef.RelationCondition.Item as Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef).Items;
+                object[] items = conditionExpressionDef.Items;
                 if (items != null)
                 {
-                    ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions = new DataModels.DataConstraint.ComplexCondition[items.Length];
+                    complexConditionDataConstraint.Conditions = new DataModels.DataConstraint.ComplexCondition[items.Length];
                     for (int k = 0; k < items.Length; k++)
                     {
-                        ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
+                        complexConditionDataConstraint.Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
                         if (items[k] is Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef)
                         {
-                            ((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
+                            complexConditionDataConstraint.Conditions[k] = new DataModels.DataConstraint.ComplexCondition();
                             var expr = items[k] as Atdi.CoreServices.EntityOrm.Metadata.ConditionExpressionDef;
                             if (expr != null)
                             {
                                 if (expr.Items != null)
                                 {
-                                    ((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions = new DataModels.DataConstraint.ConditionExpression[expr.Items.Length];
+                                    var conditions = ((DataModels.DataConstraint.ComplexCondition)complexConditionDataConstraint.Conditions[k]).Conditions;
+                                    conditions = new DataModels.DataConstraint.ConditionExpression[expr.Items.Length];
                                     for (int z = 0; z < expr.Items.Length; z++)
                                     {
-                                        ((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z] = new DataModels.DataConstraint.ConditionExpression();
+                                        conditions[z] = new DataModels.DataConstraint.ConditionExpression();
                                         if (expr.Items[z] is Atdi.CoreServices.EntityOrm.Metadata.TwoOperandsOperationDef)
                                         {
-                                            ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).Operator = (DataModels.DataConstraint.ConditionOperator)Enum.Parse(typeof(DataModels.DataConstraint.ConditionOperator), expr.ItemsElementName[z].ToString());
+                                            var condition = ((DataModels.DataConstraint.ConditionExpression)conditions[z]);
+                                            condition.Operator = (DataModels.DataConstraint.ConditionOperator)Enum.Parse(typeof(DataModels.DataConstraint.ConditionOperator), expr.ItemsElementName[z].ToString());
 
                                             var twoOperans = (expr.Items[z] as Atdi.CoreServices.EntityOrm.Metadata.TwoOperandsOperationDef);
                                             if (twoOperans != null)
                                             {
                                                 if (twoOperans.Item is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                    condition.LeftOperand = new DataModels.DataConstraint.ColumnOperand();
                                                     string Name = (twoOperans.Item as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
-                                                    ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
+                                                    ((DataModels.DataConstraint.ColumnOperand)condition.LeftOperand).ColumnName = Name;
                                                 }
                                                 if (twoOperans.Item is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.StringValueOperand();
+                                                    condition.LeftOperand = new DataModels.DataConstraint.StringValueOperand();
                                                     string Value = (twoOperans.Item as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
-                                                    ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).LeftOperand).Value = Value;
+                                                    ((DataModels.DataConstraint.StringValueOperand)(condition).LeftOperand).Value = Value;
                                                 }
 
                                                 if (twoOperans.Item1 is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).RightOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                    condition.RightOperand = new DataModels.DataConstraint.ColumnOperand();
                                                     string Name = (twoOperans.Item1 as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
-                                                    ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).RightOperand).ColumnName = Name;
+                                                    ((DataModels.DataConstraint.ColumnOperand)condition.RightOperand).ColumnName = Name;
 
                                                 }
                                                 if (twoOperans.Item1 is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).RightOperand = new DataModels.DataConstraint.StringValueOperand();
+                                                    condition.RightOperand = new DataModels.DataConstraint.StringValueOperand();
                                                     string Value = (twoOperans.Item1 as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
-                                                    ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).RightOperand).Value = Value;
+                                                    ((DataModels.DataConstraint.StringValueOperand)(condition).RightOperand).Value = Value;
                                                 }
                                             }
                                         }
                                         else if (expr.Items[z] is Atdi.CoreServices.EntityOrm.Metadata.OneOperandOperationDef)
                                         {
-                                            ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).Operator = (DataModels.DataConstraint.ConditionOperator)Enum.Parse(typeof(DataModels.DataConstraint.ConditionOperator), expr.ItemsElementName[z].ToString());
+                                            var condition = ((DataModels.DataConstraint.ConditionExpression)conditions[z]);
+                                            condition.Operator = (DataModels.DataConstraint.ConditionOperator)Enum.Parse(typeof(DataModels.DataConstraint.ConditionOperator), expr.ItemsElementName[z].ToString());
                                             var oneOperand = (expr.Items[z] as Atdi.CoreServices.EntityOrm.Metadata.OneOperandOperationDef);
                                             if (oneOperand != null)
                                             {
 
                                                 if (oneOperand.Item is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                    condition.LeftOperand = new DataModels.DataConstraint.ColumnOperand();
                                                     string Name = (oneOperand.Item as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
-                                                    ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
+                                                    ((DataModels.DataConstraint.ColumnOperand)condition.LeftOperand).ColumnName = Name;
 
                                                 }
                                                 if (oneOperand.Item is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).RightOperand = new DataModels.DataConstraint.StringValueOperand();
+                                                    condition.RightOperand = new DataModels.DataConstraint.StringValueOperand();
                                                     string Value = (oneOperand.Item as Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef).Value;
-                                                    ((DataModels.DataConstraint.StringValueOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).RightOperand).Value = Value;
+                                                    ((DataModels.DataConstraint.StringValueOperand)(condition).RightOperand).Value = Value;
                                                 }
                                             }
                                         }
                                         else if (expr.Items[z] is Atdi.CoreServices.EntityOrm.Metadata.InOperationDef)
                                         {
-                                            ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).Operator = (DataModels.DataConstraint.ConditionOperator)Enum.Parse(typeof(DataModels.DataConstraint.ConditionOperator), expr.ItemsElementName[z].ToString());
+                                            var condition = ((DataModels.DataConstraint.ConditionExpression)conditions[z]);
+                                            condition.Operator = (DataModels.DataConstraint.ConditionOperator)Enum.Parse(typeof(DataModels.DataConstraint.ConditionOperator), expr.ItemsElementName[z].ToString());
                                             var oneOperand = (expr.Items[z] as Atdi.CoreServices.EntityOrm.Metadata.InOperationDef);
                                             if (oneOperand != null)
                                             {
                                                 if (oneOperand.Field is Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef)
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand = new DataModels.DataConstraint.ColumnOperand();
+                                                    condition.LeftOperand = new DataModels.DataConstraint.ColumnOperand();
                                                     string Name = (oneOperand.Field as Atdi.CoreServices.EntityOrm.Metadata.FieldOperandDef).Name;
-                                                    ((DataModels.DataConstraint.ColumnOperand)((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).LeftOperand).ColumnName = Name;
+                                                    ((DataModels.DataConstraint.ColumnOperand)condition.LeftOperand).ColumnName = Name;
                                                 }
                                                 if (oneOperand.Values is Atdi.CoreServices.EntityOrm.Metadata.ValueOperandDef[])
                                                 {
-                                                    ((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z]).RightOperand = new DataModels.DataConstraint.StringValuesOperand();
+                                                    condition.RightOperand = new DataModels.DataConstraint.StringValuesOperand();
                                                     List<string> Values = new List<string>();
                                                     foreach (var cx in oneOperand.Values)
                                                     {
                                                         Values.Add(cx.Value);
                                                     }
-                                                    ((DataModels.DataConstraint.StringValuesOperand)(((DataModels.DataConstraint.ConditionExpression)((DataModels.DataConstraint.ComplexCondition)((DataModels.DataConstraint.ComplexCondition)(fieldMetadata.RelationCondition)).Conditions[k]).Conditions[z])).RightOperand).Values = Values.ToArray();
+                                                    ((DataModels.DataConstraint.StringValuesOperand)(condition).RightOperand).Values = Values.ToArray();
                                                 }
                                             }
                                         }
@@ -904,6 +895,7 @@ namespace Atdi.CoreServices.EntityOrm
                                             throw new NotImplementedException(Exceptions.NotSupportedOperation);
                                         }
                                     }
+                                    ((DataModels.DataConstraint.ComplexCondition)complexConditionDataConstraint.Conditions[k]).Conditions = conditions;
                                 }
                             }
                         }
@@ -995,16 +987,6 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
-
-                            if (this._columnFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
-                            {
-                                this._columnFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
-                            else
-                            {
-                                this._columnFieldMetadata.Remove(this._columnFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
-                                this._columnFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Reference)
                         {
@@ -1047,17 +1029,6 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
-
-                            if (this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
-                            {
-                                this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
-                            else
-                            {
-                                this._referenceFieldMetadata.Remove(this._referenceFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
-                                this._referenceFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
-
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Extension)
                         {
@@ -1099,15 +1070,7 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
-                            if (this._extensionFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
-                            {
-                                this._extensionFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
-                            else
-                            {
-                                this._extensionFieldMetadata.Remove(this._extensionFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
-                                this._extensionFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
+
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Relation)
                         {
@@ -1150,16 +1113,6 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
                             dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
-
-                            if (this._relationFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key == null)
-                            {
-                                this._relationFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
-                            else
-                            {
-                                this._relationFieldMetadata.Remove(this._relationFieldMetadata.ToList().Find(c => c.Key.Name == fieldMetadata.Name).Key);
-                                this._relationFieldMetadata.Add(fieldMetadata, dataSourceMetadata.Name);
-                            }
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Expression)
                         {
