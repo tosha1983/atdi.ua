@@ -1,19 +1,12 @@
-﻿@{ 
+﻿@{
     Layout = "~/Views/Shared/_masterLayout.cshtml";
 }
-<header>
-    <nav>
-        <div>Company logo image</div>
-        <div>Company name</div>
-        <div>Portal description</div>
-
-        <div>User name</div>
-        <div>Sign Out Action</div>
-    </nav>
-</header>
-<section>    
-    @RenderBody()
-</section>
-<footer>
-    <p>&copy; @DateTime.Now.Year.ToString() - WebQuery</p>
-</footer>
+@section DevStylesheets
+{<link rel="stylesheet" href="~/css/portal.css" media="screen,projection" />}
+@section ProdStylesheets
+{<link rel="stylesheet" href="~/css/portal.min.css" media="screen,projection" />}
+@RenderBody()
+@section DevScripts
+{<script type="text/javascript" src="~/js/portal.js"></script>}
+@section ProdScripts    
+{<script type="text/javascript" src="~/js/portal.min.js"></script>}

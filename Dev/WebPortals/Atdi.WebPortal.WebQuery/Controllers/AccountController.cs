@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Atdi.WebPortal.WebQuery.Utility;
 using Atdi.WebPortal.WebQuery.ViewModels;
@@ -48,14 +49,44 @@ namespace Atdi.WebPortal.WebQuery.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult SignIn(SignInViewModel model, string returnUrl)
+        public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
+            var client = new WebQueryClient(new Uri(this._portalSettings.WebQueryApiUrl));
+            var userCredential = new WebApiModels.UserCredential
+            {
+                UserName = model.Username,
+                Password = model.Password
+            };
+
+            var userIdentity = await client.AuthenticateUserAsync(userCredential);
+            if (userIdentity == null)
+            {
+                ModelState.AddModelError("", "Incorrect username or password");
+                return View(model);
+            }
+
+            await this.Authenticate(userIdentity);
+
             return RedirectToLocal(returnUrl);
+        }
+
+        private async Task Authenticate(UserIdentity userIdentity)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userIdentity.Name),
+                new Claim("WebQueryUserId", userIdentity.Id.ToString(), ClaimValueTypes.Integer32),
+                new Claim("WebQueryUserTokenData", Convert.ToBase64String(userIdentity.UserToken.Data), ClaimValueTypes.Base64Binary)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            var principal = new ClaimsPrincipal(claimsIdentity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         private ActionResult RedirectToLocal(string returnUrl)

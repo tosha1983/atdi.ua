@@ -10,10 +10,9 @@ namespace Atdi.WebPortal.WebQuery.ViewModels
     {
         [Required]
         [Display(Name = "User name")]
-        [EmailAddress]
         public string Username { get; set; }
 
-        [Required]
+        //[Required]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
