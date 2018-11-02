@@ -15,11 +15,17 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly Type ModelType = typeof(TModel);
         private readonly List<Condition> _conditions;
         private readonly string _tableName;
+        private readonly QueryDeleteStatement _statement;
+        private static IFormatProvider CultureEnUs = new System.Globalization.CultureInfo("en-US");
+        
+
+        public QueryDeleteStatement Statement => _statement;
 
         public QueryDeleteStatement()
         {
             this._tableName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
             this._conditions = new List<Condition>();
+            this._statement = new QueryDeleteStatement(this._tableName);
         }
 
         public QueryDeleteStatement(string tableName)
@@ -38,6 +44,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             this._conditions.Add(condition);
+            this._statement.Conditions.Add(condition);
             return this;
         }
 
