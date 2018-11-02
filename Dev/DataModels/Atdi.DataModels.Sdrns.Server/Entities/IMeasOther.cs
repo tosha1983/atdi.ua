@@ -10,5 +10,13 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IMeasOther
     {
+        int Id { get; set; }
+        int? SwNumber { get; set; }
+        string TypeSpectrumscan { get; set; }
+        string TypeSpectrumOccupation { get; set; }
+        double? LevelMinOccup { get; set; }
+        int? Nchenal { get; set; }
+        int? MeasTaskId { get; set; }
+        IMeasTask MEASTASK { get; set; }
     }
 }

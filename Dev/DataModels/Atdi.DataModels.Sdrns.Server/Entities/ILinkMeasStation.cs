@@ -10,5 +10,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILinkMeasStation
     {
+        int Id { get; set; }
+        int? MeasTaskId { get; set; }
+        int? StationId { get; set; }
+        IMeasTask MEASTASK { get; set; }
+        IStation STATION { get; set; }
     }
 }

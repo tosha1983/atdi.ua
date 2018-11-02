@@ -10,5 +10,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILinkSectorMaskElement
     {
+        int Id { get; set; }
+        int? SectorMaskElementId { get; set; }
+        int? SectorId { get; set; }
+        ISectorMaskElement SECTORMASKELEMENT { get; set; }
+        ISector SECTOR { get; set; }
     }
 }

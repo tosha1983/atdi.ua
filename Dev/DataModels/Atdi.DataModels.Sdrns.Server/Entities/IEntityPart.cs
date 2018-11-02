@@ -12,7 +12,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         int Id { get; set; }
         int PartIndex { get; set; }
-        bool Eof { get; set; }
+        bool? Eof { get; set; }
         Byte[] Content{ get; set; }
         IEntity ENTITY { get; set; }
     }
