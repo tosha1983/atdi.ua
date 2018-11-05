@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.WebPortal.WebQuery.WebApiModels
 {
-    public class AuthenticateUserOptions
+    public class PortalCompany
     {
-        public UserCredential Credential { get; set; }
+        public string Title { get; set; }
+
+        public string Site { get; set; }
+
+        public string Email { get; set; }
     }
 }

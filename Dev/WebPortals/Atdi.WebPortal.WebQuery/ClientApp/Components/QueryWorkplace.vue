@@ -6,8 +6,8 @@
             <div class="col s6">
                 <ul class="collapsible">
                     <li>
-                        <div class="collapsible-header"><i class="material-icons">collections</i><span><b>Group:</b> {currentGroup.Title}}</span></div>
-                        <div class="collapsible-body"><span>{currentGroup.Description}}</span></div>
+                        <div class="collapsible-header"><i class="material-icons">collections</i><span><b>Group:</b> {{currentGroup.title}}</span></div>
+                        <div class="collapsible-body"><span>{{currentGroup.description}}</span></div>
                     </li>
                     <li>
                         <div class="collapsible-header"><i class="material-icons">landscape</i><span><b>Query:</b> {currentQuery.Title}}</span></div>
@@ -232,15 +232,24 @@
     </div>
 </template>
 <script>
+    import { mapState, mapActions } from 'vuex'
+
     export default {
         name: 'QueryWorkplace',
         props: {
         },
         components: {
         },
+
+        computed: mapState({
+            currentGroup: state => state.queryGroups.current   
+        }),
+
         data() {
             return {
             }
-        }
+        },
+
+
     }
 </script>

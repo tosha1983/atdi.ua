@@ -17,10 +17,12 @@ namespace Atdi.WebPortal.WebQuery.Controllers
     public class AccountController : Controller
     {
         private readonly PortalSettings _portalSettings;
+        private readonly WebQueryClient _webQueryClient;
 
-        public AccountController(IOptions<PortalSettings> options)
+        public AccountController(IOptions<PortalSettings> options, WebQueryClient webQueryClient)
         {
             this._portalSettings = options.Value;
+            this._webQueryClient = webQueryClient;
         }
 
         //
@@ -56,14 +58,13 @@ namespace Atdi.WebPortal.WebQuery.Controllers
                 return View(model);
             }
 
-            var client = new WebQueryClient(new Uri(this._portalSettings.WebQueryApiUrl));
             var userCredential = new WebApiModels.UserCredential
             {
                 UserName = model.Username,
                 Password = model.Password
             };
 
-            var userIdentity = await client.AuthenticateUserAsync(userCredential);
+            var userIdentity = await _webQueryClient.AuthenticateUserAsync(userCredential);
             if (userIdentity == null)
             {
                 ModelState.AddModelError("", "Incorrect username or password");

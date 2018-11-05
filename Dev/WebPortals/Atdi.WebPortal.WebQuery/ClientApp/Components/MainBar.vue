@@ -5,14 +5,14 @@
 
             <ul class="brand-logo" style="padding-left: 10px">
                 <li class="valign-wrapper">
-                    <span style="font-size: 1.5rem;"><b>WebQuery Portal</b></span>
+                    <span style="font-size: 1.5rem;"><b>{{portalTitle}}</b></span>
                 </li>
 
             </ul>
             <ul class="right hide-on-med-and-down">
                 <li class="valign-wrapper">
                     <span>
-                        {{userName}}
+                       {{userName}}
                         <i class="material-icons left">person</i>
                     </span>
                 </li>
@@ -38,6 +38,8 @@
 </template>
 
 <script>
+    import { mapState, mapActions } from 'vuex'
+
     export default {
         name: 'MainBar',
         props: {
@@ -45,9 +47,14 @@
         },
         components: {
         },
+
+        computed: mapState({
+            userName: state => state.portal.environment.user.name,
+            portalTitle: state => state.portal.environment.title,
+        }),
+
         data() {
             return {
-                userName: 'AndreyKovpak',
                 signOutAction: 'Account/SignOut'
             }
         }

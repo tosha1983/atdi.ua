@@ -27,6 +27,13 @@ namespace Atdi.WebApiServices.WebQuery.Controllers
             public QueryToken QueryToken { get; set; }
         }
 
+        public class GetQueriesMetadataOptions
+        {
+            public UserToken UserToken { get; set; }
+
+            public QueryToken[] QueryTokens { get; set; }
+        }
+
         public class GetQueryMetadataByCodeOptions
         {
             public UserToken UserToken { get; set; }
@@ -107,6 +114,46 @@ namespace Atdi.WebApiServices.WebQuery.Controllers
             {
                 var resultData = this._webQueryAppServices.GetQueryMetadata(options.UserToken, options.QueryToken);
                 return resultData;
+            }
+        }
+
+        [HttpPost]
+        public QueryMetadata[] GetQueriesMetadata(GetQueriesMetadataOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            if (options.UserToken == null)
+            {
+                throw new ArgumentNullException(nameof(options.UserToken));
+            }
+            if (options.QueryTokens == null)
+            {
+                throw new ArgumentNullException(nameof(options.QueryTokens));
+            }
+            using (this.Logger.StartTrace(Contexts.WebQuery, Categories.OperationCall, TraceScopeNames.GetQueryMetadata))
+            {
+                if (options.QueryTokens.Length == 0)
+                {
+                    return new QueryMetadata[] { };
+                }
+
+                var result = new QueryMetadata[options.QueryTokens.Length];
+                for (int i = 0; i < options.QueryTokens.Length; i++)
+                {
+                    try
+                    {
+                        result[i] = this._webQueryAppServices.GetQueryMetadata(options.UserToken, options.QueryTokens[i]);
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.Exception(Contexts.WebQuery, Categories.OperationCall, e);
+                    }
+                    
+                }
+                
+                return result;
             }
         }
 
