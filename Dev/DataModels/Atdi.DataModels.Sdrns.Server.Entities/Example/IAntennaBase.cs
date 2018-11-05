@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.EntityOrm;
 using Atdi.DataModels;
 
-namespace Atdi.DataModels.Sdrns.Server.Entities
+namespace Atdi.DataModels.Sdrns.Server.Entities2
 {
     [Entity]
     public interface IAntennaBase

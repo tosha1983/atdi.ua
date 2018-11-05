@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Server.Entities
+namespace Atdi.DataModels.Sdrns.Server.Entities2
 {
     [Entity]
     public interface IAntennaPattern
@@ -19,6 +19,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Gain { get; set; }
 
 
-        ISensorAntenna SENSORANT { get; set; }
+        ISensorAntenna SENSORANTENNA { get; set; }
     }
 }
