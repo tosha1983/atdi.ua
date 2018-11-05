@@ -37,21 +37,72 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
 
             if (this._drawingData != null)
             {
+                // draw points
                 var points = this._drawingData.Points;
                 if (points != null && points.Length > 0)
                 {
                     points.ToList().ForEach(point =>
                     {
                         var mapPoint = this.FromLatLngToLocal(new PointLatLng(point.Location.Lat, point.Location.Lon));
-                       
+
                         var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon));
-                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = 0.85, Width = 10, Height = 10 };
+                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width };
                         marker.ZIndex = int.MaxValue;
                         this.Markers.Add(marker);
                     });
-                    
+                }
+
+                // draw routes
+                var routes = this._drawingData.Routes;
+                if (routes != null && routes.Length > 0)
+                {
+                    routes.ToList().ForEach(route =>
+                    {
+                        if (route.Points != null && route.Points.Length > 0)
+                        {
+                            IList<PointLatLng> routePoints = new List<PointLatLng>();
+                            route.Points.ToList().ForEach(point =>
+                            {
+                                routePoints.Add(new PointLatLng(point.Lat, point.Lon));
+                            });
+
+                            GMapRoute mapRoute = new GMapRoute(routePoints);
+                            mapRoute.RegenerateShape(this);
+                            ((System.Windows.Shapes.Path)mapRoute.Shape).Stroke = new System.Windows.Media.SolidColorBrush(route.Color);
+                            ((System.Windows.Shapes.Path)mapRoute.Shape).StrokeThickness = 1;
+
+                            mapRoute.ZIndex = int.MaxValue;
+                            this.Markers.Add(mapRoute);
+                        }
+                    });
+                }
+
+                // draw polygons
+                var polygons = this._drawingData.Polygons;
+                if (polygons != null && polygons.Length > 0)
+                {
+                    polygons.ToList().ForEach(polygon =>
+                    {
+                        if (polygon.Points != null && polygon.Points.Length > 0)
+                        {
+                            IList<PointLatLng> polygonPoints = new List<PointLatLng>();
+                            polygon.Points.ToList().ForEach(point =>
+                            {
+                                polygonPoints.Add(new PointLatLng(point.Lat, point.Lon));
+                            });
+
+                            GMapPolygon mapPolygon = new GMapPolygon(polygonPoints);
+                            mapPolygon.RegenerateShape(this);
+                            ((System.Windows.Shapes.Path)mapPolygon.Shape).Stroke = new System.Windows.Media.SolidColorBrush(polygon.Color);
+                            ((System.Windows.Shapes.Path)mapPolygon.Shape).StrokeThickness = 1;
+
+                            mapPolygon.ZIndex = int.MaxValue;
+                            this.Markers.Add(mapPolygon);
+                        }
+                    });
                 }
             }
+
             if (this.Markers.Count > 0)
             {
                 this.ZoomAndCenterMarkers(null);
