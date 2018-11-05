@@ -28,7 +28,7 @@
     <Field Desc="Lower Frequency, MHz" Title="Lower Frequency, MHz" Name="LowerFreq" DataType="Decimal.22.8" SourceName="LOWERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
     <Field Desc="Upper Frequency, MHz" Title="Upper Frequency, MHz" Name="UpperFreq" DataType="Decimal.22.8" SourceName="UPPERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
     <Field Desc="Additional loss, dB" Title="Additional loss, dB" Name="AddLoss" DataType="Decimal.22.8" SourceName="ADDLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
-    <Field Desc="XPD, dB" Title="XPD, dB" Name="Xpd" DataType="Double" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Desc="XPD, dB" Title="XPD, dB" Name="Xpd" DataType="Decimal.22.8" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB"/>
     <Field Desc="Class of antenna" Title="Class of antenna" Name="AntClass" DataType="Text.50" SourceName="ANTCLASS" SourceType="Column" Required="false"/>
     <Field Desc="Remark" Title="Remark" Name="Remark" DataType="Text.250" SourceName="REMARK" SourceType="Column" Required="false"/>
     <Field Desc="CustTxt1" Title="CustTxt1" Name="CustTxt1" DataType="Text.250" SourceName="CUSTTXT1" SourceType="Column" Required="false"/>

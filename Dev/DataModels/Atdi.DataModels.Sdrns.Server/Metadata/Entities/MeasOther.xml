@@ -11,12 +11,12 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="SwNumber" Title="SwNumber" Name="SwNumber" DataType="Integer.32" SourceName="SWNUMBER" SourceType="Column" Required="true"/>
+    <Field Desc="SwNumber" Title="SwNumber" Name="SwNumber" DataType="Integer.32" SourceName="SWNUMBER" SourceType="Column" Required="false"/>
     <Field Desc="TypeSpectrumscan" Title="TypeSpectrumscan" Name="TypeSpectrumscan" DataType="Text.50" SourceName="TYPESPECTRUMSCAN" SourceType="Column" Required="false"/>
     <Field Desc="TypeSpectrumOccupation" Title="TypeSpectrumOccupation" Name="TypeSpectrumOccupation" DataType="Text.50" SourceName="TYPESPECTRUMOCCUPATION" SourceType="Column" Required="false"/>
     <Field Desc="LevelMinOccup" Title="LevelMinOccup" Name="LevelMinOccup" DataType="Decimal.22.8" SourceName="LEVELMINOCCUP" SourceType="Column" Required="false"/>
-    <Field Desc="Nchenal" Title="Nchenal" Name="Nchenal" DataType="Integer.32" SourceName="NCHENAL" SourceType="Column" Required="true"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
+    <Field Desc="Nchenal" Title="Nchenal" Name="Nchenal" DataType="Integer.32" SourceName="NCHENAL" SourceType="Column" Required="false"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="false"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasOther to MeasTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>

@@ -11,9 +11,9 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="true"/>
+    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="false"/>
     <Field Desc="StationType" Title="StationType" Name="StationType" DataType="Text.50" SourceName="STATIONTYPE" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="false"/>
     <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation MeasLocationParam to Station">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">StationId</Mapped>

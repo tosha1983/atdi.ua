@@ -10,5 +10,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResLocSensorMeas
     {
+        int Id { get; set; }
+        double? Lon { get; set; }
+        double? Lat { get; set; }
+        double? Asl { get; set; }
+        int? ResMeasId { get; set; }
+        IResMeas RESMEAS { get; set; }
     }
 }
