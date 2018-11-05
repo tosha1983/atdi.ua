@@ -638,7 +638,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         s_out.ResultsMeasStation[ii] = new ResultsMeasurementsStation();
                                         if (flevmeas.m_idsector != null) s_out.ResultsMeasStation[ii].IdSector = flevmeas.m_idsector;
-                                        if (flevmeas.m_idstation != null) s_out.ResultsMeasStation[ii].Idstation = flevmeas.m_idstation;
+                                        if (flevmeas.m_idstation != null) s_out.ResultsMeasStation[ii].Idstation = flevmeas.m_idstation.ToString();
                                         s_out.ResultsMeasStation[ii].GlobalSID = flevmeas.m_globalsid;
                                         s_out.ResultsMeasStation[ii].MeasGlobalSID = flevmeas.m_measglobalsid;
                                         s_out.ResultsMeasStation[ii].Status = flevmeas.m_status;

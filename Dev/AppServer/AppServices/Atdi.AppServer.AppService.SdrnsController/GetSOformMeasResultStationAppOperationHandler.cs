@@ -41,9 +41,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             {
                 try
                 {
-                   
                     LstS.AddRange(analiticsUnit1.CalcAppUnit2(options.val.Frequencies_MHz, options.val.BW_kHz, options.val.MeasResultID, options.val.LonMax, options.val.LonMin, options.val.LatMax, options.val.LatMin, options.val.TrLevel_dBm));
-                    //analiticsUnit1.CalcAppUnit2(new List<double> { 2162.4, 2167.2 }, 4157, new List<int> { 1404 }, 31, 29, 51, 49, -56);
                 }
                 catch (Exception ex)
                 {

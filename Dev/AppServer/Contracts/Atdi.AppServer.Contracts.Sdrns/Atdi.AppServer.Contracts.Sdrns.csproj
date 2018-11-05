@@ -90,12 +90,9 @@
     <Compile Include="Models\Measurements\GeoLocation.cs" />
     <Compile Include="Models\Measurements\MeasurementResultsIdentifier.cs" />
     <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementOnlineResult.cs" />
-<<<<<<< HEAD
     <Compile Include="Models\Measurements\Route.cs" />
     <Compile Include="Models\Measurements\RoutePoint.cs" />
-=======
     <Compile Include="Models\Measurements\ShortMeasurementResultsExtend.cs" />
->>>>>>> dev_sdrn_1_2
     <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />

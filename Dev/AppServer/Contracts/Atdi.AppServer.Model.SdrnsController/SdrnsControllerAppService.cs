@@ -168,7 +168,7 @@ namespace Atdi.AppServer.Models.AppServices
         }
 
 
-        public SdrnsControllerAppService() 
+        public SdrnsControllerAppService()
             : base("SdrnsController")
         {
             this._operations.AddRange(
@@ -192,21 +192,16 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResultsByIdAppOperation(),
                      new GetShortMeasResultsByTaskIdAppOperation(),
                      new DeleteMeasResultsAppOperation(),
-<<<<<<< HEAD
                      new GetShortMeasResultsSpecialAppOperation(),
                      new GetShortMeasResStationAppOperation(),
                      new GetRoutesAppOperation(),
                      new GetSensorPoligonPointAppOperation(),
                      new GetResMeasStationAppOperation(),
-                     new GetSOformMeasResultStationAppOperation()
-
-
-                 }
-=======
+                     new GetSOformMeasResultStationAppOperation(),
                      new GetSOformMeasResultStationAppOperation(),
                      new GetShortMeasResultsByDatesAppOperation()
-                    }
->>>>>>> dev_sdrn_1_2
+
+                }
                 );
         }
     }

@@ -212,14 +212,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static SOFrequency[] GetSOformMeasResultStation(List<double> Frequencies_MHz, double BW_kHz, List<int> MeasResultID, double LonMax, double LonMin, double LatMax, double LatMin, double TrLevel_dBm)
-        {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
 
-<<<<<<< HEAD
         public static Route[] GetRoutes(int MeasResultsId)
         {
             var otherArgs = new CommonOperationArguments()
@@ -267,9 +260,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
 
+        public static SOFrequency[] GetSOformMeasResultStation(List<double> Frequencies_MHz, double BW_kHz, List<int> MeasResultID, double LonMax, double LonMin, double LatMax, double LatMin, double TrLevel_dBm)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
 
-        
-=======
         var parameters = new GetSOformMeasResultStationValue()
             {
                 BW_kHz = BW_kHz,
@@ -290,7 +287,8 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
->>>>>>> dev_sdrn_1_2
+
+        
 
         public static void DeleteMeasTaskById(int taskId)
         {
