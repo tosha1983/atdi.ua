@@ -1,4 +1,6 @@
-﻿@{
+﻿@model SignInViewModel
+
+@{ 
     Layout = "~/Views/Shared/_masterLayout.cshtml";
 }
 
@@ -22,14 +24,14 @@
                     <div class="card-content" style="width: 400px;">
                         <span style="width: 80%; padding-left: 25px" class="card-title"><b>WebQuery Portal</b></span>
                         <div class="row"></div>
-                        <form style="width: 80%; padding-left: 25px">
+                        <form style="width: 80%; padding-left: 25px" asp-action="SignIn" asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" asp-antiforgery="true">
                             <div class="input-field">
-                                <input id="username" type="text" class="validate">
-                                <label for="username">Username</label>
+                                <input asp-for="Username" type="text" class="validate">
+                                <label asp-for="Username">Username</label>
                             </div>
                             <div class="input-field">
-                                <input id="password" type="password" class="validate">
-                                <label for="password">Password</label>
+                                <input asp-for="Password" type="password" class="validate">
+                                <label asp-for="Password">Password</label>
                             </div>
                             <br><br>
                             <div>

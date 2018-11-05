@@ -10,5 +10,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResStLevelsSpect
     {
+        int Id { get; set; }
+        int? ResStGeneralId { get; set; }
+        double? LevelSpecrum { get; set; }
+        IResStGeneral RESSTGENERAL { get; set; }
     }
 }

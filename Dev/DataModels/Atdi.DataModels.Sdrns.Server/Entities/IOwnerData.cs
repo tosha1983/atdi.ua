@@ -10,5 +10,12 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IOwnerData
     {
+        int Id { get; set; }
+        string OwnerName { get; set; }
+        string OKPO { get; set; }
+        string ZIP { get; set; }
+        string CODE { get; set; }
+        string Address { get; set; }
+        int? StationDatFormId { get; set; }
     }
 }

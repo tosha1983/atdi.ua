@@ -10,5 +10,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILinkSectorFreq
     {
+        int Id { get; set; }
+        int? SectorFreqId { get; set; }
+        int? SectorId { get; set; }
+        ISectorFreq SECTORFREQ { get; set; }
+        ISector SECTOR { get; set; }
     }
 }

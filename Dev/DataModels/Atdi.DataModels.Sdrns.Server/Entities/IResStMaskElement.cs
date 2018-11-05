@@ -10,5 +10,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResStMaskElement
     {
+        int Id { get; set; }
+        int? ResStGeneralId { get; set; }
+        double? Bw { get; set; }
+        double? Level { get; set; }
+        IResStGeneral RESSTGENERAL { get; set; }
     }
 }

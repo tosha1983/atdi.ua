@@ -10,5 +10,33 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorEquipment
     {
+        int Id { get; set; }
+        int? SensorId { get; set; }
+        string Code { get; set; }
+        string Manufacturer { get; set; }
+        string Name { get; set; }
+        string Family { get; set; }
+        string TechId { get; set; }
+        string Version { get; set; }
+        double? LowerFreq { get; set; }
+        double? UpperFreq { get; set; }
+        double? RbwMin { get; set; }
+        double? RbwMax { get; set; }
+        double? VbwMin { get; set; }
+        double? VbwMax { get; set; }
+        bool? Mobility { get; set; }
+        double? FftPointMax { get; set; }
+        double? RefLevelDbm { get; set; }
+        string OperationMode { get; set; }
+        string Type { get; set; }
+        string EquipClass { get; set; }
+        double? TuningStep { get; set; }
+        string UserType { get; set; }
+        string Category { get; set; }
+        string Remark { get; set; }
+        string CustTxt1 { get; set; }
+        string CustData1 { get; set; }
+        double? CustNbr1 { get; set; }
+        ISensor SENSOR { get; set; }
     }
 }

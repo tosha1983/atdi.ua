@@ -11,11 +11,11 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEASTASKID" SourceType="Column" Required="true"/>
-    <Field Desc="MeasSubTaskId" Title="MeasSubTaskId" Name="MeasSubTaskId" DataType="Integer.64" SourceName="MEASSUBTASKID" SourceType="Column" Required="true"/>
-    <Field Desc="MeasSubTaskStaId" Title="MeasSubTaskStaId" Name="MeasSubTaskStaId" DataType="Integer.64" SourceName="MEASSUBTASKSTATIONID" SourceType="Column" Required="true"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEASTASKID" SourceType="Column" Required="false"/>
+    <Field Desc="MeasSubTaskId" Title="MeasSubTaskId" Name="MeasSubTaskId" DataType="Integer.64" SourceName="MEASSUBTASKID" SourceType="Column" Required="false"/>
+    <Field Desc="MeasSubTaskStaId" Title="MeasSubTaskStaId" Name="MeasSubTaskStaId" DataType="Integer.64" SourceName="MEASSUBTASKSTATIONID" SourceType="Column" Required="false"/>
     <Field Desc="Num" Title="Num" Name="Num" DataType="Integer.64" SourceName="NUM" SourceType="Column" Required="false"/>
-    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="true"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="false"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasTaskSDR to MeasTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
