@@ -424,5 +424,21 @@ namespace Atdi.AppServer.Services.Sdrns
 
             return result;
         }
+
+        public ShortMeasurementResultsExtend[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue options, CommonOperationArguments otherArgs)
+        {
+            var result =
+               Operation<SdrnsControllerAppService.GetShortMeasResultsByDatesAppOperation, ShortMeasurementResultsExtend[]>()
+                   .Invoke(
+                       new GetShortMeasResultsByDateAppOperationOptions
+                       {
+                           options = options,
+                           OtherArgs = otherArgs
+                       },
+                       this.OperationContext
+                   );
+
+            return result;
+        }
     }
 }

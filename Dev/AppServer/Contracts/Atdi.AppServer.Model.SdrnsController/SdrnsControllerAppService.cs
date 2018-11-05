@@ -161,6 +161,11 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetShortMeasResultsByDatesAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResultsByDatesAppOperation() : base("GetShortMeasResultsByDates")
+            { }
+        }
 
 
         public SdrnsControllerAppService() 
@@ -187,6 +192,7 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResultsByIdAppOperation(),
                      new GetShortMeasResultsByTaskIdAppOperation(),
                      new DeleteMeasResultsAppOperation(),
+<<<<<<< HEAD
                      new GetShortMeasResultsSpecialAppOperation(),
                      new GetShortMeasResStationAppOperation(),
                      new GetRoutesAppOperation(),
@@ -196,6 +202,11 @@ namespace Atdi.AppServer.Models.AppServices
 
 
                  }
+=======
+                     new GetSOformMeasResultStationAppOperation(),
+                     new GetShortMeasResultsByDatesAppOperation()
+                    }
+>>>>>>> dev_sdrn_1_2
                 );
         }
     }

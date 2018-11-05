@@ -236,6 +236,17 @@ namespace Atdi.AppServer.Contracts.Sdrns
         [OperationContract]
         SOFrequency[] GetSOformMeasResultStation(GetSOformMeasResultStationValue options, CommonOperationArguments otherArgs);
 
+<<<<<<< HEAD
 
+=======
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constraint"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ShortMeasurementResultsExtend[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue constraint, CommonOperationArguments otherArgs);
+>>>>>>> dev_sdrn_1_2
     }
 }
