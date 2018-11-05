@@ -37,6 +37,11 @@ namespace Atdi.WcfServices.Sdrn.Device
                 UserName = this._serverDescriptor.RabbitMqUser,
                 Password = this._serverDescriptor.RabbitMqPassword
             };
+            if (!string.IsNullOrEmpty(this._serverDescriptor.RabbitMqVirtualHost))
+            {
+                this._connectionFactory.VirtualHost = this._serverDescriptor.RabbitMqVirtualHost;
+            }
+
             this._exchangeName = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
             this.EstablisheConnection();
         }

@@ -18,6 +18,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         public List<ConcumerDescribe> listConcumerDescribe { get; set; }
         public Task[] tasks { get; set; }
         public string RabbitHostName { get; set; }
+        public string RabbitVirtualHostName { get; set; }
         public string RabbitUserName { get; set; }
         public string RabbitPassword { get; set; }
         public string NameServer { get; set; }
@@ -40,6 +41,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 listConcumerDescribe = new List<AppServer.ConfigurationSdrnController.ConcumerDescribe>();
                 listRabbitOptions = new Dictionary<IModel, RabbitOptions>();
                 RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
+                RabbitVirtualHostName = ConfigurationManager.AppSettings["RabbitVirtualHostName"];
                 RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
                 RabbitPassword = ConfigurationManager.AppSettings["RabbitMQ.Password"];
                 NameServer = ConfigurationManager.AppSettings["ServerInstance"];
@@ -77,6 +79,11 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 }
                 tasks = new Task[listConcumerDescribe.Count];
                 factory = new ConnectionFactory() { HostName = RabbitHostName, UserName = RabbitUserName, Password = RabbitPassword };
+                if (!string.IsNullOrEmpty(RabbitVirtualHostName))
+                {
+                    factory.VirtualHost = RabbitVirtualHostName;
+                }
+
                 _connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
             }
             catch (Exception ex)

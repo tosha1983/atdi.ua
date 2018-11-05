@@ -53,6 +53,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 var licenseProductKey = GetParameter(doc, "License.ProductKey");
 
                 var rabbitMQHost = GetParameter(doc, "RabbitMQ.Host");
+                var rabbitMQVirtualHost = GetParameter(doc, "RabbitMQ.VirtualHost");
                 var rabbitMQUser = GetParameter(doc, "RabbitMQ.User");
                 var rabbitMQPassword = GetParameter(doc, "RabbitMQ.Password");
 
@@ -76,6 +77,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 
 
                 txtRabbitMQHost.Text = rabbitMQHost;
+                txtRabbitMQVirtualHost.Text = rabbitMQVirtualHost;
                 txtRabbitMQUser.Text = rabbitMQUser;
 
                 try
@@ -143,6 +145,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             var licenseProductKey = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, SharedSecret);
 
             var rabbitMQHost = txtRabbitMQHost.Text;
+            var rabbitMQVirtualHost = txtRabbitMQVirtualHost.Text;
             var rabbitMQUser = txtRabbitMQUser.Text;
             var rabbitMQPassword = Encryptor.EncryptStringAES(txtRabbitMQPassword.Text, SharedSecret);
 
@@ -165,6 +168,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             SetParameter(doc, "License.ProductKey", licenseProductKey);
 
             SetParameter(doc, "RabbitMQ.Host", rabbitMQHost);
+            SetParameter(doc, "RabbitMQ.VirtualHost", rabbitMQVirtualHost);
             SetParameter(doc, "RabbitMQ.User", rabbitMQUser);
             SetParameter(doc, "RabbitMQ.Password", rabbitMQPassword);
 
