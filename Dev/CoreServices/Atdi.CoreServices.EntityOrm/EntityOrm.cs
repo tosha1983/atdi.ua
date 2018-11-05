@@ -986,7 +986,10 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Required = fieldDef.Required;
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
-                            dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            if (!dictionaryFields.ContainsKey(fieldMetadata.Name))
+                            {
+                                dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            }
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Reference)
                         {
@@ -1028,7 +1031,10 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Required = fieldDef.Required;
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
-                            dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            if (!dictionaryFields.ContainsKey(fieldMetadata.Name))
+                            {
+                                dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            }
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Extension)
                         {
@@ -1069,7 +1075,10 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Required = fieldDef.Required;
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
-                            dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            if (!dictionaryFields.ContainsKey(fieldMetadata.Name))
+                            {
+                                dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            }
 
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Relation)
@@ -1112,7 +1121,10 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldMetadata.Required = fieldDef.Required;
                             fieldMetadata.Name = fieldDef.Name;
                             fieldMetadata.Desc = fieldDef.Desc;
-                            dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            if (!dictionaryFields.ContainsKey(fieldMetadata.Name))
+                            {
+                                dictionaryFields.Add(fieldMetadata.Name, fieldMetadata);
+                            }
                         }
                         else if (fieldDef.SourceType == Metadata.FieldSourceType.Expression)
                         {

@@ -6,7 +6,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrns.Server.Entities2;
+using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using System.Collections.Generic;
 
@@ -39,7 +39,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 var sensorExistsInDb = false;
                 try
                 {
-                    
+
+                  
                     var query = this._dataLayer.GetBuilder<MD.ISensor>()
                     .From()
                     .Select(c => c.Name)
@@ -48,10 +49,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
                     .OrderByAsc(c => c.Id)
                     ;
-
+                    
                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
                     .Execute(query) == 1;
-                   
+
 
                     if (!sensorExistsInDb)
                     {

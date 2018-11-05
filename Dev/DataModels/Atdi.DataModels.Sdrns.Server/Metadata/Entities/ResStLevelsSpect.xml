@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_RESSTGENERAL</Name>
+    <Name>XBS_RESSTLEVELSSPECT</Name>
     <Schema>ICSM</Schema>
   </DataSource>
   <Fields>

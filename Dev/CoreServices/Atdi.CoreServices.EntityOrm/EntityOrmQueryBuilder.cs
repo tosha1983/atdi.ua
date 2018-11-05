@@ -531,8 +531,16 @@ namespace Atdi.CoreServices.EntityOrm
                             {
 
                                 RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
-                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].DataSource.Name;
-                                string name = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].Name;
+
+                                int index = GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo);
+                                index = index - 1;
+                                if (index < 0)
+                                {
+                                    index = 0;
+                                }
+
+                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[index].DataSource.Name;
+                                string name = aliasFieldFind.EntityMetadataLinks[index].Name;
                                 var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                 string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
@@ -710,8 +718,17 @@ namespace Atdi.CoreServices.EntityOrm
                             {
 
                                 RefTableNameTo = aliasFieldFind.EntityMetadataLinks[countSubLevels].DataSource.Name;
-                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].DataSource.Name;
-                                string name = aliasFieldFind.EntityMetadataLinks[GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo) - 1].Name;
+
+
+                                int index = GetIndexTable(aliasFieldFind.EntityMetadataLinks, RefTableNameTo);
+                                index = index - 1;
+                                if (index < 0)
+                                {
+                                    index = 0;
+                                }
+                               
+                                RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[index].DataSource.Name;
+                                string name = aliasFieldFind.EntityMetadataLinks[index].Name;
                                 var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                 string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
@@ -823,8 +840,17 @@ namespace Atdi.CoreServices.EntityOrm
                                                             var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(DbValx != null ? DbValx.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)));
                                                             if (entityMetadataRefTableName != null)
                                                             {
-                                                                string columnFrom = entityMetadataRefTableName.Fields.ToList().Find(z => z.Key == FieldName).Value.SourceName;
-                                                                stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), columnFrom));
+                                                                var valueMetaData = entityMetadataRefTableName.Fields.ToList().Find(z => z.Key == FieldName).Value;
+                                                                if (valueMetaData != null)
+                                                                {
+                                                                    string columnFrom = valueMetaData.SourceName;
+                                                                    stringBuilderRef.Add(string.Format(" ({0}.{1} = {2}.{3}) ", this._syntax.EncodeFieldName(SpecialFld), FieldNameFrom, this._syntax.EncodeFieldName((DbValx != null ? DbValx.Alias : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)))), columnFrom));
+                                                                }
+                                                                else
+                                                                {
+                                                                    throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, FieldName));
+                                                                }
+
                                                             }
                                                         }
                                                     }
@@ -1511,11 +1537,11 @@ namespace Atdi.CoreServices.EntityOrm
                 var fromExpression = BuildJoinStatement(statement.Table.Name, selectedColumns.Select(t => t.Name), parameters, out listAlias, ref listFieldProperties);
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
-                    var column = selectedColumns[i];
                     var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
                     if (dbField != null)
                     {
-                        AliasField aliasField = listAlias.Find(z => z.DBTableName == listFieldProperties[i].DBTableName);
+                        var column = selectedColumns[i];
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
                         if (aliasField != null)
                         {
                             column.Alias = dbField.Alias;

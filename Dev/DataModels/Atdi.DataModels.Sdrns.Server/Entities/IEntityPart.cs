@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IEntityPart
     {
-        int Id { get; set; }
+        string EntityId { get; set; }
         int PartIndex { get; set; }
         bool? Eof { get; set; }
         Byte[] Content{ get; set; }
