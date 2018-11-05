@@ -17,7 +17,7 @@
                 </div>
             </main>
 
-            <footer-bar :barId="footerBarId" :title="company.name" :site="company.site"></footer-bar>
+            <footer-bar :barId="footerBarId" :title="portalEnvironment.company.title" :site="portalEnvironment.company.site"></footer-bar>
 
         </section>
 
@@ -27,6 +27,7 @@
 </template> 
 
 <script>
+    import { mapState, mapActions } from 'vuex'
     import MainBar from './Components/MainBar.vue'
     import GroupsBar from './Components/GroupsBar.vue'
     import FooterBar from './Components/FooterBar.vue'
@@ -51,6 +52,14 @@
                     site: 'www.google.com'
                 }
             }
+        },
+     
+        computed: mapState({
+            portalEnvironment: state => state.portal.environment
+        }),
+
+        created() {
+            this.$store.dispatch('portal/defineEnvironment')
         }
     }
 </script>     

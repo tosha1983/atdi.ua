@@ -19,25 +19,15 @@
 
         <li class="no-padding">
             <ul class="collapsible collapsible-accordion">
-                <li>
-                    <a class="collapsible-header">{goup1.Title}}<i class="material-icons chevron">chevron_left</i></a>
+
+                <li v-for="queryGroup in queryGroups" @click="changeCurrentGroup(queryGroup.name)">
+
+                    <a class="collapsible-header">{{queryGroup.title}}<i class="material-icons chevron">chevron_left</i></a>
                     <div class="collapsible-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="waves-effect">{query11.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query12.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query13.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query14.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                        </ul>
+                        <queries-bar :groupName="queryGroup.name"></queries-bar>
                     </div>
                 </li>
+                <!--
                 <li>
                     <a class="collapsible-header">{goup2.Title}}<i class="material-icons chevron">chevron_left</i></a>
                     <div class="collapsible-body">
@@ -133,20 +123,42 @@
                         </ul>
                     </div>
                 </li>
+                -->
             </ul>
         </li>
     </ul>
 </template>
+
 <script>
+    import { mapState, mapActions } from 'vuex'
+    import QueriesBar from './QueriesBar.vue'
+
     export default {
         name: 'GroupsBar',
         props: {
             barId: String,
         },
+
         components: {
+            QueriesBar
         },
+
+        computed: mapState({
+            queryGroups: state => state.queryGroups.all
+        }),
+
         data() {
             return {
+            }
+        },
+
+        created() {
+            this.$store.dispatch('queryGroups/loadGroups')
+        },
+
+        methods: {
+            changeCurrentGroup(name) {
+                this.$store.dispatch('queryGroups/changeCurrentGroup', name)
             }
         }
     }
