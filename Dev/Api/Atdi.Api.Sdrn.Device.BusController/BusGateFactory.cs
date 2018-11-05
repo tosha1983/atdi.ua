@@ -114,6 +114,16 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
+            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQVirtualHost, out paramValue, logger))
+            {
+                descriptor.RabbitMQVirtualHost = paramValue;
+            }
+            else
+            {
+                hasParamError = true;
+            }
+
+
             if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQUser, out paramValue, logger))
             {
                 descriptor.RabbitMQUser = paramValue;
