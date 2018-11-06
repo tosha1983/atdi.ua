@@ -19,6 +19,8 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             var orm = new TST.EntityOrm(config);
 
             
+
+
         }
     }
 }
