@@ -26,7 +26,16 @@ namespace Atdi.SDNRS.AppServer.BusManager
             bool isSuccessRegister = false;
             try
             {
-                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                ConnectionFactory factory = null;
+                if (string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
+                {
+                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                }
+                else
+                {
+                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost };
+                }
+                if (factory!=null)
                 {
                     using (var connection = factory.CreateConnection($"SDRN device (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
@@ -97,8 +106,18 @@ namespace Atdi.SDNRS.AppServer.BusManager
             bool isSendSuccess = false;
             try
             {
-                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                ConnectionFactory factory = null;
+                if (string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
                 {
+                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                }
+                else
+                {
+                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost };
+                }
+                if (factory != null)
+                {
+                    
                     using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
@@ -175,8 +194,18 @@ namespace Atdi.SDNRS.AppServer.BusManager
             bool isSendSuccess = false;
             try
             {
-                var factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                ConnectionFactory factory = null;
+                if (string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
                 {
+                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
+                }
+                else
+                {
+                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost };
+                }
+                if (factory != null)
+                {
+                 
                     using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {

@@ -74,6 +74,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         public static string RabbitHostName { get; }
         public static string RabbitUserName { get; }
+        public static string RabbitVirtualHost { get; }
         public static string RabbitPassword { get; }
         public static string NameServer { get; }
         public static string ExchangePointFromDevices { get; }
@@ -124,6 +125,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.Template_Event_Confirm_MeasTaskResults_Send_ = ConfigurationManager.AppSettings["Template_Event_Confirm_MeasTaskResults_Send_"];
             GlobalInit.RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
             GlobalInit.RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
+            GlobalInit.RabbitVirtualHost = ConfigurationManager.AppSettings["RabbitVirtualHostName"];
             GlobalInit.NameServer = ConfigurationManager.AppSettings["ServerInstance"];
             GlobalInit.ExchangePointFromDevices = ConfigurationManager.AppSettings["ExchangePointFromDevices"];
             GlobalInit.ExchangePointFromServer = ConfigurationManager.AppSettings["ExchangePointFromServer"];
@@ -131,11 +133,17 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
             GlobalInit.ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
             GlobalInit.RabbitPassword = ConfigurationManager.AppSettings["RabbitMQ.Password"];
-            GlobalInit.UseEncryption = ConfigurationManager.AppSettings["RabbitMQ.UseEncryption"].ToString().ToLower()=="false" ? false : true;
+            GlobalInit.UseEncryption = ConfigurationManager.AppSettings["RabbitMQ.UseEncryption"].ToString().ToLower() == "false" ? false : true;
             GlobalInit.UseСompression = ConfigurationManager.AppSettings["RabbitMQ.UseСompression"].ToString().ToLower() == "false" ? false : true;
-
-
-            MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
+            if (!string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
+            {
+                MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}; virtualHost={3}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword, GlobalInit.RabbitVirtualHost);
+            }
+            else
+            {
+                MainRabbitMQServices = string.Format("host={0}; username={1}; password={2} ", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
+            }
+            
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
             Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();
