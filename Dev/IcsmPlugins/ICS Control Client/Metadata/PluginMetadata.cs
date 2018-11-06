@@ -53,7 +53,6 @@ namespace XICSM.ICSControlClient
             public static class Allotment
             {
                 public static readonly string StartMeasurementsSO = "Start measurements spectrum occupation";
-                public static readonly string CalcSOByMeasResult = "Calc spectrum occupation by MeasResults";
             }
         }
         
