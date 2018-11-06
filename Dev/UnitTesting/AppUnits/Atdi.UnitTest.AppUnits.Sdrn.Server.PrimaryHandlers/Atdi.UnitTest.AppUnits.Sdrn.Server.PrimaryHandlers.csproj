@@ -95,9 +95,9 @@
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities2.csproj">
       <Project>{f3e641da-37a7-4137-bbcb-151b6474a62f}</Project>
-      <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+      <Name>Atdi.DataModels.Sdrns.Server.Entities2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>

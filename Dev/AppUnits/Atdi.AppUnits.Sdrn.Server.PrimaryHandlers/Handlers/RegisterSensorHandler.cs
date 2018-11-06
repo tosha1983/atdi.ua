@@ -39,17 +39,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 var sensorExistsInDb = false;
                 try
                 {
-                    var query = this._dataLayer.GetBuilder<MD.ISensor>()
-                     .From()
-                     .Select(c => c.Name)
-                     .Select(c => c.Id)
-                     .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
-                     .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
-                     ;
 
+                  
+                    var query = this._dataLayer.GetBuilder<MD.ISensor>()
+                    .From()
+                    .Select(c => c.Name)
+                    .Select(c => c.Id)
+                    .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
+                    .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
+                    .OrderByAsc(c => c.Id)
+                    ;
+                    
                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
                     .Execute(query) == 1;
-                   
+
 
                     if (!sensorExistsInDb)
                     {

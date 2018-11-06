@@ -7,8 +7,8 @@
     <ProjectGuid>{4178C008-8B0F-4EA8-A1D9-1B86BF8DC428}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrns.Server</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrns.Server</AssemblyName>
+    <RootNamespace>Atdi.DataModels.Sdrns.Server.Entities</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrns.Server.Entities</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

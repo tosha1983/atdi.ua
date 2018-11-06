@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDRN Server", "SDRN Server", "{21E7E276-6012-498E-A58D-B5A0D0286465}"
 EndProject
@@ -121,7 +121,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.CoreServices.EntityOrm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.EntityOrm", "DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj", "{73C8791E-3FC5-4C91-84E5-C19C98096F10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Server.Entities", "DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj", "{F3E641DA-37A7-4137-BBCB-151B6474A62F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Server.Entities2", "DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities2.csproj", "{F3E641DA-37A7-4137-BBCB-151B6474A62F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Contracts.Sdrn.Server", "Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj", "{B6324D12-6E97-4E02-9499-31265565467A}"
 EndProject
@@ -153,7 +153,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.Device.Clie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.Device.WcfService", "Build\Atdi.Build.Sdrn.Device.WcfService\Atdi.Build.Sdrn.Device.WcfService.csproj", "{67FCCDAD-57F1-4159-8FC1-F8DCDB2888E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Server", "DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj", "{4178C008-8B0F-4EA8-A1D9-1B86BF8DC428}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Server.Entities", "DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.Entities.csproj", "{4178C008-8B0F-4EA8-A1D9-1B86BF8DC428}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
