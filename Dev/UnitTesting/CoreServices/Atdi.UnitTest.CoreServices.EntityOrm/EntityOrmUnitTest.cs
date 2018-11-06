@@ -12,7 +12,7 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
         {
             // Конечный путь к файлам xml формируется следующим образом:
             // директория в которой расположен файл Environment.xml \ RootPath \ Поддиректории 
-            string ExeDir = @"c:\projects\reposApi2\Dev\UnitTesting\CoreServices\Atdi.UnitTest.CoreServices.EntityOrm\bin\Debug\Metadata";
+            string ExeDir = @"C:\ProjectTest\atdi.ua\Dev\UnitTesting\CoreServices\Atdi.UnitTest.CoreServices.EntityOrm\bin\Debug\Metadata";
             var config = new EntityOrmConfigFake()
             {
                 RootPath = ExeDir + "\\",
@@ -21,8 +21,8 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
                 UnitsPath = ExeDir + "\\Units"
             };
             var orm = new TST.EntityOrm(config);
-            Contracts.CoreServices.EntityOrm.Metadata.IDataTypeMetadata dataTypeMetadata = orm.GetDataTypeMetadata("Int64", Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
-            Contracts.CoreServices.EntityOrm.Metadata.IEntityMetadata entityMetadata = orm.GetEntityMetadata("Sensor");
+            Contracts.CoreServices.EntityOrm.Metadata.IDataTypeMetadata dataTypeMetadata = orm.GetDataTypeMetadata("Integer.64", Contracts.CoreServices.EntityOrm.Metadata.DataSourceType.Database);
+            Contracts.CoreServices.EntityOrm.Metadata.IEntityMetadata entityMetadata = orm.GetEntityMetadata("Station");
             Contracts.CoreServices.EntityOrm.Metadata.IUnitMetadata unitMetadata = orm.GetUnitMetadata("Frequency.MHz.xml");
         }
     }
