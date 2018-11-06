@@ -155,9 +155,20 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetSOformMeasResultStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetSOformMeasResultStationAppOperation() : base("GetSOformMeasResultStation")
+            { }
+        }
+
+        public sealed class GetShortMeasResultsByDatesAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResultsByDatesAppOperation() : base("GetShortMeasResultsByDates")
+            { }
+        }
 
 
-        public SdrnsControllerAppService() 
+        public SdrnsControllerAppService()
             : base("SdrnsController")
         {
             this._operations.AddRange(
@@ -185,8 +196,12 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResStationAppOperation(),
                      new GetRoutesAppOperation(),
                      new GetSensorPoligonPointAppOperation(),
-                     new GetResMeasStationAppOperation()
-                 }
+                     new GetResMeasStationAppOperation(),
+                     new GetSOformMeasResultStationAppOperation(),
+                     new GetSOformMeasResultStationAppOperation(),
+                     new GetShortMeasResultsByDatesAppOperation()
+
+                }
                 );
         }
     }

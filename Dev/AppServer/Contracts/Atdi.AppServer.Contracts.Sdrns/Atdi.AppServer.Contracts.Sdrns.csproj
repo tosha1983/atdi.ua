@@ -77,6 +77,9 @@
     <Compile Include="Enums\AntennaPolarization.cs" />
     <Compile Include="Enums\AntennaDirectional.cs" />
     <Compile Include="ISdrnsController.cs" />
+    <Compile Include="Models\Analitics\GetShortMeasResultsByDateValue.cs" />
+    <Compile Include="Models\Analitics\GetSOformMeasResultStation.cs" />
+    <Compile Include="Models\Analitics\SOFrequency.cs" />
     <Compile Include="Models\Devices\BB60C\FSemples.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrBandWidthResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrLoc.cs" />
@@ -89,6 +92,7 @@
     <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementOnlineResult.cs" />
     <Compile Include="Models\Measurements\Route.cs" />
     <Compile Include="Models\Measurements\RoutePoint.cs" />
+    <Compile Include="Models\Measurements\ShortMeasurementResultsExtend.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />

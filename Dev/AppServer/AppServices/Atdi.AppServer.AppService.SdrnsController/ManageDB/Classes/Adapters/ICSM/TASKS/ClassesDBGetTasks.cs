@@ -183,7 +183,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
                             YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                             MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                             for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                             {
                                 var m_fr = new YXbsMeassubtasksta();
@@ -350,7 +350,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
                             YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                             MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                             for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                             {
                                 var m_fr = new YXbsMeassubtasksta();
@@ -433,7 +433,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
                                 YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                                 MeasSubTaskSt_.Format("*");
-                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                                 for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                                 {
                                     var m_fr = new YXbsMeassubtasksta();
@@ -613,7 +613,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
                             YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                             MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                             for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext()) {
                                 var m_fr = new YXbsMeassubtasksta();
                                 m_fr.CopyDataFrom(MeasSubTaskSt_);
@@ -680,7 +680,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                                     MeasSubTaskSt_.Format("*");
-                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                                     for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                                     {
                                         MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
@@ -750,7 +750,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             {
                                 YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                                 MeasSubTaskSt_.Format("*");
-                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                                 for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                                 {
                                     MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
@@ -969,7 +969,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 {
                                     YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
                                     MeasSubTaskSt_.Format("*");
-                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND (STATUS<>'Z')", MeasSubTask_.m_id);
+                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
                                     for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                                     {
                                         MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);

@@ -101,6 +101,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\Oracle.DataAccess.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="Quartz">
       <HintPath>..\..\..\packages\Quartz.2.6.0\lib\net40\Quartz.dll</HintPath>
     </Reference>
@@ -142,6 +146,7 @@
     <Compile Include="GetRoutesAppOperationHandle.cs" />
     <Compile Include="GetShortMeasResultsSpecialAppOperation.cs" />
     <Compile Include="GetShortMeasResStationAppOperationHandler.cs" />
+    <Compile Include="GetShortMeasResultsByDateAppOperationHandler.cs" />
     <Compile Include="GetShortSensorAppOperationHandler.cs" />
     <Compile Include="GetShortMeasTaskAppOperationHandler.cs" />
     <Compile Include="GetMeasResultsByIdAppOperationHandler.cs" />
@@ -153,6 +158,8 @@
     <Compile Include="GetShortMeasResultsAppOperationHandler.cs" />
     <Compile Include="GetShortMeasTasksAppOperationHandler.cs" />
     <Compile Include="GetShortSensorsAppOperationHandler.cs" />
+    <Compile Include="GetSOformMeasResultStationAppOperationHandler.cs" />
+    <Compile Include="ManageDB\Classes\Adapters\ICSM\Analitics\ClassConvertTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\RESULT\ClassesDBGetResult.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\SENSOR\ClassDBGetSensor.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\Constants.cs" />

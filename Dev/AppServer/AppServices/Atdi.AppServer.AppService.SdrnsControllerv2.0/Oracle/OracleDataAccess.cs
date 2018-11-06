@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System.Data.Common;
 
 
@@ -69,7 +69,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             DbConnection newConnection = null;
             try
             {
-                        DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+                        DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.ManagedDataAccess.Client");
                         newConnection = factory.CreateConnection();
                         newConnection.ConnectionString = connectionStringValue;
                         newConnection.Open();
@@ -658,7 +658,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         AllColumns_level1 = ""; AllValues_level1 = "";
                         foreach (OracleParameter p in OraParametr_Level1.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
                         {
-                            if (p.OracleDbType != OracleDbType.Object)
+                            if (p.OracleDbType != OracleDbType.Raw)
                                 AllValues_level1 += p.ParameterName + ",";
                             else
                             {
@@ -746,7 +746,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         AllColumns_level1 = ""; AllValues_level1 = "";
                         foreach (OracleParameter p in OraParametr_Level1.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
                         {
-                            if (p.OracleDbType != OracleDbType.Object)
+                            if (p.OracleDbType != OracleDbType.Raw)
                                 AllValues_level1 += p.ParameterName + ",";
                             else
                             {
@@ -774,7 +774,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         AllColumns_level2 = ""; AllValues_level2 = "";
                         foreach (OracleParameter p in OraParametr_Level2.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
                         {
-                            if (p.OracleDbType != OracleDbType.Object)
+                            if (p.OracleDbType != OracleDbType.Raw)
                                 AllValues_level2 += p.ParameterName + ",";
                             else
                             {
@@ -848,7 +848,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
                     foreach (OracleParameter p in OraParametr_Level1)
                     {
-                        if (p.OracleDbType != OracleDbType.Object)
+                        if (p.OracleDbType != OracleDbType.Raw)
                             AllValues_level1 += p.ParameterName + ",";
                         else
                         {
@@ -874,7 +874,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     List<OracleParameter> DelObj_Level2 = new List<OracleParameter>();
                     foreach (OracleParameter p in OraParametr_Level2_Const)
                     {
-                        if (p.OracleDbType != OracleDbType.Object)
+                        if (p.OracleDbType != OracleDbType.Raw)
                             AllValues_level2 += p.ParameterName + ",";
                         else
                         {
@@ -899,7 +899,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         string AllColumns_level2_records = AllColumns_level2;
                         foreach (OracleParameter sp in p)
                         {
-                            if (sp.OracleDbType != OracleDbType.Object)
+                            if (sp.OracleDbType != OracleDbType.Raw)
                             {
                                 AllValues_level2_records += sp.ParameterName + ",";
                                 AllColumns_level2_records += sp.SourceColumn + ",";
@@ -959,7 +959,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
                     foreach (OracleParameter p in OraParametr_Level1)
                     {
-                        if (p.OracleDbType != OracleDbType.Object)
+                        if (p.OracleDbType != OracleDbType.Raw)
                             AllValues_level1 += p.ParameterName + ",";
                         else
                         {
@@ -984,7 +984,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     List<OracleParameter> DelObj_Level2 = new List<OracleParameter>();
                     foreach (OracleParameter p in OraParametr_Level2_Const)
                     {
-                        if (p.OracleDbType != OracleDbType.Object)
+                        if (p.OracleDbType != OracleDbType.Raw)
                             AllValues_level2 += p.ParameterName + ",";
                         else
                         {
@@ -1009,7 +1009,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         string AllColumns_level2_records = AllColumns_level2;
                         foreach (OracleParameter sp in p)
                         {
-                            if (sp.OracleDbType != OracleDbType.Object)
+                            if (sp.OracleDbType != OracleDbType.Raw)
                             {
                                 AllValues_level2_records += sp.ParameterName + ",";
                                 AllColumns_level2_records += sp.SourceColumn + ",";
@@ -1029,7 +1029,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     List<OracleParameter> DelObj_Level3 = new List<OracleParameter>();
                     foreach (OracleParameter p in OraParametr_Level3_Const)
                     {
-                        if (p.OracleDbType != OracleDbType.Object)
+                        if (p.OracleDbType != OracleDbType.Raw)
                             AllValues_level3 += p.ParameterName + ",";
                         else
                         {
@@ -1054,7 +1054,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         string AllColumns_level3_records = AllColumns_level3;
                         foreach (OracleParameter sp in p)
                         {
-                            if (sp.OracleDbType != OracleDbType.Object)
+                            if (sp.OracleDbType != OracleDbType.Raw)
                             {
                                 AllValues_level3_records += sp.ParameterName + ",";
                                 AllColumns_level3_records += sp.SourceColumn + ",";

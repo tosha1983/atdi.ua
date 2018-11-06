@@ -3,6 +3,8 @@ using Quartz;
 using Quartz.Impl;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.AppServer;
+using System.Collections.Generic;
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {

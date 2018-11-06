@@ -8,7 +8,9 @@ using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.Modules.Licensing;
 using Atdi.Platform.Cryptography;
 using Atdi.Platform.AppComponent;
-
+using Atdi.AppServer.Contracts.Sdrns;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Atdi.AppServer.ConfigurationSdrnController
 {
@@ -39,6 +41,14 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             try
             {
+                //BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
+                //List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\Results.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
+                //BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
+                //if (ressd.SendDataObject(dyn, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02", xml_conf.xml_configuration._TimeExpirationTask))
+                // {
+
+                //}
+
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);

@@ -98,6 +98,28 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             return result;
         }
+        public static ShortMeasurementResultsExtend[] GetShortMeasResultsByDates(DateTime startDate, DateTime stopDate)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+            var dates = new GetShortMeasResultsByDateValue()
+            {
+                Start = startDate,
+                End = stopDate
+            };
+
+            var result = Execute(contract => contract.GetShortMeasResultsByDate(dates, otherArgs));
+
+            if (result == null)
+            {
+                return new ShortMeasurementResultsExtend[] { };
+            }
+            return result;
+        }
+
 
         public static MeasurementResults[] GetMeasResultsByTask(int taskId)
         {
@@ -238,6 +260,33 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
 
+        public static SOFrequency[] GetSOformMeasResultStation(List<double> Frequencies_MHz, double BW_kHz, List<int> MeasResultID, double LonMax, double LonMin, double LatMax, double LatMin, double TrLevel_dBm)
+        {
+            var otherArgs = new CommonOperationArguments()
+            {
+                UserId = MD.Employee.GetCurrentUserId()
+            };
+
+        var parameters = new GetSOformMeasResultStationValue()
+            {
+                BW_kHz = BW_kHz,
+                Frequencies_MHz = Frequencies_MHz,
+                LatMax = LatMax,
+                LatMin = LatMin,
+                LonMax = LonMax,
+                LonMin = LonMin,
+                TrLevel_dBm = TrLevel_dBm,
+                MeasResultID = MeasResultID
+            };
+
+            var result = Execute(contract => contract.GetSOformMeasResultStation(parameters, otherArgs));
+
+            if (result == null)
+            {
+                return new SOFrequency[] { };
+            }
+            return result;
+        }
 
         
 

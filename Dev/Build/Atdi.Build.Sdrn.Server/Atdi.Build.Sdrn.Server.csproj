@@ -86,10 +86,6 @@
     <Reference Include="NLog">
       <HintPath>..\..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\AppServer\AppServices\Atdi.AppServer.AppService.SdrnsController\Dll\Oracle.DataAccess.dll</HintPath>
-    </Reference>
     <Reference Include="Quartz">
       <HintPath>..\..\packages\Quartz.2.6.0\lib\net40\Quartz.dll</HintPath>
     </Reference>

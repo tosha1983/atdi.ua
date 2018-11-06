@@ -327,6 +327,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             return ListMTSDR;
         }
 
+
         /// <summary>
         /// Функция обновления статуса MeasTask,MeasSubTask,MeasSubTaskStation
         /// </summary>
