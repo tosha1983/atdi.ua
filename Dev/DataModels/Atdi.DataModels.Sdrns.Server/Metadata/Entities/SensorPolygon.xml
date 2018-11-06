@@ -12,8 +12,8 @@
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
     <Field Name="SensorId" SourceType="Column" SourceName="SENSORID" DataType="Integer.64" Required="true" Title="SensorId" Desc="SensorId"/>
-    <Field Name="Lon" SourceType="Column" SourceName="LON" DataType="Decimal.22.8" Required="false" Title="Longitude, DEC" Desc="Longitude, DEC" Unit="Longitude.DEC"/>
-    <Field Name="Lat" SourceType="Column" SourceName="LAT" DataType="Decimal.22.8" Required="false" Title="Latitude,  DEC" Desc="Latitude,  DEC" Unit="Latitude.DEC"/>
+    <Field Name="Lon" SourceType="Column" SourceName="LON" DataType="Decimal.22.8" Required="false" Title="Longitude, DEC" Desc="Longitude, DEC" Unit="Longitude.DEC.xml"/>
+    <Field Name="Lat" SourceType="Column" SourceName="LAT" DataType="Decimal.22.8" Required="false" Title="Latitude,  DEC" Desc="Latitude,  DEC" Unit="Latitude.DEC.xml"/>
     <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation SensorPolygon to Sensor">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>

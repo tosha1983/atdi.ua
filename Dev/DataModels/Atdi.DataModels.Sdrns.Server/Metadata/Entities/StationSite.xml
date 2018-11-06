@@ -11,8 +11,8 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
-    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC.xml"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC.xml"/>
     <Field Desc="Address" Title="Address" Name="Address" DataType="Text.2000" SourceName="ADDRES" SourceType="Column" Required="false"/>
     <Field Desc="Region" Title="Region" Name="Region" DataType="Text.50" SourceName="REGION" SourceType="Column" Required="false"/>
   </Fields>

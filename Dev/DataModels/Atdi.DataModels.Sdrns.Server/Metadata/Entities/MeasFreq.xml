@@ -12,7 +12,7 @@
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
     <Field Desc="Freq" Title="Freq" Name="Freq" DataType="Decimal.22.8" SourceName="FREQ" SourceType="Column" Required="false"/>
-    <Field Desc="MeasFreqParamId" Title="MeasFreqParamId" Name="MeasFreqParamId" DataType="Integer.64" SourceName="ID_XBS_MEASFREQPARAM" SourceType="Column" Required="false"/>
+    <Field Desc="MeasFreqParamId" Title="MeasFreqParamId" Name="MeasFreqParamId" DataType="Integer.64" SourceName="ID_XBS_MEASFREQPARAM" SourceType="Column" Required="true"/>
     <Field Name="MEASFREQPARAM" SourceType="Reference" SourceName="MeasFreqParam" Title="Relation MeasFreq to MeasFreqParam">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasFreqParamId</Mapped>
