@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Unit Name="Angle.Degree">
+<Unit Name="Angle.Degree"
+xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <Dimension>Degree</Dimension>
   <Category>Angle</Category>
 </Unit>
