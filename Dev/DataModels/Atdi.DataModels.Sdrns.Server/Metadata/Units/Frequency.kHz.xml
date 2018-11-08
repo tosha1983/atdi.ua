@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Unit Name="Frequency.kHz">
+<Unit Name="Frequency.kHz"
+xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <Dimension>kHz</Dimension>
   <Category>Frequency</Category>
 </Unit>

@@ -22,7 +22,7 @@
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="MeasResultSID" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.50" SourceName="MEASSDRRESULTSID" SourceType="Column" Required="false"/>
     <Field Desc="Type" Title="Type" Name="Type" DataType="Text.450" SourceName="TYPE" SourceType="Column" Required="false"/>
-    <Field Desc="Synchronized" Title="Synchronized" Name="Synchronized" DataType="Boolean" SourceName="SYNCHRONIZED" SourceType="Column" Required="true"/>
+    <Field Desc="Synchronized" Title="Synchronized" Name="Synchronized" DataType="Boolean" SourceName="SYNCHRONIZED" SourceType="Column" Required="true"/>\
     <Field Name="MEASSUBTASK" SourceType="Reference" SourceName="MeasSubTask" Title="Relation ResMeas to MeasSubTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskId</Mapped>
