@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.DataConstraint
+namespace Atdi.WebPortal.WebQuery.WebApiModels
 {
     /// <summary>
     /// Specifies a limit of the data to fetch
     /// </summary>
-    [DataContract(Namespace = CommonSpecification.Namespace)]
+    [DataContract]
     public class DataLimit
     {
         [DataMember]

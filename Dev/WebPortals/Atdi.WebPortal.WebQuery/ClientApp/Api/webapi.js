@@ -18,7 +18,7 @@ export default {
     SVC_ENVIRONMENT: 'environment',
     SVC_QUERYGROUPS: 'querygroups',
     SVC_WEBQUERIES: 'webqueries',
-    call(service, processData) {
+    get(service, processData) {
         fetch('api/' + service, { credentials: 'include' })
             .then(processStatus)
             .then(processJson)

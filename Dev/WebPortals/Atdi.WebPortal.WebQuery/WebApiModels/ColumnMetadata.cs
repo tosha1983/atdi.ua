@@ -8,16 +8,13 @@ using System.Runtime.Serialization;
 namespace Atdi.WebPortal.WebQuery.WebApiModels
 {
     /// <summary>
-    /// Represents the metadata to the web query
+    /// Represents the metadata to the column
     /// </summary>
     [DataContract]
-    public class QueryMetadata
+    public class ColumnMetadata
     {
         [DataMember]
-        public QueryToken Token { get; set; }
-
-        [DataMember]
-        public string Code { get; set; }
+        public DataType Type { get; set; }
 
         [DataMember]
         public string Name { get; set; }
@@ -29,9 +26,17 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
         public string Description { get; set; }
 
         [DataMember]
-        public ColumnMetadata[] Columns { get; set; }
+        public int Position { get; set; }
 
         [DataMember]
-        public string[] PrimaryKey { get; set; }
+        public int Width { get; set; }
+
+        [DataMember]
+        public OrderType Order { get; set; }
+        
+        [DataMember]
+        public string Format { get; set; }
+
+       
     }
 }

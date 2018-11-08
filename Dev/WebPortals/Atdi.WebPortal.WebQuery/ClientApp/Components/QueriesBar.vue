@@ -1,6 +1,6 @@
 ﻿<template>
     <ul>
-        <li v-for="query in getQueriesByGroup.list">
+        <li v-for="query in getQueriesByGroup.list" @click="changeCurrentQuery(query)" :key="query.token.id">
             <a href="#" class="waves-effect">{{query.title}}<i class="material-icons">landscape</i></a>
         </li>
     </ul>
@@ -31,8 +31,8 @@
         },
 
         methods: {
-            changeCurrentQuery(token) {
-                this.$store.dispatch('queryGroups/changeCurrentQuery', token)
+            changeCurrentQuery(query) {
+                this.$store.dispatch('queries/changeCurrentQuery', query)
             }
         }
     }

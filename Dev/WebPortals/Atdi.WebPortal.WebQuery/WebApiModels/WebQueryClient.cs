@@ -46,5 +46,18 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
             var uri = this.CreateRequestUri("/api/WebQuery/GetQueriesMetadata");
             return await this.PostAsync<QueryMetadata[], Options.GetQueriesMetadataOptions>(uri, options);
         }
+
+        public async Task<object> ExecuteQueryAsync(UserToken userToken, QueryToken token)
+        {
+            var options = new Options.ExecuteQueryOptions
+            {
+                UserToken = userToken,
+                QueryToken = token,
+                ResultStructure = DataSetStructure.StringCells
+            };
+
+            var uri = this.CreateRequestUri("/api/WebQuery/ExecuteQuery");
+            return await this.PostAsync<object, Options.ExecuteQueryOptions>(uri, options);
+        }
     }
 }

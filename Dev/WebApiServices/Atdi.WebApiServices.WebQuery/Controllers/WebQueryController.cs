@@ -128,13 +128,10 @@ namespace Atdi.WebApiServices.WebQuery.Controllers
             {
                 throw new ArgumentNullException(nameof(options.UserToken));
             }
-            if (options.QueryTokens == null)
-            {
-                throw new ArgumentNullException(nameof(options.QueryTokens));
-            }
+
             using (this.Logger.StartTrace(Contexts.WebQuery, Categories.OperationCall, TraceScopeNames.GetQueryMetadata))
             {
-                if (options.QueryTokens.Length == 0)
+                if (options.QueryTokens == null || options.QueryTokens.Length == 0)
                 {
                     return new QueryMetadata[] { };
                 }
