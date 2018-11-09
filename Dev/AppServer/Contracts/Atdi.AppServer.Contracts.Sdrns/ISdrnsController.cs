@@ -244,5 +244,41 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <returns></returns>
         [OperationContract]
         ShortMeasurementResultsExtend[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue constraint, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measResultsId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        MeasurementResults[] GetMeasResultsHeaderByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MeasResultsId"></param>
+        /// <param name="StationId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ResultsMeasurementsStation[] GetResMeasStationById(int StationId, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MeasResultsId"></param>
+        /// <param name="StationId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ResultsMeasurementsStationExtended[] GetResMeasStationHeaderByResId(int ResId, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ResId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        MeasurementResults[] GetMeasurementResultByResId(int ResId, CommonOperationArguments otherArgs);
     }
 }

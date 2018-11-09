@@ -230,8 +230,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     {
                                         own.Addres = XbsOwnerdata_.m_addres;
                                         own.Code = XbsOwnerdata_.m_code;
-                                        //own.Id = Constants.NullI;
-                                        //own.Id = XbsOwnerdata_.m_id.HasValue ? XbsOwnerdata_.m_id.Value : -1;
                                         own.OKPO = XbsOwnerdata_.m_okpo;
                                         own.OwnerName = XbsOwnerdata_.m_ownername;
                                         own.Zip = XbsOwnerdata_.m_zip;

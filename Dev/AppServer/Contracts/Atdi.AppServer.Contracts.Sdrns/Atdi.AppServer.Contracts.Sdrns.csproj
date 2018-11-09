@@ -95,6 +95,7 @@
     <Compile Include="Models\Measurements\ShortMeasurementResultsExtend.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStationExtended.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ShortResultsMeasurementsStation.cs" />
     <Compile Include="Models\Sensors\AntennaPattern.cs" />

@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Options\GetResMeasStationByIdAppOperationOptions.cs" />
     <Compile Include="Options\GetResMeasStationAppOperationOptions.cs" />
     <Compile Include="Options\GetShortMeasResStationAppOperationOptions.cs" />
     <Compile Include="Options\GetShortMeasResultsSpecialAppOperationOptions.cs" />

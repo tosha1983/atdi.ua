@@ -141,7 +141,11 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
- 
+        public sealed class GetResMeasStationByIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetResMeasStationByIdAppOperation() : base("GetResMeasStationById")
+            { }
+        }
 
         public sealed class GetShortMeasResultsByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
@@ -167,6 +171,26 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetMeasResultsHeaderByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasResultsHeaderByTaskIdAppOperation() : base("GetMeasResultsHeaderByTaskId")
+            { }
+        }
+
+        public sealed class GetResMeasStationHeaderByResIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetResMeasStationHeaderByResIdAppOperation() : base("GetResMeasStationHeaderByResId")
+            { }
+        }
+
+
+        public sealed class GetMeasurementResultByResIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasurementResultByResIdAppOperation() : base("GetMeasurementResultByResId")
+            { }
+        }
+
+       
 
         public SdrnsControllerAppService()
             : base("SdrnsController")
@@ -199,8 +223,11 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetResMeasStationAppOperation(),
                      new GetSOformMeasResultStationAppOperation(),
                      new GetSOformMeasResultStationAppOperation(),
-                     new GetShortMeasResultsByDatesAppOperation()
-
+                     new GetShortMeasResultsByDatesAppOperation(),
+                     new GetMeasResultsHeaderByTaskIdAppOperation(),
+                     new GetResMeasStationByIdAppOperation(),
+                     new GetResMeasStationHeaderByResIdAppOperation(),
+                     new GetMeasurementResultByResIdAppOperation()
                 }
                 );
         }

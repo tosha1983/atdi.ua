@@ -165,8 +165,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resmeasstationid = IDStation;
-                                                    measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
-                                                    measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
+                                                    //measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
+                                                    //measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
 
 
                                                     if (rFinded != null)
@@ -184,6 +184,53 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     int? IDResGeneral = measResGeneral.Save(dbConnect, transaction);
                                                     measResGeneral.Close();
                                                     measResGeneral.Dispose();
+
+
+
+                                                    if (IDResGeneral > 0)
+                                                    {
+                                                        if (station.GeneralResult.MaskBW != null)
+                                                        {
+                                                            if (station.GeneralResult.MaskBW.Length > 0)
+                                                            {
+                                                                foreach (MaskElements mslel in station.GeneralResult.MaskBW)
+                                                                {
+                                                                    YXbsResStMaskElm resmaskBw = new YXbsResStMaskElm();
+                                                                    resmaskBw.Format("*");
+                                                                    resmaskBw.Filter = "ID=-1";
+                                                                    resmaskBw.New();
+                                                                    resmaskBw.m_bw = mslel.BW;
+                                                                    resmaskBw.m_level = mslel.level;
+                                                                    resmaskBw.m_xbs_resstgeneralid = IDResGeneral;
+                                                                    int? IDYXbsResmaskBw = resmaskBw.Save(dbConnect, transaction);
+                                                                    resmaskBw.Close();
+                                                                    resmaskBw.Dispose();
+                                                                }
+                                                            }
+                                                        }
+
+
+                                                        if (station.GeneralResult.LevelsSpecrum != null)
+                                                        {
+                                                            if (station.GeneralResult.LevelsSpecrum.Length > 0)
+                                                            {
+                                                                foreach (float lvl in station.GeneralResult.LevelsSpecrum)
+                                                                {
+                                                                    YXbsResStLevelsSpect reslevelSpecrum = new YXbsResStLevelsSpect();
+                                                                    reslevelSpecrum.Format("*");
+                                                                    reslevelSpecrum.Filter = "ID=-1";
+                                                                    reslevelSpecrum.New();
+                                                                    reslevelSpecrum.m_levelspecrum = lvl;
+                                                                    reslevelSpecrum.m_xbs_resstgeneralid = IDResGeneral;
+                                                                    int? IDreslevelSpecrum = reslevelSpecrum.Save(dbConnect, transaction);
+                                                                    reslevelSpecrum.Close();
+                                                                    reslevelSpecrum.Dispose();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+
 
                                                     if (IDResGeneral > 0)
                                                     {

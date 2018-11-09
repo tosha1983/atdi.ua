@@ -33,10 +33,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                //MeasurementResults[] LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToArray();
                 try
                 {
-                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB());
+                    LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultFromDB()).ToArray();
                 }
                 catch (Exception ex) {
                     Logger.Error(ex.Message);
