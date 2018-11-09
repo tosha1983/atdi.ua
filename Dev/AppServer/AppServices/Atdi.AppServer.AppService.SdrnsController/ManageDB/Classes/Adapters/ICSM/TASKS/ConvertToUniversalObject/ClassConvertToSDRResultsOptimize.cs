@@ -43,6 +43,25 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         foreach (ClassSDRResults obj in objs)
                         {
                             MeasurementResults s_out = new MeasurementResults();
+                            s_out.Id = new MeasurementResultsIdentifier();
+                            s_out.AntVal = obj.meas_res.m_antval;
+                            s_out.DataRank = obj.meas_res.m_datarank;
+                            s_out.Id.MeasTaskId = new MeasTaskIdentifier();
+                            int MeasTaskId = -1; int.TryParse(obj.meas_res.m_meastaskid, out MeasTaskId);
+                            s_out.Id.MeasTaskId.Value = MeasTaskId;
+                            s_out.Id.MeasSdrResultsId = obj.meas_res.m_id.Value;
+                            s_out.N = obj.meas_res.m_n;
+                            s_out.StationMeasurements = new StationMeasurements();
+                            s_out.StationMeasurements.StationId = new SensorIdentifier();
+                            s_out.StationMeasurements.StationId.Value = obj.meas_res.m_sensorid.Value;
+                            s_out.Status = obj.meas_res.m_status;
+                            s_out.Id.SubMeasTaskId = obj.meas_res.m_submeastaskid.Value;
+                            s_out.Id.SubMeasTaskStationId = obj.meas_res.m_submeastaskstationid.Value;
+                            s_out.TimeMeas = (DateTime)obj.meas_res.m_timemeas;
+                            MeasurementType out_res_type;
+                            if (Enum.TryParse<MeasurementType>(obj.meas_res.m_typemeasurements, out out_res_type))
+                                s_out.TypeMeasurements = out_res_type;
+                          
                             /// Freq
                             List<FrequencyMeasurement> L_FM = new List<FrequencyMeasurement>();
                             if (obj.resLevels != null)

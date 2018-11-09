@@ -100,6 +100,40 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
+        StationDataForMeasurements[] ISdrnsController.GetStationDataForMeasurementsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetStationDataForMeasurementsByTaskIdAppOperation, StationDataForMeasurements[]>()
+                    .Invoke(
+                        new GetMeasTaskAppOperationOptions
+                        {
+                            TaskId = taskId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        
+
+        MeasTask ISdrnsController.GetMeasTaskHeader(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetMeasTaskHeaderAppOperation, MeasTask>()
+                    .Invoke(
+                        new GetMeasTaskAppOperationOptions
+                        {
+                            TaskId = taskId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
         MeasTask[] ISdrnsController.GetMeasTasks(DataConstraint constraint, CommonOperationArguments otherArgs)
         {
             var result =
@@ -505,6 +539,9 @@ namespace Atdi.AppServer.Services.Sdrns
 
             return result;
         }
+
+
+
 
     }
 }

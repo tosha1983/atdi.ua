@@ -41,68 +41,190 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     try
                     {
-                        ClassSDRResults ICSM_T = new ClassSDRResults();
-                        ICSM_T.resLevels = new List<YXbsResLevels>();
-                        ICSM_T.loc_sensorM = new List<YXbsResLocSensorMeas>();
-                        ICSM_T.meas_res = new YXbsResMeas();
-                        ICSM_T.XbsResGeneral = new List<YXbsResStGeneral>();
-                        ICSM_T.XbsResLevelMeas = new List<YXbsResStLevelCar>();
-                        ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
-                        ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
-                        ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
-                        ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
-
-
-                        YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
-                        XbsYXbsLevelmeasres_.Format("*");
-                        XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", ResId);
-                        XbsYXbsLevelmeasres_.Order = "[ID] ASC";
-                        for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
+                        YXbsResMeas res_val = new YXbsResMeas();
+                        res_val.Format("*");
+                        // выбирать только таски, для которых STATUS не NULL
+                        res_val.Filter = string.Format("(ID={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL)) ", ResId);
+                        res_val.Order = "[ID] ASC";
+                        for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
-                            var m_fr_ = new YXbsResLevels();
-                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasres_);
-                            ICSM_T.resLevels.Add(m_fr_);
-                            m_fr_.Close();
-                            m_fr_.Dispose();
+                            ClassSDRResults ICSM_T = new ClassSDRResults();
+                            ICSM_T.resLevels = new List<YXbsResLevels>();
+                            ICSM_T.loc_sensorM = new List<YXbsResLocSensorMeas>();
+                            ICSM_T.meas_res = new YXbsResMeas();
+                            ICSM_T.XbsResGeneral = new List<YXbsResStGeneral>();
+                            ICSM_T.XbsResLevelMeas = new List<YXbsResStLevelCar>();
+                            ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
+                            ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
+                            ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
+
+
+                            var m_frYXbsResMeas = new YXbsResMeas();
+                            m_frYXbsResMeas.CopyDataFrom(res_val);
+                            ICSM_T.meas_res = m_frYXbsResMeas;
+
+                            YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
+                            XbsYXbsLevelmeasres_.Format("*");
+                            XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", ResId);
+                            XbsYXbsLevelmeasres_.Order = "[ID] ASC";
+                            for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
+                            {
+                                var m_fr_ = new YXbsResLevels();
+                                m_fr_.CopyDataFrom(XbsYXbsLevelmeasres_);
+                                ICSM_T.resLevels.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLevelmeasres_.Close();
+                            XbsYXbsLevelmeasres_.Dispose();
+
+
+                            YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
+                            XbsYXbsLevelmeasonlres_.Format("*");
+                            XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", ResId);
+                            XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
+                            for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
+                            {
+                                var m_fr_ = new YXbsResLevmeasonline();
+                                m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
+                                ICSM_T.level_meas_onl_res.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLevelmeasonlres_.Close();
+                            XbsYXbsLevelmeasonlres_.Dispose();
+
+
+                            YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
+                            XbsYXbsLocationsensorm_.Format("*");
+                            XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", ResId);
+                            XbsYXbsLocationsensorm_.Order = "[ID] ASC";
+                            for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
+                            {
+                                var m_fr_ = new YXbsResLocSensorMeas();
+                                m_fr_.CopyDataFrom(XbsYXbsLocationsensorm_);
+                                ICSM_T.loc_sensorM.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLocationsensorm_.Close();
+                            XbsYXbsLocationsensorm_.Dispose();
+                            L_IN.Add(ICSM_T);
+
+
+                            m_frYXbsResMeas.Close();
+                            m_frYXbsResMeas.Dispose();
                         }
-                        XbsYXbsLevelmeasres_.Close();
-                        XbsYXbsLevelmeasres_.Dispose();
+                        res_val.Close();
+                        res_val.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ReadlResultFromDB... " + ex.Message);
+                    }
+                });
+                tsk.Start();
+                tsk.Join();
+                logger.Trace("End procedure ReadlResultFromDB.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error in procedure ReadlResultFromDB: " + ex.Message);
+            }
+            return L_IN;
+        }
 
 
-                        YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
-                        XbsYXbsLevelmeasonlres_.Format("*");
-                        XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", ResId);
-                        XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
-                        for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
+        public List<ClassSDRResults> ReadGetMeasurementResultsByTaskId(int MeasTaskId)
+        {
+            List<ClassSDRResults> L_IN = new List<ClassSDRResults>();
+            try
+            {
+                logger.Trace("Start procedure ReadlResultFromDB...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                    try
+                    {
+                        YXbsResMeas res_val = new YXbsResMeas();
+                        res_val.Format("*");
+                        // выбирать только таски, для которых STATUS не NULL
+                        res_val.Filter = string.Format("(MEASTASKID='{0}') AND ((STATUS<>'Z') OR (STATUS IS NULL)) ", MeasTaskId);
+                        res_val.Order = "[ID] ASC";
+                        for (res_val.OpenRs(); !res_val.IsEOF(); res_val.MoveNext())
                         {
-                            var m_fr_ = new YXbsResLevmeasonline();
-                            m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
-                            ICSM_T.level_meas_onl_res.Add(m_fr_);
-                            m_fr_.Close();
-                            m_fr_.Dispose();
+
+                            ClassSDRResults ICSM_T = new ClassSDRResults();
+                            ICSM_T.resLevels = new List<YXbsResLevels>();
+                            ICSM_T.loc_sensorM = new List<YXbsResLocSensorMeas>();
+                            ICSM_T.meas_res = new YXbsResMeas();
+                            ICSM_T.XbsResGeneral = new List<YXbsResStGeneral>();
+                            ICSM_T.XbsResLevelMeas = new List<YXbsResStLevelCar>();
+                            ICSM_T.XbsResmaskBw = new List<YXbsResStMaskElm>();
+                            ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
+                            ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
+                            ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
+
+                          
+                            var m_frYXbsResMeas = new YXbsResMeas();
+                            m_frYXbsResMeas.CopyDataFrom(res_val);
+                            ICSM_T.meas_res = m_frYXbsResMeas;
+
+                            YXbsResLevels XbsYXbsLevelmeasres_ = new YXbsResLevels();
+                            XbsYXbsLevelmeasres_.Format("*");
+                            XbsYXbsLevelmeasres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id.Value);
+                            XbsYXbsLevelmeasres_.Order = "[ID] ASC";
+                            for (XbsYXbsLevelmeasres_.OpenRs(); !XbsYXbsLevelmeasres_.IsEOF(); XbsYXbsLevelmeasres_.MoveNext())
+                            {
+
+                                var m_fr_ = new YXbsResLevels();
+                                m_fr_.CopyDataFrom(XbsYXbsLevelmeasres_);
+                                ICSM_T.resLevels.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLevelmeasres_.Close();
+                            XbsYXbsLevelmeasres_.Dispose();
+
+
+                            YXbsResLevmeasonline XbsYXbsLevelmeasonlres_ = new YXbsResLevmeasonline();
+                            XbsYXbsLevelmeasonlres_.Format("*");
+                            XbsYXbsLevelmeasonlres_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id.Value);
+                            XbsYXbsLevelmeasonlres_.Order = "[ID] ASC";
+                            for (XbsYXbsLevelmeasonlres_.OpenRs(); !XbsYXbsLevelmeasonlres_.IsEOF(); XbsYXbsLevelmeasonlres_.MoveNext())
+                            {
+                                var m_fr_ = new YXbsResLevmeasonline();
+                                m_fr_.CopyDataFrom(XbsYXbsLevelmeasonlres_);
+                                ICSM_T.level_meas_onl_res.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLevelmeasonlres_.Close();
+                            XbsYXbsLevelmeasonlres_.Dispose();
+
+
+                            YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
+                            XbsYXbsLocationsensorm_.Format("*");
+                            XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id.Value);
+                            XbsYXbsLocationsensorm_.Order = "[ID] ASC";
+                            for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
+                            {
+                                var m_fr_ = new YXbsResLocSensorMeas();
+                                m_fr_.CopyDataFrom(XbsYXbsLocationsensorm_);
+                                ICSM_T.loc_sensorM.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLocationsensorm_.Close();
+                            XbsYXbsLocationsensorm_.Dispose();
+                            L_IN.Add(ICSM_T);
+
+                            m_frYXbsResMeas.Close();
+                            m_frYXbsResMeas.Dispose();
+
+
                         }
-                        XbsYXbsLevelmeasonlres_.Close();
-                        XbsYXbsLevelmeasonlres_.Dispose();
-
-
-                        YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
-                        XbsYXbsLocationsensorm_.Format("*");
-                        XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", ResId);
-                        XbsYXbsLocationsensorm_.Order = "[ID] ASC";
-                        for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
-                        {
-                            var m_fr_ = new YXbsResLocSensorMeas();
-                            m_fr_.CopyDataFrom(XbsYXbsLocationsensorm_);
-                            ICSM_T.loc_sensorM.Add(m_fr_);
-                            m_fr_.Close();
-                            m_fr_.Dispose();
-                        }
-                        XbsYXbsLocationsensorm_.Close();
-                        XbsYXbsLocationsensorm_.Dispose();
-                        L_IN.Add(ICSM_T);
-
-
-
+                        res_val.Close();
+                        res_val.Dispose();
                     }
                     catch (Exception ex)
                     {

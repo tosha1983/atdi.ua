@@ -280,5 +280,26 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <returns></returns>
         [OperationContract]
         MeasurementResults[] GetMeasurementResultByResId(int ResId, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        MeasTask GetMeasTaskHeader(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs);
+
+
+        
     }
 }
