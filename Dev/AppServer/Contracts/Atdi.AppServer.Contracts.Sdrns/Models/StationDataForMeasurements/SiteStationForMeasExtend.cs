@@ -8,15 +8,17 @@ using System.Runtime.Serialization;
 namespace Atdi.AppServer.Contracts.Sdrns
 {
     [DataContract(Namespace = ServicesSpecification.Namespace)]
-    public class SiteStationForMeas // параметры сайта
+    public class SiteStationForMeasExtend: SiteStationForMeas
     {
         [DataMember]
-        public double? Lon; //DEC
+        public int Id;
         [DataMember]
-        public double? Lat; //DEC
+        public double? Lon; 
+        [DataMember]
+        public double? Lat; 
         [DataMember]
         public string Adress;
         [DataMember]
-        public string Region; // Район (часть области)
+        public string Region; 
     }
 }

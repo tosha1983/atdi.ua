@@ -244,6 +244,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     logger.Trace("Start procedure ConvertToStationDataForMeasurements...");
                     try
                     {
+                        List<StationDataForMeasurements> LStationData = new List<StationDataForMeasurements>();
                         List<StationDataForMeasurementsExtend> LStationDataForMeasurements = new List<StationDataForMeasurementsExtend>();
                         List<int> sql_XbsOwnerdata_in = new List<int>();
                         List<int> sql_YXbsStationSite_in = new List<int>();
@@ -363,9 +364,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             {
                                 c.Site = new SiteStationForMeas { Adress = fnd_site.Adress, Lat = fnd_site.Lat, Lon = fnd_site.Lon, Region = fnd_site.Region };
                             }
+                            LStationData.Add(c);
                         }
                     
-                        L_OUT = LStationDataForMeasurements.ToArray();
+                        L_OUT = LStationData.ToArray();
                     }
                     catch (Exception ex)
                     {

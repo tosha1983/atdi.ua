@@ -107,8 +107,8 @@
     <Compile Include="Models\StationDataForMeasurements\OwnerData.cs" />
     <Compile Include="Models\StationDataForMeasurements\PermissionForAssignment.cs" />
     <Compile Include="Models\StationDataForMeasurements\SectorStationForMeas.cs" />
-    <Compile Include="Models\StationDataForMeasurements\SiteStationForMeasExtend.cs" />
     <Compile Include="Models\StationDataForMeasurements\SiteStationForMeas.cs" />
+    <Compile Include="Models\StationDataForMeasurements\SiteStationForMeasExtend.cs" />
     <Compile Include="Models\StationDataForMeasurements\StationDataForMeasurementsExtend.cs" />
     <Compile Include="Models\StationDataForMeasurements\StationDataForMeasurements.cs" />
     <Compile Include="Models\Tasks\MeasDtParam.cs" />

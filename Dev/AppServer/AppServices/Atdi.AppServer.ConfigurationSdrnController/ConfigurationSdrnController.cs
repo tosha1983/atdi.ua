@@ -41,146 +41,146 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             try
             {
-                /*
-                GlobalInit.Initialization();
-                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
-                _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
-                BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
-                List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\Results.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
-                BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
+               /*
+               GlobalInit.Initialization();
+               Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+               InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
+               _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+               BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
+               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\Results.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
+               BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
 
-                List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> r = new List<MeasSdrResults>();
+               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> r = new List<MeasSdrResults>();
 
-                for (int i = 0; i < 10; i++)
-                {
-                    foreach (Atdi.AppServer.Contracts.Sdrns.MeasSdrResults x in dyn)
-                    {
-                        r.Add(x);
-                    }
-                }
-                if (ressd.SendDataObject(r, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02", xml_con.xml_configuration._TimeExpirationTask))
-                {
+               for (int i = 0; i < 10; i++)
+               {
+                   foreach (Atdi.AppServer.Contracts.Sdrns.MeasSdrResults x in dyn)
+                   {
+                       r.Add(x);
+                   }
+               }
+               if (ressd.SendDataObject(r, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02", xml_con.xml_configuration._TimeExpirationTask))
+               {
 
 
-                }
-                */
-             
-                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
-                _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
-                DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
-                var licenseServerFileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)+ @"\License\" +ConfigurationManager.AppSettings["LicenseServer.FileName"].ToString();
-                var licenseDeviceFileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\License\" + ConfigurationManager.AppSettings["LicenseDevice.FileName"].ToString();
+               }
+               
+               */
+               Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+               InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
+               _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+               DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
+               var licenseServerFileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)+ @"\License\" +ConfigurationManager.AppSettings["LicenseServer.FileName"].ToString();
+               var licenseDeviceFileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\License\" + ConfigurationManager.AppSettings["LicenseDevice.FileName"].ToString();
 
-                if (System.IO.File.Exists(licenseServerFileName))
-                {
-                    var productKey = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseServer.ProductKey"].ToString(), "Atdi.AppServer.AppService.SdrnsController");
-                    var ownerId = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseServer.OwnerId"], "Atdi.AppServer.AppService.SdrnsController");
-                    var verificationData = new VerificationData
-                    {
-                        OwnerId = ownerId,
-                        ProductName = "ICS Control Server",
-                        ProductKey = productKey,
-                        LicenseType = "ServerLicense",
-                        Date = CurrDate.Value
-                    };
+               if (System.IO.File.Exists(licenseServerFileName))
+               {
+                   var productKey = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseServer.ProductKey"].ToString(), "Atdi.AppServer.AppService.SdrnsController");
+                   var ownerId = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseServer.OwnerId"], "Atdi.AppServer.AppService.SdrnsController");
+                   var verificationData = new VerificationData
+                   {
+                       OwnerId = ownerId,
+                       ProductName = "ICS Control Server",
+                       ProductKey = productKey,
+                       LicenseType = "ServerLicense",
+                       Date = CurrDate.Value
+                   };
 
-                    var licenseBody = System.IO.File.ReadAllBytes(licenseServerFileName);
-                    var verResult = LicenseVerifier.Verify(verificationData, licenseBody);
-                    if (verResult != null)
-                    {
-                        if (!string.IsNullOrEmpty(verResult.Instance))
-                        {
-                            _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
-                            BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
-                            GlobalInit.Initialization();
-                            var productK = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.ProductKey"].ToString(),"Atdi.WcfServices.Sdrn.Device");
-                            var ownerI = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.OwnerId"].ToString(), "Atdi.WcfServices.Sdrn.Device");
-                            var licenseFile = licenseDeviceFileName;
-                            // зашит в код
-                            var verificationD = new VerificationData
-                            {
-                                OwnerId = ownerI,
-                                ProductName = "ICS Control Device",
-                                ProductKey = productK,
-                                LicenseType = "DeviceLicense",
-                                Date = DateTime.Now
-                            };
+                   var licenseBody = System.IO.File.ReadAllBytes(licenseServerFileName);
+                   var verResult = LicenseVerifier.Verify(verificationData, licenseBody);
+                   if (verResult != null)
+                   {
+                       if (!string.IsNullOrEmpty(verResult.Instance))
+                       {
+                           _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
+                           BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
+                           GlobalInit.Initialization();
+                           var productK = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.ProductKey"].ToString(),"Atdi.WcfServices.Sdrn.Device");
+                           var ownerI = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.OwnerId"].ToString(), "Atdi.WcfServices.Sdrn.Device");
+                           var licenseFile = licenseDeviceFileName;
+                           // зашит в код
+                           var verificationD = new VerificationData
+                           {
+                               OwnerId = ownerI,
+                               ProductName = "ICS Control Device",
+                               ProductKey = productK,
+                               LicenseType = "DeviceLicense",
+                               Date = DateTime.Now
+                           };
 
-                            if (System.IO.File.Exists(licenseFile))
-                            {
-                                var licenseB = System.IO.File.ReadAllBytes(licenseFile);
-                                var verRes = LicenseVerifier.Verify(verificationD, licenseB);
-                                if (verRes != null)
-                                {
-                                    if (!string.IsNullOrEmpty(verRes.Instance))
-                                    {
-                                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\License");
-                                        System.IO.FileInfo[] list = di.GetFiles();
-                                        for (int i = 0; i < list.Length; i++)
-                                        {
-                                            if (list[i].Extension.ToLower() == ".xml")
-                                            {
-                                                XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
-                                                if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
-                                                {
-                                                    BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
-                                                    if (sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status = "N", DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask))
-                                                    {
-                                                        if (System.IO.File.Exists(list[i].FullName))
-                                                        {
-                                                            System.IO.File.Delete(list[i].FullName);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        _logger.Error("Error sending sensor data from registration temp file to queue 'Sensors_List' ");
-                                                    }
-                                                   
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        _logger.Error("Error validation license: " + licenseFile);
-                                    }
-                                }
-                                else
-                                {
-                                    _logger.Error("Error validation license: "+ licenseFile);
-                                }
-                            }
-                            else
-                            {
-                                _logger.Error("Not found file: "+ licenseFile);
-                            }
-                                    
-                            Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
-                            Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-                            CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
-                            CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-                            getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ScanMeasTasks);
-                            Quartz = new ShedulerCheckStart(this._logger);
-                            Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
-                        }
-                        else
-                        {
-                            _logger.Error("Error validation license" + licenseServerFileName);
-                        }
-                    }
-                    else
-                    {
-                        _logger.Error("Error validation license: " + licenseServerFileName);
-                    }
-                }
-                else
-                {
-                    _logger.Error(string.Format("Not found {0} file", licenseServerFileName));
-                }
-             
+                           if (System.IO.File.Exists(licenseFile))
+                           {
+                               var licenseB = System.IO.File.ReadAllBytes(licenseFile);
+                               var verRes = LicenseVerifier.Verify(verificationD, licenseB);
+                               if (verRes != null)
+                               {
+                                   if (!string.IsNullOrEmpty(verRes.Instance))
+                                   {
+                                       System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\License");
+                                       System.IO.FileInfo[] list = di.GetFiles();
+                                       for (int i = 0; i < list.Length; i++)
+                                       {
+                                           if (list[i].Extension.ToLower() == ".xml")
+                                           {
+                                               XmlReaderStruct structXml = XMLReader.GetXmlSettings(list[i].FullName);
+                                               if ((structXml._OwnerId == ownerI) && (structXml._ProductKey == productK))
+                                               {
+                                                   BusManager<Atdi.AppServer.Contracts.Sdrns.Sensor> sens = new BusManager<Contracts.Sdrns.Sensor>();
+                                                   if (sens.SendDataObject(new Contracts.Sdrns.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new Contracts.Sdrns.SensorAntenna(), Status = "N", DateCreated = CurrDate.Value, Equipment = new Contracts.Sdrns.SensorEquip() { TechId = structXml._SensorEquipmentTechId } }, structXml._SensorQueue, xml_conf.xml_configuration._TimeExpirationTask))
+                                                   {
+                                                       if (System.IO.File.Exists(list[i].FullName))
+                                                       {
+                                                           System.IO.File.Delete(list[i].FullName);
+                                                       }
+                                                   }
+                                                   else
+                                                   {
+                                                       _logger.Error("Error sending sensor data from registration temp file to queue 'Sensors_List' ");
+                                                   }
+
+                                                   break;
+                                               }
+                                           }
+                                       }
+                                   }
+                                   else
+                                   {
+                                       _logger.Error("Error validation license: " + licenseFile);
+                                   }
+                               }
+                               else
+                               {
+                                   _logger.Error("Error validation license: "+ licenseFile);
+                               }
+                           }
+                           else
+                           {
+                               _logger.Error("Not found file: "+ licenseFile);
+                           }
+
+                           Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
+                           Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
+                           CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
+                           CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
+                           getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ScanMeasTasks);
+                           Quartz = new ShedulerCheckStart(this._logger);
+                           Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+                       }
+                       else
+                       {
+                           _logger.Error("Error validation license" + licenseServerFileName);
+                       }
+                   }
+                   else
+                   {
+                       _logger.Error("Error validation license: " + licenseServerFileName);
+                   }
+               }
+               else
+               {
+                   _logger.Error(string.Format("Not found {0} file", licenseServerFileName));
+               }
+
             }
             catch (Exception ex)
             {

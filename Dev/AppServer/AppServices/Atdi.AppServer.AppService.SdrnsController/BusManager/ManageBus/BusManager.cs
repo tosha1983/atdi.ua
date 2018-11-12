@@ -304,7 +304,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
                 if (ClassStaticBus.bus.IsConnected)
                     {
-                    if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }//, false, true, false, false, null,null,null,null,null,null, 2147000000);  }
+                    if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue, false, true, false, false, null,null,null,null,null,null, 2147000000);  }
                         EasyNetQ.Topology.IExchange exchange = EasyNetQ.Topology.Exchange.GetDefault();
                      ClassStaticBus.bus.Advanced.PublishAsync(exchange, name_queue, true, z)
                             .ContinueWith(task =>
