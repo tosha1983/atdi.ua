@@ -164,7 +164,9 @@
     <Compile Include="GetShortMeasResultsAppOperationHandler.cs" />
     <Compile Include="GetShortMeasTasksAppOperationHandler.cs" />
     <Compile Include="GetShortSensorsAppOperationHandler.cs" />
+    <Compile Include="GetStationLevelsByTaskAppOperationHandler.cs" />
     <Compile Include="GetSOformMeasResultStationAppOperationHandler.cs" />
+    <Compile Include="ManageDB\Classes\Adapters\ICSM\Analitics\CalcStationLevelsByTask.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\Analitics\ClassConvertTasks.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\ClassesDBGetTasksOptimize.cs" />
     <Compile Include="ManageDB\Classes\Adapters\ICSM\RESULT\ClassesDBGetResultOptimize.cs" />

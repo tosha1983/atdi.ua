@@ -7,7 +7,10 @@ using EasyNetQ;
 using Atdi.SDNRS.AppServer;
 using RabbitMQ.Client;
 using Atdi.Modules.Sdrn.MessageBus;
-
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using Newtonsoft.Json;
+     
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -292,11 +295,19 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     z.Properties.Expiration = Expriration;
                     z.Properties.DeliveryModePresent = true;
                     z.Properties.DeliveryMode = 2;
-                    if (ClassStaticBus.bus.IsConnected)
+
+                    MessageProperties messageProperties = new MessageProperties();
+                    messageProperties.ExpirationPresent = true;
+                    messageProperties.Expiration = Expriration;
+                    messageProperties.DeliveryModePresent = true;
+                    messageProperties.DeliveryMode = 2;
+
+                if (ClassStaticBus.bus.IsConnected)
                     {
-                        if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }
-                        ClassStaticBus.bus.Advanced.PublishAsync(EasyNetQ.Topology.Exchange.GetDefault(), name_queue, true, z)
-                                .ContinueWith(task =>
+                    if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }//, false, true, false, false, null,null,null,null,null,null, 2147000000);  }
+                        EasyNetQ.Topology.IExchange exchange = EasyNetQ.Topology.Exchange.GetDefault();
+                     ClassStaticBus.bus.Advanced.PublishAsync(exchange, name_queue, true, z)
+                            .ContinueWith(task =>
                                 {
                                     if (task.IsCompleted)
                                     {
@@ -319,6 +330,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
             }
             return is_Success;
         }
+
+
 
 
         public bool DeleteQueue(string name_queue)

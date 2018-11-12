@@ -542,6 +542,23 @@ namespace Atdi.AppServer.Services.Sdrns
 
 
 
+        StationLevelsByTask[] ISdrnsController.GetStationLevelsByTask(LevelsByTaskParams options, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetStationLevelsByTaskIdAppOperation, StationLevelsByTask[]>()
+                    .Invoke(
+                        new GetStationLevelsByTaskIdAppOperationOptions
+                        {
+                            val = options,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+
 
     }
 }

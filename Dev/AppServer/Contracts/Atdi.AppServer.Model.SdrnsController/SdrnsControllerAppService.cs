@@ -204,7 +204,12 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
-        
+        public sealed class GetStationLevelsByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetStationLevelsByTaskIdAppOperation() : base("GetStationLevelsByTask")
+            { }
+        }
+
 
 
         public SdrnsControllerAppService()
@@ -244,7 +249,8 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetResMeasStationHeaderByResIdAppOperation(),
                      new GetMeasurementResultByResIdAppOperation(),
                      new GetMeasTaskHeaderAppOperation(),
-                     new GetStationDataForMeasurementsByTaskIdAppOperation()
+                     new GetStationDataForMeasurementsByTaskIdAppOperation(),
+                     new GetStationLevelsByTaskIdAppOperation()
                 }
                 );
         }

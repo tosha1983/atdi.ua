@@ -41,14 +41,31 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             try
             {
-                //BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
-                //List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\Results.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
-                //BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
-                //if (ressd.SendDataObject(dyn, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02", xml_conf.xml_configuration._TimeExpirationTask))
-                // {
+                /*
+                GlobalInit.Initialization();
+                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
+                _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+                BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
+                List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\Results.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
+                BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
 
-                //}
+                List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> r = new List<MeasSdrResults>();
 
+                for (int i = 0; i < 10; i++)
+                {
+                    foreach (Atdi.AppServer.Contracts.Sdrns.MeasSdrResults x in dyn)
+                    {
+                        r.Add(x);
+                    }
+                }
+                if (ressd.SendDataObject(r, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02", xml_con.xml_configuration._TimeExpirationTask))
+                {
+
+
+                }
+                */
+             
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
@@ -120,20 +137,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                                     {
                                                         _logger.Error("Error sending sensor data from registration temp file to queue 'Sensors_List' ");
                                                     }
-                                                    /*
-                                                    BusManager<Atdi.DataModels.Sdrns.Device.Sensor> sens = new BusManager<Atdi.DataModels.Sdrns.Device.Sensor>();
-                                                    if (sens.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.Sensor>("RegisterSensor", new Atdi.DataModels.Sdrns.Device.Sensor { Name = verRes.Instance, Administration = "UKR", Antenna = new  DataModels.Sdrns.Device.SensorAntenna() , Status = "N", Created = CurrDate.Value, Equipment = new  DataModels.Sdrns.Device.SensorEquipment() { TechId = structXml._SensorEquipmentTechId } }, verRes.Instance, structXml._SensorEquipmentTechId, "v2.0", Guid.NewGuid().ToString()))
-                                                    {
-                                                        if (System.IO.File.Exists(list[i].FullName))
-                                                        {
-                                                            System.IO.File.Delete(list[i].FullName);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        _logger.Error("Error sending sensor data from registration temp file to queue 'Sensors_List' ");
-                                                    }
-                                                    */
+                                                   
                                                     break;
                                                 }
                                             }
@@ -176,6 +180,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 {
                     _logger.Error(string.Format("Not found {0} file", licenseServerFileName));
                 }
+             
             }
             catch (Exception ex)
             {
