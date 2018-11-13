@@ -9,7 +9,7 @@ using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.AppServices.SdrnsController
 {
-    public class GetGetStationDataForMeasurementsByTaskIdAppOperationHandler
+    public class GetStationDataForMeasurementsByTaskIdAppOperationHandler
         : AppOperationHandlerBase
         <
             SdrnsControllerAppService,
@@ -18,7 +18,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             StationDataForMeasurements[]
         >
     {
-        public GetGetStationDataForMeasurementsByTaskIdAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
+        public GetStationDataForMeasurementsByTaskIdAppOperationHandler(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
         {
         }
 

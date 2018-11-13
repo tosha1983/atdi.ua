@@ -137,13 +137,14 @@ namespace Atdi.SDNRS.AppServer.BusManager
             GlobalInit.UseСompression = ConfigurationManager.AppSettings["RabbitMQ.UseСompression"].ToString().ToLower() == "false" ? false : true;
             if (!string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
             {
-                MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}; virtualHost={3}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword, GlobalInit.RabbitVirtualHost);
+                MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}; virtualHost={3}; timeout=0; requestedHeartbeat=0", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword, GlobalInit.RabbitVirtualHost);
             }
             else
             {
-                MainRabbitMQServices = string.Format("host={0}; username={1}; password={2} ", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
+                MainRabbitMQServices = string.Format("host={0}; username={1}; password={2}", GlobalInit.RabbitHostName, GlobalInit.RabbitUserName, GlobalInit.RabbitPassword);
             }
-            
+
+
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
             Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();

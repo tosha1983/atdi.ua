@@ -27,10 +27,10 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         public override MeasurementResults Handle(GetMeasResultsByIdAppOperationOptions options, IAppOperationContext operationContext)
         {
+            /*
             MeasurementResults res = new MeasurementResults();
             ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
-            //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t=>t.Id.MeasSdrResultsId== options.MeasResultsId.MeasSdrResultsId);
             List<MeasurementResults> LST_MeasurementResults = new List<MeasurementResults>();
             Logger.Trace(this, options, operationContext);
             System.Threading.Thread th = new System.Threading.Thread(() =>
@@ -53,6 +53,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             th.Start();
             th.Join();
             return res;
+            */
+            throw new NotImplementedException("Method GetMeasResultsById not implemented.");
         }
     }
 

@@ -195,6 +195,30 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                         }
 
+
+                        int[] listTimeHours24MaxByFreqs = new int[24];
+                        for (int t = 0; t < 24; t++)
+                        {
+                            int val1 = 0;
+                            for (int i = 0; i < Frequencies_MHz.Count; i++)
+                            {
+                                if (val1 < listLevelMeasFreq[i].HitByHuors[t])
+                                {
+                                    val1 = listLevelMeasFreq[i].HitByHuors[t];
+                                }
+                            }
+                            listTimeHours24MaxByFreqs[t] = val1;
+                        }
+
+                        for (int t = 0; t < 24; t++)
+                        {
+                            if (listTimeHours24MaxByFreqs[t] > 2 * listTimeHours24[t])
+                            {
+                                listTimeHours24[t] = (int)(listTimeHours24MaxByFreqs[t] * 0.8);
+                            }
+                        }
+
+
                         for (int i = 0; i < Frequencies_MHz.Count; i++)
                         {
                             var freqOut = new SOFrequency();
@@ -204,6 +228,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             freqOut.countStation = listLevelMeasFreq[i].StantionIDs.Count + listLevelMeasFreq[i].measglobalsid.Count;
                             listLevelMeasFreq[i].hit = 0;
                             List<double> stringByHours = new List<double>();
+                            int sumHitValue = 0;
+                            int hitbyFreq = 0;
                             for (int t = 0; t < 24; t++)
                             {
                                 double val = -1;
@@ -216,15 +242,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                     listLevelMeasFreq[i].hit = listLevelMeasFreq[i].hit + listLevelMeasFreq[i].HitByHuors[t];
                                     val =  (100 * listLevelMeasFreq[i].HitByHuors[t] / listTimeHours24[t]) ;
-                                   
                                 }
                                 stringByHours.Add(val);
+                                sumHitValue += listTimeHours24[t];
+                                hitbyFreq += listLevelMeasFreq[i].HitByHuors[t];
                             }
-                            freqOut.hit = listLevelMeasFreq[i].hit;
-                            if (sumHit == 0)
+                            freqOut.hit = hitbyFreq;////listLevelMeasFreq[i].hit;
+                            if (sumHitValue == 0)
                                 freqOut.Occupation = -1;
                             else
-                                freqOut.Occupation = 100 * freqOut.hit / sumHit;
+                                freqOut.Occupation = 100 * freqOut.hit / sumHitValue;
                             if (freqOut.Occupation > 100) freqOut.Occupation = 100;
 
                             freqOut.OccupationByHuors = string.Join(";", stringByHours);

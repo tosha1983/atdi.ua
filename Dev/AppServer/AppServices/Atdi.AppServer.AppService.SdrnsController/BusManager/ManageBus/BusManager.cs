@@ -120,7 +120,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                 }
                 if (factory != null)
                 {
-                    
+
                     using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
@@ -289,25 +289,19 @@ namespace Atdi.SDNRS.AppServer.BusManager
         public bool SendDataObject(T obj, string name_queue, string Expriration)
         {
             bool is_Success = false;
-            try {
+            try
+            {
                     IMessage<T> z = new Message<T>(obj);
                     z.Properties.ExpirationPresent = true;
                     z.Properties.Expiration = Expriration;
                     z.Properties.DeliveryModePresent = true;
                     z.Properties.DeliveryMode = 2;
-
-                    MessageProperties messageProperties = new MessageProperties();
-                    messageProperties.ExpirationPresent = true;
-                    messageProperties.Expiration = Expriration;
-                    messageProperties.DeliveryModePresent = true;
-                    messageProperties.DeliveryMode = 2;
-
                 if (ClassStaticBus.bus.IsConnected)
                     {
-                    if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue, false, true, false, false, null,null,null,null,null,null, 2147000000);  }
+                    if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }
                         EasyNetQ.Topology.IExchange exchange = EasyNetQ.Topology.Exchange.GetDefault();
-                     ClassStaticBus.bus.Advanced.PublishAsync(exchange, name_queue, true, z)
-                            .ContinueWith(task =>
+                    ClassStaticBus.bus.Advanced.PublishAsync(exchange, name_queue, true, z)
+                        .ContinueWith(task =>
                                 {
                                     if (task.IsCompleted)
                                     {

@@ -29,6 +29,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <returns></returns>
         public override MeasTask[] Handle(GetMeasTasksAppOperationOptions options, IAppOperationContext operationContext)
         {
+            /*
             MeasTask[] Res = null;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
@@ -37,10 +38,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     ClassesDBGetTasks cl = new ClassesDBGetTasks(Logger);
                     ClassConvertTasks ts = new ClassConvertTasks(Logger);
                     List<MeasTask> resEnumerable = new List<MeasTask>();
-                    //List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList();
-                    //foreach (KeyValuePair<int, MeasTask> v in mtsk)
-                    //resEnumerable.Add(v.Value);
-                    //Res = resEnumerable.ToArray();
                     Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadlAllSTasksFromDB());
                     if (Res != null)
                     {
@@ -57,20 +54,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             }
                         }
                     }
-                    /*
-                    if (GlobalInit.LIST_MEAS_TASK != null) {
-                        if (GlobalInit.LIST_MEAS_TASK.Count() > 0) {
-                            List<MeasTask> tsk = GlobalInit.LIST_MEAS_TASK.FindAll(t => t.Status != "Z");
-                            if (tsk != null)
-                                Res = tsk.ToArray();
-                            else
-                                Res = null;
-                            if (tsk != null) {
-                                if (tsk.Count == 0)   Res = null;
-                            }
-                        }
-                    }
-                    */
                     Logger.Trace(this, options, operationContext);
                 }
                 catch (Exception ex)
@@ -81,6 +64,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             thread.Start();
             thread.Join();
             return Res;
+            */
+            throw new NotImplementedException("Method GetMeasTasks not implemented.");
         }
     }
 }

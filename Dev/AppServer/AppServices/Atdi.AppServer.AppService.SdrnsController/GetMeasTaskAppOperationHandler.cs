@@ -30,6 +30,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <returns></returns>
         public override MeasTask Handle(GetMeasTaskAppOperationOptions options, IAppOperationContext operationContext)
         {
+            /*
             MeasTask val = null;
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
@@ -40,10 +41,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 List<MeasTask> getValues = new List<MeasTask>();
                 List<MeasTask> Res = new List<MeasTask>();
                 Res = ts.ConvertTo_MEAS_TASKObjects(cl.ReadTask(options.TaskId.Value)).ToList();
-                // List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList().FindAll(t => t.Key == options.TaskId.Value);
-                //foreach (KeyValuePair<int, MeasTask> v in mtsk)
-                //Res.Add(v.Value);
-
                 if (Res != null)
                     {
                         if (Res.Count() > 0)
@@ -59,18 +56,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                             }
                         }
                     }
-                    /*
-                    MeasTask Res = null;
-                    if (GlobalInit.LIST_MEAS_TASK != null) {
-                        if (GlobalInit.LIST_MEAS_TASK.Count() > 0) {
-                            MeasTask tsk = GlobalInit.LIST_MEAS_TASK.Find(t => t.Status != "Z" && t.Id.Value== options.TaskId.Value);
-                            if (tsk != null)
-                                Res = tsk;
-                            else
-                                Res = null;
-                        }
-                    }
-                    */
                     Logger.Trace(this, options, operationContext);
                 }
                 catch (Exception ex) {
@@ -80,6 +65,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             thread.Start();
             thread.Join();
             return val;
+            */
+            throw new NotImplementedException("Method GetMeasTask not implemented.");
         }
     }
 }

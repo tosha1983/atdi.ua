@@ -27,6 +27,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <returns></returns>
         public override MeasurementResults[] Handle(GetMeasResultsAppOperationOptions options, IAppOperationContext operationContext)
         {
+            /*
             Logger.Trace(this, options, operationContext);
             MeasurementResults[] LST_MeasurementResults = null;
             ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
@@ -40,10 +41,12 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 catch (Exception ex) {
                     Logger.Error(ex.Message);
                 }
-        });
+            });
             th.Start();
             th.Join();
             return LST_MeasurementResults;
+            */
+            throw new NotImplementedException("Method GetMeasResults not implemented.");
         }
     }
 }

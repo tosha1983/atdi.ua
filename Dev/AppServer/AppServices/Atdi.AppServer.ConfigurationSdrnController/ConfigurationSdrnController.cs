@@ -41,31 +41,21 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             try
             {
-               /*
+              /*
                GlobalInit.Initialization();
                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
-               _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
                BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
-               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\Results.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
+               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\_rabbit_queue_message_2018-Nov-12_1023852164_clear.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
                BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
-
-               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> r = new List<MeasSdrResults>();
-
-               for (int i = 0; i < 10; i++)
-               {
-                   foreach (Atdi.AppServer.Contracts.Sdrns.MeasSdrResults x in dyn)
-                   {
-                       r.Add(x);
-                   }
-               }
-               if (ressd.SendDataObject(r, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02", xml_con.xml_configuration._TimeExpirationTask))
+               if (ressd.SendDataObject(dyn, "TESTMMSRSR-021", xml_con.xml_configuration._TimeExpirationTask))
                {
 
 
                }
                
                */
+               
                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
@@ -180,7 +170,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                {
                    _logger.Error(string.Format("Not found {0} file", licenseServerFileName));
                }
-
+           
             }
             catch (Exception ex)
             {
