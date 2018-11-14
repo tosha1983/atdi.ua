@@ -166,7 +166,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         if (L_S.Count > 0)
                         {
                             foreach (Sensor message in L_S.ToArray())
-                                busManager.SendDataObject(message, GlobalInit.Template_Event_CheckActivitySensor_Req + message.Name + message.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTemp.ToString());
+                            {
+                                //busManager.SendDataObject(message, GlobalInit.Template_Event_CheckActivitySensor_Req + message.Name + message.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTemp.ToString());
+                                busManager.SendDataObject(message, GlobalInit.Template_Event_CheckActivitySensor_Req + message.Name + message.Equipment.TechId);
+                            }
                         }
 
 
@@ -185,7 +188,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                 uint MessCount = busManager.GetMessageCount(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                 for (int i = 0; i < MessCount; i++)
                                 {
-                                    var message_x = busManager.GetDataObject(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
+                                    var message_x = busManager.GetDataObject<Sensor>(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                     if (message_x != null)
                                     {
                                         if ((message_x as Sensor).Name == se.se.Name && (message_x as Sensor).Equipment.TechId == se.se.Equipment.TechId)
@@ -221,11 +224,12 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                 {
                                     if (ClassStaticBus.bus.Advanced.IsConnected)
                                     {
-                                        busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
+                                        //busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
+                                        busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
                                         uint MessCount = busManager.GetMessageCount(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                         for (int i = 0; i < MessCount; i++)
                                         {
-                                            var message_x = busManager.GetDataObject(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
+                                            var message_x = busManager.GetDataObject<Sensor>(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                             if (message_x != null)
                                             {
                                                 if ((message_x as Sensor).Name == se.se.Name && (message_x as Sensor).Equipment.TechId == se.se.Equipment.TechId)
@@ -259,11 +263,12 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                     bool isCheck = false;
                                     if (ClassStaticBus.bus.Advanced.IsConnected)
                                     {
-                                        busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
+                                        //busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
+                                        busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
                                         uint MessCount = busManager.GetMessageCount(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                         for (int i = 0; i < MessCount; i++)
                                         {
-                                            var message_x = busManager.GetDataObject(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
+                                            var message_x = busManager.GetDataObject<Sensor>(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                             if (message_x != null)
                                             {
                                                 if ((message_x as Sensor).Name == se.se.Name && (message_x as Sensor).Equipment.TechId == se.se.Equipment.TechId)

@@ -223,7 +223,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             var freqOut = new SOFrequency();
                             freqOut.Frequency_MHz = listLevelMeasFreq[i].Frequency_MHz;
-                            freqOut.StantionIDs = string.Join(";", listLevelMeasFreq[i].StantionIDs);
+                            freqOut.StantionIDs = string.Join("/", listLevelMeasFreq[i].StantionIDs);
                             if (freqOut.StantionIDs.Length > 300) freqOut.StantionIDs = freqOut.StantionIDs.Substring(0, 300);
                             freqOut.countStation = listLevelMeasFreq[i].StantionIDs.Count + listLevelMeasFreq[i].measglobalsid.Count;
                             listLevelMeasFreq[i].hit = 0;

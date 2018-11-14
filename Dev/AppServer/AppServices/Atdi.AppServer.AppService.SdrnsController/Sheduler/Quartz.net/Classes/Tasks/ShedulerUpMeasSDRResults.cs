@@ -74,7 +74,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                 uint MessCount = BS.GetMessageCount(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
                                 for (int j = 0; j < MessCount; j++)
                                 {
-                                    var rs = BS.GetDataObject(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
+                                    var rs = BS.GetDataObject<List<MeasSdrResults>>(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
                                     if (rs != null)
                                     {
                                         List<MeasSdrResults> MEAS_SDR_RESULTS = rs as List<MeasSdrResults>;

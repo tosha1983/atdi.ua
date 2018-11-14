@@ -61,7 +61,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             List<Sensor> distinctSensors = new List<Sensor>();
                             for (int i = 0; i < cnt; i++)
                             {
-                                var message = busManager.GetDataObject(GlobalInit.Template_SENSORS_List_);
+                                var message = busManager.GetDataObject<Sensor>(GlobalInit.Template_SENSORS_List_);
                                 if (message != null)
                                 {
                                     Sensor fnd_s = distinctSensors.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
@@ -104,30 +104,18 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                         {
                                             DB.CreateNewObjectSensor((message as Sensor));
                                             //Отправка на SDR уведомления о приеме сообщения
-                                            busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                                            L_S = DB.LoadObjectSensor();
-                                            //if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
-                                            //{
-                                                //Sensor fnd = SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
-                                                //if (fnd != null)
-                                                    //GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                                //else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                            //}
+                                         //   busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
+                                            busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId);
+                                        L_S = DB.LoadObjectSensor();
                                         }
                                     }
                                     else
                                     {
                                         //Отправка на SDR уведомления о приеме сообщения
                                         DB.SaveLocationCoordSensor((message as Sensor));
-                                        busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
-                                        List<Sensor> L_S = DB.LoadObjectSensor();
-                                        //if (L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId) != null)
-                                        //{
-                                            //Sensor fnd = GlobalInit.SensorListSDRNS.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId);
-                                            //if (fnd != null)
-                                                //GlobalInit.SensorListSDRNS.ReplaceAll<Sensor>(fnd, L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                            //else GlobalInit.SensorListSDRNS.Add(L_S.Find(t => t.Name == (message as Sensor).Name && t.Equipment.TechId == (message as Sensor).Equipment.TechId));
-                                        //}
+                                    //busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
+                                    busManager.SendDataObject((message as Sensor), GlobalInit.Template_Event_Confirm_SENSORS_Send_ + (message as Sensor).Name + (message as Sensor).Equipment.TechId);
+                                    List<Sensor> L_S = DB.LoadObjectSensor();
                                     }
                                     DB.Dispose();
                                     GC.Collect();

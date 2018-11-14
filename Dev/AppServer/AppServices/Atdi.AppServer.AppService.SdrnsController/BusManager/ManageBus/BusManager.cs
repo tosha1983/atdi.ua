@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EasyNetQ;
 using Atdi.SDNRS.AppServer;
 using RabbitMQ.Client;
 using Atdi.Modules.Sdrn.MessageBus;
@@ -29,18 +28,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
             bool isSuccessRegister = false;
             try
             {
-                ConnectionFactory factory = null;
-                if (string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
+                if (ClassStaticBus.factory != null)
                 {
-                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
-                }
-                else
-                {
-                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost };
-                }
-                if (factory!=null)
-                {
-                    using (var connection = factory.CreateConnection($"SDRN device (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN device (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
                         var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
@@ -61,6 +51,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             arguments: null);
 
                         channel.QueueBind(queueName, exchange, routingKey);
+                        channel.Close();
                         isSuccessRegister = true;
                     }
                 }
@@ -109,19 +100,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
             bool isSendSuccess = false;
             try
             {
-                ConnectionFactory factory = null;
-                if (string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
-                {
-                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
-                }
-                else
-                {
-                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost };
-                }
-                if (factory != null)
+                if (ClassStaticBus.factory != null)
                 {
 
-                    using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
                         var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
@@ -180,6 +162,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         props.Headers = message.Headers;
 
                         channel.BasicPublish(exchange, routingKey, props, message.Body);
+                        channel.Close();
                         isSendSuccess = true;
                     }
                 }
@@ -197,19 +180,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
             bool isSendSuccess = false;
             try
             {
-                ConnectionFactory factory = null;
-                if (string.IsNullOrEmpty(GlobalInit.RabbitVirtualHost))
+                if (ClassStaticBus.factory != null)
                 {
-                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword };
-                }
-                else
-                {
-                    factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost };
-                }
-                if (factory != null)
-                {
-                 
-                    using (var connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     using (var channel = connection.CreateModel())
                     {
                         var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
@@ -245,6 +218,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                              routingKey: routingKey,
                                              basicProperties: props,
                                              body: data);
+                        channel.Close();
                         isSendSuccess = true;
 
                     }
@@ -261,88 +235,110 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
         public uint GetMessageCount(string name_queue)
         {
+            uint MessageCount = 0;
             try {
-                EasyNetQ.Topology.IQueue q = new EasyNetQ.Topology.Queue(name_queue, false);
-                return ClassStaticBus.bus.Advanced.MessageCount(q);
+
+                if (ClassStaticBus.factory != null)
+                {
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    {
+                        using (var channel = connection.CreateModel())
+                        {
+                            MessageCount = channel.MessageCount(name_queue);
+                            channel.Close();
+                        }
+
+                        connection.Close();
+                    }
+                }
+                return MessageCount;
             }
             catch (Exception)
             { return 0; }
         }
 
         
-        public object GetDataObject(string name_queue)
+        public object GetDataObject<T>(string name_queue)
         {
+            T obj = default(T);
             try {
-                EasyNetQ.Topology.IQueue q = new EasyNetQ.Topology.Queue(name_queue, false);
-                var getResult = ClassStaticBus.bus.Advanced.Get<T>(q);
-                if (getResult.MessageAvailable) 
-                    return getResult.Message.Body;
-                else return null;
+
+                if (ClassStaticBus.factory != null)
+                {
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    {
+                        using (var channel = connection.CreateModel())
+                        {
+                           var Result = channel.BasicGet(name_queue, true);
+                            obj = JsonConvert.DeserializeObject<T>(UTF8Encoding.UTF8.GetString(Result.Body));
+                            channel.Close();
+                        }
+
+                        connection.Close();
+                    }
+                }
+                return obj;
             }
             catch (Exception)
             { return null; }
         }
        
-      
-
-        // метод для отправки основного объекта в шину
-        public bool SendDataObject(T obj, string name_queue, string Expriration)
+        public bool SendDataToQueue(T obj, string name_queue)
         {
             bool is_Success = false;
             try
             {
-                    IMessage<T> z = new Message<T>(obj);
-                    z.Properties.ExpirationPresent = true;
-                    z.Properties.Expiration = Expriration;
-                    z.Properties.DeliveryModePresent = true;
-                    z.Properties.DeliveryMode = 2;
-                if (ClassStaticBus.bus.IsConnected)
+                if (ClassStaticBus.factory != null)
+                {
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
                     {
-                    if (!ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Add(name_queue); ClassStaticBus.bus.Advanced.QueueDeclare(name_queue); }
-                        EasyNetQ.Topology.IExchange exchange = EasyNetQ.Topology.Exchange.GetDefault();
-                    ClassStaticBus.bus.Advanced.PublishAsync(exchange, name_queue, true, z)
-                        .ContinueWith(task =>
-                                {
-                                    if (task.IsCompleted)
-                                    {
-                                        is_Success = true;
-                                    }
-                                    if (task.IsFaulted)
-                                    {
-                                        is_Success = false;
-                                    }
-                                }).Wait();
+                        using (var channel = connection.CreateModel())
+                        {
+                            channel.QueueDeclare(
+                                 queue: name_queue,
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                            var props = channel.CreateBasicProperties();
+                            props.Persistent = true;
+                            channel.BasicPublish("", name_queue, props, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj)));
+                            is_Success = true;
+                            channel.Close();
+                        }
+                        connection.Close();
                     }
-                    else
-                    {
-                        ClassStaticBus.bus.Dispose();
-                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                    }
+                }
             }
-            catch (Exception ex) { is_Success = false;
-                //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[SendDataObject]:" + ex.Message); 
+            catch (Exception ex)
+            {
+                is_Success = false;
             }
+
             return is_Success;
         }
 
-
-
+        // метод для отправки основного объекта в шину
+        public bool SendDataObject(T obj, string name_queue)
+        {
+            return SendDataToQueue(obj, name_queue);
+        }
 
         public bool DeleteQueue(string name_queue)
         {
             bool is_Success = false;
             try
             {
-                    EasyNetQ.Topology.Queue Q = new EasyNetQ.Topology.Queue(name_queue, false);
-                    if (ClassStaticBus.bus.IsConnected)
+                using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                {
+                    using (var channel = connection.CreateModel())
                     {
-                        if (ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Remove(name_queue); ClassStaticBus.bus.Advanced.QueueDelete(Q); is_Success = true; }
+                        if (ClassStaticBus.List_Queue.Contains(name_queue)) { ClassStaticBus.List_Queue.Remove(name_queue); channel.QueueDelete(name_queue); is_Success = true; }
+                        channel.Close();
                     }
-                    else
-                    {
-                        ClassStaticBus.bus.Dispose();
-                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                    }
+                    connection.Close();
+                }
             }
             catch (Exception ex) { is_Success = false;
                 //CoreICSM.Logs.CLogs.WriteError(ELogsWhat.Unknown, "[DeleteQueue]:" + ex.Message); 

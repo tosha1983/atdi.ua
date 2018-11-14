@@ -80,7 +80,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                                 uint cnt = busManager.GetMessageCount(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
                                 for (int i = 0; i < cnt; i++)
                                 {
-                                    var message = busManager.GetDataObject(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
+                                    var message = busManager.GetDataObject<List<MeasSdrTask>>(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
                                     if (message != null)
                                     {
                                         List<MeasSdrTask> fnd_s = message as List<MeasSdrTask>;
