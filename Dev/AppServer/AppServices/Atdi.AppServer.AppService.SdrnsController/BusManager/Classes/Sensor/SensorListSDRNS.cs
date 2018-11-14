@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EasyNetQ;
 using XMLLibrary;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.AppServer;
+using RabbitMQ.Client;
 
 namespace Atdi.SDNRS.AppServer.BusManager
 {
@@ -183,7 +183,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         }
                         foreach (Mdx se in GlobalInit.Lst_timers.ToArray())
                         {
-                            if (ClassStaticBus.bus.Advanced.IsConnected)
+                            if (ClassStaticBus.factory != null)
                             {
                                 uint MessCount = busManager.GetMessageCount(GlobalInit.Template_Event_CheckActivitySensor_Resp + se.se.Name + se.se.Equipment.TechId);
                                 for (int i = 0; i < MessCount; i++)
@@ -211,10 +211,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             }
                             else
                             {
-                                ClassStaticBus.bus.Dispose();
-                                GC.SuppressFinalize(ClassStaticBus.bus);
-                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                                ClassStaticBus.factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost, SocketReadTimeout = 2147000000, SocketWriteTimeout = 2147000000 };
                             }
 
                             Sensor fc = L_S.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
@@ -222,7 +219,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                             {
                                 if ((se.Cnt_timer >= BaseXMLConfiguration.xml_conf._CheckActivitySensor) && (se.Cnt_all_time < BaseXMLConfiguration.xml_conf._MaxTimeNotActivateStatusSensor))
                                 {
-                                    if (ClassStaticBus.bus.Advanced.IsConnected)
+                                    if (ClassStaticBus.factory != null)
                                     {
                                         //busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
                                         busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
@@ -248,10 +245,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                     }
                                     else
                                     {
-                                        ClassStaticBus.bus.Dispose();
-                                        GC.SuppressFinalize(ClassStaticBus.bus);
-                                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                                        ClassStaticBus.factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost, SocketReadTimeout = 2147000000, SocketWriteTimeout = 2147000000 };
                                     }
                                     fc.Status = AllStatusSensor.F.ToString();
                                     se.Cnt_timer = 0;
@@ -261,7 +255,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                 else if ((se.Cnt_all_time >= BaseXMLConfiguration.xml_conf._MaxTimeNotActivateStatusSensor))
                                 {
                                     bool isCheck = false;
-                                    if (ClassStaticBus.bus.Advanced.IsConnected)
+                                    if (ClassStaticBus.factory != null)
                                     {
                                         //busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString());
                                         busManager.SendDataObject(se.se, GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
@@ -282,10 +276,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                     }
                                     else
                                     {
-                                        ClassStaticBus.bus.Dispose();
-                                        GC.SuppressFinalize(ClassStaticBus.bus);
-                                        ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
-                                        //CoreICSM.Logs.CLogs.WriteInfo(CoreICSM.Logs.ELogsWhat.Unknown, "-> Bus dispose... ");
+                                        ClassStaticBus.factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost, SocketReadTimeout = 2147000000, SocketWriteTimeout = 2147000000 };
                                     }
                                     if (!isCheck) busManager.DeleteQueue(GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
                                     if (!isCheck) se.Cnt_sensor_Old++;

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Atdi.SDNRS.AppServer;
 using RabbitMQ.Client;
 using Atdi.Modules.Sdrn.MessageBus;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using Newtonsoft.Json;
      
 
@@ -31,28 +26,31 @@ namespace Atdi.SDNRS.AppServer.BusManager
                 if (ClassStaticBus.factory != null)
                 {
                     using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN device (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
-                    using (var channel = connection.CreateModel())
                     {
-                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
-                        var queueName = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}].[{apiVer}]";
-                        var routingKey = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}]";
+                        using (var channel = connection.CreateModel())
+                        {
+                            var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                            var queueName = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}].[{apiVer}]";
+                            var routingKey = $"{GlobalInit.StartNameQueueDevice}.[{sensorName}].[{techId}]";
 
-                    channel.ExchangeDeclare(
-                                exchange: exchange,
-                                type: "direct",
-                                durable: true
-                            );
+                            channel.ExchangeDeclare(
+                                        exchange: exchange,
+                                        type: "direct",
+                                        durable: true
+                                    );
 
-                        channel.QueueDeclare(
-                            queue: queueName,
-                            durable: true,
-                            exclusive: false,
-                            autoDelete: false,
-                            arguments: null);
+                            channel.QueueDeclare(
+                                queue: queueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
 
-                        channel.QueueBind(queueName, exchange, routingKey);
-                        channel.Close();
-                        isSuccessRegister = true;
+                            channel.QueueBind(queueName, exchange, routingKey);
+                            channel.Close();
+                            isSuccessRegister = true;
+                        }
+                        connection.Close();
                     }
                 }
             }
@@ -104,66 +102,69 @@ namespace Atdi.SDNRS.AppServer.BusManager
                 {
 
                     using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
-                    using (var channel = connection.CreateModel())
                     {
-                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
-                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
-                        var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
-
-                        channel.ExchangeDeclare(
-                                exchange: exchange,
-                                type: "direct",
-                                durable: true
-                            );
-
-                        channel.QueueDeclare(
-                            queue: queueName,
-                            durable: true,
-                            exclusive: false,
-                            autoDelete: false,
-                            arguments: null);
-
-                        channel.QueueBind(queueName, exchange, routingKey);
-
-                        MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
-                        messageConvertSettings.UseEncryption = GlobalInit.UseEncryption;
-                        messageConvertSettings.UseСompression = GlobalInit.UseСompression;
-                        var typeResolver = MessageObjectTypeResolver.CreateForApi20();
-                        var messageConvertor = new MessageConverter(messageConvertSettings, typeResolver);
-                        var message = messageConvertor.Pack<Tobj>(messageType, messageObject);
-                        message.CorrelationId = correlationToken;
-                        message.Headers = new Dictionary<string, object>
+                        using (var channel = connection.CreateModel())
                         {
-                            ["SdrnServer"] = GlobalInit.NameServer,
-                            ["SensorName"] = sensorName,
-                            ["SensorTechId"] = techId,
-                            ["Created"] = DateTime.Now.ToString("o")
-                        };
+                            var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                            var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
+                            var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
+
+                            channel.ExchangeDeclare(
+                                    exchange: exchange,
+                                    type: "direct",
+                                    durable: true
+                                );
+
+                            channel.QueueDeclare(
+                                queue: queueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
+
+                            channel.QueueBind(queueName, exchange, routingKey);
+
+                            MessageConvertSettings messageConvertSettings = new MessageConvertSettings();
+                            messageConvertSettings.UseEncryption = GlobalInit.UseEncryption;
+                            messageConvertSettings.UseСompression = GlobalInit.UseСompression;
+                            var typeResolver = MessageObjectTypeResolver.CreateForApi20();
+                            var messageConvertor = new MessageConverter(messageConvertSettings, typeResolver);
+                            var message = messageConvertor.Pack<Tobj>(messageType, messageObject);
+                            message.CorrelationId = correlationToken;
+                            message.Headers = new Dictionary<string, object>
+                            {
+                                ["SdrnServer"] = GlobalInit.NameServer,
+                                ["SensorName"] = sensorName,
+                                ["SensorTechId"] = techId,
+                                ["Created"] = DateTime.Now.ToString("o")
+                            };
 
 
-                        var props = channel.CreateBasicProperties();
-                        props.Persistent = true;
-                        props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
-                        props.MessageId = message.Id;
-                        props.Type = message.Type;
-                        if (!string.IsNullOrEmpty(message.ContentType))
-                        {
-                            props.ContentType = message.ContentType;
+                            var props = channel.CreateBasicProperties();
+                            props.Persistent = true;
+                            props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
+                            props.MessageId = message.Id;
+                            props.Type = message.Type;
+                            if (!string.IsNullOrEmpty(message.ContentType))
+                            {
+                                props.ContentType = message.ContentType;
+                            }
+                            if (!string.IsNullOrEmpty(message.ContentEncoding))
+                            {
+                                props.ContentEncoding = message.ContentEncoding;
+                            }
+                            if (!string.IsNullOrEmpty(message.CorrelationId))
+                            {
+                                props.CorrelationId = message.CorrelationId;
+                            }
+                            props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
+                            props.Headers = message.Headers;
+
+                            channel.BasicPublish(exchange, routingKey, props, message.Body);
+                            channel.Close();
+                            isSendSuccess = true;
                         }
-                        if (!string.IsNullOrEmpty(message.ContentEncoding))
-                        {
-                            props.ContentEncoding = message.ContentEncoding;
-                        }
-                        if (!string.IsNullOrEmpty(message.CorrelationId))
-                        {
-                            props.CorrelationId = message.CorrelationId;
-                        }
-                        props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
-                        props.Headers = message.Headers;
-
-                        channel.BasicPublish(exchange, routingKey, props, message.Body);
-                        channel.Close();
-                        isSendSuccess = true;
+                        connection.Close();
                     }
                 }
             }
@@ -183,44 +184,47 @@ namespace Atdi.SDNRS.AppServer.BusManager
                 if (ClassStaticBus.factory != null)
                 {
                     using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
-                    using (var channel = connection.CreateModel())
                     {
-                        var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
-                        var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
-                        var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
+                        using (var channel = connection.CreateModel())
+                        {
+                            var exchange = GlobalInit.ExchangePointFromServer + string.Format(".[{0}]", apiVer);
+                            var queueName = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}].[{apiVer}]";
+                            var routingKey = GlobalInit.StartNameQueueDevice + $".[{sensorName}].[{techId}]";
 
-                        channel.ExchangeDeclare(
-                                exchange: exchange,
-                                type: "direct",
-                                durable: true
-                            );
+                            channel.ExchangeDeclare(
+                                    exchange: exchange,
+                                    type: "direct",
+                                    durable: true
+                                );
 
-                        channel.QueueDeclare(
-                            queue: queueName,
-                            durable: true,
-                            exclusive: false,
-                            autoDelete: false,
-                            arguments: null);
+                            channel.QueueDeclare(
+                                queue: queueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
 
-                        var props = channel.CreateBasicProperties();
-                        props.Persistent = true;
-                        var messageId = Guid.NewGuid().ToString();
+                            var props = channel.CreateBasicProperties();
+                            props.Persistent = true;
+                            var messageId = Guid.NewGuid().ToString();
 
-                        props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
-                        props.MessageId = messageId;
-                        props.Type = typeMessage;;
-                        props.Headers = new Dictionary<string, object>();
-                        props.Headers["SdrnServer"] = GlobalInit.NameServer;
-                        props.Headers["SensorName"] = sensorName;
-                        props.Headers["SensorTechId"] = techId;
-                        props.DeliveryMode = 2;
-                        channel.BasicPublish(exchange: exchange,
-                                             routingKey: routingKey,
-                                             basicProperties: props,
-                                             body: data);
-                        channel.Close();
-                        isSendSuccess = true;
+                            props.AppId = "Atdi.SDNRS.AppServer.BusManager.dll";
+                            props.MessageId = messageId;
+                            props.Type = typeMessage; ;
+                            props.Headers = new Dictionary<string, object>();
+                            props.Headers["SdrnServer"] = GlobalInit.NameServer;
+                            props.Headers["SensorName"] = sensorName;
+                            props.Headers["SensorTechId"] = techId;
+                            props.DeliveryMode = 2;
+                            channel.BasicPublish(exchange: exchange,
+                                                 routingKey: routingKey,
+                                                 basicProperties: props,
+                                                 body: data);
+                            channel.Close();
+                            isSendSuccess = true;
 
+                        }
+                        connection.Close();
                     }
                 }
             }

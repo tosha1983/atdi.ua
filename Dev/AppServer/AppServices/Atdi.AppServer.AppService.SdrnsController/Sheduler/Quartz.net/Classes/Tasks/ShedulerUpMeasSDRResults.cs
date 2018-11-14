@@ -5,9 +5,9 @@ using Quartz;
 using Quartz.Impl;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
-using EasyNetQ;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.AppServer;
+using RabbitMQ.Client;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
@@ -69,7 +69,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                         List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
                         foreach (Sensor s in SensorListSDRNS.ToArray())
                         {
-                            if (ClassStaticBus.bus.Advanced.IsConnected)
+                            if (ClassStaticBus.factory != null)
                             {
                                 uint MessCount = BS.GetMessageCount(GlobalInit.Template_MEAS_SDR_RESULTS_Main_List_APPServer + s.Name + s.Equipment.TechId);
                                 for (int j = 0; j < MessCount; j++)
@@ -135,9 +135,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                             }
                             else
                             {
-                                ClassStaticBus.bus.Dispose();
-                                GC.SuppressFinalize(ClassStaticBus.bus);
-                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
+                                ClassStaticBus.factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost, SocketReadTimeout = 2147000000, SocketWriteTimeout = 2147000000 };
                             }
 
                         }

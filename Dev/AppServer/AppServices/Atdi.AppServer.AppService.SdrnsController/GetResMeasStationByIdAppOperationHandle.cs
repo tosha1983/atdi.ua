@@ -14,7 +14,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             SdrnsControllerAppService,
             SdrnsControllerAppService.GetResMeasStationByIdAppOperation,
             GetResMeasStationByIdAppOperationOptions,
-            ResultsMeasurementsStation[]
+            ResultsMeasurementsStation
         >
     {
 
@@ -24,9 +24,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         }
 
 
-        public override ResultsMeasurementsStation[] Handle(GetResMeasStationByIdAppOperationOptions options, IAppOperationContext operationContext)
+        public override ResultsMeasurementsStation Handle(GetResMeasStationByIdAppOperationOptions options, IAppOperationContext operationContext)
         {
-            ResultsMeasurementsStation[] resultsMeasurementsStation = null;
+            ResultsMeasurementsStation resultsMeasurementsStation = null;
             ClassesDBGetResultOptimize resDb = new ClassesDBGetResultOptimize(Logger);
             ClassConvertToSDRResultsOptimize conv = new ClassConvertToSDRResultsOptimize(Logger);
             Logger.Trace(this, options, operationContext);
@@ -36,7 +36,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 {
                     if (options.StationId != null)
                     {
-                        resultsMeasurementsStation = conv.ConvertTo_ResultsMeasurementsStation(resDb.ReadResultResMeasStation(options.StationId.Value));
+                        resultsMeasurementsStation = conv.ConvertTo_ResultsMeasurementsOneStation(resDb.ReadResultResMeasStation(options.StationId.Value));
                     }
                 }
                 catch (Exception ex)
@@ -46,7 +46,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             });
             th.Start();
             th.Join();
-            return resultsMeasurementsStation.ToArray();
+            return resultsMeasurementsStation;
         }
     }
 

@@ -261,7 +261,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <param name="StationId"></param>
         /// <returns></returns>
         [OperationContract]
-        ResultsMeasurementsStation[] GetResMeasStationById(int StationId, CommonOperationArguments otherArgs);
+        ResultsMeasurementsStation GetResMeasStationById(int StationId, CommonOperationArguments otherArgs);
 
         /// <summary>
         /// 

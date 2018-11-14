@@ -444,10 +444,10 @@ namespace Atdi.AppServer.Services.Sdrns
         }
 
 
-        ResultsMeasurementsStation[] ISdrnsController.GetResMeasStationById(int StationId, CommonOperationArguments otherArgs)
+        ResultsMeasurementsStation ISdrnsController.GetResMeasStationById(int StationId, CommonOperationArguments otherArgs)
         {
             var result =
-                Operation<SdrnsControllerAppService.GetResMeasStationByIdAppOperation, ResultsMeasurementsStation[]>()
+                Operation<SdrnsControllerAppService.GetResMeasStationByIdAppOperation, ResultsMeasurementsStation>()
                     .Invoke(
                         new GetResMeasStationByIdAppOperationOptions
                         {
