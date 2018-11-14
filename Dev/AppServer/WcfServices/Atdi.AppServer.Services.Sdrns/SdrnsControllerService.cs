@@ -182,6 +182,25 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
+        ShortMeasurementResults[] ISdrnsController.GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetShortMeasResultsByTypeAndTaskIdAppOperation , ShortMeasurementResults[]>()
+                    .Invoke(
+                        new GetShortMeasResultsByTypeAndTaskIdAppOperationOptions
+                        {
+                            measurementType = measurementType,
+                            TaskId = taskId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        
+
 
         ShortMeasurementResults[] ISdrnsController.GetShortMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs)
         {

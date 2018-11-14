@@ -308,5 +308,14 @@ namespace Atdi.AppServer.Contracts.Sdrns
         [OperationContract]
         StationLevelsByTask[] GetStationLevelsByTask(LevelsByTaskParams levelParams, CommonOperationArguments otherArgs);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measurementType"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs);
+
     }
 }

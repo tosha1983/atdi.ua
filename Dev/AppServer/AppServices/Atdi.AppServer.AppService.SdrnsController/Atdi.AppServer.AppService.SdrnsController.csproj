@@ -139,6 +139,7 @@
     <Compile Include="DeleteMeasResultsAppOperationHandler.cs" />
     <Compile Include="DeleteMeasTaskAppOperationHandler.cs" />
     <Compile Include="GetMeasResultsAppOperationHandler.cs" />
+    <Compile Include="GetShortMeasResultsByTypeAndTaskIdAppOperation.cs" />
     <Compile Include="GetStationDataForMeasurementsByTaskIdAppOperationHandler.cs" />
     <Compile Include="GetMeasTaskHeaderAppOperationHandler.cs" />
     <Compile Include="GetMeasurementResultByResIdAppOperationHandler.cs" />
