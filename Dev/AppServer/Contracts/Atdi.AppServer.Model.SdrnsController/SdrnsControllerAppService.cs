@@ -118,13 +118,20 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+
+        public sealed class GetMeasResultsHeaderSpecialAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasResultsHeaderSpecialAppOperation() : base("GetMeasResultsHeaderSpecial")
+            { }
+        }
+
+    
         public sealed class GetShortMeasResultsByTypeAndTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
             public GetShortMeasResultsByTypeAndTaskIdAppOperation() : base("GetShortMeasResultsByTypeAndTaskId")
             { }
         }
 
-        
 
         public sealed class GetShortMeasResultsByIdAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
@@ -258,7 +265,8 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetMeasTaskHeaderAppOperation(),
                      new GetStationDataForMeasurementsByTaskIdAppOperation(),
                      new GetStationLevelsByTaskIdAppOperation(),
-                     new GetShortMeasResultsByTypeAndTaskIdAppOperation()
+                     new GetShortMeasResultsByTypeAndTaskIdAppOperation(),
+                     new GetMeasResultsHeaderSpecialAppOperation()
                 }
                 );
         }

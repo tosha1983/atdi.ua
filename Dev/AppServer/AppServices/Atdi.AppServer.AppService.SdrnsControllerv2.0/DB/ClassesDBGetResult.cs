@@ -165,8 +165,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resmeasstationid = IDStation;
-                                                    //measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
-                                                    //measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
+                                                    measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
+                                                    measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
 
 
                                                     if (rFinded != null)

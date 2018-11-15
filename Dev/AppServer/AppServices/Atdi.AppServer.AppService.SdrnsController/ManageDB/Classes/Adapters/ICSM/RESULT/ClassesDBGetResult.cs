@@ -2251,8 +2251,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     measResGeneral.m_timefinishmeas = station.GeneralResult.TimeFinishMeas;
                                                     measResGeneral.m_timestartmeasdate = station.GeneralResult.TimeStartMeas;
                                                     measResGeneral.m_resmeasstationid = IDStation;
-                                                    //measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
-                                                    //measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
+                                                    measResGeneral.m_resstlevelsspect = ObjectToByteArray(station.GeneralResult.LevelsSpecrum);
+                                                    measResGeneral.m_resstmaskelm = ObjectToByteArray(station.GeneralResult.MaskBW);
                                                     int? IDResGeneral = measResGeneral.Save(dbConnect, transaction);
                                                     measResGeneral.Close();
                                                     measResGeneral.Dispose();

@@ -193,6 +193,15 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <returns></returns>
         [OperationContract]
         ShortMeasurementResults[] GetShortMeasResultsSpecial(MeasurementType measurementType, CommonOperationArguments otherArgs);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measurementType"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        MeasurementResults[] GetMeasResultsHeaderSpecial(MeasurementType measurementType, CommonOperationArguments otherArgs);
         /// <summary>
         /// 
         /// </summary>

@@ -469,50 +469,58 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (x.m_timefinishmeas != null) ResultsMeasStation.GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
                                                     if (x.m_timestartmeasdate != null) ResultsMeasStation.GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
 
-                                                    /*
-                                                    object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
-                                                    if (m_resstmaskelm != null)
+                                                    if (x.m_resstmaskelm != null)
                                                     {
-                                                        ResultsMeasStation.GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
-                                                    }
-
-                                                    object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
-                                                    if (m_resstlevelsspect != null)
-                                                    {
-                                                         ResultsMeasStation.GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
-                                                    }
-                                                    */
-
-
-                                                    if (obj.XbsResmaskBw != null)
-                                                    {
-                                                        List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
-                                                        if (resYXbsResmaskBw.Count > 0)
+                                                        object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
+                                                        if (m_resstmaskelm != null)
                                                         {
-                                                            ResultsMeasStation.GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
-                                                            int u = 0;
-                                                            foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
+                                                            ResultsMeasStation.GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+
+                                                        if (obj.XbsResmaskBw != null)
+                                                        {
+                                                            List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                            if (resYXbsResmaskBw.Count > 0)
                                                             {
-                                                                ResultsMeasStation.GeneralResult.MaskBW[u] = new MaskElements();
-                                                                if (xv.m_bw != null) ResultsMeasStation.GeneralResult.MaskBW[u].BW = xv.m_bw;
-                                                                if (xv.m_level != null) ResultsMeasStation.GeneralResult.MaskBW[u].level = xv.m_level;
-                                                                u++;
+                                                                ResultsMeasStation.GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
+                                                                int u = 0;
+                                                                foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
+                                                                {
+                                                                    ResultsMeasStation.GeneralResult.MaskBW[u] = new MaskElements();
+                                                                    if (xv.m_bw != null) ResultsMeasStation.GeneralResult.MaskBW[u].BW = xv.m_bw;
+                                                                    if (xv.m_level != null) ResultsMeasStation.GeneralResult.MaskBW[u].level = xv.m_level;
+                                                                    u++;
+                                                                }
                                                             }
                                                         }
                                                     }
 
-                                                    if (obj.XbsLevelSpecrum != null)
+                                                    if (x.m_resstlevelsspect != null)
                                                     {
-                                                        List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
-                                                        if (resYXbsLevelSpecrum.Count > 0)
+                                                        object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
+                                                        if (m_resstlevelsspect != null)
                                                         {
-                                                            ResultsMeasStation.GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
-                                                            int u = 0;
-                                                            foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
+                                                            ResultsMeasStation.GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (obj.XbsLevelSpecrum != null)
+                                                        {
+                                                            List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                            if (resYXbsLevelSpecrum.Count > 0)
                                                             {
-                                                                ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = new float();
-                                                                if (xv.m_levelspecrum != null) ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
-                                                                u++;
+                                                                ResultsMeasStation.GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
+                                                                int u = 0;
+                                                                foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
+                                                                {
+                                                                    ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = new float();
+                                                                    if (xv.m_levelspecrum != null) ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
+                                                                    u++;
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -619,50 +627,58 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (x.m_timefinishmeas != null) ResultsMeasStation.GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
                                                     if (x.m_timestartmeasdate != null) ResultsMeasStation.GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
 
-                                                    /*
-                                                    object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
-                                                    if (m_resstmaskelm != null)
+                                                    if (x.m_resstmaskelm != null)
                                                     {
-                                                        ResultsMeasStation.GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
-                                                    }
-
-                                                    object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
-                                                    if (m_resstlevelsspect != null)
-                                                    {
-                                                         ResultsMeasStation.GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
-                                                    }
-                                                    */
-
-
-                                                    if (obj.XbsResmaskBw != null)
-                                                    {
-                                                        List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
-                                                        if (resYXbsResmaskBw.Count > 0)
+                                                        object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
+                                                        if (m_resstmaskelm != null)
                                                         {
-                                                            ResultsMeasStation.GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
-                                                            int u = 0;
-                                                            foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
+                                                            ResultsMeasStation.GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+
+                                                        if (obj.XbsResmaskBw != null)
+                                                        {
+                                                            List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                            if (resYXbsResmaskBw.Count > 0)
                                                             {
-                                                                ResultsMeasStation.GeneralResult.MaskBW[u] = new MaskElements();
-                                                                if (xv.m_bw != null) ResultsMeasStation.GeneralResult.MaskBW[u].BW = xv.m_bw;
-                                                                if (xv.m_level != null) ResultsMeasStation.GeneralResult.MaskBW[u].level = xv.m_level;
-                                                                u++;
+                                                                ResultsMeasStation.GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
+                                                                int u = 0;
+                                                                foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
+                                                                {
+                                                                    ResultsMeasStation.GeneralResult.MaskBW[u] = new MaskElements();
+                                                                    if (xv.m_bw != null) ResultsMeasStation.GeneralResult.MaskBW[u].BW = xv.m_bw;
+                                                                    if (xv.m_level != null) ResultsMeasStation.GeneralResult.MaskBW[u].level = xv.m_level;
+                                                                    u++;
+                                                                }
                                                             }
                                                         }
                                                     }
 
-                                                    if (obj.XbsLevelSpecrum != null)
+                                                    if (x.m_resstlevelsspect != null)
                                                     {
-                                                        List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
-                                                        if (resYXbsLevelSpecrum.Count > 0)
+                                                        object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
+                                                        if (m_resstlevelsspect != null)
                                                         {
-                                                            ResultsMeasStation.GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
-                                                            int u = 0;
-                                                            foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
+                                                            ResultsMeasStation.GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (obj.XbsLevelSpecrum != null)
+                                                        {
+                                                            List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                            if (resYXbsLevelSpecrum.Count > 0)
                                                             {
-                                                                ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = new float();
-                                                                if (xv.m_levelspecrum != null) ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
-                                                                u++;
+                                                                ResultsMeasStation.GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
+                                                                int u = 0;
+                                                                foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
+                                                                {
+                                                                    ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = new float();
+                                                                    if (xv.m_levelspecrum != null) ResultsMeasStation.GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
+                                                                    u++;
+                                                                }
                                                             }
                                                         }
                                                     }
