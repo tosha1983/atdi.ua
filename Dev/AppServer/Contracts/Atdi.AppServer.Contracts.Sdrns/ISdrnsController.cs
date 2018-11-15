@@ -279,7 +279,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        MeasurementResults[] GetMeasurementResultByResId(int ResId, CommonOperationArguments otherArgs);
+        MeasurementResults GetMeasurementResultByResId(int ResId, CommonOperationArguments otherArgs);
 
         /// <summary>
         /// 

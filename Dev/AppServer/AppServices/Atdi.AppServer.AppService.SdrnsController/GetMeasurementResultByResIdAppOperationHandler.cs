@@ -15,7 +15,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             SdrnsControllerAppService,
             SdrnsControllerAppService.GetMeasurementResultByResIdAppOperation,
             GetShortMeasResStationAppOperationOptions,
-            MeasurementResults[]
+            MeasurementResults
         >
     {
 
@@ -25,9 +25,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         }
 
 
-        public override MeasurementResults[] Handle(GetShortMeasResStationAppOperationOptions options, IAppOperationContext operationContext)
+        public override MeasurementResults Handle(GetShortMeasResStationAppOperationOptions options, IAppOperationContext operationContext)
         {
-            MeasurementResults[] res = null;
+            MeasurementResults res = null;
             ClassesDBGetResultOptimize resDb = new ClassesDBGetResultOptimize(Logger);
             ClassConvertToSDRResultsOptimize conv = new ClassConvertToSDRResultsOptimize(Logger);
             Logger.Trace(this, options, operationContext);
@@ -37,7 +37,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 {
                     if (options.ResId != null)
                     {
-                        res = conv.ConvertMeasurementResults(resDb.ReadGetMeasurementResults(options.ResId.Value)).ToArray();
+                        res = conv.ConvertMeasurementResultsOne(resDb.ReadGetMeasurementResults(options.ResId.Value));
                     }
                 }
                 catch (Exception ex) {

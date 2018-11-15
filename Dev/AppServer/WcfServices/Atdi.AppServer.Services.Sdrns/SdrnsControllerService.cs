@@ -543,10 +543,10 @@ namespace Atdi.AppServer.Services.Sdrns
         }
 
 
-        MeasurementResults[] ISdrnsController.GetMeasurementResultByResId(int measResultsId, CommonOperationArguments otherArgs)
+        MeasurementResults ISdrnsController.GetMeasurementResultByResId(int measResultsId, CommonOperationArguments otherArgs)
         {
             var result =
-              Operation<SdrnsControllerAppService.GetMeasurementResultByResIdAppOperation, MeasurementResults[]>()
+              Operation<SdrnsControllerAppService.GetMeasurementResultByResIdAppOperation, MeasurementResults>()
                   .Invoke(
                       new GetShortMeasResStationAppOperationOptions
                       {
