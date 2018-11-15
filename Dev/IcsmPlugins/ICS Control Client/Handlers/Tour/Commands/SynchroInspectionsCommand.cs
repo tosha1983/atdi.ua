@@ -37,7 +37,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                 throw new InvalidOperationException($"Not found any inspection records by the tour #{tour.Id}");
             }
 
-            var measTask = WCF.SdrnsControllerWcfClient.GetMeasTaskById(tour.MeasTaskId);
+            var measTask = WCF.SdrnsControllerWcfClient.GetMeasTaskHeaderById(tour.MeasTaskId);
 
             if (measTask == null)
             {

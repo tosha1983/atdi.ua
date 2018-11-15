@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Models.Views;
@@ -12,6 +13,7 @@ using CS = XICSM.ICSControlClient.WpfControls.Charts;
 using MP = XICSM.ICSControlClient.WpfControls.Maps;
 using SDR = Atdi.AppServer.Contracts.Sdrns;
 using System.Windows;
+using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.ViewModels
@@ -29,10 +31,14 @@ namespace XICSM.ICSControlClient.ViewModels
             Sensors
         }
 
+        #region Commands
+        public WpfCommand GetCSVCommand { get; set; }
+        #endregion
+
         #region Corrent Objects
-        private MeasurementResultsViewModel _currentMeasurementResult;
-        private ShortMeasurementResultsViewModel _currentShortMeasurementResults;
-        private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStation;
+        private MeasurementResultsViewModel _currentMeasurementResults;
+        private ResultsMeasurementsStationExtentedViewModel _currentResultsMeasurementsStation;
+        private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStationData;
         private LevelMeasurementsCarViewModel _currentLevelMeasurements;
         private CS.ChartOption _currentChartOption;
         private MP.MapDrawingData _currentMapData;
@@ -41,13 +47,13 @@ namespace XICSM.ICSControlClient.ViewModels
         #endregion
 
         #region Sources (Adapters)
-        public ShortMeasurementResultsDataAdatper ShortMeasResultsSpecial => this._shortMeasResults;
-        public ResultsMeasurementsStationDataAdapter ResultsMeasurementsStations => this._resultsMeasurementsStations;
+        public MeasurementResultsDataAdatper ShortMeasResultsSpecial => this._measResults;
+        public ResultsMeasurementsStationExtentedDataAdapter ResultsMeasurementsStations => this._resultsMeasurementsStations;
         public LevelMeasurementsCarDataAdapter LevelMeasurements => this._levelMeasurements;
         #endregion
 
-        private ShortMeasurementResultsDataAdatper _shortMeasResults;
-        private ResultsMeasurementsStationDataAdapter _resultsMeasurementsStations;
+        private MeasurementResultsDataAdatper _measResults;
+        private ResultsMeasurementsStationExtentedDataAdapter _resultsMeasurementsStations;
         private LevelMeasurementsCarDataAdapter _levelMeasurements;
 
         private CS.ChartOption GetDefaultChartOption()
@@ -73,17 +79,18 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this._currentModel = ModelType.None;
             this._currentChartOption = this.GetDefaultChartOption();
-            this._shortMeasResults = new ShortMeasurementResultsDataAdatper();
-            this._resultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
+            this._measResults = new MeasurementResultsDataAdatper();
+            this._resultsMeasurementsStations = new ResultsMeasurementsStationExtentedDataAdapter();
             this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
             this._measDtParamTypeMeasurements = SDR.MeasurementType.MonitoringStations;
-            this.ReloadShortMeasResult();
+            this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
+            this.ReloadMeasResult();
         }
 
         public SDR.MeasurementType MeasDtParamTypeMeasurements
         {
             get => this._measDtParamTypeMeasurements;
-            set => this.Set(ref this._measDtParamTypeMeasurements, value, ReloadShortMeasResult);
+            set => this.Set(ref this._measDtParamTypeMeasurements, value, ReloadMeasResult);
         }
         public IList<SDR.MeasurementType> MeasDtParamTypeMeasurementsValues
         {
@@ -106,18 +113,18 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         public MeasurementResultsViewModel CurrentMeasurementResults
         {
-            get => this._currentMeasurementResult;
-            set => this.Set(ref this._currentMeasurementResult, value, () => { UpdateCurrentChartOption(); this.RedrawMap(); });
+            get => this._currentMeasurementResults;
+            set => this.Set(ref this._currentMeasurementResults, value, () => { ReloadMeasResaltDetail(); UpdateCurrentChartOption(); this.RedrawMap(); });
         }
-        public ShortMeasurementResultsViewModel CurrentShortMeasurementResults
-        {
-            get => this._currentShortMeasurementResults;
-            set => this.Set(ref this._currentShortMeasurementResults, value, () => { ReloadMeasResultDetail(); });
-        }
-        public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStation
+        public ResultsMeasurementsStationExtentedViewModel CurrentResultsMeasurementsStation
         {
             get => this._currentResultsMeasurementsStation;
-            set => this.Set(ref this._currentResultsMeasurementsStation, value, () => { ReloadLevelMeasurements(); UpdateCurrentChartOption(); });
+            set => this.Set(ref this._currentResultsMeasurementsStation, value, () => { ReloadMeasResultStationDetail(); ReloadLevelMeasurements(); UpdateCurrentChartOption(); });
+        }
+        public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStationData
+        {
+            get => this._currentResultsMeasurementsStationData;
+            set => this.Set(ref this._currentResultsMeasurementsStationData, value);
         }
         public LevelMeasurementsCarViewModel CurrentLevelMeasurements
         {
@@ -125,10 +132,10 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._currentLevelMeasurements, value, () => { this.RedrawMap(); });
         }
 
-        private void ReloadShortMeasResult()
+        private void ReloadMeasResult()
         {
-            var sdrResult = SVC.SdrnsControllerWcfClient.GetShortMeasResultsSpecial(this._measDtParamTypeMeasurements);
-            this._shortMeasResults.Source = sdrResult;
+            var sdrResult = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderSpecial(this._measDtParamTypeMeasurements);
+            this._measResults.Source = sdrResult;
         }
 
         //private void ReloadShortMeasResults()
@@ -163,34 +170,25 @@ namespace XICSM.ICSControlClient.ViewModels
         //        this._resultsMeasurementsStations.Source = null;
         //    }
         //}
-        private void ReloadMeasResultDetail()
+        private void ReloadMeasResaltDetail()
         {
-            if (this._currentShortMeasurementResults != null)
+            if (this._currentMeasurementResults != null)
             {
-                var measResults = SVC.SdrnsControllerWcfClient
-                        .GetMeasResultsById(
-                            this._currentShortMeasurementResults.MeasSdrResultsId,
-                            this._currentShortMeasurementResults.MeasTaskId,
-                            this._currentShortMeasurementResults.SubMeasTaskId,
-                            this._currentShortMeasurementResults.SubMeasTaskStationId);
-
-                var measResultsViewModel = Mappers.Map(measResults);
-                this.CurrentMeasurementResults = measResultsViewModel;
-
-                if (measResultsViewModel != null)
-                {
-                    this._resultsMeasurementsStations.Source = measResultsViewModel.ResultsMeasStation;
-                }
-                else
-                {
-                    this._resultsMeasurementsStations.Source = null;
-                }
-
+                var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
+                this._resultsMeasurementsStations.Source = sdrMeasResults;
             }
             else
             {
                 this.CurrentMeasurementResults = null;
                 this._resultsMeasurementsStations.Source = null;
+            }
+        }
+        private void ReloadMeasResultStationDetail()
+        {
+            if (this._currentResultsMeasurementsStation != null)
+            {
+                var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationById(this._currentResultsMeasurementsStation.Id);
+                this.CurrentResultsMeasurementsStationData = Mappers.Map(sdrMeasResults);
             }
         }
         private void ReloadLevelMeasurements()
@@ -200,7 +198,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._levelMeasurements.Source = null;
                 return;
             }
-            this._levelMeasurements.Source = this.CurrentResultsMeasurementsStation.LevelMeasurements;
+            this._levelMeasurements.Source = this._currentResultsMeasurementsStationData.LevelMeasurements;
         }
 
         private void UpdateCurrentChartOption()
@@ -251,7 +249,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var measStation = this.CurrentResultsMeasurementsStation;
+            var measStation = this._currentResultsMeasurementsStationData;
             if (measStation == null)
             {
                 return option;
@@ -480,7 +478,7 @@ namespace XICSM.ICSControlClient.ViewModels
             var polygons = new List<MP.MapDrawingDataPolygon>();
             var points = new List<MP.MapDrawingDataPoint>();
 
-            var sdrRoutes = SVC.SdrnsControllerWcfClient.GetRoutes(this._currentShortMeasurementResults.MeasSdrResultsId);
+            var sdrRoutes = SVC.SdrnsControllerWcfClient.GetRoutes(this._currentMeasurementResults.MeasSdrResultsId);
             if (sdrRoutes != null && sdrRoutes.Length > 0)
             {
                 sdrRoutes.ToList().ForEach(sdrRoute =>
@@ -497,7 +495,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 });
             }
 
-            var sdrPolygonPoints = SVC.SdrnsControllerWcfClient.GetSensorPoligonPoint(this._currentShortMeasurementResults.MeasSdrResultsId);
+            var sdrPolygonPoints = SVC.SdrnsControllerWcfClient.GetSensorPoligonPoint(this._currentMeasurementResults.MeasSdrResultsId);
             if (sdrPolygonPoints != null && sdrPolygonPoints.Length > 0)
             {
                 var polygonPoints = new List<Location>();
@@ -531,14 +529,15 @@ namespace XICSM.ICSControlClient.ViewModels
 
             var currentMeasTaskResultStation = this.CurrentResultsMeasurementsStation;
             var currentMeasTaskResult = this.CurrentMeasurementResults;
-            var currentMeasTask = SVC.SdrnsControllerWcfClient.GetMeasTaskById(CurrentMeasurementResults.MeasTaskId);
+            var currentMeasTask = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(CurrentMeasurementResults.MeasTaskId);
 
             //// To define station points
             if (currentMeasTaskResultStation != null)
             {
                 if (currentMeasTask != null && currentMeasTaskResultStation.StationId != null)
                 {
-                    var measTaskStations = currentMeasTask.StationsForMeasurements;
+                    //var measTaskStations = currentMeasTask.StationsForMeasurements;
+                    var measTaskStations = SVC.SdrnsControllerWcfClient.GetStationDataForMeasurementsByTaskId(currentMeasTask.Id.Value);
                     if (measTaskStations != null && measTaskStations.Length > 0)
                     {
                         var stationForShow = measTaskStations
@@ -563,7 +562,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     if (currentMeasTask != null)
                     {
-                        var measTaskStations = currentMeasTask.StationsForMeasurements;
+                        //var measTaskStations = currentMeasTask.StationsForMeasurements;
+                        var measTaskStations = SVC.SdrnsControllerWcfClient.GetStationDataForMeasurementsByTaskId(currentMeasTask.Id.Value);
                         if (measTaskStations != null && measTaskStations.Length > 0)
                         {
                             var stationsForShow = measTaskStations
@@ -616,5 +616,82 @@ namespace XICSM.ICSControlClient.ViewModels
 
             return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(a, a, b));
         }
+        private void OnGetCSVCommand(object parameter)
+        {
+            try
+            {
+                string filename = "";
+                if (this._currentMeasurementResults == null || this._currentResultsMeasurementsStationData == null)
+                    return;
+
+                int recCount = LevelMeasurements.Source.Count();
+                if (recCount == 0)
+                {
+                    MessageBox.Show("No data for export.");
+                    return;
+                }
+
+                int taskId = this._currentMeasurementResults.MeasTaskId;
+                string stationId = this._currentResultsMeasurementsStationData.StationId;
+
+                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog();
+                sfd.Filter = "CSV (*.csv)|*.csv";
+                sfd.FileName = "FS_Meas_Res_" + taskId.ToString() + "_" + stationId + ".csv";
+                if (sfd.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    //MessageBox.Show("Data will be exported and you will be notified when it is ready.");
+                    if (File.Exists(filename))
+                    {
+                        try
+                        {
+                            File.Delete(filename);
+                        }
+                        catch (IOException ex)
+                        {
+                            MessageBox.Show("It wasn't possible to write the data to the disk." + ex.Message);
+                        }
+                    }
+
+                    string[] output = new string[recCount + 1];
+                    output[0] += "Lon;Lat;Level";
+
+                    for (int i = 0; i < recCount; i++)
+                    {
+                        var ms = LevelMeasurements.Source[i] as SDR.LevelMeasurementsCar;
+                        double leveldBmkVm = 0;
+                        if ((!ms.LeveldBmkVm.HasValue || ms.LeveldBmkVm == 0 || ms.LeveldBmkVm == -1 || ms.LeveldBmkVm <= -30 || ms.LeveldBmkVm >= 200))
+                        {
+                            double freq = 0;
+                            if (this._currentResultsMeasurementsStationData.GeneralResultCentralFrequencyMeas.HasValue && this._currentResultsMeasurementsStationData.GeneralResultCentralFrequencyMeas > 0.01)
+                            {
+                                freq = this._currentResultsMeasurementsStationData.GeneralResultCentralFrequencyMeas.Value;
+                            }
+                            if (this._currentResultsMeasurementsStationData.GeneralResultCentralFrequency.HasValue && this._currentResultsMeasurementsStationData.GeneralResultCentralFrequency > 0.01)
+                            {
+                                freq = this._currentResultsMeasurementsStationData.GeneralResultCentralFrequency.Value;
+                            }
+                            if (freq > 0 && ms.LeveldBm.HasValue && ms.LeveldBm > -300 && ms.LeveldBm < -10)
+                            {
+                                leveldBmkVm = (float)(77.2 + 20 * Math.Log10(freq) + ms.LeveldBm);
+                            }
+                        }
+                        else
+                        {
+                            if (ms.LeveldBmkVm.HasValue)
+                                leveldBmkVm = ms.LeveldBmkVm.Value;
+                        }
+                        if (leveldBmkVm > 0)
+                            output[i + 1] += ms.Lon.ToString() + ";" + ms.Lat.ToString() + ";" + leveldBmkVm.ToString() + ";";
+                    }
+                    System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                    MessageBox.Show("Your file was generated and its ready for use.");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+
     }
 }

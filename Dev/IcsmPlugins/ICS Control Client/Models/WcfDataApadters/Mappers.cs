@@ -230,6 +230,26 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Status = source.Status
             };
         }
+        public static VM.ResultsMeasurementsStationExtentedViewModel Map(SDR.ResultsMeasurementsStationExtended source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.ResultsMeasurementsStationExtentedViewModel
+            {
+                CentralFrequencyMeas_MHz = source.CentralFrequencyMeas_MHz,
+                Id = source.Id,
+                SectorId = source.IdSector.ToNull(),
+                StationId = source.Idstation,
+                Standard = source.Standard,
+                StationSysInfo = source.StationSysInfo,
+                GlobalSID = source.GlobalSID,
+                MeasGlobalSID = source.MeasGlobalSID,
+                Status = source.Status
+            };
+        }
 
 
         public static VM.LevelMeasurementsCarViewModel Map(SDR.LevelMeasurementsCar source)

@@ -12,36 +12,12 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 {
     public class SdrnsControllerWcfClient : WcfServiceClientBase<ISdrnsController, SdrnsControllerWcfClient>
     {
-        public SdrnsControllerWcfClient()
-            : base("SdrnsController")
-        {
-        }
+        public SdrnsControllerWcfClient() : base("SdrnsController") { }
 
-        public static int CreateMeasTask(MeasTask task)
-        {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.CreateMeasTask(task, otherArgs));
-
-
-            if (result == null)
-            {
-                return IM.NullI;
-            }
-            return result.Value;
-        }
-
+        #region Getters
         public static ShortSensor[] GetShortSensors(DataConstraint constraint)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetShortSensors(constraint, otherArgs));
+            var result = Execute(contract => contract.GetShortSensors(constraint, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -49,15 +25,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-
         public static Sensor[] GetSensors(DataConstraint constraint)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetSensors(constraint, otherArgs));
+            var result = Execute(contract => contract.GetSensors(constraint, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -68,12 +38,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
         public static ShortMeasTask[] GetShortMeasTasks(DataConstraint constraint)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetShortMeasTasks(constraint, otherArgs));
+            var result = Execute(contract => contract.GetShortMeasTasks(constraint, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -84,12 +49,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
         public static ShortMeasurementResults[] GetShortMeasResultsByTask(int taskId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetShortMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }, otherArgs));
+            var result = Execute(contract => contract.GetShortMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -100,18 +60,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static ShortMeasurementResultsExtend[] GetShortMeasResultsByDates(DateTime startDate, DateTime stopDate)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
             var dates = new GetShortMeasResultsByDateValue()
             {
                 Start = startDate,
                 End = stopDate
             };
 
-            var result = Execute(contract => contract.GetShortMeasResultsByDate(dates, otherArgs));
+            var result = Execute(contract => contract.GetShortMeasResultsByDate(dates, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -119,44 +74,24 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-
-
         public static MeasurementResults[] GetMeasResultsByTask(int taskId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }, otherArgs));
+            var result = Execute(contract => contract.GetMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
             if (result == null)
             {
                 return new MeasurementResults[] { };
             }
-
             return result;
         }
+        //public static MeasTask GetMeasTaskById(int taskId)
+        //{
+        //    var result = Execute(contract => contract.GetMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
-        public static MeasTask GetMeasTaskById(int taskId)
-        {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetMeasTask(new MeasTaskIdentifier { Value = taskId }, otherArgs));
-
-            return result;
-        }
-
+        //    return result;
+        //}
         public static MeasurementResults GetMeasResultsById(int measSdrResultsId, int measTaskId, int subMeasTaskId, int subMeasTaskStationId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
             var id = new MeasurementResultsIdentifier
             {
                 MeasSdrResultsId = measSdrResultsId,
@@ -165,30 +100,19 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 SubMeasTaskStationId = subMeasTaskStationId
             };
 
-            var result = Execute(contract => contract.GetMeasResultsById(id, otherArgs));
+            var result = Execute(contract => contract.GetMeasResultsById(id, GetDefaultOtherArgs()));
 
             return result;
         }
-
         public static Sensor GetSensorById(int sensorId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }, otherArgs));
+            var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }, GetDefaultOtherArgs()));
 
             return result;
         }
         public static ShortMeasurementResults[] GetShortMeasResultsSpecial(MeasurementType measurementType)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetShortMeasResultsSpecial(measurementType, otherArgs));
+            var result = Execute(contract => contract.GetShortMeasResultsSpecial(measurementType, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -196,15 +120,19 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
+        public static MeasurementResults[] GetMeasResultsHeaderSpecial(MeasurementType measurementType)
+        {
+            var result = Execute(contract => contract.GetMeasResultsHeaderSpecial(measurementType, GetDefaultOtherArgs()));
 
+            if (result == null)
+            {
+                return new MeasurementResults[] { };
+            }
+            return result;
+        }
         public static ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetShortMeasResStation(MeasResultsId, otherArgs));
+            var result = Execute(contract => contract.GetShortMeasResStation(MeasResultsId, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -212,15 +140,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-
         public static Route[] GetRoutes(int MeasResultsId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetRoutes(MeasResultsId, otherArgs));
+            var result = Execute(contract => contract.GetRoutes(MeasResultsId, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -228,15 +150,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-
         public static SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetSensorPoligonPoint(MeasResultsId, otherArgs));
+            var result = Execute(contract => contract.GetSensorPoligonPoint(MeasResultsId, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -246,12 +162,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.GetResMeasStation(MeasResultsId, StationId, otherArgs));
+            var result = Execute(contract => contract.GetResMeasStation(MeasResultsId, StationId, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -259,15 +170,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-
         public static SOFrequency[] GetSOformMeasResultStation(List<double> Frequencies_MHz, double BW_kHz, List<int> MeasResultID, double LonMax, double LonMin, double LatMax, double LatMin, double TrLevel_dBm)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-        var parameters = new GetSOformMeasResultStationValue()
+            var parameters = new GetSOformMeasResultStationValue()
             {
                 BW_kHz = BW_kHz,
                 Frequencies_MHz = Frequencies_MHz,
@@ -279,7 +184,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 MeasResultID = MeasResultID
             };
 
-            var result = Execute(contract => contract.GetSOformMeasResultStation(parameters, otherArgs));
+            var result = Execute(contract => contract.GetSOformMeasResultStation(parameters, GetDefaultOtherArgs()));
 
             if (result == null)
             {
@@ -287,52 +192,98 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
+        public static MeasurementResults[] GetMeasResultsHeaderByTaskId(int taskId)
+        {
+            var result = Execute(contract => contract.GetMeasResultsHeaderByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
-        
+            if (result == null)
+            {
+                return new MeasurementResults[] { };
+            }
+            return result;
+        }
+        public static ResultsMeasurementsStation GetResMeasStationById(int stationId)
+        {
+            var result = Execute(contract => contract.GetResMeasStationById(stationId, GetDefaultOtherArgs()));
 
+            return result;
+        }
+        public static ResultsMeasurementsStationExtended[] GetResMeasStationHeaderByResId(int resId)
+        {
+            var result = Execute(contract => contract.GetResMeasStationHeaderByResId(resId, GetDefaultOtherArgs()));
+
+            if (result == null)
+            {
+                return new ResultsMeasurementsStationExtended[] { };
+            }
+            return result;
+        }
+        public static MeasurementResults GetMeasurementResultByResId(int resId)
+        {
+            var result = Execute(contract => contract.GetMeasurementResultByResId(resId, GetDefaultOtherArgs()));
+
+            return result;
+        }
+        public static MeasTask GetMeasTaskHeaderById(int taskId)
+        {
+            var result = Execute(contract => contract.GetMeasTaskHeader(new MeasTaskIdentifier { Value = taskId }, new CommonOperationArguments() { UserId = MD.Employee.GetCurrentUserId() }));
+
+            return result;
+        }
+        public static StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(int taskId)
+        {
+            var result = Execute(contract => contract.GetStationDataForMeasurementsByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+
+            if (result == null)
+            {
+                return new StationDataForMeasurements[] { };
+            }
+            return result;
+        }
+        #endregion
+
+        #region Actions
+        public static int CreateMeasTask(MeasTask task)
+        {
+            var result = Execute(contract => contract.CreateMeasTask(task, GetDefaultOtherArgs()));
+
+            if (result == null)
+            {
+                return IM.NullI;
+            }
+            return result.Value;
+        }
         public static void DeleteMeasTaskById(int taskId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.DeleteMeasTask(new MeasTaskIdentifier { Value = taskId }, otherArgs));
+            var result = Execute(contract => contract.DeleteMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
             if (result.State == CommonOperationState.Fault)
             {
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Delete the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-
         public static void RunMeasTask(int taskId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.RunMeasTask(new MeasTaskIdentifier { Value = taskId }, otherArgs));
+            var result = Execute(contract => contract.RunMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
             if (result.State == CommonOperationState.Fault)
             {
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Run the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-
         public static void StopMeasTask(int taskId)
         {
-            var otherArgs = new CommonOperationArguments()
-            {
-                UserId = MD.Employee.GetCurrentUserId()
-            };
-
-            var result = Execute(contract => contract.StopMeasTask(new MeasTaskIdentifier { Value = taskId }, otherArgs));
+            var result = Execute(contract => contract.StopMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
 
             if (result.State == CommonOperationState.Fault)
             {
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Stop the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
+        }
+        #endregion
+        private static CommonOperationArguments GetDefaultOtherArgs()
+        {
+            return (new CommonOperationArguments() { UserId = MD.Employee.GetCurrentUserId() });
         }
     }
 }
