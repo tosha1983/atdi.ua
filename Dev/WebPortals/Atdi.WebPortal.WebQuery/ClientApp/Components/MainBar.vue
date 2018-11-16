@@ -1,7 +1,7 @@
 ﻿<template>
     <nav class="portal-mainbar portal-content-header">
         <div class="nav-wrapper">
-            <a href="#!" :data-target="barId" class="sidenav-trigger left"><i class="material-icons green-text">menu</i></a>
+            <a href="javascript:undefined" :data-target="barId" class="sidenav-trigger left"><i class="material-icons green-text">menu</i></a>
 
             <ul class="brand-logo" style="padding-left: 10px">
                 <li class="valign-wrapper">
@@ -23,7 +23,7 @@
                 </li>
             </ul>
 
-            <a href="#!" data-target="right-dropdown-content" class="sidenav-trigger dropdown-trigger right"><i class="material-icons green-text">filter_list</i></a>
+            <a href="javascript:undefined" data-target="right-dropdown-content" class="sidenav-trigger dropdown-trigger right"><i class="material-icons green-text">filter_list</i></a>
             <ul id="right-dropdown-content" class="dropdown-content" style="min-width: 250px;">
                 <li>
                     <a class="waves-effect active" :href="signOutAction">

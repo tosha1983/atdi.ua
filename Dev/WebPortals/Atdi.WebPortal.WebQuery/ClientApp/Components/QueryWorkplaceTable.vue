@@ -1,6 +1,6 @@
 ﻿<template>
-    <div class="card-content" style="overflow: auto;">
-        <div v-if="showProgress" class="progress">
+    <div class="card-content" style="overflow: auto; padding-top: 0px;">
+        <div v-visible="showProgress" class="progress" style="margin-top: 0px; margin-bottom: 3px;">
             <div class="indeterminate"></div>
         </div>
         <div class="" style="overflow: auto;">
@@ -8,7 +8,12 @@
             <table :id="id" class="bordered portal-data-table">
                 <thead class="portal-table-head">
                     <tr>
-                        <th v-for="column in query.columns" :key="column.name">{{column.title}}</th>
+                        <th v-for="column in query.columns" :key="column.name" @click="onColumnClick(column.name)">
+                            <div class="portal-data-table-column waves-effect" layout="row center-justify">
+                                <div class="waves-effect">{{column.title}}</div>
+                                <div :class="getSortingState(column) === 0 ? 'waves-effect' : 'waves-effect portal-data-table-sort-arrow ' + ((getSortingState(column) === 1) ? 'portal-data-table-sort-arrow-asc': 'portal-data-table-sort-arrow-desc')"></div>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody v-if="hasData">
@@ -66,6 +71,7 @@
 </template>
 <script>
     import { mapState, mapActions } from 'vuex'
+    import utilities from './../Utilities';
 
     export default {
         name: 'QueryWorkplaceTable',
@@ -94,17 +100,31 @@
                 
             }),
 
-            processedRows: function() {
+            filteredRows: function () {
                 const data = this.queryData;
-                if (data)
-                    return data.rows;
+                if (!data)
+                    return [];
 
-                return [];
+                let result = data.rows;
+
+                if (data.filter && data.filter.value) {
+                    result = utilities.applyFilter(result, data.filter.value)
+                }
+                return result;
+            },
+            processedRows: function () {
+                const data = this.queryData;
+                let result = this.filteredRows;
+                if (data && data.sorting && data.sorting.column) {
+                    const realColumn = data.columnsMap[data.sorting.column];
+                    result = utilities.applySorting(result, (cells) => cells[realColumn.Index], data.sorting.direction)
+                }
+                return result;
             },
             rows: function() {
                 const data = this.queryData;
                 if (data)
-                    return data.rows.slice((this.currentPage - 1) * this.currentPerPage, this.currentPerPage === -1 ? data.rows.length + 1 : this.currentPage * this.currentPerPage);
+                    return this.processedRows.slice((this.currentPage - 1) * this.currentPerPage, this.currentPerPage === -1 ? data.rows.length + 1 : this.currentPage * this.currentPerPage);
 
                 return [];
             }
@@ -116,6 +136,13 @@
         },
 
         methods: {
+            getSortingState(column) {
+                const data = this.queryData;
+                if (data && data.sorting && data.sorting.column === column.name) {
+                    return data.sorting.direction;
+                }
+                return 0;
+            },
             getValue(row, column) {
                 const data = this.queryData;
                 const realColumn = data.columnsMap[column.name];
@@ -142,6 +169,41 @@
                     curRow.classList.toggle("portal-data-table-row-selected");
                 event.currentTarget.classList.toggle("portal-data-table-row-selected");
                 this.$store.commit('queries/changeCurrentRow', { index: index, cells: row});
+            },
+            onColumnClick: function (columnName) {
+                const data = this.queryData;
+                let newSorting = null;
+                if (data.sorting.column === columnName) {
+                    if (data.sorting.direction === 1) {
+                        newSorting = {
+                            column: columnName,
+                            direction: -1
+                        };
+                    } else {
+                        newSorting = {
+                            column: null,
+                            direction: 0
+                        };
+                    }
+                } else {
+                    newSorting = {
+                        column: columnName,
+                        direction: 1
+                    };
+                }
+
+                this.$store.commit('queries/toShowProgress');
+                const self = this;
+
+                this.$nextTick(function () {
+                    setTimeout(function() {
+                        self.$store.commit('queries/changeCurrentSorting', newSorting);
+                        self.$store.commit('queries/toHideProgress');
+                    }, 300);
+                });
+                
+                
+                
             }
         }
     }
@@ -177,6 +239,61 @@ table.portal-data-table tbody tr:hover {
 }
 table.portal-data-table tbody tr.portal-data-table-row-selected {
     background: #327f9d94;
+}
+table.portal-data-table th, table.portal-data-table td  {
+    border-radius: 0px;
+}
+
+table.portal-data-table th:hover  {
+    background: #85c9e494;
+}
+
+.portal-data-table-column {
+    display: flex;
+    padding: .75rem 1rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.portal-data-table-sort-arrow {
+    margin-left: 10px;
+    margin-top: 5px;
+    display: flex;
+    width: 0;
+    height: 0;
+    border: .375rem solid transparent;
+        border-top-color: transparent;
+        border-top-style: solid;
+        border-top-width: 0.375rem;
+        border-right-color: transparent;
+        border-right-style: solid;
+        border-right-width: 0.375rem;
+        border-bottom-color: transparent;
+        border-bottom-style: solid;
+        border-bottom-width: 0.375rem;
+        border-left-color: transparent;
+        border-left-style: solid;
+        border-left-width: 0.375rem;
+        border-image-outset: 0;
+        border-image-repeat: stretch;
+        border-image-slice: 100%;
+        border-image-source: none;
+        border-image-width: 1;
+}
+
+.portal-data-table-sort-arrow-asc {
+    border-bottom-color: currentColor;
+    -webkit-transform: translateY(-.1875rem);
+    transform: translateY(-.1875rem);
+}
+
+.portal-data-table-sort-arrow-desc {
+    border-top-color: currentColor;
+    -webkit-transform: translateY(.1875rem);
+    transform: translateY(.1875rem);
 }
 
 </style>

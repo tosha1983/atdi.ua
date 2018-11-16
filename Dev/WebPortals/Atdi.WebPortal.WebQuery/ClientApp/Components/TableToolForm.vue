@@ -1,24 +1,14 @@
-﻿<template>
+<template>
     <div :id="id" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>View Item: {{currentQuery.title}}</h4>
+            <h4><slot name="title"></slot></h4>
             <div class="row portal-form-place">
-                <form class="col s12">
-                    <template v-for="column in currentQuery.columns">
-                        <div class="row" :key="column.name">
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix">filter</i>
-                                <input readonly="readonly"  :id="column.name" type="text" :value="getValue(column)" class="">
-                                <label :for="column.name">{{column.title}}</label>
-                            </div>
-                        </div>
-                    </template>
-                </form>
+                <slot name="content"></slot>
             </div>
         </div>
         <div class="modal-footer">
+            <a @click="onApply" class="waves-effect waves-green btn-flat" href="javascript:undefined">Apply</a>
             <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Close</a>
-            
         </div>
     </div>
 </template>
@@ -26,7 +16,7 @@
     import { mapState, mapActions, mapGetters } from 'vuex'
 
     export default {
-        name: 'QueryWorkplaceViewForm',
+        name: 'TableToolForm',
 
         props: {
             id: String
@@ -59,20 +49,12 @@
         },
 
         methods: {
-            getValue: function (column) {
-                try{
-                    const data = this.currentQueryData;
-                    const realColumn = data.columnsMap[column.name];
-                    return this.currentRow.cells[realColumn.Index];
-                }
-                catch{
-                    return "";
-                }
-                
+            onApply: function () {
+                this.$emit('apply');
             },
 
             onClose: function () {
-                this.$emit('closeViewForm');
+                this.$emit('close');
             }
         },
         mounted: function (){

@@ -77,6 +77,15 @@ const mutations = {
             currentRow: {
                 index: -1,
                 cells: []
+            },
+            filter: {
+                columns: [],
+                value: null,
+                operation: 'contains'
+            },
+            sorting: {
+                column: null,
+                direction: 0
             }
         };
         
@@ -122,6 +131,16 @@ const mutations = {
         const data = state.data["q_" + state.current.token.id];
         data.currentRow = row;
     },
+
+    changeCurrentSorting(state, sorting) {
+        const data = state.data["q_" + state.current.token.id];
+        data.sorting = sorting;
+    },
+
+    changeCurrentFilter(state, filter) {
+        const data = state.data["q_" + state.current.token.id];
+        data.filter = filter;
+    }
 }
 
 export default {

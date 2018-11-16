@@ -19,7 +19,7 @@ export default {
     SVC_QUERYGROUPS: 'querygroups',
     SVC_WEBQUERIES: 'webqueries',
     get(service, processData) {
-        fetch('api/' + service, { credentials: 'include' })
+        return fetch('api/' + service, { credentials: 'include' })
             .then(processStatus)
             .then(processJson)
             .then(processData)
@@ -27,7 +27,7 @@ export default {
     },
 
     post(service, action, data, processData) {
-        fetch('api/' + service + '/' + action, {
+        return fetch('api/' + service + '/' + action, {
             method: 'POST',
             headers: {
                     'Content-Type': 'application/json'

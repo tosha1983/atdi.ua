@@ -4,7 +4,8 @@ import Vue from 'vue'
 const state = {
     all: [],
     current: null,
-    queries: {}
+    queries: {},
+    active: null
 }
 
 const getters = {
@@ -18,8 +19,8 @@ const getters = {
 }
 
 const actions = {
-    loadGroups({ commit }) {
-        api.getQueryGroups(groups => {
+     loadGroups({ commit }) {
+        return api.getQueryGroups(groups => {
             commit('setGroups', groups);
         });
     },
@@ -29,11 +30,18 @@ const actions = {
 
         const queries = state.queries[name];
         if (queries && queries.state === 'created') {
-            api.getQueriesByTokens(queries.group.queryTokens, data => {
+            return api.getQueriesByTokens(queries.group.queryTokens, data => {
                 commit('setQueries', { group: name, queries: data });
             });
         }
+
+        return new Promise(resolve => resolve());
+    },
+
+    setActiveGroup({ commit }, name) {
+        commit('setActive', name);
     }
+
 }
 
 const mutations = {
@@ -46,11 +54,19 @@ const mutations = {
                 state: 'created',
                 list: [{ title: 'Loading (for ' + groups[i].name + ') ...', token: { id: -1} }]
             });
+
+            if (state.active && state.active === groups[i].name) {
+                state.current = groups[i];
+            }
         }
     },
 
     changeCurrent(state, name) {
         state.current = state.all.find(group => group.name === name);
+    },
+
+    setActive(state, name) {
+        state.active = name;
     },
 
     setQueries(state, { group, queries }) {

@@ -53,7 +53,7 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
             {
                 UserToken = userToken,
                 QueryToken = token,
-                ResultStructure = DataSetStructure.StringCells
+                ResultStructure = DataSetStructure.ObjectCells
             };
 
             var uri = this.CreateRequestUri("/api/WebQuery/ExecuteQuery");
