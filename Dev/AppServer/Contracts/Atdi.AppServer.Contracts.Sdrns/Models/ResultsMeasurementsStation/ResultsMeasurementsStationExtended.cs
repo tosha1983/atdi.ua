@@ -31,6 +31,8 @@ namespace Atdi.AppServer.Contracts.Sdrns
         public double? CentralFrequencyMeas_MHz;
         [DataMember]
         public string StationSysInfo { get; set; }
+        [DataMember]
+        public MeasurementsParameterGeneral GeneralResult;
     }
 }
 

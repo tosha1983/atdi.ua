@@ -510,6 +510,28 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         ResultsMeasStation[ii].GlobalSID = flevmeas.m_globalsid;
                                         ResultsMeasStation[ii].MeasGlobalSID = flevmeas.m_measglobalsid;
                                         ResultsMeasStation[ii].Status = flevmeas.m_status;
+                                        if (obj.XbsResGeneral != null)
+                                        {
+                                            ResultsMeasStation[ii].GeneralResult = new MeasurementsParameterGeneral();
+                                            List<YXbsResStGeneral> resF = obj.XbsResGeneral.FindAll(t => t.m_resmeasstationid == flevmeas.m_id);
+                                            if (resF != null)
+                                            {
+                                                foreach (YXbsResStGeneral x in resF)
+                                                {
+                                                    if (x.m_centralfrequency != null) ResultsMeasStation[ii].GeneralResult.CentralFrequency = x.m_centralfrequency;
+                                                    if (x.m_centralfrequencymeas != null) ResultsMeasStation[ii].GeneralResult.CentralFrequencyMeas = x.m_centralfrequencymeas;
+                                                    if (x.m_durationmeas != null) ResultsMeasStation[ii].GeneralResult.DurationMeas = x.m_durationmeas;
+                                                    if (x.m_markerindex != null) ResultsMeasStation[ii].GeneralResult.MarkerIndex = x.m_markerindex;
+                                                    if (x.m_offsetfrequency != null) ResultsMeasStation[ii].GeneralResult.OffsetFrequency = x.m_offsetfrequency;
+                                                    if (x.m_specrumstartfreq != null) ResultsMeasStation[ii].GeneralResult.SpecrumStartFreq = (decimal?)x.m_specrumstartfreq;
+                                                    if (x.m_specrumsteps != null) ResultsMeasStation[ii].GeneralResult.SpecrumSteps = (decimal?)x.m_specrumsteps;
+                                                    if (x.m_t1 != null) ResultsMeasStation[ii].GeneralResult.T1 = x.m_t1;
+                                                    if (x.m_t2 != null) ResultsMeasStation[ii].GeneralResult.T2 = x.m_t2;
+                                                    if (x.m_timefinishmeas != null) ResultsMeasStation[ii].GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
+                                                    if (x.m_timestartmeasdate != null) ResultsMeasStation[ii].GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
+                                                }
+                                            }
+                                        }
                                         ii++;
                                     }
                                     L_OUT.AddRange(ResultsMeasStation);

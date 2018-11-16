@@ -593,6 +593,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
         public List<ClassSDRResults> ReadResultStationHeaderByResId(int ID)
         {
+            const int Cn = 900;
             // Список объектов в рамках конкретного адаптера ICSM
             List<ClassSDRResults> L_IN = new List<ClassSDRResults>();
             try
@@ -623,6 +624,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.meas_res = m_fr;
 
                             /////
+                            /*
                             YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
                             XbsYXbsResmeasstation_.Format("*");
                             XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
@@ -638,7 +640,62 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
                             XbsYXbsResmeasstation_.Close();
                             XbsYXbsResmeasstation_.Dispose();
-                   
+                            */
+
+                            int idx_YXbsResmeasstation = 0;
+                            List<int> sql_YXbsResmeasstation_in = new List<int>();
+                            string sql_YXbsResmeasstation = "";
+                            string sql_YXbsResStLevelCar = "";
+                            YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                            XbsYXbsResmeasstation_.Format("*");
+                            XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
+                            for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                            {
+
+                                var m_fr_1 = new YXbsResmeasstation();
+                                m_fr_1.CopyDataFrom(XbsYXbsResmeasstation_);
+                                ICSM_T.XbsResmeasstation.Add(m_fr_1);
+                                m_fr_1.Close();
+                                m_fr_1.Dispose();
+
+                                if (sql_YXbsResmeasstation_in.Count <= Cn)
+                                {
+                                    sql_YXbsResmeasstation_in.Add(XbsYXbsResmeasstation_.m_id.Value);
+                                }
+                                if ((sql_YXbsResmeasstation_in.Count > Cn) || ((idx_YXbsResmeasstation + 1) == XbsYXbsResmeasstation_.GetCount()))
+                                {
+                                    sql_YXbsResmeasstation = string.Format("(XBS_RESMEASSTATIONID IN ({0}))", string.Join(",", sql_YXbsResmeasstation_in));
+                                    sql_YXbsResStLevelCar = string.Format("(RESMEASSTATIONID IN ({0}))", string.Join(",", sql_YXbsResmeasstation_in));
+                                    sql_YXbsResmeasstation_in.Clear();
+
+
+                                    List<int> sql_YXbsResStGeneral_in = new List<int>();
+                                    YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
+                                    XbsYXbsResGeneral_.Format("*");
+                                    XbsYXbsResGeneral_.Filter = sql_YXbsResStLevelCar;
+                                    XbsYXbsResGeneral_.Order = "[ID] ASC";
+                                    for (XbsYXbsResGeneral_.OpenRs(); !XbsYXbsResGeneral_.IsEOF(); XbsYXbsResGeneral_.MoveNext())
+                                    {
+                                        var m_fr_4 = new YXbsResStGeneral();
+                                        m_fr_4.CopyDataFrom(XbsYXbsResGeneral_);
+                                        ICSM_T.XbsResGeneral.Add(m_fr_4);
+                                        m_fr_4.Close();
+                                        m_fr_4.Dispose();
+                                        if (sql_YXbsResStGeneral_in.Count <= Cn)
+                                        {
+                                            sql_YXbsResStGeneral_in.Add(XbsYXbsResGeneral_.m_id.Value);
+                                        }
+                                    }
+                                    XbsYXbsResGeneral_.Close();
+                                    XbsYXbsResGeneral_.Dispose();
+                                }
+                                idx_YXbsResmeasstation++;
+                            }
+                            XbsYXbsResmeasstation_.Close();
+                            XbsYXbsResmeasstation_.Dispose();
+
+
                             L_IN.Add(ICSM_T);
                             m_fr.Close();
                             m_fr.Dispose();
