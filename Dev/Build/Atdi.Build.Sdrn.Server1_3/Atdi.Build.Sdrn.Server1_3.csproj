@@ -75,8 +75,15 @@
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Console.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Console.Sdrns.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+
+
+
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Services.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Services.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Model.SdrnsController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Model.SdrnsController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.ConfigurationSdrnController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.ConfigurationSdrnController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
@@ -84,10 +91,25 @@ copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(Config
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsControllerv2_0.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+
+
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
 
 
 
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\XICSM_ICSControlClient.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\XICSM_ICSControlClient.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\GMap.NET.WindowsPresentation.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\GMap.NET.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\ICSControlClient.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\MeasTaskForm.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\ICSM3.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
