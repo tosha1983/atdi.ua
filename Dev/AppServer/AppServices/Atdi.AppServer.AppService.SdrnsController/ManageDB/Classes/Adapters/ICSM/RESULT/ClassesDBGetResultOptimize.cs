@@ -642,6 +642,21 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             XbsYXbsResmeasstation_.Dispose();
                             */
 
+                            YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
+                            XbsYXbsLocationsensorm_.Format("*");
+                            XbsYXbsLocationsensorm_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsLocationsensorm_.Order = "[ID] ASC";
+                            for (XbsYXbsLocationsensorm_.OpenRs(); !XbsYXbsLocationsensorm_.IsEOF(); XbsYXbsLocationsensorm_.MoveNext())
+                            {
+                                var m_fr_ = new YXbsResLocSensorMeas();
+                                m_fr_.CopyDataFrom(XbsYXbsLocationsensorm_);
+                                ICSM_T.loc_sensorM.Add(m_fr_);
+                                m_fr_.Close();
+                                m_fr_.Dispose();
+                            }
+                            XbsYXbsLocationsensorm_.Close();
+                            XbsYXbsLocationsensorm_.Dispose();
+
                             int idx_YXbsResmeasstation = 0;
                             List<int> sql_YXbsResmeasstation_in = new List<int>();
                             string sql_YXbsResmeasstation = "";
