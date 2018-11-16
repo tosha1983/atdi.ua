@@ -324,7 +324,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs);
+        ShortMeasurementResultsExtend[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs);
 
     }
 }

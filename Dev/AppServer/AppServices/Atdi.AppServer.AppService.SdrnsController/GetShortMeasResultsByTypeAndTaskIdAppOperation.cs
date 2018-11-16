@@ -15,7 +15,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             SdrnsControllerAppService,
             SdrnsControllerAppService.GetShortMeasResultsByTypeAndTaskIdAppOperation,
             GetShortMeasResultsByTypeAndTaskIdAppOperationOptions,
-            ShortMeasurementResults[]
+            ShortMeasurementResultsExtend[]
         >
     {
         public GetShortMeasResultsByTypeAndTaskIdAppOperation(IAppServerContext serverContext, ILogger logger) : base(serverContext, logger)
@@ -28,10 +28,9 @@ namespace Atdi.AppServer.AppServices.SdrnsController
         /// <param name="options"></param>
         /// <param name="operationContext"></param>
         /// <returns></returns>
-        public override ShortMeasurementResults[] Handle(GetShortMeasResultsByTypeAndTaskIdAppOperationOptions options, IAppOperationContext operationContext)
+        public override ShortMeasurementResultsExtend[] Handle(GetShortMeasResultsByTypeAndTaskIdAppOperationOptions options, IAppOperationContext operationContext)
         {
-           ShortMeasurementResults[] ShortMeas = null;
-            MeasurementResults[] res = null;
+            ShortMeasurementResultsExtend[] ShortMeas = null;
             ClassesDBGetResultOptimize resDb = new ClassesDBGetResultOptimize(Logger);
             ClassConvertToSDRResultsOptimize conv = new ClassConvertToSDRResultsOptimize(Logger);
             Logger.Trace(this, options, operationContext);
@@ -39,20 +38,20 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             {
                 try
                 {
-                    res = conv.ConvertMeasurementResults(resDb.ReadlAllResultFromDBByIdTask(options.measurementType, options.TaskId)).ToArray();
+                    var res = conv.ConvertMeasurementResultsExt(resDb.ReadlAllResultFromDBByIdTask(options.measurementType, options.TaskId));
                     if (res != null)
                     {
-                        ShortMeas = new ShortMeasurementResults[res.Length];
-                        for (int i = 0; i < res.Length; i++)
+                        ShortMeas = new ShortMeasurementResultsExtend[res.Count];
+                        for (int i = 0; i < res.Count; i++)
                         {
-                            ShortMeas[i] = new ShortMeasurementResults();
-                            ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = res[i].DataRank, Id = res[i].Id, Number = res[i].N != null ? res[i].N.Value : -1, Status = res[i].Status, TimeMeas = res[i].TimeMeas, TypeMeasurements = res[i].TypeMeasurements };
-                            if (res[i].LocationSensorMeasurement != null)
+                            ShortMeas[i] = new ShortMeasurementResultsExtend();
+                            ShortMeasurementResultsExtend ShMsrt = new ShortMeasurementResultsExtend { SensorName = res[i].Value, DataRank = res[i].Key.DataRank, Id = res[i].Key.Id, Number = res[i].Key.N != null ? res[i].Key.N.Value : -1, Status = res[i].Key.Status, TimeMeas = res[i].Key.TimeMeas, TypeMeasurements = res[i].Key.TypeMeasurements };
+                            if (res[i].Key.LocationSensorMeasurement != null)
                             {
-                                if (res[i].LocationSensorMeasurement.Count() > 0)
+                                if (res[i].Key.LocationSensorMeasurement.Count() > 0)
                                 {
-                                    ShMsrt.CurrentLat = res[i].LocationSensorMeasurement[res[i].LocationSensorMeasurement.Count() - 1].Lat;
-                                    ShMsrt.CurrentLon = res[i].LocationSensorMeasurement[res[i].LocationSensorMeasurement.Count() - 1].Lon;
+                                    ShMsrt.CurrentLat = res[i].Key.LocationSensorMeasurement[res[i].Key.LocationSensorMeasurement.Count() - 1].Lat;
+                                    ShMsrt.CurrentLon = res[i].Key.LocationSensorMeasurement[res[i].Key.LocationSensorMeasurement.Count() - 1].Lon;
                                 }
                             }
                             ShortMeas[i] = ShMsrt;

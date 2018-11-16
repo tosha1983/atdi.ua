@@ -202,10 +202,10 @@ namespace Atdi.AppServer.Services.Sdrns
         }
 
 
-        ShortMeasurementResults[] ISdrnsController.GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs)
+        ShortMeasurementResultsExtend[] ISdrnsController.GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs)
         {
             var result =
-                Operation<SdrnsControllerAppService.GetShortMeasResultsByTypeAndTaskIdAppOperation , ShortMeasurementResults[]>()
+                Operation<SdrnsControllerAppService.GetShortMeasResultsByTypeAndTaskIdAppOperation , ShortMeasurementResultsExtend[]>()
                     .Invoke(
                         new GetShortMeasResultsByTypeAndTaskIdAppOperationOptions
                         {

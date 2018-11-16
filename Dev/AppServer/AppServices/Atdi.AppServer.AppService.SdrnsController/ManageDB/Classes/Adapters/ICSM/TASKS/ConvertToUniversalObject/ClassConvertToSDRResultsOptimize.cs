@@ -139,8 +139,148 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                 }
                             }
+
                             s_out.MeasurementsResults = L_MSR.ToArray();
                             L_OUT.Add(s_out);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Error in procedure ConvertTo_SDRObjects... " + ex.Message);
+                    }
+                });
+                tsk.Start();
+                tsk.Join();
+                logger.Trace("End procedure ConvertTo_SDRObjects...");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error in procedure ConvertTo_SDRObjects..." + ex.Message);
+            }
+            return L_OUT;
+        }
+
+
+        public List<KeyValuePair<MeasurementResults, string>> ConvertMeasurementResultsExt(List<ClassSDRResults> objs)
+        {
+            List<KeyValuePair<MeasurementResults, string>> L_OUT = new List<KeyValuePair<MeasurementResults, string>>();
+            string SensorName = "";
+            try
+            {
+                logger.Trace("Start procedure ConvertMeasurementResults...");
+                System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                {
+                    try
+                    {
+                        foreach (ClassSDRResults obj in objs)
+                        {
+                            MeasurementResults s_out = new MeasurementResults();
+                            s_out.Id = new MeasurementResultsIdentifier();
+                            s_out.AntVal = obj.meas_res.m_antval;
+                            s_out.DataRank = obj.meas_res.m_datarank;
+                            s_out.Id.MeasTaskId = new MeasTaskIdentifier();
+                            int MeasTaskId = -1; int.TryParse(obj.meas_res.m_meastaskid, out MeasTaskId);
+                            s_out.Id.MeasTaskId.Value = MeasTaskId;
+                            s_out.Id.MeasSdrResultsId = obj.meas_res.m_id.Value;
+                            s_out.N = obj.meas_res.m_n;
+                            s_out.StationMeasurements = new StationMeasurements();
+                            s_out.StationMeasurements.StationId = new SensorIdentifier();
+                            s_out.StationMeasurements.StationId.Value = obj.meas_res.m_sensorid.Value;
+                            s_out.Status = obj.meas_res.m_status;
+                            s_out.Id.SubMeasTaskId = obj.meas_res.m_submeastaskid.Value;
+                            s_out.Id.SubMeasTaskStationId = obj.meas_res.m_submeastaskstationid.Value;
+                            s_out.TimeMeas = (DateTime)obj.meas_res.m_timemeas;
+                            MeasurementType out_res_type;
+                            if (Enum.TryParse<MeasurementType>(obj.meas_res.m_typemeasurements, out out_res_type))
+                                s_out.TypeMeasurements = out_res_type;
+
+                            /// Freq
+                            List<FrequencyMeasurement> L_FM = new List<FrequencyMeasurement>();
+                            if (obj.resLevels != null)
+                            {
+                                foreach (YXbsResLevels fmeas in obj.resLevels)
+                                {
+                                    FrequencyMeasurement t_FM = new FrequencyMeasurement();
+                                    t_FM.Id = fmeas.m_id.Value;
+                                    //t_FM.Id = fmeas.m_nummeas.Value;
+                                    t_FM.Freq = fmeas.m_freqmeas.Value;
+                                    L_FM.Add(t_FM);
+                                }
+                            }
+                            s_out.FrequenciesMeasurements = L_FM.ToArray();
+                            /// Location
+                            List<LocationSensorMeasurement> L_SM = new List<LocationSensorMeasurement>();
+                            foreach (YXbsResLocSensorMeas fmeas in obj.loc_sensorM)
+                            {
+                                LocationSensorMeasurement t_SM = new LocationSensorMeasurement();
+                                t_SM.ASL = fmeas.m_asl;
+                                t_SM.Lon = fmeas.m_lon;
+                                t_SM.Lat = fmeas.m_lat;
+                                L_SM.Add(t_SM);
+                            }
+
+                            s_out.LocationSensorMeasurement = L_SM.ToArray();
+                            List<MeasurementResult> L_MSR = new List<MeasurementResult>();
+                            if (obj.resLevels != null)
+                            {
+                                if (obj.resLevels.Count > 0)
+                                {
+                                    foreach (YXbsResLevels flevmeas in obj.resLevels)
+                                    {
+                                        if (obj.meas_res.m_typemeasurements == MeasurementType.Level.ToString())
+                                        {
+                                            LevelMeasurementResult rsd = new LevelMeasurementResult();
+                                            rsd.Id = new MeasurementResultIdentifier();
+                                            rsd.Id.Value = flevmeas.m_id.Value;
+                                            rsd.Value = flevmeas.m_valuelvl;
+                                            rsd.PMin = flevmeas.m_pminlvl;
+                                            rsd.PMax = flevmeas.m_pmaxlvl;
+                                            L_MSR.Add(rsd);
+                                        }
+                                    }
+                                }
+                            }
+                            if (obj.level_meas_onl_res != null)
+                            {
+                                if (obj.level_meas_onl_res.Count > 0)
+                                {
+                                    foreach (YXbsResLevmeasonline flevmeas in obj.level_meas_onl_res)
+                                    {
+                                        LevelMeasurementOnlineResult rsd = new LevelMeasurementOnlineResult();
+                                        rsd.Id = new MeasurementResultIdentifier();
+                                        rsd.Id.Value = flevmeas.m_id.Value;
+                                        rsd.Value = flevmeas.m_value.Value;
+                                        L_MSR.Add(rsd);
+                                    }
+                                }
+                            }
+                            if (obj.resLevels != null)
+                            {
+                                if (obj.resLevels.Count > 0)
+                                {
+                                    foreach (YXbsResLevels flevmeas in obj.resLevels)
+                                    {
+                                        if (obj.meas_res.m_typemeasurements == MeasurementType.SpectrumOccupation.ToString())
+                                        {
+                                            SpectrumOccupationMeasurementResult rsd = new SpectrumOccupationMeasurementResult();
+                                            rsd.Id = new MeasurementResultIdentifier();
+                                            rsd.Id.Value = flevmeas.m_id.Value;
+                                            rsd.Value = flevmeas.m_occupancyspect;
+                                            L_MSR.Add(rsd);
+                                        }
+                                    }
+                                }
+                            }
+
+                            //////////////////////////////////////////////
+                            SensorName = "";
+                            if (obj.SensorName != null)
+                            {
+                                SensorName = obj.SensorName;
+                            }
+
+                            s_out.MeasurementsResults = L_MSR.ToArray();
+                            L_OUT.Add(new KeyValuePair<MeasurementResults, string>(s_out, SensorName));
                         }
                     }
                     catch (Exception ex)
