@@ -36,6 +36,7 @@ namespace XICSM.ICSControlClient
         {
             b.RegisterQueryMenuBuilder(MD.Tours.TableName, ToursContextMenuBuilder.Build);
             b.RegisterQueryMenuBuilder(MD.Allotments.TableName, AllotmentsContextMenuBuilder.Build);
+            b.RegisterQueryMenuBuilder(MD.Inspection.TableName, InspectionsContextMenuBuilder.Build);
         }
 
         public void RegisterSchema(IMSchema s)

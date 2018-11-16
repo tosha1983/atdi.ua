@@ -31,9 +31,7 @@ namespace XICSM.ICSControlClient.ViewModels
             Sensors
         }
 
-        
-
-#region Corrent Objects
+        #region Corrent Objects
         
         // Tasks
         private MeasTaskViewModel _currentMeasTask;
@@ -62,7 +60,6 @@ namespace XICSM.ICSControlClient.ViewModels
         private ModelType _currentModel;
 
         #endregion
-        private StringBuilder _log = new StringBuilder();
         private ShortMeasTaskDataAdatper _shortMeasTasks;
         private MeasurementResultsDataAdatper _measResults;
         private ShortSensorDataAdatper _shortSensors;
@@ -216,7 +213,6 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #endregion
 
-
         public Visibility MeasTaskDetailVisibility
         {
             get => this._measTaskDetailVisibility;
@@ -231,14 +227,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void ReloadShortMeasTasks()
         {
-            Stopwatch _stopWatch = new Stopwatch();
-            _stopWatch.Start();
-            writeLog("GetShortMeasTasks: Start process " + DateTime.Now.ToString());
             var sdrTasks = SVC.SdrnsControllerWcfClient.GetShortMeasTasks(new Atdi.AppServer.Contracts.DataConstraint());
-            _stopWatch.Stop();
-            writeLog("GetShortMeasTasks: Finish process " + DateTime.Now.ToString());
-            writeLog("GetShortMeasTasks: Totals " + GetTimeVal(_stopWatch.Elapsed));
-
             this._shortMeasTasks.Source = sdrTasks;
         }
 
@@ -249,16 +238,6 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 taskId = this._currentShortMeasTask.Id;
             }
-            //Stopwatch _stopWatch = new Stopwatch();
-            //_stopWatch.Start();
-            //writeLog("GetShortMeasResultsByTask: Start process " + DateTime.Now.ToString());
-            //var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetShortMeasResultsByTask(taskId);
-            //_stopWatch.Stop();
-            //writeLog("GetShortMeasResultsByTask: Finish process " + DateTime.Now.ToString());
-            //writeLog("GetShortMeasResultsByTask: Totals " + GetTimeVal(_stopWatch.Elapsed));
-
-            //this._shortMeasResults.Source = sdrMeasResults;
-            //this._resultsMeasurementsStations.Source = null;
 
             var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(taskId);
             this._measResults.Source = sdrMeasResults;
@@ -271,14 +250,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 taskId = this._currentShortMeasTask.Id;
             }
-            Stopwatch _stopWatch = new Stopwatch();
-            _stopWatch.Start();
-            writeLog("GetMeasTaskById: Start process " + DateTime.Now.ToString());
             var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(taskId);
-            //var task = SVC.SdrnsControllerWcfClient.GetMeasTaskById(taskId);
-            _stopWatch.Stop();
-            writeLog("GetMeasTaskById: Finish process " + DateTime.Now.ToString());
-            writeLog("GetMeasTaskById: Totals " + GetTimeVal(_stopWatch.Elapsed));
             var taskViewModel = Mappers.Map(task);
             this.CurrentMeasTask = taskViewModel;
 
@@ -320,13 +292,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void ReloadShorSensors()
         {
-            Stopwatch _stopWatch = new Stopwatch();
-            _stopWatch.Start();
-            writeLog("GetShortSensors: Start process " + DateTime.Now.ToString());
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(new Atdi.AppServer.Contracts.DataConstraint());
-            _stopWatch.Stop();
-            writeLog("GetShortSensors: Finish process " + DateTime.Now.ToString());
-            writeLog("GetShortSensors: Totals " + GetTimeVal(_stopWatch.Elapsed));
 
             var measTask = this.CurrentMeasTask;
             if (measTask != null )
@@ -950,12 +916,6 @@ namespace XICSM.ICSControlClient.ViewModels
 
             data.Points = points.ToArray();
             this.CurrentMapData = data;
-        }
-        private void writeLog(string mytext)
-        {
-            _log.AppendLine(mytext);
-            //System.IO.File.AppendAllText(Path.Combine(@"C:\", "ICSMPluginLog.txt"), "=======================================================================", (new System.Text.UTF8Encoding(false)));
-            //System.IO.File.AppendAllText(Path.Combine(@"C:\", "ICSMPluginLog.txt"), _log.ToString(), (new System.Text.UTF8Encoding(false)));
         }
         string GetTimeVal(TimeSpan val)
         {

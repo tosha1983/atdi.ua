@@ -240,6 +240,33 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
+        public static StationLevelsByTask[] GetStationLevelsByTask(List<int> MeasResultID, int MeasTaskId, int SectorId)
+        {
+            var parameters = new LevelsByTaskParams()
+            {
+                MeasResultID = MeasResultID,
+                MeasTaskId = MeasTaskId,
+                SectorId = SectorId
+            };
+            var result = Execute(contract => contract.GetStationLevelsByTask(parameters, GetDefaultOtherArgs()));
+
+            if (result == null)
+            {
+                return new StationLevelsByTask[] { };
+            }
+            return result;
+        }
+        public static ShortMeasurementResultsExtend[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId)
+        {
+            var result = Execute(contract => contract.GetShortMeasResultsByTypeAndTaskId(measurementType, taskId, GetDefaultOtherArgs()));
+
+            if (result == null)
+            {
+                return new ShortMeasurementResultsExtend[] { };
+            }
+            return result;
+        }
+
         #endregion
 
         #region Actions

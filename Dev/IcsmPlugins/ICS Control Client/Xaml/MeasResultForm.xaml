@@ -95,10 +95,9 @@
                                   <DataGridTextColumn Header="GlobalSID" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="MeasGlobalSID" Binding="{Binding Path=MeasGlobalSID}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                                  <DataGridTextColumn Header="№ Meas. Location" Binding="{Binding Path=LevelMeasurementsLength}"></DataGridTextColumn>
-                                  <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=GeneralResultCentralFrequency}"></DataGridTextColumn>
+                                  <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="Standard" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-                                  <DataGridTextColumn Header="CentralFrequencyMeas" Binding="{Binding Path=GeneralResultCentralFrequencyMeas}"></DataGridTextColumn>
+                                  <DataGridTextColumn Header="CentralFrequencyMeas" Binding="{Binding Path=CentralFrequencyMeas_MHz}"></DataGridTextColumn>
                               </DataGrid.Columns> 
                             </DataGrid>
                         </GroupBox>

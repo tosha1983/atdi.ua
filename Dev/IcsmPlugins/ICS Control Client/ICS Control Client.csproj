@@ -89,23 +89,29 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
-    <Compile Include="Forms\CalcSODlg1Form.cs">
+    <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CalcSODlg1Form.Designer.cs">
+    <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.Designer.cs">
       <DependentUpon>CalcSODlg1Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CalcSODlg2Form.cs">
+    <Compile Include="Handlers\Allotments\Forms\CalcSODlg2Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CalcSODlg2Form.Designer.cs">
+    <Compile Include="Handlers\Allotments\Forms\CalcSODlg2Form.Designer.cs">
       <DependentUpon>CalcSODlg2Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CalcSODlg3Form.cs">
+    <Compile Include="Handlers\Allotments\Forms\CalcSODlg3Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CalcSODlg3Form.Designer.cs">
+    <Compile Include="Handlers\Allotments\Forms\CalcSODlg3Form.Designer.cs">
       <DependentUpon>CalcSODlg3Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\Inspection\Forms\ExportFieldStrengthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Handlers\Inspection\Forms\ExportFieldStrengthForm.Designer.cs">
+      <DependentUpon>ExportFieldStrengthForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
@@ -125,15 +131,17 @@
     <Compile Include="Forms\MeasTaskForm.Designer.cs">
       <DependentUpon>MeasTaskForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SelectAreaForm.cs">
+    <Compile Include="Handlers\Tour\Forms\SelectAreaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SelectAreaForm.Designer.cs">
+    <Compile Include="Handlers\Tour\Forms\SelectAreaForm.Designer.cs">
       <DependentUpon>SelectAreaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\Allotments\AllotmentsContextMenuBuilder.cs" />
     <Compile Include="Handlers\Allotments\Commands\CalcSOByMeasResultCommand.cs" />
     <Compile Include="Handlers\Allotments\Commands\StartMeasurementsSOCommand.cs" />
+    <Compile Include="Handlers\Inspection\Commands\ExportFieldStrengthCommand.cs" />
+    <Compile Include="Handlers\Inspection\InspectionsContextMenuBuilder.cs" />
     <Compile Include="Handlers\Tour\Commands\SelectAreaCommand.cs" />
     <Compile Include="Handlers\Tour\Commands\SynchroInspectionsCommand.cs" />
     <Compile Include="Metadata\FreqPlanChan.cs" />
@@ -219,13 +227,13 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\CalcSODlg1Form.resx">
+    <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">
       <DependentUpon>CalcSODlg1Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CalcSODlg2Form.resx">
+    <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg2Form.resx">
       <DependentUpon>CalcSODlg2Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CalcSODlg3Form.resx">
+    <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg3Form.resx">
       <DependentUpon>CalcSODlg3Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
@@ -237,7 +245,10 @@
     <EmbeddedResource Include="Forms\MeasTaskForm.resx">
       <DependentUpon>MeasTaskForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SelectAreaForm.resx">
+    <EmbeddedResource Include="Handlers\Inspection\Forms\ExportFieldStrengthForm.resx">
+      <DependentUpon>ExportFieldStrengthForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Handlers\Tour\Forms\SelectAreaForm.resx">
       <DependentUpon>SelectAreaForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

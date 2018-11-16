@@ -114,12 +114,12 @@ namespace XICSM.ICSControlClient.ViewModels
         public MeasurementResultsViewModel CurrentMeasurementResults
         {
             get => this._currentMeasurementResults;
-            set => this.Set(ref this._currentMeasurementResults, value, () => { ReloadMeasResaltDetail(); UpdateCurrentChartOption(); this.RedrawMap(); });
+            set => this.Set(ref this._currentMeasurementResults, value, () => { ReloadMeasResaltDetail(); UpdateCurrentChartOption(); RedrawMap(); });
         }
         public ResultsMeasurementsStationExtentedViewModel CurrentResultsMeasurementsStation
         {
             get => this._currentResultsMeasurementsStation;
-            set => this.Set(ref this._currentResultsMeasurementsStation, value, () => { ReloadMeasResultStationDetail(); ReloadLevelMeasurements(); UpdateCurrentChartOption(); });
+            set => this.Set(ref this._currentResultsMeasurementsStation, value, () => { ReloadMeasResultStationDetail(); ReloadLevelMeasurements(); UpdateCurrentChartOption(); RedrawMap(); });
         }
         public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStationData
         {
@@ -129,7 +129,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public LevelMeasurementsCarViewModel CurrentLevelMeasurements
         {
             get => this._currentLevelMeasurements;
-            set => this.Set(ref this._currentLevelMeasurements, value, () => { this.RedrawMap(); });
+            set => this.Set(ref this._currentLevelMeasurements, value);
         }
 
         private void ReloadMeasResult()
@@ -509,21 +509,40 @@ namespace XICSM.ICSControlClient.ViewModels
                 });
             }
 
-            if (this.CurrentLevelMeasurements != null)
-            {
-                if (this.CurrentLevelMeasurements.Lon.HasValue && this.CurrentLevelMeasurements.Lat.HasValue)
-                {
-                    System.Windows.Media.Brush pointBrush = System.Windows.Media.Brushes.GreenYellow;
-                    if (this.CurrentLevelMeasurements.LeveldBmkVm.HasValue && this.CurrentLevelMeasurements.LeveldBmkVm.Value != 0)
-                    {
-                        pointBrush = GetBrushColor(10, 80, this.CurrentLevelMeasurements.LeveldBmkVm.Value);
-                    }
-                    else if (this.CurrentLevelMeasurements.LeveldBm.HasValue && this.CurrentLevelMeasurements.LeveldBm.Value != 0)
-                    {
-                        pointBrush = GetBrushColor(-100, -30, this.CurrentLevelMeasurements.LeveldBm.Value);
-                    }
+            //if (this.CurrentLevelMeasurements != null)
+            //{
+            //    if (this.CurrentLevelMeasurements.Lon.HasValue && this.CurrentLevelMeasurements.Lat.HasValue)
+            //    {
+            //        System.Windows.Media.Brush pointBrush = System.Windows.Media.Brushes.GreenYellow;
+            //        if (this.CurrentLevelMeasurements.LeveldBmkVm.HasValue && this.CurrentLevelMeasurements.LeveldBmkVm.Value != 0)
+            //        {
+            //            pointBrush = GetBrushColor(10, 80, this.CurrentLevelMeasurements.LeveldBmkVm.Value);
+            //        }
+            //        else if (this.CurrentLevelMeasurements.LeveldBm.HasValue && this.CurrentLevelMeasurements.LeveldBm.Value != 0)
+            //        {
+            //            pointBrush = GetBrushColor(-100, -30, this.CurrentLevelMeasurements.LeveldBm.Value);
+            //        }
 
-                    points.Add(new MP.MapDrawingDataPoint() { Location = new Location(this.CurrentLevelMeasurements.Lon.Value, this.CurrentLevelMeasurements.Lat.Value), Opacity = 0.5, Height = 5, Width = 5, Fill = pointBrush, Color = pointBrush });
+            //        points.Add(new MP.MapDrawingDataPoint() { Location = new Location(this.CurrentLevelMeasurements.Lon.Value, this.CurrentLevelMeasurements.Lat.Value), Opacity = 0.5, Height = 5, Width = 5, Fill = pointBrush, Color = pointBrush });
+            //    }
+            //}
+            if (this.LevelMeasurements != null)
+            {
+                foreach (var levelMeasurement in LevelMeasurements.Source)
+                {
+                    if (levelMeasurement.Lon.HasValue && levelMeasurement.Lat.HasValue)
+                    {
+                        System.Windows.Media.Brush pointBrush = System.Windows.Media.Brushes.GreenYellow;
+                        if (levelMeasurement.LeveldBmkVm.HasValue && levelMeasurement.LeveldBmkVm.Value != 0)
+                        {
+                            pointBrush = GetBrushColor(10, 80, levelMeasurement.LeveldBmkVm.Value);
+                        }
+                        else if (levelMeasurement.LeveldBm.HasValue && levelMeasurement.LeveldBm.Value != 0)
+                        {
+                            pointBrush = GetBrushColor(-100, -30, levelMeasurement.LeveldBm.Value);
+                        }
+                        points.Add(new MP.MapDrawingDataPoint() { Location = new Location(levelMeasurement.Lon.Value, levelMeasurement.Lat.Value), Opacity = 0.5, Height = 5, Width = 5, Fill = pointBrush, Color = pointBrush });
+                    }
                 }
             }
 
