@@ -239,7 +239,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
             return new VM.ResultsMeasurementsStationExtentedViewModel
             {
-                CentralFrequencyMeas_MHz = source.CentralFrequencyMeas_MHz,
+                CentralFrequencyMeas_MHz = source.GeneralResult.CentralFrequencyMeas,
+                CentralFrequencyMHz = source.GeneralResult.CentralFrequency,
                 Id = source.Id,
                 SectorId = source.IdSector.ToNull(),
                 StationId = source.Idstation,

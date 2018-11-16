@@ -15,6 +15,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public string GlobalSID { get; set; }
         public string MeasGlobalSID { get; set; }
         public string Standard { get; set; }
+        public double? CentralFrequencyMHz { get; set; }
         public double? CentralFrequencyMeas_MHz { get; set; }
         public string StationSysInfo { get; set; }
     }
