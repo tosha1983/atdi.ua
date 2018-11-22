@@ -38,6 +38,14 @@ namespace Atdi.DataModels.WebQuery
         [DataMember]
         public string Format { get; set; }
 
-       
+
+        [DataMember]
+        public bool Readonly { get; set; }
+
+        [DataMember]
+        public bool NotChangeableByAdd { get; set; }
+
+        [DataMember]
+        public bool NotChangeableByEdit { get; set; }
     }
 }
