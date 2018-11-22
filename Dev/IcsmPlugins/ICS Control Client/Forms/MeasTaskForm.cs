@@ -37,7 +37,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new CreateMeasTaskViewModel();
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new CreateMeasTaskViewModel() { _measTaskForm = this};
             }
             //_wpfControl = new MainFormWpfControl();
             //this._wpfElementHost.Child = _wpfControl;

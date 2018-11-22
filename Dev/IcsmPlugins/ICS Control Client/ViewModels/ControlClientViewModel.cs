@@ -329,6 +329,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 var measTaskForm = new FM.MeasTaskForm();
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
+                this.ReloadShortMeasTasks();
             }
             catch (Exception e)
             {
