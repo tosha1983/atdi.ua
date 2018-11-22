@@ -102,6 +102,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 ClassConvertTasks ts = new ClassConvertTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
                 List<Atdi.DataModels.Sdrns.Device.MeasTask> Checked_L_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
+                List<Atdi.AppServer.Contracts.Sdrns.MeasSdrTask> Checked_L_Device_3_0 = new List<Atdi.AppServer.Contracts.Sdrns.MeasSdrTask>();
+                
 
                 System.Threading.Thread tsk_main = new System.Threading.Thread(() =>
                 {
@@ -223,12 +225,55 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
+                                            if (apiVer == "v3.0")
+                                            {
+                                                if (ActionType == "New")
+                                                {
+                                                    M.CreateeasTaskSDRsApi1_0(ActionType);
+                                                    IdTsk = Create_New_Meas_Task(M, "New");
+                                                }
+
+                                                LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
+                                                if (LM_SDR != null)
+                                                {
+
+                                                    string ids = "";
+                                                    int MaxVal = cl.GetMaXIdsSdrTasks(M);
+                                                    int idx = MaxVal + 1;
+                                                    foreach (MeasSdrTask mx in LM_SDR.ToArray())
+                                                    {
+                                                        mx.Id = idx;
+                                                        ids = idx.ToString() + ";";
+                                                        if (mx.SensorId.Value == SensorId)
+                                                        {
+                                                            /// Перед отправкой включаем валидацию созданных объектов MeasTaskSDR
+                                                            if (mx.ValidationMeas1_0())
+                                                            {
+                                                                Checked_L_Device_3_0.Add(mx);
+                                                                M.UpdateStatus(ActionType);
+                                                            }
+                                                            else
+                                                            {
+                                                                // если вадидация не прошла
+                                                                M.UpdateStatusE_E(mx.MeasSubTaskStationId, "E_E");
+                                                                M.UpdateStatus(ActionType);
+                                                                //обновление группы статусов для объекта MeasTask
+                                                                cl.SaveStatusTaskToDB(M);
+                                                            }
+                                                        }
+                                                        idx++;
+                                                    }
+                                                    if (ids.Length > 0) ids = ids.Remove(ids.Count() - 1, 1);
+                                                    cl.SaveIdsSdrTasks(M, ids);
+
+                                                }
+                                            }
                                         }
                                         M.MeasSubTasks = msbd_old;
 
                                     }
 
-                                    if (Checked_L.Count > 0)
+                                    if (Checked_L.Count > 0) 
                                     {
                                         BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
                                         // Отправка сообщения в СТОП-ЛИСТ
@@ -254,6 +299,39 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             }
                                         }
                                         Checked_L.Clear();
+                                    }
+
+                                    //Отправка тасков в очередь специфичную для версии API 3.0
+                                    if (Checked_L_Device_3_0.Count > 0)
+                                    {
+                                        string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[{apiVer}]";
+                                        BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                                        if (ActionType == "Stop")
+                                        {
+                                            foreach (MeasSdrTask task in Checked_L_Device_3_0)
+                                            {
+                                                if (busManager.SendDataToDeviceCrypto<MeasSdrTask>("StopMeasSdrTask", task, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
+                                                {
+                                                    isSendSuccess = true;
+                                                    isSuccessTemp = true;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            foreach (MeasSdrTask task in Checked_L_Device_3_0)
+                                            {
+                                                if (busManager.SendDataToDeviceCrypto<MeasSdrTask>("SendMeasSdrTask", task, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
+                                                {
+                                                    isSendSuccess = true;
+                                                }
+                                                else
+                                                {
+                                                    isSendSuccess = false;
+                                                }
+                                            }
+                                        }
+                                        Checked_L_Device_3_0.Clear();
                                     }
 
 

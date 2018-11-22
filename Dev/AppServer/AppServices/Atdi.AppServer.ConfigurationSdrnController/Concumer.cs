@@ -57,49 +57,99 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             ConfigurationRabbitOptions.QueueDeclareDevice(StartNameQueueDevice, sensorName, techId, channel_new, ExchangePointFromServer + ".[" + ConfigurationRabbitOptions.apiVersion + "]");
                         }
                         MessageObject objectRes = UnPackObject(messageResponse);
-                        var dataRegisterSensor = objectRes.Object as Atdi.DataModels.Sdrns.Device.Sensor;
-                        Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
-                        var queueName = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
-                        channel.QueueDeclare(
-                              queue: queueName,
-                              durable: true,
-                              exclusive: false,
-                              autoDelete: false,
-                              arguments: null);
-                        channel.QueueBind(queueName, Exchangepoint, routingKey);
-                        Atdi.DataModels.Sdrns.Device.SensorRegistrationResult deviceResult = new Atdi.DataModels.Sdrns.Device.SensorRegistrationResult();
-                        deviceResult.SensorName = dataRegisterSensor.Name;
-                        deviceResult.EquipmentTechId = dataRegisterSensor.Equipment.TechId;
-                        deviceResult.SdrnServer = sdrnServer;
-                        if (handler.IsFindSensorInDB(dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId) == false)
+                        if (objectRes.Object is Atdi.DataModels.Sdrns.Device.Sensor)
                         {
-                            try
+                            var dataRegisterSensor = objectRes.Object as Atdi.DataModels.Sdrns.Device.Sensor;
+                            Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
+                            var queueName = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
+                            channel.QueueDeclare(
+                                  queue: queueName,
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
+                            channel.QueueBind(queueName, Exchangepoint, routingKey);
+                            Atdi.DataModels.Sdrns.Device.SensorRegistrationResult deviceResult = new Atdi.DataModels.Sdrns.Device.SensorRegistrationResult();
+                            deviceResult.SensorName = dataRegisterSensor.Name;
+                            deviceResult.EquipmentTechId = dataRegisterSensor.Equipment.TechId;
+                            deviceResult.SdrnServer = sdrnServer;
+                            if (handler.IsFindSensorInDB(dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId) == false)
                             {
-                                if (handler.CreateNewObjectSensor(dataRegisterSensor, ConfigurationRabbitOptions.apiVersion))
+                                try
                                 {
-                                    deviceResult.Status = "Success";
-                                    deviceResult.Message = string.Format("Confirm success registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                                    PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                                    if (handler.CreateNewObjectSensor(dataRegisterSensor, ConfigurationRabbitOptions.apiVersion))
+                                    {
+                                        deviceResult.Status = "Success";
+                                        deviceResult.Message = string.Format("Confirm success registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                                        PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                                    }
+                                    else
+                                    {
+                                        deviceResult.Status = "Fault";
+                                        deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                                        PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                                    }
                                 }
-                                else
+                                catch (Exception ex)
                                 {
                                     deviceResult.Status = "Fault";
-                                    deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                                    deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}: {2}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId, ex.Message);
                                     PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
                                 }
                             }
-                            catch (Exception ex)
+                            else
                             {
                                 deviceResult.Status = "Fault";
-                                deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}: {2}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId, ex.Message);
+                                deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1} (Duplicate) ", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
                                 PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
                             }
                         }
-                        else
+                        else if (objectRes.Object is Atdi.AppServer.Contracts.Sdrns.Sensor)
                         {
-                            deviceResult.Status = "Fault";
-                            deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1} (Duplicate) ", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
-                            PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                            var dataRegisterSensor = objectRes.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
+                            Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
+                            var queueName = routingKey + $".[{ConfigurationRabbitOptions.apiVersion}]";
+                            channel.QueueDeclare(
+                                  queue: queueName,
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
+                            channel.QueueBind(queueName, Exchangepoint, routingKey);
+                            Atdi.DataModels.Sdrns.Device.SensorRegistrationResult deviceResult = new Atdi.DataModels.Sdrns.Device.SensorRegistrationResult();
+                            deviceResult.SensorName = dataRegisterSensor.Name;
+                            deviceResult.EquipmentTechId = dataRegisterSensor.Equipment.TechId;
+                            deviceResult.SdrnServer = sdrnServer;
+                            if (handler.IsFindSensorInDB(dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId) == false)
+                            {
+                                try
+                                {
+                                    if (handler.CreateNewObjectSensor(dataRegisterSensor))
+                                    {
+                                        deviceResult.Status = "Success";
+                                        deviceResult.Message = string.Format("Confirm success registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                                        PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                                    }
+                                    else
+                                    {
+                                        deviceResult.Status = "Fault";
+                                        deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                                        PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    deviceResult.Status = "Fault";
+                                    deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1}: {2}", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId, ex.Message);
+                                    PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                                }
+                            }
+                            else
+                            {
+                                deviceResult.Status = "Fault";
+                                deviceResult.Message = string.Format("Error registration sensor Name = {0}, TechId = {1} (Duplicate) ", dataRegisterSensor.Name, dataRegisterSensor.Equipment.TechId);
+                                PublishMessage<SensorRegistrationResult>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendRegistrationResult", channel, deviceResult, message.BasicProperties.CorrelationId);
+                            }
                         }
                         result = true;
                         break;
@@ -224,6 +274,20 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendMeasResults.CustTxt1 = "Fault";
                             PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                         }
+                        result = true;
+                        break;
+
+                    case "SendActivitySensor":
+                        MessageObject dataSendActivitySensor = UnPackObject(messageResponse);
+                        var dataSendActivitySensorRecognize = dataSendActivitySensor.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
+
+                        result = true;
+                        break;
+                    case "SendMeasSdrResults":
+
+                        MessageObject dataS = UnPackObject(messageResponse);
+                        var dataS1 = dataS.Object as Atdi.AppServer.Contracts.Sdrns.MeasSdrResults;
+                        // здесь обработчик
                         result = true;
                         break;
                     case "SendEntityPart":
