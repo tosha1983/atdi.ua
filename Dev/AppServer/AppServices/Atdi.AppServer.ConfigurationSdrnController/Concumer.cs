@@ -7,7 +7,8 @@ using Atdi.DataModels.Sdrns.Device;
 using Castle.Windsor;
 using RabbitMQ.Client;
 using Atdi.Modules.Sdrn.MessageBus;
-
+using Atdi.SDNRS.AppServer.ManageDB.Adapters;
+using Atdi.SDNRS.AppServer.BusManager;
 
 namespace Atdi.AppServer.ConfigurationSdrnController
 {
@@ -278,9 +279,27 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         break;
 
                     case "SendActivitySensor":
-                        MessageObject dataSendActivitySensor = UnPackObject(messageResponse);
-                        var dataSendActivitySensorRecognize = dataSendActivitySensor.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
+                        SensorActivity sensorActivity = ConfigurationSdrnController.listSensorActivity.Find(t => t.Sensor_.Name == sensorName && t.Sensor_.Equipment.TechId == techId);
+                        if (sensorActivity != null)
+                        {
+                            if (sensorActivity.cntSeconds > 10)
+                            {
+                                MessageObject dataSendActivitySensor = UnPackObject(messageResponse);
+                                var dataSendActivitySensorRecognize = dataSendActivitySensor.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
+                                dataSendActivitySensorRecognize.Status = "A";
+                                ClassDBGetSensor.UpdateStatusSensor(dataSendActivitySensorRecognize);
 
+                                Atdi.DataModels.Sdrns.Device.DeviceCommand SendActivitySensorResultRes = new DeviceCommand();
+                                SendActivitySensorResultRes.Command = "SendActivitySensorResult";
+                                SendActivitySensorResultRes.CommandId = "SendCommand";
+                                SendActivitySensorResultRes.SensorName = sensorName;
+                                SendActivitySensorResultRes.EquipmentTechId = techId;
+                                SendActivitySensorResultRes.SdrnServer = sdrnServer;
+                                SendActivitySensorResultRes.CustTxt1 = "Success";
+                                PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, SendActivitySensorResultRes, message.BasicProperties.CorrelationId);
+                                sensorActivity.cntSeconds = 0;
+                            }
+                        }
                         result = true;
                         break;
                     case "SendMeasSdrResults":

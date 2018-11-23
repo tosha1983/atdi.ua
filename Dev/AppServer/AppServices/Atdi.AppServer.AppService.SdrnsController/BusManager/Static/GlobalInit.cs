@@ -147,12 +147,6 @@ namespace Atdi.SDNRS.AppServer.BusManager
 
             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
             GlobalInit.Initialization();
-            Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new OracleDataAccess();
-            try
-            {
-                oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
-            }
-            catch (Exception) { }
         }
 
     }

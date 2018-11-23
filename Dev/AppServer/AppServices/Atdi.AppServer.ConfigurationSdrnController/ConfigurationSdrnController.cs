@@ -25,7 +25,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         private ShedulerCheckActivitySensor CheckActivitySensor;
         private ShedulerGetMeasTask getMeasTask;
         private ShedulerCheckStart Quartz;
-
+        public static List<SensorActivity> listSensorActivity = new List<SensorActivity>();
 
         public ConfigurationSdrnController()
         {
@@ -41,6 +41,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         {
             try
             {
+
              /*
                GlobalInit.Initialization();
                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -58,7 +59,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                {
                     dyn2.Clear();
                     dyn.Clear();
-
                }
                */
 
@@ -66,6 +66,9 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+                Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new Atdi.Oracle.DataAccess.OracleDataAccess();
+                oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
+
                 DateTime? CurrDate = _oracleDataAccess.GetSystemDate();
                 var licenseServerFileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)+ @"\License\" +ConfigurationManager.AppSettings["LicenseServer.FileName"].ToString();
                 var licenseDeviceFileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\License\" + ConfigurationManager.AppSettings["LicenseDevice.FileName"].ToString();
@@ -89,7 +92,12 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     {
                         if (!string.IsNullOrEmpty(verResult.Instance))
                         {
-                            _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensor());
+                            var lstAllSensors = _classDBGetSensor.LoadObjectAllSensorAPI1_0();
+                            foreach (var c in lstAllSensors)
+                            {
+                                listSensorActivity.Add(new SensorActivity(c));
+                            }
+                            _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensorAPI2_0());
                             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
                             GlobalInit.Initialization();
                             var productK = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.ProductKey"].ToString(),"Atdi.WcfServices.Sdrn.Device");
@@ -155,6 +163,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 _logger.Error("Not found file: "+ licenseFile);
                             }
 
+                            
                             Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
                             Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
                             CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
@@ -162,6 +171,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ScanMeasTasks);
                             Quartz = new ShedulerCheckStart(this._logger);
                             Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
+
                         }
                         else
                         {

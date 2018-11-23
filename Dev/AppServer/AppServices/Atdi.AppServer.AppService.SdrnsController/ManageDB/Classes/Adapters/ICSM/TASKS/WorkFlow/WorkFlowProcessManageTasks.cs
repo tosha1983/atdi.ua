@@ -150,6 +150,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 {
                                                     M.CreateeasTaskSDRsApi1_0(ActionType);
                                                     IdTsk = Create_New_Meas_Task(M, "New");
+                                                    var mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(IdTsk.Value)).ToList();
+                                                    if (mts_.Count()> 0)
+                                                    {
+                                                        M = mts_[0];
+                                                    }
                                                 }
 
                                                 LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
@@ -193,6 +198,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 {
                                                     M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, IdTsk, ActionType);
                                                     IdTsk = Create_New_Meas_Task(M, "New");
+                                                    var mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(IdTsk.Value)).ToList();
+                                                    if (mts_.Count() > 0)
+                                                    {
+                                                        M = mts_[0];
+                                                    }
                                                 }
                                                 else IdTsk = mt.Id.Value;
                                                 LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, IdTsk, ActionType);
@@ -225,6 +235,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     cl.SaveIdsSdrTasks(M, ids);
                                                 }
                                             }
+                                            /*
                                             if (apiVer == "v3.0")
                                             {
                                                 if (ActionType == "New")
@@ -268,6 +279,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                                 }
                                             }
+                                            */
                                         }
                                         M.MeasSubTasks = msbd_old;
 

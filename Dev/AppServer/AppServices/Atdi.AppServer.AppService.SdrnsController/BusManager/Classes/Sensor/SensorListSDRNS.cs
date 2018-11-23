@@ -197,7 +197,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                             Sensor f = L_S.Find(t => t.Name == se.se.Name && t.Equipment.TechId == se.se.Equipment.TechId);
                                             if (f != null)
                                             {
-                                                se.Cnt_sensor_New++; f.Status = "A"; se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_Old = 0; se.BZ.Close(); se.BZ.Start(); gsd.UpdateStatusSensor(f);
+                                                se.Cnt_sensor_New++; f.Status = "A"; se.Cnt_timer = 0; se.Cnt_all_time = 0; se.Cnt_sensor_Old = 0; se.BZ.Close(); se.BZ.Start(); ClassDBGetSensor.UpdateStatusSensor(f);
                                             }
                                             else
                                             {
@@ -250,7 +250,7 @@ namespace Atdi.SDNRS.AppServer.BusManager
                                     fc.Status = AllStatusSensor.F.ToString();
                                     se.Cnt_timer = 0;
                                     se.Cnt_sensor_New = 0;
-                                    gsd.UpdateStatusSensor(fc);
+                                    ClassDBGetSensor.UpdateStatusSensor(fc);
                                 }
                                 else if ((se.Cnt_all_time >= BaseXMLConfiguration.xml_conf._MaxTimeNotActivateStatusSensor))
                                 {
