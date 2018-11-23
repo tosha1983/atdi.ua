@@ -102,11 +102,23 @@
       <DependentUpon>AdminFormWebQuery.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ClassORM.cs" />
+    <Compile Include="Forms\FormEditColumnAttributes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormEditColumnAttributes.Designer.cs">
+      <DependentUpon>FormEditColumnAttributes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormEditConstraintExtend.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormEditConstraintExtend.Designer.cs">
       <DependentUpon>FormEditConstraintExtend.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormColumnAttributesList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormColumnAttributesList.Designer.cs">
+      <DependentUpon>FormColumnAttributesList.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormWebConstrainsList.cs">
       <SubType>Form</SubType>
@@ -163,8 +175,14 @@
     <EmbeddedResource Include="Forms\AdminFormWebQuery.resx">
       <DependentUpon>AdminFormWebQuery.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormEditColumnAttributes.resx">
+      <DependentUpon>FormEditColumnAttributes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormEditConstraintExtend.resx">
       <DependentUpon>FormEditConstraintExtend.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormColumnAttributesList.resx">
+      <DependentUpon>FormColumnAttributesList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormWebConstrainsList.resx">
       <DependentUpon>FormWebConstrainsList.cs</DependentUpon>

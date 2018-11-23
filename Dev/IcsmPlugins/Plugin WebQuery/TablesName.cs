@@ -11,6 +11,7 @@
         public const string USERS = "USERS";
         public const string itblUsers = USERS;
         public const string itblUsersContacts = "USERS_CNTCT";
+        public const string WebQueryAtttributes = "XWEBQUERYATTRIBUTES";
     }
   
 }

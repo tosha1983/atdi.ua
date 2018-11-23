@@ -69,41 +69,47 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             if (Lst.TableId == IM.NullI) isNew = true;
             comboBox_group.Items.AddRange(GetAllTaskForceShortName().ToArray());
             var rsWebQuery = new IMRecordset(Lst.TableName, IMRecordset.Mode.ReadOnly);
-            rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+            rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
             if (Lst.DataList == null) rsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, Lst.TableId);
             rsWebQuery.AddSelectionFrom(Lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
-            for (rsWebQuery.Open(); !rsWebQuery.IsEOF(); rsWebQuery.MoveNext()) {
-                                textBoxName.Text = rsWebQuery.GetS("NAME");
-                                textBoxDescrQuery.Text = rsWebQuery.GetS("COMMENTS");
-                                byte[] zip = null;
-                                string sql; ANetDb d;
-                                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + rsWebQuery.GetI("ID"), out sql, out d);
-                                ANetRs Anet_rs = d.NewRecordset();
-                                Anet_rs.Open(sql);
-                                if (!Anet_rs.IsEOF())
-                                zip = Anet_rs.GetBinary(0);
-                                Anet_rs.Destroy();
-                                if (zip != null)  {
-                                string cipherText = UTF8Encoding.UTF8.GetString(zip);
-                                textBoxQuery.Text = cipherText;
-                                query = cipherText;
-                                }
-                                txtUserIdent.Items.Clear();
-                                List<string> List_Path = ClassORM.GetProperties(query, true);
-                                txtUserIdent.Items.Clear();
-                                txtUserIdent.Items.Add("");
-                                foreach (string item in List_Path)
-                                    txtUserIdent.Items.Add(item);
+            for (rsWebQuery.Open(); !rsWebQuery.IsEOF(); rsWebQuery.MoveNext())
+            {
+                textBoxName.Text = rsWebQuery.GetS("NAME");
+                textBoxDescrQuery.Text = rsWebQuery.GetS("COMMENTS");
+                ViewFormColumns.Text = rsWebQuery.GetS("VIEWCOLUMNS");
+                AddFormColumns.Text = rsWebQuery.GetS("ADDCOLUMNS");
+                EditFormColumns.Text = rsWebQuery.GetS("EDITCOLUMNS");
+                TableColumns.Text = rsWebQuery.GetS("TABLECOLUMNS");
 
-                                 if (txtUserIdent.Items.IndexOf(rsWebQuery.GetS("IDENTUSER").ToString()) != -1) txtUserIdent.SelectedIndex = txtUserIdent.Items.IndexOf(rsWebQuery.GetS("IDENTUSER").ToString());
-                                textBox_code.Text = rsWebQuery.GetS("CODE");
-                                int idx = comboBox_group.FindString(rsWebQuery.GetS("TASKFORCEGROUP"));
-                                if (idx > -1) comboBox_group.SelectedIndex = idx;
-                                id = rsWebQuery.GetI("ID");
-                                isNew = false;
+                byte[] zip = null;
+                string sql; ANetDb d;
+                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + rsWebQuery.GetI("ID"), out sql, out d);
+                ANetRs Anet_rs = d.NewRecordset();
+                Anet_rs.Open(sql);
+                if (!Anet_rs.IsEOF())
+                    zip = Anet_rs.GetBinary(0);
+                Anet_rs.Destroy();
+                if (zip != null)
+                {
+                    string cipherText = UTF8Encoding.UTF8.GetString(zip);
+                    textBoxQuery.Text = cipherText;
+                    query = cipherText;
+                }
+                txtUserIdent.Items.Clear();
+                List<string> List_Path = ClassORM.GetProperties(query, true);
+                txtUserIdent.Items.Clear();
+                txtUserIdent.Items.Add("");
+                foreach (string item in List_Path)
+                    txtUserIdent.Items.Add(item);
+
+                if (txtUserIdent.Items.IndexOf(rsWebQuery.GetS("IDENTUSER").ToString()) != -1) txtUserIdent.SelectedIndex = txtUserIdent.Items.IndexOf(rsWebQuery.GetS("IDENTUSER").ToString());
+                textBox_code.Text = rsWebQuery.GetS("CODE");
+                int idx = comboBox_group.FindString(rsWebQuery.GetS("TASKFORCEGROUP"));
+                if (idx > -1) comboBox_group.SelectedIndex = idx;
+                id = rsWebQuery.GetI("ID");
+                isNew = false;
 
             }
-
         }
 
       
@@ -155,7 +161,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             if (DA == System.Windows.Forms.DialogResult.Yes){
                 {
                     var rsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
-                    rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                    rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMN");
                     if (_lst.DataList == null) rsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, _lst.TableId);
                     else rsWebQuery.AddSelectionFrom(_lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
                     try {
@@ -243,7 +249,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         return;
                     }
                         IMRecordset rsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
-                        rsWebQueryNew.Select("ID,NAME,CODE,TASKFORCEGROUP,IDENTUSER,COMMENTS");
+                        rsWebQueryNew.Select("ID,NAME,CODE,TASKFORCEGROUP,IDENTUSER,COMMENTS,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
                     rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, -1);
                     rsWebQueryNew.Open();
                     if (rsWebQueryNew.IsEOF())
@@ -256,6 +262,13 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         rsWebQueryNew.Put("TASKFORCEGROUP", comboBox_group.Text);
                         rsWebQueryNew.Put("IDENTUSER", txtUserIdent.Text);
                         rsWebQueryNew.Put("COMMENTS", textBoxDescrQuery.Text);
+
+                        rsWebQueryNew.Put("VIEWCOLUMNS", ViewFormColumns.Text);
+                        rsWebQueryNew.Put("ADDCOLUMNS", AddFormColumns.Text);
+                        rsWebQueryNew.Put("EDITCOLUMNS", EditFormColumns.Text);
+                        rsWebQueryNew.Put("TABLECOLUMNS", TableColumns.Text);
+
+
                         rsWebQueryNew.Update();
                         rsWebQueryNew.Close();
                         rsWebQueryNew.Destroy();
@@ -289,7 +302,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             }
             else  {
                 IMRecordset rsWebQueryNew = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
-                rsWebQueryNew.Select("ID,NAME,CODE,TASKFORCEGROUP,IDENTUSER,COMMENTS");
+                rsWebQueryNew.Select("ID,NAME,CODE,TASKFORCEGROUP,IDENTUSER,COMMENTS,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
                 rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, id);
                 rsWebQueryNew.Open();
                 if (!rsWebQueryNew.IsEOF())
@@ -300,6 +313,12 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     rsWebQueryNew.Put("TASKFORCEGROUP", comboBox_group.Text);
                     rsWebQueryNew.Put("IDENTUSER", txtUserIdent.Text);
                     rsWebQueryNew.Put("COMMENTS", textBoxDescrQuery.Text);
+
+                    rsWebQueryNew.Put("VIEWCOLUMNS", ViewFormColumns.Text);
+                    rsWebQueryNew.Put("ADDCOLUMNS", AddFormColumns.Text);
+                    rsWebQueryNew.Put("EDITCOLUMNS", EditFormColumns.Text);
+                    rsWebQueryNew.Put("TABLECOLUMNS", TableColumns.Text);
+
                     rsWebQueryNew.Update();
                     rsWebQueryNew.Close();
                     rsWebQueryNew.Destroy();
@@ -333,5 +352,14 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             }
         }
 
+        private void ColumnAttr_Click(object sender, EventArgs e)
+        {
+            if (id != IM.NullI)
+            {
+                List<string> List_Path = ClassORM.GetProperties(textBoxQuery.Text.ToString(), false);
+                FormColumnAttributesList constraintForm = new FormColumnAttributesList(id, List_Path);
+                constraintForm.ShowDialog();
+            }
+        }
     }
 }
