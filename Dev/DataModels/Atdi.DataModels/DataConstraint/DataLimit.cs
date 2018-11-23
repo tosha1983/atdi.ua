@@ -17,5 +17,5 @@ namespace Atdi.DataModels.DataConstraint
         public int Value { get; set; }
         [DataMember]
         public LimitValueType Type { get; set; }
-}
+    }
 }

@@ -59,6 +59,10 @@ namespace Atdi.WebPortal.WebQuery
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Portal}/{action=Index}/{id?}");
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Portal", action = "Index" });
             });
 
             //app.Run(async (context) =>

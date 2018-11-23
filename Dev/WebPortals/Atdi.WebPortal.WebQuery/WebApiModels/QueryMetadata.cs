@@ -28,5 +28,10 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
         [DataMember]
         public string Description { get; set; }
 
+        [DataMember]
+        public ColumnMetadata[] Columns { get; set; }
+
+        [DataMember]
+        public string[] PrimaryKey { get; set; }
     }
 }

@@ -1,14 +1,11 @@
-﻿import webapi from '../../Api/webapi'
+﻿import api from '../../Api/portal'
 import Vue from 'vue'
 
 const state = {
     all: [],
-    current: {
-        name: '',
-        title: '',
-        description: ''
-    },
-    queries: {}
+    current: null,
+    queries: {},
+    active: null
 }
 
 const getters = {
@@ -22,28 +19,29 @@ const getters = {
 }
 
 const actions = {
-    loadGroups({ commit }) {
-        webapi.call(webapi.SVC_QUERYGROUPS, data => {
-            if (data && data.groups) {
-                commit('setGroups', data.groups);
-            } else {
-                commit('setGroups', []);
-            }
-            
-        })
+     loadGroups({ commit }) {
+        return api.getQueryGroups(groups => {
+            commit('setGroups', groups);
+        });
     },
 
     changeCurrentGroup({ commit }, name) {
         commit('changeCurrent', name);
 
         const queries = state.queries[name];
-        if (queries && queries.state === 'empty') {
-            webapi.post(webapi.SVC_WEBQUERIES, 'get', { tokens: queries.group.queryTokens }, data => {
+        if (queries && queries.state === 'created') {
+            return api.getQueriesByTokens(queries.group.queryTokens, data => {
                 commit('setQueries', { group: name, queries: data });
             });
-            
         }
+
+        return new Promise(resolve => resolve());
+    },
+
+    setActiveGroup({ commit }, name) {
+        commit('setActive', name);
     }
+
 }
 
 const mutations = {
@@ -53,9 +51,13 @@ const mutations = {
         for (var i = 0; i < groups.length; i++) {
             Vue.set(state.queries, groups[i].name, {
                 group: groups[i],
-                state: 'empty',
-                list: [{ title: 'Loading (for ' + groups[i].name + ') ...' }]
+                state: 'created',
+                list: [{ title: 'Loading (for ' + groups[i].name + ') ...', token: { id: -1} }]
             });
+
+            if (state.active && state.active === groups[i].name) {
+                state.current = groups[i];
+            }
         }
     },
 
@@ -63,11 +65,20 @@ const mutations = {
         state.current = state.all.find(group => group.name === name);
     },
 
+    setActive(state, name) {
+        state.active = name;
+    },
+
     setQueries(state, { group, queries }) {
         const g = state.queries[group];
-        g.state = 'loaded';
         g.list.pop();
-        g.list.push(...queries);
+        if (queries && queries.length > 0) {
+            g.state = 'loaded';
+            g.list.push(...queries);
+        }
+        else {
+            g.state = 'empty'
+        }
     },
 
     
