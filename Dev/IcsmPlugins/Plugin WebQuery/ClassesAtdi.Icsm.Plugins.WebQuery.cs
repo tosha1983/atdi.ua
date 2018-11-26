@@ -22,6 +22,14 @@ namespace OrmCs
 			public DatPtr z_code { get { return new DatPtr(this,4); } }
 		public string m_taskforcegroup { get { return getString(5); } set { setString(5,100,value); } }
 			public DatPtr z_taskforcegroup { get { return new DatPtr(this,5); } }
+		public string m_viewcolumns { get { return getString(6); } set { setString(6,4000,value); } }
+			public DatPtr z_viewcolumns { get { return new DatPtr(this,6); } }
+		public string m_addcolumns { get { return getString(7); } set { setString(7,4000,value); } }
+			public DatPtr z_addcolumns { get { return new DatPtr(this,7); } }
+		public string m_editcolumns { get { return getString(8); } set { setString(8,4000,value); } }
+			public DatPtr z_editcolumns { get { return new DatPtr(this,8); } }
+		public string m_tablecolumns { get { return getString(9); } set { setString(9,4000,value); } }
+			public DatPtr z_tablecolumns { get { return new DatPtr(this,9); } }
 	}
 
 	public class YXwebconstraint : Yyy
@@ -87,6 +95,25 @@ namespace OrmCs
 			public DatPtr z_byte_type { get { return new DatPtr(this,8); } }
 		public string m_guid_type { get { return getString(9); } set { setString(9,40,value); } }
 			public DatPtr z_guid_type { get { return new DatPtr(this,9); } }
+	}
+
+	public class YXwebqueryattributes : Yyy
+	{
+		public YXwebqueryattributes() { construct("XWEBQUERYATTRIBUTES",null); }
+		public YXwebqueryattributes(OrmLinker lk) { construct("XWEBQUERYATTRIBUTES",lk); }
+		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
+			public DatPtr z_id { get { return new DatPtr(this,0); } }
+		public int m_webqueryid { get { return getInt(1); } set { setInt(1,value); } }
+			public DatPtr z_webqueryid { get { return new DatPtr(this,1); } }
+		public string m_path { get { return getString(2); } set { setString(2,250,value); } }
+			public DatPtr z_path { get { return new DatPtr(this,2); } }
+		public int m_readonly { get { return getInt(3); } set { setInt(3,value); } }
+			public DatPtr z_readonly { get { return new DatPtr(this,3); } }
+		public int m_notchangeadd { get { return getInt(4); } set { setInt(4,value); } }
+			public DatPtr z_notchangeadd { get { return new DatPtr(this,4); } }
+		public int m_notchangeedit { get { return getInt(5); } set { setInt(5,value); } }
+			public DatPtr z_notchangeedit { get { return new DatPtr(this,5); } }
+		public YXwebquery m_JoinWebQuery { get { return (YXwebquery)getYyy(6); }  set { setYyy(6,value); } }
 	}
 
 }

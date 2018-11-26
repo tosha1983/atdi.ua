@@ -97,7 +97,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     arr[0] = rsWebQueryNew.GetI("ID").ToString();
                     IMRecordset RsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadOnly);
                     RsWebQuery.Select("ID,NAME");
-                    RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, rsWebQueryNew.GetI("ID"));
+                    RsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, rsWebQueryNew.GetI("WEBQUERYID"));
                     RsWebQuery.Open();
                     if (!RsWebQuery.IsEOF())
                     {
