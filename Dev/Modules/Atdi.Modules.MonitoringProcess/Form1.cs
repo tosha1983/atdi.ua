@@ -2012,6 +2012,32 @@ namespace BB60C_
             ResBW = MeasProcessing.TaskProcessing(SDR, mEAS_TASK_SDR_BW, sensor, ref circulatingData, ResBW) as MeasSdrResults;
             TimeSpan timeSpan2 = DateTime.Now - dateTime;
         }
+
+        private void TestChangeGreed_Click(object sender, EventArgs e)
+        {
+            int NumberPointInNewLevels = 50;
+            double StartOldFreq_MHz = 100;
+            double OldStep_kHz = 1000;
+            double StartNewFreq_MHz = 98;
+            double NewStep_kHz = 300;
+            double[] Levels = new double[] { -100, -100, -90, -80, -10, -70, -80, -100 };
+            double[] NewLevels = new double[NumberPointInNewLevels];
+            //NewLevels = ChangeTraceGrid.ChangeGrid(ref Levels, StartOldFreq_MHz, OldStep_kHz, StartNewFreq_MHz, NewStep_kHz, NumberPointInNewLevels);
+
+            NumberPointInNewLevels = 40;
+            StartOldFreq_MHz = 100;
+            OldStep_kHz = 1000;
+            StartNewFreq_MHz = 101;
+            NewStep_kHz = 150;
+            NewLevels = new double[NumberPointInNewLevels];
+            NewLevels = ChangeTraceGrid.ChangeGrid(ref Levels, StartOldFreq_MHz, OldStep_kHz, StartNewFreq_MHz, NewStep_kHz, NumberPointInNewLevels);
+
+
+
+
+
+
+        }
     }
 }
 
