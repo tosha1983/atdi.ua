@@ -64,8 +64,23 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("IDENTUSER", "VARCHAR(250)", null, null, null);
                 s.DeclareField("CODE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("TASKFORCEGROUP", "VARCHAR(100)", null, null, null);
+                s.DeclareField("VIEWCOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("ADDCOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("EDITCOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("TABLECOLUMNS", "VARCHAR(4000)", null, null, null);
             }
 
+            s.DeclareTable("XWEBQUERYATTRIBUTES", "Web constraints", plugin4);
+            {
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XWEBQUERYATTRIBUTES", "PRIMARY", "ID");
+                s.DeclareField("WEBQUERYID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
+                s.DeclareField("READONLY", "NUMBER(1,0)", null, null, null);
+                s.DeclareField("NOTCHANGEADD", "NUMBER(1,0)", null, null, null);
+                s.DeclareField("NOTCHANGEEDIT", "NUMBER(1,0)", null, null, null);
+                s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
+            }
 
             s.DeclareTable("XWEBCONSTRAINT", "Web constraints", plugin4);
             {

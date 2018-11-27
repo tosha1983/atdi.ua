@@ -51,6 +51,7 @@
     <Compile Include="Repository\DTO\TASKFORCE.cs" />
     <Compile Include="Repository\DTO\TSKF_MEMBER.cs" />
     <Compile Include="Repository\DTO\XWEBCONSTRAINT.cs" />
+    <Compile Include="Repository\DTO\XWEBQUERYATTRIBUTES.cs" />
     <Compile Include="Repository\DTO\XWEBQUERY.cs" />
     <Compile Include="Repository\Caches\GroupDescriptorsCache.cs" />
     <Compile Include="Repository\Caches\QueryDescriptorsCache.cs" />

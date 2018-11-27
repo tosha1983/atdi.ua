@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 namespace Atdi.WebPortal.WebQuery.Controllers
 {
     [Route("api/[controller]")]
+    [Route("portal/api/[controller]")]
+    [Route("portal/index/api/[controller]")]
     [ApiController]
     public class EnvironmentController : ControllerBase
     {

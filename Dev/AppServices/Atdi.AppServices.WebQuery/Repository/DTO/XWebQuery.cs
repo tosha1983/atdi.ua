@@ -8,38 +8,54 @@ using Atdi.DataModels.WebQuery;
 
 namespace Atdi.AppServices.WebQuery
 {
-        /// Класс для хранения свойств запроса
+    /// Класс для хранения свойств запроса
+    /// </summary>
+    public sealed class XWEBQUERY
+    {
+        /// <summary>
+        /// ID запроса
         /// </summary>
-        public sealed class XWEBQUERY
-        {
-            /// <summary>
-            /// ID запроса
-            /// </summary>
-            public int ID { get; set; }
-            /// <summary>
-            /// Наименование запроса
-            /// </summary>
-            public string NAME { get; set; }
-            /// <summary>
-            /// Идентификатор запроса
-            /// </summary>
-            public string CODE { get; set; }
-            /// <summary>
-            /// Код запроса 
-            /// </summary>
-            public byte[] QUERY { get; set; }
-            /// <summary>
-            /// Комментарии к запросу
-            /// </summary>
-            public string COMMENTS { get; set; }
-            /// <summary>
-            /// Идентификатор поля, которое содержит номер ID пользователя (для фильтрации данных конкретного пользователя)
-            /// </summary>
-            public string IDENTUSER { get; set; }
-            /// <summary>
-            /// Группа TaskForce
-            /// </summary>
-           public string TASKFORCEGROUP { get; set; }
+        public int ID { get; set; }
+        /// <summary>
+        /// Наименование запроса
+        /// </summary>
+        public string NAME { get; set; }
+        /// <summary>
+        /// Идентификатор запроса
+        /// </summary>
+        public string CODE { get; set; }
+        /// <summary>
+        /// Код запроса 
+        /// </summary>
+        public byte[] QUERY { get; set; }
+        /// <summary>
+        /// Комментарии к запросу
+        /// </summary>
+        public string COMMENTS { get; set; }
+        /// <summary>
+        /// Идентификатор поля, которое содержит номер ID пользователя (для фильтрации данных конкретного пользователя)
+        /// </summary>
+        public string IDENTUSER { get; set; }
+        /// <summary>
+        /// Группа TaskForce
+        /// </summary>
+        public string TASKFORCEGROUP { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string VIEWCOLUMNS { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ADDCOLUMNS { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string EDITCOLUMNS { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TABLECOLUMNS { get; set; }
 
     }
     

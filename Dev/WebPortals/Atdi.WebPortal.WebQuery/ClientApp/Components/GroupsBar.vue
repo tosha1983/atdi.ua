@@ -5,125 +5,31 @@
                 <div class="background">
                     <img class="responsive-img" src="images/office.jpg">
                 </div>
-                <a href="#user">
+                <a :href="'//' + portalEnvironment.company.site" target="_blank">
                     <img class="circle" src="images/company.jpg">
                 </a>
-                <a href="#name">
-                    <span class="white-text name">{companyName}}</span>
+                <a :href="'//' + portalEnvironment.company.site" target="_blank">
+                    <span class="white-text name">{{portalEnvironment.company.title}}</span>
                 </a>
-                <a href="#email">
-                    <span class="white-text email">{companyMail}}</span>
+                <a :href="'//' + portalEnvironment.company.site" target="_blank">
+                    <span class="white-text email">{{portalEnvironment.company.email}}</span>
                 </a>
             </div>
         </li>
 
         <li class="no-padding">
-            <ul class="collapsible collapsible-accordion">
+            <ul class="collapsible collapsible-accordion" id="portal-groups-slider">
 
-                <li v-for="queryGroup in queryGroups" @click="changeCurrentGroup(queryGroup.name)">
+                <li v-for="queryGroup in queryGroups" :key="queryGroup.name" :id="'portal-groups-slider-li-' + queryGroup.name" :class="[queryGroup.name === activeGroup ? 'active' : '']">
+                    <!--
+                        <a href="javascript:undefined" class="collapsible-header" @click="changeCurrentGroup(queryGroup.name)">{{queryGroup.title}}<i class="material-icons chevron">chevron_left</i></a>
+                    -->
+                    <router-link :to="{ path: '/', query: { group: queryGroup.name } }" @click="changeCurrentGroup(queryGroup.name)" class="collapsible-header" active-class="" exact-active-class="">{{queryGroup.title}}<i class="material-icons chevron">chevron_left</i></router-link>
 
-                    <a class="collapsible-header">{{queryGroup.title}}<i class="material-icons chevron">chevron_left</i></a>
                     <div class="collapsible-body">
-                        <queries-bar :groupName="queryGroup.name"></queries-bar>
+                        <queries-bar :groupName="queryGroup.name" :active-query="activeQuery"></queries-bar>
                     </div>
                 </li>
-                <!--
-                <li>
-                    <a class="collapsible-header">{goup2.Title}}<i class="material-icons chevron">chevron_left</i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="waves-effect">{query21.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query22.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query23.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query24.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li>
-                    <a class="collapsible-header">{goup3.Title}}<i class="material-icons chevron">chevron_left</i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="waves-effect">{query31.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query32.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query33.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query34.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li>
-                    <a class="collapsible-header">{goup4.Title}}<i class="material-icons chevron">chevron_left</i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="waves-effect">{query41.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query42.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query43.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query44.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li>
-                    <a class="collapsible-header">{goup5.Title}}<i class="material-icons chevron">chevron_left</i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="waves-effect">{query51.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query52.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query53.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query54.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li>
-                    <a class="collapsible-header">{goup6.Title}}<i class="material-icons chevron">chevron_left</i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="waves-effect">{query61.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query62.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query63.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect">{query64.Title}}<i class="material-icons">landscape</i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                -->
             </ul>
         </li>
     </ul>
@@ -137,6 +43,8 @@
         name: 'GroupsBar',
         props: {
             barId: String,
+            activeGroup: String,
+            activeQuery: Number
         },
 
         components: {
@@ -144,7 +52,9 @@
         },
 
         computed: mapState({
-            queryGroups: state => state.queryGroups.all
+            queryGroups: state => state.queryGroups.all,
+            portalEnvironment: state => state.portal.environment,
+            currentGroup: state => state.queryGroups.current
         }),
 
         data() {
@@ -153,12 +63,63 @@
         },
 
         created() {
+          //  this.$store.dispatch('queryGroups/loadGroups')
+        },
+
+        mounted() {
+            
+            //sliderInstance.close();
+
+            //const itemElement = document.getElementById('portal-groups-slider-li-' + this.activeGroup);
+            //if (!itemElement)
+            //    return;
+
+            //itemElement.classList.add('active');
+
+            //sliderInstance.open();
+            const self = this;
+            //this.$store.dispatch('queryGroups/setActiveGroup', this.activeGroup);
             this.$store.dispatch('queryGroups/loadGroups')
+                .then(function () {
+                    
+                    const groups = self.$store.state.queryGroups.all;
+                    let groupIndex = -1;
+                    for (let index = 0; index < groups.length; index++) {
+                        const group = groups[index];
+                        if (group.name && group.name === self.activeGroup){
+                            groupIndex = index;
+                            break;
+                        }
+                    }
+                    const sliderElement = document.getElementById('portal-groups-slider');
+                    M.Collapsible.init(sliderElement);
+                    if (groupIndex >= 0) {
+                        const sliderInstance = M.Collapsible.getInstance(sliderElement);
+                        sliderInstance.open(groupIndex);
+
+                        self.$store.dispatch('queryGroups/changeCurrentGroup', self.activeGroup)
+                        .then(function() {
+
+                        });
+                    }
+                    
+
+                });
+            //this.changeCurrentGroup(this.activeGroup);
         },
 
         methods: {
             changeCurrentGroup(name) {
-                this.$store.dispatch('queryGroups/changeCurrentGroup', name)
+                if (!this.currentGroup || this.currentGroup.name !== name) {
+                    this.$store.dispatch('queries/changeCurrentQuery', null);
+                    this.$store.dispatch('queryGroups/changeCurrentGroup', name);
+                }
+            }
+        },
+
+        watch: {
+            activeGroup: function (val, oldVal) {
+                this.changeCurrentGroup(val);
             }
         }
     }

@@ -1,0 +1,224 @@
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\BB60C_NEW\BB60C_NEW\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\TEMP\SDR\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Documents\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\TEMP\SDR\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\Project\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_WINFORMS\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\Sever\BB60C_WINFORMS_SERVERX\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\Test\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\TEMP\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\New folder\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\Satellite\Desktop\BB60C_WINFORMS\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Desktop\BB60C_WINFORMS_SERVER-10-03-2017\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Desktop\New folder\BB60C_WINFORMS_SERVERRRRRR\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Users\atdi\Downloads\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Users\Grisha\Desktop\SDR\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csproj.CoreCompileInputs.cache
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\Projects\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_WINFORMS_SERVER\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\SVN\TestApp\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\SVN\TestApp\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\SVN\TestApp\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\SVN\TestApp\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\SVN\TestApp\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\SVN\TestApp\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+c:\ATDI\Control_to_Servers\TestApp\BB60C_\obj\x64\Debug\BB60C_.exe
+c:\ATDI\Control_to_Servers\TestApp\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\ATDI\Control_to_Servers\TestApp\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.Sdrns.dll
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.Sdrns.dll
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\SVN\TestApp_Correct\TestAppCorrect\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\projects\SDR\project\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\projects\SDR\project\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\projects\SDR\project\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\ATDI\Control_to_Servers\project\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\ATDI\Control_to_Servers\project\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\ATDI\Control_to_Servers\project\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\ATDI\Control_to_Servers\project\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\ATDI\Control_to_Servers\project\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\ATDI\Control_to_Servers\project\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.Sdrns.dll
+C:\ATDI\Control_to_Servers\project\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\ATDI\Control_to_Servers\project\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\ATDI\Control_to_Servers\project\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\ATDI\Control_to_Servers\project\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\projects\SDR\project\project\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\projects\SDR\project\project\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\projects\SDR\project\project\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\SVN\TestApp_Correct\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\SVN\TestApp_Correct\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.Sdrns.dll
+C:\SVN\TestApp_Correct\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\SVN\TestApp_Correct\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\SVN\TestApp_Correct\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.Cache
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\NLog.dll
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\NLog.Extended.dll
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\NLog.Extended.xml
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\NLog.xml
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\Nlog.config
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.dll
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\NLog.pdb
+C:\SVN\TestApp_Correct\BB60C_\bin\x64\Debug\NLog.Extended.pdb
+C:\SVN\TestApp_Correct\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\NLog.dll
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\NLog.Extended.dll
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\NLog.Extended.xml
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\NLog.xml
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\Nlog.config
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\BB60C_.exe.config
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\BB60C_.exe
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\BB60C_.pdb
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.dll
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.Sdrns.dll
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\NLog.pdb
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\NLog.Extended.pdb
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.Form1.resources
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.Properties.Resources.resources
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.csproj.GenerateResource.cache
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.csproj.CoreCompileInputs.cache
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.csproj.CopyComplete
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.exe
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.pdb
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.pdb
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\bin\x64\Debug\Atdi.AppServer.Contracts.Sdrns.pdb
+C:\projects\Monitoring projects\SDR\project\TestApp_Correct_29_05_2018\BB60C_\obj\x64\Debug\BB60C_.csprojResolveAssemblyReference.cache

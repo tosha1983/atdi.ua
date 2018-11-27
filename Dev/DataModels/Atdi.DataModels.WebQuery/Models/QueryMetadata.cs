@@ -33,5 +33,8 @@ namespace Atdi.DataModels.WebQuery
 
         [DataMember]
         public string[] PrimaryKey { get; set; }
+
+        [DataMember]
+        public QueryUIMetadata UI { get; set; }
     }
 }
