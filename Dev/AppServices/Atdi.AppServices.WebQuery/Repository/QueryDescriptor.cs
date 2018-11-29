@@ -14,6 +14,7 @@ namespace Atdi.AppServices.WebQuery
 {
     public sealed class QueryDescriptor
     {
+        private readonly XWEBQUERYATTRIBUTES[] _AttributesValue;
         private readonly XWEBCONSTRAINT[] _ConstraintsValue;
         private readonly Dictionary<string, DataType> _hashSet;
         private readonly XWEBQUERY _QueryValue;
@@ -30,27 +31,52 @@ namespace Atdi.AppServices.WebQuery
 
         public QueryTokenDescriptor QueryTokenDescriptor { get; private set; }
 
-        public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
+        public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, XWEBQUERYATTRIBUTES[] AttributesValue, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
         {
             this._hashSet = new Dictionary<string, DataType>();
             this.IrpDictionary = new Dictionary<string, IrpColumn>();
             this._QueryValue = QueryValue;
             this._ConstraintsValue = ConstraintsValue;
+            this._AttributesValue = AttributesValue;
             this.QueryTokenDescriptor = queryTokenDescriptor;
 
             this.TableName = irpdescription.TableName;
             this.IdentUserField = QueryValue.IDENTUSER;
             this.IrpDescrColumns = irpdescription.irpColumns.ToArray();
 
+            var checkColumnMetaData = this.IrpDescrColumns.Select(t => t.columnMeta).ToArray();
+            for (int i = 0; i < checkColumnMetaData.Length; i++)
+            {
+                var column = checkColumnMetaData[i];
+                var listAttributes = AttributesValue.ToList();
+                if (listAttributes != null)
+                {
+                    var findAttribute = listAttributes.Find(t => t.PATH == column.Name);
+                    if (findAttribute != null)
+                    {
+                        column.Readonly = findAttribute.READONLY==1? true : false;
+                        column.NotChangeableByAdd = findAttribute.NOTCHANGEADD  == 1 ? true : false;
+                        column.NotChangeableByEdit  = findAttribute.NOTCHANGEEDIT  == 1 ? true : false;
+                    }
+                }
+            }
+
             this.Metadata = new QueryMetadata
             {
-                Columns = this.IrpDescrColumns.Select(t => t.columnMeta).ToArray(),
+                Columns = checkColumnMetaData,
                 Name = QueryValue.NAME,
                 Code = QueryValue.CODE,
                 Token = queryTokenDescriptor.Token,
                 Description = QueryValue.COMMENTS,
                 Title = QueryValue.NAME,
-                PrimaryKey = irpdescription.PrimaryKey
+                PrimaryKey = irpdescription.PrimaryKey,
+                UI = new QueryUIMetadata()
+                {
+                    AddFormColumns = QueryValue.ADDCOLUMNS!=null ? QueryValue.ADDCOLUMNS.Split(new char[] { ';', ',' }) : null,
+                    EditFormColumns = QueryValue.EDITCOLUMNS != null ? QueryValue.EDITCOLUMNS.Split(new char[] { ';', ',' }) : null,
+                    TableColumns = QueryValue.TABLECOLUMNS != null ? QueryValue.TABLECOLUMNS.Split(new char[] { ';', ',' }) : null,
+                    ViewFormColumns = QueryValue.VIEWCOLUMNS  != null ? QueryValue.VIEWCOLUMNS.Split(new char[] { ';', ',' }) : null
+                }
             };
 
             

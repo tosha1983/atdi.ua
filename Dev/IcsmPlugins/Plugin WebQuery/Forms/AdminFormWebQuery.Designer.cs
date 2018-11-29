@@ -29,10 +29,19 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TableColumns = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.EditFormColumns = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.AddFormColumns = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ViewFormColumns = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.textBox_code = new System.Windows.Forms.TextBox();
             this.comboBox_group = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtUserIdent = new System.Windows.Forms.ComboBox();
             this.labelIdentUser = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ButtonClose = new System.Windows.Forms.Button();
@@ -47,13 +56,13 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.groupBoxEditQuery = new System.Windows.Forms.GroupBox();
             this.panelSaveChangeQuery = new System.Windows.Forms.Panel();
+            this.ColumnAttr = new System.Windows.Forms.Button();
             this.button_Constraints = new System.Windows.Forms.Button();
             this.ButtonSaveChangeQuery = new System.Windows.Forms.Button();
             this.textBoxQuery = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.txtUserIdent = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -67,6 +76,14 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.TableColumns);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.EditFormColumns);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.AddFormColumns);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.ViewFormColumns);
+            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBox_code);
             this.groupBox1.Controls.Add(this.comboBox_group);
             this.groupBox1.Controls.Add(this.label1);
@@ -87,6 +104,82 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Panel Setting Web Query";
+            // 
+            // TableColumns
+            // 
+            this.TableColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.TableColumns.Location = new System.Drawing.Point(179, 282);
+            this.TableColumns.Name = "TableColumns";
+            this.TableColumns.Size = new System.Drawing.Size(321, 20);
+            this.TableColumns.TabIndex = 39;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 285);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(79, 13);
+            this.label5.TabIndex = 38;
+            this.label5.Text = "Table columns:";
+            // 
+            // EditFormColumns
+            // 
+            this.EditFormColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.EditFormColumns.Location = new System.Drawing.Point(179, 256);
+            this.EditFormColumns.Name = "EditFormColumns";
+            this.EditFormColumns.Size = new System.Drawing.Size(321, 20);
+            this.EditFormColumns.TabIndex = 37;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 259);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(93, 13);
+            this.label4.TabIndex = 36;
+            this.label4.Text = "Edit form columns:";
+            // 
+            // AddFormColumns
+            // 
+            this.AddFormColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddFormColumns.Location = new System.Drawing.Point(179, 230);
+            this.AddFormColumns.Name = "AddFormColumns";
+            this.AddFormColumns.Size = new System.Drawing.Size(321, 20);
+            this.AddFormColumns.TabIndex = 35;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 233);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(94, 13);
+            this.label3.TabIndex = 34;
+            this.label3.Text = "Add form columns:";
+            // 
+            // ViewFormColumns
+            // 
+            this.ViewFormColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ViewFormColumns.Location = new System.Drawing.Point(179, 204);
+            this.ViewFormColumns.Name = "ViewFormColumns";
+            this.ViewFormColumns.Size = new System.Drawing.Size(321, 20);
+            this.ViewFormColumns.TabIndex = 33;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 207);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(98, 13);
+            this.label2.TabIndex = 32;
+            this.label2.Text = "View form columns:";
             // 
             // textBox_code
             // 
@@ -131,6 +224,18 @@
             this.groupBox2.TabIndex = 27;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mode visible records";
+            // 
+            // txtUserIdent
+            // 
+            this.txtUserIdent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUserIdent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.txtUserIdent.FormattingEnabled = true;
+            this.txtUserIdent.Location = new System.Drawing.Point(291, 13);
+            this.txtUserIdent.Name = "txtUserIdent";
+            this.txtUserIdent.Size = new System.Drawing.Size(203, 21);
+            this.txtUserIdent.TabIndex = 31;
             // 
             // labelIdentUser
             // 
@@ -219,17 +324,17 @@
             this.textBoxDescrQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxDescrQuery.Location = new System.Drawing.Point(12, 221);
+            this.textBoxDescrQuery.Location = new System.Drawing.Point(12, 335);
             this.textBoxDescrQuery.Multiline = true;
             this.textBoxDescrQuery.Name = "textBoxDescrQuery";
             this.textBoxDescrQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxDescrQuery.Size = new System.Drawing.Size(504, 476);
+            this.textBoxDescrQuery.Size = new System.Drawing.Size(504, 362);
             this.textBoxDescrQuery.TabIndex = 3;
             // 
             // labelDescrQuery
             // 
             this.labelDescrQuery.AutoSize = true;
-            this.labelDescrQuery.Location = new System.Drawing.Point(12, 205);
+            this.labelDescrQuery.Location = new System.Drawing.Point(12, 319);
             this.labelDescrQuery.Name = "labelDescrQuery";
             this.labelDescrQuery.Size = new System.Drawing.Size(87, 13);
             this.labelDescrQuery.TabIndex = 2;
@@ -268,6 +373,7 @@
             // 
             // panelSaveChangeQuery
             // 
+            this.panelSaveChangeQuery.Controls.Add(this.ColumnAttr);
             this.panelSaveChangeQuery.Controls.Add(this.button_Constraints);
             this.panelSaveChangeQuery.Controls.Add(this.ButtonSaveChangeQuery);
             this.panelSaveChangeQuery.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -275,6 +381,16 @@
             this.panelSaveChangeQuery.Name = "panelSaveChangeQuery";
             this.panelSaveChangeQuery.Size = new System.Drawing.Size(548, 47);
             this.panelSaveChangeQuery.TabIndex = 6;
+            // 
+            // ColumnAttr
+            // 
+            this.ColumnAttr.Location = new System.Drawing.Point(17, 13);
+            this.ColumnAttr.Name = "ColumnAttr";
+            this.ColumnAttr.Size = new System.Drawing.Size(132, 23);
+            this.ColumnAttr.TabIndex = 11;
+            this.ColumnAttr.Text = "Column attributes";
+            this.ColumnAttr.UseVisualStyleBackColor = true;
+            this.ColumnAttr.Click += new System.EventHandler(this.ColumnAttr_Click);
             // 
             // button_Constraints
             // 
@@ -292,9 +408,9 @@
             // 
             this.ButtonSaveChangeQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonSaveChangeQuery.Location = new System.Drawing.Point(143, 13);
+            this.ButtonSaveChangeQuery.Location = new System.Drawing.Point(176, 13);
             this.ButtonSaveChangeQuery.Name = "ButtonSaveChangeQuery";
-            this.ButtonSaveChangeQuery.Size = new System.Drawing.Size(184, 23);
+            this.ButtonSaveChangeQuery.Size = new System.Drawing.Size(138, 23);
             this.ButtonSaveChangeQuery.TabIndex = 1;
             this.ButtonSaveChangeQuery.Text = "Save Query";
             this.ButtonSaveChangeQuery.UseVisualStyleBackColor = true;
@@ -340,18 +456,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(1083, 768);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 3;
-            // 
-            // txtUserIdent
-            // 
-            this.txtUserIdent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUserIdent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.txtUserIdent.FormattingEnabled = true;
-            this.txtUserIdent.Location = new System.Drawing.Point(291, 13);
-            this.txtUserIdent.Name = "txtUserIdent";
-            this.txtUserIdent.Size = new System.Drawing.Size(203, 21);
-            this.txtUserIdent.TabIndex = 31;
             // 
             // AdminFormWebQuery
             // 
@@ -408,5 +512,14 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button ButtonSaveAllChange;
         private System.Windows.Forms.ComboBox txtUserIdent;
+        private System.Windows.Forms.TextBox ViewFormColumns;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox AddFormColumns;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox EditFormColumns;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox TableColumns;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button ColumnAttr;
     }
 }

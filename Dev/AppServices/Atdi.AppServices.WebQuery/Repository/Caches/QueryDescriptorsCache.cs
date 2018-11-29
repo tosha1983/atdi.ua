@@ -48,7 +48,7 @@ namespace Atdi.AppServices.WebQuery
                 .Select(
                         c => c.DATEMODIFIED
                     )
-                .Where(c => c.OBJTABLE, ConditionOperator.In, "XWEBQUERY", "XWEBCONSTRAINT")
+                .Where(c => c.OBJTABLE, ConditionOperator.In, "XWEBQUERY", "XWEBCONSTRAINT", "XWEBQUERYATTRIBUTES")
                 .Where(c => c.DATEMODIFIED, ConditionOperator.GreaterThan, this._actualyCacheDataDate)
                 .OnTop(1);
 
@@ -123,6 +123,40 @@ namespace Atdi.AppServices.WebQuery
                 return groups_constr.ToArray();
             });
 
+
+            var query_web_attributes = _dataLayer.Builder
+             .From<XWEBQUERYATTRIBUTES>()
+             .Where(c => c.WEBQUERYID, ConditionOperator.Equal, queryId)
+             .Select(
+                 c => c.ID,
+                 c => c.PATH,
+                c => c.WEBQUERYID,
+                c => c.READONLY,
+                c => c.NOTCHANGEADD,
+                c => c.NOTCHANGEEDIT
+                );
+
+            var AttributesValue = this._queryExecutor
+            .Fetch(query_web_attributes, reader =>
+            {
+                var groups_attributes = new List<XWEBQUERYATTRIBUTES>();
+                while (reader.Read())
+                {
+                    var token = new XWEBQUERYATTRIBUTES
+                    {
+                        ID = reader.GetValue(x => x.ID),
+                        WEBQUERYID = reader.GetValue(x => x.WEBQUERYID),
+                        READONLY = reader.GetValue(x => x.READONLY),
+                        PATH = reader.GetValue(x => x.PATH),
+                        NOTCHANGEADD  = reader.GetValue(x => x.NOTCHANGEADD),
+                        NOTCHANGEEDIT = reader.GetValue(x => x.NOTCHANGEEDIT)
+                    };
+                    groups_attributes.Add(token);
+                }
+                return groups_attributes.ToArray();
+            });
+
+
             var queryweb = _dataLayer.Builder
                .From<XWEBQUERY>()
                .Where(c => c.ID, ConditionOperator.Equal, queryId)
@@ -133,7 +167,11 @@ namespace Atdi.AppServices.WebQuery
                    c => c.IDENTUSER,
                    c => c.NAME,
                    c => c.QUERY,
-                   c => c.TASKFORCEGROUP
+                   c => c.TASKFORCEGROUP,
+                   c => c.VIEWCOLUMNS,
+                   c => c.ADDCOLUMNS,
+                   c => c.EDITCOLUMNS,
+                   c => c.TABLECOLUMNS
                   );
 
             var QueryValue = this._queryExecutor
@@ -148,11 +186,15 @@ namespace Atdi.AppServices.WebQuery
                    Value.NAME = reader.GetValue(x => x.NAME);
                    Value.QUERY = reader.GetValue(x => x.QUERY);
                    Value.TASKFORCEGROUP = reader.GetValue(x => x.TASKFORCEGROUP);
+                   Value.VIEWCOLUMNS = reader.GetValue(x => x.VIEWCOLUMNS);
+                   Value.ADDCOLUMNS = reader.GetValue(x => x.ADDCOLUMNS);
+                   Value.EDITCOLUMNS = reader.GetValue(x => x.EDITCOLUMNS);
+                   Value.TABLECOLUMNS = reader.GetValue(x => x.TABLECOLUMNS);
                }
                return Value;
            });
             IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
-            description = new QueryDescriptor(QueryValue, ConstraintsValue, irpDescriptor, queryToken);
+            description = new QueryDescriptor(QueryValue, ConstraintsValue, AttributesValue, irpDescriptor, queryToken);
             return description;
         }
     }

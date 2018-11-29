@@ -41,6 +41,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.BB60CTest = new System.Windows.Forms.Button();
             this.MeasTest = new System.Windows.Forms.GroupBox();
+            this.IQStream_Sweep = new System.Windows.Forms.Button();
             this.TestSign = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
@@ -54,11 +55,13 @@
             this.label7 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button5 = new System.Windows.Forms.Button();
-            this.IQStream_Sweep = new System.Windows.Forms.Button();
+            this.TestChangeGreed = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.MeasTest.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
@@ -154,6 +157,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.BB60CTest);
             this.tabPage1.Controls.Add(this.MeasTest);
             this.tabPage1.Controls.Add(this.button20);
@@ -195,12 +199,22 @@
             this.MeasTest.Controls.Add(this.TestSign);
             this.MeasTest.Controls.Add(this.button11);
             this.MeasTest.Controls.Add(this.button21);
-            this.MeasTest.Location = new System.Drawing.Point(656, 7);
+            this.MeasTest.Location = new System.Drawing.Point(609, 7);
             this.MeasTest.Name = "MeasTest";
-            this.MeasTest.Size = new System.Drawing.Size(104, 310);
+            this.MeasTest.Size = new System.Drawing.Size(151, 159);
             this.MeasTest.TabIndex = 32;
             this.MeasTest.TabStop = false;
             this.MeasTest.Text = "MeasTest";
+            // 
+            // IQStream_Sweep
+            // 
+            this.IQStream_Sweep.Location = new System.Drawing.Point(6, 112);
+            this.IQStream_Sweep.Name = "IQStream_Sweep";
+            this.IQStream_Sweep.Size = new System.Drawing.Size(75, 37);
+            this.IQStream_Sweep.TabIndex = 33;
+            this.IQStream_Sweep.Text = "IQStream_Sweep";
+            this.IQStream_Sweep.UseVisualStyleBackColor = true;
+            this.IQStream_Sweep.Click += new System.EventHandler(this.IQStream_Sweep_Click);
             // 
             // TestSign
             // 
@@ -331,15 +345,25 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
-            // IQStream_Sweep
+            // TestChangeGreed
             // 
-            this.IQStream_Sweep.Location = new System.Drawing.Point(5, 243);
-            this.IQStream_Sweep.Name = "IQStream_Sweep";
-            this.IQStream_Sweep.Size = new System.Drawing.Size(75, 37);
-            this.IQStream_Sweep.TabIndex = 33;
-            this.IQStream_Sweep.Text = "IQStream_Sweep";
-            this.IQStream_Sweep.UseVisualStyleBackColor = true;
-            this.IQStream_Sweep.Click += new System.EventHandler(this.IQStream_Sweep_Click);
+            this.TestChangeGreed.Location = new System.Drawing.Point(6, 19);
+            this.TestChangeGreed.Name = "TestChangeGreed";
+            this.TestChangeGreed.Size = new System.Drawing.Size(75, 34);
+            this.TestChangeGreed.TabIndex = 13;
+            this.TestChangeGreed.Text = "TestChangeGreed";
+            this.TestChangeGreed.UseVisualStyleBackColor = true;
+            this.TestChangeGreed.Click += new System.EventHandler(this.TestChangeGreed_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.TestChangeGreed);
+            this.groupBox1.Location = new System.Drawing.Point(609, 187);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(151, 100);
+            this.groupBox1.TabIndex = 34;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "SignalProcessing";
             // 
             // Form1
             // 
@@ -358,6 +382,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.MeasTest.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -391,6 +416,8 @@
         private System.Windows.Forms.Button BB60CTest;
         private System.Windows.Forms.Button TestSign;
         private System.Windows.Forms.Button IQStream_Sweep;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button TestChangeGreed;
     }
 }
 

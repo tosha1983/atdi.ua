@@ -64,8 +64,23 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("IDENTUSER", "VARCHAR(250)", null, null, null);
                 s.DeclareField("CODE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("TASKFORCEGROUP", "VARCHAR(100)", null, null, null);
+                s.DeclareField("VIEWCOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("ADDCOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("EDITCOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("TABLECOLUMNS", "VARCHAR(4000)", null, null, null);
             }
 
+            s.DeclareTable("XWEBQUERYATTRIBUTES", "Web attributes", plugin4);
+            {
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XWEBQUERYATTRIBUTES", "PRIMARY", "ID");
+                s.DeclareField("WEBQUERYID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
+                s.DeclareField("READONLY", "NUMBER(1,0)", null, null, null);
+                s.DeclareField("NOTCHANGEADD", "NUMBER(1,0)", null, null, null);
+                s.DeclareField("NOTCHANGEEDIT", "NUMBER(1,0)", null, null, null);
+                s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
+            }
 
             s.DeclareTable("XWEBCONSTRAINT", "Web constraints", plugin4);
             {
@@ -118,16 +133,17 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         /// <returns>true</returns>
         public static bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
-            if (dbCurVersion < 20180105.0949)
+            if (dbCurVersion < 20181128.0949)
             {
-                //s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS");
-                //s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
-                //s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS,XWEBQUERYATTRIBUTES");
+                s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
+                s.CreateTableFields("XWEBQUERYATTRIBUTES", "ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
                 //s.CreateTables("XWEBTEST");
                 //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
                 //s.CreateTables("XWEBTEST");
                 //s.CreateTableFields("XWEBTEST", "ID,STRING_TYPE,BOOLEAN_TYPE,INTEGER_TYPE,DATETIME_TYPE,DOUBLE_TYPE,FLOAT_TYPE,DECIMAL_TYPE,BYTE_TYPE,BYTES_TYPE,GUID_TYPE");
-                s.SetDatabaseVersion(20180105.0949);
+                s.SetDatabaseVersion(20181128.0949);
             }
             return true;
         }
@@ -136,6 +152,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         /// <summary>
         /// Текущая версия БД плагина
         /// </summary>
-        public static readonly double schemaVersion = 20180105.0949;//20161003.0909
+        //public static readonly double schemaVersion = 20180105.0949;//20161003.0909
+        public static readonly double schemaVersion = 20181128.0949;//20161003.0909
     }
 }
