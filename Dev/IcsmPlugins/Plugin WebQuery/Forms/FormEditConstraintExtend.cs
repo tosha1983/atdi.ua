@@ -30,7 +30,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 if (id != IM.NullI) {
                     if (!IsNew)  {
                         var rsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                        rsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                        rsWebQueryNew.Select("ID,WEBQUERYID,DESCRCONDITION,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
                         rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, id);
                         rsWebQueryNew.Open();
                         if (!rsWebQueryNew.IsEOF())  {
@@ -81,7 +81,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, id);
                     rsWebQueryNew.Open();
                     if (!rsWebQueryNew.IsEOF())  {
-                        textBox_name.Text = rsWebQueryNew.GetS("NAME");
+                        textBox_name.Text = rsWebQueryNew.GetS("DESCRCONDITION");
                         textBox_str_value.Text = rsWebQueryNew.GetS("STRVALUE");
                         icsDouble_from.Value = rsWebQueryNew.GetD("MIN");
                         icsDouble_to.Value = rsWebQueryNew.GetD("MAX");
@@ -173,7 +173,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                 int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
                                 rsWebQueryNew.Put("ID", idnew);
                                 rsWebQueryNew.Put("WEBQUERYID", id);
-                                rsWebQueryNew.Put("NAME", textBox_name.Text);
+                                rsWebQueryNew.Put("DESCRCONDITION", textBox_name.Text);
                                 rsWebQueryNew.Put("STRVALUE", textBox_str_value.Text);
                                 rsWebQueryNew.Put("MIN", icsDouble_from.Value!=IM.NullD ? icsDouble_from.Value : IM.NullD);
                                 rsWebQueryNew.Put("MAX", icsDouble_to.Value!=IM.NullD ? icsDouble_to.Value : IM.NullD);
@@ -188,7 +188,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                             {
                                 if (!IsNew)  {
                                     rsWebQueryNew.Edit();
-                                    rsWebQueryNew.Put("NAME", textBox_name.Text);
+                                    rsWebQueryNew.Put("DESCRCONDITION", textBox_name.Text);
                                     rsWebQueryNew.Put("STRVALUE", textBox_str_value.Text);
                                     rsWebQueryNew.Put("MIN", icsDouble_from.Value != IM.NullD ? icsDouble_from.Value : IM.NullD);
                                     rsWebQueryNew.Put("MAX", icsDouble_to.Value != IM.NullD ? icsDouble_to.Value : IM.NullD);
@@ -205,7 +205,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                     int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
                                     rsWebQueryNew.Put("ID", idnew);
                                     rsWebQueryNew.Put("WEBQUERYID", id);
-                                    rsWebQueryNew.Put("NAME", textBox_name.Text);
+                                    rsWebQueryNew.Put("DESCRCONDITION", textBox_name.Text);
                                     rsWebQueryNew.Put("STRVALUE", textBox_str_value.Text);
                                     rsWebQueryNew.Put("MIN", icsDouble_from.Value != IM.NullD ? icsDouble_from.Value : IM.NullD);
                                     rsWebQueryNew.Put("MAX", icsDouble_to.Value != IM.NullD ? icsDouble_to.Value : IM.NullD);

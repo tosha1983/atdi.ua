@@ -36,15 +36,14 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         /// </summary>
         private void InitListView()
         {
-
             listView_constraints_lst.View = View.Details;
             listView_constraints_lst.GridLines = true;
             listView_constraints_lst.FullRowSelect = true;
             listView_constraints_lst.Items.Clear();
             listView_constraints_lst.Columns.Clear();
             listView_constraints_lst.Columns.Add(new ColHeader("ID constraint", 70, HorizontalAlignment.Left, true));
-            listView_constraints_lst.Columns.Add(new ColHeader("Name Web Query", 150, HorizontalAlignment.Left, true));
-            listView_constraints_lst.Columns.Add(new ColHeader("Name Constraint", 150, HorizontalAlignment.Left, true));
+            listView_constraints_lst.Columns.Add(new ColHeader("Name web query", 150, HorizontalAlignment.Left, true));
+            listView_constraints_lst.Columns.Add(new ColHeader("Type condition", 150, HorizontalAlignment.Left, true));
             listView_constraints_lst.Columns.Add(new ColHeader("Path", 150, HorizontalAlignment.Left, true));
             listView_constraints_lst.Columns.Add(new ColHeader("Numeric Min", 70, HorizontalAlignment.Left, true));
             listView_constraints_lst.Columns.Add(new ColHeader("Numeric Max", 70, HorizontalAlignment.Left, true));
@@ -89,7 +88,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             int Num = 1; if (listView_constraints_lst.Items.Count > 0) Num = listView_constraints_lst.Items.Count + 1;
             int webqueryid=IM.NullI;
                 var rsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                rsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                rsWebQueryNew.Select("ID,WEBQUERYID,DESCRCONDITION,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX,DESCRCONDITION,TYPECONDITION");
                 rsWebQueryNew.SetWhere("WEBQUERYID", IMRecordset.Operation.Eq, idweb);
                 for (rsWebQueryNew.Open(); !rsWebQueryNew.IsEOF(); rsWebQueryNew.MoveNext())
                 {
@@ -107,7 +106,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         RsWebQuery.Close();
                     RsWebQuery.Destroy();
 
-                    arr[2] = rsWebQueryNew.GetS("NAME");
+                    arr[2] = rsWebQueryNew.GetS("TYPECONDITION");
                     arr[3] = rsWebQueryNew.GetS("PATH");
                     arr[4] = ((rsWebQueryNew.GetD("MIN") != IM.NullD) && (rsWebQueryNew.GetD("MIN") != IM.NullI)) ? rsWebQueryNew.GetD("MIN").ToString() : "";
                     arr[5] = ((rsWebQueryNew.GetD("MAX") != IM.NullD) && (rsWebQueryNew.GetD("MAX") != IM.NullI)) ? rsWebQueryNew.GetD("MAX").ToString() : "";
@@ -128,7 +127,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private void button_add_new_Click(object sender, EventArgs e)
         {
-            FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(idweb, true, pathlist);
+            //FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(idweb, true, pathlist);
+            FormEditConstraints extend_constraint = new FormEditConstraints(-1, idweb, false, pathlist);
             extend_constraint.ShowDialog();
             ViewData();
         }
@@ -140,7 +140,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 int ID_;
                 if (int.TryParse(listView_constraints_lst.SelectedItems[i].SubItems[0].Text, out ID_))
                 {
-                    FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(ID_, false, pathlist);
+                    //FormEditConstraintExtend extend_constraint = new FormEditConstraintExtend(ID_, false, pathlist);
+                    FormEditConstraints extend_constraint = new FormEditConstraints(ID_, idweb, false, pathlist);
                     extend_constraint.ShowDialog();
                 }
             }
@@ -197,13 +198,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         public class SortComparer : IComparer
         {
             bool ascending;
-
-
             public SortComparer(bool asc)
             {
                 this.ascending = asc;
             }
-
             public int Compare(object x, object y)
             {
                 var xItem = (SortWrapper)x;
@@ -232,7 +230,6 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
     {
         public delegate void callbackEvent(string what);
         public static callbackEvent callbackEventHandler;
-
         public delegate void callbackEventFunc(Action<string> what);
         public static callbackEventFunc callbackEventHandlerFunc;
     }

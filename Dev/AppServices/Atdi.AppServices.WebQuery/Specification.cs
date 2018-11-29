@@ -45,5 +45,8 @@ namespace Atdi.AppServices.WebQuery
         public static readonly ExceptionText ActionTypeNotSupported = "The action type {0} is not supported.";
         public static readonly ExceptionText AccessToActionDenied = "Access to action '{0}' is denied";
         public static readonly ExceptionText DataRowTypeNotSupported = "The data row type {0} is not supported.";
+        public static readonly ExceptionText OperationBetweenNotSupportedfoString = "Operations 'Between' and 'NotBetween' not supported for type 'String'.";
+        public static readonly ExceptionText HandlerOperationNotImplemented = "The handler for this operation is not implemented";
+        public static readonly ExceptionText HandlerOperationNotImplemented2 = "The handler for operations 'Between', 'NotBetween','In','NotIn' is not implemented";
     }
 }

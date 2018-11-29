@@ -99,10 +99,14 @@ namespace Atdi.AppServices.WebQuery.Handlers
         private int PerformCreationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, CreationAction action)
         {
             queryDescriptor.CheckColumns(action.Columns);
+            var unPackValues = this.UnpackInsertedValues(action);
+
+            queryDescriptor.PrapareValidationConditions(userTokenData, unPackValues, action);
+            queryDescriptor.GetConditions(userTokenData, unPackValues, action);
 
             var insertQuery = this._dataLayer.Builder
                 .Insert(queryDescriptor.TableName)
-                .SetValues(this.UnpackInsertedValues(action));
+                .SetValues(unPackValues);
 
             var recordsAffected = this._queryExecutor.Execute(insertQuery);
             return recordsAffected;
@@ -117,16 +121,19 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 queryDescriptor.CheckCondition(action.Condition);
             }
 
+            var unPackValues = this.UnpackUpdatedValues(action);
             var updationQuery = this._dataLayer.Builder
                 .Update(queryDescriptor.TableName)
-                .SetValues(this.UnpackUpdatedValues(action))
                 .Where(action.Condition);
 
-            var queryConditions = queryDescriptor.GetConditions(userTokenData);
+            queryDescriptor.PrapareValidationConditions(userTokenData, unPackValues, action);
+            var queryConditions = queryDescriptor.GetConditions(userTokenData, unPackValues, action);
             if (queryConditions != null && queryConditions.Length > 0)
             {
                 updationQuery.Where(queryConditions);
             }
+
+            updationQuery.SetValues(unPackValues);
 
             var recordsAffected = this._queryExecutor.Execute(updationQuery);
             return recordsAffected;
@@ -162,6 +169,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
             }
         }
 
+
         private int PerformDeleteionAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, DeletionAction action)
         {
             if (action.Condition != null)
@@ -173,7 +181,11 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 .Delete(queryDescriptor.TableName)
                 .Where(action.Condition);
 
-            var queryConditions = queryDescriptor.GetConditions(userTokenData);
+            var listColumnValues = new List<ColumnValue>();
+            queryDescriptor.GetAllColumnValuesFromCondition(action.Condition, ref listColumnValues);
+            var arr = listColumnValues.ToArray();
+            queryDescriptor.PrapareValidationConditions(userTokenData, arr, action);
+            var queryConditions = queryDescriptor.GetConditions(userTokenData, arr, action);
             if (queryConditions != null && queryConditions.Length > 0)
             {
                 deletionQuery.Where(queryConditions);

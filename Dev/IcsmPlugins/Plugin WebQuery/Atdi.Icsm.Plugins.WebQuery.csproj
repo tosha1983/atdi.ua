@@ -108,6 +108,12 @@
     <Compile Include="Forms\FormEditColumnAttributes.Designer.cs">
       <DependentUpon>FormEditColumnAttributes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormEditConstraints.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormEditConstraints.Designer.cs">
+      <DependentUpon>FormEditConstraints.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormEditConstraintExtend.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,6 +184,9 @@
     <EmbeddedResource Include="Forms\FormEditColumnAttributes.resx">
       <DependentUpon>FormEditColumnAttributes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormEditConstraints.resx">
+      <DependentUpon>FormEditConstraints.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormEditConstraintExtend.resx">
       <DependentUpon>FormEditConstraintExtend.cs</DependentUpon>
     </EmbeddedResource>
@@ -191,6 +200,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -118,6 +118,32 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         }
 
 
+        public static OrmVarType GetOrmTypeField(string fld_check, string tableName)
+        {
+            OrmVarType rType =  OrmVarType.var_String;
+            OrmTable zeta = OrmSchema.Table(tableName, false);
+            if (zeta != null)
+            {
+                foreach (OrmField f1 in zeta.ClassFields)
+                {
+                    switch (f1.Nature)
+                    {
+                        case OrmFieldNature.Column:
+                            {
+                                OrmFieldF fjF = (OrmFieldF)f1;
+                                if (fld_check == f1.Name)
+                                {
+                                    rType = fjF.DDesc.ClassType;
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+            return rType;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
