@@ -17,7 +17,12 @@
                     </tr>
                 </thead>
                 <tbody v-if="hasData">
-                    <tr v-for="(row, index) in rows" :key="index" @click="onRowClick(row, index, $event)">
+                    <tr 
+                        v-for="(row, index) in rows" 
+                        :key="index" 
+                        @click="onRowClick(row, index, $event)"
+                        :class=" (row && row.isSelected) ? 'portal-data-table-row-selected' : ''"
+                    >
                         <td v-for="column in query.columns" :key="column.name">{{getValue(row, column)}}</td>
                     </tr>
 
@@ -135,6 +140,12 @@
             }
         },
 
+        watch: {
+            rows: function(){
+                this.hideRowSelection();
+            }
+        },
+
         methods: {
             getSortingState(column) {
                 const data = this.queryData;
@@ -164,11 +175,14 @@
                 this.$store.commit('queries/changePerPage', parseInt(event.target.value));
             },
             onRowClick: function(row, index, event) {
+                this.hideRowSelection();
+                event.currentTarget.classList.toggle("portal-data-table-row-selected");
+                this.$store.commit('queries/changeCurrentRow', { index: index, cells: row});
+            },
+            hideRowSelection: function() {
                 const curRow = document.querySelector("tr.portal-data-table-row-selected");
                 if (curRow)
                     curRow.classList.toggle("portal-data-table-row-selected");
-                event.currentTarget.classList.toggle("portal-data-table-row-selected");
-                this.$store.commit('queries/changeCurrentRow', { index: index, cells: row});
             },
             onColumnClick: function (columnName) {
                 const data = this.queryData;

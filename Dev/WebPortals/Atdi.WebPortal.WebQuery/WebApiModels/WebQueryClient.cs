@@ -47,17 +47,40 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
             return await this.PostAsync<QueryMetadata[], Options.GetQueriesMetadataOptions>(uri, options);
         }
 
-        public async Task<object> ExecuteQueryAsync(UserToken userToken, QueryToken token)
+        public async Task<object> ExecuteQueryAsync(UserToken userToken, QueryToken token, string[] columns, Filter filter, OrderExpression[] orders, DataLimit limit)
         {
             var options = new Options.ExecuteQueryOptions
             {
                 UserToken = userToken,
                 QueryToken = token,
-                ResultStructure = DataSetStructure.ObjectCells
+                ResultStructure = DataSetStructure.ObjectCells,
+                Columns = columns,
+                Filter = filter,
+                Orders = orders,
+                Limit = limit
             };
 
             var uri = this.CreateRequestUri("/api/WebQuery/ExecuteQuery");
             return await this.PostAsync<object, Options.ExecuteQueryOptions>(uri, options);
+        }
+
+        public async Task<ActionResult> ExecuteActionAsync(UserToken userToken, QueryToken token, DataChangeAction action)
+        {
+            var options = new Options.SaveChangesOptions
+            {
+                UserToken = userToken,
+                QueryToken = token,
+                Changeset = new DataChangeset
+                {
+                    ChangesetId = Guid.NewGuid(),
+                    Actions = new DataChangeAction[] { action }
+                }
+            };
+
+            var uri = this.CreateRequestUri("/api/WebQuery/SaveChanges");
+            var result = await this.PostAsync<ChangesResult, Options.SaveChangesOptions>(uri, options);
+
+            return result.Actions[0];
         }
     }
 }

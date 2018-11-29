@@ -45,7 +45,7 @@ const actions = {
 
     executeCurrentQuery({ commit }, options) {
         commit('toShowProgress');
-        api.executeQuery(state.current.token, data => {
+        api.executeQuery({token: state.current.token}, data => {
             commit('setQueryData', { data: data });
             commit('toHideProgress');
         });
@@ -129,7 +129,13 @@ const mutations = {
 
     changeCurrentRow(state, row) {
         const data = state.data["q_" + state.current.token.id];
+        if (data.currentRow && data.currentRow.cells){
+            data.currentRow.cells.isSelected = false;
+        }
         data.currentRow = row;
+        if (data.currentRow && data.currentRow.cells){
+            data.currentRow.cells.isSelected = true;
+        }
     },
 
     changeCurrentSorting(state, sorting) {

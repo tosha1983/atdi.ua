@@ -22,13 +22,31 @@ export default {
         });
     },
 
-    executeQuery(token, handlers) {
-        return webapi.post(webapi.SVC_WEBQUERIES, 'execute', { token }, data => {
+    executeQuery({ token, columns, filter, orders, limit }, handlers) {
+        return webapi.post(webapi.SVC_WEBQUERIES, 'Execute', { token, columns, filter, orders, limit }, data => {
             handlers(data);
         });
     },
 
-    declareEnvironment () {
+    createQueryRecord({ token, columns, cells }, handlers) {
+        return webapi.post(webapi.SVC_WEBQUERIES, 'CreateRecord', { token, columns, cells }, data => {
+            handlers(data);
+        });
+    },
+
+    updateQueryRecord({ token, columns, filter, cells }, handlers) {
+        return webapi.post(webapi.SVC_WEBQUERIES, 'UpdateRecord', { token, columns, filter, cells }, data => {
+            handlers(data);
+        });
+    },
+
+    deleteQueryRecord({ token, filter }, handlers) {
+        return webapi.post(webapi.SVC_WEBQUERIES, 'DeleteRecord', { token, filter }, data => {
+            handlers(data);
+        });
+    },
+
+    declareEnvironment() {
         return {
             title: null,
             version: null,
@@ -38,7 +56,7 @@ export default {
             },
             company: {
                 title: null,
-                 site: null,
+                site: null,
                 email: null
             }
         }
