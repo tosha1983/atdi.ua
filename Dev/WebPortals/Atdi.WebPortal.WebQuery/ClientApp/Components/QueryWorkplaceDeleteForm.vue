@@ -1,7 +1,10 @@
-﻿<template>
+<template>
     <div :id="id" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>View Item: {{query.title}}</h4>
+            <h4>Do you want to delete this item?</h4>
+            <template v-if="errorState && errorState.has">
+                <h4 class="" style="color: red">Error: {{errorState.message}}</h4>
+            </template>
             <div class="row portal-form-place">
                 <form class="col s12">
                     <template v-for="column in row.columns">
@@ -20,7 +23,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Close</a>
+            <a @click="onSave" class="waves-effect waves-green btn-flat" href="javascript:undefined">Delete</a>
+            <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Cancel</a>
             
         </div>
     </div>
@@ -30,12 +34,13 @@
     import DataEntry from './DataEntry.vue'
 
     export default {
-        name: 'QueryWorkplaceViewForm',
+        name: 'QueryWorkplaceAddForm',
 
         props: {
             id: String,
             query: Object,
             row: Object, // {key: [{column, value}], columns, cells, map}
+            errorState: Object // { has, message}
         },
 
         components: {
@@ -47,7 +52,6 @@
 
         data() {
             return {
-               
             }
 
         },
@@ -64,15 +68,19 @@
                 
             },
 
+            onSave: function () {
+                this.$emit('saveDeleteForm', {key: this.row.key, data: this.changedData});
+            },
+
             onClose: function () {
-                this.$emit('closeViewForm');
+                this.$emit('closeDeleteForm');
             }
         },
         mounted: function (){
             const modalElements = document.querySelectorAll('.modal');
             M.Modal.init(modalElements);
 
-             M.updateTextFields();
+            M.updateTextFields();
         }
     }
 </script>

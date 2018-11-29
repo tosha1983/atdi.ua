@@ -1,7 +1,10 @@
-﻿<template>
+<template>
     <div :id="id" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>View Item: {{query.title}}</h4>
+            <h4>Add New Item: {{query.title}}</h4>
+            <template v-if="errorState && errorState.has">
+                <h4 class="" style="color: red">Error: {{errorState.message}}</h4>
+            </template>
             <div class="row portal-form-place">
                 <form class="col s12">
                     <template v-for="column in row.columns">
@@ -11,7 +14,8 @@
                                     :id="'de-' + column.name"
                                     :column="column"
                                     :value="getValue(column)"
-                                    mode="View"
+                                    mode="Add"
+                                    @changedValue="onChangedValue"
                                 ></data-entry>
                             </div>
                         </div>
@@ -20,7 +24,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Close</a>
+            <a @click="onSave" class="waves-effect waves-green btn-flat" href="javascript:undefined">Save</a>
+            <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Cancel</a>
             
         </div>
     </div>
@@ -30,12 +35,13 @@
     import DataEntry from './DataEntry.vue'
 
     export default {
-        name: 'QueryWorkplaceViewForm',
+        name: 'QueryWorkplaceAddForm',
 
         props: {
             id: String,
             query: Object,
             row: Object, // {key: [{column, value}], columns, cells, map}
+            errorState: Object // { has, message}
         },
 
         components: {
@@ -47,7 +53,7 @@
 
         data() {
             return {
-               
+                changedData: {}
             }
 
         },
@@ -64,15 +70,26 @@
                 
             },
 
+            onSave: function () {
+                this.$emit('saveAddForm', {key: this.row.key, data: this.changedData});
+            },
+
             onClose: function () {
-                this.$emit('closeViewForm');
+                this.$emit('closeAddForm');
+            },
+
+            onChangedValue: function({column, value}) {
+                this.changedData[column.name] = {
+                    column: column,
+                    value: value
+                }
             }
         },
         mounted: function (){
             const modalElements = document.querySelectorAll('.modal');
             M.Modal.init(modalElements);
 
-             M.updateTextFields();
+            M.updateTextFields();
         }
     }
 </script>

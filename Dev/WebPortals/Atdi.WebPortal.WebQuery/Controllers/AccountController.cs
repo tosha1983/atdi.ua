@@ -29,7 +29,7 @@ namespace Atdi.WebPortal.WebQuery.Controllers
         // GET: /Account/SignIn
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult SignIn(string returnUrl)
+        public Microsoft.AspNetCore.Mvc.ActionResult SignIn(string returnUrl)
         {
             //var client = new WebQueryClient( new Uri(this._portalSettings.WebQueryApiUrl));
             //var userCredential = new WebApiModels.UserCredential
@@ -90,7 +90,7 @@ namespace Atdi.WebPortal.WebQuery.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
-        private ActionResult RedirectToLocal(string returnUrl)
+        private Microsoft.AspNetCore.Mvc.ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
             {
