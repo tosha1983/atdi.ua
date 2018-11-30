@@ -141,26 +141,32 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         /// <returns>true</returns>
         public static bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
+            if (dbCurVersion < 20180105.0949)
+            {
+                s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS");
+                s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                s.SetDatabaseVersion(20180105.0949);
+            }
             if (dbCurVersion < 20181128.0949)
             {
-                s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS,XWEBQUERYATTRIBUTES");
-                s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
-                s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
+                s.CreateTableFields("XWEBQUERY", "VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
+                s.CreateTables("XWEBQUERYATTRIBUTES");
                 s.CreateTableFields("XWEBQUERYATTRIBUTES", "ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
-                //s.CreateTables("XWEBTEST");
-                //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
-                //s.CreateTables("XWEBTEST");
-                //s.CreateTableFields("XWEBTEST", "ID,STRING_TYPE,BOOLEAN_TYPE,INTEGER_TYPE,DATETIME_TYPE,DOUBLE_TYPE,FLOAT_TYPE,DECIMAL_TYPE,BYTE_TYPE,BYTES_TYPE,GUID_TYPE");
                 s.SetDatabaseVersion(20181128.0949);
+            }
+            if (dbCurVersion < 20181129.0949)
+            {
+                s.CreateTableFields("XWEBCONSTRAINT", "STRVALUETO,MOMENTOFUSE,DEFAULTVALUE,MESSAGENOTVALID,OPERCONDITION,TYPECONDITION,DESCRCONDITION");
+                s.SetDatabaseVersion(20181129.0949);
             }
             return true;
         }
-
         //=============================================================
         /// <summary>
         /// Текущая версия БД плагина
         /// </summary>
         //public static readonly double schemaVersion = 20180105.0949;//20161003.0909
-        public static readonly double schemaVersion = 20181128.0949;//20161003.0909
+        public static readonly double schemaVersion = 20181129.0949;//20161003.0909
     }
 }

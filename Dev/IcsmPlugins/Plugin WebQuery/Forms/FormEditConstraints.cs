@@ -77,9 +77,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         comboBox_MomentOfUse.Text = rsWebQueryNew.GetS("MOMENTOFUSE");
                         comboBox_TypeCondition.Text = rsWebQueryNew.GetS("TYPECONDITION");
                         comboBox_OperationCondition.Text = rsWebQueryNew.GetS("OPERCONDITION");
-                        //comboBox_OperationCondition_SelectedIndexChanged(null, null);
-                      
-
+                        if (_web_id == -1)
+                        {
+                            _web_id = rsWebQueryNew.GetI("WEBQUERYID");
+                        }
                         if ((comboBox_OperationCondition.Items[comboBox_OperationCondition.SelectedIndex].ToString() == ConditionOperator.Between.ToString()) ||
                            (comboBox_OperationCondition.Items[comboBox_OperationCondition.SelectedIndex].ToString() == ConditionOperator.NotBetween.ToString()))
                         {

@@ -457,6 +457,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -484,6 +485,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -511,6 +513,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -537,6 +540,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -563,6 +567,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -589,6 +594,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -615,6 +621,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -641,6 +648,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -709,6 +717,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -735,6 +744,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -761,6 +771,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -787,6 +798,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -813,6 +825,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -839,6 +852,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -865,6 +879,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -891,6 +906,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -958,6 +974,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -984,6 +1001,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1010,6 +1028,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1036,6 +1055,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1062,6 +1082,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1088,6 +1109,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1114,6 +1136,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
 
                             }
@@ -1141,6 +1164,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1209,6 +1233,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1235,6 +1260,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1261,6 +1287,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1287,6 +1314,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1313,6 +1341,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1339,6 +1368,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1365,6 +1395,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1391,6 +1422,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1460,6 +1492,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1486,6 +1519,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1512,6 +1546,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1538,6 +1573,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1564,6 +1600,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1590,6 +1627,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1616,6 +1654,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1642,6 +1681,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1709,6 +1749,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1735,6 +1776,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1761,6 +1803,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1787,6 +1830,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1813,6 +1857,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1839,6 +1884,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1865,6 +1911,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1891,6 +1938,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1958,6 +2006,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -1984,6 +2033,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2010,6 +2060,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2036,6 +2087,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2062,6 +2114,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2088,6 +2141,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2114,6 +2168,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2140,6 +2195,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2207,6 +2263,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2233,6 +2290,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2259,6 +2317,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2285,6 +2344,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2311,6 +2371,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2337,6 +2398,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2363,6 +2425,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2389,6 +2452,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2456,6 +2520,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2482,6 +2547,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2508,6 +2574,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2534,6 +2601,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2560,6 +2628,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2586,6 +2655,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2612,6 +2682,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2638,6 +2709,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2679,7 +2751,7 @@ namespace Atdi.AppServices.WebQuery
 
                     if (validationChecked == false)
                     {
-                        errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                        errorMessage += string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
                     }
                 }
                 if (cntr.DATEVALUEMIN != null)
@@ -2719,6 +2791,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2745,6 +2818,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2771,6 +2845,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2797,6 +2872,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2823,6 +2899,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2849,6 +2926,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2875,6 +2953,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2901,6 +2980,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2942,7 +3022,7 @@ namespace Atdi.AppServices.WebQuery
 
                     if (validationChecked == false)
                     {
-                        errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                        errorMessage+= string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
                     }
                 }
                 if (cntr.STRVALUE != null)
@@ -2954,7 +3034,7 @@ namespace Atdi.AppServices.WebQuery
                         {
                             if ((actionType == ActionType.Create) && (typeCondition == _typeConditionGenerationCondition))
                             {
-                                if (!string.IsNullOrEmpty(cntr.DEFAULTVALUE))
+                                if (!string.IsNullOrEmpty(cntr.STRVALUE))
                                 {
                                     (columnValue as StringColumnValue).Value = cntr.STRVALUE;
                                     value = (columnValue as StringColumnValue).Value;
@@ -2962,6 +3042,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -2988,6 +3069,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -3014,6 +3096,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -3041,6 +3124,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -3067,6 +3151,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -3093,6 +3178,7 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
@@ -3119,13 +3205,14 @@ namespace Atdi.AppServices.WebQuery
                                 else
                                 {
                                     validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
                                 }
                             }
                             else
                             {
                                 if (conditionOperator == ConditionOperator.In)
                                 {
-                                    if (cntr.STRVALUE.Contains(value))
+                                    if (value.Contains(cntr.STRVALUE))
                                     {
                                         validationChecked = true;
                                     }
@@ -3136,7 +3223,48 @@ namespace Atdi.AppServices.WebQuery
                                 }
                                 else if (conditionOperator == ConditionOperator.NotIn)
                                 {
-                                    if (!cntr.STRVALUE.Contains(value))
+                                    if (!value.Contains(cntr.STRVALUE))
+                                    {
+                                        validationChecked = true;
+                                    }
+                                    else
+                                    {
+                                        validationChecked = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if ((conditionOperator == ConditionOperator.Contains) || (conditionOperator == ConditionOperator.NotContains))
+                        {
+                            if ((actionType == ActionType.Create) && (typeCondition == _typeConditionGenerationCondition))
+                            {
+                                if (!string.IsNullOrEmpty(cntr.DEFAULTVALUE))
+                                {
+                                    (columnValue as StringColumnValue).Value = cntr.DEFAULTVALUE;
+                                    value = (columnValue as StringColumnValue).Value;
+                                }
+                                else
+                                {
+                                    validationChecked = false;
+                                    errorMessage += Exceptions.FieldDefaultValueNull;
+                                }
+                            }
+                            else
+                            {
+                                if (conditionOperator == ConditionOperator.Contains)
+                                {
+                                    if (value.Contains(cntr.STRVALUE))
+                                    {
+                                        validationChecked = true;
+                                    }
+                                    else
+                                    {
+                                        validationChecked = false;
+                                    }
+                                }
+                                else if (conditionOperator == ConditionOperator.NotContains)
+                                {
+                                    if (!value.Contains(cntr.STRVALUE))
                                     {
                                         validationChecked = true;
                                     }
@@ -3158,7 +3286,7 @@ namespace Atdi.AppServices.WebQuery
                     }
                     if (validationChecked == false)
                     {
-                        errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                        errorMessage+= string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
                     }
                 }
                 if (!string.IsNullOrEmpty(errorMessage))

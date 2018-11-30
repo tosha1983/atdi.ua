@@ -114,6 +114,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
         private int PerformUpdationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, UpdationAction action)
         {
+            int recordsAffected = 0;
             queryDescriptor.CheckColumns(action.Columns);
 
             if (action.Condition != null)
@@ -132,10 +133,11 @@ namespace Atdi.AppServices.WebQuery.Handlers
             {
                 updationQuery.Where(queryConditions);
             }
-
-            updationQuery.SetValues(unPackValues);
-
-            var recordsAffected = this._queryExecutor.Execute(updationQuery);
+            if (unPackValues.Length > 0)
+            {
+                updationQuery.SetValues(unPackValues);
+                recordsAffected = this._queryExecutor.Execute(updationQuery);
+            }
             return recordsAffected;
         }
 
