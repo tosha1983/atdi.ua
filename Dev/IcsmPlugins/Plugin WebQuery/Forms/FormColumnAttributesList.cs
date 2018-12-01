@@ -122,7 +122,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private void button_add_new_Click(object sender, EventArgs e)
         {
-            FormEditColumnAttributes extend_attr = new FormEditColumnAttributes(idweb, true, pathlist);
+            FormEditColumnAttributes extend_attr = new FormEditColumnAttributes(idweb,-1, true, pathlist);
             extend_attr.ShowDialog();
             ViewData();
         }
@@ -134,7 +134,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 int ID_;
                 if (int.TryParse(listView_constraints_lst.SelectedItems[i].SubItems[0].Text, out ID_))
                 {
-                    FormEditColumnAttributes extend_attr = new FormEditColumnAttributes(ID_, false, pathlist);
+                    FormEditColumnAttributes extend_attr = new FormEditColumnAttributes(idweb, ID_, false, pathlist);
                     extend_attr.ShowDialog();
                 }
             }

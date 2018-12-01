@@ -91,10 +91,17 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
                 s.DeclareField("MIN", "NUMBER(22,8)", null, null, null);
                 s.DeclareField("MAX", "NUMBER(22,8)", null, null, null);
-                s.DeclareField("STRVALUE", "VARCHAR(250)", null, null, null);
+                s.DeclareField("STRVALUE", "VARCHAR(4000)", null, null, null);
                 s.DeclareField("DATEVALUEMIN", "DATE", "Date", null, null);
                 s.DeclareField("INCLUDE", "NUMBER(1,0)", null, null, null);
                 s.DeclareField("DATEVALUEMAX", "DATE", "Date", null, null);
+                s.DeclareField("DESCRCONDITION", "VARCHAR(2000)", null, null, null);
+                s.DeclareField("TYPECONDITION", "VARCHAR(50)", null, null, null);
+                s.DeclareField("OPERCONDITION", "VARCHAR(50)", null, null, null);
+                s.DeclareField("MESSAGENOTVALID", "VARCHAR(1000)", null, null, null);
+                s.DeclareField("DEFAULTVALUE", "VARCHAR(200)", null, null, null);
+                s.DeclareField("MOMENTOFUSE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("STRVALUETO", "VARCHAR(4000)", null, null, null);
                 s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
             }
 
@@ -105,7 +112,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("OBJTABLE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("DATEMODIFIED", "DATE", "Date", null, null);
             }
-
+            /*
             s.DeclareTable("XWEBTEST", "TEST table", plugin4);
             {
                 s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null); 
@@ -122,6 +129,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("GUID_TYPE", "VARCHAR(40)", null, null, null);
                 s.DeclareShortDesc("ID;System.Int32|STRING_TYPE;System.String|BOOLEAN_TYPE;System.Boolean|INTEGER_TYPE;System.Int32|DATETIME_TYPE;System.DateTime|DOUBLE_TYPE;System.Double|FLOAT_TYPE;System.Single|DECIMAL_TYPE;System.Decimal|BYTE_TYPE;System.Byte|BYTES_TYPE;System.Byte[]|GUID_TYPE;System.Guid");
             }
+            */
         }
 
         //=============================================================
@@ -133,26 +141,32 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         /// <returns>true</returns>
         public static bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
+            if (dbCurVersion < 20180105.0949)
+            {
+                s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS");
+                s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
+                s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP");
+                s.SetDatabaseVersion(20180105.0949);
+            }
             if (dbCurVersion < 20181128.0949)
             {
-                s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS,XWEBQUERYATTRIBUTES");
-                s.CreateTableFields("XWEBCONSTRAINT", "ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,DATEVALUEMIN,INCLUDE,DATEVALUEMAX");
-                s.CreateTableFields("XWEBQUERY", "ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
+                s.CreateTableFields("XWEBQUERY", "VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
+                s.CreateTables("XWEBQUERYATTRIBUTES");
                 s.CreateTableFields("XWEBQUERYATTRIBUTES", "ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
-                //s.CreateTables("XWEBTEST");
-                //s.CreateTableFields("XUPDATEOBJECTS", "ID,OBJTABLE,DATEMODIFIED");
-                //s.CreateTables("XWEBTEST");
-                //s.CreateTableFields("XWEBTEST", "ID,STRING_TYPE,BOOLEAN_TYPE,INTEGER_TYPE,DATETIME_TYPE,DOUBLE_TYPE,FLOAT_TYPE,DECIMAL_TYPE,BYTE_TYPE,BYTES_TYPE,GUID_TYPE");
                 s.SetDatabaseVersion(20181128.0949);
+            }
+            if (dbCurVersion < 20181129.0949)
+            {
+                s.CreateTableFields("XWEBCONSTRAINT", "STRVALUETO,MOMENTOFUSE,DEFAULTVALUE,MESSAGENOTVALID,OPERCONDITION,TYPECONDITION,DESCRCONDITION");
+                s.SetDatabaseVersion(20181129.0949);
             }
             return true;
         }
-
         //=============================================================
         /// <summary>
         /// Текущая версия БД плагина
         /// </summary>
         //public static readonly double schemaVersion = 20180105.0949;//20161003.0909
-        public static readonly double schemaVersion = 20181128.0949;//20161003.0909
+        public static readonly double schemaVersion = 20181129.0949;//20161003.0909
     }
 }

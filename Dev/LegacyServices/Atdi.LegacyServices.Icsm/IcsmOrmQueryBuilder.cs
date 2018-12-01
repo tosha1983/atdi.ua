@@ -25,7 +25,6 @@ namespace Atdi.LegacyServices.Icsm
             this._syntax = dataEngine.Syntax;
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
             this._schemasMetadata = schemasMetadata;
-
             logger.Debug(Contexts.LegacyServicesIcsm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
 
@@ -208,6 +207,8 @@ namespace Atdi.LegacyServices.Icsm
                 throw new InvalidOperationException(Exceptions.AbortedBuildDeleteStatement, e);
             }
         }
+
+               
 
         public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
