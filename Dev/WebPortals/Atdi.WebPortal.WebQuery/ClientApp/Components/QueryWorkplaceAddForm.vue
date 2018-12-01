@@ -1,7 +1,7 @@
 <template>
     <div :id="id" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>Add New Item: {{query.title}}</h4>
+            <h4>{{query.title}}: Add New Item</h4>
             <template v-if="errorState && errorState.has">
                 <h4 class="" style="color: red">Error: {{errorState.message}}</h4>
             </template>
@@ -90,6 +90,8 @@
             M.Modal.init(modalElements);
 
             M.updateTextFields();
+
+            
         }
     }
 </script>

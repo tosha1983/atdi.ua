@@ -73,6 +73,9 @@
             M.Modal.init(modalElements);
 
              M.updateTextFields();
+
+            const datepickerElements = document.querySelectorAll('.datepicker');
+            M.Datepicker.init(datepickerElements);
         }
     }
 </script>

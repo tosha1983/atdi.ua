@@ -68,43 +68,43 @@ namespace Atdi.DataModels
                 case DataType.DateTime:
                     result = new DateTimeColumnValue
                     {
-                        Value = (value == null) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                        Value = (value == null || value.ToString().Length == 0) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind)
                     };
                     break;
                 case DataType.Double:
                     result = new DoubleColumnValue
                     {
-                        Value = double.Parse(value.ToString()) as double?
+                        Value = (value == null || value.ToString().Length == 0) ? (double?)null : double.Parse(value.ToString()) as double?
                     };
                     break;
                 case DataType.Float:
                     result = new FloatColumnValue
                     {
-                        Value = Single.Parse(value.ToString()) as Single?
+                        Value = (value == null || value.ToString().Length == 0) ? (Single?)null : Single.Parse(value.ToString()) as Single?
                     };
                     break;
                 case DataType.Decimal:
                     result = new DecimalColumnValue
                     {
-                        Value = decimal.Parse(value.ToString()) as decimal?
+                        Value = (value == null || value.ToString().Length == 0) ? (decimal?)null : decimal.Parse(value.ToString()) as decimal?
                     };
                     break;
                 case DataType.Byte:
                     result = new ByteColumnValue
                     {
-                        Value = (value == null) ? (byte?)null : Convert.ToByte(value) as byte?
+                        Value = (value == null || value.ToString().Length == 0) ? (byte?)null : Convert.ToByte(value) as byte?
                     };
                     break;
                 case DataType.Bytes:
                     result = new BytesColumnValue
                     {
-                        Value = (value == null) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value.ToString())
+                        Value = (value == null || value.ToString().Length == 0) ? (byte[])null : UTF8Encoding.UTF8.GetBytes(value.ToString())
                     };
                     break;
                 case DataType.Guid:
                     result = new GuidColumnValue
                     {
-                        Value = Guid.Parse(value.ToString()) as Guid?
+                        Value = (value == null || value.ToString().Length == 0) ? (Guid?)null : Guid.Parse(value.ToString()) as Guid?
                     };
                     break;
                 case DataType.Char:
@@ -158,13 +158,13 @@ namespace Atdi.DataModels
                 case DataType.Date:
                     result = new DateColumnValue
                     {
-                        Value = (value == null) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                        Value = (value == null || value.ToString().Length == 0) ? (DateTime?)null : DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind)
                     };
                     break;
                 case DataType.DateTimeOffset:
                     result = new DateTimeOffsetColumnValue
                     {
-                        Value = (value == null) ? (DateTimeOffset?)null : DateTimeOffset.Parse(value.ToString()) as DateTimeOffset?
+                        Value = (value == null || value.ToString().Length == 0) ? (DateTimeOffset?)null : DateTimeOffset.Parse(value.ToString()) as DateTimeOffset?
                     };
                     break;
                 case DataType.Xml:
