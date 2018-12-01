@@ -150,6 +150,8 @@ namespace Atdi.AppServices.WebQuery
                 //throw new InvalidOperationException(Exceptions.AccessToActionDenied.With(type));
             } 
         }
+
+
         public void CheckColumns(string[] columns)
         {
             for (int i = 0; i < columns.Length; i++)

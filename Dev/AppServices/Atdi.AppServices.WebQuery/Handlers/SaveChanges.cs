@@ -168,37 +168,34 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
         private int PerformCreationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, CreationAction action)
         {
+            var isFindFieldId = false;
             queryDescriptor.CheckColumns(action.Columns);
             var unPackValues = this.UnpackInsertedValues(action);
-            var allcolums = unPackValues.ToList();
-            var columnValue = allcolums.Find(z => z.Name == "ID");
-            if (columnValue != null)
+            for (int i = 0; i < unPackValues.Length; i++)
             {
-                IntegerColumnValue integerColumnValue = columnValue as IntegerColumnValue;
-                var columnValueReplaced = new IntegerColumnValue()
-                {
-                    DataType = integerColumnValue.DataType,
-                    Name = columnValue.Name,
-                    Source = columnValue.Source,
-                    Value = AllocID(queryDescriptor.TableName)
-                };
-                allcolums.Remove(columnValue);
-                allcolums.Add(columnValueReplaced);
-                unPackValues = allcolums.ToArray();
-            }
-            else
-            {
-                queryDescriptor.CheckColumns(new string[] { "ID" });
+                if (unPackValues[i].Name == "ID")
                 {
                     var columnValueReplaced = new IntegerColumnValue()
                     {
-                        DataType = DataType.Integer,
-                        Name = "ID",
+                        Name = unPackValues[i].Name,
+                        Source = unPackValues[i].Source,
                         Value = AllocID(queryDescriptor.TableName)
                     };
-                    allcolums.Add(columnValueReplaced);
-                    unPackValues = allcolums.ToArray();
+                    unPackValues[i] = columnValueReplaced;
+                    isFindFieldId = true;
+                    break;
                 }
+            }
+            if ((queryDescriptor.HasColumn("ID")) && (isFindFieldId==false))
+            {
+                var columnValueReplaced = new IntegerColumnValue()
+                {
+                    DataType = DataType.Integer,
+                    Name = "ID",
+                    Value = AllocID(queryDescriptor.TableName)
+                };
+                Array.Resize(ref unPackValues, unPackValues.Length + 1);
+                unPackValues[unPackValues.Length-1] = columnValueReplaced;
             }
             queryDescriptor.PrapareValidationConditions(userTokenData, unPackValues, action);
             queryDescriptor.GetConditions(userTokenData, unPackValues, action);
