@@ -154,7 +154,7 @@ namespace Atdi.LegacyServices.Icsm
                 _report.SetConfig(f);
                 var zeta = this._schemasMetadata.GetTableByName(_report.m_dat.m_tab);
                 List<KeyValuePair<string,string>> listColumnsFromSchema = new List<KeyValuePair<string, string>>();
-                if (!string.IsNullOrEmpty(zeta.ShortDesc))
+                if (zeta != null && !string.IsNullOrEmpty(zeta.ShortDesc))
                 {
                     string[] blocks = zeta.ShortDesc.Split(new char[] { '|' });
                     for (int i = 0; i < blocks.Length; i++)

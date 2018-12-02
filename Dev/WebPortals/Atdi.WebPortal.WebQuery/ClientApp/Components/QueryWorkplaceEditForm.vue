@@ -85,15 +85,13 @@
                     value: value
                 }
                 this.hasChanged = true;
-                console.log("- changed column value [" + column.name + "]: ", value);
+                //console.log("- changed column value [" + column.name + "]: ", value);
             }
         },
         mounted: function (){
             const modalElements = document.querySelectorAll('.modal');
             M.Modal.init(modalElements);
-
-             M.updateTextFields();
-             
+            M.updateTextFields();
         }
     }
 </script>

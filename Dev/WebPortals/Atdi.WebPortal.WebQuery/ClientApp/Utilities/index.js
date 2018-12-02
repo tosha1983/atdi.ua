@@ -65,5 +65,39 @@ export default {
         });
 
         return sortArray;
+    },
+
+    applyMultiSorting: function (source, columns) {
+
+        console.log("[call: applyMultiSorting] - columns: ", columns);
+
+        let sortArray = [...source];
+        sortArray.sort((row1, row2) => {
+
+            for (let index = 0; index < columns.length; index++) {
+                const column = columns[index];
+                
+                let valueRow1 = row1[column.index]; // callback.call(source, row1, column);
+                let valueRow2 = row2[column.index]; //callback.call(source, row2, column);
+
+                if (valueRow1 === null) {
+                    valueRow1 = ''
+                }
+                if (valueRow2 === null) {
+                    valueRow2 = ''
+                }
+
+                if (valueRow1 < valueRow2) {
+                    return -1 * column.direction;
+                }
+                if (valueRow1 > valueRow2) {
+                    return 1 * column.direction;
+                }
+            }
+
+            return 0;
+        });
+
+        return sortArray;
     }
 }

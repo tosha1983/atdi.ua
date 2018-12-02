@@ -2,7 +2,7 @@
     <div :id="id" class="row">
         <div class="input-field col s8">
             <i class="material-icons prefix">event</i>
-            <input v-if="state === 'Editable'"          :id="dateId" type="text"  class="datepicker">
+            <input v-if="state === 'Editable'"          :id="dateId" type="text"  @change="changeDateText" class="datepicker">
             <input v-if="state === 'Readonly'" readonly :id="dateId" type="text"  class="datepicker">
             <input v-if="state === 'Disabled'" disabled :id="dateId" type="text"  class="datepicker">
             <label :for="dateId">{{title}}</label>
@@ -112,7 +112,16 @@
                     ':' + this.pad(datetime.getSeconds()) +
                     '.' + (datetime.getMilliseconds() / 1000).toFixed(3).slice(2, 5)
             },
-
+            changeDateText: function () {
+                const datepickerElement = document.getElementById(this.dateId);
+                const dateInstance = M.Datepicker.getInstance(datepickerElement);
+                if (dateInstance.date){
+                    this.setDate(dateInstance.date);
+                } else {
+                    this.setDate(null);
+                }
+                
+            },
             changeTimeText: function(value) {
                 const timepickerElement = document.getElementById(this.timeId);
                 const timeInstance = M.Timepicker.getInstance(timepickerElement);
@@ -131,12 +140,6 @@
                 container: 'body',
                 autoClose: true,
                 showClearBtn: true,
-                onSelect: function (newDate) {
-                    if (initState){
-                        return;
-                    }
-                    self.setDate(newDate);
-                }
             }
             M.Datepicker.init(datepickerElement, dateOptions);
 
@@ -152,7 +155,7 @@
             const timeOptions = {
                 container: 'body',
                 autoClose: false,
-                showClearBtn: true,
+                showClearBtn: false,
                 defaultTime:  timeValue,
                 twelveHour: false
             };
