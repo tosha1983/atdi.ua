@@ -435,54 +435,98 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (x.m_timefinishmeas != null) s_out.ResultsMeasStation[ii].GeneralResult.TimeFinishMeas = x.m_timefinishmeas;
                                                     if (x.m_timestartmeasdate != null) s_out.ResultsMeasStation[ii].GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
 
+
+                                                    if (x.m_resstmaskelm != null)
+                                                    {
+                                                        object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
+                                                        if (m_resstmaskelm != null)
+                                                        {
+                                                            s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+
+                                                        if (obj.XbsResmaskBw != null)
+                                                        {
+                                                            List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                            if (resYXbsResmaskBw.Count > 0)
+                                                            {
+                                                                s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
+                                                                int u = 0;
+                                                                foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
+                                                                {
+                                                                    s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u] = new MaskElements();
+                                                                    if (xv.m_bw != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].BW = xv.m_bw;
+                                                                    if (xv.m_level != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].level = xv.m_level;
+                                                                    u++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (x.m_resstlevelsspect != null)
+                                                    {
+                                                        object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
+                                                        if (m_resstlevelsspect != null)
+                                                        {
+                                                            s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (obj.XbsLevelSpecrum != null)
+                                                        {
+                                                            List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                            if (resYXbsLevelSpecrum.Count > 0)
+                                                            {
+                                                                s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
+                                                                int u = 0;
+                                                                foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
+                                                                {
+                                                                    s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = new float();
+                                                                    if (xv.m_levelspecrum != null) s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
+                                                                    u++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
                                                     /*
-                                                    object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
-                                                    if (m_resstmaskelm != null)
-                                                    {
-                                                        s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
-                                                    }
-
-                                                    object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
-                                                    if (m_resstlevelsspect != null)
-                                                    {
-                                                        s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
-                                                    }
-                                                    */
-
-
-                                                    if (obj.XbsResmaskBw != null)
-                                                    {
-                                                        List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
-                                                        if (resYXbsResmaskBw.Count > 0)
-                                                        {
-                                                            s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
-                                                            int u = 0;
-                                                            foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
-                                                            {
-                                                                s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u] = new MaskElements();
-                                                                if (xv.m_bw != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].BW = xv.m_bw;
-                                                                if (xv.m_level != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].level = xv.m_level;
-                                                                u++;
-                                                            }
-                                                        }
-                                                    }
+                                                     if (obj.XbsResmaskBw != null)
+                                                     {
+                                                         List<YXbsResStMaskElm> resYXbsResmaskBw = obj.XbsResmaskBw.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                         if (resYXbsResmaskBw.Count > 0)
+                                                         {
+                                                             s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = new MaskElements[resYXbsResmaskBw.Count];
+                                                             int u = 0;
+                                                             foreach (YXbsResStMaskElm xv in resYXbsResmaskBw)
+                                                             {
+                                                                 s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u] = new MaskElements();
+                                                                 if (xv.m_bw != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].BW = xv.m_bw;
+                                                                 if (xv.m_level != null) s_out.ResultsMeasStation[ii].GeneralResult.MaskBW[u].level = xv.m_level;
+                                                                 u++;
+                                                             }
+                                                         }
+                                                     }
 
 
-                                                    if (obj.XbsLevelSpecrum != null)
-                                                    {
-                                                        List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
-                                                        if (resYXbsLevelSpecrum.Count > 0)
-                                                        {
-                                                            s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
-                                                            int u = 0;
-                                                            foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
-                                                            {
-                                                                s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = new float();
-                                                                if (xv.m_levelspecrum != null) s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
-                                                                u++;
-                                                            }
-                                                        }
-                                                    }
+                                                     if (obj.XbsLevelSpecrum != null)
+                                                     {
+                                                         List<YXbsResStLevelsSpect> resYXbsLevelSpecrum = obj.XbsLevelSpecrum.FindAll(t => t.m_xbs_resstgeneralid == x.m_id);
+                                                         if (resYXbsLevelSpecrum.Count > 0)
+                                                         {
+                                                             s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = new float[resYXbsLevelSpecrum.Count];
+                                                             int u = 0;
+                                                             foreach (YXbsResStLevelsSpect xv in resYXbsLevelSpecrum)
+                                                             {
+                                                                 s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = new float();
+                                                                 if (xv.m_levelspecrum != null) s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum[u] = (float)xv.m_levelspecrum;
+                                                                 u++;
+                                                             }
+                                                         }
+                                                     }
+                                                     */
                                                 }
                                             }
                                         }
