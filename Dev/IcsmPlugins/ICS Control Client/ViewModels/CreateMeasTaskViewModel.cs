@@ -21,66 +21,44 @@ namespace XICSM.ICSControlClient.ViewModels
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
         #region Current Objects
-
-        // Tasks
         private MeasTaskViewModel _currentMeasTask;
-
-        // Task -> Sensors
         private ShortSensorViewModel _currentShortSensor;
-
-        // Task - Map (Task, TaskStation, TaskResult, TaskResultStation, TaskSensor)
         private MP.MapDrawingData _currentMapData;
-
         #endregion
 
-        private ShortMeasTaskDataAdatper _shortMeasTasks;
+        public FM.MeasTaskForm _measTaskForm;
         private ShortSensorDataAdatper _shortSensors;
 
         #region Commands
-
         public WpfCommand CreateMeasTaskCommand { get; set; }
-
         #endregion
 
         public CreateMeasTaskViewModel()
         {
             this.CreateMeasTaskCommand = new WpfCommand(this.OnCreateMeasTaskCommand);
-
-            this._shortMeasTasks = new ShortMeasTaskDataAdatper();
             this._shortSensors = new ShortSensorDataAdatper();
             this._currentMeasTask = new MeasTaskViewModel();
-
             this.SetDefaultVaues();
-            this.ReloadShortMeasTasks();
             this.ReloadShortSensors();
         }
-
         public MP.MapDrawingData CurrentMapData
         {
             get => this._currentMapData;
             set => this.Set(ref this._currentMapData, value);
         }
-
         public MeasTaskViewModel CurrentMeasTask
         {
             get => this._currentMeasTask;
             set => this.Set(ref this._currentMeasTask, value, () => { ReloadShortSensors(); RedrawMap(); });
         }
-
         public ShortSensorViewModel CurrentShortSensor
         {
             get => this._currentShortSensor;
             set => this.Set(ref this._currentShortSensor, value, RedrawMap);
         }
-
         #region Sources (Adapters)
-
-        public ShortMeasTaskDataAdatper ShortMeasTasks => this._shortMeasTasks;
-
         public ShortSensorDataAdatper ShortSensors => this._shortSensors;
-
         #endregion
-
         private void SetDefaultVaues()
         {
             this._currentMeasTask.MeasDtParamTypeMeasurements = SDR.MeasurementType.Level;
@@ -109,36 +87,11 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.DateCreated = DateTime.Now;
             this._currentMeasTask.CreatedBy = IM.ConnectedUser();
         }
-        private void ReloadShortMeasTasks()
-        {
-            var sdrTasks = SVC.SdrnsControllerWcfClient.GetShortMeasTasks(new Atdi.AppServer.Contracts.DataConstraint());
-
-            this._shortMeasTasks.Source = sdrTasks;
-        }
-
         private void ReloadShortSensors()
         {
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(new Atdi.AppServer.Contracts.DataConstraint());
-
-            //var measTask = this.CurrentMeasTask;
-            //if (measTask != null)
-            //{
-            //    if (measTask.Stations != null && measTask.Stations.Length > 0)
-            //    {
-            //        sdrSensors = sdrSensors
-            //            .Where(sdrSensor => measTask.Stations
-            //                    .FirstOrDefault(s => s.StationId.Value == sdrSensor.Id.Value) != null
-            //                )
-            //            .ToArray();
-            //    }
-            //    else
-            //    {
-            //        sdrSensors = new SDR.ShortSensor[] { };
-            //    }
-            //}
             this._shortSensors.Source = sdrSensors;
         }
-
         private void OnCreateMeasTaskCommand(object parameter)
         {
             try
@@ -148,32 +101,108 @@ namespace XICSM.ICSControlClient.ViewModels
                     MessageBox.Show("Undefined sensor!");
                     return;
                 }
-                    
+
+                if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
+                {
+                    MessageBox.Show("Date Stop should be great of the Date Start!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasTimeParamListTimeStart > this._currentMeasTask.MeasTimeParamListTimeStop)
+                {
+                    MessageBox.Show("Time Stop should be great of the Time Start!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasTimeParamListPerInterval <= 0 || this._currentMeasTask.MeasTimeParamListPerInterval >= 3600)
+                {
+                    MessageBox.Show("Incorrect value Duration!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasFreqParamRgL > this._currentMeasTask.MeasFreqParamRgU)
+                {
+                    MessageBox.Show("Stop freq should be great of the Start freq!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasFreqParamRgL <= 1 || this._currentMeasTask.MeasFreqParamRgL >= 6000)
+                {
+                    MessageBox.Show("Incorrect value Start freq!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasFreqParamRgU <= 1 || this._currentMeasTask.MeasFreqParamRgU >= 6000)
+                {
+                    MessageBox.Show("Incorrect value Stop freq!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasFreqParamStep <= 0 || this._currentMeasTask.MeasFreqParamStep >= 20000)
+                {
+                    MessageBox.Show("Incorrect value Step whith!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasDtParamRBW <= 0.001 || this._currentMeasTask.MeasDtParamRBW >= 10000)
+                {
+                    MessageBox.Show("Incorrect value RBW!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasDtParamVBW <= 0.001 || this._currentMeasTask.MeasDtParamVBW >= 10000)
+                {
+                    MessageBox.Show("Incorrect value VBW!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasDtParamVBW > this._currentMeasTask.MeasDtParamRBW)
+                {
+                    MessageBox.Show("VBW should be great of the RBW!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasDtParamMeasTime < 0.001 || this._currentMeasTask.MeasDtParamMeasTime > 1)
+                {
+                    MessageBox.Show("Incorrect value Sweep time!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasDtParamRfAttenuation != 0 && this._currentMeasTask.MeasDtParamRfAttenuation != 10 && this._currentMeasTask.MeasDtParamRfAttenuation != 20 && this._currentMeasTask.MeasDtParamRfAttenuation != 30)
+                {
+                    MessageBox.Show("Incorrect value Attenuation!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasDtParamPreamplification != 0 && this._currentMeasTask.MeasDtParamPreamplification != 10 && this._currentMeasTask.MeasDtParamPreamplification != 20 && this._currentMeasTask.MeasDtParamPreamplification != 30)
+                {
+                    MessageBox.Show("Incorrect value Gain of preamplifier!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasOtherLevelMinOccup <= -130 || this._currentMeasTask.MeasOtherLevelMinOccup >= -30)
+                {
+                    MessageBox.Show("Incorrect value Level occupation!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasOtherSwNumber < 1 || this._currentMeasTask.MeasOtherSwNumber > 10000)
+                {
+                    MessageBox.Show("Incorrect value Number of scan!");
+                    return;
+                }
+
                 var measTask = new SDR.MeasTask()
                 {
                     Name = this._currentMeasTask.Name,
                     MaxTimeBs = this._currentMeasTask.MaxTimeBs,
                     MeasFreqParam = new SDR.MeasFreqParam()
                     {
-                        Mode = this.CurrentMeasTask.MeasFreqParamMode,
-                        RgL = this.CurrentMeasTask.MeasFreqParamRgL,
-                        RgU = this.CurrentMeasTask.MeasFreqParamRgU,
-                        Step = this.CurrentMeasTask.MeasFreqParamStep
+                        Mode = this._currentMeasTask.MeasFreqParamMode,
+                        RgL = this._currentMeasTask.MeasFreqParamRgL,
+                        RgU = this._currentMeasTask.MeasFreqParamRgU,
+                        Step = this._currentMeasTask.MeasFreqParamStep
                         //MeasFreqs = new SDR.MeasFreq()
                     },
                     //MeasLocParams = ,
                     MeasOther = new SDR.MeasOther()
                     {
-                        TypeSpectrumOccupation = this.CurrentMeasTask.MeasOtherTypeSpectrumOccupation,
-                        LevelMinOccup = this.CurrentMeasTask.MeasOtherLevelMinOccup,
-                        SwNumber = this.CurrentMeasTask.MeasOtherSwNumber,
-                        TypeSpectrumScan = this.CurrentMeasTask.MeasOtherTypeSpectrumScan,
+                        TypeSpectrumOccupation = this._currentMeasTask.MeasOtherTypeSpectrumOccupation,
+                        LevelMinOccup = this._currentMeasTask.MeasOtherLevelMinOccup,
+                        SwNumber = this._currentMeasTask.MeasOtherSwNumber,
+                        TypeSpectrumScan = this._currentMeasTask.MeasOtherTypeSpectrumScan,
                         NChenal = this._currentMeasTask.MeasOtherNChenal
                     },
                     //MeasSubTasks = ,
                     OrderId = this._currentMeasTask.OrderId,
                     Prio = this._currentMeasTask.Prio,
-                    ResultType = this.CurrentMeasTask.ResultType,
+                    ResultType = this._currentMeasTask.ResultType,
                     Status = this._currentMeasTask.Status,
                     Type = this._currentMeasTask.Type,
                     MeasDtParam = new SDR.MeasDtParam()
@@ -215,6 +244,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     throw new InvalidOperationException($"Could not create a meas task");
                 }
+                _measTaskForm.Close();
             }
             catch (Exception e)
             {

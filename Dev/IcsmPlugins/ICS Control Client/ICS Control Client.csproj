@@ -144,6 +144,12 @@
     <Compile Include="Handlers\Inspection\InspectionsContextMenuBuilder.cs" />
     <Compile Include="Handlers\Tour\Commands\SelectAreaCommand.cs" />
     <Compile Include="Handlers\Tour\Commands\SynchroInspectionsCommand.cs" />
+    <Compile Include="Forms\StationListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StationListForm.Designer.cs">
+      <DependentUpon>StationListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Metadata\FreqPlanChan.cs" />
     <Compile Include="Metadata\AllStations.cs" />
     <Compile Include="Metadata\Allotments.cs" />
@@ -250,6 +256,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Tour\Forms\SelectAreaForm.resx">
       <DependentUpon>SelectAreaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StationListForm.resx">
+      <DependentUpon>StationListForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
