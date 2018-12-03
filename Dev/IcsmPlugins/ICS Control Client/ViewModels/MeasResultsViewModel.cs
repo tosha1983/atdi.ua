@@ -15,6 +15,7 @@ using SDR = Atdi.AppServer.Contracts.Sdrns;
 using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
+using ICSM;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -33,6 +34,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #region Commands
         public WpfCommand GetCSVCommand { get; set; }
+        public WpfCommand SearchStationCommand { get; set; }
         #endregion
 
         #region Corrent Objects
@@ -84,6 +86,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
             this._measDtParamTypeMeasurements = SDR.MeasurementType.MonitoringStations;
             this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
+            this.SearchStationCommand = new WpfCommand(this.OnSearchStationCommand);
             this.ReloadMeasResult();
         }
 
@@ -711,6 +714,109 @@ namespace XICSM.ICSControlClient.ViewModels
                 MessageBox.Show(e.ToString());
             }
         }
+        private void OnSearchStationCommand(object parameter)
+        {
+            try
+            {
+                if (this._currentResultsMeasurementsStationData == null || string.IsNullOrEmpty(this._currentResultsMeasurementsStationData.MeasGlobalSID) || this._currentResultsMeasurementsStationData.MeasGlobalSID.Length < 5)
+                    return;
 
+                string stationName = this._currentResultsMeasurementsStationData.MeasGlobalSID;
+                double? lonMin = null;
+                double? lonMax = null;
+                double? latMin = null;
+                double? latMax = null;
+                decimal? freq = null;
+
+                stationName = stationName.Substring(stationName.Length - 5, 4).TrimStart('0');
+
+                int recCount = LevelMeasurements.Source.Count();
+                if (recCount == 0)
+                {
+                    MessageBox.Show("No Level Measurements data.");
+                    return;
+                }
+
+                for (int i = 0; i < recCount; i++)
+                {
+                    var ms = LevelMeasurements.Source[i] as SDR.LevelMeasurementsCar;
+
+                    if (ms.Lon.HasValue)
+                    {
+                        if (!lonMin.HasValue || lonMin > ms.Lon)
+                            lonMin = ms.Lon;
+                        if (!lonMax.HasValue || lonMax < ms.Lon)
+                            lonMax = ms.Lon;
+                    }
+
+                    if (ms.Lat.HasValue)
+                    {
+                        if (!latMin.HasValue || latMin > ms.Lat)
+                            latMin = ms.Lat;
+                        if (!latMax.HasValue || latMax < ms.Lat)
+                            latMax = ms.Lat;
+                    }
+
+                    if (!freq.HasValue)
+                        freq = ms.CentralFrequency;
+                }
+
+                var source = new IMRecordset("MOB_STATION", IMRecordset.Mode.ReadOnly);
+                source.Select("ID,NAME,Position.LONGITUDE,Position.LATITUDE");
+                source.SetWhere("NAME", IMRecordset.Operation.Eq, stationName);
+                if (lonMin.HasValue)
+                    source.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Gt, lonMin.Value - 0.7);
+                if (lonMax.HasValue)
+                    source.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Lt, lonMax.Value + 0.7);
+                if (latMin.HasValue)
+                    source.SetWhere("Position.LATITUDE", IMRecordset.Operation.Gt, latMin.Value - 0.7);
+                if (latMax.HasValue)
+                    source.SetWhere("Position.LATITUDE", IMRecordset.Operation.Lt, latMax.Value + 0.7);
+
+                Dictionary<int, int> stations = new Dictionary<int, int>();
+
+                for (source.Open(); !source.IsEOF(); source.MoveNext())
+                {
+                    var rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                    rs.SetWhere("STA_ID", IMRecordset.Operation.Eq, source.GetI("ID"));
+
+                    double? minFreq = null;
+                    double? maxFreq = null;
+
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        var frq = rs.GetD("TX_FREQ");
+                        if (frq != IM.NullD)
+                        {
+                            if (!minFreq.HasValue || minFreq > frq)
+                                minFreq = frq;
+                            if (!maxFreq.HasValue || maxFreq < frq)
+                                maxFreq = frq;
+                        }
+                    }
+
+                    if (minFreq.HasValue && maxFreq.HasValue && minFreq - 0.2 < (double)freq && (double)freq < maxFreq + 0.2)
+                        stations.Add(source.GetI("ID"), source.GetI("ID"));
+
+                    //MessageBox.Show(source.GetS("ID") + " - " + source.GetS("NAME") + "(" + source.GetD("Position.LONGITUDE").ToString() + ":" + source.GetD("Position.LATITUDE").ToString() + ")");
+                }
+
+                if (stations.Count() > 0)
+                {
+                    var dlgForm = new FM.StationListForm();
+                    dlgForm.stationIDs = string.Join(",", stations.Keys.ToArray());
+                    dlgForm.ShowDialog();
+                    dlgForm.Dispose();
+                }
+                else
+                {
+                    MessageBox.Show("Stations not found");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
     }
 }
