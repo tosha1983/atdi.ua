@@ -141,7 +141,6 @@ namespace Atdi.LegacyServices.Icsm
             var irpDescr = new IrpDescriptor();
             try
             {
-                
                 var f = new Frame();
                 string Query = value;
                 int x1 = Query.IndexOf("\r\n");
@@ -152,24 +151,28 @@ namespace Atdi.LegacyServices.Icsm
                 f.Load(strx);
                 var _report = new IcsmReport();
                 _report.SetConfig(f);
+                List<KeyValuePair<string, string>> listColumnsFromSchema = new List<KeyValuePair<string, string>>();
                 var zeta = this._schemasMetadata.GetTableByName(_report.m_dat.m_tab);
-                List<KeyValuePair<string,string>> listColumnsFromSchema = new List<KeyValuePair<string, string>>();
-                if (!string.IsNullOrEmpty(zeta.ShortDesc))
+                if (zeta != null)
                 {
-                    string[] blocks = zeta.ShortDesc.Split(new char[] { '|' });
-                    for (int i = 0; i < blocks.Length; i++)
+                    if (!string.IsNullOrEmpty(zeta.ShortDesc))
                     {
-                        if (!string.IsNullOrEmpty(blocks[i]))
+                        string[] blocks = zeta.ShortDesc.Split(new char[] { '|' });
+                        for (int i = 0; i < blocks.Length; i++)
                         {
-                            string[] wrds = blocks[i].Split(new char[] { ';' });
-                            if (wrds.Length > 1)
+                            if (!string.IsNullOrEmpty(blocks[i]))
                             {
-                                listColumnsFromSchema.Add(new KeyValuePair<string, string>(wrds[0], wrds[1]));
+                                string[] wrds = blocks[i].Split(new char[] { ';' });
+                                if (wrds.Length > 1)
+                                {
+                                    listColumnsFromSchema.Add(new KeyValuePair<string, string>(wrds[0], wrds[1]));
+                                }
                             }
                         }
                     }
                 }
-                    for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++) {
+                for (int i = 0; i < _report.m_dat.m_list[0].m_query.lq.Length; i++)
+                {
                     {
                         var metaData = new IrpColumn();
                         metaData.columnMeta = new ColumnMetadata();
@@ -218,9 +221,9 @@ namespace Atdi.LegacyServices.Icsm
                         }
                         bool isDefinedRealType = false;
                         {
-                            if (listColumnsFromSchema.Count>0)
+                            if (listColumnsFromSchema.Count > 0)
                             {
-                                KeyValuePair<string,string> fndColumn = listColumnsFromSchema.Find(z => z.Key == t);
+                                KeyValuePair<string, string> fndColumn = listColumnsFromSchema.Find(z => z.Key == t);
                                 if (!string.IsNullOrEmpty(fndColumn.Value))
                                 {
                                     isDefinedRealType = true;
@@ -264,7 +267,7 @@ namespace Atdi.LegacyServices.Icsm
                                 }
                             }
                         }
-                        if ((ty_p != null) && (isDefinedRealType==false))
+                        if ((ty_p != null) && (isDefinedRealType == false))
                         {
                             switch (ty_p.DDesc.ClassType)
                             {
@@ -299,8 +302,8 @@ namespace Atdi.LegacyServices.Icsm
                 }
                 _report.Clear(false);
                 irpDescr.irpColumns = listDescrColumns;
-                
-           }
+
+            }
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesIcsm, Categories.ParseIRP, e, this);

@@ -1,8 +1,7 @@
 ﻿using ICSM;
-using OrmCs;
 using System;
 
-namespace XICSM.Atdi.Icsm.Plugins.WebQuery
+namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
 {
     public class UpdateSchema
     {
@@ -52,67 +51,40 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         public static void RegisterSchema(IMSchema s)
         {
             //===============================================
-            // TABLES
+            // VIEWS
             //===============================================
-            s.DeclareTable("XWEBQUERY", "Web query", plugin4);
+            s.DeclareView("XV_WEB_BC", "WebQuery_BS-3_View", plugin3);
             {
-                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XWEBQUERY", "PRIMARY", "ID");
-                s.DeclareField("NAME", "VARCHAR(50)", null, null, null);
-                s.DeclareField("QUERY", "BINARY(20000)", null, null, null);
-                s.DeclareField("COMMENTS", "VARCHAR(250)", null, null, null);
-                s.DeclareField("IDENTUSER", "VARCHAR(250)", null, null, null);
-                s.DeclareField("CODE", "VARCHAR(50)", null, null, null);
-                s.DeclareField("TASKFORCEGROUP", "VARCHAR(100)", null, null, null);
-                s.DeclareField("VIEWCOLUMNS", "VARCHAR(4000)", null, null, null);
-                s.DeclareField("ADDCOLUMNS", "VARCHAR(4000)", null, null, null);
-                s.DeclareField("EDITCOLUMNS", "VARCHAR(4000)", null, null, null);
-                s.DeclareField("TABLECOLUMNS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("LICENCE", "VARCHAR(200)", null, null, null);
+                s.DeclareField("LIC_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("CONC_NUMBER", "VARCHAR(200)", null, null, null);
+                s.DeclareField("CONC_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("DOZV_NUMBER", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DOZV_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("EQUIP_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EQUIP_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("MODULATION", "VARCHAR(20)", null, null, null);
+                s.DeclareField("ADDRESS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("POS_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("LONGITUDE", "NUMBER(10,6)", null, null, null);
+                s.DeclareField("LATITUDE", "NUMBER(10,6)", null, null, null);
+                s.DeclareField("POWER", "NUMBER(22,8)", null, null, null);
+                s.DeclareField("ANTENNA_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("ANTENNA_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("GAIN", "NUMBER(6,2)", null, null, null);
+                s.DeclareField("AGL", "NUMBER(5,1)", null, null, null);
+                s.DeclareField("ANGLE_ELEV", "NUMBER(5,2)", null, null, null);
+                s.DeclareField("DIAG", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("POLARIZATION", "VARCHAR(4)", null, null, null);
+                s.DeclareField("AZIMUTH", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("TX_FREQ", "VARCHAR(200)", null, null, null);
+                s.DeclareField("RX_FREQ", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DES_EMISSION", "VARCHAR(9)", null, null, null);
+                s.DeclareField("SECTOR_NUMBER", "VARCHAR(1)", null, null, null);
+                s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
+
             }
 
-            s.DeclareTable("XWEBQUERYATTRIBUTES", "Web attributes", plugin4);
-            {
-                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XWEBQUERYATTRIBUTES", "PRIMARY", "ID");
-                s.DeclareField("WEBQUERYID", "NUMBER(9,0)", null, null, null);
-                s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
-                s.DeclareField("READONLY", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("NOTCHANGEADD", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("NOTCHANGEEDIT", "NUMBER(1,0)", null, null, null);
-                s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
-            }
-
-            s.DeclareTable("XWEBCONSTRAINT", "Web constraints", plugin4);
-            {
-                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XWEBCONSTRAINT", "PRIMARY", "ID");
-                s.DeclareField("WEBQUERYID", "NUMBER(9,0)", null, null, null);
-                s.DeclareField("NAME", "VARCHAR(50)", null, null, null);
-                s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
-                s.DeclareField("MIN", "NUMBER(22,8)", null, null, null);
-                s.DeclareField("MAX", "NUMBER(22,8)", null, null, null);
-                s.DeclareField("STRVALUE", "VARCHAR(4000)", null, null, null);
-                s.DeclareField("DATEVALUEMIN", "DATE", "Date", null, null);
-                s.DeclareField("INCLUDE", "NUMBER(1,0)", null, null, null);
-                s.DeclareField("DATEVALUEMAX", "DATE", "Date", null, null);
-                s.DeclareField("DESCRCONDITION", "VARCHAR(2000)", null, null, null);
-                s.DeclareField("TYPECONDITION", "VARCHAR(50)", null, null, null);
-                s.DeclareField("OPERCONDITION", "VARCHAR(50)", null, null, null);
-                s.DeclareField("MESSAGENOTVALID", "VARCHAR(1000)", null, null, null);
-                s.DeclareField("DEFAULTVALUE", "VARCHAR(200)", null, null, null);
-                s.DeclareField("MOMENTOFUSE", "VARCHAR(50)", null, null, null);
-                s.DeclareField("STRVALUETO", "VARCHAR(4000)", null, null, null);
-                s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
-            }
-
-            s.DeclareTable("XUPDATEOBJECTS", "Update objects", plugin4);
-            {
-                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
-                s.DeclareIndex("PK_XUPDATEOBJECTS", "PRIMARY", "ID");
-                s.DeclareField("OBJTABLE", "VARCHAR(50)", null, null, null);
-                s.DeclareField("DATEMODIFIED", "DATE", "Date", null, null);
-            }
-            
         }
 
         //=============================================================

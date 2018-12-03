@@ -77,10 +77,10 @@ namespace Atdi.AppServices.WebQuery
                 PrimaryKey = irpdescription.PrimaryKey,
                 UI = new QueryUIMetadata()
                 {
-                    AddFormColumns = QueryValue.ADDCOLUMNS!=null ? QueryValue.ADDCOLUMNS.Split(new char[] { ';', ',' }) : null,
-                    EditFormColumns = QueryValue.EDITCOLUMNS != null ? QueryValue.EDITCOLUMNS.Split(new char[] { ';', ',' }) : null,
-                    TableColumns = QueryValue.TABLECOLUMNS != null ? QueryValue.TABLECOLUMNS.Split(new char[] { ';', ',' }) : null,
-                    ViewFormColumns = QueryValue.VIEWCOLUMNS  != null ? QueryValue.VIEWCOLUMNS.Split(new char[] { ';', ',' }) : null
+                    AddFormColumns = QueryValue.ADDCOLUMNS!=null ? QueryValue.ADDCOLUMNS.Split(new char[] { ';', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries) : null,
+                    EditFormColumns = QueryValue.EDITCOLUMNS != null ? QueryValue.EDITCOLUMNS.Split(new char[] { ';', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries) : null,
+                    TableColumns = QueryValue.TABLECOLUMNS != null ? QueryValue.TABLECOLUMNS.Split(new char[] { ';', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries) : null,
+                    ViewFormColumns = QueryValue.VIEWCOLUMNS  != null ? QueryValue.VIEWCOLUMNS.Split(new char[] { ';', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries) : null
                 }
             };
 
