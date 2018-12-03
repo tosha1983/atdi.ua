@@ -124,7 +124,6 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         /// <returns>true</returns>
         public static bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
-            /*
             if (dbCurVersion < 20180105.0949)
             {
                 s.CreateTables("XWEBQUERY,XWEBCONSTRAINT,XUPDATEOBJECTS");
@@ -144,14 +143,13 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.CreateTableFields("XWEBCONSTRAINT", "STRVALUETO,MOMENTOFUSE,DEFAULTVALUE,MESSAGENOTVALID,OPERCONDITION,TYPECONDITION,DESCRCONDITION");
                 s.SetDatabaseVersion(20181129.0949);
             }
-            */
             return true;
         }
         //=============================================================
         /// <summary>
         /// Текущая версия БД плагина
         /// </summary>
-        public static readonly double schemaVersion = 20180105.0949;//20161003.0909
-        //public static readonly double schemaVersion = 20181129.0949;//20161003.0909
+        //public static readonly double schemaVersion = 20180105.0949;//20161003.0909
+        public static readonly double schemaVersion = 20181129.0949;//20161003.0909
     }
 }
