@@ -102,6 +102,18 @@
       <DependentUpon>AdminFormWebQuery.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ClassORM.cs" />
+    <Compile Include="Forms\FormColumnOrdersList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormColumnOrdersList.Designer.cs">
+      <DependentUpon>FormColumnOrdersList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormEditColumnOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormEditColumnOrder.Designer.cs">
+      <DependentUpon>FormEditColumnOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormEditColumnAttributes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,6 +186,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\AdminFormWebQuery.resx">
       <DependentUpon>AdminFormWebQuery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormColumnOrdersList.resx">
+      <DependentUpon>FormColumnOrdersList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormEditColumnOrder.resx">
+      <DependentUpon>FormEditColumnOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormEditColumnAttributes.resx">
       <DependentUpon>FormEditColumnAttributes.cs</DependentUpon>

@@ -48,7 +48,7 @@ namespace Atdi.AppServices.WebQuery
                 .Select(
                         c => c.DATEMODIFIED
                     )
-                .Where(c => c.OBJTABLE, ConditionOperator.In, "XWEBQUERY", "XWEBCONSTRAINT", "XWEBQUERYATTRIBUTES")
+                .Where(c => c.OBJTABLE, ConditionOperator.In, "XWEBQUERY", "XWEBCONSTRAINT", "XWEBQUERYATTRIBUTES", "XWEBQUERYORDERS")
                 .Where(c => c.DATEMODIFIED, ConditionOperator.GreaterThan, this._actualyCacheDataDate)
                 .OnTop(1);
 
