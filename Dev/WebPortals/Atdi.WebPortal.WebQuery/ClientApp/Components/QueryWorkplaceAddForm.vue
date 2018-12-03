@@ -1,7 +1,7 @@
 <template>
     <div :id="id" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>Add New Item: {{query.title}}</h4>
+            <h4>{{query.title}}: Add New Item</h4>
             <template v-if="errorState && errorState.has">
                 <h4 class="" style="color: red">Error: {{errorState.message}}</h4>
             </template>
@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a @click="onSave" class="waves-effect waves-green btn-flat" href="javascript:undefined">Save</a>
+            <a v-if="hasChanged" @click="onSave" class="waves-effect waves-green btn-flat" href="javascript:undefined">Save</a>
             <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Cancel</a>
             
         </div>
@@ -53,7 +53,8 @@
 
         data() {
             return {
-                changedData: {}
+                changedData: {},
+                hasChanged: false
             }
 
         },
@@ -83,12 +84,12 @@
                     column: column,
                     value: value
                 }
+                this.hasChanged = true;
             }
         },
         mounted: function (){
             const modalElements = document.querySelectorAll('.modal');
             M.Modal.init(modalElements);
-
             M.updateTextFields();
         }
     }

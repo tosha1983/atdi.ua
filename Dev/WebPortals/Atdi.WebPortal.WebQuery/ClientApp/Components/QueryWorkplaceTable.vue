@@ -8,10 +8,11 @@
             <table :id="id" class="bordered portal-data-table">
                 <thead class="portal-table-head">
                     <tr>
-                        <th v-for="column in query.columns" :key="column.name" @click="onColumnClick(column.name)">
+                        <th v-for="column in tableColumns" :key="column.name" @click="onColumnClick(column.name)">
                             <div class="portal-data-table-column waves-effect" layout="row center-justify">
                                 <div class="waves-effect">{{column.title}}</div>
                                 <div :class="getSortingState(column) === 0 ? 'waves-effect' : 'waves-effect portal-data-table-sort-arrow ' + ((getSortingState(column) === 1) ? 'portal-data-table-sort-arrow-asc': 'portal-data-table-sort-arrow-desc')"></div>
+                                <i v-if="getSortingIndex(column) > 0" style='margin-left: 5px;' class="material-icons prefix">{{'filter_' + getSortingIndex(column)}}</i>
                             </div>
                         </th>
                     </tr>
@@ -23,7 +24,7 @@
                         @click="onRowClick(row, index, $event)"
                         :class=" (row && row.isSelected) ? 'portal-data-table-row-selected' : ''"
                     >
-                        <td v-for="column in query.columns" :key="column.name">{{getValue(row, column)}}</td>
+                        <td v-for="column in tableColumns" :key="column.name">{{getValue(row, column)}}</td>
                     </tr>
 
                 </tbody>
@@ -103,6 +104,22 @@
                     return null;
                 },
                 
+                tableColumns: state => {
+                    const current = state.queries.current;
+                    if (!current){
+                        return [];
+                    }
+                    if (current.ui && current.ui.tableColumns && current.ui.tableColumns.length > 0) {
+                        const columns = [];
+                        const tColumns = current.ui.tableColumns;
+                        for (let index = 0; index < tColumns.length; index++) {
+                            const columnName = tColumns[index];
+                            columns.push(current.columns.find(column => column.name === columnName));
+                        }
+                        return columns;
+                    }
+                    return current.columns;
+                },
             }),
 
             filteredRows: function () {
@@ -124,6 +141,11 @@
                     const realColumn = data.columnsMap[data.sorting.column];
                     result = utilities.applySorting(result, (cells) => cells[realColumn.Index], data.sorting.direction)
                 }
+
+                if (data && data.sortColumns && data.sortColumns.length > 0) {
+                    result = utilities.applyMultiSorting(result, data.sortColumns)
+                }
+
                 return result;
             },
             rows: function() {
@@ -151,6 +173,24 @@
                 const data = this.queryData;
                 if (data && data.sorting && data.sorting.column === column.name) {
                     return data.sorting.direction;
+                }
+                if (data && data.sortColumns && data.sortColumns.length > 0) {
+                    const sorting = data.sortColumns.find(sc => sc.name === column.name);
+                    if (sorting){
+                        return sorting.direction;
+                    }
+                }
+                return 0;
+            },
+            getSortingIndex(column) {
+                const data = this.queryData;
+                if (data && data.sortColumns && data.sortColumns.length > 0) {
+                    for (let index = 0; index < data.sortColumns.length; index++) {
+                        const  sortColumn = data.sortColumns[index];
+                        if (column.name === sortColumn.name){
+                            return index + 1;
+                        }
+                    }
                 }
                 return 0;
             },
@@ -185,7 +225,7 @@
                     curRow.classList.toggle("portal-data-table-row-selected");
             },
             onColumnClick: function (columnName) {
-                const data = this.queryData;
+                /*const data = this.queryData;
                 let newSorting = null;
                 if (data.sorting.column === columnName) {
                     if (data.sorting.direction === 1) {
@@ -204,14 +244,14 @@
                         column: columnName,
                         direction: 1
                     };
-                }
+                }*/
 
                 this.$store.commit('queries/toShowProgress');
                 const self = this;
 
                 this.$nextTick(function () {
                     setTimeout(function() {
-                        self.$store.commit('queries/changeCurrentSorting', newSorting);
+                        self.$store.commit('queries/changeColumnSorting', columnName);
                         self.$store.commit('queries/toHideProgress');
                     }, 300);
                 });

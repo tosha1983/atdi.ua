@@ -109,8 +109,8 @@
                     if (!current){
                         return [];
                     }
-                    if (current.ui && current.ui.EditFormColumns) {
-                        const columns = current.ui.EditFormColumns;
+                    if (current.ui && current.ui.editFormColumns) {
+                        const columns = current.ui.editFormColumns;
                         if ( columns.length > 0){
                             return columns;
                         }
@@ -123,8 +123,8 @@
                     if (!current){
                         return [];
                     }
-                    if (current.ui && current.ui.ViewFormColumns) {
-                        const columns = current.ui.ViewFormColumns;
+                    if (current.ui && current.ui.viewFormColumns) {
+                        const columns = current.ui.viewFormColumns;
                         if ( columns.length > 0){
                             return columns;
                         }
@@ -137,8 +137,8 @@
                     if (!current){
                         return [];
                     }
-                    if (current.ui && current.ui.AddFormColumns) {
-                        const columns = current.ui.AddFormColumns;
+                    if (current.ui && current.ui.addFormColumns) {
+                        const columns = current.ui.addFormColumns;
                         if ( columns.length > 0){
                             return columns;
                         }

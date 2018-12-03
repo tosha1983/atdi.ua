@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a @click="onSave" class="waves-effect waves-green btn-flat" href="javascript:undefined">Save</a>
+            <a v-if="hasChanged" @click="onSave" class="waves-effect waves-green btn-flat" href="javascript:undefined">Save</a>
             <a @click="onClose" class="waves-effect waves-green btn-flat" href="javascript:undefined">Cancel</a>
             
         </div>
@@ -53,7 +53,8 @@
 
         data() {
             return {
-                changedData: {}
+                changedData: {},
+                hasChanged: false
             }
 
         },
@@ -83,13 +84,14 @@
                     column: column,
                     value: value
                 }
+                this.hasChanged = true;
+                //console.log("- changed column value [" + column.name + "]: ", value);
             }
         },
         mounted: function (){
             const modalElements = document.querySelectorAll('.modal');
             M.Modal.init(modalElements);
-
-             M.updateTextFields();
+            M.updateTextFields();
         }
     }
 </script>
