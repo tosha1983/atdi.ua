@@ -1,15 +1,18 @@
 ﻿<template>
     <div :id="id" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>View Item: {{currentQuery.title}}</h4>
+            <h4>View Item: {{query.title}}</h4>
             <div class="row portal-form-place">
                 <form class="col s12">
-                    <template v-for="column in currentQuery.columns">
+                    <template v-for="column in row.columns">
                         <div class="row" :key="column.name">
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix">filter</i>
-                                <input readonly="readonly"  :id="column.name" type="text" :value="getValue(column)" class="">
-                                <label :for="column.name">{{column.title}}</label>
+                            <div class="col s6">
+                                <data-entry
+                                    :id="'de-' + column.name"
+                                    :column="column"
+                                    :value="getValue(column)"
+                                    mode="View"
+                                ></data-entry>
                             </div>
                         </div>
                     </template>
@@ -24,31 +27,22 @@
 </template>
 <script>
     import { mapState, mapActions, mapGetters } from 'vuex'
+    import DataEntry from './DataEntry.vue'
 
     export default {
         name: 'QueryWorkplaceViewForm',
 
         props: {
-            id: String
+            id: String,
+            query: Object,
+            row: Object, // {key: [{column, value}], columns, cells, map}
         },
 
         components: {
+            DataEntry
         },
 
         computed: {
-                ...{
-                currentRow: function () {
-                    return this.$store.getters['queries/currentRow'];
-                },
-
-                currentQueryData: function () {
-                    return this.$store.getters['queries/currentQueryData'];
-                },
-
-                ...mapState({
-                    currentQuery: state => state.queries.current,
-                })
-            }
         },
 
         data() {
@@ -61,9 +55,8 @@
         methods: {
             getValue: function (column) {
                 try{
-                    const data = this.currentQueryData;
-                    const realColumn = data.columnsMap[column.name];
-                    return this.currentRow.cells[realColumn.Index];
+                    const realColumn = this.row.map[column.name];
+                    return this.row.cells[realColumn.Index];
                 }
                 catch{
                     return "";
@@ -80,6 +73,9 @@
             M.Modal.init(modalElements);
 
              M.updateTextFields();
+
+            const datepickerElements = document.querySelectorAll('.datepicker');
+            M.Datepicker.init(datepickerElements);
         }
     }
 </script>

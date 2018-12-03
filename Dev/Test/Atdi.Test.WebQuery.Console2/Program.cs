@@ -25,9 +25,9 @@ namespace Atdi.Test.WebQuery
                 System.Console.WriteLine("Press any key to start testing ...");
                 System.Console.ReadLine();
 
-                //TestWebQuerySaveChanges("HttpAuthenticationManager", "HttpWebQuery");
+                TestWebQuerySaveChanges("HttpAuthenticationManager", "HttpWebQuery");
                 //TestAuthenticationManager("TcpAuthenticationManager");
-                SimpleUsingWebQuery2.Run();
+                //SimpleUsingWebQuery2.Run();
                 //TestWebQueryAccess("HttpAuthenticationManager", "HttpWebQuery");
 
             }
@@ -221,6 +221,7 @@ namespace Atdi.Test.WebQuery
                     Id = Guid.NewGuid(),
                     Actions = new DataModels.Action[]
                     {
+                        /*
                         new DataModels.DeletionAction
                         {
                             Id = Guid.NewGuid(),
@@ -233,26 +234,14 @@ namespace Atdi.Test.WebQuery
                                     {
                                         LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "ID" },
                                         Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "1315021" }
+                                        RightOperand = new DataModels.DataConstraint.IntegerValueOperand{ Value =  1315021 }
                                     },
-                                    /*
-                                    new DataModels.DataConstraint.ConditionExpression
-                                    {
-                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
-                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
-                                    },
-                                    new DataModels.DataConstraint.ConditionExpression
-                                    {
-                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
-                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
-                                    }
-                                    */
                                 }
                             }
 
                         },
+                        */
+                        /*
                         new DataModels.StringRowUpdationAction
                         {
                             Id =  Guid.NewGuid(),
@@ -313,20 +302,6 @@ namespace Atdi.Test.WebQuery
                                         Operator = DataModels.DataConstraint.ConditionOperator.Equal,
                                         RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "1315020" }
                                     },
-                                     /*
-                                    new DataModels.DataConstraint.ConditionExpression
-                                    {
-                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
-                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
-                                    },
-                                    new DataModels.DataConstraint.ConditionExpression
-                                    {
-                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
-                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
-                                    }
-                                    */
                                 }
                             },
                             Columns = new DataModels.DataSetColumn[]
@@ -367,20 +342,6 @@ namespace Atdi.Test.WebQuery
                                         Operator = DataModels.DataConstraint.ConditionOperator.Equal,
                                         RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "1315020" }
                                     },
-                                    /*
-                                    new DataModels.DataConstraint.ConditionExpression
-                                    {
-                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Antenna.DeviceModel.Standard.RadioSystem.EFIS_NAME" },
-                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
-                                    },
-                                    new DataModels.DataConstraint.ConditionExpression
-                                    {
-                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "Owner.REPR_FIRSTNAME" },
-                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
-                                        RightOperand = new DataModels.DataConstraint.StringValueOperand{ Value =  "SomeTest111" }
-                                    }
-                                    */
                                 }
                             },
                             Columns = new DataModels.DataSetColumn[]
@@ -405,8 +366,9 @@ namespace Atdi.Test.WebQuery
                                 DecimalCells = new decimal? [] { (decimal?)123 }
                             }
                         },
-
+                        */
                         //////Indert
+                        /*
                         new DataModels.TypedRowCreationAction
                         {
                             Id =  Guid.NewGuid(),
@@ -416,7 +378,11 @@ namespace Atdi.Test.WebQuery
                             {
                                 new DataModels.DataSetColumn
                                 {
-                                    Name = "NETWORK_IDENT", Type = DataModels.DataType.String, Index = 0
+                                    Name = "CODE", Type = DataModels.DataType.String, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NAME", Type = DataModels.DataType.String, Index = 0
                                 },
                                 new DataModels.DataSetColumn
                                 {
@@ -426,7 +392,48 @@ namespace Atdi.Test.WebQuery
                             },
                             Row = new DataModels.TypedDataRow
                             {
-                                StringCells = new string[] { "VAL"},
+                                StringCells = new string[] { "345435","VAL"},
+                                IntegerCells = new int?[] { 12 },
+
+                            }
+                        }
+                       */
+                        new DataModels.TypedRowUpdationAction
+                        {
+                            Id =  Guid.NewGuid(),
+                            Type = DataModels.ActionType.Update,
+                            Condition = new DataModels.DataConstraint.ComplexCondition
+                            {
+                                Operator = DataModels.DataConstraint.LogicalOperator.Or,
+                                Conditions = new DataModels.DataConstraint.Condition[]
+                                {
+                                     new DataModels.DataConstraint.ConditionExpression
+                                    {
+                                        LeftOperand = new DataModels.DataConstraint.ColumnOperand{ ColumnName = "ID" },
+                                        Operator = DataModels.DataConstraint.ConditionOperator.Equal,
+                                        RightOperand = new DataModels.DataConstraint.IntegerValueOperand{ Value =  234 }
+                                    },
+                                }
+                            },
+                            Columns = new DataModels.DataSetColumn[]
+                            {
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "CODE", Type = DataModels.DataType.String, Index = 1
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "NAME", Type = DataModels.DataType.String, Index = 0
+                                },
+                                new DataModels.DataSetColumn
+                                {
+                                    Name = "ID", Type = DataModels.DataType.Integer, Index = 0
+                                },
+
+                            },
+                            Row = new DataModels.TypedDataRow
+                            {
+                                StringCells = new string[] { "345435","VAL"},
                                 IntegerCells = new int?[] { 12 },
 
                             }

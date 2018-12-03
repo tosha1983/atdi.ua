@@ -13,14 +13,15 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 {
     public partial class FormEditColumnAttributes : Form
     {
-        public int id { get; set; }
+        public int _id { get; set; }
         public bool IsNew { get; set; }
-        public int web_id { get; set; }
+        public int _web_id { get; set; }
 
-        public FormEditColumnAttributes(int web_contraint, bool isnew, List<string> L_Path)
+        public FormEditColumnAttributes(int web_id, int id, bool isnew, List<string> L_Path)
         {
             InitializeComponent();
-            id = web_contraint;
+            _id = id;
+            _web_id = web_id;
             IsNew = isnew;
 
             textBox_name.Text = "";
@@ -28,14 +29,13 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             NotChangeableByAdd.Checked = false;
             NotChangeableByEdit.Checked = false;
 
-            if (id != IM.NullI)
+            if (_id != IM.NullI)
             {
-                web_id = id;
                 if (!IsNew)
                 {
                     var rsWebQueryNew = new IMRecordset(ICSMTbl.WebQueryAtttributes, IMRecordset.Mode.ReadWrite);
                     rsWebQueryNew.Select("ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
-                    rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, id);
+                    rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, _id);
                     rsWebQueryNew.Open();
                     if (!rsWebQueryNew.IsEOF())
                     {
@@ -94,7 +94,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             }
             byte[] zip = null;
             string sql; ANetDb d;
-            OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + web_id, out sql, out d);
+            OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + _web_id, out sql, out d);
             ANetRs Anet_rs = d.NewRecordset();
             Anet_rs.Open(sql);
             if (!Anet_rs.IsEOF())
@@ -114,7 +114,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         }
                         if (ClassORM.CheckField(Lod[Lod.Count-1].FieldJoinTo, Lod[Lod.Count - 1].NameTableTo))
                         {
-                            string[] txt = textBox_name.Text.Split(new char[] { '.' });
+                            string[] txt = textBox_name.Text.Split(new char[] { '.', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                             if (txt != null)
                             {
                                 if (txt.Length>0)
@@ -142,11 +142,11 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
                 var rsWebQueryNew = new IMRecordset(ICSMTbl.WebQueryAtttributes, IMRecordset.Mode.ReadWrite);
                 rsWebQueryNew.Select("ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
-                if (id != IM.NullI)
+                if (_id != IM.NullI)
                 {
                     if (!IsNew)
                     {
-                        rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, id);
+                        rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, _id);
                     }
                 }
 
@@ -158,7 +158,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         rsWebQueryNew.AddNew();
                         int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
                         rsWebQueryNew.Put("ID", idnew);
-                        rsWebQueryNew.Put("WEBQUERYID", id);
+                        rsWebQueryNew.Put("WEBQUERYID", _web_id);
                         rsWebQueryNew.Put("PATH", textBox_name.Text);
                         if (ReadOnly.Checked) { rsWebQueryNew.Put("READONLY", 1); } else { rsWebQueryNew.Put("READONLY", 0); }
                         if (NotChangeableByAdd.Checked) { rsWebQueryNew.Put("NOTCHANGEADD", 1); } else { rsWebQueryNew.Put("NOTCHANGEADD", 0); }
@@ -181,7 +181,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                             rsWebQueryNew.AddNew();
                             int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
                             rsWebQueryNew.Put("ID", idnew);
-                            rsWebQueryNew.Put("WEBQUERYID", id);
+                            rsWebQueryNew.Put("WEBQUERYID", _web_id);
                             rsWebQueryNew.Put("PATH", textBox_name.Text);
                             if (ReadOnly.Checked) { rsWebQueryNew.Put("READONLY", 1); } else { rsWebQueryNew.Put("READONLY", 0); }
                             if (NotChangeableByAdd.Checked) { rsWebQueryNew.Put("NOTCHANGEADD", 1); } else { rsWebQueryNew.Put("NOTCHANGEADD", 0); }

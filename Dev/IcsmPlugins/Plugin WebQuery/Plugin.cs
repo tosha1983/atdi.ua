@@ -69,7 +69,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 IMQueryMenuNode.Context context = new IMQueryMenuNode.Context();
                 context.TableName = recPtr.Table;
                 context.TableId = recPtr.Id;
-                FormEditConstraintExtend Web = new FormEditConstraintExtend(context.TableId, false, null);
+                FormEditConstraints Web = new FormEditConstraints(context.TableId,-1, false, null);
                 Web.ShowDialog();
             }
 
@@ -84,7 +84,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private void AdminFormSettingConstraintQuery(string checkTable, string tableName, int nbSelMin, ref List<IMQueryMenuNode> menuList)
         {
-            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Edit record..."), null, OnEditRecConstraintWebQery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Select);
+            AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Edit record..."), null, OnEditRecConstraintWebQery, IMQueryMenuNode.ExecMode.FirstRecord), IMTableRight.Select);
             AddContextMenu(ref menuList, checkTable, new IMQueryMenuNode(CLocaliz.TxT("Delete record..."), null, OnDeleteRecSettingWebQuery, IMQueryMenuNode.ExecMode.SelectionOfRecords), IMTableRight.Delete);
         }
 
@@ -109,7 +109,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private bool OnEditRecConstraintWebQery(IMQueryMenuNode.Context context)
         {
-            FormEditConstraintExtend Web = new FormEditConstraintExtend(context.TableId,false,null);
+            FormEditConstraints Web = new FormEditConstraints(context.TableId,-1,false,null);
             Web.ShowDialog();
             return true;
         }

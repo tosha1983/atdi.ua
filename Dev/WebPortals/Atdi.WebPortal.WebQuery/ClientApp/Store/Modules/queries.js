@@ -45,7 +45,7 @@ const actions = {
 
     executeCurrentQuery({ commit }, options) {
         commit('toShowProgress');
-        api.executeQuery(state.current.token, data => {
+        api.executeQuery({token: state.current.token}, data => {
             commit('setQueryData', { data: data });
             commit('toHideProgress');
         });
@@ -86,7 +86,8 @@ const mutations = {
             sorting: {
                 column: null,
                 direction: 0
-            }
+            },
+            sortColumns: [] // [{name, index, direction},...]
         };
         
         Vue.set(state.data, "q_" + state.current.token.id, result);
@@ -129,12 +130,37 @@ const mutations = {
 
     changeCurrentRow(state, row) {
         const data = state.data["q_" + state.current.token.id];
+        if (data.currentRow && data.currentRow.cells){
+            data.currentRow.cells.isSelected = false;
+        }
         data.currentRow = row;
+        if (data.currentRow && data.currentRow.cells){
+            data.currentRow.cells.isSelected = true;
+        }
     },
 
-    changeCurrentSorting(state, sorting) {
+    changeColumnSorting(state, columnName) {
         const data = state.data["q_" + state.current.token.id];
-        data.sorting = sorting;
+        
+        const sorting = data.sortColumns.find(column => column.name === columnName);
+        if (sorting) {
+            if (sorting.direction === 1) {
+                sorting.direction = -1
+                data.sortColumns = [...data.sortColumns];
+            } else {
+                const newSortColumns = data.sortColumns.filter(column => column.name !== columnName)
+                data.sortColumns = newSortColumns;
+            }
+        } else {
+            // need to add
+            const newSortColumns = [...data.sortColumns]; 
+            newSortColumns.push({
+                name: columnName,
+                index: data.columnsMap[columnName].Index,
+                direction: 1
+            });
+            data.sortColumns = newSortColumns;
+        }
     },
 
     changeCurrentFilter(state, filter) {

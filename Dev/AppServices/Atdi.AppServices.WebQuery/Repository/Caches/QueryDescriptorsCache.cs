@@ -83,48 +83,62 @@ namespace Atdi.AppServices.WebQuery
         {
             var queryId = queryToken.Token.Id;
             QueryDescriptor description = null;
-            var query_web_constraint = _dataLayer.Builder
+            var queryWebConstraint = _dataLayer.Builder
               .From<XWEBCONSTRAINT>()
               .Where(c => c.WEBQUERYID, ConditionOperator.Equal, queryId)
               .Select(
                   c => c.ID,
-                  c => c.INCLUDE,
                   c => c.MAX,
                   c => c.MIN,
                   c => c.NAME,
+                  c => c.INCLUDE,
                   c => c.PATH,
-                  c => c.STRVALUE,
                   c => c.WEBQUERYID,
+                  c => c.STRVALUE,
+                  c => c.STRVALUETO,
                   c => c.DATEVALUEMIN,
-                  c => c.DATEVALUEMAX
+                  c => c.DATEVALUEMAX,
+                  c => c.TYPECONDITION,
+                  c => c.OPERCONDITION,
+                  c => c.MOMENTOFUSE,
+                  c => c.MESSAGENOTVALID,
+                  c => c.DESCRCONDITION,
+                  c => c.DEFAULTVALUE
                  );
 
-            var ConstraintsValue = this._queryExecutor
-            .Fetch(query_web_constraint, reader =>
+            var constraintsValue = this._queryExecutor
+            .Fetch(queryWebConstraint, reader =>
             {
-                var groups_constr = new List<XWEBCONSTRAINT>();
+                var groupsConstr = new List<XWEBCONSTRAINT>();
                 while (reader.Read())
                 {
                     var token = new XWEBCONSTRAINT
                     {
                         ID = reader.GetValue(x => x.ID),
                         NAME = reader.GetValue(x => x.NAME),
-                        STRVALUE = reader.GetValue(x => x.STRVALUE),
-                        WEBQUERYID = reader.GetValue(x => x.WEBQUERYID),
                         INCLUDE = reader.GetValue(x => x.INCLUDE),
+                        PATH = reader.GetValue(x => x.PATH),
+                        STRVALUE = reader.GetValue(x => x.STRVALUE),
+                        STRVALUETO = reader.GetValue(x => x.STRVALUETO),
+                        WEBQUERYID = reader.GetValue(x => x.WEBQUERYID),
                         MIN = reader.GetValue(x => x.MIN),
                         MAX = reader.GetValue(x => x.MAX),
                         DATEVALUEMIN = reader.GetValue(x => x.DATEVALUEMIN),
                         DATEVALUEMAX = reader.GetValue(x => x.DATEVALUEMAX),
-                        PATH = reader.GetValue(x => x.PATH)
+                        TYPECONDITION = reader.GetValue(x => x.TYPECONDITION),
+                        OPERCONDITION = reader.GetValue(x => x.OPERCONDITION),
+                        MOMENTOFUSE = reader.GetValue(x => x.MOMENTOFUSE),
+                        MESSAGENOTVALID = reader.GetValue(x => x.MESSAGENOTVALID),
+                        DESCRCONDITION = reader.GetValue(x => x.DESCRCONDITION),
+                        DEFAULTVALUE = reader.GetValue(x => x.DEFAULTVALUE)
                     };
-                    groups_constr.Add(token);
+                    groupsConstr.Add(token);
                 }
-                return groups_constr.ToArray();
+                return groupsConstr.ToArray();
             });
 
 
-            var query_web_attributes = _dataLayer.Builder
+            var queryWebAttributes = _dataLayer.Builder
              .From<XWEBQUERYATTRIBUTES>()
              .Where(c => c.WEBQUERYID, ConditionOperator.Equal, queryId)
              .Select(
@@ -136,10 +150,10 @@ namespace Atdi.AppServices.WebQuery
                 c => c.NOTCHANGEEDIT
                 );
 
-            var AttributesValue = this._queryExecutor
-            .Fetch(query_web_attributes, reader =>
+            var attributesValue = this._queryExecutor
+            .Fetch(queryWebAttributes, reader =>
             {
-                var groups_attributes = new List<XWEBQUERYATTRIBUTES>();
+                var groupsAttributes = new List<XWEBQUERYATTRIBUTES>();
                 while (reader.Read())
                 {
                     var token = new XWEBQUERYATTRIBUTES
@@ -151,9 +165,9 @@ namespace Atdi.AppServices.WebQuery
                         NOTCHANGEADD  = reader.GetValue(x => x.NOTCHANGEADD),
                         NOTCHANGEEDIT = reader.GetValue(x => x.NOTCHANGEEDIT)
                     };
-                    groups_attributes.Add(token);
+                    groupsAttributes.Add(token);
                 }
-                return groups_attributes.ToArray();
+                return groupsAttributes.ToArray();
             });
 
 
@@ -174,7 +188,7 @@ namespace Atdi.AppServices.WebQuery
                    c => c.TABLECOLUMNS
                   );
 
-            var QueryValue = this._queryExecutor
+            var queryValue = this._queryExecutor
            .Fetch(queryweb, reader => {
                var Value = new XWEBQUERY();
                if (reader.Read())
@@ -193,8 +207,8 @@ namespace Atdi.AppServices.WebQuery
                }
                return Value;
            });
-            IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(QueryValue.QUERY);
-            description = new QueryDescriptor(QueryValue, ConstraintsValue, AttributesValue, irpDescriptor, queryToken);
+            IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(queryValue.QUERY);
+            description = new QueryDescriptor(queryValue, constraintsValue, attributesValue, irpDescriptor, queryToken);
             return description;
         }
     }
