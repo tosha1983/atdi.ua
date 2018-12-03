@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Atdi.AppServer.Contracts.Sdrns;
+//using Atdi.AppServer.Contracts.Sdrns;
 
-namespace Atdi.SDR.Server.MeasurementProcessing
+namespace Atdi.Modules.MonitoringProcess
 {
     /// <summary>
     /// Represent function any type measurements
@@ -12,7 +12,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing
         bool Calibration();
         bool ResetDevice();
         void Close();
-        MeasSdrLoc GetSDRLocation();
+        SDRLoc GetSDRLocation();
 
         bool SetConfiguration(SDRParameters sDRParameters);
 

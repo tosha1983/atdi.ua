@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal;
-using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal;
+//using Atdi.AppServer.Contracts.Sdrns;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
+namespace Atdi.Modules.MonitoringProcess.Measurement
 {
     public class Signaling
     {
@@ -15,12 +15,12 @@ namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
         {
             // Константы
             double triggerLevel_dBm_Hz = -130;// костыль            
-            double maxDeviationBWSignal = 0.1;
+            //double maxDeviationBWSignal = 0.1;
             // Конец константам
 
             if (circulatingData == null)
             {// т.е. еще ничего не измерялось
-                circulatingData = new CirculatingData();
+                //circulatingData = new CirculatingData();
                 circulatingData.TaskId = taskParameters.TaskId;
                 SDRTraceParameters sDRTraceParameters = SDR.GetSDRTraceParameters();
                 circulatingData.referenceLevels = new ReferenceLevels(referenceSignals, sDRTraceParameters, triggerLevel_dBm_Hz, sensorParameters);
@@ -69,7 +69,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
             Emitting[] newEmittings = Createemittings(levels, refLevels,index_start_stop, stepBW_kHz, startFreq_MHz);
             // сформировали новые параметры излучения теперь надо накатить старые по идее.
             emitting = EmittingUpdate(emitting, newEmittings, stepBW_kHz);
-            impositionCompleteEmitting(ref emitting);
+            ImpositionCompleteEmitting(ref emitting);
             return true;
         }
         private Emitting[] Createemittings(float[] levels, float[] refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz)
@@ -92,7 +92,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
                 Emitting emitting = new Emitting();
                 double [] templevel = new double [stop_ - start_];
                 Array.Copy(levels, start_, templevel, 0, stop_ - start_);
-                MeasSdrBandwidthResults measSdrBandwidthResults = BandwidthEstimation.GetBandwidthPoint(templevel, BandwidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, 0);
+                MeasBandwidthResult measSdrBandwidthResults = BandwidthEstimation.GetBandwidthPoint(templevel, BandwidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, 0);
                 if (measSdrBandwidthResults.СorrectnessEstimations != null)
                 {
                     if (measSdrBandwidthResults.СorrectnessEstimations.Value)
@@ -307,7 +307,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
             }
             return resEmittings.ToArray();
         }
-        private void impositionCompleteEmitting(ref Emitting[] emitting)
+        private void ImpositionCompleteEmitting(ref Emitting[] emitting)
         {
             List<Emitting> emittingsRes = new List<Emitting>();
             List<Emitting> emittingsList = emitting.ToList();

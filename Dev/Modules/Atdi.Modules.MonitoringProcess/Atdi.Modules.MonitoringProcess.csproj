@@ -5,20 +5,35 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BBEE6FDF-95CE-4549-8D30-28E9B1A1A5BC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BB60C_</RootNamespace>
-    <AssemblyName>BB60C_</AssemblyName>
+    <RootNamespace>Atdi.Modules.MonitoringProcess</RootNamespace>
+    <AssemblyName>Atdi.Modules.MonitoringProcess</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -61,22 +76,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atdi.AppServer.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Atdi.AppServer.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.AppServer.Contracts.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Atdi.AppServer.Contracts.Sdrns.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog.Extended, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\NLog.Extended.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -90,7 +89,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MeasurementProcessing\CirculatingData.cs" />
+    <Compile Include="MeasurementProcessing\enum\DetectType.cs" />
+    <Compile Include="MeasurementProcessing\enum\MeasType.cs" />
     <Compile Include="MeasurementProcessing\enum\SDRState.cs" />
+    <Compile Include="MeasurementProcessing\enum\SOType.cs" />
+    <Compile Include="MeasurementProcessing\enum\SpectrScanType.cs" />
     <Compile Include="MeasurementProcessing\enum\TraceType.cs" />
     <Compile Include="MeasurementProcessing\enum\MeasError.cs" />
     <Compile Include="MeasurementProcessing\LastResultParameters.cs" />
@@ -101,28 +104,18 @@
     <Compile Include="MeasurementProcessing\Measurements\Signaling.cs" />
     <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\Emitting.cs" />
     <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\GroupEmmiting.cs" />
+    <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\MeasBandwidthResult.cs" />
     <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\ReferenceLevels.cs" />
     <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\ReferenceSignal.cs" />
+    <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\SDRLoc.cs" />
+    <Compile Include="MeasurementProcessing\Measurements\SignalingProcess\SemplFreq.cs" />
     <Compile Include="MeasurementProcessing\Measurements\SpectrumOcupation.cs" />
     <Compile Include="MeasurementProcessing\Measurements\Trace.cs" />
     <Compile Include="MeasurementProcessing\ProcessSignal\ChangeTraceGrid.cs" />
     <Compile Include="MeasurementProcessing\SDR\SDRParameters.cs" />
-    <Compile Include="MeasurementProcessing\MeasurementProcessing.cs" />
     <Compile Include="MeasurementProcessing\SDR\SDRTraceParameters.cs" />
     <Compile Include="MeasurementProcessing\SDR\SingleHound\bb_api.cs" />
-    <Compile Include="ClassSDRNSObjects.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GlobalInit.cs" />
-    <Compile Include="MeasSubTaskStationExtend.cs" />
-    <Compile Include="MeasTaskExtend.cs" />
-    <Compile Include="MeasTaskSDRExtend.cs" />
     <Compile Include="MeasurementProcessing\SDR\ISDR.cs" />
-    <Compile Include="MeasurementProcessing\MeasurementProcessingSingleHoundBB60C.cs" />
     <Compile Include="MeasurementProcessing\ProcessSignal\BandwidthEstimation.cs" />
     <Compile Include="MeasurementProcessing\ProcessSignal\BlockOfSignals.cs" />
     <Compile Include="MeasurementProcessing\ProcessSignal\IQStreamStartAndStopFlange.cs" />
@@ -135,14 +128,8 @@
     <Compile Include="MeasurementProcessing\SDR\SingleHound\SDRBB60C.cs" />
     <Compile Include="MeasurementProcessing\SensorParameters.cs" />
     <Compile Include="MeasurementProcessing\TaskParameters.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MeasurementProcessing\SDR\SingleHound\SDR_BB60C.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="SOFrequency.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -153,12 +140,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Nlog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -170,24 +151,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Atdi.AppServer.Contracts.dll" />
-    <Content Include="Atdi.AppServer.Contracts.Sdrns.dll" />
-    <Content Include="NLog.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NLog.Extended.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NLog.Extended.pdb" />
-    <Content Include="NLog.Extended.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NLog.pdb" />
-    <Content Include="NLog.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

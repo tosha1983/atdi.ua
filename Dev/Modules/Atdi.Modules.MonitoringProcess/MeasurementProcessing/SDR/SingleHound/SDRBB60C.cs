@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDR.Server.MeasurementProcessing;
+//using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
+namespace Atdi.Modules.MonitoringProcess.SingleHound
 {
     public class SDRBB60C : ISDR
     {
@@ -30,7 +30,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
 
         private bbStatus status = bbStatus.bbNoError;
 
-        private Atdi.AppServer.Contracts.Sdrns.SpectrumScanType TypeSpectrumScan = Atdi.AppServer.Contracts.Sdrns.SpectrumScanType.Sweep;
+        private SpectrScanType TypeSpectrumScan = SpectrScanType.Sweep;
         private Double f_min = 103;//MHz
         private Double f_max = 105;//MHz
         private Double RBW = 10000;//Hz
@@ -140,12 +140,12 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
         {
             sw_time = TraceCount;
             float[] Trace = null;
-            if (TypeSpectrumScan == SpectrumScanType.Sweep)
+            if (TypeSpectrumScan == SpectrScanType.Sweep)
             {
                 if (traceType == TraceType.Average) { Trace = SweepAvarageTrace(sw_time); }
                 if (traceType == TraceType.MaxHold) { Trace = SweepMaxHoldTrace(sw_time); }
             }
-            if (TypeSpectrumScan == SpectrumScanType.RealTime)
+            if (TypeSpectrumScan == SpectrScanType.RealTime)
             {
                 if (traceType == TraceType.Average) { Trace = RealTimeAvarageTrace(sw_time); }
                 if (traceType == TraceType.MaxHold) { Trace = RealTimeMaxHoldTrace(sw_time); }
@@ -270,12 +270,12 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
                     SetParameterForMeasurements(ref sDRParameters);// установка параметров для класса
 
                     // настройка конфигурации оборудования
-                    if (sDRParameters.MeasurementType == MeasurementType.SoundID) // КОСТЫЛЬ пока не будет изменен контракт
+                    if (sDRParameters.MeasurementType == MeasType.SoundID) // КОСТЫЛЬ пока не будет изменен контракт
                     {
                         done = put_config_for_IQ();
                     }
                     else {
-                        if (sDRParameters.TypeSpectrumScan == Atdi.AppServer.Contracts.Sdrns.SpectrumScanType.RealTime)
+                        if (sDRParameters.TypeSpectrumScan == SpectrScanType.RealTime)
                         { // RealTimeMeasurement
                             done = put_config_for_RT();
                         }
@@ -296,7 +296,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
         /// <param name="sDRParameters">параметры для инициализации роботы SDR</param>
         private void SetParameterForMeasurements(ref SDRParameters sDRParameters)
         {
-            if (sDRParameters.DetectTypeSDR == Atdi.AppServer.Contracts.Sdrns.DetectingType.Avarage) { DETECT_TYPE = bb_api.BB_AVERAGE; } else { DETECT_TYPE = bb_api.BB_MIN_AND_MAX; }
+            if (sDRParameters.DetectTypeSDR == DetectType.Avarage) { DETECT_TYPE = bb_api.BB_AVERAGE; } else { DETECT_TYPE = bb_api.BB_MIN_AND_MAX; }
             // Установка частот 
             f_max = sDRParameters.MaxFreq_MHz;
             f_min = sDRParameters.MinFreq_MHz;
@@ -313,13 +313,13 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
             LastTaskId = sDRParameters.TaskId;
             switch (sDRParameters.MeasurementType)
             {
-                case MeasurementType.Level:
+                case MeasType.Level:
                     traceType = TraceType.Average;
                     break;
-                case MeasurementType.BandwidthMeas:
+                case MeasType.BandwidthMeas:
                     traceType = TraceType.MaxHold;
                     break;
-                case MeasurementType.SpectrumOccupation:
+                case MeasType.SpectrumOccupation:
                     traceType = TraceType.Average;
                     break;
                 default:
@@ -506,17 +506,15 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound
         #endregion
 
         #region Location
-        public MeasSdrLoc GetSDRLocation() // функция должна возращать текущие координаты сенсора пока с костылем
+        public SDRLoc GetSDRLocation() // функция должна возращать текущие координаты сенсора пока с костылем
         {
-            MeasSdrLoc loc = new MeasSdrLoc();
+            SDRLoc loc = new SDRLoc();
             //////
             loc.Lon = 30; // костыль
             loc.Lat = 50; // костыль
             loc.ASL = 150; // костыль
             return (loc);
         }
-
-        
         #endregion
     }
 }
