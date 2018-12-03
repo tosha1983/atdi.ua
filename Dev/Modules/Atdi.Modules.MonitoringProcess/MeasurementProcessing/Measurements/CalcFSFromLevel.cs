@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDR.Server.MeasurementProcessing;
+//using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
+namespace Atdi.Modules.MonitoringProcess.Measurement
 {
     public class CalcFSFromLevel
     {
-        public CalcFSFromLevel(FSemples[] F_Sem, SensorParameters sensorParameters = null)
+        public CalcFSFromLevel(SemplFreq[] F_Sem, SensorParameters sensorParameters = null)
         {
 
-            Double ANT_VAL = 1.17;
+            double ANT_VAL = 1.17;
             if (sensorParameters != null)
             {
-                Double Rx = 0;
+                double Rx = 0;
                 Rx = sensorParameters.RxLoss;
-                Double Gain = 3;
+                double Gain = 3;
                 Gain = sensorParameters.Gain; // Пока костыль, но мы его изменим
                 ANT_VAL = Gain - Rx;
             }

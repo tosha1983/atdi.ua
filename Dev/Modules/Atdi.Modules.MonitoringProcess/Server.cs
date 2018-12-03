@@ -34,9 +34,9 @@ namespace ServerTCP
         }
     }
 
-        public delegate void StatusChangedEventHandler(object sender, StatusChangedEventArgs e);
+    public delegate void StatusChangedEventHandler(object sender, StatusChangedEventArgs e);
 
-    public  class Server
+    public class Server
     {
         public static Hashtable htUsers = new Hashtable(300); // 30 users at one time limit
         public static Hashtable htConnections = new Hashtable(300); // 30 users at one time limit
@@ -63,7 +63,7 @@ namespace ServerTCP
         private TcpListener tlsClient;
         bool ServRunning = false;
 
-        
+
         public static void AddUser(TcpClient tcpUser, string strUsername)
         {
             Server.htUsers.Add(strUsername, tcpUser);
@@ -118,7 +118,7 @@ namespace ServerTCP
             }
         }
 
-        
+
 
 
         void EndReadData(IAsyncResult iar)
@@ -136,13 +136,13 @@ namespace ServerTCP
             }
             catch (Exception)
             { isAbort = true; }
-                
+
         }
 
 
         public bool isAbt()
         {
-           
+
             bool isAbrt = false;
             /*
             try
@@ -157,7 +157,7 @@ namespace ServerTCP
                                                                  swReader);
                     isAbrt = isAbort;
                     if (!tcpClient.Connected) isAbrt = true;
-                    
+
                     List<byte> r = new List<byte>();
                     byte[] bytes = new byte[tcpClient.ReceiveBufferSize];
                     swReader.Read(bytes, 0, (int)tcpClient.ReceiveBufferSize);
@@ -170,7 +170,7 @@ namespace ServerTCP
 
                     if (isAllNull==false)
                         AllText = Encoding.UTF8.GetString(bytes);
-                     
+
                 }
 
                 if (!isAbrt)
@@ -204,9 +204,9 @@ namespace ServerTCP
                 isAbort = true;
             }
             */
-            return isAbort; 
+            return isAbort;
         }
-        
+
 
         public static void SendMessage(string From, string Message)
         {
@@ -229,7 +229,7 @@ namespace ServerTCP
                     swSenderSender.Flush();
                     swSenderSender = null;
                 }
-                catch 
+                catch
                 {
                     RemoveUser(tcpClients[i]);
                 }

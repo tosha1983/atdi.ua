@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDR.Server.MeasurementProcessing;
-using Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal;
+//using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess;
+using Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
+namespace Atdi.Modules.MonitoringProcess.Measurement
 {
     public class Bandwidth
     {
-        public MeasSdrBandwidthResults measSdrBandwidthResults;
-        public FSemples[] fSemples;
+        public MeasBandwidthResult measSdrBandwidthResults;
+
+        public SemplFreq[] fSemples;
         public Bandwidth(ISDR SDR, TaskParameters taskParameters, SensorParameters sensorParameters, LastResultParameters lastResultParameters)
         {
             // const 

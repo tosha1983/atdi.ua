@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
 {
-    class BlockOfSignal
+    public class BlockOfSignal
     {
         public float[] IQStream;
         public int StartIndexIQ;
