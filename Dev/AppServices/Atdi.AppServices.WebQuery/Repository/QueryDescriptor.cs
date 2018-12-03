@@ -16,6 +16,7 @@ namespace Atdi.AppServices.WebQuery
     {
         public static IFormatProvider CultureEnUs = new System.Globalization.CultureInfo("en-US");
         private readonly XWEBQUERYATTRIBUTES[] _AttributesValue;
+        private readonly XWEBQUERYORDERS[] _OrdersValue;
         private readonly XWEBCONSTRAINT[] _ConstraintsValue;
         private readonly Dictionary<string, DataType> _hashSet;
         private readonly XWEBQUERY _QueryValue;
@@ -35,13 +36,14 @@ namespace Atdi.AppServices.WebQuery
         public Dictionary<string,IrpColumn> IrpDictionary { get; private set; }
         public QueryTokenDescriptor QueryTokenDescriptor { get; private set; }
 
-        public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, XWEBQUERYATTRIBUTES[] AttributesValue, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
+        public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, XWEBQUERYATTRIBUTES[] AttributesValue, XWEBQUERYORDERS[] Orders, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
         {
             this._hashSet = new Dictionary<string, DataType>();
             this.IrpDictionary = new Dictionary<string, IrpColumn>();
             this._QueryValue = QueryValue;
             this._ConstraintsValue = ConstraintsValue;
             this._AttributesValue = AttributesValue;
+            this._OrdersValue = Orders;
             this.QueryTokenDescriptor = queryTokenDescriptor;
 
             this.TableName = irpdescription.TableName;
@@ -61,6 +63,15 @@ namespace Atdi.AppServices.WebQuery
                         column.Readonly = findAttribute.READONLY==1? true : false;
                         column.NotChangeableByAdd = findAttribute.NOTCHANGEADD  == 1 ? true : false;
                         column.NotChangeableByEdit  = findAttribute.NOTCHANGEEDIT  == 1 ? true : false;
+                    }
+                }
+                var listOrders = Orders.ToList();
+                if (listOrders != null)
+                {
+                    var findAttributeOrders = listOrders.Find(t => t.PATH == column.Name);
+                    if (findAttributeOrders != null)
+                    {
+                        column.Order = findAttributeOrders.ORDER == 1 ? OrderType.Ascending : OrderType.Descending;
                     }
                 }
             }

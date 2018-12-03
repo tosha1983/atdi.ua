@@ -104,4 +104,19 @@ namespace OrmCs
 			public DatPtr z_datemodified { get { return new DatPtr(this,2); } }
 	}
 
+	public class YXwebqueryorders : Yyy
+	{
+		public YXwebqueryorders() { construct("XWEBQUERYORDERS",null); }
+		public YXwebqueryorders(OrmLinker lk) { construct("XWEBQUERYORDERS",lk); }
+		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
+			public DatPtr z_id { get { return new DatPtr(this,0); } }
+		public int m_webqueryid { get { return getInt(1); } set { setInt(1,value); } }
+			public DatPtr z_webqueryid { get { return new DatPtr(this,1); } }
+		public string m_path { get { return getString(2); } set { setString(2,250,value); } }
+			public DatPtr z_path { get { return new DatPtr(this,2); } }
+		public int m_order { get { return getInt(3); } set { setInt(3,value); } }
+			public DatPtr z_order { get { return new DatPtr(this,3); } }
+		public YXwebquery m_JoinWebQuery { get { return (YXwebquery)getYyy(4); }  set { setYyy(4,value); } }
+	}
+
 }

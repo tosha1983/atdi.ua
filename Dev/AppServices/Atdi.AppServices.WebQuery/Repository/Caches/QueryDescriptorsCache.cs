@@ -170,6 +170,34 @@ namespace Atdi.AppServices.WebQuery
                 return groupsAttributes.ToArray();
             });
 
+            var queryWebOrders = _dataLayer.Builder
+           .From<XWEBQUERYORDERS>()
+           .Where(c => c.WEBQUERYID, ConditionOperator.Equal, queryId)
+           .Select(
+               c => c.ID,
+               c => c.PATH,
+              c => c.WEBQUERYID,
+              c => c.ORDER
+              );
+
+            var attributesValueOrders = this._queryExecutor
+            .Fetch(queryWebOrders, reader =>
+            {
+                var groupsAttributes = new List<XWEBQUERYORDERS>();
+                while (reader.Read())
+                {
+                    var token = new XWEBQUERYORDERS
+                    {
+                        ID = reader.GetValue(x => x.ID),
+                        WEBQUERYID = reader.GetValue(x => x.WEBQUERYID),
+                        ORDER = reader.GetValue(x => x.ORDER),
+                        PATH = reader.GetValue(x => x.PATH)
+                    };
+                    groupsAttributes.Add(token);
+                }
+                return groupsAttributes.ToArray();
+            });
+
 
             var queryweb = _dataLayer.Builder
                .From<XWEBQUERY>()
@@ -208,7 +236,7 @@ namespace Atdi.AppServices.WebQuery
                return Value;
            });
             IrpDescriptor irpDescriptor = this._irpParser.ExecuteParseQuery(queryValue.QUERY);
-            description = new QueryDescriptor(queryValue, constraintsValue, attributesValue, irpDescriptor, queryToken);
+            description = new QueryDescriptor(queryValue, constraintsValue, attributesValue, attributesValueOrders, irpDescriptor, queryToken);
             return description;
         }
     }

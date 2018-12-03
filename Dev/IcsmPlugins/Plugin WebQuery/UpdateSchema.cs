@@ -112,7 +112,18 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareField("OBJTABLE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("DATEMODIFIED", "DATE", "Date", null, null);
             }
-            
+
+            s.DeclareTable("XWEBQUERYORDERS", "Web orders", plugin4);
+            {
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XWEBQUERYORDERS", "PRIMARY", "ID");
+                s.DeclareField("WEBQUERYID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("PATH", "VARCHAR(250)", null, null, null);
+                s.DeclareField("ORDER", "NUMBER(1,0)", null, null, null);
+                s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
+            }
+
+
         }
 
         //=============================================================
