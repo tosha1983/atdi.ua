@@ -166,7 +166,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                             }
                             if (ClassORM.CheckField(Lod[Lod.Count - 1].FieldJoinTo, Lod[Lod.Count - 1].NameTableTo))
                             {
-                                string[] txt = NameField.Split(new char[] { '.' });
+                                string[] txt = NameField.Split(new char[] { '.',' '},StringSplitOptions.RemoveEmptyEntries);
                                 if (txt != null)
                                 {
                                     if (txt.Length > 0)

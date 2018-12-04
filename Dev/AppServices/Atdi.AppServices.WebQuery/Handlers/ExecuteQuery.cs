@@ -81,6 +81,20 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     queryDescriptor.CheckColumns(fetchOptions.Orders);
                     statement.OrderBy(fetchOptions.Orders); 
                 }
+                else
+                {
+                    var orderExpressions = new List<DataModels.DataConstraint.OrderExpression>();
+                    for (int j = 0; j < queryDescriptor.Metadata.Columns.Length; j++)
+                    {
+                        if ((orderExpressions.Find(z => z.ColumnName == queryDescriptor.Metadata.Columns[j].Name) == null) && (queryDescriptor.Metadata.Columns[j].Order != DataModels.DataConstraint.OrderType.None))
+                        {
+                            orderExpressions.Add(new Atdi.DataModels.DataConstraint.OrderExpression() { ColumnName = queryDescriptor.Metadata.Columns[j].Name, OrderType = queryDescriptor.Metadata.Columns[j].Order });
+                        }
+                    }
+                    var orderExpressionsArray = orderExpressions.ToArray();
+                    queryDescriptor.CheckColumns(orderExpressionsArray);
+                    statement.OrderBy(orderExpressionsArray);
+                }
 
                 statement.SetLimit(fetchOptions.Limit);
                 var fetchedColumns = selectedColumns.Select(c => queryDescriptor.MakeDataSetColumn(c)).ToArray();

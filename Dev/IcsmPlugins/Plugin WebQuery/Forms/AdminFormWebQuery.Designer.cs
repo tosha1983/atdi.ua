@@ -63,6 +63,7 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.BtnOrders = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -373,6 +374,7 @@
             // 
             // panelSaveChangeQuery
             // 
+            this.panelSaveChangeQuery.Controls.Add(this.BtnOrders);
             this.panelSaveChangeQuery.Controls.Add(this.ColumnAttr);
             this.panelSaveChangeQuery.Controls.Add(this.button_Constraints);
             this.panelSaveChangeQuery.Controls.Add(this.ButtonSaveChangeQuery);
@@ -396,9 +398,9 @@
             // 
             this.button_Constraints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_Constraints.Location = new System.Drawing.Point(345, 13);
+            this.button_Constraints.Location = new System.Drawing.Point(422, 13);
             this.button_Constraints.Name = "button_Constraints";
-            this.button_Constraints.Size = new System.Drawing.Size(184, 23);
+            this.button_Constraints.Size = new System.Drawing.Size(107, 23);
             this.button_Constraints.TabIndex = 10;
             this.button_Constraints.Text = "Constraints...";
             this.button_Constraints.UseVisualStyleBackColor = true;
@@ -408,7 +410,7 @@
             // 
             this.ButtonSaveChangeQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonSaveChangeQuery.Location = new System.Drawing.Point(176, 13);
+            this.ButtonSaveChangeQuery.Location = new System.Drawing.Point(155, 13);
             this.ButtonSaveChangeQuery.Name = "ButtonSaveChangeQuery";
             this.ButtonSaveChangeQuery.Size = new System.Drawing.Size(138, 23);
             this.ButtonSaveChangeQuery.TabIndex = 1;
@@ -456,6 +458,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(1083, 768);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // BtnOrders
+            // 
+            this.BtnOrders.Location = new System.Drawing.Point(309, 13);
+            this.BtnOrders.Name = "BtnOrders";
+            this.BtnOrders.Size = new System.Drawing.Size(107, 23);
+            this.BtnOrders.TabIndex = 12;
+            this.BtnOrders.Text = "Orders";
+            this.BtnOrders.UseVisualStyleBackColor = true;
+            this.BtnOrders.Click += new System.EventHandler(this.BtnOrders_Click);
             // 
             // AdminFormWebQuery
             // 
@@ -521,5 +533,6 @@
         private System.Windows.Forms.TextBox TableColumns;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button ColumnAttr;
+        private System.Windows.Forms.Button BtnOrders;
     }
 }

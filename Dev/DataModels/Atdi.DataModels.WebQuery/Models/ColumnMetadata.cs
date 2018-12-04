@@ -38,7 +38,6 @@ namespace Atdi.DataModels.WebQuery
         [DataMember]
         public string Format { get; set; }
 
-
         [DataMember]
         public bool Readonly { get; set; }
 

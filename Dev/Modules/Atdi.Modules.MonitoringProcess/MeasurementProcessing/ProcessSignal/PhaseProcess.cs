@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
 {
     static class PhaseProcess
     {

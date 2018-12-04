@@ -361,5 +361,15 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 constraintForm.ShowDialog();
             }
         }
+
+        private void BtnOrders_Click(object sender, EventArgs e)
+        {
+            if (id != IM.NullI)
+            {
+                List<string> List_Path = ClassORM.GetProperties(textBoxQuery.Text.ToString(), false);
+                FormColumnOrdersList constraintForm = new FormColumnOrdersList(id, List_Path);
+                constraintForm.ShowDialog();
+            }
+        }
     }
 }

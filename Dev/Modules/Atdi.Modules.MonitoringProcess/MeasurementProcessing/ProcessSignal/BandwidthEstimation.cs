@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
 {
     static class BandwidthEstimation
     {
@@ -17,7 +16,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
         /// <param name="bandwidthEstimationType">Bandwidth Estimation Type according ITU 443 beta - Annex1; xFromCentr, xFromEdge - Annex2 </param>
         /// <param name="X_Beta">Present of beta for Bandwidth Estimation Type beta; level x dB for Bandwidth Estimation Type xFromCentr, xFromEdge </param>
         /// <returns>Index of point with start signal, Index of point with end signal, Index of point with maximum Level, Correctness of estimation of bandwidth</returns>
-        static public MeasSdrBandwidthResults GetBandwidthPoint(double[] SpecrtumArrdBm, BandwidthEstimationType bandwidthEstimationType = BandwidthEstimationType.beta, double X_Beta = 1, int MaximumIgnorPoint = 1)
+        static public MeasBandwidthResult GetBandwidthPoint(double[] SpecrtumArrdBm, BandwidthEstimationType bandwidthEstimationType = BandwidthEstimationType.beta, double X_Beta = 1, int MaximumIgnorPoint = 1)
         {
             
             double LevelOfSuspiciousJumpdB = 10;
@@ -35,18 +34,20 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
                     GetBandwidthPointMethodBeta(ref SpecrtumArrdBm, X_Beta, out T1, out T2, out M1, out CorrectEstimation, MaximumIgnorPoint, LevelOfSuspiciousJumpdB);
                     break;
             }
-            MeasSdrBandwidthResults measSdrBandwidthResults = new MeasSdrBandwidthResults();
-            measSdrBandwidthResults.T1 = T1;
-            measSdrBandwidthResults.T2 = T2;
-            measSdrBandwidthResults.MarkerIndex = M1;
-            measSdrBandwidthResults.СorrectnessEstimations = CorrectEstimation;
+            MeasBandwidthResult measSdrBandwidthResults = new MeasBandwidthResult
+            {
+                T1 = T1,
+                T2 = T2,
+                MarkerIndex = M1,
+                СorrectnessEstimations = CorrectEstimation
+            };
             return (measSdrBandwidthResults);
         }
         static private void GetBandwidthPointMethodBeta(ref double[] SpecrtumArrdBm, double beta, out int T1, out int T2, out int M1, out bool CorrectEstimation, int MaximumIgnorPoint, double LevelOfSuspiciousJumpdB)
         { // тестированно Макисм 21.08.2018.
             T1 = 0; T2 = SpecrtumArrdBm.Length -1; M1 = 0; CorrectEstimation = false;
 
-            double SumPow = 0; int imax = 0;
+            double SumPow = 0; //int imax = 0;
             // проверка возможности использовать данный метод по уровню 30дБ, а также определение общей суммы 
             CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
             // суть метода мы идем от края до края шаг за шагом оценивая сумму эелементов (т.е. площадь елементов) Смысл найти позицию где у нас будет минимальная BW
@@ -75,7 +76,7 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
         }
         static private void GetBandwidthPointMethodX(ref double[] SpecrtumArrdBm, double x, out int T1, out int T2, out int M1, out bool CorrectEstimation, int MaximumIgnorPoint, double LevelOfSuspiciousJumpdB, bool FindFromCentr)
         {
-            double SumPow = 0; int imax = 0;
+            double SumPow = 0; //int imax = 0;
             // проверка возможности использовать данный метод по уровню 30дБ, а также определение общей суммы 
             CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
             double TrigerLeveldBm = SpecrtumArrdBm[M1] - x;

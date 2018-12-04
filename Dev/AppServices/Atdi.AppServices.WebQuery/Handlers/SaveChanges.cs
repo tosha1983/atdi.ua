@@ -186,7 +186,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     break;
                 }
             }
-            if ((queryDescriptor.HasColumn("ID")) && (isFindFieldId==false))
+            if (isFindFieldId == false)
             {
                 var columnValueReplaced = new IntegerColumnValue()
                 {
@@ -195,7 +195,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     Value = AllocID(queryDescriptor.TableName)
                 };
                 Array.Resize(ref unPackValues, unPackValues.Length + 1);
-                unPackValues[unPackValues.Length-1] = columnValueReplaced;
+                unPackValues[unPackValues.Length - 1] = columnValueReplaced;
             }
             queryDescriptor.PrapareValidationConditions(userTokenData, unPackValues, action);
             queryDescriptor.GetConditions(userTokenData, unPackValues, action);

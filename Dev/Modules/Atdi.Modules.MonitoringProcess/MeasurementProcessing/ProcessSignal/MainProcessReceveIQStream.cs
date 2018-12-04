@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.SDR.Server.MeasurementProcessing.SingleHound;
+using Atdi.Modules.MonitoringProcess.SingleHound;
 using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
 {
-    class MainProcessReceveIQStreamAndGetTimeStamp
+    public class MainProcessReceveIQStreamAndGetTimeStamp
     {
         #region parameters 
-        SDR_BB60C SDR;
+        SDRBB60C SDR;
         public Double TimeReceivingSec;
         public Double MinDurationSignalForAnalizemks;
         public IQStreamTimeStampBloks IQStreamTimeStampBloks;
@@ -82,9 +82,9 @@ namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
             bool FilteringForFindSignalAndPause = true; 
             // конец констант
             TimeReceivingSec = _TimeReceivingSec; 
-            SDR = new SDR_BB60C();
-            SDR.initiation_SDR();
-            SDR.calibration();
+            //SDR = new SDR_BB60C();
+            //SDR.initiation_SDR();
+            //SDR.calibration();
             SetConfigurationForReceivIQStream SDRConfig = new SetConfigurationForReceivIQStream(ref SDR, freqMHz, spankHz);
             // костыль 
             SDRConfig.samples_per_sec = 40000000;

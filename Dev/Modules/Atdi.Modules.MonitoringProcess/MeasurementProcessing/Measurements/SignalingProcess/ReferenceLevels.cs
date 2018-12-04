@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDR.Server.MeasurementProcessing;
+//using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
+namespace Atdi.Modules.MonitoringProcess
 {
     /// <summary>
     /// Represent triggers levels adopted to trace of Devise (SDR)

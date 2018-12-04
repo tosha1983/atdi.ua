@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
 {
     /// <summary>
     /// Клас обрабатывает поток и вычисляет индессы возрастающего фронта и падающего фронта начала и конца сигнала 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
-using Atdi.SDR.Server.MeasurementProcessing;
+//using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
+
+namespace Atdi.Modules.MonitoringProcess.Measurement
 {
     /// <summary>
     /// Данный клас обслуживат измерения полчения спектрограммы. 
@@ -15,10 +16,10 @@ namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
     {
         public float[] Frequencies_MHz;
         public float[] Levels_dBm;
-        public FSemples[] fSemples;
+        public SemplFreq[] fSemples;
         public Trace(ISDR SDR, TaskParameters taskParameters, SensorParameters  sensorParameters = null, LastResultParameters lastResultParameters = null)
         {
-            if (taskParameters.MeasurementType == MeasurementType.PICode)
+            if (taskParameters.MeasurementType == MeasType.PICode)
             { // костыль пока не будет добавлено новый тип вместо MeasurementType.PICode 
                 GetTraceOnLine(SDR, lastResultParameters);
             }
@@ -45,10 +46,10 @@ namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
                 NeedAddToOldResult = ((lastResultParameters.FSemples.Length == CurLevels_dBm.Length) && (lastResultParameters.NN > 0));
             }
             // формирование Fsemples 
-            fSemples = new FSemples[CurLevels_dBm.Length];
+            fSemples = new SemplFreq[CurLevels_dBm.Length];
             for (int i = 0; i < CurLevels_dBm.Length; i++)
             {
-                fSemples[i] = new FSemples();
+                fSemples[i] = new SemplFreq();
                 fSemples[i].LeveldBm = CurLevels_dBm[i];
                 if (NeedAddToOldResult)
                 {

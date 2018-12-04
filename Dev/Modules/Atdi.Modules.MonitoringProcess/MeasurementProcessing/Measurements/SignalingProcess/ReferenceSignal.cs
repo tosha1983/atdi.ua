@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.SDR.Server.MeasurementProcessing.Measurement
+namespace Atdi.Modules.MonitoringProcess
 {
     public struct ReferenceSignal
     {
