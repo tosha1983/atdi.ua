@@ -46,6 +46,7 @@ namespace Atdi.AppServices.WebQuery
             this._OrdersValue = Orders;
             this.QueryTokenDescriptor = queryTokenDescriptor;
 
+
             this.TableName = irpdescription.TableName;
             this.IdentUserField = QueryValue.IDENTUSER;
             this.IrpDescrColumns = irpdescription.irpColumns.ToArray();
@@ -3762,11 +3763,11 @@ namespace Atdi.AppServices.WebQuery
             return validationChecked;
         }
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="tokenData"></param>
-            /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenData"></param>
+        /// <returns></returns>
         public Condition[] GetConditions(UserTokenData tokenData, ColumnValue[] columnValues = null, Atdi.DataModels.Action actionType = null)
         {
             List<Condition> List_Expressions = new List<Condition>();

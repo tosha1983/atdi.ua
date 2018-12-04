@@ -53,7 +53,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
             //===============================================
             // VIEWS
             //===============================================
-            s.DeclareView("XV_WEB_BC", "WebQuery_BS-3_View", plugin3);
+            CreateViewForAccess(s, "XV_WEB_BC", "WebQuery_BS-3_View", plugin3, "MOB_STATION2", "WebQuery_BS-3");
             {
                 s.DeclareField("LICENCE", "VARCHAR(200)", null, null, null);
                 s.DeclareField("LIC_ID", "NUMBER(9,0)", null, null, null);
@@ -87,6 +87,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
 
         }
 
+
         //=============================================================
         /// <summary>
         /// Обновление таблиц
@@ -102,6 +103,19 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
             }
             return true;
         }
+
+        /// <summary>
+        /// Создает схему вида для распределения доступа
+        /// </summary>
+        /// <param name="s"></param>
+        private static void CreateViewForAccess(IMSchema s, string viewName, string viewDecs, string tableGroup, string tableName, string joinName)
+        {
+            s.DeclareView(viewName, viewDecs, tableGroup);
+            s.DeclareField("ID", "NUMBER(9,0)", null, null, null);
+            s.DeclareIndex("PK_" + viewName, "PRIMARY", "ID");
+            s.DeclareJoin(joinName, tableName, null, "ID", "ID");
+        }
+
         //=============================================================
         /// <summary>
         /// Текущая версия БД плагина
