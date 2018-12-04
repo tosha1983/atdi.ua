@@ -3,6 +3,49 @@
         <div v-visible="showProgress" class="progress" style="margin-top: 0px; margin-bottom: 3px;">
             <div class="indeterminate"></div>
         </div>
+
+        <nav v-if="hasData && currentPerPage && currentPerPage > 10"  style="height: 44px; line-height: 44px; margin-bottom: 5px" class="portal-slidebar-nav">
+            <div class="nav-wrapper">
+                <ul class="right">
+                    <li>
+                        <span style="margin-right: 15px;">Rows per page:</span>
+                    </li>
+                    <li>
+                        <select class="browser-default rows-per-pages" @change="changePerPage">
+                            <option v-for="(option, index) in perPageOptions" :value="option" :selected="option == currentPerPage" :key="index">
+                            {{ option === -1 ? 'all' : option }}
+                            </option>
+                        </select>
+                    </li>
+                    <li>
+                        <a href="javascript:undefined" class="waves-effect btn-flat portal-table-btn" @click.prevent="firstPage" tabindex="0">
+                            <i class="material-icons">first_page</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:undefined" class="waves-effect portal-table-btn btn-flat" @click.prevent="previousPage" tabindex="0">
+                            <i class="material-icons">chevron_left</i>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="">
+                        {{(currentPage - 1) * currentPerPage ? (currentPage - 1) * currentPerPage : 1}}-{{Math.min(processedRows.length, currentPerPage * currentPage)}} out of pages {{processedRows.length}}
+                        </div>
+                    </li>   
+                    <li>
+                        <a href="javascript:undefined" class="waves-effect portal-table-btn btn-flat" @click.prevent="nextPage" tabindex="0">
+                            <i class="material-icons">chevron_right</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:undefined" class="waves-effect portal-table-btn btn-flat" @click.prevent="lastPage" tabindex="0">
+                            <i class="material-icons">last_page</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
         <div class="" style="overflow: auto;">
 
             <table :id="id" class="bordered portal-data-table">
