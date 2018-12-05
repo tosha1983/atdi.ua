@@ -54,6 +54,7 @@
     <Compile Include="IrpParser\FrameObject.cs" />
     <Compile Include="IrpParser\IcsmReport.cs" />
     <Compile Include="IrpParser\IrpParser.cs" />
+    <Compile Include="IrpParser\PropertyField.cs" />
     <Compile Include="Orm\DataCoding.cs" />
     <Compile Include="Orm\DataDesc.cs" />
     <Compile Include="Orm\DbExpressionField.cs" />

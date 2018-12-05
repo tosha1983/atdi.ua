@@ -83,12 +83,14 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 }
                 else
                 {
-                    var orderExpressions = new List<DataModels.DataConstraint.OrderExpression>();
-                    for (int j = 0; j < queryDescriptor.Metadata.Columns.Length; j++)
+                   var allColumns = queryDescriptor.Metadata.Columns;
+                   var sortedOrders = allColumns.OrderBy(z => z.PriorityOrder).ToArray();
+                   var orderExpressions = new List<DataModels.DataConstraint.OrderExpression>();
+                    for (int j = 0; j < sortedOrders.Length; j++)
                     {
-                        if ((orderExpressions.Find(z => z.ColumnName == queryDescriptor.Metadata.Columns[j].Name) == null) && (queryDescriptor.Metadata.Columns[j].Order != DataModels.DataConstraint.OrderType.None))
+                        if ((orderExpressions.Find(z => z.ColumnName == sortedOrders[j].Name) == null) && (sortedOrders[j].Order != DataModels.DataConstraint.OrderType.None))
                         {
-                            orderExpressions.Add(new Atdi.DataModels.DataConstraint.OrderExpression() { ColumnName = queryDescriptor.Metadata.Columns[j].Name, OrderType = queryDescriptor.Metadata.Columns[j].Order });
+                            orderExpressions.Add(new Atdi.DataModels.DataConstraint.OrderExpression() { ColumnName = sortedOrders[j].Name, OrderType = sortedOrders[j].Order });
                         }
                     }
                     var orderExpressionsArray = orderExpressions.ToArray();

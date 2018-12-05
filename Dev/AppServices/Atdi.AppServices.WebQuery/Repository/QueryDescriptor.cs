@@ -69,10 +69,14 @@ namespace Atdi.AppServices.WebQuery
                 var listOrders = Orders.ToList();
                 if (listOrders != null)
                 {
-                    var findAttributeOrders = listOrders.Find(t => t.PATH == column.Name);
-                    if (findAttributeOrders != null)
+                    for (int k=0; k< listOrders.Count; k++)
                     {
-                        column.Order = findAttributeOrders.ORDER == 1 ? OrderType.Ascending : OrderType.Descending;
+                        if (listOrders[k].PATH== column.Name)
+                        {
+                            column.Order = listOrders[k].ORDER == 1 ? OrderType.Ascending : OrderType.Descending;
+                            column.PriorityOrder = k;
+                            break;
+                        }
                     }
                 }
             }
