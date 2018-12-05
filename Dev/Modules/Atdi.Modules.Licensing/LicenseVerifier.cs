@@ -62,7 +62,8 @@ namespace Atdi.Modules.Licensing
                                 Count = lic.Count,
                                 Instance = lic.Instance,
                                 OwnerName = lic.OwnerName,
-                                StopDate = lic.StopDate
+                                StopDate = lic.StopDate,
+                                StartDate = lic.StartDate
                             };
                         }
                     }

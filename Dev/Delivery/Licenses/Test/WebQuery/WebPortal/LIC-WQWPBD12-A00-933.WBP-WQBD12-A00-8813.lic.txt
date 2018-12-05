@@ -1,0 +1,20 @@
+﻿
+  -- License Data -- 
+License Number    : 'LIC-WQWPBD12-A00-933'
+License Type      : ServerLicense
+Issued by Company : ТОВ 'Лабораторія інформаційних систем'
+  ------------------ 
+
+Owner Id     : 'OID-BD12-A00-N00'
+Owner Name   : 'ТОВ 'Лабораторія інформаційних систем''
+Product Name : 'WebQuery Web Portal'
+Product Key  : 'TLQD-P650-U18N-SP8P-EWYK'
+  ------------------ 
+
+Created    : 05.12.2018 20:23:20
+Start Date : 05.12.2018 0:00:00
+Stop Date  : 01.01.2020 0:00:00
+  ------------------ 
+
+Instance : 'WBP-WQBD12-A00-8813'
+  ------------------ 

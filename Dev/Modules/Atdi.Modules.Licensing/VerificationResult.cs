@@ -17,5 +17,7 @@ namespace Atdi.Modules.Licensing
         public int Count { get; set; }
 
         public string Instance { get; set; }
+
+        public DateTime StartDate { get; set; }
     }
 }

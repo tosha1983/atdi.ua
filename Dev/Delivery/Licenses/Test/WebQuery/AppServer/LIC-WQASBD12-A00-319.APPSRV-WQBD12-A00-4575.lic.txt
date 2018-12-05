@@ -1,0 +1,20 @@
+﻿
+  -- License Data -- 
+License Number    : 'LIC-WQASBD12-A00-319'
+License Type      : ServerLicense
+Issued by Company : ТОВ 'Лабораторія інформаційних систем'
+  ------------------ 
+
+Owner Id     : 'OID-BD12-A00-N00'
+Owner Name   : 'ТОВ 'Лабораторія інформаційних систем''
+Product Name : 'WebQuery Application Server'
+Product Key  : '0EE0-IVIR-UL41-2ARA-LADL'
+  ------------------ 
+
+Created    : 05.12.2018 20:23:20
+Start Date : 05.12.2018 0:00:00
+Stop Date  : 01.01.2020 0:00:00
+  ------------------ 
+
+Instance : 'APPSRV-WQBD12-A00-4575'
+  ------------------ 
