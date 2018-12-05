@@ -178,7 +178,8 @@ namespace Atdi.AppServices.WebQuery
                c => c.PATH,
               c => c.WEBQUERYID,
               c => c.ORDER
-              );
+              )
+              .OrderByAsc(c=>c.ID);
 
             var attributesValueOrders = this._queryExecutor
             .Fetch(queryWebOrders, reader =>
