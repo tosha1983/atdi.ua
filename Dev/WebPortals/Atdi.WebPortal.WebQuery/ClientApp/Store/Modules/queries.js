@@ -69,6 +69,20 @@ const mutations = {
             columnsMap[column.Name] = column;
         }
         
+        const pk = state.current.primaryKey;
+        for (let index = 0; index < pk.length; index++) {
+            const pkColumnName = pk[index];
+            if (pkColumnName == null || pkColumnName === ""){
+                console.warn("Undefined name of the primary key column with index #" + index);
+            } else {
+                const pkColumn = columnsMap[pkColumnName];
+                if (!pkColumn){
+                    console.warn("Not found primary key column with name '" + pkColumnName + "'");
+                }
+            }
+            
+        }
+        
         const result = {
             columnsMap: columnsMap,
             rows: data.Dataset.Cells,

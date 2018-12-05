@@ -6,6 +6,7 @@
         <a v-if="allowedEdit" class="waves-effect waves-light" @click="openEditForm" href="javascript:undefined">Edit</a>
         <a v-if="allowedDel" class="waves-effect waves-light"  @click="openDeleteForm" href="javascript:undefined">Delete</a>
         <a @click="exportExcel" class="waves-effect waves-light" href="javascript:undefined">Excel</a>
+        <a @click="printTable" class="waves-effect waves-light" href="javascript:undefined"><i class="material-icons">local_printshop</i></a>
 
         <search-tool 
             v-if="allowedSearch"
@@ -13,7 +14,7 @@
             >
         </search-tool>
         
-        
+        <!--
         <div id="portal-table-toolbar-table-tools" class="fixed-action-btn horizontal direction-top direction-left" style="position: absolute; display: inline-block; right: 24px;">
             <a class="btn-floating btn-large tooltipped" data-position="bottom" data-tooltip="Table tool bar">
                 <i class="large material-icons">menu</i>
@@ -41,7 +42,7 @@
                 </li>
             </ul>
         </div>
-      
+        -->
         <template v-if="needSortingTuneForm">
             <table-tool-form id="portal-table-tool-form-sorting" @close="onCloseSortingTuneForm" @apply="onApplySortingTuneForm">
                 <template slot="title">Tune sorting</template>
