@@ -1,7 +1,9 @@
-﻿using Atdi.WebPortal.WebQuery.Utility;
+﻿using Atdi.WebPortal.WebQuery.Licensing;
+using Atdi.WebPortal.WebQuery.Utility;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,12 +11,38 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
 {
     public class WebQueryClient : WebApiClient
     {
+        private readonly VerificationResult _licState;
+        
         public WebQueryClient(IOptions<PortalSettings> options) : base(new Uri(options.Value.WebQueryApiUrl))
         {
+            try
+            {
+                var verificationData = new VerificationData
+                {
+                    OwnerId = options.Value.LicenseOwnerId,
+                    ProductName = "WebQuery Web Portal",
+                    ProductKey = options.Value.LicenseProductKey,
+                    LicenseType = "ServerLicense",
+                    Date = DateTime.Now
+                };
+
+                var licenseFileName = options.Value.LicenseFileName;
+                var licenseBody = File.ReadAllBytes(licenseFileName);
+
+                this._licState = LicenseVerifier.Verify(verificationData, licenseBody);
+
+                
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("The license verification failed", e);
+            }
         }
 
         public async Task<UserIdentity> AuthenticateUserAsync(UserCredential userCredential)
         {
+            this._licState.Verify();
+
             var options = new Options.AuthenticateUserOptions
             {
                 Credential = userCredential
@@ -26,6 +54,8 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
 
         public async Task<QueryGroups> GetQueryGroupsAsync(UserToken userToken)
         {
+            this._licState.Verify();
+
             var options = new Options.GetQueryGroupsOptions
             {
                 UserToken = userToken
@@ -37,6 +67,8 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
 
         public async Task<QueryMetadata[]> GetQueriesMetadataAsync(UserToken userToken, QueryToken[] tokens)
         {
+            this._licState.Verify();
+
             var options = new Options.GetQueriesMetadataOptions
             {
                 UserToken = userToken,
@@ -49,6 +81,8 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
 
         public async Task<object> ExecuteQueryAsync(UserToken userToken, QueryToken token, string[] columns, Filter filter, OrderExpression[] orders, DataLimit limit)
         {
+            this._licState.Verify();
+
             var options = new Options.ExecuteQueryOptions
             {
                 UserToken = userToken,
@@ -66,6 +100,8 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
 
         public async Task<ActionResult> ExecuteActionAsync(UserToken userToken, QueryToken token, DataChangeAction action)
         {
+            this._licState.Verify();
+
             var options = new Options.SaveChangesOptions
             {
                 UserToken = userToken,
