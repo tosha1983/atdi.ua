@@ -17,11 +17,13 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
         {
             try
             {
+                var ownerId = Encryptor.DecryptStringAES(options.Value.LicenseOwnerId, "Atdi.WebPortal.WebQuery");
+                var productKey = Encryptor.DecryptStringAES(options.Value.LicenseProductKey, "Atdi.WebPortal.WebQuery");
                 var verificationData = new VerificationData
                 {
-                    OwnerId = options.Value.LicenseOwnerId,
+                    OwnerId = ownerId,
                     ProductName = "WebQuery Web Portal",
-                    ProductKey = options.Value.LicenseProductKey,
+                    ProductKey = productKey,
                     LicenseType = "ServerLicense",
                     Date = DateTime.Now
                 };
