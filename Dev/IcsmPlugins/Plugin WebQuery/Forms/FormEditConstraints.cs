@@ -25,9 +25,23 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         public int _web_id { get; set; }
         public bool IsNew { get; set; }
 
+        public Point pointFrom { get; set; }
+        public Size SizeFrom { get; set; }
+
+        public Point pointTo { get; set; }
+        public Size SizeTo { get; set; }
+
+        public Size SizeLittle { get; set; }
+
         public FormEditConstraints(int id, int web_id, bool isnew, List<string> L_Path)
         {
             InitializeComponent();
+            pointFrom = textBox_FromValue.Location;
+            SizeFrom = textBox_FromValue.Size;
+
+            pointTo = textBoxToValue.Location;
+            SizeTo = textBoxToValue.Size;
+
             icsDateTimeFrom = new IcsDateTime();
             icsDateTimeTo = new IcsDateTime();
             icsDoubleFrom = new IcsDouble();
@@ -188,15 +202,18 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private void ShowBlockTwoValue(OrmCs.OrmVarType ValueType)
         {
+            textBox_FromValue.Size = SizeFrom;
+            icsIntegerFrom.Size = SizeFrom;
+            icsDoubleFrom.Size = SizeFrom;
             switch (ValueType)
             {
                 case OrmCs.OrmVarType.var_String:
 
-                    textBox_FromValue.Location = new Point(142, 126);
-                    textBox_FromValue.Size = new Size(121, 20);
+                    textBox_FromValue.Location = pointFrom;
+                    textBox_FromValue.Size = SizeFrom;
                     textBox_FromValue.Visible = true;
-                    textBoxToValue.Location = new Point(297, 126);
-                    textBoxToValue.Size = new Size(121, 20);
+                    textBoxToValue.Location = pointTo;
+                    textBoxToValue.Size = SizeTo;
                     textBoxToValue.Visible = true;
                     textBoxToValue.Text = "";
                     icsIntegerFrom.Visible = false;
@@ -213,10 +230,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     icsDoubleTo.Value = IM.NullD;
                     break;
                 case OrmCs.OrmVarType.var_Int:
-                    icsIntegerFrom.Location = new Point(142, 126);
-                    icsIntegerFrom.Size = new Size(121, 20);
-                    icsIntegerTo.Location = new Point(297, 126);
-                    icsIntegerTo.Size = new Size(121, 20);
+                    icsIntegerFrom.Location = pointFrom;
+                    icsIntegerFrom.Size = SizeFrom;
+                    icsIntegerTo.Location = pointTo;
+                    icsIntegerTo.Size = SizeTo;
                     icsIntegerFrom.Visible = true;
                     icsIntegerTo.Visible = true;
                     icsDoubleFrom.Visible = false;
@@ -237,10 +254,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     break;
                 case OrmCs.OrmVarType.var_Flo:
                 case OrmCs.OrmVarType.var_Dou:
-                    icsDoubleFrom.Location = new Point(142, 126);
-                    icsDoubleFrom.Size = new Size(121, 20);
-                    icsDoubleTo.Location = new Point(297, 126);
-                    icsDoubleTo.Size = new Size(121, 20);
+                    icsDoubleFrom.Location = pointFrom;
+                    icsDoubleFrom.Size = SizeFrom;
+                    icsDoubleTo.Location = pointTo;
+                    icsDoubleTo.Size = SizeTo;
                     icsDoubleFrom.Visible = true;
                     icsDoubleTo.Visible = true;
                     icsIntegerFrom.Visible = false;
@@ -261,10 +278,10 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     break;
 
                 case OrmCs.OrmVarType.var_Tim:
-                    icsDateTimeFrom.Location = new Point(142, 126);
-                    icsDateTimeFrom.Size = new Size(121, 20);
-                    icsDateTimeTo.Location = new Point(297, 126);
-                    icsDateTimeTo.Size = new Size(121, 20);
+                    icsDateTimeFrom.Location = pointFrom;
+                    icsDateTimeFrom.Size = SizeFrom;
+                    icsDateTimeTo.Location = pointTo;
+                    icsDateTimeTo.Size = SizeTo;
                     icsDateTimeFrom.Visible = true;
                     icsDateTimeTo.Visible = true;
                     icsIntegerFrom.Visible = false;
@@ -291,11 +308,14 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
         private void ShowBlockOneValue(OrmCs.OrmVarType ValueType)
         {
+            textBox_FromValue.Size = SizeFrom;
+            icsIntegerFrom.Size = SizeFrom;
+            icsDoubleFrom.Size = SizeFrom;
             switch (ValueType)
             {
                 case OrmCs.OrmVarType.var_String:
-                    textBox_FromValue.Location = new Point(142, 126);
-                    textBox_FromValue.Size = new Size(277, 20);
+                    textBox_FromValue.Location = pointFrom;
+                    textBox_FromValue.Size = textBox_NameField.Size;
                     textBox_FromValue.Visible = true;
                     icsIntegerFrom.Visible = false;
                     icsDoubleFrom.Visible = false;
@@ -314,8 +334,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     break;
 
                 case OrmCs.OrmVarType.var_Int:
-                    icsIntegerFrom.Location = new Point(142, 126);
-                    icsIntegerFrom.Size = new Size(277, 20);
+                    icsIntegerFrom.Location = pointFrom;
+                    icsIntegerFrom.Size = textBox_NameField.Size;
                     icsIntegerFrom.Visible = true;
                     icsDoubleFrom.Visible = false;
                     icsDateTimeFrom.Visible = false;
@@ -336,8 +356,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
 
                 case OrmCs.OrmVarType.var_Flo:
                 case OrmCs.OrmVarType.var_Dou:
-                    icsDoubleFrom.Location = new Point(142, 126);
-                    icsDoubleFrom.Size = new Size(277, 20);
+                    icsDoubleFrom.Location = pointFrom;
+                    icsDoubleFrom.Size = textBox_NameField.Size;
                     icsDoubleFrom.Visible = true;
                     icsIntegerFrom.Visible = false;
                     icsDateTimeFrom.Visible = false;
@@ -357,8 +377,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                     break;
 
                 case OrmCs.OrmVarType.var_Tim:
-                    icsDateTimeFrom.Location = new Point(142, 126);
-                    icsDateTimeFrom.Size = new Size(277, 20);
+                    icsDateTimeFrom.Location = pointFrom;
+                    icsDateTimeFrom.Size = textBox_NameField.Size;
                     icsDateTimeFrom.Visible = true;
                     icsIntegerFrom.Visible = false;
                     icsDoubleFrom.Visible = false;
@@ -414,88 +434,46 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         private void button_ok_Click(object sender, EventArgs e)
         {
             bool isDuplicate = false;
-            if (string.IsNullOrEmpty(textBox_NameField.Text))
+            try
             {
-                MessageBox.Show("Please input field name");
-                return;
-            }
-
-            if (!isDuplicate)
-            {
-                var rsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
-                rsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,STRVALUETO,DATEVALUEMIN,INCLUDE,DATEVALUEMAX,DESCRCONDITION,TYPECONDITION,OPERCONDITION,MESSAGENOTVALID,DEFAULTVALUE,MOMENTOFUSE");
-                if (_id != IM.NullI)
+                if (string.IsNullOrEmpty(textBox_NameField.Text))
                 {
-                    if (!IsNew)
-                    {
-                        rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, _id);
-                    }
+                    MessageBox.Show("Please input field name");
+                    return;
                 }
 
-                OrmCs.OrmVarType ormVarType = OrmCs.OrmVarType.var_String;
-                if (((comboBox_OperationCondition.Items[comboBox_OperationCondition.SelectedIndex].ToString() != ConditionOperator.In.ToString()) &&
-                (comboBox_OperationCondition.Items[comboBox_OperationCondition.SelectedIndex].ToString() != ConditionOperator.NotIn.ToString())))
+                if (!isDuplicate)
                 {
-                    ormVarType = GetVarTypeFromColumn(textBox_NameField.Text);
-                }
-
-                try
-                {
-                    rsWebQueryNew.Open();
-                    if (rsWebQueryNew.IsEOF())
-                    {
-                        rsWebQueryNew.AddNew();
-                        int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
-                        rsWebQueryNew.Put("ID", idnew);
-                        rsWebQueryNew.Put("WEBQUERYID", _web_id);
-                        rsWebQueryNew.Put("PATH", textBox_NameField.Text);
-
-
-                   
-                        if (ormVarType == OrmCs.OrmVarType.var_String)
-                        {
-                            rsWebQueryNew.Put("STRVALUE", textBox_FromValue.Text);
-                            rsWebQueryNew.Put("STRVALUETO", textBoxToValue.Text);
-                        }
-                        else if (ormVarType == OrmCs.OrmVarType.var_Int)
-                        {
-                            rsWebQueryNew.Put("MIN", icsIntegerFrom.Value != IM.NullI ? icsIntegerFrom.Value : IM.NullI);
-                            rsWebQueryNew.Put("MAX", icsIntegerTo.Value != IM.NullI ? icsIntegerTo.Value : IM.NullI);
-                        }
-                        else if ((ormVarType == OrmCs.OrmVarType.var_Flo) || (ormVarType == OrmCs.OrmVarType.var_Dou))
-                        {
-                            rsWebQueryNew.Put("MIN", icsDoubleFrom.Value != IM.NullD ? icsDoubleFrom.Value : IM.NullD);
-                            rsWebQueryNew.Put("MAX", icsDoubleTo.Value != IM.NullD ? icsDoubleTo.Value : IM.NullD);
-                        }
-                        else if (ormVarType == OrmCs.OrmVarType.var_Tim)
-                        {
-                            rsWebQueryNew.Put("DATEVALUEMIN", icsDateTimeFrom.Value);
-                            rsWebQueryNew.Put("DATEVALUEMAX", icsDateTimeTo.Value);
-                        }
-                    
-                        if (comboBox_MomentOfUse.Items.Count > 0) { if (comboBox_MomentOfUse.SelectedIndex != -1) rsWebQueryNew.Put("MOMENTOFUSE", comboBox_MomentOfUse.Text); }
-                        if (comboBox_TypeCondition.Items.Count > 0) { if (comboBox_TypeCondition.SelectedIndex != -1) rsWebQueryNew.Put("TYPECONDITION", comboBox_TypeCondition.Text); }
-                        if (comboBox_OperationCondition.Items.Count > 0) { if (comboBox_OperationCondition.SelectedIndex != -1) rsWebQueryNew.Put("OPERCONDITION", comboBox_OperationCondition.Text); }
-                        rsWebQueryNew.Put("DESCRCONDITION", textBox_DescriptionCondition.Text);
-                        rsWebQueryNew.Put("MESSAGENOTVALID", textBox_MessageNotValid.Text);
-                        rsWebQueryNew.Put("DEFAULTVALUE", textBox_DefValues.Text);
-                        rsWebQueryNew.Update();
-                    }
-                    else
+                    var rsWebQueryNew = new IMRecordset(ICSMTbl.WebConstraint, IMRecordset.Mode.ReadWrite);
+                    rsWebQueryNew.Select("ID,WEBQUERYID,NAME,PATH,MIN,MAX,STRVALUE,STRVALUETO,DATEVALUEMIN,INCLUDE,DATEVALUEMAX,DESCRCONDITION,TYPECONDITION,OPERCONDITION,MESSAGENOTVALID,DEFAULTVALUE,MOMENTOFUSE");
+                    if (_id != IM.NullI)
                     {
                         if (!IsNew)
                         {
-                            rsWebQueryNew.Edit();
+                            rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, _id);
+                        }
+                    }
 
-                            rsWebQueryNew.Put("STRVALUE", "");
-                            rsWebQueryNew.Put("STRVALUETO", "");
-                            rsWebQueryNew.Put("MIN", IM.NullD);
-                            rsWebQueryNew.Put("MAX", IM.NullD);
-                            rsWebQueryNew.Put("DATEVALUEMIN", IM.NullT);
-                            rsWebQueryNew.Put("DATEVALUEMAX", IM.NullT);
+                    OrmCs.OrmVarType ormVarType = OrmCs.OrmVarType.var_String;
+                    if (((comboBox_OperationCondition.Items[comboBox_OperationCondition.SelectedIndex].ToString() != ConditionOperator.In.ToString()) &&
+                    (comboBox_OperationCondition.Items[comboBox_OperationCondition.SelectedIndex].ToString() != ConditionOperator.NotIn.ToString())))
+                    {
+                        ormVarType = GetVarTypeFromColumn(textBox_NameField.Text);
+                    }
 
+                    try
+                    {
+                        rsWebQueryNew.Open();
+                        if (rsWebQueryNew.IsEOF())
+                        {
+                            rsWebQueryNew.AddNew();
+                            int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
+                            rsWebQueryNew.Put("ID", idnew);
                             rsWebQueryNew.Put("WEBQUERYID", _web_id);
                             rsWebQueryNew.Put("PATH", textBox_NameField.Text);
+
+
+
                             if (ormVarType == OrmCs.OrmVarType.var_String)
                             {
                                 rsWebQueryNew.Put("STRVALUE", textBox_FromValue.Text);
@@ -516,7 +494,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                                 rsWebQueryNew.Put("DATEVALUEMIN", icsDateTimeFrom.Value);
                                 rsWebQueryNew.Put("DATEVALUEMAX", icsDateTimeTo.Value);
                             }
-                          
+
                             if (comboBox_MomentOfUse.Items.Count > 0) { if (comboBox_MomentOfUse.SelectedIndex != -1) rsWebQueryNew.Put("MOMENTOFUSE", comboBox_MomentOfUse.Text); }
                             if (comboBox_TypeCondition.Items.Count > 0) { if (comboBox_TypeCondition.SelectedIndex != -1) rsWebQueryNew.Put("TYPECONDITION", comboBox_TypeCondition.Text); }
                             if (comboBox_OperationCondition.Items.Count > 0) { if (comboBox_OperationCondition.SelectedIndex != -1) rsWebQueryNew.Put("OPERCONDITION", comboBox_OperationCondition.Text); }
@@ -527,54 +505,103 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         }
                         else
                         {
-                            rsWebQueryNew.AddNew();
-                            int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
-                            rsWebQueryNew.Put("ID", idnew);
-                            rsWebQueryNew.Put("WEBQUERYID", _web_id);
-                            rsWebQueryNew.Put("PATH", textBox_NameField.Text);
-                            if (ormVarType == OrmCs.OrmVarType.var_String)
+                            if (!IsNew)
                             {
-                                rsWebQueryNew.Put("STRVALUE", textBox_FromValue.Text);
-                                rsWebQueryNew.Put("STRVALUETO", textBoxToValue.Text);
+                                rsWebQueryNew.Edit();
+
+                                rsWebQueryNew.Put("STRVALUE", "");
+                                rsWebQueryNew.Put("STRVALUETO", "");
+                                rsWebQueryNew.Put("MIN", IM.NullD);
+                                rsWebQueryNew.Put("MAX", IM.NullD);
+                                rsWebQueryNew.Put("DATEVALUEMIN", IM.NullT);
+                                rsWebQueryNew.Put("DATEVALUEMAX", IM.NullT);
+
+                                rsWebQueryNew.Put("WEBQUERYID", _web_id);
+                                rsWebQueryNew.Put("PATH", textBox_NameField.Text);
+                                if (ormVarType == OrmCs.OrmVarType.var_String)
+                                {
+                                    rsWebQueryNew.Put("STRVALUE", textBox_FromValue.Text);
+                                    rsWebQueryNew.Put("STRVALUETO", textBoxToValue.Text);
+                                }
+                                else if (ormVarType == OrmCs.OrmVarType.var_Int)
+                                {
+                                    rsWebQueryNew.Put("MIN", icsIntegerFrom.Value != IM.NullI ? icsIntegerFrom.Value : IM.NullI);
+                                    rsWebQueryNew.Put("MAX", icsIntegerTo.Value != IM.NullI ? icsIntegerTo.Value : IM.NullI);
+                                }
+                                else if ((ormVarType == OrmCs.OrmVarType.var_Flo) || (ormVarType == OrmCs.OrmVarType.var_Dou))
+                                {
+                                    rsWebQueryNew.Put("MIN", icsDoubleFrom.Value != IM.NullD ? icsDoubleFrom.Value : IM.NullD);
+                                    rsWebQueryNew.Put("MAX", icsDoubleTo.Value != IM.NullD ? icsDoubleTo.Value : IM.NullD);
+                                }
+                                else if (ormVarType == OrmCs.OrmVarType.var_Tim)
+                                {
+                                    rsWebQueryNew.Put("DATEVALUEMIN", icsDateTimeFrom.Value);
+                                    rsWebQueryNew.Put("DATEVALUEMAX", icsDateTimeTo.Value);
+                                }
+
+                                if (comboBox_MomentOfUse.Items.Count > 0) { if (comboBox_MomentOfUse.SelectedIndex != -1) rsWebQueryNew.Put("MOMENTOFUSE", comboBox_MomentOfUse.Text); }
+                                if (comboBox_TypeCondition.Items.Count > 0) { if (comboBox_TypeCondition.SelectedIndex != -1) rsWebQueryNew.Put("TYPECONDITION", comboBox_TypeCondition.Text); }
+                                if (comboBox_OperationCondition.Items.Count > 0) { if (comboBox_OperationCondition.SelectedIndex != -1) rsWebQueryNew.Put("OPERCONDITION", comboBox_OperationCondition.Text); }
+                                rsWebQueryNew.Put("DESCRCONDITION", textBox_DescriptionCondition.Text);
+                                rsWebQueryNew.Put("MESSAGENOTVALID", textBox_MessageNotValid.Text);
+                                rsWebQueryNew.Put("DEFAULTVALUE", textBox_DefValues.Text);
+                                rsWebQueryNew.Update();
                             }
-                            else if (ormVarType == OrmCs.OrmVarType.var_Int)
+                            else
                             {
-                                rsWebQueryNew.Put("MIN", icsIntegerFrom.Value != IM.NullI ? icsIntegerFrom.Value : IM.NullI);
-                                rsWebQueryNew.Put("MAX", icsIntegerTo.Value != IM.NullI ? icsIntegerTo.Value : IM.NullI);
+                                rsWebQueryNew.AddNew();
+                                int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
+                                rsWebQueryNew.Put("ID", idnew);
+                                rsWebQueryNew.Put("WEBQUERYID", _web_id);
+                                rsWebQueryNew.Put("PATH", textBox_NameField.Text);
+                                if (ormVarType == OrmCs.OrmVarType.var_String)
+                                {
+                                    rsWebQueryNew.Put("STRVALUE", textBox_FromValue.Text);
+                                    rsWebQueryNew.Put("STRVALUETO", textBoxToValue.Text);
+                                }
+                                else if (ormVarType == OrmCs.OrmVarType.var_Int)
+                                {
+                                    rsWebQueryNew.Put("MIN", icsIntegerFrom.Value != IM.NullI ? icsIntegerFrom.Value : IM.NullI);
+                                    rsWebQueryNew.Put("MAX", icsIntegerTo.Value != IM.NullI ? icsIntegerTo.Value : IM.NullI);
+                                }
+                                else if ((ormVarType == OrmCs.OrmVarType.var_Flo) || (ormVarType == OrmCs.OrmVarType.var_Dou))
+                                {
+                                    rsWebQueryNew.Put("MIN", icsDoubleFrom.Value != IM.NullD ? icsDoubleFrom.Value : IM.NullD);
+                                    rsWebQueryNew.Put("MAX", icsDoubleTo.Value != IM.NullD ? icsDoubleTo.Value : IM.NullD);
+                                }
+                                else if (ormVarType == OrmCs.OrmVarType.var_Tim)
+                                {
+                                    rsWebQueryNew.Put("DATEVALUEMIN", icsDateTimeFrom.Value);
+                                    rsWebQueryNew.Put("DATEVALUEMAX", icsDateTimeTo.Value);
+                                }
+
+                                if (comboBox_MomentOfUse.Items.Count > 0) { if (comboBox_MomentOfUse.SelectedIndex != -1) rsWebQueryNew.Put("MOMENTOFUSE", comboBox_MomentOfUse.Text); }
+                                if (comboBox_TypeCondition.Items.Count > 0) { if (comboBox_TypeCondition.SelectedIndex != -1) rsWebQueryNew.Put("TYPECONDITION", comboBox_TypeCondition.Text); }
+                                if (comboBox_OperationCondition.Items.Count > 0) { if (comboBox_OperationCondition.SelectedIndex != -1) rsWebQueryNew.Put("OPERCONDITION", comboBox_OperationCondition.Text); }
+                                rsWebQueryNew.Put("DESCRCONDITION", textBox_DescriptionCondition.Text);
+                                rsWebQueryNew.Put("MESSAGENOTVALID", textBox_MessageNotValid.Text);
+                                rsWebQueryNew.Put("DEFAULTVALUE", textBox_DefValues.Text);
+                                rsWebQueryNew.Update();
                             }
-                            else if ((ormVarType == OrmCs.OrmVarType.var_Flo) || (ormVarType == OrmCs.OrmVarType.var_Dou))
-                            {
-                                rsWebQueryNew.Put("MIN", icsDoubleFrom.Value != IM.NullD ? icsDoubleFrom.Value : IM.NullD);
-                                rsWebQueryNew.Put("MAX", icsDoubleTo.Value != IM.NullD ? icsDoubleTo.Value : IM.NullD);
-                            }
-                            else if (ormVarType == OrmCs.OrmVarType.var_Tim)
-                            {
-                                rsWebQueryNew.Put("DATEVALUEMIN", icsDateTimeFrom.Value);
-                                rsWebQueryNew.Put("DATEVALUEMAX", icsDateTimeTo.Value);
-                            }
-                         
-                            if (comboBox_MomentOfUse.Items.Count > 0) { if (comboBox_MomentOfUse.SelectedIndex != -1) rsWebQueryNew.Put("MOMENTOFUSE", comboBox_MomentOfUse.Text); }
-                            if (comboBox_TypeCondition.Items.Count > 0) { if (comboBox_TypeCondition.SelectedIndex != -1) rsWebQueryNew.Put("TYPECONDITION", comboBox_TypeCondition.Text); }
-                            if (comboBox_OperationCondition.Items.Count > 0) { if (comboBox_OperationCondition.SelectedIndex != -1) rsWebQueryNew.Put("OPERCONDITION", comboBox_OperationCondition.Text); }
-                            rsWebQueryNew.Put("DESCRCONDITION", textBox_DescriptionCondition.Text);
-                            rsWebQueryNew.Put("MESSAGENOTVALID", textBox_MessageNotValid.Text);
-                            rsWebQueryNew.Put("DEFAULTVALUE", textBox_DefValues.Text);
-                            rsWebQueryNew.Update();
+
                         }
 
                     }
+                    finally
+                    {
+                        if (rsWebQueryNew.IsOpen())
+                            rsWebQueryNew.Close();
+                        rsWebQueryNew.Destroy();
+                    }
+                    MessageBox.Show("Record created successfull!", "Warning!"); Close();
 
                 }
-                finally
-                {
-                    if (rsWebQueryNew.IsOpen())
-                        rsWebQueryNew.Close();
-                    rsWebQueryNew.Destroy();
-                }
-                MessageBox.Show("Record created successfull!", "Warning!"); Close();
-
+                else { MessageBox.Show("Record is already exists in table 'XWEBCONSTRAINT'", "Warning!"); Close(); }
             }
-            else { MessageBox.Show("Record is already exists in table 'XWEBCONSTRAINT'", "Warning!"); Close(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
        

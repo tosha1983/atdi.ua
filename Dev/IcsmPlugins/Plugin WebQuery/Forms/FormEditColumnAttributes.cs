@@ -87,96 +87,75 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         private void button_ok_Click(object sender, EventArgs e)
         {
             bool isDuplicate = false;
-            if (textBox_name.Text == "")
+            try
             {
-                MessageBox.Show("Please input column name!");
-                return;
-            }
-            byte[] zip = null;
-            string sql; ANetDb d;
-            OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + _web_id, out sql, out d);
-            ANetRs Anet_rs = d.NewRecordset();
-            Anet_rs.Open(sql);
-            if (!Anet_rs.IsEOF())
-                zip = Anet_rs.GetBinary(0);
-            Anet_rs.Destroy();
-            if (zip != null)
-            {
-                string cipherText = UTF8Encoding.UTF8.GetString(zip);
-                List<RecordPtrDB> Lod = ClassORM.GetLinkData(ClassORM.GetTableName(cipherText), textBox_name.Text);
-                if (Lod != null)
+                if (textBox_name.Text == "")
                 {
-                    if (Lod.Count > 0)
-                    { 
-                        if (Lod.Count == 1)
+                    MessageBox.Show("Please input column name!");
+                    return;
+                }
+                byte[] zip = null;
+                string sql; ANetDb d;
+                OrmCs.OrmSchema.Linker.PrepareExecute("SELECT QUERY FROM %XWEBQUERY WHERE ID=" + _web_id, out sql, out d);
+                ANetRs Anet_rs = d.NewRecordset();
+                Anet_rs.Open(sql);
+                if (!Anet_rs.IsEOF())
+                    zip = Anet_rs.GetBinary(0);
+                Anet_rs.Destroy();
+                if (zip != null)
+                {
+                    string cipherText = UTF8Encoding.UTF8.GetString(zip);
+                    List<RecordPtrDB> Lod = ClassORM.GetLinkData(ClassORM.GetTableName(cipherText), textBox_name.Text);
+                    if (Lod != null)
+                    {
+                        if (Lod.Count > 0)
                         {
-                            Lod[Lod.Count - 1].FieldJoinTo = Lod[Lod.Count - 1].LinkField;
-                        }
-                        if (ClassORM.CheckField(Lod[Lod.Count-1].FieldJoinTo, Lod[Lod.Count - 1].NameTableTo))
-                        {
-                            string[] txt = textBox_name.Text.Split(new char[] { '.', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (txt != null)
+                            if (Lod.Count == 1)
                             {
-                                if (txt.Length>0)
+                                Lod[Lod.Count - 1].FieldJoinTo = Lod[Lod.Count - 1].LinkField;
+                            }
+                            if (ClassORM.CheckField(Lod[Lod.Count - 1].FieldJoinTo, Lod[Lod.Count - 1].NameTableTo))
+                            {
+                                string[] txt = textBox_name.Text.Split(new char[] { '.', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (txt != null)
                                 {
-                                    if (Lod[Lod.Count - 1].FieldJoinTo != txt[txt.Length-1])
+                                    if (txt.Length > 0)
                                     {
-                                        MessageBox.Show("Column name is wrong!");
-                                        return;
+                                        if (Lod[Lod.Count - 1].FieldJoinTo != txt[txt.Length - 1])
+                                        {
+                                            MessageBox.Show("Column name is wrong!");
+                                            return;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Column name is wrong!");
-                            return;
+                            else
+                            {
+                                MessageBox.Show("Column name is wrong!");
+                                return;
+                            }
                         }
                     }
                 }
-            }
 
 
-            if (!isDuplicate)
-            {
-
-                var rsWebQueryNew = new IMRecordset(ICSMTbl.WebQueryAtttributes, IMRecordset.Mode.ReadWrite);
-                rsWebQueryNew.Select("ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
-                if (_id != IM.NullI)
+                if (!isDuplicate)
                 {
-                    if (!IsNew)
-                    {
-                        rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, _id);
-                    }
-                }
 
-                try
-                {
-                    rsWebQueryNew.Open();
-                    if (rsWebQueryNew.IsEOF())
-                    {
-                        rsWebQueryNew.AddNew();
-                        int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
-                        rsWebQueryNew.Put("ID", idnew);
-                        rsWebQueryNew.Put("WEBQUERYID", _web_id);
-                        rsWebQueryNew.Put("PATH", textBox_name.Text);
-                        if (ReadOnly.Checked) { rsWebQueryNew.Put("READONLY", 1); } else { rsWebQueryNew.Put("READONLY", 0); }
-                        if (NotChangeableByAdd.Checked) { rsWebQueryNew.Put("NOTCHANGEADD", 1); } else { rsWebQueryNew.Put("NOTCHANGEADD", 0); }
-                        if (NotChangeableByEdit.Checked) { rsWebQueryNew.Put("NOTCHANGEEDIT", 1); } else { rsWebQueryNew.Put("NOTCHANGEEDIT", 0); }
-                        rsWebQueryNew.Update();
-                    }
-                    else
+                    var rsWebQueryNew = new IMRecordset(ICSMTbl.WebQueryAtttributes, IMRecordset.Mode.ReadWrite);
+                    rsWebQueryNew.Select("ID,WEBQUERYID,PATH,READONLY,NOTCHANGEADD,NOTCHANGEEDIT");
+                    if (_id != IM.NullI)
                     {
                         if (!IsNew)
                         {
-                            rsWebQueryNew.Edit();
-                            rsWebQueryNew.Put("PATH", textBox_name.Text);
-                            if (ReadOnly.Checked) { rsWebQueryNew.Put("READONLY", 1); } else { rsWebQueryNew.Put("READONLY", 0); }
-                            if (NotChangeableByAdd.Checked) { rsWebQueryNew.Put("NOTCHANGEADD", 1); } else { rsWebQueryNew.Put("NOTCHANGEADD", 0); }
-                            if (NotChangeableByEdit.Checked) { rsWebQueryNew.Put("NOTCHANGEEDIT", 1); } else { rsWebQueryNew.Put("NOTCHANGEEDIT", 0); }
-                            rsWebQueryNew.Update();
+                            rsWebQueryNew.SetWhere("ID", IMRecordset.Operation.Eq, _id);
                         }
-                        else
+                    }
+
+                    try
+                    {
+                        rsWebQueryNew.Open();
+                        if (rsWebQueryNew.IsEOF())
                         {
                             rsWebQueryNew.AddNew();
                             int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
@@ -188,21 +167,48 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                             if (NotChangeableByEdit.Checked) { rsWebQueryNew.Put("NOTCHANGEEDIT", 1); } else { rsWebQueryNew.Put("NOTCHANGEEDIT", 0); }
                             rsWebQueryNew.Update();
                         }
+                        else
+                        {
+                            if (!IsNew)
+                            {
+                                rsWebQueryNew.Edit();
+                                rsWebQueryNew.Put("PATH", textBox_name.Text);
+                                if (ReadOnly.Checked) { rsWebQueryNew.Put("READONLY", 1); } else { rsWebQueryNew.Put("READONLY", 0); }
+                                if (NotChangeableByAdd.Checked) { rsWebQueryNew.Put("NOTCHANGEADD", 1); } else { rsWebQueryNew.Put("NOTCHANGEADD", 0); }
+                                if (NotChangeableByEdit.Checked) { rsWebQueryNew.Put("NOTCHANGEEDIT", 1); } else { rsWebQueryNew.Put("NOTCHANGEEDIT", 0); }
+                                rsWebQueryNew.Update();
+                            }
+                            else
+                            {
+                                rsWebQueryNew.AddNew();
+                                int idnew = IM.AllocID(ICSMTbl.WebConstraint, 1, -1);
+                                rsWebQueryNew.Put("ID", idnew);
+                                rsWebQueryNew.Put("WEBQUERYID", _web_id);
+                                rsWebQueryNew.Put("PATH", textBox_name.Text);
+                                if (ReadOnly.Checked) { rsWebQueryNew.Put("READONLY", 1); } else { rsWebQueryNew.Put("READONLY", 0); }
+                                if (NotChangeableByAdd.Checked) { rsWebQueryNew.Put("NOTCHANGEADD", 1); } else { rsWebQueryNew.Put("NOTCHANGEADD", 0); }
+                                if (NotChangeableByEdit.Checked) { rsWebQueryNew.Put("NOTCHANGEEDIT", 1); } else { rsWebQueryNew.Put("NOTCHANGEEDIT", 0); }
+                                rsWebQueryNew.Update();
+                            }
+
+                        }
 
                     }
+                    finally
+                    {
+                        if (rsWebQueryNew.IsOpen())
+                            rsWebQueryNew.Close();
+                        rsWebQueryNew.Destroy();
+                    }
+                    MessageBox.Show("Record created successfull!", "Warning!"); Close();
 
                 }
-                finally
-                {
-                    if (rsWebQueryNew.IsOpen())
-                        rsWebQueryNew.Close();
-                    rsWebQueryNew.Destroy();
-                }
-                MessageBox.Show("Record created successfull!", "Warning!"); Close();
-
+                else { MessageBox.Show("Record is already exists in table 'XWEBCONSTRAINT'", "Warning!"); Close(); }
             }
-            else { MessageBox.Show("Record is already exists in table 'XWEBCONSTRAINT'", "Warning!"); Close(); }
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button_cancel_Click(object sender, EventArgs e)

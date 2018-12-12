@@ -647,6 +647,22 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
+        public void BeginTransaction()
+        {
+            this._dataEngine.BeginTransaction();
+        }
+
+        public void CommitTransaction()
+        {
+            this._dataEngine.CommitTransaction();
+        }
+
+        public void RollbackTransaction()
+        {
+            this._dataEngine.RollbackTransaction();
+        }
+
+
         public int Execute(IQueryStatement statement)
         {
             if (statement == null)
@@ -674,6 +690,36 @@ namespace Atdi.LegacyServices.Icsm
             }
 
             var recordsAffected = this._dataEngine.Execute(command);
+            return recordsAffected;
+        }
+
+        public int ExecuteTransaction(IQueryStatement statement)
+        {
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
+            var command = new EngineCommand();
+            if (statement is QueryInsertStatement queryInsertStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+            }
+            else if (statement is QueryUpdateStatement queryUpdateStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+            }
+            else if (statement is QueryDeleteStatement queryDeleteStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+            }
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            var recordsAffected = this._dataEngine.ExecuteTransaction(command);
             return recordsAffected;
         }
 

@@ -9,26 +9,51 @@ using System.Data;
 using System.Data.SqlClient;
 using Atdi.DataModels;
 using System.Runtime.CompilerServices;
+using System.Data.Common;
 
 namespace Atdi.CoreServices.DataLayer
 {
     internal sealed class SqlServerCommandExecuter : LoggedObject, IDisposable
     {
+        private SqlConnection _connectionForTransaction;
         private SqlConnection _connection;
         private SqlCommand _command;
 
-        public SqlServerCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger) 
+        public SqlServerCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger, SqlConnection connectionForTransaction = null) 
             : base(logger)
         {
             this._connection = new SqlConnection(_engineConfig.ConnectionString);
             this._command = new SqlCommand
             {
-                Connection = this._connection,
+                Connection = connectionForTransaction == null ? this._connection : connectionForTransaction,
                 CommandType = CommandType.Text,
                 CommandText = engineCommand.Text
             };
 
             this.PrepareCommandParameters(engineCommand.Parameters.Values);
+        }
+
+        public SqlServerCommandExecuter(IDataEngineConfig _engineConfig, ILogger logger)
+           : base(logger)
+        {
+            this._connectionForTransaction = new SqlConnection(_engineConfig.ConnectionString);
+            if (this._connectionForTransaction.State == ConnectionState.Open)
+            {
+                return;
+            }
+            try
+            {
+                using (var trace = this.Logger.StartTrace(Contexts.SqlServerEngine, Categories.OpeningConnection, this))
+                {
+                    trace.SetData("Connection string", this._connectionForTransaction.ConnectionString);
+                    this._connectionForTransaction.Open();
+                }
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.SqlServerEngine, Categories.DataProcessing, e, this);
+                throw;
+            }
         }
 
         private void PrepareCommandParameters(ICollection<EngineCommandParameter> parameters)
@@ -94,6 +119,20 @@ namespace Atdi.CoreServices.DataLayer
                     return SqlDbType.VarBinary;
                 default:
                     throw new InvalidCastException();
+            }
+        }
+
+        public SqlConnection GetConnection()
+        {
+            return this._connectionForTransaction;
+        }
+
+
+        public void SetTransactionToDbCommand(SqlTransaction dbTransaction)
+        {
+            if (dbTransaction != null)
+            {
+                this._command.Transaction = dbTransaction;
             }
         }
 

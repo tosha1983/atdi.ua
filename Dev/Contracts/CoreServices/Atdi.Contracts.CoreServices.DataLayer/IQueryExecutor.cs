@@ -19,6 +19,14 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int Execute(IQueryStatement statement);
 
+        int ExecuteTransaction(IQueryStatement statement);
+
+        void BeginTransaction();
+
+        void CommitTransaction();
+
+        void RollbackTransaction();
+
     }
 
     public interface IDataReader

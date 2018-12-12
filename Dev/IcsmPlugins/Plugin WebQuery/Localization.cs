@@ -16,7 +16,6 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
       }
 
       private Hashtable HashTransl;
-      private bool tryLoadLanguage;
       private string folderPath;
       private string filePrefix;
       //===================================================
@@ -35,7 +34,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
          if(path == "") folderPath = ".";
          else           folderPath = path;
          filePrefix = prefixFile;
-         tryLoadLanguage = false;
+         bool tryLoadLanguage = false;
          listLanguage = new List<string>();
          if (language != "")
             listLanguage.Add(language);

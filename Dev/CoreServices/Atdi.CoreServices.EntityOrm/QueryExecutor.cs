@@ -738,7 +738,25 @@ namespace Atdi.CoreServices.EntityOrm
             return recordsAffected;
         }
 
+        public int ExecuteTransaction(IQueryStatement statement)
+        {
+            throw new NotImplementedException();
+        }
 
+        public void BeginTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CommitTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RollbackTransaction()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

@@ -49,5 +49,7 @@ namespace Atdi.DataModels.WebQuery
 
         [DataMember]
         public int PriorityOrder { get; set; }
+
+
     }
 }

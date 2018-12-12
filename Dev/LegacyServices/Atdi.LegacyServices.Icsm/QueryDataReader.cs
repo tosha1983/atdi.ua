@@ -366,6 +366,7 @@ namespace Atdi.LegacyServices.Icsm
         {
             if (fieldDbType == typeof(string))
             {
+                //return _dataReader.GetValue(ordinal)!=null ? _dataReader.GetValue(ordinal).ToString() : null;
                 return _dataReader.GetString(ordinal);
             }
             if (fieldDbType == typeof(double))

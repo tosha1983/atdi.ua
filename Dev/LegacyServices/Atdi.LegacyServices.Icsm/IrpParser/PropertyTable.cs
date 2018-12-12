@@ -17,5 +17,9 @@ namespace Atdi.LegacyServices.Icsm
         public string Name;
         public Orm.VarType TypeValue;
         public int Precision;
+        public string DefaultValueFrom;
+        public string DefaultValueTo;
+        public int PrecisionFieldJoinFrom;
+        public int PrecisionFieldJoinTo;
     }
 }
