@@ -13,10 +13,53 @@ namespace Atdi.Modules.LicenseGenerator
     {
         static void Main(string[] args)
         {
-            ForTesting();
+            var path = "C:\\Projects\\Licensing\\WebQuery\\AppServer";
+            WebQueryAppServer_ForTesting(path);
+            path = "C:\\Projects\\Licensing\\WebQuery\\WebPortal";
+            WebQueryWebPortal_ForTesting(path);
         }
 
-        static void ForTesting()
+        static void WebQueryAppServer_ForTesting(string path)
+        {
+            var ownerId = "OID-BD12-A00-N00";
+            var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+            var company = "ТОВ 'Лабораторія інформаційних систем'";
+            var ownerKey = "BD12-A00";
+            var startDate = new DateTime(2018, 12, 5);
+            var stopDate = new DateTime(2020, 1, 1);
+            var productName = "WebQuery Application Server";
+            var licenseType = "ServerLicense";
+
+            var srvLicenseIndex = GetUniqueIntegerKey(3);
+            var instanceIndex = GetUniqueIntegerKey(4);
+
+            var licPrefix = "LIC-WQAS";
+            var instancePrefix = "APPSRV-WQ";
+
+            MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+        }
+
+        static void WebQueryWebPortal_ForTesting(string path)
+        {
+            var ownerId = "OID-BD12-A00-N00";
+            var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+            var company = "ТОВ 'Лабораторія інформаційних систем'";
+            var ownerKey = "BD12-A00";
+            var startDate = new DateTime(2018, 12, 5);
+            var stopDate = new DateTime(2020, 1, 1);
+            var productName = "WebQuery Web Portal";
+            var licenseType = "ServerLicense";
+
+            var srvLicenseIndex = GetUniqueIntegerKey(3);
+            var instanceIndex = GetUniqueIntegerKey(4);
+
+            var licPrefix = "LIC-WQWP";
+            var instancePrefix = "WBP-WQ";
+
+            MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+        }
+
+        static void ICSControl_ForTesting(string path)
         {
             var ownerId = "OID-BD12-A00-N00";
             var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
@@ -30,16 +73,20 @@ namespace Atdi.Modules.LicenseGenerator
             {
                 var licenseIndex = GetUniqueIntegerKey(3);
                 var deviceIndex = GetUniqueIntegerKey(4);
-                MakeLicense("DeviceLicense", "ICS Control Device", licenseIndex, deviceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+                var licPrefix = "LIC-D";
+                var instancePrefix = "SENSOR-D";
+                MakeLicense(path, licPrefix, instancePrefix, "DeviceLicense", "ICS Control Device", licenseIndex, deviceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
             }
 
             var srvLicenseIndex = GetUniqueIntegerKey(3);
             var instanceIndex = GetUniqueIntegerKey(4);
+            var srvLicPrefix = "LIC-S";
+            var srvInstancePrefix = "SDRNSV-S";
 
-            MakeLicense("ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+            MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
         }
 
-        static void ForUDCR()
+        static void ICSControl_ForUDCR(string path)
         {
             var ownerId = "OID-BD13-G65-N00";
             var ownerName = "Державне підприємство «Український державний центр радіочастот»";
@@ -53,13 +100,17 @@ namespace Atdi.Modules.LicenseGenerator
             {
                 var licenseIndex = GetUniqueIntegerKey(3);
                 var deviceIndex = GetUniqueIntegerKey(4);
-                MakeLicense("DeviceLicense", "ICS Control Device", licenseIndex, deviceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+                var licPrefix = "LIC-D";
+                var instancePrefix = "SENSOR-D";
+                MakeLicense(path, licPrefix, instancePrefix, "DeviceLicense", "ICS Control Device", licenseIndex, deviceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
             }
 
             var srvLicenseIndex = GetUniqueIntegerKey(3);
             var instanceIndex = GetUniqueIntegerKey(4);
+            var srvLicPrefix = "LIC-S";
+            var srvInstancePrefix = "SDRNSV-S";
 
-            MakeLicense("ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+            MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
         }
 
         public static string GetProductKey(string productName, string licenseType, string instance, string ownerId, string number)
@@ -133,7 +184,7 @@ namespace Atdi.Modules.LicenseGenerator
 
         
 
-        private static string MakeLicense(string licenseType, string productName, string licenseIndex, string instanceIndex, string ownerName, string ownerId, string ownerKey, string company, DateTime startDate, DateTime stopDate)
+        private static string MakeLicense(string path, string licPrefix, string instancePrefix, string licenseType, string productName, string licenseIndex, string instanceIndex, string ownerName, string ownerId, string ownerKey, string company, DateTime startDate, DateTime stopDate)
         {
             var productKey = string.Empty;
 
@@ -158,13 +209,13 @@ namespace Atdi.Modules.LicenseGenerator
 
             if ("DeviceLicense".Equals(licenseType))
             {
-                l.LicenseNumber = $"LIC-D{ownerKey}-{licenseIndex}";
-                l.Instance = $"SENSOR-D{ownerKey}-{instanceIndex}";
+                l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+                l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
             }
             else if ("ServerLicense".Equals(licenseType))
             {
-                l.LicenseNumber = $"LIC-S{ownerKey}-{licenseIndex}";
-                l.Instance = $"SDRNSV-S{ownerKey}-{instanceIndex}";
+                l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+                l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
             }
 
             productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);
@@ -172,7 +223,7 @@ namespace Atdi.Modules.LicenseGenerator
 
             var result = c.Create(new LicenseData[] { l });
 
-            var directory = $"C:\\Temp\\{ownerKey}\\{licenseType}";
+            var directory = $"{path}\\{ownerKey}\\{licenseType}";
             Directory.CreateDirectory(directory);
 
             var fileName = $"{directory}\\{l.LicenseNumber}.{l.Instance}.lic";

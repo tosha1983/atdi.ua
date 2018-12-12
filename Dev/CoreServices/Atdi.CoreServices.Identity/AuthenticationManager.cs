@@ -11,7 +11,6 @@ using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.CoreServices.Identity.Models;
 using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
-using Atdi.Contracts.CoreServices.Netkey;
 using System.Globalization;
 
 
@@ -23,14 +22,12 @@ namespace Atdi.CoreServices.Identity
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly IUserTokenProvider _tokenProvider;
         private readonly IQueryExecutor _queryExecutor;
-        private readonly INetKeyValidator _netKey;
 
-        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, INetKeyValidator netKey, ILogger logger) : base(logger)
+        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, ILogger logger) : base(logger)
         {
             this._dataLayer = dataLayer;
             this._tokenProvider = tokenProvider;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
-            this._netKey = netKey;
         }
 
         private UserIdentity CreateUserIdentity(IcsmUser user)

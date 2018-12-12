@@ -18,5 +18,11 @@ namespace Atdi.WebPortal.WebQuery
         public string CompanySite { get; set; }
 
         public string CompanyEmail { get; set; }
+
+        public string LicenseFileName { get; set; }
+
+        public string LicenseOwnerId { get; set; }
+
+        public string LicenseProductKey { get; set; }
     }
 }
