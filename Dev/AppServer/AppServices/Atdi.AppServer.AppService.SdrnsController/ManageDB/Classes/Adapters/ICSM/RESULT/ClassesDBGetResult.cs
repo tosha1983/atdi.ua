@@ -2393,7 +2393,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     measResGeneral.Close();
                                                     measResGeneral.Dispose();
 
-                                                   
+                                                   /*
                                                     if (IDResGeneral > 0)
                                                     {
                                                         if (station.GeneralResult.MaskBW != null)
@@ -2437,7 +2437,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         }
 
                                                     }
-                                                   
+                                                   */
 
                                                     if (station.LevelMeasurements != null)
                                                     {

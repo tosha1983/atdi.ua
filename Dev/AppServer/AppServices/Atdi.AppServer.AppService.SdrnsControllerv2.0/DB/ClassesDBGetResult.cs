@@ -186,7 +186,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                     measResGeneral.Dispose();
 
 
-
+                                                    /*
                                                     if (IDResGeneral > 0)
                                                     {
                                                         if (station.GeneralResult.MaskBW != null)
@@ -229,7 +229,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                             }
                                                         }
                                                     }
-
+                                                    */
 
 
                                                     if (IDResGeneral > 0)

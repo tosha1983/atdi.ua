@@ -241,7 +241,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             {
                                 ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
                             }
-                            if (ID > 0)
+                            if ((ID > 0) && (ID != Constants.NullI))
                             {
                                 Atdi.DataModels.Sdrns.Device.DeviceCommand commandResSendMeasResults = new DeviceCommand();
                                 commandResSendMeasResults.Command = "SendMeasResultsConfirmed";
