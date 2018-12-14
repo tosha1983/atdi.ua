@@ -14,9 +14,18 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int Execute(EngineCommand command);
 
+        int ExecuteTransaction(EngineCommand command);
+
         object ExecuteScalar(EngineCommand command);
 
         // To Do: Have to do it
         IEngineSyntax Syntax { get; }
+
+        void BeginTransaction();
+
+        void CommitTransaction();
+
+        void RollbackTransaction();
+        
     }
 }

@@ -11,6 +11,10 @@ namespace Atdi.AppServices.WebQuery
     static class Contexts
     {
         public static readonly EventContext WebQueryAppServices = "WebQuery AppServices";
+        public static readonly EventContext ErrorUpdateOperation = "Error occurred while updating data";
+        public static readonly EventContext ErrorInsertOperation = "Error occurred while insert data";
+        public static readonly EventContext ErrorDeleteOperation = "Error occurred while delete data";
+
     }
 
     static class Categories

@@ -16,10 +16,11 @@ namespace Atdi.CoreServices.DataLayer
 {
     internal sealed class OracleCommandExecuter : LoggedObject, IDisposable
     {
+        private DbConnection _connectionForTransaction;
         private DbConnection _connection;
         private DbCommand _command;
 
-        public OracleCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger) 
+        public OracleCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger, DbConnection connectionForTransaction = null) 
             : base(logger)
         {
             DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
@@ -27,11 +28,21 @@ namespace Atdi.CoreServices.DataLayer
             this._connection.ConnectionString = _engineConfig.ConnectionString;
             this._connection.Open();
             this._command = this._connection.CreateCommand();
-            this._command.Connection = this._connection;
+            this._command.Connection = connectionForTransaction == null ? this._connection : connectionForTransaction;
             this._command.CommandText = engineCommand.Text;
             this._command.CommandType = CommandType.Text;
             this.PrepareCommandParameters(engineCommand.Parameters.Values);
         }
+
+        public OracleCommandExecuter(IDataEngineConfig _engineConfig, ILogger logger)
+           : base(logger)
+        {
+            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+            this._connectionForTransaction = _dbProviderFactory.CreateConnection();
+            this._connectionForTransaction.ConnectionString = _engineConfig.ConnectionString;
+            this._connectionForTransaction.Open();
+        }
+
 
         private void PrepareCommandParameters(ICollection<EngineCommandParameter> parameters)
         {
@@ -94,6 +105,22 @@ namespace Atdi.CoreServices.DataLayer
                     throw new InvalidCastException();
             }
         }
+
+        public DbConnection GetConnection()
+        {
+            return this._connectionForTransaction;
+        }
+
+
+        public void SetTransactionToDbCommand(DbTransaction dbTransaction)
+        {
+            if (dbTransaction != null)
+            {
+                this._command.Transaction = dbTransaction;
+            }
+        }
+
+
 
         public void Dispose()
         {

@@ -56,6 +56,7 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.groupBoxEditQuery = new System.Windows.Forms.GroupBox();
             this.panelSaveChangeQuery = new System.Windows.Forms.Panel();
+            this.BtnOrders = new System.Windows.Forms.Button();
             this.ColumnAttr = new System.Windows.Forms.Button();
             this.button_Constraints = new System.Windows.Forms.Button();
             this.ButtonSaveChangeQuery = new System.Windows.Forms.Button();
@@ -63,7 +64,6 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.BtnOrders = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -384,8 +384,22 @@
             this.panelSaveChangeQuery.Size = new System.Drawing.Size(548, 47);
             this.panelSaveChangeQuery.TabIndex = 6;
             // 
+            // BtnOrders
+            // 
+            this.BtnOrders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnOrders.Location = new System.Drawing.Point(309, 13);
+            this.BtnOrders.Name = "BtnOrders";
+            this.BtnOrders.Size = new System.Drawing.Size(107, 23);
+            this.BtnOrders.TabIndex = 12;
+            this.BtnOrders.Text = "Orders";
+            this.BtnOrders.UseVisualStyleBackColor = true;
+            this.BtnOrders.Click += new System.EventHandler(this.BtnOrders_Click);
+            // 
             // ColumnAttr
             // 
+            this.ColumnAttr.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ColumnAttr.Location = new System.Drawing.Point(17, 13);
             this.ColumnAttr.Name = "ColumnAttr";
             this.ColumnAttr.Size = new System.Drawing.Size(132, 23);
@@ -458,16 +472,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(1083, 768);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 3;
-            // 
-            // BtnOrders
-            // 
-            this.BtnOrders.Location = new System.Drawing.Point(309, 13);
-            this.BtnOrders.Name = "BtnOrders";
-            this.BtnOrders.Size = new System.Drawing.Size(107, 23);
-            this.BtnOrders.TabIndex = 12;
-            this.BtnOrders.Text = "Orders";
-            this.BtnOrders.UseVisualStyleBackColor = true;
-            this.BtnOrders.Click += new System.EventHandler(this.BtnOrders_Click);
             // 
             // AdminFormWebQuery
             // 

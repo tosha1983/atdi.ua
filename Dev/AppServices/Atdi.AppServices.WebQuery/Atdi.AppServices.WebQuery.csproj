@@ -57,6 +57,9 @@
     <Compile Include="Repository\DTO\XWEBQUERY.cs" />
     <Compile Include="Repository\Caches\GroupDescriptorsCache.cs" />
     <Compile Include="Repository\Caches\QueryDescriptorsCache.cs" />
+    <Compile Include="Repository\DescriptorColumns.cs" />
+    <Compile Include="Repository\LinkValue.cs" />
+    <Compile Include="Repository\LinkColumn.cs" />
     <Compile Include="Repository\QueryTokenDescriptor.cs" />
     <Compile Include="Repository\GroupDescriptor.cs" />
     <Compile Include="Repository\QueriesRepository.cs" />

@@ -67,7 +67,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
         {
             UpdateSchema.RegisterSchema(s);
             string appFolder = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-            string err;
+            //string err;
             //if (!OrmCs.OrmSchema.ParseSchema(appFolder, "Atdi.Icsm.Plugins.WebQueryExtended", "XICSM_Atdi.Icsm.Plugins.WebQueryExtended.dll", out err)) MessageBox.Show("Could not load 'XICSM_Atdi.Icsm.Plugins.WebQueryExtended.Schema' :" + err);
 
         }
@@ -81,10 +81,9 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
         public List<IMQueryMenuNode> OnGetQueryMenu(String tableName, int nbSelMin)
         {
             List<IMQueryMenuNode> menuList = new List<IMQueryMenuNode>();
-            switch (tableName)
-            {
-               
-            }
+            //switch (tableName)
+            //{
+            //}
             return menuList;
         }
       
