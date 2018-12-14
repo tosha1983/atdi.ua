@@ -13,18 +13,103 @@ namespace Atdi.Modules.LicenseGenerator
     {
         static void Main(string[] args)
         {
-            var path = "C:\\Projects\\Licensing\\WebQuery\\AppServer";
-            WebQueryAppServer_ForTesting(path);
-            path = "C:\\Projects\\Licensing\\WebQuery\\WebPortal";
-            WebQueryWebPortal_ForTesting(path);
+            var path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer";
+            WebQueryAppServer_ForUDCR(path);
+            path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal";
+            WebQueryWebPortal_ForUDCR(path);
+        }
+
+        static void WebQueryAppServer_ForUDCR(string path)
+        {
+            var ownerKey = "BD13-G65";
+            var ownerId = "OID-BD13-G65-N00";
+            var ownerName = "Державне підприємство «Український державний центр радіочастот»";
+            var company = "ТОВ 'Лабораторія інформаційних систем'";
+
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2020, 1, 1);
+            var productName = "WebQuery Application Server";
+            var licenseType = "ServerLicense";
+
+            var srvLicenseIndex = GetUniqueIntegerKey(3);
+            var instanceIndex = GetUniqueIntegerKey(4);
+
+            var licPrefix = "LIC-WQAS";
+            var instancePrefix = "APPSRV-WQ";
+
+            MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+        }
+
+        static void WebQueryWebPortal_ForUDCR(string path)
+        {
+            var ownerKey = "BD13-G65";
+            var ownerId = "OID-BD13-G65-N00";
+            var ownerName = "Державне підприємство «Український державний центр радіочастот»";
+            var company = "ТОВ 'Лабораторія інформаційних систем'";
+
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2020, 1, 1);
+            var productName = "WebQuery Web Portal";
+            var licenseType = "ServerLicense";
+
+            var srvLicenseIndex = GetUniqueIntegerKey(3);
+            var instanceIndex = GetUniqueIntegerKey(4);
+
+            var licPrefix = "LIC-WQWP";
+            var instancePrefix = "WBP-WQ";
+
+            MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+        }
+
+        static void WebQueryAppServer_ForBosny(string path)
+        {
+            var ownerKey = "CA10-B00";
+            var ownerId = "OID-CA10-B00-N00";
+            var ownerName = "Regulatorna agencija za komunikacije";
+            var company = "ATDI Ukraine";
+            
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2020, 1, 1);
+            var productName = "WebQuery Application Server";
+            var licenseType = "ServerLicense";
+
+            var srvLicenseIndex = GetUniqueIntegerKey(3);
+            var instanceIndex = GetUniqueIntegerKey(4);
+
+            var licPrefix = "LIC-WQAS";
+            var instancePrefix = "APPSRV-WQ";
+
+            MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+        }
+
+        static void WebQueryWebPortal_ForBosny(string path)
+        {
+            var ownerKey = "CA10-B00";
+            var ownerId = "OID-CA10-B00-N00";
+            var ownerName = "Regulatorna agencija za komunikacije";
+            var company = "ATDI Ukraine";
+            
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2020, 1, 1);
+            var productName = "WebQuery Web Portal";
+            var licenseType = "ServerLicense";
+
+            var srvLicenseIndex = GetUniqueIntegerKey(3);
+            var instanceIndex = GetUniqueIntegerKey(4);
+
+            var licPrefix = "LIC-WQWP";
+            var instancePrefix = "WBP-WQ";
+
+            MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
         }
 
         static void WebQueryAppServer_ForTesting(string path)
         {
+            var ownerKey = "BD12-A00";
             var ownerId = "OID-BD12-A00-N00";
             var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
             var company = "ТОВ 'Лабораторія інформаційних систем'";
-            var ownerKey = "BD12-A00";
+            
             var startDate = new DateTime(2018, 12, 5);
             var stopDate = new DateTime(2020, 1, 1);
             var productName = "WebQuery Application Server";
