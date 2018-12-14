@@ -56,7 +56,7 @@ namespace Atdi.Test.RabbitMQ
 
         static void MakeMessages()
         {
-            var body = new byte[1024 * 1024 * 50];
+            var body = new byte[1024 * 1024 * 25];
             for (int i = 0; i < 20; i++)
             {
                 var msg = new DeliveryMessage
