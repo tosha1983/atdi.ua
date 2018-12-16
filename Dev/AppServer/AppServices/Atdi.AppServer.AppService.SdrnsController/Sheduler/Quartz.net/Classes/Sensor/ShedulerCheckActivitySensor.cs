@@ -6,6 +6,7 @@ using Atdi.AppServer;
 using System.Collections.Generic;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
+
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
     public class ShedulerCheckActivitySensor : InterfaceSheduler, IDisposable
