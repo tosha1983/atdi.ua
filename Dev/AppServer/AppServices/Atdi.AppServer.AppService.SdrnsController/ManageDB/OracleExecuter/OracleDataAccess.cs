@@ -60,13 +60,10 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSucess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
-                    {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
-                    }
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
                 }
                 System.Console.WriteLine(e.ToString());
             }
@@ -102,9 +99,17 @@ namespace Atdi.Oracle.DataAccess
             int? ID = null;
             System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
-            try
-            {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                try
+                {
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+
                     if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -152,19 +157,20 @@ namespace Atdi.Oracle.DataAccess
                             }
                         }
                     }
-            }
-            catch (Exception e)
-            {
-                    if (e is OracleException)
+                }
+                catch (Exception e)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                           ID = InsertRecord(OraParametr, TableName, dbConnection, dbTransaction);
                         }
                     }
-                    System.Console.WriteLine("Neither record was written to database: "+e.ToString());
-            }
+                    System.Console.WriteLine("Neither record was written to database: " + e.ToString());
+                }
             });
             tsk.Start();
             tsk.Join();
@@ -184,7 +190,15 @@ namespace Atdi.Oracle.DataAccess
             {
                 try
                 {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+
                     if (((dbConnection!=null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -210,12 +224,13 @@ namespace Atdi.Oracle.DataAccess
                 }
                 catch (Exception e)
                 {
-                    if (e is OracleException)
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            ID_VALUE = UpdateRecord(OraParametr, TableName, ID, dbConnection, dbTransaction);
                         }
                     }
                     System.Console.WriteLine(e.ToString());
@@ -241,7 +256,15 @@ namespace Atdi.Oracle.DataAccess
             {
                 try
                 {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+
                     if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -266,12 +289,13 @@ namespace Atdi.Oracle.DataAccess
                 }
                 catch (Exception e)
                 {
-                    if (e is OracleException)
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            isSuccess = UpdateRecord(OraParametr, TableName, sql, dbConnection, dbTransaction);
                         }
                     }
                     System.Console.WriteLine(e.ToString());
@@ -292,7 +316,16 @@ namespace Atdi.Oracle.DataAccess
             bool isSuccess = false;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -305,12 +338,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return DeleteRecord(TableName, ID, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -327,7 +361,15 @@ namespace Atdi.Oracle.DataAccess
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -350,12 +392,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetMaxId(TableName);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -368,7 +411,15 @@ namespace Atdi.Oracle.DataAccess
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -391,12 +442,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetMaxId(TableName, NameField);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -409,7 +461,15 @@ namespace Atdi.Oracle.DataAccess
             object value = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -420,12 +480,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValueFromField(FieldName, TableName,  ID);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -438,7 +499,15 @@ namespace Atdi.Oracle.DataAccess
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -461,12 +530,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetNextId(sequenceName);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -486,7 +556,15 @@ namespace Atdi.Oracle.DataAccess
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -514,12 +592,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValues(Columns, TableName, ID, OrderBy);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -533,7 +612,15 @@ namespace Atdi.Oracle.DataAccess
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -544,12 +631,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValuesSql(sql);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -570,7 +658,15 @@ namespace Atdi.Oracle.DataAccess
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -612,12 +708,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValues(Columns, TableName, sql, OrderBy);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -641,7 +738,15 @@ namespace Atdi.Oracle.DataAccess
             string allSql = "";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -706,12 +811,13 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, Cnt, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -729,7 +835,15 @@ namespace Atdi.Oracle.DataAccess
             string allSql = "";//"INSERT ALL ";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -807,12 +921,13 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, Cnt1, OraParametr_Level2,  TableName_Level2,  Cnt2,  oracleParameterRefId,  dbConnection,  dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -834,7 +949,15 @@ namespace Atdi.Oracle.DataAccess
             string allSql = "INSERT ALL ";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -918,12 +1041,13 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, OraParametr_Level2_Const, OraParametr_Level2_records, TableName_Level2,  dbConnection,  dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -945,7 +1069,15 @@ namespace Atdi.Oracle.DataAccess
             string allSql = "INSERT ALL ";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -1074,12 +1206,13 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, OraParametr_Level2_Const, OraParametr_Level2_records,  TableName_Level2,  OraParametr_Level3_Const,  OraParametr_Level3_records, TableName_Level3,  dbConnection,  dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
