@@ -24,9 +24,15 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadLine();
 
-            Run("NetTcpEndpoint", "SDRNSV-SBD12-A00-8591");
-            Run("BasicHttpEndpoint", "SDRNSV-SBD12-A00-8591");
-            Run("NetNamedPipeEndpoint", "SDRNSV-SBD12-A00-8591");
+            for (int i = 0; i < 100; i++)
+            {
+                SendMeasResultsSimple("MeasTasksBusNetTcpEndpoint");
+                //Console.ReadKey();
+            }
+            
+            //Run("NetTcpEndpoint", "SDRNSV-SBD12-A00-8591");
+            //Run("BasicHttpEndpoint", "SDRNSV-SBD12-A00-8591");
+            //Run("NetNamedPipeEndpoint", "SDRNSV-SBD12-A00-8591");
 
             Console.WriteLine($"Press any key to exit ...");
             Console.ReadKey();

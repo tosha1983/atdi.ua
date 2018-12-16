@@ -143,5 +143,37 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Device
         /// <returns></returns>
         [OperationContract]
         Result AckEntityPart(SensorDescriptor sensorDescriptor, byte[] token);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sensor"></param>
+        /// <param name="sdrnServer"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Result SendSensorRegistration(Sensor sensor, string sdrnServer);
+
+        [OperationContract]
+        Result<SensorRegistrationResult> GetSensorRegistrationResult(SensorDescriptor sensorDescriptor);
+
+        [OperationContract]
+        Result AckSensorRegistrationResult(SensorDescriptor sensorDescriptor, byte[] token);
+
+        /// <summary>
+        /// Sends updating data of the Sensor parameters
+        /// </summary>
+        /// <param name="sensor"></param>
+        /// <param name="sdrnServer"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Result SendSensorUpdating(Sensor sensor, string sdrnServer);
+
+        [OperationContract]
+        Result<SensorUpdatingResult> GetSensorUpdatingResult(SensorDescriptor sensorDescriptor);
+
+        [OperationContract]
+        Result AckSensorUpdatingResult(SensorDescriptor sensorDescriptor, byte[] token);
+
     }
 }
