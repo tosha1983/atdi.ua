@@ -188,6 +188,10 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasDeviceId = source.StationMeasurements == null ? (int?)null : source.StationMeasurements.StationId.Value,
                 StationsNumber = source.ResultsMeasStation == null ? (int?)null : source.ResultsMeasStation.Length,
                 PointsNumber = source.MeasurementsResults == null ? (int?)null : source.MeasurementsResults.Length,
+                SensorName = source.SensorName,
+                SensorTechId = source.SensorTechId,
+                CountStationMeasurements = source.CountStationMeasurements,
+                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements
             };
         }
 

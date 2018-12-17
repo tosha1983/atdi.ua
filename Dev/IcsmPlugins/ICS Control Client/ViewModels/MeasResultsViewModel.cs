@@ -46,6 +46,8 @@ namespace XICSM.ICSControlClient.ViewModels
         private MP.MapDrawingData _currentMapData;
         private ModelType _currentModel;
         private SDR.MeasurementType _measDtParamTypeMeasurements;
+        private bool _taskOnlyChecked;
+        private bool _sensorOnlyChecked;
         #endregion
 
         #region Sources (Adapters)
@@ -139,6 +141,41 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var sdrResult = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderSpecial(this._measDtParamTypeMeasurements);
             this._measResults.Source = sdrResult;
+        }
+
+        public bool TaskOnlyChecked
+        {
+            get => this._taskOnlyChecked;
+            set => this.Set(ref this._taskOnlyChecked, value, () => { ApplyFilterResultByTask(); });
+        }
+        public bool SensorOnlyChecked
+        {
+            get => this._sensorOnlyChecked;
+            set => this.Set(ref this._sensorOnlyChecked, value, () => { ApplyFilterResultBySensor(); });
+        }
+        private void ApplyFilterResultByTask()
+        {
+            var id = this._currentMeasurementResults.MeasTaskId;
+            if (this._taskOnlyChecked)
+            {
+                this._measResults.ApplyFilter(c => c.MeasTaskId == id);
+            }
+            else
+            {
+                this._measResults.ClearFilter();
+            }
+        }
+        private void ApplyFilterResultBySensor()
+        {
+            var id = this._currentMeasurementResults.SensorTechId;
+            if (this._sensorOnlyChecked)
+            {
+                this._measResults.ApplyFilter(c => c.SensorTechId == id);
+            }
+            else
+            {
+                this._measResults.ClearFilter();
+            }
         }
 
         //private void ReloadShortMeasResults()
@@ -484,9 +521,9 @@ namespace XICSM.ICSControlClient.ViewModels
             var sdrRoutes = SVC.SdrnsControllerWcfClient.GetRoutes(this._currentMeasurementResults.MeasSdrResultsId);
             if (sdrRoutes != null && sdrRoutes.Length > 0)
             {
+                var routePoints = new List<Location>();
                 sdrRoutes.ToList().ForEach(sdrRoute =>
                 {
-                    var routePoints = new List<Location>();
                     if (sdrRoute.RoutePoints != null && sdrRoute.RoutePoints.Length > 0)
                     {
                         sdrRoute.RoutePoints.ToList().ForEach(point =>
@@ -494,8 +531,8 @@ namespace XICSM.ICSControlClient.ViewModels
                             routePoints.Add(new Location(point.Lon, point.Lat));
                         });
                     }
-                    routes.Add(new MP.MapDrawingDataRoute() { Points = routePoints.ToArray(), Color = System.Windows.Media.Colors.Black, Fill = System.Windows.Media.Colors.Black });
                 });
+                routes.Add(new MP.MapDrawingDataRoute() { Points = routePoints.ToArray(), Color = System.Windows.Media.Colors.Black, Fill = System.Windows.Media.Colors.Black });
             }
 
             var sdrPolygonPoints = SVC.SdrnsControllerWcfClient.GetSensorPoligonPoint(this._currentMeasurementResults.MeasSdrResultsId);
@@ -508,8 +545,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         polygonPoints.Add(new Location(sdrPolygonPoint.Lon.Value, sdrPolygonPoint.Lat.Value));
                     }
-                    polygons.Add(new MP.MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Black });
                 });
+                polygons.Add(new MP.MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
             }
 
             //if (this.CurrentLevelMeasurements != null)
