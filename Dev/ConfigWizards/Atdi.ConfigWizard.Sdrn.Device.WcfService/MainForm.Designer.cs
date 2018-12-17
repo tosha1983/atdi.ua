@@ -61,6 +61,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.txtInboxPath = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
+            this.txtRabbitMQPort = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -132,6 +134,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtRabbitMQPort);
+            this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Controls.Add(this.txtRabbitMQVirtualHost);
             this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.txtRabbitMQPassword);
@@ -200,7 +204,7 @@
             // 
             this.txtRabbitMQHost.Location = new System.Drawing.Point(77, 19);
             this.txtRabbitMQHost.Name = "txtRabbitMQHost";
-            this.txtRabbitMQHost.Size = new System.Drawing.Size(303, 20);
+            this.txtRabbitMQHost.Size = new System.Drawing.Size(174, 20);
             this.txtRabbitMQHost.TabIndex = 7;
             // 
             // label6
@@ -370,6 +374,22 @@
             this.label13.TabIndex = 14;
             this.label13.Text = "Inbox folder path";
             // 
+            // txtRabbitMQPort
+            // 
+            this.txtRabbitMQPort.Location = new System.Drawing.Point(289, 19);
+            this.txtRabbitMQPort.Name = "txtRabbitMQPort";
+            this.txtRabbitMQPort.Size = new System.Drawing.Size(91, 20);
+            this.txtRabbitMQPort.TabIndex = 15;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(257, 22);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(26, 13);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Port";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.button1;
@@ -436,6 +456,8 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox txtInboxPath;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtRabbitMQPort;
+        private System.Windows.Forms.Label label14;
     }
 }
 

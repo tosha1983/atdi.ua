@@ -76,6 +76,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
             config["RabbitMQ.Host"] = "10.1.2.129";
+            config["RabbitMQ.Port"] = "5678";
             config["RabbitMQ.VirtualHost"] = "/";
             config["RabbitMQ.User"] = "SDR_Client";
             config["RabbitMQ.Password"] = "32Xr567";
@@ -271,7 +272,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.OwnerId"] = "OID-BD12-A00-N00";
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
-            config["RabbitMQ.Host"] = "10.1.2.129";
+            config["RabbitMQ.Host"] = "109.237.91.29";
+            config["RabbitMQ.Port"] = "5672"; // "5678";
             config["RabbitMQ.VirtualHost"] = "/";
             config["RabbitMQ.User"] = "SDR_Client";
             config["RabbitMQ.Password"] = "32Xr567";

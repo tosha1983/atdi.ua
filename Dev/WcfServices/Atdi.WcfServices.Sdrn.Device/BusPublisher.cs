@@ -49,6 +49,10 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this._connectionFactory.VirtualHost = this._serverDescriptor.RabbitMqVirtualHost;
             }
+            if (!string.IsNullOrEmpty(this._serverDescriptor.RabbitMqPort))
+            {
+                this._connectionFactory.Port = int.Parse(this._serverDescriptor.RabbitMqPort);
+            }
 
             this._exchangeName = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
             this._mainTask = new Task(() => this.Process());

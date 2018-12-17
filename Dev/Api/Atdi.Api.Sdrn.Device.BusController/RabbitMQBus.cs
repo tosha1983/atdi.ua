@@ -35,6 +35,11 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 UserName = this._environmentDescriptor.RabbitMQUser,
                 Password = this._environmentDescriptor.RabbitMQPassword,
             };
+            if (!string.IsNullOrEmpty(this._environmentDescriptor.RabbitMQPort))
+            {
+                this._connectionFactory.Port = int.Parse(this._environmentDescriptor.RabbitMQPort);
+            }
+
             if (!string.IsNullOrEmpty(this._environmentDescriptor.RabbitMQVirtualHost))
             {
                 this._connectionFactory.VirtualHost = this._environmentDescriptor.RabbitMQVirtualHost;
