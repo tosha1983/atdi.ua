@@ -28,7 +28,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         public string StartNameQueueDevice { get; set; }
         public string ConcumerDescribe { get; set; }
         public static string apiVersion  { get; set; }
-    private IWindsorContainer _container { get; set; }
+        private IWindsorContainer _container { get; set; }
         private ILogger _logger { get; set; }
 
 
@@ -83,13 +83,20 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 {
                     factory.VirtualHost = RabbitVirtualHostName;
                 }
-
+                factory.AutomaticRecoveryEnabled = true;;
+                factory.NetworkRecoveryInterval = new TimeSpan(0,1,0);
                 _connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
+                _connection.ConnectionShutdown += _connection_ConnectionShutdown;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message);
             }
+        }
+
+        private void _connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        {
+            _logger.Error(e.ReplyText);
         }
 
         public void CreateChannelsAndQueues(List<Sensor> listSensors)
@@ -102,6 +109,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     foreach (ConcumerDescribe d in listConcumerDescribe)
                     {
                         var channel = _connection.CreateModel();
+                        channel.ModelShutdown += Channel_ModelShutdown;
                         channel.ExchangeDeclare(exchange: ExchangePointFromDevices + ".[" + apiVersion + "]", type: "direct", durable: true);
                         var queueName = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}].[{apiVersion}]";
                         var routingKey = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}]";
@@ -143,6 +151,11 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 _logger.Error(ex.Message);
             }
 
+        }
+
+        private void Channel_ModelShutdown(object sender, ShutdownEventArgs e)
+        {
+            _logger.Error(e.ReplyText);
         }
 
         public void QueueDeclareConcumer(string ExchangePoint, string ConsumersQueue, IModel channel, string Point)

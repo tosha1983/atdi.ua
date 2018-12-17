@@ -42,27 +42,39 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             try
             {
 
-             /*
-               GlobalInit.Initialization();
-               Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-               InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
-               BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
-               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn2 = new List<MeasSdrResults>();
-               List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\_rabbit_queue_message_2018-Oct-24_1648278085.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
-               BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
-               for (int i = 0; i < 1; i++)
-               {
-                   dyn2.AddRange(dyn);
-               }
-                
-               if (ressd.SendDataObject(dyn2, "TESTMMSRSR-021"))
-               {
-                    dyn2.Clear();
-                    dyn.Clear();
-               }
-               */
+                /*
+                  GlobalInit.Initialization();
+                  Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                  InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
+                  BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
+                  List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn2 = new List<MeasSdrResults>();
+                  List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\Projects\\_rabbit_queue_message_2018-Oct-24_1648278085.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
+                  BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>> ressd = new BusManager<List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>>();
+                  for (int i = 0; i < 1; i++)
+                  {
+                      dyn2.AddRange(dyn);
+                  }
 
-                
+                  if (ressd.SendDataObject(dyn2, "TESTMMSRSR-021"))
+                  {
+                       dyn2.Clear();
+                       dyn.Clear();
+                  }
+
+                GlobalInit.Initialization();
+                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
+                BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
+                BusManager<Atdi.DataModels.Sdrns.Device.MeasResults> ressd = new BusManager<Atdi.DataModels.Sdrns.Device.MeasResults>();
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1629590000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931181000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931127000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931308000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931495000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                // var T = ressd.GetDataObject<Atdi.DataModels.Sdrns.Device.MeasResults>("Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+*/
+
+
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);

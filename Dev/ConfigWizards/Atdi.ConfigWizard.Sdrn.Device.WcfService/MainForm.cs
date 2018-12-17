@@ -62,6 +62,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 var sdrnServerQueueNamePart = GetParameter(doc, "SDRN.ServerQueueNamePart");
                 var sdrnDeviceQueueNamePart = GetParameter(doc, "SDRN.DeviceQueueNamePart");
 
+                var inboxPath = GetParameter(doc, "Messages.InboxFolder");
+                var outboxPath = GetParameter(doc, "Messages.OutboxFolder");
+
                 txtLicenseFileName.Text = licenseFileName;
                 try
                 {
@@ -91,6 +94,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 txtSdrnMessagesExchange.Text = sdrnMessagesExchange;
                 txtSdrnServerQueueNamePart.Text = sdrnServerQueueNamePart;
                 txtSdrnDeviceQueueNamePart.Text = sdrnDeviceQueueNamePart;
+
+                txtInboxPath.Text = inboxPath;
+                txtOutboxPath.Text = outboxPath;
 
                 txtWcfBindings.Text = wcfBindings;
             }
@@ -154,6 +160,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             var sdrnServerQueueNamePart = txtSdrnServerQueueNamePart.Text;
             var sdrnDeviceQueueNamePart = txtSdrnDeviceQueueNamePart.Text;
 
+            var inboxPath = txtInboxPath.Text;
+            var outboxPath = txtOutboxPath.Text;
+
             var wcfBindings = txtWcfBindings.Text;
 
             var path = this.AssemblyDirectory;
@@ -176,6 +185,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             SetParameter(doc, "SDRN.MessagesExchange", sdrnMessagesExchange);
             SetParameter(doc, "SDRN.ServerQueueNamePart", sdrnServerQueueNamePart);
             SetParameter(doc, "SDRN.DeviceQueueNamePart", sdrnDeviceQueueNamePart);
+
+            SetParameter(doc, "Messages.OutboxFolder", outboxPath);
+            SetParameter(doc, "Messages.InboxFolder", inboxPath);
 
             doc.Save(fileName);
         }

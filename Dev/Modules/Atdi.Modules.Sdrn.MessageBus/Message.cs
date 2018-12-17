@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Modules.Sdrn.MessageBus
 {
+    [Serializable]
     public class Message
     {
         public string Id { get; set; }

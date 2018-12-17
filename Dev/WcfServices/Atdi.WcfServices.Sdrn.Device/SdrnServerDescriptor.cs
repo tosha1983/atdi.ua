@@ -69,6 +69,9 @@ namespace Atdi.WcfServices.Sdrn.Device
             this.ServerQueueNamePart = config.GetParameterAsString("SDRN.ServerQueueNamePart");
             this.DeviceQueueNamePart = config.GetParameterAsString("SDRN.DeviceQueueNamePart");
 
+            this.MessagesOutboxFolder = config.GetParameterAsString("Messages.OutboxFolder");
+            this.MessagesInboxFolder = config.GetParameterAsString("Messages.InboxFolder");
+
             this.AllowedSensors = new Dictionary<string, string>();
             this.AllowedSensors[instance] = instance;
 
@@ -105,6 +108,9 @@ namespace Atdi.WcfServices.Sdrn.Device
         public string ServerQueueNamePart { get; set; }
 
         public string DeviceQueueNamePart { get; set; }
+
+        public string MessagesOutboxFolder { get; set; }
+        public string MessagesInboxFolder { get; set; }
 
         public IDictionary<string, QueueBindingDecriptor> QueueBindings { get; set; }
 

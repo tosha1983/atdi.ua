@@ -153,7 +153,31 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     var mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(IdTsk.Value)).ToList();
                                                     if (mts_.Count()> 0)
                                                     {
-                                                        M = mts_[0];
+                                                        var measTaskOld = M; 
+                                                        M = new MeasTask()
+                                                        {
+                                                            CreatedBy = mts_[0].CreatedBy,
+                                                            DateCreated = mts_[0].DateCreated,
+                                                            ExecutionMode = mts_[0].ExecutionMode,
+                                                            Id = mts_[0].Id,
+                                                            MaxTimeBs = mts_[0].MaxTimeBs,
+                                                            MeasDtParam = mts_[0].MeasDtParam,
+                                                            MeasFreqParam = mts_[0].MeasFreqParam,
+                                                            MeasLocParams = mts_[0].MeasLocParams,
+                                                            MeasOther = mts_[0].MeasOther,
+                                                            MeasSubTasks = mts_[0].MeasSubTasks,
+                                                            MeasTimeParamList = mts_[0].MeasTimeParamList,
+                                                            Name = mts_[0].Name,
+                                                            OrderId = mts_[0].OrderId,
+                                                            Prio = mts_[0].Prio,
+                                                            ResultType = mts_[0].ResultType,
+                                                            Status = mts_[0].Status,
+                                                            Task = mts_[0].Task,
+                                                            Type = mts_[0].Type,
+                                                            Stations = measTaskOld.Stations,
+                                                            StationsForMeasurements = measTaskOld.StationsForMeasurements
+                                                        };
+                                                        //M = mts_[0];
                                                     }
                                                 }
 
@@ -201,7 +225,31 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     var mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(IdTsk.Value)).ToList();
                                                     if (mts_.Count() > 0)
                                                     {
-                                                        M = mts_[0];
+                                                        var measTaskOld = M;
+                                                        M = new MeasTask()
+                                                        {
+                                                            CreatedBy = mts_[0].CreatedBy,
+                                                            DateCreated = mts_[0].DateCreated,
+                                                            ExecutionMode = mts_[0].ExecutionMode,
+                                                            Id = mts_[0].Id,
+                                                            MaxTimeBs = mts_[0].MaxTimeBs,
+                                                            MeasDtParam = mts_[0].MeasDtParam,
+                                                            MeasFreqParam = mts_[0].MeasFreqParam,
+                                                            MeasLocParams = mts_[0].MeasLocParams,
+                                                            MeasOther = mts_[0].MeasOther,
+                                                            MeasSubTasks = mts_[0].MeasSubTasks,
+                                                            MeasTimeParamList = mts_[0].MeasTimeParamList,
+                                                            Name = mts_[0].Name,
+                                                            OrderId = mts_[0].OrderId,
+                                                            Prio = mts_[0].Prio,
+                                                            ResultType = mts_[0].ResultType,
+                                                            Status = mts_[0].Status,
+                                                            Task = mts_[0].Task,
+                                                            Type = mts_[0].Type,
+                                                            Stations = measTaskOld.Stations,
+                                                            StationsForMeasurements = measTaskOld.StationsForMeasurements
+                                                        };
+                                                        //M = mts_[0];
                                                     }
                                                 }
                                                 else IdTsk = mt.Id.Value;

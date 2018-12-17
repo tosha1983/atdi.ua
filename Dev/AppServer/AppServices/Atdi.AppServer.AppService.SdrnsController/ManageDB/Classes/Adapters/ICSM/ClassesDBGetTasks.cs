@@ -19,7 +19,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public static ILogger logger;
         public ClassesDBGetTasks(ILogger log)
         {
-            if (logger==null) logger = log;
+            if (logger == null) logger = log;
         }
         /// <summary>
         /// Деструктор.
@@ -48,161 +48,161 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
                     try
-                    { 
-                    CLASS_TASKS ICSM_T = new CLASS_TASKS();
-                    ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
-                    ICSM_T.meas_task = new YXbsMeastask();
-                    ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
-                    ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
-                    ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
-                    ICSM_T.MeasOther = new YXbsMeasother();
-                    ICSM_T.Stations = new List<YXbsMeasstation>();
-                    ICSM_T.XbsStationdatform = new List<YXbsStation>();
-
-
-                    YXbsMeastask task = new YXbsMeastask();
-                    task.Format("*");
-                    task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')",MeasTaskId);
-                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                     {
-                        ICSM_T = new CLASS_TASKS();
-                        YXbsMeastask m_meas_task = new YXbsMeastask();
-                        m_meas_task.CopyDataFrom(task);
-                        ICSM_T.meas_task = m_meas_task;
-                        m_meas_task.Close();
-                        m_meas_task.Dispose();
+                        CLASS_TASKS ICSM_T = new CLASS_TASKS();
+                        ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
+                        ICSM_T.meas_task = new YXbsMeastask();
+                        ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
+                        ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
+                        ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
+                        ICSM_T.MeasOther = new YXbsMeasother();
+                        ICSM_T.Stations = new List<YXbsMeasstation>();
+                        ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
-                        List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
-                        YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
-                        XbsMeasstation_.Format("*");
-                        XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
-                        for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
+
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')", MeasTaskId);
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                         {
-                            var m_fr = new YXbsMeasstation();
-                            m_fr.CopyDataFrom(XbsMeasstation_);
-                            LXbsMeasstation.Add(m_fr);
-                            m_fr.Dispose();
-                        }
-                        XbsMeasstation_.Close();
-                        XbsMeasstation_.Dispose();
-                        ICSM_T.Stations = LXbsMeasstation;
+                            ICSM_T = new CLASS_TASKS();
+                            YXbsMeastask m_meas_task = new YXbsMeastask();
+                            m_meas_task.CopyDataFrom(task);
+                            ICSM_T.meas_task = m_meas_task;
+                            m_meas_task.Close();
+                            m_meas_task.Dispose();
 
-
-                        List<YXbsStation> LYXbsStationdatform = new List<YXbsStation>();
-                        YXbsStation XbsStationdatform_ = new YXbsStation();
-                        XbsStationdatform_.Format("*");
-                        XbsStationdatform_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
-                        for (XbsStationdatform_.OpenRs(); !XbsStationdatform_.IsEOF(); XbsStationdatform_.MoveNext())
-                        {
-                            var m_fr = new YXbsStation();
-                            m_fr.CopyDataFrom(XbsStationdatform_);
-                            LYXbsStationdatform.Add(m_fr);
-                            m_fr.Dispose();
-                        }
-                        XbsStationdatform_.Close();
-                        XbsStationdatform_.Dispose();
-                        ICSM_T.XbsStationdatform = LYXbsStationdatform;
-
-
-
-                        YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
-                        MeasDtParam_.Format("*");
-                        MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext())
-                        {
-                            var m = new YXbsMeasdtparam();
-                            m.CopyDataFrom(MeasDtParam_);
-                            ICSM_T.MeasDtParam.Add(m);
-                            m.Dispose();
-                        }
-                        MeasDtParam_.Close();
-                        MeasDtParam_.Dispose();
-
-
-                        YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
-                        MeasLocParam_.Format("*");
-                        MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext())
-                        {
-                            var m = new YXbsMeaslocparam();
-                            m.CopyDataFrom(MeasLocParam_);
-                            ICSM_T.MeasLocParam.Add(m);
-                            m.Dispose();
-                        }
-                        MeasLocParam_.Close();
-                        MeasLocParam_.Dispose();
-
-                        YXbsMeasother MeasOther_ = new YXbsMeasother();
-                        MeasOther_.Format("*");
-                        MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext())
-                        {
-                            var m = new YXbsMeasother();
-                            m.CopyDataFrom(MeasOther_);
-                            ICSM_T.MeasOther = m;
-                            m.Dispose();
-                        }
-                        MeasOther_.Close();
-                        MeasOther_.Dispose();
-
-                        YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
-                        MeasFreqParam_.Format("*");
-                        MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext())
-                        {
-                            var m = new YXbsMeasfreqparam();
-                            m.CopyDataFrom(MeasFreqParam_);
-                            List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
-                            YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
-                            MeasFreqLst_.Format("*");
-                            MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
-                            for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext())
+                            List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
+                            YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
+                            XbsMeasstation_.Format("*");
+                            XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
+                            for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
                             {
-                                var m_fr = new YXbsMeasfreq();
-                                m_fr.CopyDataFrom(MeasFreqLst_);
-                                FreqL.Add(m_fr);
+                                var m_fr = new YXbsMeasstation();
+                                m_fr.CopyDataFrom(XbsMeasstation_);
+                                LXbsMeasstation.Add(m_fr);
                                 m_fr.Dispose();
                             }
-                            MeasFreqLst_.Close();
-                            MeasFreqLst_.Dispose();
+                            XbsMeasstation_.Close();
+                            XbsMeasstation_.Dispose();
+                            ICSM_T.Stations = LXbsMeasstation;
 
-                            KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
-                            ICSM_T.MeasFreqLst_param.Add(key);
-                            m.Dispose();
-                        }
-                        MeasFreqParam_.Close();
-                        MeasFreqParam_.Dispose();
 
-                        YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
-                        MeasSubTask_.Format("*");
-                        MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
-                        {
-                            var m = new YXbsMeassubtask();
-                            m.CopyDataFrom(MeasSubTask_);
-                            List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
-                            YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
-                            MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
-                            for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                            List<YXbsStation> LYXbsStationdatform = new List<YXbsStation>();
+                            YXbsStation XbsStationdatform_ = new YXbsStation();
+                            XbsStationdatform_.Format("*");
+                            XbsStationdatform_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
+                            for (XbsStationdatform_.OpenRs(); !XbsStationdatform_.IsEOF(); XbsStationdatform_.MoveNext())
                             {
-                                var m_fr = new YXbsMeassubtasksta();
-                                m_fr.CopyDataFrom(MeasSubTaskSt_);
-                                SubTaskStL.Add(m_fr);
+                                var m_fr = new YXbsStation();
+                                m_fr.CopyDataFrom(XbsStationdatform_);
+                                LYXbsStationdatform.Add(m_fr);
                                 m_fr.Dispose();
                             }
-                            MeasSubTaskSt_.Close();
-                            MeasSubTaskSt_.Dispose();
-                            KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
-                            ICSM_T.meas_st.Add(key);
-                            m.Dispose();
+                            XbsStationdatform_.Close();
+                            XbsStationdatform_.Dispose();
+                            ICSM_T.XbsStationdatform = LYXbsStationdatform;
+
+
+
+                            YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
+                            MeasDtParam_.Format("*");
+                            MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext())
+                            {
+                                var m = new YXbsMeasdtparam();
+                                m.CopyDataFrom(MeasDtParam_);
+                                ICSM_T.MeasDtParam.Add(m);
+                                m.Dispose();
+                            }
+                            MeasDtParam_.Close();
+                            MeasDtParam_.Dispose();
+
+
+                            YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
+                            MeasLocParam_.Format("*");
+                            MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext())
+                            {
+                                var m = new YXbsMeaslocparam();
+                                m.CopyDataFrom(MeasLocParam_);
+                                ICSM_T.MeasLocParam.Add(m);
+                                m.Dispose();
+                            }
+                            MeasLocParam_.Close();
+                            MeasLocParam_.Dispose();
+
+                            YXbsMeasother MeasOther_ = new YXbsMeasother();
+                            MeasOther_.Format("*");
+                            MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext())
+                            {
+                                var m = new YXbsMeasother();
+                                m.CopyDataFrom(MeasOther_);
+                                ICSM_T.MeasOther = m;
+                                m.Dispose();
+                            }
+                            MeasOther_.Close();
+                            MeasOther_.Dispose();
+
+                            YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
+                            MeasFreqParam_.Format("*");
+                            MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext())
+                            {
+                                var m = new YXbsMeasfreqparam();
+                                m.CopyDataFrom(MeasFreqParam_);
+                                List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
+                                YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
+                                MeasFreqLst_.Format("*");
+                                MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
+                                for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeasfreq();
+                                    m_fr.CopyDataFrom(MeasFreqLst_);
+                                    FreqL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasFreqLst_.Close();
+                                MeasFreqLst_.Dispose();
+
+                                KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
+                                ICSM_T.MeasFreqLst_param.Add(key);
+                                m.Dispose();
+                            }
+                            MeasFreqParam_.Close();
+                            MeasFreqParam_.Dispose();
+
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                            {
+                                var m = new YXbsMeassubtask();
+                                m.CopyDataFrom(MeasSubTask_);
+                                List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
+                                YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                MeasSubTaskSt_.Format("*");
+                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
+                                for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeassubtasksta();
+                                    m_fr.CopyDataFrom(MeasSubTaskSt_);
+                                    SubTaskStL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasSubTaskSt_.Close();
+                                MeasSubTaskSt_.Dispose();
+                                KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
+                                ICSM_T.meas_st.Add(key);
+                                m.Dispose();
+                            }
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
+                            L_IN.Add(ICSM_T);
                         }
-                        MeasSubTask_.Close();
-                        MeasSubTask_.Dispose();
-                        L_IN.Add(ICSM_T);
-                    }
-                    task.Close();
-                    task.Dispose();
+                        task.Close();
+                        task.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -231,145 +231,145 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
                     try
-                    { 
-                    // сканирование по объектам БД
-                    CLASS_TASKS ICSM_T = new CLASS_TASKS();
-                    ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
-                    ICSM_T.meas_task = new YXbsMeastask();
-                    ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
-                    ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
-                    ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
-                    ICSM_T.MeasOther = new YXbsMeasother();
-                    ICSM_T.Stations = new List<YXbsMeasstation>();
-                    ICSM_T.XbsStationdatform = new List<YXbsStation>();
-
-
-                    //подключение к БД
-                    YXbsMeastask task = new YXbsMeastask();
-                    task.Format("*");
-                    task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')", MeasTaskId);
-                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                     {
-                        ICSM_T = new CLASS_TASKS();
-                        YXbsMeastask m_meas_task = new YXbsMeastask();
-                        m_meas_task.CopyDataFrom(task);
-                        ICSM_T.meas_task = m_meas_task;
-                        m_meas_task.Close();
-                        m_meas_task.Dispose();
+                        // сканирование по объектам БД
+                        CLASS_TASKS ICSM_T = new CLASS_TASKS();
+                        ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
+                        ICSM_T.meas_task = new YXbsMeastask();
+                        ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
+                        ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
+                        ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
+                        ICSM_T.MeasOther = new YXbsMeasother();
+                        ICSM_T.Stations = new List<YXbsMeasstation>();
+                        ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
-                        List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
-                        YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
-                        XbsMeasstation_.Format("*");
-                        XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
-                        for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
+
+                        //подключение к БД
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = string.Format("(ID={0}) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')", MeasTaskId);
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                         {
-                            var m_fr = new YXbsMeasstation();
-                            m_fr.CopyDataFrom(XbsMeasstation_);
-                            LXbsMeasstation.Add(m_fr);
-                            m_fr.Dispose();
-                        }
-                        XbsMeasstation_.Close();
-                        XbsMeasstation_.Dispose();
-                        ICSM_T.Stations = LXbsMeasstation;
+                            ICSM_T = new CLASS_TASKS();
+                            YXbsMeastask m_meas_task = new YXbsMeastask();
+                            m_meas_task.CopyDataFrom(task);
+                            ICSM_T.meas_task = m_meas_task;
+                            m_meas_task.Close();
+                            m_meas_task.Dispose();
 
-                        YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
-                        MeasDtParam_.Format("*");
-                        MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext())
-                        {
-                            var m = new YXbsMeasdtparam();
-                            m.CopyDataFrom(MeasDtParam_);
-                            ICSM_T.MeasDtParam.Add(m);
-                            m.Dispose();
-                        }
-                        MeasDtParam_.Close();
-                        MeasDtParam_.Dispose();
-
-
-                        YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
-                        MeasLocParam_.Format("*");
-                        MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext())
-                        {
-                            var m = new YXbsMeaslocparam();
-                            m.CopyDataFrom(MeasLocParam_);
-                            ICSM_T.MeasLocParam.Add(m);
-                            m.Dispose();
-                        }
-                        MeasLocParam_.Close();
-                        MeasLocParam_.Dispose();
-
-                        YXbsMeasother MeasOther_ = new YXbsMeasother();
-                        MeasOther_.Format("*");
-                        MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext())
-                        {
-                            var m = new YXbsMeasother();
-                            m.CopyDataFrom(MeasOther_);
-                            ICSM_T.MeasOther = m;
-                            m.Dispose();
-                        }
-                        MeasOther_.Close();
-                        MeasOther_.Dispose();
-
-                        YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
-                        MeasFreqParam_.Format("*");
-                        MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext())
-                        {
-                            var m = new YXbsMeasfreqparam();
-                            m.CopyDataFrom(MeasFreqParam_);
-                            List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
-                            YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
-                            MeasFreqLst_.Format("*");
-                            MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
-                            for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext())
+                            List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
+                            YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
+                            XbsMeasstation_.Format("*");
+                            XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
+                            for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
                             {
-                                var m_fr = new YXbsMeasfreq();
-                                m_fr.CopyDataFrom(MeasFreqLst_);
-                                FreqL.Add(m_fr);
+                                var m_fr = new YXbsMeasstation();
+                                m_fr.CopyDataFrom(XbsMeasstation_);
+                                LXbsMeasstation.Add(m_fr);
                                 m_fr.Dispose();
                             }
-                            MeasFreqLst_.Close();
-                            MeasFreqLst_.Dispose();
+                            XbsMeasstation_.Close();
+                            XbsMeasstation_.Dispose();
+                            ICSM_T.Stations = LXbsMeasstation;
 
-                            KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
-                            ICSM_T.MeasFreqLst_param.Add(key);
-                            m.Dispose();
-                        }
-                        MeasFreqParam_.Close();
-                        MeasFreqParam_.Dispose();
-
-                        YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
-                        MeasSubTask_.Format("*");
-                        MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
-                        {
-                            var m = new YXbsMeassubtask();
-                            m.CopyDataFrom(MeasSubTask_);
-                            List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
-                            YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
-                            MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
-                            for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                            YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
+                            MeasDtParam_.Format("*");
+                            MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext())
                             {
-                                var m_fr = new YXbsMeassubtasksta();
-                                m_fr.CopyDataFrom(MeasSubTaskSt_);
-                                SubTaskStL.Add(m_fr);
-                                m_fr.Dispose();
+                                var m = new YXbsMeasdtparam();
+                                m.CopyDataFrom(MeasDtParam_);
+                                ICSM_T.MeasDtParam.Add(m);
+                                m.Dispose();
                             }
-                            MeasSubTaskSt_.Close();
-                            MeasSubTaskSt_.Dispose();
-                            KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
-                            ICSM_T.meas_st.Add(key);
-                            m.Dispose();
+                            MeasDtParam_.Close();
+                            MeasDtParam_.Dispose();
+
+
+                            YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
+                            MeasLocParam_.Format("*");
+                            MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext())
+                            {
+                                var m = new YXbsMeaslocparam();
+                                m.CopyDataFrom(MeasLocParam_);
+                                ICSM_T.MeasLocParam.Add(m);
+                                m.Dispose();
+                            }
+                            MeasLocParam_.Close();
+                            MeasLocParam_.Dispose();
+
+                            YXbsMeasother MeasOther_ = new YXbsMeasother();
+                            MeasOther_.Format("*");
+                            MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext())
+                            {
+                                var m = new YXbsMeasother();
+                                m.CopyDataFrom(MeasOther_);
+                                ICSM_T.MeasOther = m;
+                                m.Dispose();
+                            }
+                            MeasOther_.Close();
+                            MeasOther_.Dispose();
+
+                            YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
+                            MeasFreqParam_.Format("*");
+                            MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext())
+                            {
+                                var m = new YXbsMeasfreqparam();
+                                m.CopyDataFrom(MeasFreqParam_);
+                                List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
+                                YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
+                                MeasFreqLst_.Format("*");
+                                MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
+                                for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeasfreq();
+                                    m_fr.CopyDataFrom(MeasFreqLst_);
+                                    FreqL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasFreqLst_.Close();
+                                MeasFreqLst_.Dispose();
+
+                                KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
+                                ICSM_T.MeasFreqLst_param.Add(key);
+                                m.Dispose();
+                            }
+                            MeasFreqParam_.Close();
+                            MeasFreqParam_.Dispose();
+
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                            {
+                                var m = new YXbsMeassubtask();
+                                m.CopyDataFrom(MeasSubTask_);
+                                List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
+                                YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                MeasSubTaskSt_.Format("*");
+                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
+                                for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeassubtasksta();
+                                    m_fr.CopyDataFrom(MeasSubTaskSt_);
+                                    SubTaskStL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasSubTaskSt_.Close();
+                                MeasSubTaskSt_.Dispose();
+                                KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
+                                ICSM_T.meas_st.Add(key);
+                                m.Dispose();
+                            }
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
+                            L_IN.Add(ICSM_T);
                         }
-                        MeasSubTask_.Close();
-                        MeasSubTask_.Dispose();
-                        L_IN.Add(ICSM_T);
-                    }
-                    task.Close();
-                    task.Dispose();
+                        task.Close();
+                        task.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -485,153 +485,161 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadlAllSTasksFromDB...");
                     try
-                    { 
-                    CLASS_TASKS ICSM_T = new CLASS_TASKS();
-                    ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
-                    ICSM_T.meas_task = new YXbsMeastask();
-                    ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
-                    ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
-                    ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
-                    ICSM_T.MeasOther = new YXbsMeasother();
-                    ICSM_T.Stations = new List<YXbsMeasstation>();
-                    ICSM_T.XbsStationdatform = new List<YXbsStation>();
+                    {
+                        CLASS_TASKS ICSM_T = new CLASS_TASKS();
+                        ICSM_T.meas_st = new List<KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>>();
+                        ICSM_T.meas_task = new YXbsMeastask();
+                        ICSM_T.MeasDtParam = new List<YXbsMeasdtparam>();
+                        ICSM_T.MeasFreqLst_param = new List<KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>>();
+                        ICSM_T.MeasLocParam = new List<YXbsMeaslocparam>();
+                        ICSM_T.MeasOther = new YXbsMeasother();
+                        ICSM_T.Stations = new List<YXbsMeasstation>();
+                        ICSM_T.XbsStationdatform = new List<YXbsStation>();
 
 
-                    YXbsMeastask task = new YXbsMeastask();
-                    task.Format("*");
-                    task.Filter = "(ID>0) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')";
-                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext()) {
-                        ICSM_T = new CLASS_TASKS();
-                        YXbsMeastask m_meas_task = new YXbsMeastask();
-                        m_meas_task.CopyDataFrom(task);
-                        ICSM_T.meas_task = m_meas_task;
-                        m_meas_task.Close();
-                        m_meas_task.Dispose();
-
-                        List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
-                        YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
-                        XbsMeasstation_.Format("*");
-                        XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
-                        for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = "(ID>0) AND (STATUS IS NOT NULL) AND (STATUS<>'Z')";
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                         {
-                            var m_fr = new YXbsMeasstation();
-                            m_fr.CopyDataFrom(XbsMeasstation_);
-                            LXbsMeasstation.Add(m_fr);
-                            m_fr.Dispose();
-                        }
-                        XbsMeasstation_.Close();
-                        XbsMeasstation_.Dispose();
-                        ICSM_T.Stations = LXbsMeasstation;
+                            ICSM_T = new CLASS_TASKS();
+                            YXbsMeastask m_meas_task = new YXbsMeastask();
+                            m_meas_task.CopyDataFrom(task);
+                            ICSM_T.meas_task = m_meas_task;
+                            m_meas_task.Close();
+                            m_meas_task.Dispose();
+
+                            List<YXbsMeasstation> LXbsMeasstation = new List<YXbsMeasstation>();
+                            YXbsMeasstation XbsMeasstation_ = new YXbsMeasstation();
+                            XbsMeasstation_.Format("*");
+                            XbsMeasstation_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
+                            for (XbsMeasstation_.OpenRs(); !XbsMeasstation_.IsEOF(); XbsMeasstation_.MoveNext())
+                            {
+                                var m_fr = new YXbsMeasstation();
+                                m_fr.CopyDataFrom(XbsMeasstation_);
+                                LXbsMeasstation.Add(m_fr);
+                                m_fr.Dispose();
+                            }
+                            XbsMeasstation_.Close();
+                            XbsMeasstation_.Dispose();
+                            ICSM_T.Stations = LXbsMeasstation;
 
 
-                        List<YXbsStation> LYXbsStationdatform = new List<YXbsStation>();
+                            List<YXbsStation> LYXbsStationdatform = new List<YXbsStation>();
                             YXbsStation XbsStationdatform_ = new YXbsStation();
-                        XbsStationdatform_.Format("*");
-                        XbsStationdatform_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
-                        for (XbsStationdatform_.OpenRs(); !XbsStationdatform_.IsEOF(); XbsStationdatform_.MoveNext())
-                        {
-                            var m_fr = new YXbsStation();
-                            m_fr.CopyDataFrom(XbsStationdatform_);
-                            LYXbsStationdatform.Add(m_fr);
-                            m_fr.Dispose();
-                        }
-                        XbsStationdatform_.Close();
-                        XbsStationdatform_.Dispose();
-                        ICSM_T.XbsStationdatform = LYXbsStationdatform;
-
-
-
-                        YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
-                        MeasDtParam_.Format("*");
-                        MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext()) {
-                            var m = new YXbsMeasdtparam();
-                            m.CopyDataFrom(MeasDtParam_);
-                            ICSM_T.MeasDtParam.Add(m);
-                            m.Dispose();
-                        }
-                        MeasDtParam_.Close();
-                        MeasDtParam_.Dispose();
-
-                      
-                        YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
-                        MeasLocParam_.Format("*");
-                        MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext()) {
-                            var m = new YXbsMeaslocparam();
-                            m.CopyDataFrom(MeasLocParam_);
-                            ICSM_T.MeasLocParam.Add(m);
-                            m.Dispose();
-                        }
-                        MeasLocParam_.Close();
-                        MeasLocParam_.Dispose();
-
-                        YXbsMeasother MeasOther_ = new YXbsMeasother();
-                        MeasOther_.Format("*");
-                        MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext()) {
-                            var m = new YXbsMeasother();
-                            m.CopyDataFrom(MeasOther_);
-                            ICSM_T.MeasOther = m;
-                            m.Dispose();
-                        }
-                        MeasOther_.Close();
-                        MeasOther_.Dispose();
-
-                        YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
-                        MeasFreqParam_.Format("*");
-                        MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext()) {
-                            var m = new YXbsMeasfreqparam();
-                            m.CopyDataFrom(MeasFreqParam_);
-                            List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
-                            YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
-                            MeasFreqLst_.Format("*");
-                            MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
-                            for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext()) {
-                                var m_fr = new YXbsMeasfreq();
-                                m_fr.CopyDataFrom(MeasFreqLst_);
-                                FreqL.Add(m_fr);
+                            XbsStationdatform_.Format("*");
+                            XbsStationdatform_.Filter = string.Format("(ID_XBS_MEASTASK={0})", task.m_id);
+                            for (XbsStationdatform_.OpenRs(); !XbsStationdatform_.IsEOF(); XbsStationdatform_.MoveNext())
+                            {
+                                var m_fr = new YXbsStation();
+                                m_fr.CopyDataFrom(XbsStationdatform_);
+                                LYXbsStationdatform.Add(m_fr);
                                 m_fr.Dispose();
                             }
-                            MeasFreqLst_.Close();
-                            MeasFreqLst_.Dispose();
+                            XbsStationdatform_.Close();
+                            XbsStationdatform_.Dispose();
+                            ICSM_T.XbsStationdatform = LYXbsStationdatform;
 
-                            KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
-                            ICSM_T.MeasFreqLst_param.Add(key);
-                            m.Dispose();
-                        }
-                        MeasFreqParam_.Close();
-                        MeasFreqParam_.Dispose();
 
-                        YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
-                        MeasSubTask_.Format("*");
-                        MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext()) {
-                            var m = new YXbsMeassubtask();
-                            m.CopyDataFrom(MeasSubTask_);
-                            List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
-                            YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
-                            MeasSubTaskSt_.Format("*");
-                            MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
-                            for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext()) {
-                                var m_fr = new YXbsMeassubtasksta();
-                                m_fr.CopyDataFrom(MeasSubTaskSt_);
-                                SubTaskStL.Add(m_fr);
-                                m_fr.Dispose();
+
+                            YXbsMeasdtparam MeasDtParam_ = new YXbsMeasdtparam();
+                            MeasDtParam_.Format("*");
+                            MeasDtParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasDtParam_.OpenRs(); !MeasDtParam_.IsEOF(); MeasDtParam_.MoveNext())
+                            {
+                                var m = new YXbsMeasdtparam();
+                                m.CopyDataFrom(MeasDtParam_);
+                                ICSM_T.MeasDtParam.Add(m);
+                                m.Dispose();
                             }
-                            MeasSubTaskSt_.Close();
-                            MeasSubTaskSt_.Dispose();
-                            KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
-                            ICSM_T.meas_st.Add(key);
-                            m.Dispose();
+                            MeasDtParam_.Close();
+                            MeasDtParam_.Dispose();
+
+
+                            YXbsMeaslocparam MeasLocParam_ = new YXbsMeaslocparam();
+                            MeasLocParam_.Format("*");
+                            MeasLocParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasLocParam_.OpenRs(); !MeasLocParam_.IsEOF(); MeasLocParam_.MoveNext())
+                            {
+                                var m = new YXbsMeaslocparam();
+                                m.CopyDataFrom(MeasLocParam_);
+                                ICSM_T.MeasLocParam.Add(m);
+                                m.Dispose();
+                            }
+                            MeasLocParam_.Close();
+                            MeasLocParam_.Dispose();
+
+                            YXbsMeasother MeasOther_ = new YXbsMeasother();
+                            MeasOther_.Format("*");
+                            MeasOther_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasOther_.OpenRs(); !MeasOther_.IsEOF(); MeasOther_.MoveNext())
+                            {
+                                var m = new YXbsMeasother();
+                                m.CopyDataFrom(MeasOther_);
+                                ICSM_T.MeasOther = m;
+                                m.Dispose();
+                            }
+                            MeasOther_.Close();
+                            MeasOther_.Dispose();
+
+                            YXbsMeasfreqparam MeasFreqParam_ = new YXbsMeasfreqparam();
+                            MeasFreqParam_.Format("*");
+                            MeasFreqParam_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasFreqParam_.OpenRs(); !MeasFreqParam_.IsEOF(); MeasFreqParam_.MoveNext())
+                            {
+                                var m = new YXbsMeasfreqparam();
+                                m.CopyDataFrom(MeasFreqParam_);
+                                List<YXbsMeasfreq> FreqL = new List<YXbsMeasfreq>();
+                                YXbsMeasfreq MeasFreqLst_ = new YXbsMeasfreq();
+                                MeasFreqLst_.Format("*");
+                                MeasFreqLst_.Filter = string.Format("ID_XBS_MeasFreqParam={0}", MeasFreqParam_.m_id);
+                                for (MeasFreqLst_.OpenRs(); !MeasFreqLst_.IsEOF(); MeasFreqLst_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeasfreq();
+                                    m_fr.CopyDataFrom(MeasFreqLst_);
+                                    FreqL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasFreqLst_.Close();
+                                MeasFreqLst_.Dispose();
+
+                                KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>> key = new KeyValuePair<YXbsMeasfreqparam, List<YXbsMeasfreq>>(m, FreqL);
+                                ICSM_T.MeasFreqLst_param.Add(key);
+                                m.Dispose();
+                            }
+                            MeasFreqParam_.Close();
+                            MeasFreqParam_.Dispose();
+
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                            {
+                                var m = new YXbsMeassubtask();
+                                m.CopyDataFrom(MeasSubTask_);
+                                List<YXbsMeassubtasksta> SubTaskStL = new List<YXbsMeassubtasksta>();
+                                YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                MeasSubTaskSt_.Format("*");
+                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
+                                for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                {
+                                    var m_fr = new YXbsMeassubtasksta();
+                                    m_fr.CopyDataFrom(MeasSubTaskSt_);
+                                    SubTaskStL.Add(m_fr);
+                                    m_fr.Dispose();
+                                }
+                                MeasSubTaskSt_.Close();
+                                MeasSubTaskSt_.Dispose();
+                                KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>> key = new KeyValuePair<YXbsMeassubtask, List<YXbsMeassubtasksta>>(m, SubTaskStL);
+                                ICSM_T.meas_st.Add(key);
+                                m.Dispose();
+                            }
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
+                            L_IN.Add(ICSM_T);
                         }
-                        MeasSubTask_.Close();
-                        MeasSubTask_.Dispose();
-                        L_IN.Add(ICSM_T);
-                    }
-                    task.Close();
-                    task.Dispose();
+                        task.Close();
+                        task.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -643,12 +651,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 tsk.Join();
                 #endregion
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 logger.Error("Error in ReadlAllSTasksFromDB: " + ex.Message);
-            }           
+            }
             return L_IN;
         }
-        
+
         /// <summary>
         /// Change status
         /// </summary>
@@ -734,45 +743,45 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 {
                     logger.Trace("Start procedure SaveStatusTaskToDB...");
                     try
-                    { 
-                    YXbsMeastask task = new YXbsMeastask();
-                    task.Format("*");
-                    task.Filter = string.Format("(ID={0})", obj.Id.Value);
-                    for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                     {
-                        YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
-                        MeasSubTask_.Format("*");
-                        MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
-                        for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
+                        YXbsMeastask task = new YXbsMeastask();
+                        task.Format("*");
+                        task.Filter = string.Format("(ID={0})", obj.Id.Value);
+                        for (task.OpenRs(); !task.IsEOF(); task.MoveNext())
                         {
-                            MeasSubTask M_TS = obj.MeasSubTasks.ToList().Find(t => t.Id.Value == MeasSubTask_.m_id);
-                            if (M_TS != null)
+                            YXbsMeassubtask MeasSubTask_ = new YXbsMeassubtask();
+                            MeasSubTask_.Format("*");
+                            MeasSubTask_.Filter = string.Format("ID_XBS_MEASTASK={0}", task.m_id);
+                            for (MeasSubTask_.OpenRs(); !MeasSubTask_.IsEOF(); MeasSubTask_.MoveNext())
                             {
-                                YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
-                                MeasSubTaskSt_.Format("*");
-                                MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
-                                for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
+                                MeasSubTask M_TS = obj.MeasSubTasks.ToList().Find(t => t.Id.Value == MeasSubTask_.m_id);
+                                if (M_TS != null)
                                 {
-                                    MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
-                                    if (M_STX != null)
+                                    YXbsMeassubtasksta MeasSubTaskSt_ = new YXbsMeassubtasksta();
+                                    MeasSubTaskSt_.Format("*");
+                                    MeasSubTaskSt_.Filter = string.Format("(ID_XB_MEASSUBTASK={0}) AND ((STATUS<>'Z') OR (STATUS IS NULL))", MeasSubTask_.m_id);
+                                    for (MeasSubTaskSt_.OpenRs(); !MeasSubTaskSt_.IsEOF(); MeasSubTaskSt_.MoveNext())
                                     {
-                                        task.m_status = obj.Status;
-                                        MeasSubTask_.m_status = M_TS.Status;
-                                        MeasSubTaskSt_.m_status = M_STX.Status;
-                                        MeasSubTaskSt_.Save(null,null);
-                                        MeasSubTask_.Save(null,null);
-                                        task.Save(null,null);
+                                        MeasSubTaskStation M_STX = M_TS.MeasSubTaskStations.ToList().Find(t => t.Id == MeasSubTaskSt_.m_id);
+                                        if (M_STX != null)
+                                        {
+                                            task.m_status = obj.Status;
+                                            MeasSubTask_.m_status = M_TS.Status;
+                                            MeasSubTaskSt_.m_status = M_STX.Status;
+                                            MeasSubTaskSt_.Save(null, null);
+                                            MeasSubTask_.Save(null, null);
+                                            task.Save(null, null);
+                                        }
                                     }
+                                    MeasSubTaskSt_.Close();
+                                    MeasSubTaskSt_.Dispose();
                                 }
-                                MeasSubTaskSt_.Close();
-                                MeasSubTaskSt_.Dispose();
                             }
+                            MeasSubTask_.Close();
+                            MeasSubTask_.Dispose();
                         }
-                        MeasSubTask_.Close();
-                        MeasSubTask_.Dispose();
-                    }
-                    task.Close();
-                    task.Dispose();
+                        task.Close();
+                        task.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -838,7 +847,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public int GetMaXIdsSdrTasks(MeasTask obj)
         {
-            int MaxIDs=-1;
+            int MaxIDs = -1;
             try
             {
                 string ids = "";
@@ -1026,64 +1035,64 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, string TaskId, int SensorId)
         {
-           int? NUM_Val = null;
-           System.Threading.Thread thread = new System.Threading.Thread(() =>
-           {
-               Yyy yyy = new Yyy();
-               DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
-               if (dbConnect.State == System.Data.ConnectionState.Open)
-               {
-                   DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-                   try
-                   {
-                       logger.Trace("Start procedure SaveTaskToDB...");
-                       int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR","NUM");
-                       ++Num;
+            int? NUM_Val = null;
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                Yyy yyy = new Yyy();
+                DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                if (dbConnect.State == System.Data.ConnectionState.Open)
+                {
+                    DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+                    try
+                    {
+                        logger.Trace("Start procedure SaveTaskToDB...");
+                        int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR", "NUM");
+                        ++Num;
 
-                       bool isNew = false;
-                       YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
-                       meastask.Format("*");
-                       if (!meastask.Fetch(string.Format("MEASTASKID='{0}' AND MEASSUBTASKID={1} AND MEASSUBTASKSTATIONID={2} AND SENSORID={3}", TaskId, SubTaskId, SubTaskStationId, SensorId)))
-                       {
-                           meastask.New();
-                           isNew = true;
-                           NUM_Val = Num;
-                       }
-                       else
-                       {
-                           NUM_Val = meastask.m_num;
-                       }
-                       meastask.m_meastaskid = TaskId;
-                       meastask.m_meassubtaskid = SubTaskId;
-                       meastask.m_meassubtaskstationid = SubTaskStationId;
-                       meastask.m_sensorid = SensorId;
-                       meastask.m_num = Num;
-                       if (isNew)  meastask.Save(dbConnect, transaction);
-                       meastask.Close();
-                       meastask.Dispose();
-                       transaction.Commit();
-                       
-                   }
-                   catch (Exception ex)
-                   {
-                       try
-                       {
-                           transaction.Rollback();
-                       }
-                       catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
-                       logger.Error("Error in SaveTaskToDB: " + ex.Message);
-                   }
-                   finally
-                   {
-                       transaction.Dispose();
-                       dbConnect.Close();
-                       dbConnect.Dispose();
-                   }
-               }
-           });
-          thread.Start();
-          thread.Join();
-          return NUM_Val;
+                        bool isNew = false;
+                        YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                        meastask.Format("*");
+                        if (!meastask.Fetch(string.Format("MEASTASKID='{0}' AND MEASSUBTASKID={1} AND MEASSUBTASKSTATIONID={2} AND SENSORID={3}", TaskId, SubTaskId, SubTaskStationId, SensorId)))
+                        {
+                            meastask.New();
+                            isNew = true;
+                            NUM_Val = Num;
+                        }
+                        else
+                        {
+                            NUM_Val = meastask.m_num;
+                        }
+                        meastask.m_meastaskid = TaskId;
+                        meastask.m_meassubtaskid = SubTaskId;
+                        meastask.m_meassubtaskstationid = SubTaskStationId;
+                        meastask.m_sensorid = SensorId;
+                        meastask.m_num = Num;
+                        if (isNew) meastask.Save(dbConnect, transaction);
+                        meastask.Close();
+                        meastask.Dispose();
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
+                        logger.Error("Error in SaveTaskToDB: " + ex.Message);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        dbConnect.Close();
+                        dbConnect.Dispose();
+                    }
+                }
+            });
+            thread.Start();
+            thread.Join();
+            return NUM_Val;
         }
 
         /// <summary>
@@ -1270,7 +1279,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             {
                                                 YXbsMeassubtask prm_sub_task = new YXbsMeassubtask();
                                                 prm_sub_task.Format("*");
-                                                if (!prm_sub_task.Fetch(sub_task.Id.Value))
+                                                //if (!prm_sub_task.Fetch(sub_task.Id.Value))
                                                 {
                                                     prm_sub_task.New();
                                                     sub_task.Id.Value = ID_sub_task.Value;
@@ -1282,11 +1291,11 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     ID_sub_task = prm_sub_task.Save(dbConnect, transaction);
                                                     sub_task.Id.Value = ID_sub_task.Value;
                                                 }
-                                                else
-                                                {
-                                                    ID_sub_task = prm_sub_task.m_id;
-                                                    sub_task.Id.Value = ID_sub_task.Value;
-                                                }
+                                                //else
+                                                //{
+                                                //    ID_sub_task = prm_sub_task.m_id;
+                                                //    sub_task.Id.Value = ID_sub_task.Value;
+                                                //}
                                                 prm_sub_task.Close();
                                                 prm_sub_task.Dispose();
                                             }
@@ -1300,7 +1309,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                 {
                                                     YXbsMeassubtasksta prm_sub_task_st = new YXbsMeassubtasksta();
                                                     prm_sub_task_st.Format("*");
-                                                    if (!prm_sub_task_st.Fetch(sub_task_st.Id))
+                                                    //if (!prm_sub_task_st.Fetch(sub_task_st.Id))
                                                     {
                                                         prm_sub_task_st.New();
                                                         prm_sub_task_st.m_id_xb_meassubtask = ID_sub_task;
@@ -1310,10 +1319,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         prm_sub_task_st.m_id_xbs_sensor = sub_task_st.StationId.Value;
                                                         sub_task_st.Id = prm_sub_task_st.Save(dbConnect, transaction).Value;
                                                     }
-                                                    else
-                                                    {
-                                                        sub_task_st.Id = prm_sub_task_st.m_id.Value;
-                                                    }
+                                                    //else
+                                                    //{
+                                                    //    sub_task_st.Id = prm_sub_task_st.m_id.Value;
+                                                    //}
                                                     prm_sub_task_st.Close();
                                                     prm_sub_task_st.Dispose();
                                                 }
@@ -1456,13 +1465,13 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             owner_formeas.Format("*");
                                             //if (!owner_formeas.Fetch(string.Format("(ADDRES='{0}') AND (CODE='{1}') AND (OKPO='{2}') AND (OWNERNAME='{3}' AND (ZIP='{4}'))", StationData_param.Owner.Addres, StationData_param.Owner.Code, StationData_param.Owner.OKPO, StationData_param.Owner.OwnerName, StationData_param.Owner.Zip)))
                                             //{
-                                                owner_formeas.New();
-                                                if (StationData_param.Owner.Addres != null) owner_formeas.m_addres = StationData_param.Owner.Addres;
-                                                if (StationData_param.Owner.Code != null) owner_formeas.m_code = StationData_param.Owner.Code;
-                                                if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
-                                                if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
-                                                if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
-                                                ID_Ownerdata = owner_formeas.Save(dbConnect, transaction);
+                                            owner_formeas.New();
+                                            if (StationData_param.Owner.Addres != null) owner_formeas.m_addres = StationData_param.Owner.Addres;
+                                            if (StationData_param.Owner.Code != null) owner_formeas.m_code = StationData_param.Owner.Code;
+                                            if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
+                                            if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
+                                            if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
+                                            ID_Ownerdata = owner_formeas.Save(dbConnect, transaction);
                                             //}
                                             owner_formeas.Close();
                                             owner_formeas.Dispose();
@@ -1473,16 +1482,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             site_formeas.Format("*");
                                             //if (!site_formeas.Fetch(string.Format("(REGION='{0}') AND (ADDRES='{1}') AND (LAT={2}) AND (LON={3})", StationData_param.Site.Region, StationData_param.Site.Adress, ID, StationData_param.Site.Lat.GetValueOrDefault().ToString().Replace(",", "."), StationData_param.Site.Lon.GetValueOrDefault().ToString().Replace(",", "."))))
                                             //{
-                                                site_formeas.New();
-                                                if (StationData_param.Site.Lat != null) site_formeas.m_lat = StationData_param.Site.Lat.GetValueOrDefault();
-                                                if (StationData_param.Site.Lon != null) site_formeas.m_lon = StationData_param.Site.Lon.GetValueOrDefault();
-                                                if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
-                                                if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
+                                            site_formeas.New();
+                                            if (StationData_param.Site.Lat != null) site_formeas.m_lat = StationData_param.Site.Lat.GetValueOrDefault();
+                                            if (StationData_param.Site.Lon != null) site_formeas.m_lon = StationData_param.Site.Lon.GetValueOrDefault();
+                                            if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
+                                            if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
 
-                                                ID_site_formeas = site_formeas.Save(dbConnect, transaction);
+                                            ID_site_formeas = site_formeas.Save(dbConnect, transaction);
 
-                                                site_formeas.Close();
-                                                site_formeas.Dispose();
+                                            site_formeas.Close();
+                                            site_formeas.Dispose();
                                             //}
                                         }
                                         prm_loc.m_id_xbs_stationsite = ID_site_formeas;
@@ -1531,21 +1540,21 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         List<string> valueKey = new List<string> { F.ChannalNumber.GetValueOrDefault().ToString(), F.IdPlan.GetValueOrDefault().ToString(), F.Frequency.ToString() };
                                                         YXbsSectorFreq freq_formeas = new YXbsSectorFreq();
                                                         freq_formeas.Format("*");
-                                                        
-                                                            //if (!freq_formeas.Fetch(string.Format("(CHANNALNUMBER={0}) AND (IDPLAN={1}) AND (FREQUENCY={2})", F.ChannalNumber.GetValueOrDefault(), F.IdPlan.GetValueOrDefault(), ((double?)F.Frequency).ToString().Replace(",", "."))))
-                                                            {
-                                                                freq_formeas.New();
-                                                                if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
-                                                                if (F.Frequency != null) freq_formeas.m_frequency = (double?)F.Frequency;
-                                                                if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
-                                                                ID_sectorfreq = freq_formeas.Save(dbConnect, transaction);
-                                                            }
-                                                            //else
-                                                            //{
-                                                                //ID_sectorfreq = freq_formeas.m_id;
-                                                            //}
 
-                                                        
+                                                        //if (!freq_formeas.Fetch(string.Format("(CHANNALNUMBER={0}) AND (IDPLAN={1}) AND (FREQUENCY={2})", F.ChannalNumber.GetValueOrDefault(), F.IdPlan.GetValueOrDefault(), ((double?)F.Frequency).ToString().Replace(",", "."))))
+                                                        {
+                                                            freq_formeas.New();
+                                                            if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
+                                                            if (F.Frequency != null) freq_formeas.m_frequency = (double?)F.Frequency;
+                                                            if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
+                                                            ID_sectorfreq = freq_formeas.Save(dbConnect, transaction);
+                                                        }
+                                                        //else
+                                                        //{
+                                                        //ID_sectorfreq = freq_formeas.m_id;
+                                                        //}
+
+
                                                         freq_formeas.Close();
                                                         freq_formeas.Dispose();
 
@@ -1563,7 +1572,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                             yXbsLinkSectorFreq.Close();
                                                             yXbsLinkSectorFreq.Dispose();
                                                         }
-                                                      
+
                                                     }
                                                     if (BlockInsert.Count > 0)
                                                     {
@@ -1593,7 +1602,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         }
                                                         //else
                                                         //{
-                                                            //SectorMaskElemId = yXbsMaskelements.m_id;
+                                                        //SectorMaskElemId = yXbsMaskelements.m_id;
                                                         //}
 
                                                         yXbsMaskelements.Close();
@@ -1638,7 +1647,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         {
                             transaction.Rollback();
                         }
-                        catch (Exception e) {   transaction.Dispose();   dbConnect.Close();      dbConnect.Dispose(); logger.Error(e.Message); }
+                        catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
                         ID = Constants.NullI;
                         logger.Error("Error in SaveTaskToDB: " + ex.Message);
                     }
@@ -1654,16 +1663,16 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     dbConnect.Close();
                     dbConnect.Dispose();
                 }
-                 //GlobalInit.blockingCollectionMeasTask.TryAdd(obj.Id.Value, obj);
-                 #endregion
-                });
+                //GlobalInit.blockingCollectionMeasTask.TryAdd(obj.Id.Value, obj);
+                #endregion
+            });
             thread.Start();
             thread.Join();
             logger.Trace("End procedure SaveTaskToDB.");
             return ID;
         }
 
-       
+
 
     }
 }

@@ -286,7 +286,55 @@ namespace Atdi.SDNRS.AppServer.BusManager
             catch (Exception)
             { return null; }
         }
-       
+
+        public bool SendDataToQueue(string jsonString, string name_queue)
+        {
+            bool is_Success = false;
+            try
+            {
+                if (ClassStaticBus.factory != null)
+                {
+                    using (var connection = ClassStaticBus.factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+                    {
+                        using (var channel = connection.CreateModel())
+                        {
+                            var dictionary = new Dictionary<string, object>();
+                            dictionary.Add("SdrnServer", "ServerSDRN01");
+                            dictionary.Add("SensorName", "INS-DV-2018-TEST");
+                            dictionary.Add("SensorTechId", "MMS-02");
+                            //dictionary.Add("contenttype", "application/sdrn");
+
+                            channel.QueueDeclare(
+                                 queue: name_queue,
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                            var props = channel.CreateBasicProperties();
+                            props.Persistent = true;
+                            props.AppId = "Atdi.Sdrn";
+                            props.Type = "SendMeasResults";
+                            props.MessageId = Guid.NewGuid().ToString();
+                            props.Headers = dictionary;
+                            props.ContentType = "application/sdrn";
+                            channel.BasicPublish("", name_queue, props, UTF8Encoding.UTF8.GetBytes(jsonString));
+                            is_Success = true;
+                            channel.Close();
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                is_Success = false;
+            }
+
+            return is_Success;
+        }
+
+
         public bool SendDataToQueue(T obj, string name_queue)
         {
             bool is_Success = false;

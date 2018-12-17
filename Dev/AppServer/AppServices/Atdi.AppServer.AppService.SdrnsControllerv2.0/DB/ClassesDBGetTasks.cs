@@ -108,45 +108,60 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             System.Threading.Thread thread = new System.Threading.Thread(() =>
             {
                 Yyy yyy = new Yyy();
-                DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
-                if (dbConnect.State == System.Data.ConnectionState.Open)
+                DbConnection dbConnect = null;
+                try
                 {
-                    DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-                    try
+                    dbConnect = yyy.NewConnection(yyy.GetConnectionString());
+                    if (dbConnect.State == System.Data.ConnectionState.Open)
                     {
-                        logger.Trace("Start procedure SaveTaskToDB...");
-                        int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR", "NUM");
-                        ++Num;
-
-                        YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
-                        meastask.Format("*");
-                        meastask.New();
-                        meastask.m_meastaskid = TaskId;
-                        meastask.m_meassubtaskid = SubTaskId;
-                        meastask.m_meassubtaskstationid = SubTaskStationId;
-                        meastask.m_sensorid = SensorId;
-                        meastask.m_num = Num;
-                        meastask.Save(dbConnect, transaction);
-                        meastask.Close();
-                        meastask.Dispose();
-                        transaction.Commit();
-                        NUM_Val = Num;
-                    }
-                    catch (Exception ex)
-                    {
+                        DbTransaction transaction = dbConnect.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
                         try
                         {
-                            transaction.Rollback();
+                            logger.Trace("Start procedure SaveTaskToDB...");
+                            int? Num = yyy.GetMaxId("XBS_MEASTASK_SDR", "NUM");
+                            ++Num;
+
+                            YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
+                            meastask.Format("*");
+                            meastask.New();
+                            meastask.m_meastaskid = TaskId;
+                            meastask.m_meassubtaskid = SubTaskId;
+                            meastask.m_meassubtaskstationid = SubTaskStationId;
+                            meastask.m_sensorid = SensorId;
+                            meastask.m_num = Num;
+                            meastask.Save(dbConnect, transaction);
+                            meastask.Close();
+                            meastask.Dispose();
+                            transaction.Commit();
+                            NUM_Val = Num;
                         }
-                        catch (Exception e) { transaction.Dispose(); dbConnect.Close(); dbConnect.Dispose(); logger.Error(e.Message); }
-                        logger.Error("Error in SaveTaskToDB: " + ex.Message);
+                        catch (Exception ex)
+                        {
+                            try
+                            {
+                                transaction.Rollback();
+                            }
+                            catch (Exception e) { transaction.Dispose(); logger.Error(e.Message); }
+                            logger.Error("Error in SaveTaskToDB: " + ex.Message);
+                        }
+                        finally
+                        {
+                            transaction.Dispose();
+                        }
                     }
-                    finally
+                    else
                     {
-                        transaction.Dispose();
-                        dbConnect.Close();
-                        dbConnect.Dispose();
+                        logger.Error("[CreateNewObjectSensor] Error connection  to Database");
                     }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+                finally
+                {
+                    dbConnect.Close();
+                    dbConnect.Dispose();
                 }
             });
             thread.Start();

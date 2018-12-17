@@ -13,7 +13,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public OrmRsOracle rs;
         public List<OracleParameter> getAllFields = new List<OracleParameter>();
         public static bool isConnection { get { if (connection != null) { return connection.State == ConnectionState.Open ? true : false; } else return false; } }
-        public static DbConnection connection = null;
+        public static  DbConnection connection = null;
         public static string connectionStringValue { get; set; }
 
      
@@ -26,6 +26,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
                 connection.Close();
                 connection.Dispose();
+                connection = null;
             }
         }
 
@@ -51,7 +52,6 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     if (isConnection == false)
                     {
                         connection = NewConnection(connectionString);
-                        //isConnection = true;
                         isSucess = true;
                     }
                 }
@@ -59,10 +59,16 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSucess = false;
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
+                {
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                }
                 System.Console.WriteLine(e.ToString());
             }
             return isSucess;
         }
+
 
         public DbConnection NewConnection(string connectionString)
         {
@@ -95,7 +101,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
             try
             {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    
+
                     if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -143,15 +154,20 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             }
                         }
                     }
+
             }
             catch (Exception e)
             {
                     if (e is OracleException)
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            connection.Close();
+                            connection = NewConnection(GetConnectionString());
+                            if ((connection != null) && (connection.State == ConnectionState.Open))
+                            {
+                                ID = InsertRecord(OraParametr, TableName,  dbConnection, dbTransaction);
+                            }
                         }
                     }
                     System.Console.WriteLine("Neither record was written to database: "+e.ToString());
@@ -175,7 +191,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
                 try
                 {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    
+
                     if (((dbConnection!=null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -201,12 +222,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 }
                 catch (Exception e)
                 {
-                    if (e is OracleException)
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            ID_VALUE = UpdateRecord(OraParametr, TableName, ID, dbConnection, dbTransaction);
                         }
                     }
                     System.Console.WriteLine(e.ToString());
@@ -232,7 +254,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
                 try
                 {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    
+
                     if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -257,12 +284,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 }
                 catch (Exception e)
                 {
-                    if (e is OracleException)
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            isSuccess = UpdateRecord(OraParametr, TableName, sql, dbConnection, dbTransaction);
                         }
                     }
                     System.Console.WriteLine(e.ToString());
@@ -283,7 +311,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             bool isSuccess = false;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -296,12 +329,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return DeleteRecord(TableName, ID, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -318,7 +352,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -341,12 +380,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetMaxId(TableName);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -359,7 +399,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -382,12 +427,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetMaxId(TableName, NameField);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -400,7 +446,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             DateTime? Date = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -420,12 +471,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetSystemDate();
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -440,7 +492,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -465,10 +522,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
                 if (e is OracleException)
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
+                        {
+                            return GetNextId(sequenceName);
+                        }
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -488,7 +549,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -516,12 +582,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValues(Columns, TableName, ID, OrderBy);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -535,7 +602,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -546,12 +618,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValuesSql(sql);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -572,7 +645,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -616,10 +694,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             {
                 if (e is OracleException)
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
+                        {
+                            return GetValues(Columns, TableName, sql, OrderBy);
+                        }
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -643,7 +725,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             string allSql = "";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -708,12 +795,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, Cnt, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -731,7 +819,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             string allSql = "";//"INSERT ALL ";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -809,12 +902,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, Cnt1,  OraParametr_Level2,  TableName_Level2,  Cnt2,  oracleParameterRefId, dbConnection,  dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -836,7 +930,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             string allSql = "INSERT ALL ";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -920,12 +1019,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, OraParametr_Level2_Const,  OraParametr_Level2_records, TableName_Level2,  dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -947,7 +1047,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             string allSql = "INSERT ALL ";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -1076,12 +1181,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, OraParametr_Level2_Const,  OraParametr_Level2_records, TableName_Level2,  OraParametr_Level3_Const, OraParametr_Level3_records, TableName_Level3, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
