@@ -535,9 +535,22 @@ namespace Atdi.LegacyServices.Icsm
                 var f = new Frame();
                 string Query = value;
                 int x1 = Query.IndexOf("\r\n");
-                Query = Query.Remove(0, x1 + 2);
-                int x2 = Query.IndexOf("\r\n");
-                Query = Query.Remove(0, x2 + 2);
+                if (x1 > 0)
+                {
+                    Query = Query.Remove(0, x1 + 2);
+                    int x2 = Query.IndexOf("\r\n");
+                    Query = Query.Remove(0, x2 + 2);
+                }
+                else
+                {
+                    x1 = Query.IndexOf("\n");
+                    if (x1 > 0)
+                    {
+                        Query = Query.Remove(0, x1 + 1);
+                        int x2 = Query.IndexOf("\n");
+                        Query = Query.Remove(0, x2 + 1);
+                    }
+                }
                 var strx = new InChannelString(Query);
                 f.Load(strx);
                 var _report = new IcsmReport();

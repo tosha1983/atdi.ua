@@ -332,7 +332,6 @@ namespace Atdi.Modules.AmqpBroker
                     Handler = handler,
                     Consumer = new Consumer(queue, tag, this, handler)
                 };
-
                 this._consumers.Add(tag, descriptor);
                 _channel.BasicConsume(queue, false, tag, false, false, null, descriptor.Consumer);
 
