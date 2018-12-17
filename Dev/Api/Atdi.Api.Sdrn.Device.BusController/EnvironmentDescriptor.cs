@@ -18,6 +18,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public IBusGateConfig GateConfig { get; private set; }
 
         public string RabbitMQHost { get; set; }
+        public string RabbitMQPort { get; set; }
         public string RabbitMQVirtualHost { get; set; }
         public string RabbitMQUser { get; set; }
         public string RabbitMQPassword { get; set; }
