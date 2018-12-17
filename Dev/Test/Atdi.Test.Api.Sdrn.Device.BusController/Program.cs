@@ -272,11 +272,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.OwnerId"] = "OID-BD12-A00-N00";
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
-            config["RabbitMQ.Host"] = "109.237.91.29";
-            config["RabbitMQ.Port"] = "5672"; // "5678";
+            config["RabbitMQ.Host"] = "192.168.3.33"; // "109.237.91.29";
+            //config["RabbitMQ.Port"] = "5674"; // "5678";
             config["RabbitMQ.VirtualHost"] = "/";
-            config["RabbitMQ.User"] = "SDR_Client";
-            config["RabbitMQ.Password"] = "32Xr567";
+            config["RabbitMQ.User"] = "andrey"; // "SDR_Client";
+            config["RabbitMQ.Password"] = "P@ssw0rd";// "32Xr567";
 
             config["SDRN.ApiVersion"] = "2.0";
 
