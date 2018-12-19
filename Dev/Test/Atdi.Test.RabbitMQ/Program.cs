@@ -21,7 +21,7 @@ namespace Atdi.Test.RabbitMQ
 
             var pubConfig = new ConnectionConfig
             {
-                HostName = "192.168.33.110", //"10.1.1.137",
+                HostName = "192.168.3.33", //"192.168.33.110", //"10.1.1.137",
                 Port = 5672,
                 VirtualHost = "dev_2",
                 ConnectionName = "[kovpak].[Publisher]",
@@ -37,7 +37,7 @@ namespace Atdi.Test.RabbitMQ
 
             var conConfig = new ConnectionConfig
             {
-                HostName = "192.168.33.110", //"10.1.1.137",
+                HostName = "192.168.3.33", //"192.168.33.110", //"10.1.1.137",
                 Port = 5672,
                 VirtualHost = "dev_2",
                 ConnectionName = "[kovpak].[Comsumer]",
@@ -47,16 +47,16 @@ namespace Atdi.Test.RabbitMQ
 
             _consumerConnection = _factory.Create(conConfig);
             _consumerChannel = _consumerConnection.CreateChannel();
-            _consumerChannel.JoinConsumer("[q.kovpak]", "[c.kovpak]", new DeliveryHandler());
+            //_consumerChannel.JoinConsumer("[q.kovpak]", "[c.kovpak]", new DeliveryHandler());
 
-           //Task.Run(() => MakeMessages());
+           Task.Run(() => MakeMessages());
 
             Console.ReadLine();
         }
 
         static void MakeMessages()
         {
-            var body = new byte[1024 * 1024 * 25];
+            var body = new byte[1024 * 1024 * 50];
             for (int i = 0; i < 20; i++)
             {
                 var msg = new DeliveryMessage
