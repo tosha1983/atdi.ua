@@ -21,12 +21,12 @@ namespace Atdi.Test.RabbitMQ
 
             var pubConfig = new ConnectionConfig
             {
-                HostName = "192.168.3.33", //"192.168.33.110", //"10.1.1.137",
+                HostName = "109.237.91.29", //"192.168.3.33", //"192.168.33.110", //"10.1.1.137",
                 Port = 5672,
                 VirtualHost = "dev_2",
                 ConnectionName = "[kovpak].[Publisher]",
-                UserName = "andrey", // "SDR_Client",
-                Password = "P@ssw0rd", //"32Xr567"
+                UserName = "SDR_Client", // "andrey",
+                Password = "32Xr567", //"P@ssw0rd"
             };
 
             _publisherConnection = _factory.Create(pubConfig);
@@ -37,17 +37,17 @@ namespace Atdi.Test.RabbitMQ
 
             var conConfig = new ConnectionConfig
             {
-                HostName = "192.168.3.33", //"192.168.33.110", //"10.1.1.137",
+                HostName = "109.237.91.29", //"192.168.3.33", //"192.168.33.110", //"10.1.1.137",
                 Port = 5672,
                 VirtualHost = "dev_2",
                 ConnectionName = "[kovpak].[Comsumer]",
-                UserName = "andrey", // "SDR_Client",
-                Password = "P@ssw0rd", //"32Xr567"
+                UserName = "SDR_Client", // "andrey",
+                Password = "32Xr567", //"P@ssw0rd"
             };
 
             _consumerConnection = _factory.Create(conConfig);
             _consumerChannel = _consumerConnection.CreateChannel();
-            //_consumerChannel.JoinConsumer("[q.kovpak]", "[c.kovpak]", new DeliveryHandler());
+            _consumerChannel.JoinConsumer("[q.kovpak]", "[c.kovpak]", new DeliveryHandler());
 
            Task.Run(() => MakeMessages());
 

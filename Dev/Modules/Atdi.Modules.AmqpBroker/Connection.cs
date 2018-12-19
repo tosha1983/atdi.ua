@@ -31,6 +31,7 @@ namespace Atdi.Modules.AmqpBroker
 
             this._connectionFactory.SocketReadTimeout *= 10;
             this._connectionFactory.SocketWriteTimeout *= 10;
+            this._connectionFactory.RequestedFrameMax = 1024 * 1024; 
 
             if (!string.IsNullOrEmpty(this._config.VirtualHost))
             {
