@@ -66,11 +66,11 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
                 BusManager<Atdi.DataModels.Sdrns.Device.MeasResults> ressd = new BusManager<Atdi.DataModels.Sdrns.Device.MeasResults>();
-                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1629590000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1629590000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
                 ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931181000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931127000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931308000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931495000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931127000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931308000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931495000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
                 // var T = ressd.GetDataObject<Atdi.DataModels.Sdrns.Device.MeasResults>("Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
 */
 
@@ -111,7 +111,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             }
                             _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensorAPI2_0());
                             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
-                            GlobalInit.Initialization();
+                            //GlobalInit.Initialization();
                             var productK = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.ProductKey"].ToString(),"Atdi.WcfServices.Sdrn.Device");
                             var ownerI = Atdi.Platform.Cryptography.Encryptor.DecryptStringAES(ConfigurationManager.AppSettings["LicenseDevice.OwnerId"].ToString(), "Atdi.WcfServices.Sdrn.Device");
                             var licenseFile = licenseDeviceFileName;
