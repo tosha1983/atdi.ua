@@ -15,6 +15,16 @@ namespace Atdi.WcfServices.Sdrn.Device
 {
     class BusPublisher : IDisposable
     {
+        private enum MessageSendingState
+        {
+            None = 0,
+            Sending,
+            Returned,
+            Sent,
+            Nacks,
+            Aborted
+        }
+
         private readonly SdrnServerDescriptor _serverDescriptor;
         private readonly MMB.MessageConverter _messageConverter;
         private readonly ILogger _logger;
@@ -33,6 +43,7 @@ namespace Atdi.WcfServices.Sdrn.Device
 
         private string[] _files;
         private int _fileIndex = -1;
+        private MessageSendingState _messageSendingState;
 
         public BusPublisher(SdrnServerDescriptor serverDescriptor, MMB.MessageConverter messageConverter, ILogger logger)
         {
@@ -235,11 +246,30 @@ namespace Atdi.WcfServices.Sdrn.Device
                     ["Created"] = data.Created.ToString("o")
                 };
 
-                _publishChannel.BasicPublish(exchange: this._exchangeName,
+                this._messageSendingState = MessageSendingState.Sending;
+
+                this._publishChannel.BasicPublish(exchange: this._exchangeName,
                                     routingKey: routingKey,
                                     basicProperties: props,
                                     body: data.Message.Body);
 
+                this._publishChannel.WaitForConfirmsOrDie();
+
+                if (this._messageSendingState != MessageSendingState.Sent)
+                {
+                    switch (this._messageSendingState)
+                    {
+                        case MessageSendingState.Returned:
+                            throw new InvalidOperationException("The message was returned");
+                        case MessageSendingState.Nacks:
+                            throw new InvalidOperationException("The message was Nacks");
+                        case MessageSendingState.Aborted:
+                            throw new InvalidOperationException("The message sending was aborted");
+                        default:
+                            throw new InvalidOperationException("The message was not sent");
+                    }
+                }
+                
                 this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.SendMessage", $"The message was sent successfully: MessageType = '{data.Message.Type}', RoutingKey = '{routingKey}', SDRN Server = '{data.Descriptor.SdrnServer}', Sensor = '{data.Descriptor.SensorName}', File = '{fileName}'");
 
             }
@@ -247,6 +277,10 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this._logger.Exception("SdrnDeviceServices", (EventCategory)"Publisher.SendMessage", e);
                 throw new InvalidOperationException("The object was not sent to server", e);
+            }
+            finally
+            {
+                this._messageSendingState = MessageSendingState.None;
             }
 
         }
@@ -309,17 +343,61 @@ namespace Atdi.WcfServices.Sdrn.Device
         private void EstablishePublishChannel()
         {
             EstablisheConnection();
-            if (this._publishChannel == null)
+            if (this._publishChannel != null)
             {
-                this._publishChannel = this._connection.CreateModel();
-            }
-            if (this._publishChannel.IsClosed)
-            {
+                if (this._publishChannel.IsOpen)
+                {
+                    return;
+                }
                 this._publishChannel.Dispose();
                 this._publishChannel = null;
-                this._publishChannel = this._connection.CreateModel();
+            }
+
+            this._publishChannel = this._connection.CreateModel();
+            this._publishChannel.ModelShutdown += _publishChannel_ModelShutdown;
+            this._publishChannel.BasicAcks += _publishChannel_BasicAcks;
+            this._publishChannel.BasicNacks += _publishChannel_BasicNacks;
+            this._publishChannel.BasicReturn += _publishChannel_BasicReturn;
+            this._publishChannel.ConfirmSelect();
+            this._messageSendingState = MessageSendingState.None;
+        }
+
+        private void _publishChannel_BasicReturn(object sender, RabbitMQ.Client.Events.BasicReturnEventArgs e)
+        {
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Channel.BasicReturn", $"The message was returned: ReplyText = '{e.ReplyText}', RoutingKey = '{e.RoutingKey}', Exchange = '{e.Exchange}', Type = '{e.BasicProperties.Type}'");
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Returned;
             }
         }
+
+        private void _publishChannel_BasicNacks(object sender, RabbitMQ.Client.Events.BasicNackEventArgs e)
+        {
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Channel.BasicNacks", $"The message was Nacks: DeliveryTag = '{e.DeliveryTag}', Requeue = '{e.Requeue}', Multiple = '{e.Multiple}'");
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Nacks;
+            }
+        }
+
+        private void _publishChannel_BasicAcks(object sender, RabbitMQ.Client.Events.BasicAckEventArgs e)
+        {
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Channel.BasicAcks", $"The message was Acks: DeliveryTag = '{e.DeliveryTag}', Multiple = '{e.Multiple}'");
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Sent;
+            }
+        }
+
+        private void _publishChannel_ModelShutdown(object sender, ShutdownEventArgs e)
+        {
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Channel.ModelShutdown", $"The channel was shutdown: ReplyText = '{e.ReplyText}', Initiator = '{e.Initiator}', ReplyCode = '{e.ReplyCode}'");
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Aborted;
+            }
+        }
+
         private void EstablisheConnection()
         {
             var connectionName = $"SDRN Device [{this._serverDescriptor.Instance}][WCF Service][Publisher] #{System.Threading.Thread.CurrentThread.ManagedThreadId}";
@@ -364,17 +442,17 @@ namespace Atdi.WcfServices.Sdrn.Device
 
         private void _connection_ConnectionRecoveryError(object sender, RabbitMQ.Client.Events.ConnectionRecoveryErrorEventArgs e)
         {
-            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.ConnectionRecoveryError", $"Reason = '{e.Exception.Message}'");
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Connection.RecoveryError", $"Reason = '{e.Exception.Message}'");
         }
 
         private void _connection_RecoverySucceeded(object sender, EventArgs e)
         {
-            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.ConnectionRecovery", $"The connection is restored");
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Connection.Recovery", $"The connection is restored");
         }
 
         private void _connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
-            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.ConnectionShutdown", $"The connection is shutdowned: Initiator = '{e.Initiator}', Reason = '{e.ReplyText}'");
+            this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"Publisher.Connection.Shutdown", $"The connection is shutdowned: Initiator = '{e.Initiator}', Reason = '{e.ReplyText}'");
         }
     }
 }

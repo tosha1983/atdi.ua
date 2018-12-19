@@ -77,7 +77,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 var fileName = MakeFileName();
                 var directory = Path.Combine(this._serverDescriptor.MessagesInboxFolder, PrepareTypeForFolderName(properties.Type));
 
-                if (Directory.Exists(directory))
+                if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
@@ -92,13 +92,13 @@ namespace Atdi.WcfServices.Sdrn.Device
                 }
 
                 _channel.BasicAck(deliveryTag, false);
-
-                this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"BusConsumer.HandleBasicDeliver", $"The received message was saved successfully: MessageType = '{properties.Type}', SDRN Server = '{messageData.Descriptor.SdrnServer}', Sensor = '{messageData.Descriptor.SensorName}', File = '{fileName}'");
-
+                
+                this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"BusConsumer.HandleBasicDeliver", $"The received message was saved successfully: Type = '{properties.Type}', Id = '{properties.MessageId}', SDRN Server = '{messageData.Descriptor.SdrnServer}', Sensor = '{messageData.Descriptor.SensorName}', File = '{fileName}'");
             }
             catch(Exception e)
             {
                 this._logger.Exception("SdrnDeviceServices", (EventCategory)"BusConsumer.HandleBasicDeliver", e);
+                _channel.BasicNack(deliveryTag, false, true);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             var timeString3 = d.ToString(timeFormat3).PadRight(timeFormat3.Length, '0');
 
             System.Threading.Interlocked.Increment(ref this._fileCounter);
-            return timeString + "_" + timeString3 + "_" + "_" + (this._fileCounter).ToString().PadLeft(10, '0') + ".mdata";
+            return timeString + "_" + timeString3 + "_"  + (this._fileCounter).ToString().PadLeft(10, '0') + ".mdata";
         }
 
         private string GetHeaderValue(IBasicProperties properties, string key)

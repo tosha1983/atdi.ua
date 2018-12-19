@@ -24,7 +24,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadLine();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 5; i++)
             {
                 SendMeasResultsSimple("MeasTasksBusNetTcpEndpoint");
                 //Console.ReadKey();

@@ -12,6 +12,16 @@ namespace Atdi.Api.Sdrn.Device.BusController
 {
     internal class RabbitMQBus : IDisposable
     {
+        private enum MessageSendingState
+        {
+            None = 0,
+            Sending,
+            Returned,
+            Sent,
+            Nacks,
+            Aborted
+        }
+
         private readonly string _contextName;
         private readonly EnvironmentDescriptor _environmentDescriptor;
         private readonly BusLogger _logger;
@@ -20,6 +30,8 @@ namespace Atdi.Api.Sdrn.Device.BusController
         private IModel _sharedChannel;
         //private List<QueueConsumer> _consumers;
         private List<IModel> _channels;
+
+        private MessageSendingState _messageSendingState;
 
         public RabbitMQBus(string contextName, EnvironmentDescriptor environmentDescriptor, BusLogger logger)
         {
@@ -99,6 +111,13 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 }
 
                 this._sharedChannel = this._connection.CreateModel();
+                this._sharedChannel.BasicAcks += _sharedChannel_BasicAcks;
+                this._sharedChannel.BasicNacks += _sharedChannel_BasicNacks;
+                this._sharedChannel.BasicReturn += _sharedChannel_BasicReturn;
+                this._sharedChannel.ModelShutdown += _sharedChannel_ModelShutdown;
+                this._sharedChannel.ConfirmSelect();
+
+                this._messageSendingState = MessageSendingState.None;
 
                 this._logger.Verbouse("Rabbit MQ: Establish Channel", $"The shared channel is established successfully", this);
             }
@@ -106,6 +125,38 @@ namespace Atdi.Api.Sdrn.Device.BusController
             {
                 this._logger.Exception(BusEvents.NotEstablishRabbitSharedChannel, "Rabbit MQ: Establish Channel", e, this);
                 throw new InvalidOperationException("The shared channel to RabbitMQ is not established", e);
+            }
+        }
+
+        private void _sharedChannel_ModelShutdown(object sender, ShutdownEventArgs e)
+        {
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Aborted;
+            }
+        }
+
+        private void _sharedChannel_BasicReturn(object sender, BasicReturnEventArgs e)
+        {
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Returned;
+            }
+        }
+
+        private void _sharedChannel_BasicNacks(object sender, BasicNackEventArgs e)
+        {
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Nacks;
+            }
+        }
+
+        private void _sharedChannel_BasicAcks(object sender, BasicAckEventArgs e)
+        {
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Sent;
             }
         }
 
@@ -251,7 +302,24 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 props.Timestamp = new AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
                 props.Headers = message.Headers;
 
+                this._messageSendingState = MessageSendingState.Sending;
                 this._sharedChannel.BasicPublish(exchange, routingKey, props, message.Body);
+                this._sharedChannel.WaitForConfirmsOrDie();
+
+                if (this._messageSendingState != MessageSendingState.Sent)
+                {
+                    switch (this._messageSendingState)
+                    {
+                        case MessageSendingState.Returned:
+                            throw new InvalidOperationException("The message was returned");
+                        case MessageSendingState.Nacks:
+                            throw new InvalidOperationException("The message was Nacks");
+                        case MessageSendingState.Aborted:
+                            throw new InvalidOperationException("The message sending was aborted");
+                        default:
+                            throw new InvalidOperationException("The message was not sent");
+                    }
+                }
 
                 this._logger.Verbouse("Rabbit MQ: Publishe Message", $"The message '{message.Type}' is published successfully: Id = '{message.Id}', Routing key = '{routingKey}', Exchange name: '{exchange}'", this);
 
@@ -262,6 +330,10 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 this._logger.Exception(BusEvents.NotDeclareExchange, "Rabbit MQ: Publishe Message", e, this);
                 throw new InvalidOperationException($"The message with type '{message.Type}' is not published", e);
             }
+            finally
+            {
+                this._messageSendingState = MessageSendingState.None;
+            }
         }
 
         public QueueConsumer CreateConsumer(string queueName, string consumerName, MessageDispatcher messageDispatcher)
@@ -271,6 +343,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 this.EstablishConnection();
 
                 var channel = this._connection.CreateModel();
+                channel.BasicQos(0, 1, false);
                 this._channels.Add(channel);
 
                 var consumer = new QueueConsumer(consumerName, queueName, _environmentDescriptor, messageDispatcher, this, channel, this._logger);
