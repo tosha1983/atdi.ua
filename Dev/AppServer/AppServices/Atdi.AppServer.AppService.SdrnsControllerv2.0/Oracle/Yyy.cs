@@ -327,27 +327,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             }
         }
 
-        public bool SaveBath(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter, DbConnection dbConnection, DbTransaction dbTransaction)
-        {
-            try
-            {
-                if (dbConnection != null)
-                {
-                    if (rs != null)
-                    {
-                        if (rs.isNew)
-                            return rs.InsertBulkRecords(ListY1, ListY2, oracleParameter, dbConnection, dbTransaction);
-                    }
-                }
-                return false;
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e.ToString());
-                return false;
-            }
-        }
-
+      
         public bool Delete(DbConnection dbConnection, DbTransaction dbTransaction)
         {
             try

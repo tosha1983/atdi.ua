@@ -32,11 +32,11 @@ namespace XICSM.ICSControlClient.Handlers.InspectionCommnads
             List<Inspection> selectedInspections = new List<Inspection>();
 
             IMRecordset rs = new IMRecordset(context.TableName, IMRecordset.Mode.ReadWrite);
-            rs.Select("ID,STATUS,CUST_NBR1,Station.TABLE_ID,Station.ID,Station.NAME");
+            rs.Select("ID,STATUS,InspTour.CUST_NBR1,Station.TABLE_ID,Station.ID,Station.NAME");
             rs.AddSelectionFrom(context.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
-                selectedInspections.Add(new Inspection { id = rs.GetI("ID"), taskId = rs.GetI("CUST_NBR1"), status = rs.GetS("STATUS"), sectorId = rs.GetI("Station.TABLE_ID"), stationId = rs.GetI("Station.ID"), stationName = rs.GetS("Station.NAME") });
+                selectedInspections.Add(new Inspection { id = rs.GetI("ID"), taskId = rs.GetI("InspTour.CUST_NBR1"), status = rs.GetS("STATUS"), sectorId = rs.GetI("Station.TABLE_ID"), stationId = rs.GetI("Station.ID"), stationName = rs.GetS("Station.NAME") });
             }
             return CreateFilesCSV(selectedInspections.ToArray());
         }
@@ -62,7 +62,15 @@ namespace XICSM.ICSControlClient.Handlers.InspectionCommnads
                     List<int> measResultIds = new List<int>();
 
                     if (insp.id == IM.NullI || insp.taskId == IM.NullI || insp.sectorId == IM.NullI)
-                        continue;
+                    {
+                        if (isFewRecords)
+                            continue;
+                        else
+                        {
+                            System.Windows.MessageBox.Show("Undefined value TaskId or SectorId");
+                            continue;
+                        }
+                    }
 
                     if (string.IsNullOrEmpty(insp.status) || insp.status.Equals("New", StringComparison.OrdinalIgnoreCase))
                     {

@@ -31,7 +31,31 @@ namespace XICSM.ICSControlClient.Environment.Wpf
             this._currentIndex = -1;
             this._mapper = this.GetMapper();
         }
+        public void ApplyFilter(Func<TData, bool> filterCallback)
+        {
+            this._currentIndex = -1;
+            var dataRows = new List<TData>();
+            for (int index = 0; index < this._source.Length; index++)
+            {
+                var dataRow = this._data[index];
+                if (dataRow == null)
+                {
+                    dataRow = this._mapper(this._source[index]);
+                }
 
+                var result = filterCallback(dataRow);
+                if (result)
+                {
+                    dataRows.Add(dataRow);
+                }
+            }
+            this._data = dataRows.ToArray();
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+        public void ClearFilter()
+        {
+            this.Source = this._source;
+        }
         public TSource[] Source
         {
             get
@@ -79,7 +103,7 @@ namespace XICSM.ICSControlClient.Environment.Wpf
 
         bool IEnumerator.MoveNext()
         {
-            if (this._source != null && this._source.Length > (this._currentIndex + 1))
+            if (this._data != null && this._data.Length > (this._currentIndex + 1))
             {
                 ++this._currentIndex;
                 return true;

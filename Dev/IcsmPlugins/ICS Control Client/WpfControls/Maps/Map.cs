@@ -69,9 +69,9 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                             GMapRoute mapRoute = new GMapRoute(routePoints);
                             mapRoute.RegenerateShape(this);
                             ((System.Windows.Shapes.Path)mapRoute.Shape).Stroke = new System.Windows.Media.SolidColorBrush(route.Color);
-                            ((System.Windows.Shapes.Path)mapRoute.Shape).StrokeThickness = 1;
+                            ((System.Windows.Shapes.Path)mapRoute.Shape).StrokeThickness = 3;
 
-                            mapRoute.ZIndex = int.MaxValue;
+                            //mapRoute.ZIndex = int.MaxValue;
                             this.Markers.Add(mapRoute);
                         }
                     });
@@ -93,10 +93,11 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
 
                             GMapPolygon mapPolygon = new GMapPolygon(polygonPoints);
                             mapPolygon.RegenerateShape(this);
-                            ((System.Windows.Shapes.Path)mapPolygon.Shape).Stroke = new System.Windows.Media.SolidColorBrush(polygon.Color);
-                            ((System.Windows.Shapes.Path)mapPolygon.Shape).StrokeThickness = 1;
 
-                            mapPolygon.ZIndex = int.MaxValue;
+                            ((System.Windows.Shapes.Path)mapPolygon.Shape).Stroke = new System.Windows.Media.SolidColorBrush(polygon.Color);
+                            ((System.Windows.Shapes.Path)mapPolygon.Shape).StrokeThickness = 3;
+
+                            //mapPolygon.ZIndex = int.MaxValue;
                             this.Markers.Add(mapPolygon);
                         }
                     });
