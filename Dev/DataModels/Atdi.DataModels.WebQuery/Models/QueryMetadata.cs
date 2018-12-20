@@ -36,5 +36,6 @@ namespace Atdi.DataModels.WebQuery
 
         [DataMember]
         public QueryUIMetadata UI { get; set; }
+
     }
 }

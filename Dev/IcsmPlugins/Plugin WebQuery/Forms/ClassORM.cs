@@ -218,9 +218,22 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             var ics = new IcsmReport();
             Frame f = new Frame();
             int x1 = Query.IndexOf("\r\n");
-            Query = Query.Remove(0, x1 + 2);
-            int x2 = Query.IndexOf("\r\n");
-            Query = Query.Remove(0, x2 + 2);
+            if (x1 > 0)
+            {
+                Query = Query.Remove(0, x1 + 2);
+                int x2 = Query.IndexOf("\r\n");
+                Query = Query.Remove(0, x2 + 2);
+            }
+            else
+            {
+                x1 = Query.IndexOf("\n");
+                if (x1 > 0)
+                {
+                    Query = Query.Remove(0, x1 + 1);
+                    int x2 = Query.IndexOf("\n");
+                    Query = Query.Remove(0, x2 + 1);
+                }
+            }
             InChannelString strx = new InChannelString(Query);
             f.Load(strx);
             ics.SetConfig(f);
@@ -239,9 +252,23 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             var ics = new IcsmReport();
             Frame f = new Frame();
             int x1 = Query.IndexOf("\r\n");
-            Query = Query.Remove(0, x1 + 2);
-            int x2 = Query.IndexOf("\r\n");
-            Query = Query.Remove(0, x2 + 2);
+            if (x1 > 0)
+            {
+                Query = Query.Remove(0, x1 + 2);
+                int x2 = Query.IndexOf("\r\n");
+                Query = Query.Remove(0, x2 + 2);
+            }
+            else
+            {
+                x1 = Query.IndexOf("\n");
+                if (x1 > 0)
+                {
+                    Query = Query.Remove(0, x1 + 1);
+                    int x2 = Query.IndexOf("\n");
+                    Query = Query.Remove(0, x2 + 1);
+                }
+            }
+
             InChannelString strx = new InChannelString(Query);
             f.Load(strx);
             ics.SetConfig(f);

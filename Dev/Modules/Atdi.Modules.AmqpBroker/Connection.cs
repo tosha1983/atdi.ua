@@ -28,6 +28,11 @@ namespace Atdi.Modules.AmqpBroker
                 UserName = this._config.UserName,
                 Password = this._config.Password,
             };
+
+            this._connectionFactory.SocketReadTimeout *= 10;
+            this._connectionFactory.SocketWriteTimeout *= 10;
+            
+
             if (!string.IsNullOrEmpty(this._config.VirtualHost))
             {
                 this._connectionFactory.VirtualHost = this._config.VirtualHost;
@@ -70,6 +75,8 @@ namespace Atdi.Modules.AmqpBroker
                 this._connection.CallbackException += _connection_CallbackException;
                 this._connection.ConnectionShutdown += _connection_ConnectionShutdown;
                 this._connection.RecoverySucceeded += _connection_RecoverySucceeded;
+                this._connection.ConnectionBlocked += _connection_ConnectionBlocked;
+                this._connection.ConnectionUnblocked += _connection_ConnectionUnblocked;
 
                 this._logger.Verbouse("RabbitMQ.EstablishConnection", $"The connection '{this._config.ConnectionName}' is established successfully", this);
             }
@@ -78,6 +85,16 @@ namespace Atdi.Modules.AmqpBroker
                 this._logger.Exception(BrokerEvents.EstablishConnectionException, "RabbitMQ.EstablishConnection", e, this);
                 throw new InvalidOperationException($"The connection '{this._config.ConnectionName}' to RabbitMQ is not established", e);
             }
+        }
+
+        private void _connection_ConnectionUnblocked(object sender, EventArgs e)
+        {
+            this._logger.Verbouse("RabbitMQ.ConnectionUnblocked", $"The connection '{this._config.ConnectionName}' is unblocked", this);
+        }
+
+        private void _connection_ConnectionBlocked(object sender, RBE.ConnectionBlockedEventArgs e)
+        {
+            this._logger.Verbouse("RabbitMQ.ConnectionBlocked", $"The connection '{this._config.ConnectionName}' is blocked", this);
         }
 
         private void _connection_ConnectionRecoveryError(object sender, RBE.ConnectionRecoveryErrorEventArgs e)

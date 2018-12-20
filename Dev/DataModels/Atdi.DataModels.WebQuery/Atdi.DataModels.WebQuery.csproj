@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ColumnProperties.cs" />
     <Compile Include="Models\ColumnMetadata.cs" />
     <Compile Include="Models\QueryMetadata.cs" />
     <Compile Include="Models\FetchOptions.cs" />

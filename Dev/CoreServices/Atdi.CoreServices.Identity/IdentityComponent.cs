@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.Identity;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.DependencyInjection;
-using Atdi.CoreServices.NetKeyValidator;
-using Atdi.Contracts.CoreServices.Netkey;
 
 namespace Atdi.CoreServices.Identity
 {
@@ -25,7 +23,6 @@ namespace Atdi.CoreServices.Identity
         {
             this.Container.Register<IUserTokenProvider, UserTokenProvider>(ServiceLifetime.PerThread);
             this.Container.Register<IAuthenticationManager, AuthenticationManager>(ServiceLifetime.PerThread);
-            this.Container.Register<INetKeyValidator, NetKeyValidator.NetKeyValidator>(ServiceLifetime.PerThread);
         }
     }
 }

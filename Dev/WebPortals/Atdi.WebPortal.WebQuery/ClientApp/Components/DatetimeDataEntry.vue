@@ -11,7 +11,7 @@
             <input v-if="state === 'Editable'"          :id="timeId" type="text" @change="changeTimeText"  class="timepicker">
             <input v-if="state === 'Readonly'" readonly :id="timeId" type="text"  class="timepicker">
             <input v-if="state === 'Disabled'" disabled :id="timeId" type="text"  class="timepicker">
-            <label :for="timeId">Time: {{title}}</label>
+            <label :for="timeId">Time:</label>
         </div>
     </div>
 </template>
@@ -130,6 +130,7 @@
         },
 
         mounted: function (){
+            
             let initState = true;
             const datepickerElement = document.getElementById(this.dateId);
             const timepickerElement = document.getElementById(this.timeId);

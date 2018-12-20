@@ -46,5 +46,10 @@ namespace Atdi.DataModels.WebQuery
 
         [DataMember]
         public bool NotChangeableByEdit { get; set; }
+
+        [DataMember]
+        public int PriorityOrder { get; set; }
+
+
     }
 }

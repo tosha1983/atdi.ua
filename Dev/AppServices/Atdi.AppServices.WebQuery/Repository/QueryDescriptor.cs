@@ -28,13 +28,14 @@ namespace Atdi.AppServices.WebQuery
         private const string _momentOfUseDelete = "Delete";
 
 
-
         public string IdentUserField { get; private set; }
         public string TableName { get; private set; }
         public QueryMetadata Metadata { get; private set; }
         public IrpColumn[] IrpDescrColumns { get; private set; }
         public Dictionary<string,IrpColumn> IrpDictionary { get; private set; }
         public QueryTokenDescriptor QueryTokenDescriptor { get; private set; }
+        public ColumnProperties[] MandatoryColumns { get; private set; }
+        public ColumnProperties[] PrimaryColumns { get; private set; }
 
         public QueryDescriptor(XWEBQUERY QueryValue, XWEBCONSTRAINT[] ConstraintsValue, XWEBQUERYATTRIBUTES[] AttributesValue, XWEBQUERYORDERS[] Orders, IrpDescriptor irpdescription, QueryTokenDescriptor queryTokenDescriptor)
         {
@@ -45,11 +46,11 @@ namespace Atdi.AppServices.WebQuery
             this._AttributesValue = AttributesValue;
             this._OrdersValue = Orders;
             this.QueryTokenDescriptor = queryTokenDescriptor;
-
-
             this.TableName = irpdescription.TableName;
             this.IdentUserField = QueryValue.IDENTUSER;
             this.IrpDescrColumns = irpdescription.irpColumns.ToArray();
+            this.MandatoryColumns = irpdescription.MandatoryColumns;
+            this.PrimaryColumns = irpdescription.PrimaryColumns;
 
             var checkColumnMetaData = this.IrpDescrColumns.Select(t => t.columnMeta).ToArray();
             for (int i = 0; i < checkColumnMetaData.Length; i++)
@@ -69,10 +70,14 @@ namespace Atdi.AppServices.WebQuery
                 var listOrders = Orders.ToList();
                 if (listOrders != null)
                 {
-                    var findAttributeOrders = listOrders.Find(t => t.PATH == column.Name);
-                    if (findAttributeOrders != null)
+                    for (int k=0; k< listOrders.Count; k++)
                     {
-                        column.Order = findAttributeOrders.ORDER == 1 ? OrderType.Ascending : OrderType.Descending;
+                        if (listOrders[k].PATH== column.Name)
+                        {
+                            column.Order = listOrders[k].ORDER == 1 ? OrderType.Ascending : OrderType.Descending;
+                            column.PriorityOrder = k;
+                            break;
+                        }
                     }
                 }
             }
@@ -429,7 +434,7 @@ namespace Atdi.AppServices.WebQuery
             return result;
         }
 
-        public void CheckValidation(XWEBCONSTRAINT cntr, ColumnValue columnValue, ConditionOperator conditionOperator, ActionType actionType, string typeCondition)
+        public void CheckValidation(XWEBCONSTRAINT cntr, ColumnValue columnValue, ConditionOperator conditionOperator, ActionType actionType, string typeCondition, bool isFullColumnName = true)
         {
             string errorMessage = "";
             bool validationChecked = true;
@@ -2765,7 +2770,7 @@ namespace Atdi.AppServices.WebQuery
 
                     if (validationChecked == false)
                     {
-                        errorMessage += string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                        errorMessage += string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
                     }
                 }
                 if (cntr.DATEVALUEMIN != null)
@@ -3036,7 +3041,7 @@ namespace Atdi.AppServices.WebQuery
 
                     if (validationChecked == false)
                     {
-                        errorMessage+= string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                        errorMessage+= string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
                     }
                 }
                 if (cntr.STRVALUE != null)
@@ -3300,7 +3305,7 @@ namespace Atdi.AppServices.WebQuery
                     }
                     if (validationChecked == false)
                     {
-                        errorMessage+= string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                        errorMessage+= string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
                     }
                 }
                 if (!string.IsNullOrEmpty(errorMessage))
@@ -3377,7 +3382,18 @@ namespace Atdi.AppServices.WebQuery
             return condition;
         }
 
-        public bool PrapareValidationConditions(UserTokenData tokenData, ColumnValue[] columnValues, Atdi.DataModels.Action actionType = null)
+        private string GetNameColumnInDb(string fullColumnName)
+        {
+            string nameColumnInDb = "";
+            var wrdChecked = fullColumnName.Split(new char[] { '.' });
+            if ((wrdChecked != null) && (wrdChecked.Length > 0))
+            {
+                nameColumnInDb = wrdChecked[wrdChecked.Length - 1];
+            }
+            return nameColumnInDb;
+        }
+
+        public bool PrapareValidationConditions(UserTokenData tokenData, ColumnValue[] columnValues, Atdi.DataModels.Action actionType = null, bool isFullColumnName = true)
         {
             bool validationChecked = false;
             string errorMessage = "";
@@ -3388,208 +3404,41 @@ namespace Atdi.AppServices.WebQuery
                 {
                     for (int i = 0; i < Metadata.Columns.Length; i++)
                     {
-                        var columnValue = columnValues.ToList().Find(z => z.Name == cntr.PATH);
+                        var columnValue = columnValues.ToList().Find(z => (isFullColumnName == true ? z.Source == cntr.PATH  : z.Name== GetNameColumnInDb(cntr.PATH)));
                         if (columnValue != null)
                         {
-                            if ((Metadata.Columns[i].Name == cntr.PATH) && (columnValue.Name == cntr.PATH))
+                            if (Metadata.Columns[i].Name == cntr.PATH)
                             {
-                                if (((actionType.Type == ActionType.Create) && ((cntr.MOMENTOFUSE == _momentOfUseAlways) || (cntr.MOMENTOFUSE == _momentOfUseCreate)))
-                                      || ((actionType.Type == ActionType.Update) && ((cntr.MOMENTOFUSE == _momentOfUseAlways) || (cntr.MOMENTOFUSE == _momentOfUseUpdate)))
-                                      || ((actionType.Type == ActionType.Delete) && ((cntr.MOMENTOFUSE == _momentOfUseAlways) || (cntr.MOMENTOFUSE == _momentOfUseDelete))))
+                                if (actionType != null)
                                 {
-
-                                    NameFldLon = Metadata.Columns[i].Name;
-                                    if (!string.IsNullOrEmpty(NameFldLon))
+                                    if (((actionType.Type == ActionType.Create) && ((cntr.MOMENTOFUSE == _momentOfUseAlways) || (cntr.MOMENTOFUSE == _momentOfUseCreate)))
+                                          || ((actionType.Type == ActionType.Update) && ((cntr.MOMENTOFUSE == _momentOfUseAlways) || (cntr.MOMENTOFUSE == _momentOfUseUpdate)))
+                                          || ((actionType.Type == ActionType.Delete) && ((cntr.MOMENTOFUSE == _momentOfUseAlways) || (cntr.MOMENTOFUSE == _momentOfUseDelete))))
                                     {
-                                        if (columnValues != null)
+
+                                        NameFldLon = Metadata.Columns[i].Name;
+                                        if (!string.IsNullOrEmpty(NameFldLon))
                                         {
-                                            var findColumnValue = columnValues.ToList().Find(z => z.Name == cntr.PATH);
-                                            if (findColumnValue != null)
+                                            if (columnValues != null)
                                             {
-                                                CheckValidation(cntr, findColumnValue, (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION), actionType.Type, cntr.TYPECONDITION);
-                                            }
-                                        }
-
-                                        var condition = new ComplexCondition();
-                                        if ((cntr.OPERCONDITION == ConditionOperator.Between.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotBetween.ToString()))
-                                        {
-                                            if ((cntr.MIN != null) && (cntr.MAX != null))
-                                            {
-                                                if (columnValue is IntegerColumnValue)
+                                                var findColumnValue = columnValues.ToList().Find(z => (isFullColumnName == true ? z.Source == cntr.PATH : z.Name == GetNameColumnInDb(cntr.PATH)));
+                                                if (findColumnValue != null)
                                                 {
-                                                    var value = (columnValue as IntegerColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is DoubleColumnValue)
-                                                {
-                                                    var value = (columnValue as DoubleColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is FloatColumnValue)
-                                                {
-                                                    var value = (columnValue as FloatColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is ShortColumnValue)
-                                                {
-                                                    var value = (columnValue as ShortColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is UnsignedShortColumnValue)
-                                                {
-                                                    var value = (columnValue as UnsignedShortColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is UnsignedIntegerColumnValue)
-                                                {
-                                                    var value = (columnValue as UnsignedIntegerColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is UnsignedLongColumnValue)
-                                                {
-                                                    var value = (columnValue as UnsignedLongColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is ShortColumnValue)
-                                                {
-                                                    var value = (columnValue as ShortColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is LongColumnValue)
-                                                {
-                                                    var value = (columnValue as LongColumnValue).Value;
-                                                    if ((value >= cntr.MIN) && (value <= cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-                                                else if (columnValue is DecimalColumnValue)
-                                                {
-                                                    var value = (columnValue as DecimalColumnValue).Value;
-                                                    if ((value >= (decimal?)cntr.MIN) && (value <= (decimal?)cntr.MAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-
-                                                if (validationChecked == false)
-                                                {
-                                                    errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                                                    CheckValidation(cntr, findColumnValue, (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION), actionType.Type, cntr.TYPECONDITION);
                                                 }
                                             }
-                                            if ((cntr.DATEVALUEMIN != null) && (cntr.DATEVALUEMAX != null))
+
+                                            //var findColumnValueCondition = columnValues.ToList().Find(z => z.Source == cntr.PATH);
+                                            //if (findColumnValueCondition != null)
+                                            var condition = new ComplexCondition();
+                                            if ((cntr.OPERCONDITION == ConditionOperator.Between.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotBetween.ToString()))
                                             {
-                                                if (columnValue is DateTimeColumnValue)
+                                                if ((cntr.MIN != null) && (cntr.MAX != null))
                                                 {
-                                                    var value = (columnValue as DateTimeColumnValue).Value;
-                                                    if ((value >= cntr.DATEVALUEMIN) && (value <= cntr.DATEVALUEMAX))
-                                                    {
-                                                        validationChecked = true;
-                                                    }
-                                                }
-
-                                                if (validationChecked == false)
-                                                {
-                                                    errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
-                                                }
-                                            }
-                                            if ((cntr.STRVALUE != null) && (cntr.STRVALUETO != null))
-                                            {
-                                                if (validationChecked == false)
-                                                {
-                                                    errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
-                                                    throw new NotImplementedException(Exceptions.OperationBetweenNotSupportedfoString);
-                                                }
-                                            }
-                                        }
-                                        else if ((cntr.OPERCONDITION == ConditionOperator.In.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
-                                        {
-                                            if (cntr.STRVALUE != null)
-                                            {
-
-                                                if (Metadata.Columns[i].Type == DataType.String)
-                                                {
-                                                    string inValues = cntr.STRVALUE;
-                                                    string[] inValuesString = null;
-                                                    if (!string.IsNullOrEmpty(inValues))
-                                                    {
-                                                        string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                        if (wrd != null)
-                                                        {
-                                                            inValuesString = wrd;
-
-                                                        }
-                                                    }
-
-                                                    if (columnValue is StringColumnValue)
-                                                    {
-                                                        var value = (columnValue as StringColumnValue).Value;
-                                                        if ((inValuesString.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesString.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-
-                                                    }
-
-                                                    if (validationChecked == false)
-                                                    {
-                                                        errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
-                                                    }
-
-                                                }
-                                                else if ((Metadata.Columns[i].Type == DataType.Integer) || (Metadata.Columns[i].Type == DataType.Short) || (Metadata.Columns[i].Type == DataType.Long) || (Metadata.Columns[i].Type == DataType.Float) || (Metadata.Columns[i].Type == DataType.Double) || (Metadata.Columns[i].Type == DataType.Decimal))
-                                                {
-                                                    string inValues = cntr.STRVALUE;
-                                                    double?[] inValuesDouble = null;
-                                                    if (!string.IsNullOrEmpty(inValues))
-                                                    {
-                                                        string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                        if (wrd != null)
-                                                        {
-                                                            inValuesDouble = new double?[wrd.Length];
-                                                            for (int j = 0; j < wrd.Length; j++)
-                                                            {
-                                                                inValuesDouble[j] = double.Parse(wrd[j]);
-                                                            }
-                                                        }
-                                                    }
-
                                                     if (columnValue is IntegerColumnValue)
                                                     {
                                                         var value = (columnValue as IntegerColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3597,11 +3446,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is DoubleColumnValue)
                                                     {
                                                         var value = (columnValue as DoubleColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3609,11 +3454,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is FloatColumnValue)
                                                     {
                                                         var value = (columnValue as FloatColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3621,11 +3462,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is ShortColumnValue)
                                                     {
                                                         var value = (columnValue as ShortColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3633,11 +3470,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is UnsignedShortColumnValue)
                                                     {
                                                         var value = (columnValue as UnsignedShortColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3645,11 +3478,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is UnsignedIntegerColumnValue)
                                                     {
                                                         var value = (columnValue as UnsignedIntegerColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3657,11 +3486,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is UnsignedLongColumnValue)
                                                     {
                                                         var value = (columnValue as UnsignedLongColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3669,11 +3494,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is ShortColumnValue)
                                                     {
                                                         var value = (columnValue as ShortColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3681,11 +3502,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is LongColumnValue)
                                                     {
                                                         var value = (columnValue as LongColumnValue).Value;
-                                                        if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= cntr.MIN) && (value <= cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3693,11 +3510,7 @@ namespace Atdi.AppServices.WebQuery
                                                     else if (columnValue is DecimalColumnValue)
                                                     {
                                                         var value = (columnValue as DecimalColumnValue).Value;
-                                                        if ((inValuesDouble.Contains((double?)value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-                                                        else if ((inValuesDouble.Contains((double?)value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                        if ((value >= (decimal?)cntr.MIN) && (value <= (decimal?)cntr.MAX))
                                                         {
                                                             validationChecked = true;
                                                         }
@@ -3705,50 +3518,258 @@ namespace Atdi.AppServices.WebQuery
 
                                                     if (validationChecked == false)
                                                     {
-                                                        errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                                                        errorMessage = string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
                                                     }
-
                                                 }
-                                                else if ((Metadata.Columns[i].Type == DataType.Date) || (Metadata.Columns[i].Type == DataType.DateTime))
+                                                if ((cntr.DATEVALUEMIN != null) && (cntr.DATEVALUEMAX != null))
                                                 {
-                                                    string inValues = cntr.STRVALUE;
-                                                    DateTime?[] inValuesDateTime = null;
-                                                    if (!string.IsNullOrEmpty(inValues))
-                                                    {
-                                                        string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                        if (wrd != null)
-                                                        {
-                                                            inValuesDateTime = new DateTime?[wrd.Length];
-                                                            for (int j = 0; j < wrd.Length; j++)
-                                                            {
-                                                                inValuesDateTime[j] = DateTime.ParseExact(wrd[j], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                                                            }
-                                                        }
-                                                    }
                                                     if (columnValue is DateTimeColumnValue)
                                                     {
                                                         var value = (columnValue as DateTimeColumnValue).Value;
-                                                        if ((inValuesDateTime.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                        if ((value >= cntr.DATEVALUEMIN) && (value <= cntr.DATEVALUEMAX))
                                                         {
                                                             validationChecked = true;
                                                         }
-                                                        else if ((inValuesDateTime.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
-                                                        {
-                                                            validationChecked = true;
-                                                        }
-
                                                     }
 
                                                     if (validationChecked == false)
                                                     {
-                                                        errorMessage = string.Format(cntr.MESSAGENOTVALID, cntr.PATH);
+                                                        errorMessage = string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
+                                                    }
+                                                }
+                                                if ((cntr.STRVALUE != null) && (cntr.STRVALUETO != null))
+                                                {
+                                                    if (validationChecked == false)
+                                                    {
+                                                        errorMessage = string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
+                                                        throw new NotImplementedException(Exceptions.OperationBetweenNotSupportedfoString);
                                                     }
                                                 }
                                             }
-                                        }
-                                        else
-                                        {
-                                            CheckValidation(cntr, columnValue, (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION), actionType.Type, cntr.TYPECONDITION);
+                                            else if ((cntr.OPERCONDITION == ConditionOperator.In.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                            {
+                                                if (cntr.STRVALUE != null)
+                                                {
+
+                                                    if (Metadata.Columns[i].Type == DataType.String)
+                                                    {
+                                                        string inValues = cntr.STRVALUE;
+                                                        string[] inValuesString = null;
+                                                        if (!string.IsNullOrEmpty(inValues))
+                                                        {
+                                                            string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                            if (wrd != null)
+                                                            {
+                                                                inValuesString = wrd;
+
+                                                            }
+                                                        }
+
+                                                        if (columnValue is StringColumnValue)
+                                                        {
+                                                            var value = (columnValue as StringColumnValue).Value;
+                                                            if ((inValuesString.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesString.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+
+                                                        }
+
+                                                        if (validationChecked == false)
+                                                        {
+                                                            errorMessage = string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
+                                                        }
+
+                                                    }
+                                                    else if ((Metadata.Columns[i].Type == DataType.Integer) || (Metadata.Columns[i].Type == DataType.Short) || (Metadata.Columns[i].Type == DataType.Long) || (Metadata.Columns[i].Type == DataType.Float) || (Metadata.Columns[i].Type == DataType.Double) || (Metadata.Columns[i].Type == DataType.Decimal))
+                                                    {
+                                                        string inValues = cntr.STRVALUE;
+                                                        double?[] inValuesDouble = null;
+                                                        if (!string.IsNullOrEmpty(inValues))
+                                                        {
+                                                            string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                            if (wrd != null)
+                                                            {
+                                                                inValuesDouble = new double?[wrd.Length];
+                                                                for (int j = 0; j < wrd.Length; j++)
+                                                                {
+                                                                    inValuesDouble[j] = double.Parse(wrd[j]);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        if (columnValue is IntegerColumnValue)
+                                                        {
+                                                            var value = (columnValue as IntegerColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is DoubleColumnValue)
+                                                        {
+                                                            var value = (columnValue as DoubleColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is FloatColumnValue)
+                                                        {
+                                                            var value = (columnValue as FloatColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is ShortColumnValue)
+                                                        {
+                                                            var value = (columnValue as ShortColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is UnsignedShortColumnValue)
+                                                        {
+                                                            var value = (columnValue as UnsignedShortColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is UnsignedIntegerColumnValue)
+                                                        {
+                                                            var value = (columnValue as UnsignedIntegerColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is UnsignedLongColumnValue)
+                                                        {
+                                                            var value = (columnValue as UnsignedLongColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is ShortColumnValue)
+                                                        {
+                                                            var value = (columnValue as ShortColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is LongColumnValue)
+                                                        {
+                                                            var value = (columnValue as LongColumnValue).Value;
+                                                            if ((inValuesDouble.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+                                                        else if (columnValue is DecimalColumnValue)
+                                                        {
+                                                            var value = (columnValue as DecimalColumnValue).Value;
+                                                            if ((inValuesDouble.Contains((double?)value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDouble.Contains((double?)value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                        }
+
+                                                        if (validationChecked == false)
+                                                        {
+                                                            errorMessage = string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
+                                                        }
+
+                                                    }
+                                                    else if ((Metadata.Columns[i].Type == DataType.Date) || (Metadata.Columns[i].Type == DataType.DateTime))
+                                                    {
+                                                        string inValues = cntr.STRVALUE;
+                                                        DateTime?[] inValuesDateTime = null;
+                                                        if (!string.IsNullOrEmpty(inValues))
+                                                        {
+                                                            string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                            if (wrd != null)
+                                                            {
+                                                                inValuesDateTime = new DateTime?[wrd.Length];
+                                                                for (int j = 0; j < wrd.Length; j++)
+                                                                {
+                                                                    inValuesDateTime[j] = DateTime.ParseExact(wrd[j], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                                                }
+                                                            }
+                                                        }
+                                                        if (columnValue is DateTimeColumnValue)
+                                                        {
+                                                            var value = (columnValue as DateTimeColumnValue).Value;
+                                                            if ((inValuesDateTime.Contains(value)) && (cntr.OPERCONDITION == ConditionOperator.In.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+                                                            else if ((inValuesDateTime.Contains(value) == false) && (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                                            {
+                                                                validationChecked = true;
+                                                            }
+
+                                                        }
+
+                                                        if (validationChecked == false)
+                                                        {
+                                                            errorMessage = string.Format(cntr.MESSAGENOTVALID, (isFullColumnName == true ? cntr.PATH : GetNameColumnInDb(cntr.PATH)));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                CheckValidation(cntr, columnValue, (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION), actionType.Type, cntr.TYPECONDITION);
+                                            }
                                         }
                                     }
                                 }
@@ -3763,12 +3784,13 @@ namespace Atdi.AppServices.WebQuery
             return validationChecked;
         }
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="tokenData"></param>
         /// <returns></returns>
-        public Condition[] GetConditions(UserTokenData tokenData, ColumnValue[] columnValues = null, Atdi.DataModels.Action actionType = null)
+        public Condition[] GetConditions(UserTokenData tokenData, ColumnValue[] columnValues = null, Atdi.DataModels.Action actionType = null, bool isFullColumnName = true)
         {
             List<Condition> List_Expressions = new List<Condition>();
             if (_QueryValue != null) {
@@ -3803,22 +3825,210 @@ namespace Atdi.AppServices.WebQuery
                             {
                                 if (columnValues != null)
                                 {
-                                    var findColumnValue = columnValues.ToList().Find(z => z.Name == cntr.PATH);
+                                    var findColumnValue = columnValues.ToList().Find(z => (isFullColumnName == true ? z.Source == cntr.PATH : z.Name == GetNameColumnInDb(cntr.PATH)));
                                     if (findColumnValue != null)
                                     {
-                                        CheckValidation(cntr, findColumnValue, (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION), actionType.Type, cntr.TYPECONDITION);
+                                        if (actionType != null)
+                                        {
+                                            CheckValidation(cntr, findColumnValue, (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION), actionType.Type, cntr.TYPECONDITION);
+                                        }
+                                    }
+
+                                    var findColumnValueCondition = columnValues.ToList().Find(z => (isFullColumnName == true ? z.Source == cntr.PATH : z.Name == GetNameColumnInDb(cntr.PATH)));
+                                    if (findColumnValueCondition != null)
+                                    {
+
+                                        var condition = new ComplexCondition();
+                                        if ((cntr.OPERCONDITION == ConditionOperator.Between.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotBetween.ToString()))
+                                        {
+                                            if ((cntr.MIN != null) && (cntr.MAX != null))
+                                            {
+                                                condition = new ComplexCondition()
+                                                {
+                                                    Operator = LogicalOperator.And,
+                                                    Conditions = new Condition[]
+                                                     {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  findColumnValueCondition.Name
+                                             },
+                                             Operator = (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DoubleValuesOperand(){
+                                             Values = new double?[] {  cntr.MIN, cntr.MAX}
+                                             }
+                                          }
+                                                  }
+                                                };
+                                            }
+                                            if ((cntr.DATEVALUEMIN != null) && (cntr.DATEVALUEMAX != null))
+                                            {
+                                                condition = new ComplexCondition()
+                                                {
+                                                    Operator = LogicalOperator.And,
+                                                    Conditions = new Condition[]
+                                                     {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  findColumnValueCondition.Name
+                                             },
+                                             Operator = (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DateTimeValuesOperand(){
+                                             Values = new DateTime?[] { cntr.DATEVALUEMIN, cntr.DATEVALUEMAX }
+                                             }
+                                             }
+                                                     }
+                                                };
+                                            }
+                                            if ((cntr.STRVALUE != null) && (cntr.STRVALUETO != null))
+                                            {
+                                                condition = new ComplexCondition()
+                                                {
+                                                    Operator = LogicalOperator.And,
+                                                    Conditions = new Condition[]
+                                                     {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  findColumnValueCondition.Name
+                                             },
+                                             Operator = (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new StringValuesOperand(){
+                                             Values = new String[] { cntr.STRVALUE, cntr.STRVALUETO }
+                                             }
+                                             }
+                                                     }
+                                                };
+                                            }
+                                        }
+                                        else if ((cntr.OPERCONDITION == ConditionOperator.In.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
+                                        {
+                                            if (cntr.STRVALUE != null)
+                                            {
+
+                                                if (Metadata.Columns[i].Type == DataType.String)
+                                                {
+                                                    string inValues = cntr.STRVALUE;
+                                                    string[] inValuesString = null;
+                                                    if (!string.IsNullOrEmpty(inValues))
+                                                    {
+                                                        string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                        if (wrd != null)
+                                                        {
+                                                            inValuesString = wrd;
+                                                        }
+                                                    }
+
+                                                    condition = new ComplexCondition()
+                                                    {
+                                                        Operator = LogicalOperator.And,
+                                                        Conditions = new Condition[]
+                                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  findColumnValueCondition.Name
+                                             },
+                                             Operator =  (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new StringValuesOperand(){
+                                             Values = inValuesString
+                                             }
+                                             }
+                                                         }
+                                                    };
+                                                }
+                                                else if ((Metadata.Columns[i].Type == DataType.Integer) || (Metadata.Columns[i].Type == DataType.Short) || (Metadata.Columns[i].Type == DataType.Long) || (Metadata.Columns[i].Type == DataType.Float) || (Metadata.Columns[i].Type == DataType.Double) || (Metadata.Columns[i].Type == DataType.Decimal))
+                                                {
+                                                    string inValues = cntr.STRVALUE;
+                                                    double?[] inValuesDouble = null;
+                                                    if (!string.IsNullOrEmpty(inValues))
+                                                    {
+                                                        string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                        if (wrd != null)
+                                                        {
+                                                            inValuesDouble = new double?[wrd.Length];
+                                                            for (int j = 0; j < wrd.Length; j++)
+                                                            {
+                                                                inValuesDouble[j] = double.Parse(wrd[j]);
+                                                            }
+                                                        }
+                                                    }
+                                                    condition = new ComplexCondition()
+                                                    {
+                                                        Operator = LogicalOperator.And,
+                                                        Conditions = new Condition[]
+                                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                             ColumnName =  findColumnValueCondition.Name
+                                             },
+                                             Operator = (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DoubleValuesOperand(){
+                                             Values =  inValuesDouble
+                                             }
+                                             }
+                                                         }
+                                                    };
+                                                }
+                                                else if ((Metadata.Columns[i].Type == DataType.Date) || (Metadata.Columns[i].Type == DataType.DateTime))
+                                                {
+                                                    string inValues = cntr.STRVALUE;
+                                                    DateTime?[] inValuesDateTime = null;
+                                                    if (!string.IsNullOrEmpty(inValues))
+                                                    {
+                                                        string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                        if (wrd != null)
+                                                        {
+                                                            inValuesDateTime = new DateTime?[wrd.Length];
+                                                            for (int j = 0; j < wrd.Length; j++)
+                                                            {
+                                                                inValuesDateTime[j] = DateTime.ParseExact(wrd[j], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                                            }
+                                                        }
+                                                    }
+                                                    condition = new ComplexCondition()
+                                                    {
+                                                        Operator = LogicalOperator.And,
+                                                        Conditions = new Condition[]
+                                                         {
+                                             new ConditionExpression(){
+                                             LeftOperand = new ColumnOperand() {
+                                              ColumnName =  findColumnValueCondition.Name
+                                             },
+                                             Operator = (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
+                                             Type = ConditionType.Expression,
+                                             RightOperand = new DateTimeValuesOperand(){
+                                             Values =  inValuesDateTime
+                                             }
+                                             }
+                                                     }
+                                                    };
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            condition = GetComplexCondition(cntr, findColumnValueCondition.Name);
+                                        }
+                                        List_Expressions.Add(condition);
                                     }
                                 }
-                                var condition = new ComplexCondition();
-                                if ((cntr.OPERCONDITION == ConditionOperator.Between.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotBetween.ToString()))
+                                else
                                 {
-                                    if ((cntr.MIN != null) && (cntr.MAX != null))
+
+
+                                    var condition = new ComplexCondition();
+                                    if ((cntr.OPERCONDITION == ConditionOperator.Between.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotBetween.ToString()))
                                     {
-                                        condition = new ComplexCondition()
+                                        if ((cntr.MIN != null) && (cntr.MAX != null))
                                         {
-                                            Operator = LogicalOperator.And,
-                                            Conditions = new Condition[]
-                                             {
+                                            condition = new ComplexCondition()
+                                            {
+                                                Operator = LogicalOperator.And,
+                                                Conditions = new Condition[]
+                                                 {
                                              new ConditionExpression(){
                                              LeftOperand = new ColumnOperand() {
                                               ColumnName =  NameFldLon
@@ -3829,16 +4039,16 @@ namespace Atdi.AppServices.WebQuery
                                              Values = new double?[] {  cntr.MIN, cntr.MAX}
                                              }
                                           }
-                                          }
-                                        };
-                                    }
-                                    if ((cntr.DATEVALUEMIN != null) && (cntr.DATEVALUEMAX != null))
-                                    {
-                                        condition = new ComplexCondition()
+                                              }
+                                            };
+                                        }
+                                        if ((cntr.DATEVALUEMIN != null) && (cntr.DATEVALUEMAX != null))
                                         {
-                                            Operator = LogicalOperator.And,
-                                            Conditions = new Condition[]
-                                             {
+                                            condition = new ComplexCondition()
+                                            {
+                                                Operator = LogicalOperator.And,
+                                                Conditions = new Condition[]
+                                                 {
                                              new ConditionExpression(){
                                              LeftOperand = new ColumnOperand() {
                                               ColumnName =  NameFldLon
@@ -3849,19 +4059,19 @@ namespace Atdi.AppServices.WebQuery
                                              Values = new DateTime?[] { cntr.DATEVALUEMIN, cntr.DATEVALUEMAX }
                                              }
                                              }
-                                             }
-                                        };
-                                    }
-                                    if ((cntr.STRVALUE != null) && (cntr.STRVALUETO != null))
-                                    {
-                                        condition = new ComplexCondition()
+                                                 }
+                                            };
+                                        }
+                                        if ((cntr.STRVALUE != null) && (cntr.STRVALUETO != null))
                                         {
-                                            Operator = LogicalOperator.And,
-                                            Conditions = new Condition[]
-                                             {
+                                            condition = new ComplexCondition()
+                                            {
+                                                Operator = LogicalOperator.And,
+                                                Conditions = new Condition[]
+                                                 {
                                              new ConditionExpression(){
                                              LeftOperand = new ColumnOperand() {
-                                              ColumnName =  NameFldLon
+                                              ColumnName = NameFldLon
                                              },
                                              Operator = (ConditionOperator)Enum.Parse(typeof(ConditionOperator), cntr.OPERCONDITION),
                                              Type = ConditionType.Expression,
@@ -3869,33 +4079,33 @@ namespace Atdi.AppServices.WebQuery
                                              Values = new String[] { cntr.STRVALUE, cntr.STRVALUETO }
                                              }
                                              }
-                                             }
-                                        };
+                                                 }
+                                            };
+                                        }
                                     }
-                                }
-                                else if ((cntr.OPERCONDITION == ConditionOperator.In.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
-                                {
-                                    if (cntr.STRVALUE != null)
+                                    else if ((cntr.OPERCONDITION == ConditionOperator.In.ToString()) || (cntr.OPERCONDITION == ConditionOperator.NotIn.ToString()))
                                     {
-
-                                        if (Metadata.Columns[i].Type == DataType.String)
+                                        if (cntr.STRVALUE != null)
                                         {
-                                            string inValues = cntr.STRVALUE;
-                                            string[] inValuesString = null;
-                                            if (!string.IsNullOrEmpty(inValues))
-                                            {
-                                                string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                if (wrd != null)
-                                                {
-                                                    inValuesString = wrd;
-                                                }
-                                            }
 
-                                            condition = new ComplexCondition()
+                                            if (Metadata.Columns[i].Type == DataType.String)
                                             {
-                                                Operator = LogicalOperator.And,
-                                                Conditions = new Condition[]
-                                                 {
+                                                string inValues = cntr.STRVALUE;
+                                                string[] inValuesString = null;
+                                                if (!string.IsNullOrEmpty(inValues))
+                                                {
+                                                    string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                    if (wrd != null)
+                                                    {
+                                                        inValuesString = wrd;
+                                                    }
+                                                }
+
+                                                condition = new ComplexCondition()
+                                                {
+                                                    Operator = LogicalOperator.And,
+                                                    Conditions = new Condition[]
+                                                     {
                                              new ConditionExpression(){
                                              LeftOperand = new ColumnOperand() {
                                               ColumnName =  NameFldLon
@@ -3906,30 +4116,30 @@ namespace Atdi.AppServices.WebQuery
                                              Values = inValuesString
                                              }
                                              }
-                                                 }
-                                            };
-                                        }
-                                        else if ((Metadata.Columns[i].Type == DataType.Integer) || (Metadata.Columns[i].Type == DataType.Short) || (Metadata.Columns[i].Type == DataType.Long) || (Metadata.Columns[i].Type == DataType.Float) || (Metadata.Columns[i].Type == DataType.Double) || (Metadata.Columns[i].Type == DataType.Decimal))
-                                        {
-                                            string inValues = cntr.STRVALUE;
-                                            double?[] inValuesDouble = null;
-                                            if (!string.IsNullOrEmpty(inValues))
+                                                     }
+                                                };
+                                            }
+                                            else if ((Metadata.Columns[i].Type == DataType.Integer) || (Metadata.Columns[i].Type == DataType.Short) || (Metadata.Columns[i].Type == DataType.Long) || (Metadata.Columns[i].Type == DataType.Float) || (Metadata.Columns[i].Type == DataType.Double) || (Metadata.Columns[i].Type == DataType.Decimal))
                                             {
-                                                string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                if (wrd != null)
+                                                string inValues = cntr.STRVALUE;
+                                                double?[] inValuesDouble = null;
+                                                if (!string.IsNullOrEmpty(inValues))
                                                 {
-                                                    inValuesDouble = new double?[wrd.Length];
-                                                    for (int j = 0; j < wrd.Length; j++)
+                                                    string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                    if (wrd != null)
                                                     {
-                                                        inValuesDouble[j] = double.Parse(wrd[j]);
+                                                        inValuesDouble = new double?[wrd.Length];
+                                                        for (int j = 0; j < wrd.Length; j++)
+                                                        {
+                                                            inValuesDouble[j] = double.Parse(wrd[j]);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            condition = new ComplexCondition()
-                                            {
-                                                Operator = LogicalOperator.And,
-                                                Conditions = new Condition[]
-                                                 {
+                                                condition = new ComplexCondition()
+                                                {
+                                                    Operator = LogicalOperator.And,
+                                                    Conditions = new Condition[]
+                                                     {
                                              new ConditionExpression(){
                                              LeftOperand = new ColumnOperand() {
                                              ColumnName =  NameFldLon
@@ -3940,30 +4150,30 @@ namespace Atdi.AppServices.WebQuery
                                              Values =  inValuesDouble
                                              }
                                              }
-                                                 }
-                                            };
-                                        }
-                                        else if ((Metadata.Columns[i].Type == DataType.Date) || (Metadata.Columns[i].Type == DataType.DateTime))
-                                        {
-                                            string inValues = cntr.STRVALUE;
-                                            DateTime?[] inValuesDateTime = null;
-                                            if (!string.IsNullOrEmpty(inValues))
+                                                     }
+                                                };
+                                            }
+                                            else if ((Metadata.Columns[i].Type == DataType.Date) || (Metadata.Columns[i].Type == DataType.DateTime))
                                             {
-                                                string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                if (wrd != null)
+                                                string inValues = cntr.STRVALUE;
+                                                DateTime?[] inValuesDateTime = null;
+                                                if (!string.IsNullOrEmpty(inValues))
                                                 {
-                                                    inValuesDateTime = new DateTime?[wrd.Length];
-                                                    for (int j = 0; j < wrd.Length; j++)
+                                                    string[] wrd = inValues.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                                    if (wrd != null)
                                                     {
-                                                        inValuesDateTime[j] = DateTime.ParseExact(wrd[j], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                                        inValuesDateTime = new DateTime?[wrd.Length];
+                                                        for (int j = 0; j < wrd.Length; j++)
+                                                        {
+                                                            inValuesDateTime[j] = DateTime.ParseExact(wrd[j], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            condition = new ComplexCondition()
-                                            {
-                                                Operator = LogicalOperator.And,
-                                                Conditions = new Condition[]
-                                                 {
+                                                condition = new ComplexCondition()
+                                                {
+                                                    Operator = LogicalOperator.And,
+                                                    Conditions = new Condition[]
+                                                     {
                                              new ConditionExpression(){
                                              LeftOperand = new ColumnOperand() {
                                               ColumnName =  NameFldLon
@@ -3974,16 +4184,18 @@ namespace Atdi.AppServices.WebQuery
                                              Values =  inValuesDateTime
                                              }
                                              }
-                                             }
-                                            };
+                                                 }
+                                                };
+                                            }
                                         }
                                     }
+                                    else
+                                    {
+                                        condition = GetComplexCondition(cntr, NameFldLon);
+                                    }
+                                    List_Expressions.Add(condition);
+
                                 }
-                                else
-                                {
-                                    condition = GetComplexCondition(cntr, NameFldLon);
-                                }
-                                List_Expressions.Add(condition);
                             }
                         }
                     }

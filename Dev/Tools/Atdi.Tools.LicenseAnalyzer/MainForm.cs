@@ -68,9 +68,17 @@ namespace Atdi.Tools.LicenseAnalyzer
             {
                 sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
             }
-            if (cmbConfigType.SelectedIndex == 1)
+            else if (cmbConfigType.SelectedIndex == 1)
             {
                 sharedSecret = "Atdi.WcfServices.Sdrn.Device";
+            }
+            else if (cmbConfigType.SelectedIndex == 2)
+            {
+                sharedSecret = "Atdi.AppServices.WebQuery";
+            }
+            else if (cmbConfigType.SelectedIndex == 3)
+            {
+                sharedSecret = "Atdi.WebPortal.WebQuery";
             }
 
             txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);

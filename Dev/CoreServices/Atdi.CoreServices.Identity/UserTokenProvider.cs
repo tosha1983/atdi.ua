@@ -9,7 +9,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using Atdi.CoreServices.NetKeyValidator;
 
 namespace Atdi.CoreServices.Identity
 {
