@@ -19,9 +19,9 @@ using System.Runtime.InteropServices;
 
 unsafe public struct bbIQPacket 
 {
-    public float* iqData;
+    public float[] iqData;
     public int iqCount;
-    public int* triggers;
+    public int[] triggers;
     public int triggerCount;
     public int purge;
     public int dataRemaining;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 //using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Modules.MonitoringProcess.ProcessSignal;
 
 namespace Atdi.Modules.MonitoringProcess
 {
@@ -22,6 +23,8 @@ namespace Atdi.Modules.MonitoringProcess
         public SOType Type_of_SO; // Тип измеряемой занятости канала
         public List<Double> List_freq_CH = new List<Double>();//MHz // перечень частот для измерения SO
         public string status;
+        public double ReceivedIQStreemDuration_sec;
+        public GetTimeStamp.TypeTechnology TypeTechnology; 
         #endregion
     }
 }

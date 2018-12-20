@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
     static class PhaseProcess
     {
@@ -514,19 +514,20 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
             }
         }
 
-        static public void RotationCalculation(IQStreamTimeStampBloks.MethodForSelectCriticalPoint methodForSelectCriticalPoint, BlockOfSignal block, out List<int> RotationIndex, out List<double>RotationApml)
+        static public void RotationCalculation(IQStreamTimeStampBloks.MethodForSelectCriticalPoint methodForSelectCriticalPoint, BlockOfSignal block, out List<int> RotationIndex, out List<double>RotationApml, out List<double> RotationPhase)
         {
             // определение констант для работы с методами 
             double PointMinMaxBase = 5; double TriggerAmplitideForFixRotationInProcent = 20; // амплитудный метод
             double TriggerAngleForChangeRotationDegree = 20; // фазовый метод
             bool CheckLine = true; double AngleDeviationDegreeForAmplitude = 10;// амплитудный метод
             RotationApml = new List<double>();
+            RotationPhase = new List<double>();
 
             RotationIndex = new List<int>();
             switch (methodForSelectCriticalPoint)
             {
                 case IQStreamTimeStampBloks.MethodForSelectCriticalPoint.PhaseRotation:
-                    RotationPhaseCalculation(ref block, out RotationIndex, out List<double> RotationPhase, TriggerAngleForChangeRotationDegree);
+                    RotationPhaseCalculation(ref block, out RotationIndex, out RotationPhase, TriggerAngleForChangeRotationDegree);
                     break;
                 case IQStreamTimeStampBloks.MethodForSelectCriticalPoint.MaxLevel:
                     AmplitudePhaseCalculation(ref block, out RotationIndex, PointMinMaxBase, TriggerAmplitideForFixRotationInProcent, CheckLine, AngleDeviationDegreeForAmplitude);

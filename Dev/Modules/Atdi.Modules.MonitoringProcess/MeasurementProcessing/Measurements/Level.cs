@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 //using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Modules.MonitoringProcess;
-using Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal;
+using Atdi.Modules.MonitoringProcess.ProcessSignal;
 
 namespace Atdi.Modules.MonitoringProcess.Measurement
 {

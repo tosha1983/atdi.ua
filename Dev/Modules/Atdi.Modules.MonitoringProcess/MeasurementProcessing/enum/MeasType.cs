@@ -23,6 +23,7 @@ namespace Atdi.Modules.MonitoringProcess
         Location,
         MonitoringStations,
         Signaling,
-        IQReceive
+        IQReceive,
+        Timetimestamp
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal;
+using Atdi.Modules.MonitoringProcess.ProcessSignal;
 //using Atdi.AppServer.Contracts.Sdrns;
 
 namespace Atdi.Modules.MonitoringProcess.Measurement

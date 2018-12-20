@@ -15,249 +15,32 @@ using System.Xml.Serialization;
 using Atdi.Modules.MonitoringProcess.SingleHound;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.AppServer.Contracts;
-using Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal;
+using Atdi.Modules.MonitoringProcess.ProcessSignal;
 using Atdi.Modules.MonitoringProcess;
 using Atdi.Modules.MonitoringProcess.Measurement;
 using Atdi.Sdrn.Modules.MonitoringProcess;
+using System.Runtime.Serialization.Formatters.Binary;
 
 
 namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
 {
     public partial class Form1 : Form
     {
-       // public SDR_BB60C SDR_test;
+        // public SDR_BB60C SDR_test;
         private delegate void UpdateStatusCallback(string strMessage);
         //private Server mainServer;
         public int id = -1;
-        private bbStatus status {get; set;}
+        private bbStatus status { get; set; }
         private string AllText = "";
         public Thread thrListene;
-        
-            
+
+
         public Form1()
         {
             InitializeComponent();
             status = bbStatus.bbNoError;
             //thrListene = new Thread();
         }
-
-        //public void mainServer_StatusChanged(object sender, StatusChangedEventArgs e)
-        //{
-        //    //this.Invoke(new UpdateStatusCallback(this.UpdateStatus), new object[] { e.EventMessage });
-        //}
-
-        //private void Listen()
-        //{
-        //    IPAddress ipAddr = IPAddress.Parse("127.0.0.1");
-        //    mainServer = new Server(ipAddr);
-        //    Server.StatusChanged += new StatusChangedEventHandler(mainServer_StatusChanged);
-        //    mainServer.StartListening();
-        //}
-        //private void UpdateStatus(string strMessage)
-        //{
-        //    /*AllText += strMessage;
-        //    if (strMessage.Contains("<F_semples />"))
-        //    {
-        //        try
-        //        {
-        //            Application.DoEvents();
-        //            AllText = AllText.Replace("</SDR_BB60C_test>", "");
-        //            AllText += "\r\n" + "</SDR_BB60C_test>";
-        //            String tempPath_answer = System.IO.Path.GetTempPath();
-        //            string xml_file = string.Format(tempPath_answer + "\\{0}", Guid.NewGuid().ToString()) + ".xml";
-        //            File.WriteAllText(xml_file, AllText, Encoding.UTF8);
-
-        //            XmlSerializer ser = new XmlSerializer(typeof(SDR_BB60C));
-        //            TextReader reader = new System.IO.StreamReader(xml_file, false);
-        //            object vb = ser.Deserialize(reader);
-        //            SDR_BB60C test_une_sw = (SDR_BB60C)vb;
-        //            reader.Close();
-        //            File.Delete(xml_file);
-        //            AllText = "";
-        //            if (test_une_sw.TypeFunction==1)
-        //                F1(test_une_sw);
-        //            if (test_une_sw.TypeFunction == 2)
-        //                F2(test_une_sw);
-        //            if (test_une_sw.TypeFunction == 3)
-        //                F3(test_une_sw);
-                 
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message);
-        //        }
-
-        //    }
-        //     */
-        //}
-
-
-        //private void button1_Click(object sender, EventArgs e) 
-        //{
-        //     try
-        //     {
-
-        //        textBox1.Text += "Opening Device, Please Wait" + Environment.NewLine;
-        //        status = bb_api.bbOpenDevice(ref id);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "Error: Unable to open BB60" + Environment.NewLine;
-        //            textBox1.Text+=bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-        //        else
-        //        {
-        //            textBox1.Text += "Device Found" + Environment.NewLine;
-        //        }
-        //        textBox1.Text += "API Version: " + bb_api.bbGetAPIString() + Environment.NewLine;
-        //        textBox1.Text += "Device Type: " + bb_api.bbGetDeviceName(id) + Environment.NewLine;
-        //        textBox1.Text += "Serial Number: " + bb_api.bbGetSerialString(id) + Environment.NewLine;
-        //        textBox1.Text += "Firmware Version: " + bb_api.bbGetFirmwareString(id) + Environment.NewLine;
-
-
-        //        float temp = 0.0F, voltage = 0.0F, current = 0.0F;
-        //        bb_api.bbGetDeviceDiagnostics(id, ref temp, ref voltage, ref current);
-        //        textBox1.Text += "Device Diagnostics" +
-        //            "Temperature: " + temp.ToString() + " C" +
-        //            "USB Voltage: " + voltage.ToString() + " V" +
-        //            "USB Current: " + current.ToString() + " mA";
-
-
-        //        textBox1.Text += "Configuring Device For a Sweep";
-        //        bb_api.bbConfigureAcquisition(id, bb_api.BB_MIN_AND_MAX, bb_api.BB_LOG_SCALE);
-        //        bb_api.bbConfigureCenterSpan(id, 1.0e9, 20.0e6);
-        //        bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
-        //        bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-        //        bb_api.bbConfigureSweepCoupling(id, 10.0e3, 10.0e3, 0.001,
-        //            bb_api.BB_NON_NATIVE_RBW, bb_api.BB_NO_SPUR_REJECT);
-        //        bb_api.bbConfigureProcUnits(id, bb_api.BB_LOG);
-
-        //        status = bb_api.bbInitiate(id, bb_api.BB_SWEEPING, 0);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "Error: Unable to initialize BB60";
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-
-        //        uint trace_len = 0;
-        //        double bin_size = 0.0;
-        //        double start_freq = 0.0;
-        //        status = bb_api.bbQueryTraceInfo(id, ref trace_len, ref bin_size, ref start_freq);
-
-        //        float[] sweep_max, sweep_min;
-        //        sweep_max = new float[trace_len];
-        //        sweep_min = new float[trace_len];
-
-        //        bb_api.bbFetchTrace_32f(id, unchecked((int)trace_len), sweep_min, sweep_max);
-        //        textBox1.Text += "Sweep Retrieved";
-
-        //        textBox1.Text += "Configuring the deviceto stream I/Q data";
-        //        bb_api.bbConfigureCenterSpan(id, 2400.0e6, 20.0e6);
-        //        bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
-        //        bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-        //        bb_api.bbConfigureIQ(id, bb_api.BB_MIN_DECIMATION, 20.0e6);
-
-                
-
-        //        status = bb_api.bbInitiate(id, bb_api.BB_STREAMING, bb_api.BB_STREAM_IQ);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "Error: Unable to initialize BB60 for streaming";
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-
-        //        int return_len = 0;
-        //        int samples_per_sec = 0;
-        //        double bandwidth = 0.0;
-        //        bb_api.bbQueryStreamInfo(id, ref return_len, ref bandwidth, ref samples_per_sec);
-        //        textBox1.Text += "Initialized Stream for ";
-        //        textBox1.Text += "Samples per second: " + (samples_per_sec / 1.0e6).ToString() + " MS/s";
-        //        textBox1.Text += "Bandwidth: " + (bandwidth / 1.0e6).ToString() + " MHz";
-        //        textBox1.Text += "Samples per function call: " + return_len.ToString() + Environment.NewLine;
-
-        //        // Alternating I/Q samples
-        //        // return_len is the number of I/Q pairs, so.. allocate twice as many floats
-        //        float[] iq_samples = new float[return_len * 2];
-        //        int[] triggers = new int[80];
-
-        //        bb_api.bbFetchRaw(id, iq_samples, triggers);
-        //        textBox1.Text += "Retrieved one I/Q packet";
-        //        textBox1.Text += "Closing Device";
-        //        bb_api.bbCloseDevice(id);
-                
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-
-        //} //просто тестирование
-        //private void button2_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        textBox1.Text += "Opening Device, Please Wait" + Environment.NewLine;
-        //        status = bb_api.bbOpenDevice(ref id);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "Error: Unable to open BB60" + Environment.NewLine;
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-        //        else
-        //        {
-        //            textBox1.Text += "Device Found" + Environment.NewLine;
-        //        }
-        //        // типа должны проициализировать устройства 
-        //        // ниже рабочее тело кода 
-        //        Double f_min = 90000000;
-        //        Double f_max = 110000000;
-
-        //        bb_api.bbConfigureAcquisition(id, bb_api.BB_MIN_AND_MAX, bb_api.BB_LOG_SCALE);
-        //        bb_api.bbConfigureCenterSpan(id, (f_max+f_min )/2, f_max- f_min);
-        //        label3.Text = f_min.ToString();
-        //        label4.Text = f_max.ToString();
-        //        bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
-        //        bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-        //                        bb_api.bbConfigureSweepCoupling(id, 10.0e3, 10.0e3, 0.001,
-        //            bb_api.BB_NON_NATIVE_RBW, bb_api.BB_NO_SPUR_REJECT);
-        //        bb_api.bbConfigureProcUnits(id, bb_api.BB_LOG);
-
-        //        status = bb_api.bbInitiate(id, bb_api.BB_SWEEPING, 0);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "Error: Unable to initialize BB60";
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-
-        //        uint trace_len = 0;
-        //        double bin_size = 0.0;
-        //        double start_freq = 0.0;
-        //        status = bb_api.bbQueryTraceInfo(id, ref trace_len, ref bin_size, ref start_freq);
-
-        //        float[] sweep_max, sweep_min;
-        //        sweep_max = new float[trace_len];
-        //        sweep_min = new float[trace_len];
-
-        //        bb_api.bbFetchTrace_32f(id, unchecked((int)trace_len), sweep_min, sweep_max);
-        //        textBox1.Text += "Sweep Retrieved";
-
-
-        //        //конец рабочего тела.
-        //        // гасим устройство 
-        //        textBox1.Text += "Closing Device";
-        //        bb_api.bbCloseDevice(id);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-
-            
-        //}
 
         /// <summary>
         /// 
@@ -270,7 +53,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         {
             Graphics g = Graphics.FromHwnd(pictureBox1.Handle);
             Pen pen = new Pen(Color.Red, 1);
-            g.DrawLine(pen, new Point(x1,y1),  new Point(x2,y2));
+            g.DrawLine(pen, new Point(x1, y1), new Point(x2, y2));
             g.Dispose();
         }
 
@@ -300,15 +83,15 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
 
         private void button3_Click_1(object sender, EventArgs e)
         {
-            drawLine(0,0,100,100);
-            drawLine(100,100,100,240);
-            drawPoint(240,240);
+            drawLine(0, 0, 100, 100);
+            drawLine(100, 100, 100, 240);
+            drawPoint(240, 240);
             drawPoint(240, 242);
             drawPoint(240, 246);
         }
 
         //private void button4_Click(object sender, EventArgs e)
-        
+
 
         private void button5_Click(object sender, EventArgs e)
         {
@@ -316,601 +99,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             g.Clear(pictureBox1.BackColor);
         }
 
-        //private void button6_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-
-        //        textBox1.Text += "RT Opening Device, Please Wait" + Environment.NewLine;
-        //        status = bb_api.bbOpenDevice(ref id);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "RT Error: Unable to open BB60" + Environment.NewLine;
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-        //        else
-        //        {
-        //            textBox1.Text += "RT Device Found" + Environment.NewLine;
-        //        }
-        //        // типа должны проициализировать устройства 
-        //        // ниже рабочее тело кода итак SW 
-        //        Double f_min = 103000000;
-        //        Double f_max = 105000000;
-        //        Double Level_min = -110;
-        //        Double Level_max = -10;
-        //        Double Time = 0.001;
-        //        Double RBW = 9863.28125;
-        //        Double VBW = 9863.28125;
-
-        //        bb_api.bbConfigureAcquisition(id, bb_api.BB_MIN_AND_MAX, bb_api.BB_LOG_SCALE);
-        //        bb_api.bbConfigureCenterSpan(id, (f_max + f_min) / 2, f_max - f_min);
-        //        label3.Text = (f_min / 1000000).ToString();
-        //        label4.Text = (f_max / 1000000).ToString();
-        //        label7.Text = Level_min.ToString();
-        //        label8.Text = Level_max.ToString();
-        //        bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
-        //        bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-        //        bb_api.bbConfigureSweepCoupling(id, RBW, VBW, Time,
-        //        bb_api.BB_NUTALL, bb_api.BB_NO_SPUR_REJECT);
-        //        bb_api.bbConfigureRealTime(id, 100.0, 30);
-
-        //        status = bb_api.bbInitiate(id, bb_api.BB_REAL_TIME, 0);
-        //        if (status != bbStatus.bbNoError)
-        //        {
-        //            textBox1.Text += "RT Error: Unable to initialize BB60";
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;
-        //        }
-
-
-        //        uint sweepsize = 0;
-        //        double bin_size = 0.0;
-        //        double start_freq = 0.0;
-        //        status = bb_api.bbQueryTraceInfo(id, ref sweepsize, ref bin_size, ref start_freq);
-        //        int frameWidth=0;
-        //        int frameHeight=0;
-        //        status = bb_api.bbQueryRealTimeInfo(id, ref frameWidth, ref frameHeight);
-        //        float[] sweep, frame;
-        //        sweep = new float[sweepsize];
-        //        frame = new float[frameWidth*frameHeight];
-
-
-
-        //        int frameCount = 0;
-        //        while (frameCount++ < 100)
-        //        {
-        //            bb_api.bbFetchRealTimeFrame(id, sweep, frame);
-        //            label9.Text = frameCount.ToString();
-
-
-        //            for (int i = 0; i < sweepsize; i++)
-        //            {
-        //                Double x = 400 * i / sweepsize;
-        //                Double y_min = (-sweep[i] + Level_max) * 400 / (Level_max - Level_min);
-        //                //Double y_max = (-sweep[i] + Level_max) * 400 / (Level_max - Level_min);
-        //                drawPoint((int)x, (int)y_min);
-        //                //drawPoint((int)x, (int)(y_max / 2 + y_max / 2));
-        //            }
-        //        }
-
-        //        // Конец рабочего тела оборудования
-        //        // Закрываем оборудование
-        //        textBox1.Text += "Closing Device";
-        //        bb_api.bbCloseDevice(id);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
-
-        //private void button7_Click(object sender, EventArgs e)
-        //{
-        //    /*string err = "No error";
-        //    SDR_BB60C test_une_sw = new SDR_BB60C();
-        //    /*
-        //    test_une_sw.f_min = 102; // берем из формы
-        //    test_une_sw.f_max = 105; // берем из формы
-        //    test_une_sw.ref_level_dbm = -20; // константа
-        //    test_une_sw.VBW = 10000; // берем из формы
-        //    test_une_sw.RBW = 10000; // берем из формы
-        //    int sw_time = 50;//  берем из формы
-        //    string Type_of_m = "RT"; // тип режима измерения. Есть 2 режима. SW и RT 
-        //     */
-        //    /*
-        //    test_une_sw.f_min = 100; // берем из формы
-        //    test_une_sw.f_max = 110; // берем из формы
-        //    test_une_sw.ref_level_dbm = -20; // константа
-        //    test_une_sw.VBW = 10000; // берем из формы
-        //    test_une_sw.RBW = 10000; // берем из формы
-        //    int sw_time = 5;//  берем из формы
-        //    string Type_of_m = "RT"; // тип режима измерения. Есть 2 режима. SW и RT 
-
-
-        //    test_une_sw.initiation_SDR();
-        //    if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of initialization"; test_une_sw.Close_dev(); return;}
-        //    test_une_sw.calibration();
-        //    if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of calibration"; test_une_sw.Close_dev(); return; }
-        //    if (Type_of_m == "SW")
-        //    {
-        //        test_une_sw.put_config_for_sweep();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for SW"; test_une_sw.Close_dev(); return; }
-        //        test_une_sw.Sweep(sw_time);
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; test_une_sw.Close_dev(); return; }
-        //    }
-        //    else if (Type_of_m == "RT")
-        //    {
-        //        test_une_sw.put_config_for_RT();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for RT"; test_une_sw.Close_dev(); return; }
-        //        test_une_sw.Real_time(sw_time);
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of RT"; test_une_sw.Close_dev(); return; }
-        //    }
-        //    test_une_sw.Close_dev();
-
-        //    // в данной точке результат находится в переменой test_une_sw.F_semples мы ее возвращаем только и всего а также возвращаем err
-
-
-
-
-        //    // ниже код нужен только для тестов его после прибить
-        //    Double Level_min = -110;
-        //    Double Level_max = -10;
-        //    for (int i = 0; i < test_une_sw.F_semples.Count-1; i++)
-        //    {
-        //        Double x = 400 * i / (test_une_sw.F_semples.Count - 1);
-        //        Double y_max = (-test_une_sw.F_semples[i].Level_dBm + Level_max) * 400 / (Level_max - Level_min);
-        //        drawPoint((int)x, (int)(y_max / 2 + y_max / 2));
-        //    }
-
-
-        //    */
-        //}
-
-
-        //private void F1(SDR_BB60C input)
-        //{
-        //    /*
-        //    try
-        //    {
-        //        string err = "No error";
-        //        SDR_BB60C test_une_sw = new SDR_BB60C();
-        //        test_une_sw.f_min = input.f_min; // берем из формы
-        //        test_une_sw.f_max = input.f_max; // берем из формы
-        //        test_une_sw.ref_level_dbm = -20; // константа
-        //        test_une_sw.VBW = input.VBW; // берем из формы
-        //        test_une_sw.RBW = input.RBW; // берем из формы
-        //        int sw_time = input.sw_time;//  берем из формы
-        //        string Type_of_m = input.Type_of_m;//  берем из формы
-
-        //        test_une_sw.TypeFunction = 1;
-
-        //        test_une_sw.initiation_SDR();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of initialization"; test_une_sw.isError = true; test_une_sw.isAbort = true; }
-        //        test_une_sw.calibration();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of calibration"; test_une_sw.isError = true; test_une_sw.isAbort = true; }
-        //        if (Type_of_m == "SW")
-        //        {
-        //            test_une_sw.put_config_for_sweep();
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for SW"; test_une_sw.isError = true; test_une_sw.isAbort = true; }
-        //            test_une_sw.Sweep(sw_time);
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; test_une_sw.isError = true; test_une_sw.isAbort = true; }
-        //        }
-        //        else if (Type_of_m == "RT")
-        //        {
-        //            test_une_sw.put_config_for_RT();
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for RT"; test_une_sw.isError = true; test_une_sw.isAbort = true; }
-        //            test_une_sw.Real_time(sw_time);
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of RT"; test_une_sw.isError = true; test_une_sw.isAbort = true; }
-        //        }
-        //        test_une_sw.Close_dev();
-
-        //        if (test_une_sw.F_semples.Count > 0)
-        //            test_une_sw.F_semples = CorrectMass(input.N, test_une_sw.F_semples);
-
-        //        //Сериализация объекта и отправка на клиента
-        //        String tempPath_answer = System.IO.Path.GetTempPath();
-        //        string xml_file = string.Format(tempPath_answer + "\\{0}", Guid.NewGuid().ToString()) + ".xml";
-        //        XmlSerializer ser = new XmlSerializer(typeof(SDR_BB60C));
-        //        var writer = new System.IO.StreamWriter(xml_file, false);
-        //        ser.Serialize(writer, test_une_sw);
-        //        writer.Flush();
-        //        writer.Close();
-        //        string nString = File.ReadAllText(xml_file, Encoding.UTF8);
-        //        Server.SendAdminMessage(nString.ToString());
-        //        File.Delete(xml_file);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //    }
-        //    */
-        //}
-
-        //private void button8_Click(object sender, EventArgs e)
-        //{
-        //    /*
-        //    string err = "No error";
-        //    SDR_BB60C test_une_sw = new SDR_BB60C();
-        //    test_une_sw.f_min = 102; // берем из формы
-        //    test_une_sw.f_max = 105; // берем из формы
-        //    test_une_sw.ref_level_dbm = -20; // константа
-        //    test_une_sw.VBW = 10000; // берем из формы
-        //    test_une_sw.RBW = 10000; // берем из формы
-
-        //    int sw_time = 5;//  берем из формы
-        //    string Type_of_m = "RT"; // тип режима измерения. Есть 2 режима. SW и RT 
-
-
-        //    test_une_sw.initiation_SDR();
-        //    if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of initialization"; return; }
-        //    test_une_sw.calibration();
-        //    if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of calibration"; return; }
-        //    if (Type_of_m == "SW")
-        //    {
-        //        test_une_sw.put_config_for_sweep();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for SW"; return; }
-
-        //        int count = 0;
-        //        while (count++<50)
-        //        {
-        //                test_une_sw.Sweep(sw_time);
-        //                if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; return; }
-        //            // в данной точке результат находится в переменой test_une_sw.F_semples мы ее возвращаем только и всего а также возвращаем err 
-        //            // кстати это происходит у нас циклически
-        //            /// ниже код нужен только для тестов его после прибить
-        //                Double Level_min = -110;
-        //                Double Level_max = -10;
-        //                for (int i = 0; i < test_une_sw.F_semples.Count - 1; i++)
-        //                {
-        //                    Double x = 400 * i / (test_une_sw.F_semples.Count - 1);
-        //                    Double y_max = (-test_une_sw.F_semples[i].Level_dBm + Level_max) * 400 / (Level_max - Level_min);
-        //                    drawPoint((int)x, (int)(y_max / 2 + y_max / 2));
-        //                }
-        //        }
-
-
-        //    }
-        //    else if (Type_of_m == "RT")
-        //    {
-        //        test_une_sw.put_config_for_RT();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for RT"; return; }
-
-        //        int count = 0;
-        //        while (count++ < 50)
-        //        {
-        //            test_une_sw.Real_time(sw_time);
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of RT"; return; }
-        //            // в данной точке результат находится в переменой test_une_sw.F_semples мы ее возвращаем только и всего а также возвращаем err 
-        //            // кстати это происходит у нас циклически
-        //            /// ниже код нужен только для тестов его после прибить
-        //            Double Level_min = -110;
-        //            Double Level_max = -10;
-        //            for (int i = 0; i < test_une_sw.F_semples.Count - 1; i++)
-        //            {
-        //                Double x = 400 * i / (test_une_sw.F_semples.Count - 1);
-        //                Double y_max = (-test_une_sw.F_semples[i].Level_dBm + Level_max) * 400 / (Level_max - Level_min);
-        //                drawPoint((int)x, (int)(y_max / 2 + y_max / 2));
-        //            }
-        //        }
-
-
-        //    }
-        //    test_une_sw.Close_dev();
-        //    */
-        //}
-
-        ////private void F2(SDR_BB60C input)
-        //{
-        //    /*
-        //    try
-        //    {
-        //        string err = "No error";
-        //        SDR_BB60C test_une_sw = new SDR_BB60C();
-        //        test_une_sw.f_min = input.f_min; // берем из формы
-        //        test_une_sw.f_max = input.f_max; // берем из формы
-        //        test_une_sw.ref_level_dbm = -20; // константа
-        //        test_une_sw.VBW = input.VBW; // берем из формы
-        //        test_une_sw.RBW = input.RBW; // берем из формы
-        //        int sw_time = input.sw_time;//  берем из формы
-        //        string Type_of_m = input.Type_of_m;//  берем из формы
-        //        mainServer.isAbort = false;
-        //        test_une_sw.TypeFunction = 2;
-        //        test_une_sw.initiation_SDR();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of initialization"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-        //        test_une_sw.calibration();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of calibration"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-        //        if (Type_of_m == "RT")
-        //        {
-        //            test_une_sw.put_config_for_RT();
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for RT"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-
-        //            double c = 1.02;
-        //            while (true)
-        //            {
-        //                Application.DoEvents();
-        //                if (mainServer.isAbt()) break;
-
-
-        //                test_une_sw.Real_time(sw_time);
-        //                if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-
-        //                if (test_une_sw.F_semples.Count > 0)
-        //                    test_une_sw.F_semples = CorrectMass(input.N, test_une_sw.F_semples);
-
-
-        //                // в данной точке результат находится в переменой test_une_sw.F_semples мы ее возвращаем только и всего а также возвращаем err 
-        //                // кстати это происходит у нас циклически
-        //                /// ниже код нужен только для тестов его после прибить
-        //                //Сериализация объекта и отправка на клиента
-        //                String tempPath_answer = System.IO.Path.GetTempPath();
-        //                string xml_file = string.Format(tempPath_answer + "\\{0}", Guid.NewGuid().ToString()) + ".xml";
-        //                XmlSerializer ser = new XmlSerializer(typeof(SDR_BB60C));
-        //                var writer = new System.IO.StreamWriter(xml_file, false);
-        //                ser.Serialize(writer, test_une_sw);
-        //                writer.Flush();
-        //                writer.Close();
-        //                string nString = File.ReadAllText(xml_file, Encoding.UTF8);
-        //                Server.SendAdminMessage(nString.ToString());
-        //                File.Delete(xml_file);
-
-        //            }
-        //        }
-        //        else if (Type_of_m == "SW")
-        //        {
-        //            test_une_sw.put_config_for_sweep();
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for SW"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-
-        //            double c = 1.02;
-        //            while (true)
-        //            {
-        //                Application.DoEvents();
-        //                if (mainServer.isAbt()) break;
-
-
-
-        //                test_une_sw.Sweep(sw_time);
-        //                if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-
-        //                if (test_une_sw.F_semples.Count > 0)
-        //                    test_une_sw.F_semples = CorrectMass(input.N, test_une_sw.F_semples);
-
-
-        //                // в данной точке результат находится в переменой test_une_sw.F_semples мы ее возвращаем только и всего а также возвращаем err 
-        //                // кстати это происходит у нас циклически
-        //                /// ниже код нужен только для тестов его после прибить
-        //                //Сериализация объекта и отправка на клиента
-        //                String tempPath_answer = System.IO.Path.GetTempPath();
-        //                string xml_file = string.Format(tempPath_answer + "\\{0}", Guid.NewGuid().ToString()) + ".xml";
-        //                XmlSerializer ser = new XmlSerializer(typeof(SDR_BB60C));
-        //                var writer = new System.IO.StreamWriter(xml_file, false);
-        //                ser.Serialize(writer, test_une_sw);
-        //                writer.Flush();
-        //                writer.Close();
-        //                string nString = File.ReadAllText(xml_file, Encoding.UTF8);
-        //                Server.SendAdminMessage(nString.ToString());
-        //                File.Delete(xml_file);
-
-        //            }
-        //        }
-        //        test_une_sw.Close_dev();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //    }
-        //    */
-        //}
-
-        //private void F3(SDR_BB60C input)
-        //{
-        //    /*
-        //    try
-        //    {
-        //        mainServer.isAbort = false;
-        //        // Начало работы процедуры Spectr Ocup
-        //        string err = "No error";
-        //        SDR_BB60C test_une_sw = new SDR_BB60C();
-        //        //test_une_sw.List_freq_CH = new List<Double>() { 100.5, 100.7, 100.8, 100.9, 100, 100.1, 100.2, 100.3, 101 };// формируема на основании канального плана  
-        //        test_une_sw.List_freq_CH = input.List_freq_CH;
-        //        int sw_time = input.sw_time;//  берем из формы
-        //        string Type_of_m = input.Type_of_m;//  берем из формы
-        //        test_une_sw.BW_CH = input.BW_CH;
-        //        test_une_sw.ref_level_dbm = -20; // константа
-        //        test_une_sw.n_in_chenal = input.n_in_chenal;
-        //        test_une_sw.Level_min_occup = input.Level_min_occup;
-        //        test_une_sw.Type_of_SO = input.Type_of_SO;
-        //        // формируем начало и конец для измерений 
-        //        test_une_sw.TypeFunction = 3;
-        //        test_une_sw.List_freq_CH.Sort();
-        //        test_une_sw.f_min = input.f_min;
-        //        test_une_sw.f_max = input.f_max;
-        //        //test_une_sw.f_min = test_une_sw.List_freq_CH[0] - test_une_sw.BW_CH / 2000;
-        //        //test_une_sw.f_max = test_une_sw.List_freq_CH[test_une_sw.List_freq_CH.Count - 1] + test_une_sw.BW_CH / 2000;
-        //        // расчитываем желаемое RBW и VBW
-        //        test_une_sw.VBW = test_une_sw.BW_CH * 1000 / test_une_sw.n_in_chenal;
-        //        test_une_sw.RBW = test_une_sw.BW_CH * 1000 / test_une_sw.n_in_chenal;
-
-        //        // коректировка режима измерения 
-        //        if ((Type_of_m == "RT") && ((test_une_sw.f_max - test_une_sw.f_min > 20) || ((test_une_sw.f_max - test_une_sw.f_min) * 1000 / test_une_sw.RBW > 8000))) { Type_of_m = "SW"; }
-
-
-        //        test_une_sw.initiation_SDR();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of initialization"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-        //        test_une_sw.calibration();
-        //        if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of calibration"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-        //        // настройка 
-        //        if (Type_of_m == "SW")
-        //        {
-        //            test_une_sw.put_config_for_sweep();
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for SW"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-        //        }
-        //        else if (Type_of_m == "RT")
-        //        {
-        //            test_une_sw.put_config_for_RT();
-        //            if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for RT"; test_une_sw.isAbort = true; test_une_sw.isError = true; }
-        //        }
-        //        // вот и настроили
-        //        int count = 0;
-        //        List<f_semples> F_ch_res = new List<f_semples>();
-        //        while (true)
-        //        {
-        //            count++;
-        //            Application.DoEvents();
-        //            if (mainServer.isAbt()) break;
-
-        //            // сохраняем предыдущий результат если это не первый замер
-        //            List<f_semples> F_temp = new List<f_semples>();
-        //            if (count != 1) { F_temp = test_une_sw.F_semples; }
-
-        //            // замер 
-        //            if (Type_of_m == "SW") { test_une_sw.Sweep(sw_time); if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; test_une_sw.isAbort = true; test_une_sw.isError = true; } }
-        //            else if (Type_of_m == "RT") { test_une_sw.Real_time(sw_time); if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of RT"; test_une_sw.isAbort = true; test_une_sw.isError = true; } }
-        //            // замер выполнен он находится в  test_une_sw.F_semple
-
-        //            // дополняем замер значениями SO и прочим теперь значения красивые по микроканальчикам
-        //            for (int i = 0; i <= test_une_sw.F_semples.Count - 1; i++)
-        //            {
-        //                test_une_sw.F_semples[i].Level_max_dBm = test_une_sw.F_semples[i].Level_dBm;
-        //                test_une_sw.F_semples[i].Level_min_dBm = test_une_sw.F_semples[i].Level_dBm;
-        //                if (test_une_sw.F_semples[i].Level_dBm > test_une_sw.Level_min_occup)
-        //                { test_une_sw.F_semples[i].Ocupation_pt = 100; }
-        //                else { test_une_sw.F_semples[i].Ocupation_pt = 0; }
-        //            }
-        //            // Вот и дополнили значениями SO и прочим теперь значения красивые по микроканальчикам
-        //            // Вычисляем занятость для данного замера по каналам 
-        //            List<f_semples> F_ch_res_temp = new List<f_semples>(); // здест будут храниться замеры приведенные к каналу
-        //            int start = 0;
-        //            for (int i = 0; i <= test_une_sw.List_freq_CH.Count - 1; i++) // Цикл по каналам
-        //            {
-        //                f_semples F_SO = new f_semples(); // здесь будет храниться один замер приведенный к каналу
-        //                int sempl_in_freq = 0; //количество замеров идущие в один канал 
-        //                for (int j = start; j <= test_une_sw.F_semples.Count - 1; j++) // цикл по замерам по канальчикам
-        //                {
-        //                    if (test_une_sw.List_freq_CH[i] + test_une_sw.BW_CH / 2000 < test_une_sw.F_semples[j].Freq) { start = j; break; }
-        //                    if ((test_une_sw.List_freq_CH[i] - test_une_sw.BW_CH / 2000 <= test_une_sw.F_semples[j].Freq) && (test_une_sw.List_freq_CH[i] + test_une_sw.BW_CH / 2000 > test_une_sw.F_semples[j].Freq)) // проверка на попадание в диапазон частот
-        //                    {
-        //                        sempl_in_freq = sempl_in_freq + 1;
-        //                        if (sempl_in_freq == 1)// заполняем первое попадание как есть
-        //                        {
-        //                            F_SO.Freq = test_une_sw.List_freq_CH[i];
-        //                            F_SO.Level_dBm = test_une_sw.F_semples[j].Level_dBm;
-        //                            if (test_une_sw.Type_of_SO == "FBO") // частотная занятость
-        //                            {
-        //                                if (test_une_sw.F_semples[j].Level_dBm > test_une_sw.Level_min_occup + 10 * Math.Log10(test_une_sw.RBW / (test_une_sw.BW_CH * 1000)))
-        //                                { F_SO.Ocupation_pt = 100; }
-        //                            }
-        //                        }
-        //                        else // накапливаем уровень синнала
-        //                        {
-        //                            F_SO.Level_dBm = Math.Pow(10, F_SO.Level_dBm / 10) + Math.Pow(10, test_une_sw.F_semples[j].Level_dBm / 10);
-        //                            F_SO.Level_dBm = 10 * Math.Log10(F_SO.Level_dBm);
-        //                            if (test_une_sw.Type_of_SO == "FBO") // частотная занятость //накапливаем
-        //                            {
-        //                                if (test_une_sw.F_semples[j].Level_dBm > test_une_sw.Level_min_occup + 10 * Math.Log10(test_une_sw.RBW / (test_une_sw.BW_CH * 1000)))
-        //                                { F_SO.Ocupation_pt = F_SO.Ocupation_pt + 100; }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //                if (test_une_sw.Type_of_SO == "FBO") { F_SO.Ocupation_pt = F_SO.Ocupation_pt / sempl_in_freq; }
-        //                if (test_une_sw.Type_of_SO == "FCO") { if (F_SO.Level_dBm > test_une_sw.Level_min_occup) { F_SO.Ocupation_pt = 100; } }
-        //                F_SO.Level_max_dBm = F_SO.Level_dBm;
-        //                F_SO.Level_min_dBm = F_SO.Level_dBm;
-        //                //F_SO на данный момент готов
-        //                F_ch_res_temp.Add(F_SO); // добавляем во временный масив данные.
-        //            }
-        //            // данные единичного замера приведенного к каналам находятся здесь F_ch_res_temp    
-        //            // Собираем статистику  в F_ch_res
-        //            try
-        //            {
-        //                if (count == 1)
-        //                { F_ch_res = F_ch_res_temp; }
-        //                else
-        //                {
-        //                    if (F_ch_res.Count != F_ch_res_temp.Count)
-        //                    {
-        //                        int q = 1;
-        //                    }
-        //                   // F_ch_res = F_ch_res_temp;
-        //                    for (int i = 0; i <= F_ch_res.Count - 1; i++)
-        //                    {
-        //                        F_ch_res[i].Level_dBm = (count * F_ch_res[i].Level_dBm + F_ch_res_temp[i].Level_dBm) / (count + 1);
-        //                        F_ch_res[i].Ocupation_pt = (count * F_ch_res[i].Ocupation_pt + F_ch_res_temp[i].Ocupation_pt) / (count + 1);
-        //                        if (F_ch_res[i].Level_max_dBm < F_ch_res_temp[i].Level_max_dBm) { F_ch_res[i].Level_max_dBm = F_ch_res_temp[i].Level_max_dBm; }
-        //                        if (F_ch_res[i].Level_min_dBm > F_ch_res_temp[i].Level_min_dBm) { F_ch_res[i].Level_min_dBm = F_ch_res_temp[i].Level_min_dBm; }
-        //                    }
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-
-        //            }
-        //            test_une_sw.F_semples.Clear();
-        //            test_une_sw.F_semples.AddRange(F_ch_res);
-        //            test_une_sw.N = count;
-        //            //test_une_sw.F_semples = F_ch_res;
-
-        //              //  var test_une_sw_tmp = new SDR_BB60C_test();
-        //              //  test_une_sw_tmp = test_une_sw;
-        //             //  test_une_sw_tmp.F_semples = F_ch_res;
-
-
-
-
-        //            // в данной точке результат находится в переменой test_une_sw.F_semples мы ее возвращаем только и всего а также возвращаем err 
-        //            // кстати это происходит у нас циклически
-        //            /// ниже код нужен только для тестов его после прибить
-        //            //Сериализация объекта и отправка на клиента
-        //            String tempPath_answer = System.IO.Path.GetTempPath();
-        //            string xml_file = string.Format(tempPath_answer + "\\{0}", Guid.NewGuid().ToString()) + ".xml";
-        //            XmlSerializer ser = new XmlSerializer(typeof(SDR_BB60C));
-        //            var writer = new System.IO.StreamWriter(xml_file, false);
-        //            ser.Serialize(writer, test_une_sw);
-        //            writer.Flush();
-        //            writer.Close();
-        //            string nString = File.ReadAllText(xml_file, Encoding.UTF8);
-        //            Server.SendAdminMessage(nString.ToString());
-        //            File.Delete(xml_file);
-
-
-        //           // break;
-        //            // в данной точке результат находится в переменой F_ch_res и в count мы его должны показать/запомнить.  
-        //            // кстати это происходит у нас циклически
-
-        //        }
-        //        test_une_sw.Close_dev();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //test_une_sw.Close_dev();
-        //    }
-        //     */
-        //}
-
-        //private List<FSemples> CorrectMass(int MAX_N, List<FSemples> semples)
-        //{
-        //    List<FSemples> OutMass = new List<FSemples>();
-        //    if (semples.Count>MAX_N) {
-        //        double Val = semples.Count / MAX_N;
-        //        double N = Math.Ceiling(Val);
-        //        int NN = (int)N;
-        //        if (NN > 1) {
-        //            int index = 0;
-        //            while (index < semples.Count){
-        //                if ((index % N) == 0) {
-        //                    if (OutMass.Count<MAX_N)
-        //                        OutMass.Add(semples[index]);
-        //                }
-        //                index = index + 1;
-        //            }
-        //        }
-        //        else OutMass = semples;
-        //    }
-        //    else OutMass = semples;
-        //    return OutMass;
-        //}
-
+  
         private void Form1_Shown(object sender, EventArgs e)
         {
             //Listen();
@@ -922,391 +111,6 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         {
             //mainServer.Close();
         }
-
-        //        private void button10_Click(object sender, EventArgs e)
-        //        {
-        //            /*
-        //            // Начало работы процедуры Spectr Ocup
-        //                string err = "No error";
-        //                SDR_BB60C test_une_sw = new SDR_BB60C();
-        //                test_une_sw.List_freq_CH = new List<Double>() { 100.5, 100.7, 100.8, 100.9, 100, 100.1, 100.2, 100.3, 101, 101.1, 101.2, 101.3, 101.4, 101.5, 101.6, 101.7, 101.8, 101.9, 102.0, 103.1, 103.2, 103.3, 103.4, 103.5, 103.6, 103.7, 103.8, 103.9, 104.0 };// формируема на основании канального плана  
-        //                test_une_sw.BW_CH = 100; // формируема на основании канального плана 
-        //                int sw_time = 5;//  берем из формы
-        //                string Type_of_m = "SW"; // тип режима измерения. Есть 2 режима. SW и RT
-        //                test_une_sw.ref_level_dbm = -20; // константа
-        //                test_une_sw.n_in_chenal = 10;//показывает сколько измерений надо сделать в канале; данную штуку надо засунуть в файл конфигурации
-        //                test_une_sw.Level_min_occup = -80; // берем из формы
-        //                test_une_sw.Type_of_SO = "FBO"; //берем из формы
-        //                // формируем начало и конец для измерений 
-        //                test_une_sw.List_freq_CH.Sort();
-        //                test_une_sw.f_min = test_une_sw.List_freq_CH[0]-test_une_sw.BW_CH/2000;
-        //                test_une_sw.f_max = test_une_sw.List_freq_CH[test_une_sw.List_freq_CH.Count-1] + test_une_sw.BW_CH / 2000;
-        //                // расчитываем желаемое RBW и VBW
-        //                test_une_sw.VBW = test_une_sw.BW_CH * 1000 / test_une_sw.n_in_chenal;
-        //                test_une_sw.RBW = test_une_sw.BW_CH * 1000 / test_une_sw.n_in_chenal;
-
-        //                // коректировка режима измерения 
-        //                if ((Type_of_m == "RT") && ((test_une_sw.f_max - test_une_sw.f_min > 20) || ((test_une_sw.f_max - test_une_sw.f_min) * 1000 / test_une_sw.RBW > 8000))) { Type_of_m = "SW";} 
-
-
-        //                test_une_sw.initiation_SDR();
-        //                if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of initialization"; return; }
-        //                test_une_sw.calibration();
-        //                if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of calibration"; return; }
-        //                // настройка 
-        //                if (Type_of_m == "SW") 
-        //                {
-        //                    test_une_sw.put_config_for_sweep();
-        //                    if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for SW"; return; }
-        //                }
-        //                 else if (Type_of_m == "RT")
-        //                {
-        //                     test_une_sw.put_config_for_RT();
-        //                     if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of config for RT"; return; }
-        //                }
-        //                // вот и настроили
-        //                int count = 0;
-        //                List<f_semples> F_ch_res = new List<f_semples>();
-        //                while (count++ < 50)  
-        //                {
-        //                    // сохраняем предыдущий результат если это не первый замер
-        //                    List<f_semples> F_temp = new List<f_semples>();
-        //                    if (count != 1) {F_temp = test_une_sw.F_semples;}
-
-        //                    // замер 
-        //                    if (Type_of_m == "SW") {test_une_sw.Sweep(sw_time);if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of SW"; return; }}
-        //                    else if (Type_of_m == "RT"){test_une_sw.Real_time(sw_time);if (test_une_sw.status != bbStatus.bbNoError) { err = "Error of RT"; return; }}
-        //                    // замер выполнен он находится в  test_une_sw.F_semple
-
-        //                    // дополняем замер значениями SO и прочим теперь значения красивые по микроканальчикам
-        //                    for (int i = 0; i<test_une_sw.F_semples.Count-1; i++)
-        //                    {
-        //                        test_une_sw.F_semples[i].Level_max_dBm = test_une_sw.F_semples[i].Level_dBm;
-        //                        test_une_sw.F_semples[i].Level_min_dBm = test_une_sw.F_semples[i].Level_dBm;
-        //                        if (test_une_sw.F_semples[i].Level_dBm > test_une_sw.Level_min_occup)
-        //                        {test_une_sw.F_semples[i].Ocupation_pt = 100;}
-        //                        else{test_une_sw.F_semples[i].Ocupation_pt = 0;}
-        //                    }
-        //                    // Вот и дополнили значениями SO и прочим теперь значения красивые по микроканальчикам
-        //                    // Вычисляем занятость для данного замера по каналам 
-        //                    List<f_semples> F_ch_res_temp = new List<f_semples>(); // здест будут храниться замеры приведенные к каналу
-        //                    int start = 0;
-        //                    for (int i = 0; i < test_une_sw.List_freq_CH.Count - 1; i++) // Цикл по каналам
-        //                    {
-        //                        f_semples F_SO = new f_semples(); // здесь будет храниться один замер приведенный к каналу
-        //                        int sempl_in_freq = 0; //количество замеров идущие в один канал 
-        //                        for (int j = start; j < test_une_sw.F_semples.Count - 1; j++) // цикл по замерам по канальчикам
-        //                        {
-        //                            if (test_une_sw.List_freq_CH[i] + test_une_sw.BW_CH/2000 < test_une_sw.F_semples[j].Freq) {start = j; break;}
-        //                            if ((test_une_sw.List_freq_CH[i] - test_une_sw.BW_CH / 2000 <= test_une_sw.F_semples[j].Freq) && (test_une_sw.List_freq_CH[i] + test_une_sw.BW_CH / 2000 > test_une_sw.F_semples[j].Freq)) // проверка на попадание в диапазон частот
-        //                            {
-        //                                sempl_in_freq = sempl_in_freq+1;
-        //                                if (sempl_in_freq == 1)// заполняем первое попадание как есть
-        //                                {
-        //                                   F_SO.Freq = test_une_sw.List_freq_CH[i];
-        //                                   F_SO.Level_dBm = test_une_sw.F_semples[j].Level_dBm;
-        //                                   if (test_une_sw.Type_of_SO == "FBO") // частотная занятость
-        //                                   {
-        //                                       if (test_une_sw.F_semples[j].Level_dBm > test_une_sw.Level_min_occup + 10*Math.Log10(test_une_sw.RBW/(test_une_sw.BW_CH*1000)))
-        //                                       {F_SO.Ocupation_pt = 100;}
-        //                                   }
-        //                                }
-        //                                else // накапливаем уровень синнала
-        //                                {
-        //                                   F_SO.Level_dBm = Math.Pow(10,F_SO.Level_dBm/10) + Math.Pow(10,test_une_sw.F_semples[j].Level_dBm/10);
-        //                                   F_SO.Level_dBm = 10 *Math.Log10(F_SO.Level_dBm);
-        //                                   if (test_une_sw.Type_of_SO == "FBO") // частотная занятость //накапливаем
-        //                                   {
-        //                                       if (test_une_sw.F_semples[j].Level_dBm > test_une_sw.Level_min_occup + 10*Math.Log10(test_une_sw.RBW/(test_une_sw.BW_CH*1000)))
-        //                                       {F_SO.Ocupation_pt = F_SO.Ocupation_pt + 100;}
-        //                                   }
-        //                                }
-        //                            }     
-        //                        }
-        //                        if (test_une_sw.Type_of_SO == "FBO") {F_SO.Ocupation_pt = F_SO.Ocupation_pt/sempl_in_freq;}
-        //                        if (test_une_sw.Type_of_SO == "FCO") {if (F_SO.Level_dBm >test_une_sw.Level_min_occup) {F_SO.Ocupation_pt =100;}}
-        //                        F_SO.Level_max_dBm = F_SO.Level_dBm;
-        //                        F_SO.Level_min_dBm = F_SO.Level_dBm;
-        //                        //F_SO на данный момент готов
-        //                        F_ch_res_temp.Add(F_SO); // добавляем во временный масив данные.
-        //                  }
-        //                  // данные единичного замера приведенного к каналам находятся здесь F_ch_res_temp    
-        //                  // Собираем статистику  в F_ch_res
-        //                  if (count ==1)
-        //                  {F_ch_res = F_ch_res_temp;}
-        //                  else
-        //                  {
-        //                      for (int i = 0; i < F_ch_res.Count - 1;i++)
-        //                      {
-        //                          F_ch_res[i].Level_dBm = (count*F_ch_res[i].Level_dBm + F_ch_res_temp[i].Level_dBm)/(count +1);
-        //                          F_ch_res[i].Ocupation_pt = (count*F_ch_res[i].Ocupation_pt + F_ch_res_temp[i].Ocupation_pt)/(count +1);
-        //                          if (F_ch_res[i].Level_max_dBm < F_ch_res_temp[i].Level_max_dBm) {F_ch_res[i].Level_max_dBm = F_ch_res_temp[i].Level_max_dBm;}
-        //                          if (F_ch_res[i].Level_min_dBm > F_ch_res_temp[i].Level_min_dBm) {F_ch_res[i].Level_min_dBm = F_ch_res_temp[i].Level_min_dBm;}
-        //                      }
-        //                  }
-
-        //                 // в данной точке результат находится в переменой F_ch_res и в count мы его должны показать/запомнить.  
-        //                  // кстати это происходит у нас циклически
-
-        //              }
-        //             test_une_sw.Close_dev();
-        //             */
-        //       }
-
-        //        private void button11_Click(object sender, EventArgs e)
-        //        {
-
-        //        }
-
-        //        private void button12_Click(object sender, EventArgs e)
-        //        {
-
-
-        //            MEAS_TASK_SDR mEAS_TASK_SDR = new MEAS_TASK_SDR();
-        //            mEAS_TASK_SDR.ident_task = "1234586";
-        //            mEAS_TASK_SDR.id_meas_sub_task_st = "99094";
-        //            mEAS_TASK_SDR.MEAS_SDR = new MEAS_SDR();
-        //            mEAS_TASK_SDR.MEAS_SDR.IDENT = "BBC60C_123";
-        //            mEAS_TASK_SDR.MEAS_SDR.Type_SDR = "BBC60C";
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM = new MEAS_SDR_FREQ_PARAM();
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.BW_CH = 50; // 50 кГц
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.f_min = 95;
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.f_max = 105;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM = new MEAS_SDR_PARAM();
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.DETECT_TYPE = "Average";
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.PREAMPLIFICATION = 0;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.RBW = 50;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.VBW = 50;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.ref_level_dbm = -20;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.RF_ATTENUATION = 0;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.Time_of_m = 10;
-        //            mEAS_TASK_SDR.status = "A";
-        //            mEAS_TASK_SDR.sw_time = 10;
-        //            mEAS_TASK_SDR.TypeFunction = "Scan";
-        //            mEAS_TASK_SDR.Type_of_m = "RT";
-
-        //            SDR_test.process_meas_BB60C(mEAS_TASK_SDR);
-        //            MEAS_SDR_RESULTS results = new MEAS_SDR_RESULTS();
-        //            results = SDR_test.MEAS_SDR_RESULTS;*/
-        //        }
-
-        //        private void button13_Click(object sender, EventArgs e)
-        //        {
-        //            /*
-        //            // тестирование занятия спектра 
-        //            MEAS_TASK_SDR mEAS_TASK_SDR = new MEAS_TASK_SDR();
-        //            mEAS_TASK_SDR.ident_task = "123456";
-        //            mEAS_TASK_SDR.id_meas_sub_task_st = "99094";
-        //            mEAS_TASK_SDR.MEAS_SDR = new MEAS_SDR();
-        //            mEAS_TASK_SDR.MEAS_SDR.IDENT = "BBC60C_123";
-        //            mEAS_TASK_SDR.MEAS_SDR.Type_SDR = "BBC60C";
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM = new MEAS_SDR_FREQ_PARAM();
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.BW_CH = 100; // 50 кГц
-
-
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST = new List<MEAS_SDR_FREQ_LST>();
-        //            MEAS_SDR_FREQ_LST fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 102; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 99.1; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 99.3; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 99.5; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100.1; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100.2; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100.3; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100.4; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100.5; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            fr_lst = new MEAS_SDR_FREQ_LST(); fr_lst.freq_ch = 100.6; mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.FREQ_LST.Add(fr_lst);
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.f_min = 99.05;
-        //            mEAS_TASK_SDR.MEAS_SDR_FREQ_PARAM.f_max = 102.05;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM = new MEAS_SDR_PARAM();
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.DETECT_TYPE = "Average";
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.PREAMPLIFICATION = 0;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.RBW = 100;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.VBW = 100;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.ref_level_dbm = -20;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.RF_ATTENUATION = 0;
-        //            mEAS_TASK_SDR.MEAS_SDR_PARAM.Time_of_m = 10;
-        //            mEAS_TASK_SDR.status = "A";
-        //            mEAS_TASK_SDR.sw_time = 10;
-        //            mEAS_TASK_SDR.TypeFunction = "FBO";
-        //            mEAS_TASK_SDR.Type_of_m = "RT";
-        //            mEAS_TASK_SDR.MEAS_SDR_SO_PARAM = new MEAS_SDR_SO_PARAM();
-        //            mEAS_TASK_SDR.MEAS_SDR_SO_PARAM.Level_min_occup = -80;
-        //            mEAS_TASK_SDR.MEAS_SDR_SO_PARAM.n_in_chenal =10;
-        //            mEAS_TASK_SDR.MEAS_SDR_SO_PARAM.Type_of_SO = "FBO"; // FCO
-        //            SDR_test.process_meas_BB60C(mEAS_TASK_SDR);
-
-        //            MEAS_SDR_RESULTS results = new MEAS_SDR_RESULTS();
-        //            results = SDR_test.MEAS_SDR_RESULTS;*/
-        //        }
-
-        //        private void button14_Click(object sender, EventArgs e)
-        //        {
-        //            // тупа создаем обект
-        //            SDR_test = new SDR_BB60C();
-        //        }
-
-        // функция максима исключительно для теста стрима старой функции bbFetchRaw
-        //private void button15_Click(object sender, EventArgs e)
-        //{
-        //    //try
-        //    //{
-        //        // Инициализация
-        //        int id = -1;
-        //        textBox1.Text += "SW Opening Device, Please Wait" + Environment.NewLine;
-        //        status = bb_api.bbOpenDevice(ref id);
-        //        if (status != bbStatus.bbNoError)
-        //        {   textBox1.Text += "SW Error: Unable to open BB60" + Environment.NewLine;
-        //            textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine;
-        //            return;}
-        //        else {textBox1.Text += "SW Device Found" + Environment.NewLine;}
-        //        // Конец инициализации
-        //        // Установка параметров измерения 
-
-
-        //        bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
-        //        bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-
-        //        Double f_central = 959200000;
-        //        Double span = 200000;
-        //        List<Double> Lsum_I = new List<double>();
-        //        List<Double> Lsum_Q = new List<double>();
-        //        List<Double> Lsum_atan = new List<double>();
-        //        List<Double> Lsum_IQ = new List<double>();
-        //        List<Double> Lpenalty = new List<double>();
-
-        //        for (int i = 0; i < 10; i++ )
-        //        {
-        //            double f = f_central;// +i * 1000 - 5000;
-        //            bb_api.bbConfigureCenterSpan(id, f, span);
-        //            bb_api.bbConfigureIQ(id, 1, span);
-        //            status = bb_api.bbInitiate(id, bb_api.BB_STREAMING, bb_api.BB_STREAM_IQ);
-        //            if (status != bbStatus.bbNoError) { return; }
-        //            int return_len = 0; int samples_per_sec = 0; double bandwidth = 0.0;
-        //            bb_api.bbQueryStreamInfo(id, ref return_len, ref bandwidth, ref samples_per_sec);
-        //            float[] iq_samples = new float[return_len * 2];
-        //            int[] triggers = new int[80];
-        //            bb_api.bbFetchRaw(id, iq_samples, triggers);
-
-        //            Double max_ampl = -999; Double sum_I = 0; Double sum_Q = 0; Double sum_IQ = 0; Double sum_atan = 0;
-
-        //            for (int j = 0; j < return_len * 2-1; j++)
-        //            {
-        //                double cur_I = iq_samples[j];
-        //                double cur_Q = iq_samples[j + 1];
-        //                sum_I += cur_I;
-        //                sum_Q += cur_Q;
-        //                sum_atan += Math.Atan(cur_I / cur_Q);
-        //                sum_IQ += Math.Sign(cur_I) * cur_Q + cur_I * Math.Sign(cur_Q);
-        //                if (Math.Abs(iq_samples[j]) > max_ampl) { max_ampl = Math.Abs(iq_samples[j]); }
-        //                if (Math.Abs(sum_atan) < 1)
-        //                {
-        //                    int h = 0;
-        //                }
-        //            }
-        //            Lsum_I.Add(sum_I);
-        //            Lsum_Q.Add(sum_Q);
-        //            Lsum_IQ.Add(sum_IQ);
-        //            Lsum_atan.Add(sum_atan);
-
-        //            Graphics g = Graphics.FromHwnd(pictureBox1.Handle);
-        //            g.Clear(pictureBox1.BackColor);
-
-        //            int first_0 = 0; 
-
-        //            for (int i1 = 100; i1 < return_len * 2 - 2; i1 = i1 + 2)
-        //            {
-        //                if ((iq_samples[i1] > 0) && (iq_samples[i1 + 2] < 0) || (iq_samples[i1] < 0) && (iq_samples[i1 + 2] > 0)) { first_0 = i1; break; }
-        //            }
-        //            Double time_of_semple = 1/40000000.0;
-        //            Double f_max_bod = 210000;
-        //            Double f_min_bod = 190000;
-        //            Double steps_of_boads = 1000;
-        //            Double window = 0.25; //окно для срабатывания.
-        //            Double penalty = 0;
-        //            for (Double f_bod = f_min_bod; f_bod < f_max_bod; f_bod = f_bod + steps_of_boads)
-        //            {
-        //                for (int i1 = 100; i1 < return_len * 2 - 2; i1 = i1 + 2)
-        //                {
-        //                    if ((iq_samples[i1] > 0) && (iq_samples[i1 + 2] < 0) || (iq_samples[i1] < 0) && (iq_samples[i1 + 2] > 0))
-        //                    {
-        //                        double delta = (i1 - first_0) * time_of_semple;
-        //                        double for_if = Math.Abs(delta % (1 / f_bod)) * f_bod;
-        //                        if (for_if > window)
-        //                        { 
-        //                            penalty += 1;  
-        //                        }
-        //                    }
-        //                }
-        //                Lpenalty.Add(penalty);
-        //                penalty = 0;
-        //            }
-
-
-        //            int k = 0; int z = 0;
-        //            for (int i1 = 0; i1 < 100000; i1 = i1 + 2)
-        //            {
-        //                Double x = (i1-k)/10.0;//200 * iq_samples[i1] / max_ampl + 200;//I
-        //                if (i1 - k >= 4000) {
-        //                    break;
-        //                }
-        //                Double y = 100 * iq_samples[i1 + 1+z] / max_ampl + 100;//Q
-        //                Double y1 = 100 * iq_samples[i1+z] / max_ampl + 300;//Q
-        //                drawPoint((int)x, (int)y);
-        //                drawPoint((int)x, (int)y1);
-        //            }
-
-        //        }
-
-
-
-
-
-
-
-        //    /*
-
-        //        Graphics g = Graphics.FromHwnd(pictureBox1.Handle);
-        //        g.Clear(pictureBox1.BackColor);
-        //        do
-        //        { j++;
-        //            Double  start_time = DateTime.Now.Ticks;
-        //            DateTime time = DateTime.Now;                    
-        //            label9.Text = j.ToString();
-        //            int return_len = 0; int samples_per_sec = 0; double bandwidth = 0.0;
-        //            bb_api.bbQueryStreamInfo(id, ref return_len, ref bandwidth, ref samples_per_sec);
-        //            //System.Threading.Thread.Sleep(1000);
-        //            float[] iq_samples = new float[return_len * 2];
-        //            int[] triggers = new int[80];
-
-
-        //            bb_api.bbFetchRaw(id, iq_samples, triggers);
-        //            for (int i = 0; i <100000; i = i + 2)
-        //            {
-        //                Double x = 200*iq_samples[i]/max_ampl+200;//I
-        //                Double y = 200*iq_samples[i + 1] / max_ampl + 200;//Q
-        //                drawPoint((int)x, (int)y);
-        //            }
-        //          }
-        //        while (j < 1);
-
-        //    */
-
-
-
-
-
-
-
-
-
-        //        bb_api.bbCloseDevice(id);
-        //    //}
-        //    //catch (Exception ex)
-        //    //{
-        //    //    textBox1.Text += "Some error in block work with streem";
-        //    //}
-        //  }
 
         private void button11_Click_1(object sender, EventArgs e)
         {
@@ -1382,7 +186,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             SDRBB60C SDR = new SDRBB60C();
             Sensor sensor = new Sensor();
             MeasSdrResults Res = new MeasSdrResults();
-            CirculatingData circulatingData =null;
+            CirculatingData circulatingData = null;
             ReferenceSignal[] referenceSignals = null;
             MeasurementProcessing MeasProcessing = new MeasurementProcessing();
             int i = 0;
@@ -1391,11 +195,11 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                 // поиск таска Task из ListTask
                 // MeasProcessing (Task)
                 // Если есть результаты они передаются в другой поток ()
-                if ((mEAS_TASK_SDR.Time_start < DateTime.Now)&&(mEAS_TASK_SDR.Time_stop > DateTime.Now))
+                if ((mEAS_TASK_SDR.Time_start < DateTime.Now) && (mEAS_TASK_SDR.Time_stop > DateTime.Now))
                 {
                     Res = MeasProcessing.TaskProcessing(SDR, mEAS_TASK_SDR, sensor, ref circulatingData, Res, referenceSignals) as MeasSdrResults;
                 }
-                else 
+                else
                 {
                     if (mEAS_TASK_SDR.Time_stop < DateTime.Now) { mEAS_TASK_SDR.status = "C"; }
                 }
@@ -1539,7 +343,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                 }
                 pictureBox1.Image = pt;
             }
-            */ 
+            */
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -1548,60 +352,87 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         }
 
         unsafe private void button18_Click(object sender, EventArgs e)
-        { 
+        {
             // инициализация устройства   
             int id = -1;
             textBox1.Text += "SW Opening Device, Please Wait" + Environment.NewLine;
             status = bb_api.bbOpenDevice(ref id);
             if (status != bbStatus.bbNoError)
-            {   textBox1.Text += "SW Error: Unable to open BB60" + Environment.NewLine;
-                textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine; return;}
-            else {textBox1.Text += "SW Device Found" + Environment.NewLine;}
+            {
+                textBox1.Text += "SW Error: Unable to open BB60" + Environment.NewLine;
+                textBox1.Text += bb_api.bbGetStatusString(status) + Environment.NewLine; return;
+            }
+            else { textBox1.Text += "SW Device Found" + Environment.NewLine; }
             // Конец инициализации
             // Установка параметров измерения 
             Double f_central = 959200000;
             Double span = 200000;
             bb_api.bbConfigureCenterSpan(id, f_central, span);
-            bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);                
+            bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
             bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-            bb_api.bbConfigureIQ(id, 2, 15000000);
+            bb_api.bbConfigureIQ(id, 1, 15000000);
             bb_api.bbConfigureIO(id, 0, bb_api.BB_PORT2_IN_TRIGGER_RISING_EDGE);
             //bb_api.bbSyncCPUtoGPS(3, 38400);
             status = bb_api.bbInitiate(id, bb_api.BB_STREAMING, bb_api.BB_STREAM_IQ);
             if (status != bbStatus.bbNoError) { return; }
-            double bandwidth =0 ;
+            double bandwidth = 0;
             int sampleRate = 0;
-            int rr = 0; 
+            int rr = 0;
             bb_api.bbQueryStreamInfo(id, ref rr, ref bandwidth, ref sampleRate);
-            const int BlockSize = 262144;
-            float *bufer = stackalloc float[BlockSize * 2];
-            int *triggers = stackalloc int[71];
-            bbIQPacket pkt = new bbIQPacket();
-            pkt.iqData = bufer;
-            pkt.iqCount = BlockSize;
-            pkt.triggers = triggers;
-            pkt.triggerCount = 70;
-            pkt.purge = 1;
+            const int BlockSize = 524288;
+            //float* bufer = stackalloc float[BlockSize * 2];
+            //int* triggers = stackalloc int[71];
+            //bbIQPacket pkt = new bbIQPacket();
+            //pkt.iqData = bufer;
+            //pkt.iqCount = BlockSize;
+            //pkt.triggers = triggers;
+            //pkt.triggerCount = 70;
+            //pkt.purge = 1;
             //bb_api.bbGetIQ(id, ref pkt);
             string file = "";
+            List<bbIQPacket> listpkt = new List<bbIQPacket>();
             for (int i = 0; i < 500; i++)
             {
-                bb_api.bbGetIQ(id, ref pkt);
-                file+= "Triggers: ";
-                for (int j = 0; j < 10; j++)
+                float[] bufer_ = new float[BlockSize * 2];
+                int[] triggers_ = new int[71];
+                fixed (float* bufer = bufer_)
                 {
-                    file+= pkt.triggers[j].ToString()+ " ";
-                }
-                file+= Environment.NewLine;
-                //file+= "iqData: ";
-                //for (int j = 0; j < 10; j++)
-                //{
-                //    file += pkt.iqData[j].ToString() + " ";
-                //}
-                //file += Environment.NewLine;
+                    fixed (int* triggers = triggers_)
+                    {
+                        var pkt = new bbIQPacket()
+                        {
+                            iqCount = BlockSize,
+                            triggerCount = 70,
+                            purge = 1,
+                            iqData = bufer,
+                            triggers = triggers
+                        };
+                        bb_api.bbGetIQ(id, ref pkt);
+                        listpkt.Add(pkt);
+                    }
 
+                }
+                bufer_ = null;
+                triggers_ = null;
             }
-            System.IO.File.WriteAllText("C:\\Temp\\ResSharp.txt",file);
+            //for (int i = 0; i < 500; i++)
+            //{
+            //    bb_api.bbGetIQ(id, ref pkt);
+            //    file+= "Triggers: ";
+            //    for (int j = 0; j < 10; j++)
+            //    {
+            //        file+= pkt.triggers[j].ToString()+ " ";
+            //    }
+            //    file+= Environment.NewLine;
+            //    file+= "iqData: ";
+            //    for (int j = 0; j < 10; j++)
+            //    {
+            //        file += pkt.iqData[j].ToString() + " ";
+            //    }
+            //    file += Environment.NewLine;
+
+            //}
+            //            System.IO.File.WriteAllText("C:\\Temp\\ResSharp.txt",file);
             bb_api.bbCloseDevice(id);
         }
 
@@ -1642,11 +473,11 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             bool hit = false;
             for (int i = 0; i < listTrigger.Count; i++)
             {
-                for(int j = 0; j<listTrigger[i].Length; j++)
+                for (int j = 0; j < listTrigger[i].Length; j++)
                 {
-                    if (listTrigger[i][j]!=0)
+                    if (listTrigger[i][j] != 0)
                     {
-                        hit = true; 
+                        hit = true;
                     }
                 }
             }
@@ -1657,24 +488,24 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             bb_api.bbCloseDevice(id);
         }
 
-        private void CreatePictureForBlokIQ (BlockOfSignal Block, int from, int to, List<int>Blue_point)
+        private void CreatePictureForBlokIQ(BlockOfSignal Block, int from, int to, List<int> Blue_point)
         {
             Double Max_IQ = 0;
-            for (int i = 0; i < Block.IQStream.Length; i++){ if (Max_IQ < Block.IQStream[i]) { Max_IQ = Block.IQStream[i];} }
+            for (int i = 0; i < Block.IQStream.Length; i++) { if (Max_IQ < Block.IQStream[i]) { Max_IQ = Block.IQStream[i]; } }
             Graphics g = Graphics.FromHwnd(pictureBox1.Handle);
             g.Clear(pictureBox1.BackColor);
             drawPointBlue((int)200, (int)200);
 
-            for (int i = from*2; i < to*2; i = i + 2)
+            for (int i = from * 2; i < to * 2; i = i + 2)
             {
                 Double x = 200 * Block.IQStream[i] / Max_IQ + 200;//I
                 Double y = 200 * Block.IQStream[i + 1] / Max_IQ + 200;//Q
-                if (Blue_point.Contains(i/2))//ПРАВКА
+                if (Blue_point.Contains(i / 2))//ПРАВКА
                 {
                     drawPointBlue((int)x, (int)y);
                 }
-                else 
-                { 
+                else
+                {
                     drawPoint((int)x, (int)y);
                 }
                 System.Threading.Thread.Sleep(5);
@@ -1688,12 +519,12 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         /// <param name="e"></param>
         private void button20_Click(object sender, EventArgs e)
         {
-            
+
             BlockOfSignal Block = new BlockOfSignal();
             List<int> Point_rotation = new List<int>();
             Double Penalty = 0;
             List<Double> RotationPhase = new List<Double>();
-            MainProcessReceveIQStreamAndGetTimeStamp test_stream = new MainProcessReceveIQStreamAndGetTimeStamp(1,959.2,200, MainProcessReceveIQStreamAndGetTimeStamp.TypeTechnology.GSM);
+            GetTimeStamp test_stream = new GetTimeStamp(null, 40000000, 200, GetTimeStamp.TypeTechnology.GSM);
             CreatePictureForBlokIQ(Block, Point_rotation[1] - 50, Point_rotation[4] + 50, Point_rotation.GetRange(1, 4));
             MessageBox.Show("Банзай");
             CreatePictureForBlokIQ(Block, Point_rotation[4] - 50, Point_rotation[7] + 50, Point_rotation.GetRange(4, 4));
@@ -1704,7 +535,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         }
 
         private void button21_Click(object sender, EventArgs e)
-        { 
+        {
             // тест пройден 04.09.2018 Максим, 03.12.2018 Максим.
             // тестирование BW 
             // формируем таск
@@ -1742,7 +573,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             SDRBB60C SDR = new SDRBB60C();
             Atdi.AppServer.Contracts.Sdrns.Sensor sensor = new Atdi.AppServer.Contracts.Sdrns.Sensor();
             MeasSdrResults Res = new MeasSdrResults();
-            MeasurementProcessing MeasProcessing = new  MeasurementProcessing();
+            MeasurementProcessing MeasProcessing = new MeasurementProcessing();
             CirculatingData circulatingData = new CirculatingData();
             int i = 0;
             while (mEAS_TASK_SDR.status == "A") // цикл имитирует процесс измерения
@@ -1798,14 +629,14 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             bb_api.bbConfigureAcquisition(id, bb_api.BB_MIN_AND_MAX, bb_api.BB_LOG_SCALE);
             bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
             bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
-            bb_api.bbConfigureSweepCoupling(id, RBW, VBW, Time,bb_api.BB_NUTALL, bb_api.BB_NO_SPUR_REJECT);
+            bb_api.bbConfigureSweepCoupling(id, RBW, VBW, Time, bb_api.BB_NUTALL, bb_api.BB_NO_SPUR_REJECT);
             bb_api.bbConfigureProcUnits(id, bb_api.BB_LOG);
             bb_api.bbConfigureCenterSpan(id, (f_max + f_min) / 2, f_max - f_min);
-                
-           
-           
-                
-           
+
+
+
+
+
 
 
             status = bb_api.bbInitiate(id, bb_api.BB_SWEEPING, 0);
@@ -1848,7 +679,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             // гасим устройство 
             textBox1.Text += "SW Closing Device";
             bb_api.bbCloseDevice(id);
-            }
+        }
 
         private void TestSign_Click(object sender, EventArgs e)
         {
@@ -2033,17 +864,214 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             NewStep_kHz = 150;
             NewLevels = new double[NumberPointInNewLevels];
             NewLevels = ChangeTraceGrid.ChangeGrid(ref Levels, StartOldFreq_MHz, OldStep_kHz, StartNewFreq_MHz, NewStep_kHz, NumberPointInNewLevels);
-
-
-
-
-
-
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             // Тестирование измерение уровня 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // Тестирование записи в IQ поток
+            MeasSdrTask mEAS_TASK_SDR = new MeasSdrTask();
+            mEAS_TASK_SDR.Id = 1;
+            mEAS_TASK_SDR.MeasTaskId = new Atdi.AppServer.Contracts.Sdrns.MeasTaskIdentifier();
+            mEAS_TASK_SDR.MeasTaskId.Value = 2;
+            mEAS_TASK_SDR.MeasSubTaskId = new Atdi.AppServer.Contracts.Sdrns.MeasTaskIdentifier();
+            mEAS_TASK_SDR.MeasSubTaskId.Value = 3;
+            mEAS_TASK_SDR.MeasSubTaskStationId = 4;
+            mEAS_TASK_SDR.MeasFreqParam = new Atdi.AppServer.Contracts.Sdrns.MeasFreqParam();
+            mEAS_TASK_SDR.MeasFreqParam.Step = 200; // 10 кГц
+            mEAS_TASK_SDR.MeasFreqParam.RgL = 941.4 - 0.200 / 2.0;
+            mEAS_TASK_SDR.MeasFreqParam.RgU = 941.4 + 0.200 / 2.0;
+            mEAS_TASK_SDR.MeasSDRParam = new MeasSdrParam();
+            mEAS_TASK_SDR.MeasSDRParam.DetectTypeSDR = Atdi.AppServer.Contracts.Sdrns.DetectingType.Avarage;
+            mEAS_TASK_SDR.MeasSDRParam.PreamplificationSDR = -1;
+            mEAS_TASK_SDR.MeasSDRParam.RBW = 200; // 10 кГц
+            mEAS_TASK_SDR.MeasSDRParam.VBW = 200; // 10 кГц
+            mEAS_TASK_SDR.MeasSDRParam.ref_level_dbm = -40;
+            mEAS_TASK_SDR.MeasSDRParam.RfAttenuationSDR = -1;
+            mEAS_TASK_SDR.MeasSDRParam.MeasTime = 0.001;
+            mEAS_TASK_SDR.MeasDataType = Atdi.AppServer.Contracts.Sdrns.MeasurementType.SoundID;
+            mEAS_TASK_SDR.TypeM = Atdi.AppServer.Contracts.Sdrns.SpectrumScanType.Sweep;
+            mEAS_TASK_SDR.MeasSDRSOParam = new MeasSdrSOParam();
+            mEAS_TASK_SDR.NumberScanPerTask = -999;
+            mEAS_TASK_SDR.Time_start = DateTime.Now - TimeSpan.FromSeconds(10);
+            mEAS_TASK_SDR.Time_stop = DateTime.Now + TimeSpan.FromSeconds(65);
+            mEAS_TASK_SDR.PerInterval = 55;
+            mEAS_TASK_SDR.status = "A";
+            SDRBB60C SDR = new SDRBB60C();
+            Sensor sensor = new Sensor();
+            MeasSdrResults_v2 Res = null;
+            CirculatingData circulatingData = null;
+            ReferenceSignal[] referenceSignals = null;
+            MeasurementProcessing MeasProcessing = new MeasurementProcessing();
+            List<Emitting> emittings = new List<Emitting>();
+            int i = 0;
+            Res = MeasProcessing.TaskProcessing(SDR, mEAS_TASK_SDR, sensor, ref circulatingData, Res, referenceSignals) as MeasSdrResults_v2;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            // Тестирование получение таймштампов
+            // Тестирование записи в IQ поток
+            MeasSdrTask mEAS_TASK_SDR = new MeasSdrTask();
+            mEAS_TASK_SDR.Id = 1;
+            mEAS_TASK_SDR.MeasTaskId = new Atdi.AppServer.Contracts.Sdrns.MeasTaskIdentifier();
+            mEAS_TASK_SDR.MeasTaskId.Value = 2;
+            mEAS_TASK_SDR.MeasSubTaskId = new Atdi.AppServer.Contracts.Sdrns.MeasTaskIdentifier();
+            mEAS_TASK_SDR.MeasSubTaskId.Value = 3;
+            mEAS_TASK_SDR.MeasSubTaskStationId = 4;
+            mEAS_TASK_SDR.MeasFreqParam = new Atdi.AppServer.Contracts.Sdrns.MeasFreqParam();
+            mEAS_TASK_SDR.MeasFreqParam.Step = 200; // 10 кГц
+            mEAS_TASK_SDR.MeasFreqParam.RgL = 952.2 - 0.200 / 2.0;
+            mEAS_TASK_SDR.MeasFreqParam.RgU = 952.2 + 0.200 / 2.0;
+            mEAS_TASK_SDR.MeasSDRParam = new MeasSdrParam();
+            mEAS_TASK_SDR.MeasSDRParam.DetectTypeSDR = Atdi.AppServer.Contracts.Sdrns.DetectingType.Avarage;
+            mEAS_TASK_SDR.MeasSDRParam.PreamplificationSDR = -1;
+            mEAS_TASK_SDR.MeasSDRParam.RBW = 200; // 10 кГц
+            mEAS_TASK_SDR.MeasSDRParam.VBW = 200; // 10 кГц
+            mEAS_TASK_SDR.MeasSDRParam.ref_level_dbm = -40;
+            mEAS_TASK_SDR.MeasSDRParam.RfAttenuationSDR = -1;
+            mEAS_TASK_SDR.MeasSDRParam.MeasTime = 0.001;
+            mEAS_TASK_SDR.MeasDataType = Atdi.AppServer.Contracts.Sdrns.MeasurementType.Program;
+            mEAS_TASK_SDR.TypeM = Atdi.AppServer.Contracts.Sdrns.SpectrumScanType.Sweep;
+            mEAS_TASK_SDR.MeasSDRSOParam = new MeasSdrSOParam();
+            mEAS_TASK_SDR.NumberScanPerTask = -999;
+            mEAS_TASK_SDR.Time_start = DateTime.Now - TimeSpan.FromSeconds(10);
+            mEAS_TASK_SDR.Time_stop = DateTime.Now + TimeSpan.FromSeconds(65);
+            mEAS_TASK_SDR.PerInterval = 55;
+            mEAS_TASK_SDR.status = "A";
+            SDRBB60C SDR = new SDRBB60C();
+            Sensor sensor = new Sensor();
+            MeasSdrResults_v2 Res = null;
+            CirculatingData circulatingData = null;
+            ReferenceSignal[] referenceSignals = null;
+            MeasurementProcessing MeasProcessing = new MeasurementProcessing();
+            List<Emitting> emittings = new List<Emitting>();
+            int i = 0;
+            Res = MeasProcessing.TaskProcessing(SDR, mEAS_TASK_SDR, sensor, ref circulatingData, Res, referenceSignals) as MeasSdrResults_v2;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string fileName = "C:\\TEMP\\GetTimestamp.txt";
+            double Freq_MHz;
+            int minut = 0 ;
+            string[] allText = File.ReadAllLines(fileName);//чтение всех строк файла в массив строк
+            minut = Convert.ToInt32(allText[0]);
+            Freq_MHz = Convert.ToDouble(allText[1]);
+            DateTime curTime = DateTime.Now;
+            DateTime TimeStart = new DateTime(curTime.Year, curTime.Month, curTime.Day, curTime.Hour, minut, 0);
+            
+            // стартуем запись IQ потока 
+
+            // заполняем таск 
+            TaskParameters taskParameters = new TaskParameters();
+            taskParameters.MinFreq_MHz = Freq_MHz - 0.1;
+            taskParameters.MaxFreq_MHz = Freq_MHz + 0.1;
+            taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.GSM;
+            taskParameters.RBW_Hz = 200000;
+            taskParameters.VBW_Hz = 200000;
+            taskParameters.ReceivedIQStreemDuration_sec = 1.0;
+
+            // Создаем сенсор для измерения
+            SDRBB60C SDR = new SDRBB60C();
+            SDR.Initiation();
+            SDR.Calibration();
+            // Создаем настройки для сенсора
+            SDRParameters sDRParameters = new SDRParameters();
+            sDRParameters.MeasurementType = MeasType.IQReceive;
+            sDRParameters.MinFreq_MHz = taskParameters.MinFreq_MHz;
+            sDRParameters.MaxFreq_MHz = taskParameters.MaxFreq_MHz;
+            sDRParameters.PreamplificationSDR = -1;
+            sDRParameters.RefLevel_dBm = -40;
+            sDRParameters.RfAttenuationSDR = -1;
+            sDRParameters.RBW_Hz = taskParameters.RBW_Hz;
+            sDRParameters.VBW_Hz = taskParameters.VBW_Hz;
+            if (SDR.GetSDRState() == SDRState.ReadyForMeasurements)
+            {
+                SDR.SetConfiguration(sDRParameters); // Конфигурируем сенсор
+                if (SDR.SetConfiguration(sDRParameters))
+                {
+                    // Стартуем измерение 
+                    ReceivedIQStream receivedIQStream = new ReceivedIQStream();
+                    DateTime now_time;
+                    do
+                    {
+                        now_time = DateTime.Now;
+                    }
+                    while (now_time < TimeStart);
+                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec);
+                    if (done == true)
+                    { // поток приняли !!!
+                        GetTimeStamp TimeStamp = new GetTimeStamp(receivedIQStream, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
+                        // Пишем в файл TimeShtamp
+                        string st0 = "C:\\TEMP\\GSM900_";
+                        string st1 = Freq_MHz.ToString();
+                        string st2 = "Time";
+                        string st3 = TimeStart.ToString();
+                        string st4 = ".txt";
+                        string FileNameSaved = st1+st2+st3+st4;
+                        FileNameSaved = st0 + FileNameSaved.Replace(":", "_");
+                        SerializeObject(FileNameSaved, TimeStamp);
+                    }
+                }
+            }
+        }
+        private void SerializeObject(string File, object obj)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream fs = new FileStream(File, FileMode.OpenOrCreate);
+            formatter.Serialize(fs, obj);
+            fs.Close();
+            fs.Dispose();
+        }
+        public object DeserializeObject(string File)
+        {
+            object obj = null;
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream fs = new FileStream(File, FileMode.OpenOrCreate);
+            obj = formatter.Deserialize(fs);
+            fs.Close();
+            fs.Dispose();
+            return obj;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = openFileDialog1.FileName;
+            // читаем файл в строку
+            if (textBox2.Text == "")
+            {
+                textBox2.Text = filename;
+            }
+            else
+            {
+                if (textBox3.Text == "")
+                {
+                    textBox3.Text = filename;
+                }
+                else
+                {
+                    textBox2.Text = filename;
+                    textBox3.Text = "";
+                }
+            }
+            
+            
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            GetTimeStamp TimeStamp1 = (DeserializeObject(textBox2.Text) as GetTimeStamp);
+            GetTimeStamp TimeStamp2 = (DeserializeObject(textBox3.Text) as GetTimeStamp);
+            EstimationTimeDelayBetweenTwoTimestamp estimationTimeDelayBetweenTwoTimestamp = new EstimationTimeDelayBetweenTwoTimestamp(TimeStamp1.IQStreamTimeStampBloks, TimeStamp2.IQStreamTimeStampBloks);
         }
     }
 }

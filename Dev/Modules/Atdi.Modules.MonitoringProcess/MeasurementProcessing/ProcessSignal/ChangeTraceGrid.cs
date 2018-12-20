@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 //using Atdi.AppServer.Contracts.Sdrns;
 
-namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
     static public class ChangeTraceGrid
     {
