@@ -24,10 +24,28 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             Console.WriteLine($"Press any key to start test ...");
             Console.ReadLine();
 
-            for (int i = 0; i < 100; i++)
+            var sensorDescriptor = new SensorDescriptor()
             {
-                SendMeasResultsSimple("MeasTasksBusNetTcpEndpoint");
+                SdrnServer = "SDRNSV-SBD12-A00-8591", // Имя SDRN Server (зависит от доступной на сервере лицензии)
+                SensorName = "SENSOR-DBD12-A00-1280", //Важно: Имя сенсора из лицензии WCF сервиса
+                EquipmentTechId = "SomeSensor SN:0923382737273", // идентификатор сенсора до 200 символов
+            };
+
+            for (int i = 0; i < 500; i++)
+            {
+                SendMeasResultsSimple("MeasTasksBusNetTcpEndpoint", sensorDescriptor);
                 //Console.ReadKey();
+            }
+            Console.ReadKey();
+            var c = 0;
+            while(true)
+            {
+                var result = GetNextEntity("MeasTasksBusNetTcpEndpoint", sensorDescriptor);
+                if (result != null)
+                {
+                    ++c;
+                    Console.WriteLine($"Count: {c}");
+                }
             }
             
             //Run("NetTcpEndpoint", "SDRNSV-SBD12-A00-8591");
@@ -170,7 +188,7 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
 
             if (getEntityResult.Token != null)
             {
-              //  busService.AckEntity(sensorDescriptor, getEntityResult.Token);
+                busService.AckEntity(sensorDescriptor, getEntityResult.Token);
             }
             
             return entity;
@@ -423,18 +441,10 @@ namespace Atdi.Test.MeasTasksBus.WcfClient
             }
         }
 
-        static void SendMeasResultsSimple(string endpointName)
+        static void SendMeasResultsSimple(string endpointName, SensorDescriptor sensorDescriptor)
         {
             try
             {
-                var sensorDescriptor = new SensorDescriptor()
-                {
-                    SdrnServer = "SDRNSV-SBD12-A00-8591", // Имя SDRN Server (зависит от доступной на сервере лицензии)
-                    SensorName = "SENSOR-DBD12-A00-1280", //Важно: Имя сенсора из лицензии WCF сервиса
-                    EquipmentTechId = "SomeSensor SN:0923382737273", // идентификатор сенсора до 200 символов
-                };
-
-
                 var measResults = new MeasResults
                 {
                     TaskId = "Some task ID",

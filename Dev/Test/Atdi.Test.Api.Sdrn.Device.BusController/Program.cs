@@ -76,6 +76,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
             config["RabbitMQ.Host"] = "10.1.2.129";
+            config["RabbitMQ.Port"] = "5678";
             config["RabbitMQ.VirtualHost"] = "/";
             config["RabbitMQ.User"] = "SDR_Client";
             config["RabbitMQ.Password"] = "32Xr567";
@@ -230,7 +231,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             dispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
             //dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
             dispatcher.Activate();
-
+            Console.ReadLine();
 
             var publisher = gate.CreatePublisher("main");
 
@@ -239,7 +240,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 Name = "SENSOR-DBD12-A00-1280", 
                 Equipment = new DM.SensorEquipment
                 {
-                    TechId = "SomeSensor 2.3 SN:00009093"
+                    TechId = "SomeSensor SN:0923382737273"
                 }
             };
 
@@ -271,19 +272,20 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.OwnerId"] = "OID-BD12-A00-N00";
             config["License.ProductKey"] = "0ZB0-DVZR-ATI1-WIHB-NC1B";
 
-            config["RabbitMQ.Host"] = "10.1.2.129";
-            config["RabbitMQ.VirtualHost"] = "/";
-            config["RabbitMQ.User"] = "SDR_Client";
-            config["RabbitMQ.Password"] = "32Xr567";
+            config["RabbitMQ.Host"] = "192.168.33.110"; //"192.168.3.33"; // "109.237.91.29";
+            config["RabbitMQ.Port"] = "5672"; // "5678";
+            config["RabbitMQ.VirtualHost"] = "dev_1_3";
+            config["RabbitMQ.User"] = "andrey"; // "SDR_Client";
+            config["RabbitMQ.Password"] = "P@ssw0rd";// "32Xr567";
 
             config["SDRN.ApiVersion"] = "2.0";
 
-            config["SDRN.Server.Instance"] = "ServerSDRN01";
+            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-8591";
             config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
 
             // будет взят из лицензии - изменить будет нельзя
             //config["SDRN.Device.SensorName"] = "my SENSOR-DBD12-A00-1280";
-            config["SDRN.Device.SensorTechId"] = "SomeSensor";
+            config["SDRN.Device.SensorTechId"] = "SomeSensor SN:0923382737273";
 
             config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
             config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";

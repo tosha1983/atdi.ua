@@ -41,7 +41,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 HostName = this._serverDescriptor.RabbitMqHost,
                 UserName = this._serverDescriptor.RabbitMqUser,
                 Password = this._serverDescriptor.RabbitMqPassword,
-
+                VirtualHost = this._serverDescriptor.RabbitMqVirtualHost
             };
 
             this.EstablishConnection();

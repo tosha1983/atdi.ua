@@ -49,6 +49,10 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this._connectionFactory.VirtualHost = this._serverDescriptor.RabbitMqVirtualHost;
             }
+            if (!string.IsNullOrEmpty(this._serverDescriptor.RabbitMqPort))
+            {
+                this._connectionFactory.Port = int.Parse(this._serverDescriptor.RabbitMqPort);
+            }
 
             this.LoadConsumersInfo();
 
@@ -152,11 +156,12 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.EstablisheConnection();
                 channel = _connection.CreateModel();
+                channel.BasicQos(0, 1, false);
                 var tag = descriptor.ToString();
                 var consumer = new BusConsumer(tag, channel, this._serverDescriptor, this._logger);
                 descriptor.IsJoined = true;
                 descriptor.Consumer = consumer;
-                channel.BasicConsume(deviceQueueName, false, consumer);
+                channel.BasicConsume(deviceQueueName, false, tag, consumer);
 
                 this._logger.Verbouse("SdrnDeviceServices", (EventCategory)"BusConsumers.JoinConsumer", $"The consumer is joined: tag = '{tag}', queue = {deviceQueueName}");
             }

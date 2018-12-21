@@ -13,6 +13,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         public SdrnServerDescriptor(IComponentConfig config)
         {
             this.RabbitMqHost = config.GetParameterAsString("RabbitMQ.Host");
+            this.RabbitMqVirtualHost= config.GetParameterAsString("RabbitMQ.VirtualHost");
             this.RabbitMqUser = config.GetParameterAsString("RabbitMQ.User");
             this.RabbitMqPassword = config.GetParameterAsString("RabbitMQ.Password");
             this.ApiVersion = config.GetParameterAsString("SDRN.ApiVersion");
@@ -40,6 +41,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
         }
 
         public string RabbitMqHost { get; set; }
+
+        public string RabbitMqVirtualHost { get; set; }
 
         public string RabbitMqUser { get; set; }
 
