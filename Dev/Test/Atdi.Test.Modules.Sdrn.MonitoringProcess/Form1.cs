@@ -974,7 +974,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.GSM;
             taskParameters.RBW_Hz = 200000;
             taskParameters.VBW_Hz = 200000;
-            taskParameters.ReceivedIQStreemDuration_sec = 1.0;
+            taskParameters.ReceivedIQStreemDuration_sec = 0.05;
 
             // Создаем сенсор для измерения
             SDRBB60C SDR = new SDRBB60C();
@@ -997,25 +997,31 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                 {
                     // Стартуем измерение 
                     ReceivedIQStream receivedIQStream = new ReceivedIQStream();
+                    ReceivedIQStream receivedIQStream2 = new ReceivedIQStream();
                     DateTime now_time;
                     do
                     {
                         now_time = DateTime.Now;
                     }
                     while (now_time < TimeStart);
-                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec);
+                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, true);
+                    done = SDR.GetIQStream(ref receivedIQStream2, taskParameters.ReceivedIQStreemDuration_sec, true);
                     if (done == true)
                     { // поток приняли !!!
                         GetTimeStamp TimeStamp = new GetTimeStamp(receivedIQStream, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
+                        GetTimeStamp TimeStamp2 = new GetTimeStamp(receivedIQStream2, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
                         // Пишем в файл TimeShtamp
-                        string st0 = "C:\\TEMP\\GSM900_";
+                        string st0 = "C:\\TEMP\\GSM900_1_";
+                        string st02 = "C:\\TEMP\\GSM900_2_";
                         string st1 = Freq_MHz.ToString();
                         string st2 = "Time";
                         string st3 = TimeStart.ToString();
                         string st4 = ".txt";
                         string FileNameSaved = st1+st2+st3+st4;
-                        FileNameSaved = st0 + FileNameSaved.Replace(":", "_");
-                        SerializeObject(FileNameSaved, TimeStamp);
+                        string FileNameSaved1 = st0 + FileNameSaved.Replace(":", "_");
+                        string FileNameSaved2 = st02 + FileNameSaved.Replace(":", "_");
+                        SerializeObject(FileNameSaved1, TimeStamp);
+                        SerializeObject(FileNameSaved2, TimeStamp);
                     }
                 }
             }
