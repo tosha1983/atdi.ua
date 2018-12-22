@@ -999,11 +999,11 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                     ReceivedIQStream receivedIQStream = new ReceivedIQStream();
                     ReceivedIQStream receivedIQStream2 = new ReceivedIQStream();
                     DateTime now_time;
-                    //do
-                    //{
-                    //    now_time = DateTime.Now;
-                    //}
-                    //while (now_time < TimeStart);
+                    do
+                    {
+                        now_time = DateTime.Now;
+                    }
+                    while (now_time < TimeStart);
                     bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, true);
                     done = SDR.GetIQStream(ref receivedIQStream2, taskParameters.ReceivedIQStreemDuration_sec, true);
                     if (done == true)
