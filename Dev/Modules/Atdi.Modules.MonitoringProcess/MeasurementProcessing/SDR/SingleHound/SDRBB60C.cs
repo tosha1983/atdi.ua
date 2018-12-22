@@ -106,11 +106,15 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
         }
 
         #region IQStream
-        unsafe public bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving_sec = -1)
+        unsafe public bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving_sec = -1, bool AfterPPS = false)
         {
             bool done = false;
             try
             {
+                // константа
+                int max_count = 150;
+                // конец констант
+
                 int NumberPass = 0;
                 if (durationReceiving_sec < 0) { NumberPass = 1; } else { NumberPass = (int)Math.Ceiling(durationReceiving_sec * samples_per_sec / return_len); }
                 receivedIQStream = new ReceivedIQStream();
@@ -140,13 +144,23 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                 }
                 int dataRemaining = 1, sampleLoss = 0, iqSec = 0, iqNano = 0;  //ВАЖНО КОСТЫЛЬ
                 long time = DateTime.Now.Ticks;
-
+                int count = 0;
                 for (int i = 0; i < NumberPass; i++)
                 {
                     //long tick = DateTime.Now.Ticks;
                     //ticks[i] = DateTime.Now.Ticks - tick;
                     bb_api.bbGetIQUnpacked(id_dev, IQData[i], return_len, TrData[i], 71, 1,
                             ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
+                    if (TrData[i][0] != 0)
+                    {
+                        AfterPPS = false;
+                    }
+                    if (AfterPPS)
+                    {
+                        i--;
+                    }
+                    count++;
+                    if (count >= max_count) { break;}
                     //long tick1 = DateTime.Now.Ticks;
                     //ticks1[i] = DateTime.Now.Ticks - tick1;
                     //System.Threading.Thread.Sleep(1);

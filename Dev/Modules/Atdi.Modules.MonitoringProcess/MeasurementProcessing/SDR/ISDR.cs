@@ -24,7 +24,7 @@ namespace Atdi.Modules.MonitoringProcess
 
 
         float[] GetTrace(int TraceCount = 1);
-        bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving =-1);
+        bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving =-1, bool AfterPPS = false);
 
         SDRState GetSDRState();
         int GetLastTaskId();
