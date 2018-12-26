@@ -21,8 +21,8 @@ namespace Atdi.Test.RabbitMQ
 
             var pubConfig = new ConnectionConfig
             {
-                HostName = "10.1.1.131", //10.1.1.137", //"109.237.91.29", //"192.168.3.33", //"192.168.33.110", //"10.1.1.137",
-                Port = 5672, // 5672,
+                HostName = "109.237.91.29", //"10.1.1.131", //10.1.1.137",  //"192.168.3.33", //"192.168.33.110", //"10.1.1.137",
+                Port = 5674, // 5672,
                 VirtualHost = "dev_2",
                 ConnectionName = "[kovpak].[Publisher]",
                 UserName = "SDR_Client", // "andrey",
@@ -37,8 +37,8 @@ namespace Atdi.Test.RabbitMQ
 
             var conConfig = new ConnectionConfig
             {
-                HostName = "10.1.1.131", //10.1.1.137", //"109.237.91.29", //"192.168.3.33", //"192.168.33.110", //"10.1.1.137",
-                Port = 5672, // 5672,
+                HostName = "109.237.91.29", //"10.1.1.131", //10.1.1.137",  //"192.168.3.33", //"192.168.33.110", //"10.1.1.137",
+                Port = 5674, // 5672,
                 VirtualHost = "dev_2",
                 ConnectionName = "[kovpak].[Comsumer]",
                 UserName = "SDR_Client", // "andrey",
@@ -56,8 +56,8 @@ namespace Atdi.Test.RabbitMQ
 
         static void MakeMessages()
         {
-            var body = new byte[1024 * 1024 * 100];
-            for (int i = 0; i < 4; i++)
+            var body = new byte[1024 * 1024 * 1];
+            for (int i = 0; i < 100; i++)
             {
                 var msg = new DeliveryMessage
                 {
