@@ -206,7 +206,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         result = true;
                         break;
                     case "SendMeasResults":
+                        string Symbol = "\"";
 
+                        string textSendCommand = "";
+                        string Error = "";
                         MessageObject dataU = UnPackObject(messageResponse);
                         var data = dataU.Object as Atdi.DataModels.Sdrns.Device.MeasResults;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor handler_ = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor>();
@@ -229,17 +232,17 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                     if (msReslts.MeasurementsResults[0] is Atdi.AppServer.Contracts.Sdrns.LevelMeasurementOnlineResult)
                                     {
                                         msReslts.Status = "O";
-                                        ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                                        ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId, out Error);
                                     }
                                     else
                                     {
-                                        ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                                        ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId, out Error);
                                     }
                                 }
                             }
                             else
                             {
-                                ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId);
+                                ID = DbGetRes.SaveResultToDB(msReslts, data, data.TaskId, out Error);
                             }
                             if ((ID > 0) && (ID != Constants.NullI))
                             {
@@ -249,7 +252,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 commandResSendMeasResults.SensorName = sensorName;
                                 commandResSendMeasResults.EquipmentTechId = techId;
                                 commandResSendMeasResults.SdrnServer = sdrnServer;
-                                commandResSendMeasResults.CustTxt1 = "Success";
+                                commandResSendMeasResults.CustTxt1 = "{ "+ string.Format("{0}: {1}, {2}: {3}, {4}: {5} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\""+data.ResultId+"\"", "\"Message\"", "\"\"") + " }";
                                 PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                             }
                             else
@@ -260,7 +263,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 commandResSendMeasResults.SensorName = sensorName;
                                 commandResSendMeasResults.EquipmentTechId = techId;
                                 commandResSendMeasResults.SdrnServer = sdrnServer;
-                                commandResSendMeasResults.CustTxt1 = "Fault";
+                                commandResSendMeasResults.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + data.ResultId + "\"", "\"Message\"", "\""+ Error + "\"") + " }";
                                 PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                             }
                         }
@@ -272,7 +275,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendMeasResults.SensorName = sensorName;
                             commandResSendMeasResults.EquipmentTechId = techId;
                             commandResSendMeasResults.SdrnServer = sdrnServer;
-                            commandResSendMeasResults.CustTxt1 = "Fault";
+                            commandResSendMeasResults.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + data.ResultId + "\"", "\"Message\"", "\"" + Error + "\"") + " }";
                             PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                         }
                         result = true;

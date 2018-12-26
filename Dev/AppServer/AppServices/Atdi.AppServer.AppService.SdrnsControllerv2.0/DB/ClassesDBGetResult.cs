@@ -19,8 +19,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 
 
 
-        public int? SaveResultToDB(MeasurementResults obj, Atdi.DataModels.Sdrns.Device.MeasResults api2Result, string taskId)
+        public int? SaveResultToDB(MeasurementResults obj, Atdi.DataModels.Sdrns.Device.MeasResults api2Result, string taskId, out string Error)
         {
+            Error = "";
             int? ID = Constants.NullI;
             {
                 logger.Trace("Start procedure SaveResultToDB.");
@@ -535,6 +536,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         }
                         catch (Exception ex)
                         {
+                            Error = ex.Message;
                             ID = Constants.NullI;
                             try
                             {
@@ -550,12 +552,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     }
                     else
                     {
+                        Error = "Error connection  to Database";
                         logger.Error("[SaveResultToDB] Error connection  to Database");
                         ID = Constants.NullI;
                     }
                 }
                 catch (Exception ex)
                 {
+                    Error = ex.Message;
                     ID = Constants.NullI;
                     logger.Error(ex.Message);
                 }

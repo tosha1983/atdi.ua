@@ -58,7 +58,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                   if (ressd.SendDataObject(dyn2, "TESTMMSRSR-021"))
                   {
                        dyn2.Clear();
-                       dyn.Clear();
+                     dyn.Clear();
                   }
 
                 GlobalInit.Initialization();
@@ -66,13 +66,13 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 BaseXMLConfiguration xml_con = new BaseXMLConfiguration();
                 BusManager<Atdi.DataModels.Sdrns.Device.MeasResults> ressd = new BusManager<Atdi.DataModels.Sdrns.Device.MeasResults>();
-                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1629590000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1629590000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
                 ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931181000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931127000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931308000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-                ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931495000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931127000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+                //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931308000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
+             //ressd.SendDataToQueue(System.IO.File.ReadAllText("D:\\TEMP\\1931495000.json"), "Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
                 // var T = ressd.GetDataObject<Atdi.DataModels.Sdrns.Device.MeasResults>("Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0]");
-*/
+  */   
 
 
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
