@@ -8,32 +8,19 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
-    public class MainProcessReceveIQStreamAndGetTimeStamp
+    [Serializable]
+    public class GetTimeStamp
     {
         #region parameters 
-        SDRBB60C SDR;
-        public Double TimeReceivingSec;
-        public Double MinDurationSignalForAnalizemks;
+        public double TimeReceivingSec;
+        public double MinDurationSignalForAnalizemks;
         public IQStreamTimeStampBloks IQStreamTimeStampBloks;
-        public enum TypeTechnology { GSM, UMTS, CDMA, LTE, PMR, Ununknown}
+        public enum TypeTechnology {GSM, UMTS, CDMA, LTE, PMR, Ununknown}
         public TypeTechnology SignalTechnology;
         #endregion
-        #region SaveLoadRaw
-        /// <summary>
-        /// Serialize
-        /// </summary>
-        /// <param name="File"></param>
-        /// <param name="obj"></param>
-        public void SerializeObject(string File, object obj)
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream fs = new FileStream(File, FileMode.OpenOrCreate);
-            formatter.Serialize(fs, obj);
-            fs.Close();
-            fs.Dispose();
-        }
+        #region LoadRaw
         /// <summary>
         /// Deserialize
         /// </summary>
@@ -49,7 +36,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
             fs.Dispose();
             return obj;
         }
-        private void SaveFileForAnalize(ReceiveIQStream IQStream, int PointStart, int PointStop)
+        private void SaveFileForAnalize(ReceivedIQStream IQStream, int PointStart, int PointStop)
         {
             int steps = 0;
             StreamWriter sw = new StreamWriter("C:\\TEMP\\points.csv");
@@ -74,40 +61,29 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
         }
         #endregion
 
-        public MainProcessReceveIQStreamAndGetTimeStamp(double _TimeReceivingSec, Double freqMHz, Double spankHz, TypeTechnology _SignalTechnology = TypeTechnology.Ununknown)
+        public GetTimeStamp(ReceivedIQStream IQStream, int semple_per_second, double spankHz, TypeTechnology _SignalTechnology = TypeTechnology.Ununknown)
         {
-            SignalTechnology =_SignalTechnology; 
+            SignalTechnology =_SignalTechnology;
             // Константы
             MinDurationSignalForAnalizemks = 100000.0/(spankHz);
             bool FilteringForFindSignalAndPause = true; 
             // конец констант
-            TimeReceivingSec = _TimeReceivingSec; 
-            //SDR = new SDR_BB60C();
-            //SDR.initiation_SDR();
-            //SDR.calibration();
-            SetConfigurationForReceivIQStream SDRConfig = new SetConfigurationForReceivIQStream(ref SDR, freqMHz, spankHz);
-            // костыль 
-            SDRConfig.samples_per_sec = 40000000;
             DateTime TimeMeas = DateTime.Now; // КОСТЫЛЬ
-            //ReceiveIQStream IQStream = new ReceiveIQStream(SDR.id_dev, SDRConfig.return_len, SDRConfig.samples_per_sec, TimeReceivingSec);
-            //запись объекта в файл
-            //SerializeObject("C:\\Temp\\REsult4.bin", IQStream);
-            //считывание объекта с файла
-            ReceiveIQStream IQStream = (DeserializeObject("C:\\projects\\Monitoring projects\\SDR\\DataSignal\\GSM 900\\REsult2.bin") as ReceiveIQStream);
+            //считывание объекта с файла используется для тестов
+            if (IQStream is null)
+            {
+                IQStream = (DeserializeObject("C:\\projects\\Monitoring projects\\SDR\\DataSignal\\GSM_900_2.bin") as ReceivedIQStream);
+            }
+            TimeReceivingSec = IQStream.durationReceiving_sec;
             IQStream.CalcAmpl();
-            //SaveFileForAnalize(IQStream, 9600, 10600);
 
-            // Константы и их установка
+            //Установка констант
             IQStreamTimeStampBloks.MethodForTimeDivision methodForTimeDivision;
             IQStreamTimeStampBloks.MethodForSelectCriticalPoint methodForSelectCriticalPoint;
             IQStreamTimeStampBloks.MethodForCalcFreqFromCriticalPoint methodForCalcFreqFromCriticalPoint;
             bool CalcFreqTone;
-
-
-
             switch (SignalTechnology)
             {
-
                 case TypeTechnology.GSM:
                 case TypeTechnology.PMR:
                     methodForTimeDivision = IQStreamTimeStampBloks.MethodForTimeDivision.ChangeOfFlanks;
@@ -124,13 +100,12 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
                     methodForSelectCriticalPoint = IQStreamTimeStampBloks.MethodForSelectCriticalPoint.SpeedChangeIQ;
                     methodForCalcFreqFromCriticalPoint = IQStreamTimeStampBloks.MethodForCalcFreqFromCriticalPoint.MultyToneByBlock;
                     CalcFreqTone = false;
-
                     MinDurationSignalForAnalizemks = Math.Max(TimeReceivingSec * 1000000 / 50, MinDurationSignalForAnalizemks);
                     break;
             }
             // конец констант
 
-            IQStreamStartAndStopFlange IQstreamSignalFlange = new IQStreamStartAndStopFlange(SDRConfig);
+            IQStreamStartAndStopFlange IQstreamSignalFlange = new IQStreamStartAndStopFlange(semple_per_second);
             IQstreamSignalFlange.IQStreamStartAndStopFlangeCalc(methodForTimeDivision, IQStream, MinDurationSignalForAnalizemks, FilteringForFindSignalAndPause, spankHz); 
             IQstreamSignalFlange.CalcDurationSignalPause();
             IQstreamSignalFlange.CreateBlockSignal(IQStream, MinDurationSignalForAnalizemks);
@@ -147,7 +122,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
                     { IQStreamTimeStampBloks.IndexPPS.Add(IQStream.triggers[i][j] + i * IQStream.iq_samples[0].Length);}else{break;}
                 }
             }
-            IQStreamTimeStampBloks.SemplePerSecond = SDRConfig.samples_per_sec;
+            IQStreamTimeStampBloks.SemplePerSecond = semple_per_second;
             IQStreamTimeStampBloks.TimeMeas = TimeMeas;
             IQStreamTimeStampBloks.TotalDurationIQStreammks = TimeReceivingSec*1000000.0;
             IQStreamTimeStampBloks.IndexStartFlange = IQstreamSignalFlange.IndexStartFlange;
@@ -166,23 +141,24 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
             //Нужно только для тестов
 
             List<double> RotationAmpl = new List<double>();
+            List<double> RotationPhase = new List<double>();
             for (int i = 0; i < IQstreamSignalFlange.BlockOfSignals.Count; i++) 
             {
                 if (IQstreamSignalFlange.BlockOfSignals[i].Durationmks > MinDurationSignalForAnalizemks)
                 {
                     int p = IQstreamSignalFlange.BlockOfSignals[i].IQStream.Length;
                     List <int>RotationIndex = new List<int>();
-                    List<Double> RotationPhase = new List<double>();
-                    PhaseProcess.RotationCalculation(methodForSelectCriticalPoint, IQstreamSignalFlange.BlockOfSignals[i], out RotationIndex, out RotationAmpl);
+                    PhaseProcess.RotationCalculation(methodForSelectCriticalPoint, IQstreamSignalFlange.BlockOfSignals[i], out RotationIndex, out RotationAmpl, out RotationPhase);
                     TimeStampBlock timeStampBlock = new TimeStampBlock();
                     if (RotationIndex.Count > 10)
                     {
-                        PhaseProcess.CalcTimestampBloks(ref RotationIndex, SDRConfig.samples_per_sec, spankHz, IQstreamSignalFlange.BlockOfSignals[i].Durationmks, IQstreamSignalFlange.BlockOfSignals[i].StartIndexIQ, methodForCalcFreqFromCriticalPoint, CalcFreqTone, out timeStampBlock);
+                        PhaseProcess.CalcTimestampBloks(ref RotationIndex, semple_per_second, spankHz, IQstreamSignalFlange.BlockOfSignals[i].Durationmks, IQstreamSignalFlange.BlockOfSignals[i].StartIndexIQ, methodForCalcFreqFromCriticalPoint, CalcFreqTone, out timeStampBlock);
                         timeStampBlock.RotationAmpl = RotationAmpl;
+                        timeStampBlock.RotationPhase = RotationPhase;
                         IQStreamTimeStampBloks.TimeStampBlocks.Add(timeStampBlock);
                     }
                 }
-             }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Modules.MonitoringProcess.Measurement;
 using Atdi.Modules.MonitoringProcess;
+using Atdi.Modules.MonitoringProcess.ProcessSignal;
 
 namespace Atdi.Sdrn.Modules.MonitoringProcess
 {
@@ -57,8 +58,8 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
         private object TaskProcessing(ISDR SDR, TaskParameters taskParameters, LastResultParameters lastResultParameters, SensorParameters sensorParameters, ref CirculatingData circulatingData, ReferenceSignal[] referenceSignals)
         {
             MeasSdrResults_v2 MSDRRes = new MeasSdrResults_v2();
-            try
-            {
+            //try
+            //{
                 // заполнение основных параметров таска
 
                 MSDRRes.MeasSubTaskId = null;
@@ -89,18 +90,30 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
                     MSDRRes.FSemples = GetFemplesFromSemplesFreq(bandwidth.fSemples);
                     MSDRRes.ResultsBandwidth = GetMeasSdrBandwidthResultsFromMeasBandwidthResult( bandwidth.measSdrBandwidthResults);
                 }
-                if (taskParameters.MeasurementType == MeasType.PICode)// пока с костылем работаем
+                if (taskParameters.MeasurementType == MeasType.Signaling)// пока не доделано и не дотестированно
                 {
                     Signaling signaling = new Signaling(SDR, taskParameters, sensorParameters, lastResultParameters, ref circulatingData, referenceSignals);
                     MSDRRes.emittings = signaling.emittingsComplete;
                 }
-                if (taskParameters.MeasurementType == MeasType.SoundID)// пока с костылем работаем для тестов
+                if (taskParameters.MeasurementType == MeasType.IQReceive)// пока не доделано и не дотестированно
                 {
-                    IQStreem iQStreem = new IQStreem(SDR);
+                    IQStreem iQStreem = new IQStreem(SDR, taskParameters);
+                }
+                if (taskParameters.MeasurementType == MeasType.Timetimestamp)// пока не доделано и не дотестированно
+                {
+                    IQStreem iQStreem = new IQStreem(SDR, taskParameters);
+                    GetTimeStamp getTimeStamp = new GetTimeStamp(null, 40000000, 200, GetTimeStamp.TypeTechnology.GSM);
+                // функционал для тестирования 
+                //    EstimationTimeDelayBetweenTwoTimestamp estimationTimeDelayBetweenTwoTimestamp = new EstimationTimeDelayBetweenTwoTimestamp(getTimeStamp.IQStreamTimeStampBloks, getTimeStamp.IQStreamTimeStampBloks);
+                // 
+
+
+                // функционал для тестирования 
                 }
 
-            }
-            catch { MSDRRes = null; error = MeasError.Measurements; }
+
+            //}
+            //catch { MSDRRes = null; error = MeasError.Measurements; }
 
             return MSDRRes;
         }
@@ -269,6 +282,9 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
                 case MeasurementType.SoundID:
                     measType = MeasType.IQReceive;
                     break;
+                case MeasurementType.Program:
+                    measType = MeasType.Timetimestamp;
+                    break;
                 default:
                     measType = MeasType.Level;
                     break;
@@ -393,10 +409,14 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
                 }
             }
             // коректировка режима измерения 
-
             taskParameters.TaskId = taskSDR.Id;
             taskParameters.MeasurementType = GetMeasTypeFromMeasurementType(taskSDR.MeasDataType);
             taskParameters.status = taskSDR.status;
+
+            // до конца не определенные блоки
+            taskParameters.ReceivedIQStreemDuration_sec = 1.0;
+
+
             return (taskParameters);
         }
         #endregion

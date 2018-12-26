@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
     /// <summary>
     /// Клас обрабатывает поток и вычисляет индессы возрастающего фронта и падающего фронта начала и конца сигнала 
@@ -15,33 +15,33 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
 
         //configuration parameter
         // параметры для IQStreamStartAndStopFlangeCalcByTriggerLeve
-        public Double PersentOfAmplitudeForTrigger = 10;
+        public double PersentOfAmplitudeForTrigger = 10;
         public int TriggerIndexIntervalmksec = 3; //длительность которую можно считать паузой расчитана на 1 км распространения в микросекундах.
         // параметры для IQStreamStartAndStopFlangeCalcByRateOfChangeOfFlanks
-        public Double CriticlaRateChangeFlankedBinmksec = 10;
-        public Double CriticlaLevelChangeFlankedB = 10;
-        public Double TimeAfterFlancmks = 0.5;
+        public double CriticlaRateChangeFlankedBinmksec = 10;
+        public double CriticlaLevelChangeFlankedB = 10;
+        public double TimeAfterFlancmks = 0.5;
         // end configuration parameter
 
         public int[] IndexStartFlange;
         public int[] IndexStopFlange;
-        Double[] TimeDurationSignal; // в милисекундах
-        Double[] TimeDurationPause; // в милисекундах
+        double[] TimeDurationSignal; // в милисекундах
+        double[] TimeDurationPause; // в милисекундах
         int samples_per_sec;
-        Double TriggerLevel;
+        double TriggerLevel;
         int TriggerIndexInterval;
         public List<BlockOfSignal> BlockOfSignals;
 
         #endregion
-        public IQStreamStartAndStopFlange(SetConfigurationForReceivIQStream IQparameters)
+        public IQStreamStartAndStopFlange(int _semple_per_second)
         {
-            samples_per_sec = IQparameters.samples_per_sec;
+            samples_per_sec = _semple_per_second;
         }
         /// <summary>
         /// Определяем начала и концы передачи при переходк через тригерный уровень.
         /// </summary>
         /// <param name="IQStream"></param>
-        private void IQStreamStartAndStopFlangeCalcByTriggerLevel(ReceiveIQStream IQStream)
+        private void IQStreamStartAndStopFlangeCalcByTriggerLevel(ReceivedIQStream IQStream)
         {
             TriggerIndexInterval = TriggerIndexIntervalmksec * samples_per_sec / 1000000;
             if (TriggerIndexInterval < 5) { TriggerIndexInterval = 5; }
@@ -83,7 +83,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
         /// Определяем начало и конец передачи делением на равные интервалы
         /// </summary>
         /// <param name="IQStream"></param>
-        private void IQStreamStartAndStopFlangeCalcByEqualTimeIntervals(ReceiveIQStream IQStream, double BlockDurationmks)
+        private void IQStreamStartAndStopFlangeCalcByEqualTimeIntervals(ReceivedIQStream IQStream, double BlockDurationmks)
         {
             //константа 
             int StartPause = 300;
@@ -118,7 +118,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
         /// Определяем начала и концы передачи при скачках амплитуды.
         /// </summary>
         /// <param name="IQStream"></param>
-        private void IQStreamStartAndStopFlangeCalcByRateOfChangeOfFlanks(ReceiveIQStream IQStream, bool FilteringForFindSignalAndPause, Double bandwidthKhz)
+        private void IQStreamStartAndStopFlangeCalcByRateOfChangeOfFlanks(ReceivedIQStream IQStream, bool FilteringForFindSignalAndPause, Double bandwidthKhz)
         {
             CriticlaRateChangeFlankedBinmksec = 5.0 * bandwidthKhz/1000.0;
 
@@ -179,6 +179,15 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
                     else { _IndexStopFlange.RemoveAt(i + 1); }
                 }
                 while (i < _IndexStopFlange.Count - 1);
+                if (_IndexStopFlange[0] < _IndexStartFlange[0])
+                {
+                    _IndexStopFlange.RemoveAt(0);
+                }
+                if (_IndexStopFlange.Count < _IndexStartFlange.Count)
+                {
+                    _IndexStartFlange.RemoveAt(_IndexStartFlange.Count-1);
+                }
+
             }
 
             IndexStartFlange = _IndexStartFlange.ToArray();
@@ -206,7 +215,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
         /// </summary>
         /// <param name="IQStream"></param>
         /// <param name="MinTimeDuration"></param>
-        public void CreateBlockSignal(ReceiveIQStream IQStream, Double MinTimeDurationmks)
+        public void CreateBlockSignal(ReceivedIQStream IQStream, Double MinTimeDurationmks)
         {
             BlockOfSignals = new List<BlockOfSignal>();
             // создание одного большого массива
@@ -231,7 +240,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
                 }
             }
         }
-        public void IQStreamStartAndStopFlangeCalc(IQStreamTimeStampBloks.MethodForTimeDivision methodForTimeDivision, ReceiveIQStream IQStream, double BlockDurationmks, bool FilteringForFindSignalAndPause, Double bandwidthKhz)
+        public void IQStreamStartAndStopFlangeCalc(IQStreamTimeStampBloks.MethodForTimeDivision methodForTimeDivision, ReceivedIQStream IQStream, double BlockDurationmks, bool FilteringForFindSignalAndPause, Double bandwidthKhz)
         {
             // константы которые нужны для исполнения методов
             switch (methodForTimeDivision)

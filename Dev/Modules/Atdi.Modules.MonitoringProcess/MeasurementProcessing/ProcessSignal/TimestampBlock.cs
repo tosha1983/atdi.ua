@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
+    [Serializable]
     public class TimeStampBlock
     {
         /// <summary>
@@ -17,6 +18,10 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
         /// </summary>
         public List<double> RotationAmpl;
         /// <summary>
+        /// Phase of indexes with some hit, depend from method find rotation.
+        /// </summary>
+        public List<double> RotationPhase;
+        /// <summary>
         /// Parameter of tone for Rotation index
         /// </summary>
         public List<TimeStampToneParameter> TimeStampToneParameters;
@@ -26,6 +31,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
         public int StartIndexOfBlock;
         public double DurationBlockmks;
     }
+    [Serializable]
     public class TimeStampToneParameter
     {
         /// <summary>

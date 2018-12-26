@@ -4,39 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.MonitoringProcess.SingleHound.ProcessSignal
+namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
     [Serializable]
-    public class ReceiveIQStream
+    public class ReceivedIQStream
     {
         #region parameters
         public List<float[]> iq_samples;
         public List<int[]> triggers;
         public List<float[]> Ampl;
-        public Double MinLevel;
-        public Double MaxLevel;  
-        #endregion 
-        public ReceiveIQStream(int id_dev, int return_len, int samples_per_sec, Double TimeReceivingSec)
-        {
-            Double NumberPass = 0;
-            NumberPass = TimeReceivingSec * samples_per_sec / return_len;
-            iq_samples = new List<float[]>();
-            triggers = new List<int[]>();
-            for (int i = 0; i < NumberPass; i++)
-            {
-                float[] iq_sample = new float[return_len * 2];
-                int[] trigger = new int[80];
-                bb_api.bbFetchRaw(id_dev, iq_sample, trigger);
-                iq_samples.Add(iq_sample);
-                triggers.Add(trigger);
-            }
-        }
-
-        public ReceiveIQStream()
-        {
-
-        }
-        
+        public double MinLevel;
+        public double MaxLevel;
+        public DateTime TimeMeasStart; // время начала измерения потока IQ
+        public double durationReceiving_sec; 
+        #endregion
         public void CalcAmpl()
         {
             Ampl = new List<float[]>();

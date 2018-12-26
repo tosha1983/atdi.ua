@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 //using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Modules.MonitoringProcess;
+using Atdi.Modules.MonitoringProcess.ProcessSignal;
 
 namespace Atdi.Modules.MonitoringProcess.SingleHound
 {
@@ -105,22 +106,92 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
         }
 
         #region IQStream
-        public bool GetIQStream(ref float[] iq_sample, ref int[] trigger)
+        unsafe public bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving_sec = -1, bool AfterPPS = false)
         {
-            //(int id_dev, int return_len, int samples_per_sec, Double TimeReceivingSec)
             bool done = false;
             try
             {
-                iq_sample = new float[return_len * 2];
-                trigger = new int[80];
-                bb_api.bbFetchRaw(id_dev, iq_sample, trigger);
+                // константа
+                int max_count = 150;
+                // конец констант
+
+                int NumberPass = 0;
+                if (durationReceiving_sec < 0) { NumberPass = 1; } else { NumberPass = (int)Math.Ceiling(durationReceiving_sec * samples_per_sec / return_len); }
+                receivedIQStream = new ReceivedIQStream();
+                receivedIQStream.TimeMeasStart = DateTime.Now;
+                receivedIQStream.iq_samples = new List<float[]>();
+                receivedIQStream.triggers = new List<int[]>();
+                //float* bufer = stackalloc float[return_len * 2];
+                //int* triggers = stackalloc int[71];
+                //bbIQPacket pkt = new bbIQPacket();
+                //pkt.iqData = bufer;
+                //pkt.iqCount = return_len;
+                //pkt.triggers = triggers;
+                //pkt.triggerCount = 70;
+                //pkt.purge = 1;
+                long[] ticks = new long[NumberPass+1];
+                long[] ticks1 = new long[NumberPass + 1];
+                List<float[]> IQData = new List<float[]>();
+                List<int []> TrData = new List<int[]>();
+
+
+                for (int i = 0; i < NumberPass; i++)
+                {
+                    float[] iqSamplesX = new float[return_len * 2];
+                    int[] triggersX = new int[71];
+                    IQData.Add(iqSamplesX);
+                    TrData.Add(triggersX);
+                }
+                int dataRemaining = 1, sampleLoss = 0, iqSec = 0, iqNano = 0;  //ВАЖНО КОСТЫЛЬ
+                long time = DateTime.Now.Ticks;
+                int count = 0;
+                for (int i = 0; i < NumberPass; i++)
+                {
+                    //long tick = DateTime.Now.Ticks;
+                    //ticks[i] = DateTime.Now.Ticks - tick;
+                    bb_api.bbGetIQUnpacked(id_dev, IQData[i], return_len, TrData[i], 71, 1,
+                            ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
+                    if (TrData[i][0] != 0)
+                    {
+                        AfterPPS = false;
+                    }
+                    if (AfterPPS)
+                    {
+                        i--;
+                    }
+                    count++;
+                    if (count >= max_count) { break;}
+                    //long tick1 = DateTime.Now.Ticks;
+                    //ticks1[i] = DateTime.Now.Ticks - tick1;
+                    //System.Threading.Thread.Sleep(1);
+                }
+                long time1 = DateTime.Now.Ticks - time;
+                time = DateTime.Now.Ticks;
+                for (int i = 0; i < NumberPass; i++)
+                {
+                    float[] iq_sample = new float[return_len * 2];
+                    int[] trigger = new int[80];
+                    for (int j = 0; j < return_len * 2; j++)
+                    {
+                        iq_sample[j] = IQData[i][j];
+                    }
+                    for (int j = 0; j < 10; j++)
+                    {
+                        trigger[j] = TrData[i][j];
+                        if (trigger[j] == 0) { break; }
+                    }
+                    receivedIQStream.iq_samples.Add(iq_sample);
+                    receivedIQStream.triggers.Add(trigger);
+                }
+                time1 = (DateTime.Now.Ticks - time)/10000000;
+                receivedIQStream.durationReceiving_sec = durationReceiving_sec;
                 done = true;
             }
             catch
             {
-                iq_sample = null;
-                trigger = null;
+                receivedIQStream = null;
             }
+            
             return done;
         }
         #endregion
@@ -270,7 +341,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     SetParameterForMeasurements(ref sDRParameters);// установка параметров для класса
 
                     // настройка конфигурации оборудования
-                    if (sDRParameters.MeasurementType == MeasType.SoundID) // КОСТЫЛЬ пока не будет изменен контракт
+                    if ((sDRParameters.MeasurementType == MeasType.IQReceive)||(sDRParameters.MeasurementType == MeasType.Timetimestamp)) // КОСТЫЛЬ пока не будет изменен контракт
                     {
                         done = put_config_for_IQ();
                     }
@@ -403,6 +474,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                 bb_api.bbConfigureGain(id_dev, gain_SDR);
                 bb_api.bbConfigureCenterSpan(id_dev, (f_max * 1000000 + f_min * 1000000) / 2, f_max * 1000000 - f_min * 1000000);
                 bb_api.bbConfigureIQ(id_dev, downsampleFactor, f_max * 1000000 - f_min * 1000000);
+                bb_api.bbConfigureIO(id_dev, 0, bb_api.BB_PORT2_IN_TRIGGER_RISING_EDGE);
                 status = bb_api.bbInitiate(id_dev, bb_api.BB_STREAMING, bb_api.BB_STREAM_IQ);
                 if (status != bbStatus.bbNoError) { return false; } //Выход с ошибкой 
                 return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
