@@ -41,7 +41,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             if (obj != null)
                             {
 
-                                if ((taskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
+                                //if ((taskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
+                                if ((obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                                 {
 
                                     if (obj.StationMeasurements.StationId != null)

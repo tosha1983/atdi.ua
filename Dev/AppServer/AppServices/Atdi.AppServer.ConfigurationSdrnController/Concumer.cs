@@ -207,8 +207,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         break;
                     case "SendMeasResults":
                         string Symbol = "\"";
-
-                        string textSendCommand = "";
                         string Error = "";
                         MessageObject dataU = UnPackObject(messageResponse);
                         var data = dataU.Object as Atdi.DataModels.Sdrns.Device.MeasResults;
@@ -217,7 +215,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         if (SensorId != null)
                         {
                             Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult DbGetRes = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassesDBGetResult>();
-                            //var data = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.MeasResults)) as Atdi.DataModels.Sdrns.Device.MeasResults;
                             int? ID = -1;
                             string Status_Original = data.Status;
                             Atdi.AppServer.Contracts.Sdrns.MeasurementResults msReslts = Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassConvertToSDRResults.GenerateMeasResults2_0(data);
@@ -252,7 +249,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 commandResSendMeasResults.SensorName = sensorName;
                                 commandResSendMeasResults.EquipmentTechId = techId;
                                 commandResSendMeasResults.SdrnServer = sdrnServer;
-                                commandResSendMeasResults.CustTxt1 = "{ "+ string.Format("{0}: {1}, {2}: {3}, {4}: {5} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\""+data.ResultId+"\"", "\"Message\"", "\"\"") + " }";
+                                commandResSendMeasResults.CustTxt1 = "{ "+ string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\""+data.ResultId+"\"", "\"Message\"", "\"\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
                                 PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                             }
                             else
@@ -263,7 +260,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 commandResSendMeasResults.SensorName = sensorName;
                                 commandResSendMeasResults.EquipmentTechId = techId;
                                 commandResSendMeasResults.SdrnServer = sdrnServer;
-                                commandResSendMeasResults.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + data.ResultId + "\"", "\"Message\"", "\""+ Error + "\"") + " }";
+                                commandResSendMeasResults.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + data.ResultId + "\"", "\"Message\"", "\""+ Error + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
                                 PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                             }
                         }
@@ -275,7 +272,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             commandResSendMeasResults.SensorName = sensorName;
                             commandResSendMeasResults.EquipmentTechId = techId;
                             commandResSendMeasResults.SdrnServer = sdrnServer;
-                            commandResSendMeasResults.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + data.ResultId + "\"", "\"Message\"", "\"" + Error + "\"") + " }";
+                            commandResSendMeasResults.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + data.ResultId + "\"", "\"Message\"", "\"" + Error + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
                             PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, commandResSendMeasResults, message.BasicProperties.CorrelationId);
                         }
                         result = true;
@@ -416,6 +413,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             catch (Exception e)
             {
                 result = false;
+                channel.BasicAck(message.DeliveryTag, false);
+                channel.BasicPublish(message.Exchange, string.Format("Q.SDRN.Server.[{0}].[errors].[v2.0]", sdrnServer), message.BasicProperties, message.Body);
                 this._logger.Error(e.Message);
             }
 

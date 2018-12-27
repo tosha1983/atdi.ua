@@ -106,6 +106,12 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 if (listConcumerDescribe != null)
                 {
                     Dictionary<IModel, RabbitOptions> dictionary = new Dictionary<IModel, RabbitOptions>();
+
+                    var channel_ = _connection.CreateModel();
+                    channel_.ModelShutdown += Channel_ModelShutdown;
+                    channel_.ExchangeDeclare(exchange: ExchangePointFromDevices + ".[" + apiVersion + "]", type: "direct", durable: true);
+                    QueueDeclareConcumer(StartNameQueueServer, "errors", channel_, ExchangePointFromDevices + ".[" + apiVersion + "]");
+
                     foreach (ConcumerDescribe d in listConcumerDescribe)
                     {
                         var channel = _connection.CreateModel();
@@ -116,6 +122,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         dictionary.Add(channel, new RabbitOptions(StartNameQueueServer, routingKey, queueName, d.NameConcumer));
                         listRabbitOptions.Add(channel, new RabbitOptions(StartNameQueueServer, routingKey, queueName, d.NameConcumer));
                     }
+
+                    
                     int i = 0;
                     foreach (KeyValuePair<IModel, RabbitOptions> lo in dictionary)
                     {
