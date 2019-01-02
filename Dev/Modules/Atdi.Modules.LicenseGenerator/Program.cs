@@ -17,7 +17,11 @@ namespace Atdi.Modules.LicenseGenerator
             //WebQueryAppServer_ForUDCR(path);
             //path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal";
             //WebQueryWebPortal_ForUDCR(path);
-            UpdatePeriod_ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2018");
+
+            //UpdatePeriod_ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2018");
+
+            UpdatePeriod_ICSControl_ForTest(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2018");
+
             Console.WriteLine("Process was finished");
             Console.ReadKey();
         }
@@ -77,6 +81,53 @@ namespace Atdi.Modules.LicenseGenerator
             }
             // dev 1
             
+        }
+
+        static void UpdatePeriod_ICSControl_ForTest(string path)
+        {
+            var startDate = new DateTime(2018, 12, 25);
+            var stopDate = new DateTime(2020, 1, 1);
+            var outPath = @"C:\Projects\Licensing\Test\Sdrn\Licenses_2019";
+            var ownerId = "OID-BD12-A00-N00";
+            var ownerKey = "BD12-A00";
+
+            // server
+            UpdateLicesePeriod(
+                sourcefileName: Path.Combine(path, "ServerLicense\\LIC-SBD12-A00-613.SDRNSV-SBD12-A00-8591.lic"),
+                productKey: "XC0R-EEVL-0AT5-LETT-VEUO",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate);
+
+            var data = new string[][]
+            {
+                new string[] { "LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280", "0ZB0-DVZR-ATI1-WIHB-NC1B" },
+                new string[] { "LIC-DBD12-A00-192.SENSOR-DBD12-A00-0618", "BCBC-ECA1-L9EC-IR7E-V1AD" },
+                new string[] { "LIC-DBD12-A00-333.SENSOR-DBD12-A00-5140", "CCMR-RBZN-2C1D-OE40-EC23" },
+                new string[] { "LIC-DBD12-A00-442.SENSOR-DBD12-A00-5169", "ADL6-EDCV-NC1I-CE1N-DLH0" },
+                new string[] { "LIC-DBD12-A00-511.SENSOR-DBD12-A00-8429", "020B-CJHO-TDNI-ZEEO-2KDI" },
+                new string[] { "LIC-DBD12-A00-542.SENSOR-DBD12-A00-9792", "N8XE-HLRQ-DERB-NLIV-0DX2" },
+                new string[] { "LIC-DBD12-A00-668.SENSOR-DBD12-A00-8485", "ROL9-XSMC-WDCT-62ST-R5ER" },
+                new string[] { "LIC-DBD12-A00-722.SENSOR-DBD12-A00-1692", "BE1D-RLNN-S0S6-EN42-0028" },
+                new string[] { "LIC-DBD12-A00-787.SENSOR-DBD12-A00-3828", "NTC0-IODJ-7SC0-01EB-DVRV" },
+                new string[] { "LIC-DBD12-A00-878.SENSOR-DBD12-A00-8918", "0VE1-OCOL-S4S0-C1D1-SEXB" },
+            };
+
+            foreach (var item in data)
+            {
+                UpdateLicesePeriod(
+                sourcefileName: Path.Combine(path, "DeviceLicense\\" + item[0] + ".lic"),
+                productKey: item[1],
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate);
+            }
+            // dev 1
+
         }
 
         static void UpdateLicesePeriod(string sourcefileName, string productKey, string ownerKey, string ownerId, string outPath, DateTime startDate, DateTime stopDate)
