@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{291436B1-151E-44AD-9153-3AE2F8F70E0C}</ProjectGuid>
+    <ProjectGuid>{FC847D51-2CA1-49DF-A322-A993238EFD4E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.Api.Sdrn.Device.BusController</RootNamespace>
-    <AssemblyName>Atdi.Test.Api.Sdrn.Device.BusController</AssemblyName>
+    <RootNamespace>Atdi.AppServer.Sdrn.ControlA.Console</RootNamespace>
+    <AssemblyName>Atdi.AppServer.Sdrn.ControlA.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,12 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\SendSensorUpdatingResultHandler.cs" />
-    <Compile Include="Handlers\SendRegistrationResultHandler.cs" />
-    <Compile Include="Handlers\SendCommandHandler.cs" />
-    <Compile Include="Handlers\SendMeasTaskHandler.cs" />
-    <Compile Include="MyCommandHandler.cs" />
-    <Compile Include="MyEventObserver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,25 +50,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
-      <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
-      <Name>Atdi.Api.Sdrn.Device.BusController</Name>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
-      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
-      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
-      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
-      <Name>Atdi.DataModels.Sdrns.Device</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
-      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
-      <Name>Atdi.DataModels.Sdrns</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
