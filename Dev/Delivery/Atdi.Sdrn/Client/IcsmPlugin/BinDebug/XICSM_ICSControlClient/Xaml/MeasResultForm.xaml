@@ -62,6 +62,7 @@
                             <Grid.RowDefinitions>
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
+                              <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
                             <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}"/>
@@ -82,6 +83,8 @@
                                     <DataGridTextColumn Header="CountUnknownStationMeasurements" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
                                   </DataGrid.Columns>                        
                               </DataGrid>
+                              <CheckBox Grid.Column="0" Grid.Row="2" Content="Show only this task" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding TaskOnlyChecked}"/>
+                              <CheckBox Grid.Column="1" Grid.Row="2" Content="Show only this sensor" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding SensorOnlyChecked}"/>
                         </Grid>
                           
                         <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
@@ -123,6 +126,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
@@ -359,6 +363,7 @@
                                             <RowDefinition Height="20"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
                                           </Grid.RowDefinitions>
+                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
                                           <Button Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
                                           <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}" SelectedItem="{Binding CurrentLevelMeasurements}">
                                             <DataGrid.Columns>
@@ -377,6 +382,27 @@
                                           </DataGrid>
                                         </Grid>                                      
                                     </Expander>
+                                    <Expander Grid.Column="0" Grid.Row="7" Header="Station Sys Info">
+                                      <Expander.Style>
+                                        <Style TargetType="{x:Type Expander}">
+                                          <Setter Property="Visibility" Value="Visible" />
+                                          <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
+                                              <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                          </Style.Triggers>
+                                        </Style>
+                                      </Expander.Style>
+                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStation}">
+                                        <Grid.ColumnDefinitions>
+                                          <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                          <RowDefinition Height="*"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Path=StationSysInfo}" Padding="5,0,0,0" Height="100" IsReadOnly="True"/>
+                                      </Grid>
+                                    </Expander>                                  
                                 </Grid>
                             </ScrollViewer>
                         </GroupBox>

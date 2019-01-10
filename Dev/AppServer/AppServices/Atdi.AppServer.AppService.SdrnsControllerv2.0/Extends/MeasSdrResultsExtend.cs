@@ -44,9 +44,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     {
                         if (sdrRes.StationResults[i] != null)
                         {
+                            MRs.ResultsMeasStation[i] = new ResultsMeasurementsStation();
                             if (sdrRes.StationResults[i].GeneralResult != null)
                             {
-                                MRs.ResultsMeasStation[i] = new ResultsMeasurementsStation();
                                 MRs.ResultsMeasStation[i].GeneralResult = new MeasurementsParameterGeneral();
                                 MRs.ResultsMeasStation[i].GeneralResult.CentralFrequency = sdrRes.StationResults[i].GeneralResult.CentralFrequency_MHz;
                                 MRs.ResultsMeasStation[i].GeneralResult.CentralFrequencyMeas = sdrRes.StationResults[i].GeneralResult.CentralFrequencyMeas_MHz;

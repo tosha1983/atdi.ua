@@ -289,11 +289,12 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             bool isSuccess = false;
             try
             {
-                List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
-                paramsOracle = new List<OracleParameter>();
+                List<OracleParameter[]> AllPropertiesColumns_ = new List<OracleParameter[]>();
+                //paramsOracle = new List<OracleParameter>();
                 int r = 1;
                 foreach (Yyy vn in ListY)
                 {
+                    paramsOracle = new List<OracleParameter>();
                     AllPropertiesColumns = vn.getAllFields;
                     int i = 0;
                     foreach (string val in AllFields)
@@ -327,104 +328,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         }
                     }
                     r++;
+                    AllPropertiesColumns_.Add(paramsOracle.ToArray());
                 }
-                isSuccess = oracleData.InsertBulkRecords(paramsOracle, yyy.GetTableName(), ListY.Count, dbConnection, dbTransaction);
+                isSuccess = oracleData.InsertBulkRecords(AllPropertiesColumns_, yyy.GetTableName(), ListY.Count, dbConnection, dbTransaction);
             }
             catch (Exception e) { System.Console.WriteLine(e.ToString()); }
             return isSuccess;
         }
 
-        public bool InsertBulkRecords(List<Yyy> ListY1, List<Yyy> ListY2, OracleParameter[] oracleParameter, DbConnection dbConnection, DbTransaction dbTransaction)
-        {
-            bool isSuccess = false;
-            try
-            {
-
-                string tableName1 = "";
-                List<OracleParameter> AllPropertiesColumns_ = new List<OracleParameter>();
-                paramsOracle = new List<OracleParameter>();
-                paramsOracle2 = new List<OracleParameter>();
-                int r = 1;
-                foreach (Yyy vn in ListY1)
-                {
-                    tableName1 = vn.GetTableName();
-                    AllPropertiesColumns = vn.getAllFields;
-                    int i = 0;
-                    foreach (string val in AllFields)
-                    {
-                        foreach (OracleParameter x in AllPropertiesColumns)
-                        {
-                            if (x.SourceColumn == val)
-                            {
-                                if (x.SourceColumn != "\"ID\"")
-                                {
-                                    if (x.Value != null)
-                                    {
-                                        string valr = val.Insert(val.Length - 1, "_" + r.ToString());
-                                        paramsOracle.Add(new OracleParameter()
-                                        {
-                                            SourceColumn = val,
-                                            ParameterName = ":" + valr,
-                                            OracleDbType = x.OracleDbType,
-                                            Direction = System.Data.ParameterDirection.Input,
-                                            Value = x.Value
-                                        });
-                                    }
-                                    i++;
-                                    break;
-                                }
-                                else
-                                {
-                                    i++;
-                                }
-                            }
-                        }
-                    }
-                    r++;
-                }
-                string tableName2 = "";
-                paramsOracle2.AddRange(oracleParameter);
-                foreach (Yyy vn in ListY2)
-                {
-                    tableName2 = vn.GetTableName();
-                    AllPropertiesColumns2 = vn.getAllFields;
-                    int i = 0;
-                    foreach (string val in AllFields2)
-                    {
-                        foreach (OracleParameter x in AllPropertiesColumns2)
-                        {
-                            if (x.SourceColumn == val)
-                            {
-                                if (x.SourceColumn != "\"ID\"")
-                                {
-                                    if (x.Value != null)
-                                    {
-                                        string valr = val.Insert(val.Length - 1, "_" + r.ToString());
-                                        paramsOracle2.Add(new OracleParameter()
-                                        {
-                                            SourceColumn = val,
-                                            ParameterName = ":" + valr,
-                                            OracleDbType = x.OracleDbType,
-                                            Direction = System.Data.ParameterDirection.Input,
-                                            Value = x.Value
-                                        });
-                                    }
-                                    i++;
-                                    break;
-                                }
-                                else
-                                {
-                                    i++;
-                                }
-                            }
-                        }
-                    }
-                    r++;
-                }
-                isSuccess = oracleData.InsertBulkRecords(paramsOracle, tableName1, ListY1.Count, paramsOracle2, tableName2, ListY2.Count, oracleParameter, dbConnection, dbTransaction);
-            }
-            catch (Exception e) { System.Console.WriteLine(e.ToString()); }
-            return isSuccess;
-        }
+      
     }
 }
