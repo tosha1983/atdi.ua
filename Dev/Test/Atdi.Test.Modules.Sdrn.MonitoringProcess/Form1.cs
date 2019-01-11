@@ -99,7 +99,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             g.Clear(pictureBox1.BackColor);
         }
 
-  
+
         private void Form1_Shown(object sender, EventArgs e)
         {
             //Listen();
@@ -365,8 +365,8 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             else { textBox1.Text += "SW Device Found" + Environment.NewLine; }
             // Конец инициализации
             // Установка параметров измерения 
-            Double f_central = 959200000;
-            Double span = 200000;
+            double f_central = 1500000000;
+            double span = 200000;
             bb_api.bbConfigureCenterSpan(id, f_central, span);
             bb_api.bbConfigureLevel(id, -20.0, bb_api.BB_AUTO_ATTEN);
             bb_api.bbConfigureGain(id, bb_api.BB_AUTO_GAIN);
@@ -508,7 +508,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                 {
                     drawPoint((int)x, (int)y);
                 }
-                System.Threading.Thread.Sleep(5);
+                //System.Threading.Thread.Sleep(5);
 
             }
         }
@@ -958,71 +958,82 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         {
             string fileName = "C:\\TEMP\\GetTimestamp.txt";
             double Freq_MHz;
-            int minut = 0 ;
+            int minut = 0;
             string[] allText = File.ReadAllLines(fileName);//чтение всех строк файла в массив строк
             minut = Convert.ToInt32(allText[0]);
             Freq_MHz = Convert.ToDouble(allText[1]);
+            string SensoreName = allText[2];
             DateTime curTime = DateTime.Now;
             DateTime TimeStart = new DateTime(curTime.Year, curTime.Month, curTime.Day, curTime.Hour, minut, 0);
-            
-            // стартуем запись IQ потока 
-
-            // заполняем таск 
-            TaskParameters taskParameters = new TaskParameters();
-            taskParameters.MinFreq_MHz = Freq_MHz - 0.1;
-            taskParameters.MaxFreq_MHz = Freq_MHz + 0.1;
-            taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.GSM;
-            taskParameters.RBW_Hz = 200000;
-            taskParameters.VBW_Hz = 200000;
-            taskParameters.ReceivedIQStreemDuration_sec = 0.05;
-
-            // Создаем сенсор для измерения
             SDRBB60C SDR = new SDRBB60C();
             SDR.Initiation();
             SDR.Calibration();
-            // Создаем настройки для сенсора
-            SDRParameters sDRParameters = new SDRParameters();
-            sDRParameters.MeasurementType = MeasType.IQReceive;
-            sDRParameters.MinFreq_MHz = taskParameters.MinFreq_MHz;
-            sDRParameters.MaxFreq_MHz = taskParameters.MaxFreq_MHz;
-            sDRParameters.PreamplificationSDR = -1;
-            sDRParameters.RefLevel_dBm = -40;
-            sDRParameters.RfAttenuationSDR = -1;
-            sDRParameters.RBW_Hz = taskParameters.RBW_Hz;
-            sDRParameters.VBW_Hz = taskParameters.VBW_Hz;
-            if (SDR.GetSDRState() == SDRState.ReadyForMeasurements)
+
+            // стартуем запись IQ потока 
+            for (int j = 0; j < 2; j++)
             {
-                SDR.SetConfiguration(sDRParameters); // Конфигурируем сенсор
-                if (SDR.SetConfiguration(sDRParameters))
+                for (double i = 429.712; i <= 429.7126; i = i + 0.2)
                 {
-                    // Стартуем измерение 
-                    ReceivedIQStream receivedIQStream = new ReceivedIQStream();
-                    ReceivedIQStream receivedIQStream2 = new ReceivedIQStream();
-                    DateTime now_time;
-                    do
+                    Freq_MHz = i;
+                    // заполняем таск 
+                    TaskParameters taskParameters = new TaskParameters();
+                    taskParameters.MinFreq_MHz = Freq_MHz - 0.025;
+                    taskParameters.MaxFreq_MHz = Freq_MHz + 0.025;
+                    taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.PMR;
+                    taskParameters.RBW_Hz = 50000;
+                    taskParameters.VBW_Hz = 50000;
+                    taskParameters.ReceivedIQStreemDuration_sec = 1.1;
+                    // Создаем сенсор для измерения
+
+                    // Создаем настройки для сенсора
+                    SDRParameters sDRParameters = new SDRParameters();
+                    sDRParameters.MeasurementType = MeasType.IQReceive;
+                    sDRParameters.MinFreq_MHz = taskParameters.MinFreq_MHz;
+                    sDRParameters.MaxFreq_MHz = taskParameters.MaxFreq_MHz;
+                    sDRParameters.PreamplificationSDR = -1;
+                    sDRParameters.RefLevel_dBm = -40;
+                    sDRParameters.RfAttenuationSDR = -1;
+                    sDRParameters.RBW_Hz = taskParameters.RBW_Hz;
+                    sDRParameters.VBW_Hz = taskParameters.VBW_Hz;
+                    if (SDR.GetSDRState() == SDRState.ReadyForMeasurements)
                     {
-                        now_time = DateTime.Now;
+                        SDR.SetConfiguration(sDRParameters); // Конфигурируем сенсор
+                        if (SDR.SetConfiguration(sDRParameters))
+                        {
+                            // Стартуем измерение 
+                            ReceivedIQStream receivedIQStream = new ReceivedIQStream();
+                            ReceivedIQStream receivedIQStream2 = new ReceivedIQStream();
+                            DateTime now_time;
+                            do
+                            {
+                                now_time = DateTime.Now;
+                            }
+                            while (now_time < TimeStart);
+                            bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, true);
+                            //done = SDR.GetIQStream(ref receivedIQStream2, taskParameters.ReceivedIQStreemDuration_sec, true);
+                            if (done == true)
+                            { // поток приняли !!!
+                                GetTimeStamp TimeStamp = new GetTimeStamp(receivedIQStream, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
+                                //GetTimeStamp TimeStamp2 = new GetTimeStamp(receivedIQStream2, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
+                                //DellAllBadBlock(ref TimeStamp);
+                                //DellAllBadBlock(ref TimeStamp2);
+                                // Пишем в файл TimeShtamp
+                                string st0 = "C:\\TEMP\\PMR_1_";
+                                string st02 = "C:\\TEMP\\PMR_2_";
+                                string st1 = Freq_MHz.ToString();
+                                string st2 = "Time";
+                                string st3 = TimeStart.ToString();
+                                string st4 = ".txt";
+                                string FileNameSaved = st1 + st2 + st3 + st4;
+                                string FileNameSaved1 = st0 + j.ToString()+ SensoreName + FileNameSaved.Replace(":", "_");
+                                //string FileNameSaved2 = st02 + j.ToString() + SensoreName + FileNameSaved.Replace(":", "_");
+                                SerializeObject(FileNameSaved1, TimeStamp);
+                                //SerializeObject(FileNameSaved2, TimeStamp);
+                            }
+
+                        }
                     }
-                    while (now_time < TimeStart);
-                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, true);
-                    done = SDR.GetIQStream(ref receivedIQStream2, taskParameters.ReceivedIQStreemDuration_sec, true);
-                    if (done == true)
-                    { // поток приняли !!!
-                        GetTimeStamp TimeStamp = new GetTimeStamp(receivedIQStream, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
-                        GetTimeStamp TimeStamp2 = new GetTimeStamp(receivedIQStream2, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
-                        // Пишем в файл TimeShtamp
-                        string st0 = "C:\\TEMP\\GSM900_1_";
-                        string st02 = "C:\\TEMP\\GSM900_2_";
-                        string st1 = Freq_MHz.ToString();
-                        string st2 = "Time";
-                        string st3 = TimeStart.ToString();
-                        string st4 = ".txt";
-                        string FileNameSaved = st1+st2+st3+st4;
-                        string FileNameSaved1 = st0 + FileNameSaved.Replace(":", "_");
-                        string FileNameSaved2 = st02 + FileNameSaved.Replace(":", "_");
-                        SerializeObject(FileNameSaved1, TimeStamp);
-                        SerializeObject(FileNameSaved2, TimeStamp);
-                    }
+                    TimeStart = TimeStart + TimeSpan.FromMinutes(2);
                 }
             }
         }
@@ -1068,8 +1079,8 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                     textBox3.Text = "";
                 }
             }
-            
-            
+
+
 
         }
 
@@ -1078,6 +1089,181 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             GetTimeStamp TimeStamp1 = (DeserializeObject(textBox2.Text) as GetTimeStamp);
             GetTimeStamp TimeStamp2 = (DeserializeObject(textBox3.Text) as GetTimeStamp);
             EstimationTimeDelayBetweenTwoTimestamp estimationTimeDelayBetweenTwoTimestamp = new EstimationTimeDelayBetweenTwoTimestamp(TimeStamp1.IQStreamTimeStampBloks, TimeStamp2.IQStreamTimeStampBloks);
+        }
+        private void DellAllBadBlock(ref GetTimeStamp timeStamp)
+        {
+            for (int i = 0; i < timeStamp.IQStreamTimeStampBloks.TimeStampBlocks.Count; i++)
+            {
+                if (timeStamp.IQStreamTimeStampBloks.TimeStampBlocks[i].TimeStampToneParameters[0].Penalty>0.05)
+                {
+                    timeStamp.IQStreamTimeStampBloks.TimeStampBlocks.RemoveAt(i);
+                    i = i - 1;
+                }
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            string fileName = "C:\\TEMP\\GetTimestamp.txt";
+            double Freq_MHz;
+            int minut = 0;
+            string[] allText = File.ReadAllLines(fileName);//чтение всех строк файла в массив строк
+            minut = Convert.ToInt32(allText[0]);
+            Freq_MHz = Convert.ToDouble(allText[1]);
+            string SensoreName = allText[2];
+            DateTime curTime = DateTime.Now;
+            DateTime TimeStart = new DateTime(curTime.Year, curTime.Month, curTime.Day, curTime.Hour, minut, 0);
+
+
+            // стартуем запись IQ потока 
+            // заполняем таск 
+            TaskParameters taskParameters = new TaskParameters();
+            taskParameters.MinFreq_MHz = Freq_MHz - 0.025;
+            taskParameters.MaxFreq_MHz = Freq_MHz + 0.025;
+            taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.PMR;
+            taskParameters.RBW_Hz = 50000;
+            taskParameters.VBW_Hz = 50000;
+            taskParameters.ReceivedIQStreemDuration_sec = 1.1;
+
+            // Создаем сенсор для измерения
+            SDRBB60C SDR = new SDRBB60C();
+            SDR.Initiation();
+            SDR.Calibration();
+
+            // Создаем настройки для сенсора
+            SDRParameters sDRParameters = new SDRParameters();
+            sDRParameters.MeasurementType = MeasType.IQReceive;
+            sDRParameters.MinFreq_MHz = taskParameters.MinFreq_MHz;
+            sDRParameters.MaxFreq_MHz = taskParameters.MaxFreq_MHz;
+            sDRParameters.PreamplificationSDR = -1;
+            sDRParameters.RefLevel_dBm = -40;
+            sDRParameters.RfAttenuationSDR = -1;
+            sDRParameters.RBW_Hz = taskParameters.RBW_Hz;
+            sDRParameters.VBW_Hz = taskParameters.VBW_Hz;
+            if (SDR.GetSDRState() == SDRState.ReadyForMeasurements)
+            {
+                SDR.SetConfiguration(sDRParameters); // Конфигурируем сенсор
+                if (SDR.SetConfiguration(sDRParameters))
+                {
+                    // Стартуем измерение 
+                    ReceivedIQStream receivedIQStream = new ReceivedIQStream();
+                    DateTime now_time;
+                    do
+                    {
+                        now_time = DateTime.Now;
+                    }
+                    while (now_time < TimeStart);
+                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, true);
+                    if (done == true)
+                    { // поток приняли !!!
+                        //GetTimeStamp TimeStamp = new GetTimeStamp(receivedIQStream, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
+                        // Пишем в файл IQ Stream 
+                        string st0 = "C:\\TEMP\\IQSreem";
+                        string st1 = Freq_MHz.ToString();
+                        string st2 = "Time";
+                        string st3 = TimeStart.ToString(); st3 = st3.Replace(":", "_");
+                        string st4 = ".txt";
+                        string FileNameSaved = st0 + SensoreName  + st1 + st2 +st3+ st4;
+                        SerializeObject(FileNameSaved, receivedIQStream);
+                    }
+                }
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            ReceivedIQStream receivedIQStream = (DeserializeObject(textBox4.Text) as ReceivedIQStream);
+            GetTimeStamp TimeStamp1 = new GetTimeStamp(receivedIQStream,10000000,50,GetTimeStamp.TypeTechnology.PMR);
+
+
+            CreatePictureForBlokIQ(TimeStamp1.TestBlock, TimeStamp1.RotationIndexTest[1] - 50, TimeStamp1.RotationIndexTest[4] + 50, TimeStamp1.RotationIndexTest.GetRange(1, 4));
+            MessageBox.Show("Банзай");
+            CreatePictureForBlokIQ(TimeStamp1.TestBlock, TimeStamp1.RotationIndexTest[4] - 50, TimeStamp1.RotationIndexTest[7] + 50, TimeStamp1.RotationIndexTest.GetRange(4, 4));
+            MessageBox.Show("Еще банзай");
+            CreatePictureForBlokIQ(TimeStamp1.TestBlock, TimeStamp1.RotationIndexTest[7] - 50, TimeStamp1.RotationIndexTest[10] + 50, TimeStamp1.RotationIndexTest.GetRange(7, 4));
+            MessageBox.Show("Еще банзай....");
+            CreatePictureForBlokIQ(TimeStamp1.TestBlock, TimeStamp1.RotationIndexTest[10] - 50, TimeStamp1.RotationIndexTest[13] + 50, TimeStamp1.RotationIndexTest.GetRange(10, 4));
+
+
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = openFileDialog1.FileName;
+            // читаем файл в строку
+            textBox4.Text = filename;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            ReceivedIQStream receivedIQStream1 = (DeserializeObject(textBox2.Text) as ReceivedIQStream);
+            GetTimeStamp TimeStamp1 = new GetTimeStamp(receivedIQStream1, 10000000, 10, GetTimeStamp.TypeTechnology.PMR);
+            ReceivedIQStream receivedIQStream2 = (DeserializeObject(textBox3.Text) as ReceivedIQStream);
+            GetTimeStamp TimeStamp2 = new GetTimeStamp(receivedIQStream2, 10000000, 10, GetTimeStamp.TypeTechnology.PMR);
+            EstimationTimeDelayBetweenTwoTimestamp estimationTimeDelayBetweenTwoTimestamp = new EstimationTimeDelayBetweenTwoTimestamp(TimeStamp1.IQStreamTimeStampBloks, TimeStamp2.IQStreamTimeStampBloks);
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            
+            double Freq_MHz = 1500;
+            double BW_kHz = 50;
+            // стартуем запись IQ потока 
+            // заполняем таск 
+            TaskParameters taskParameters = new TaskParameters();
+            taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.PMR;
+            taskParameters.ReceivedIQStreemDuration_sec = 0.1;
+
+            // Создаем сенсор для измерения
+            SDRBB60C SDR = new SDRBB60C();
+            SDR.Initiation();
+            SDR.Calibration();
+
+            // Создаем настройки для сенсора
+            SDRParameters sDRParameters = new SDRParameters();
+            sDRParameters.MeasurementType = MeasType.IQReceive;
+            sDRParameters.PreamplificationSDR = -1;
+            sDRParameters.RefLevel_dBm = -50;
+            sDRParameters.RfAttenuationSDR = -1;
+            List<double> avarageList = new List<double>();
+            List<double> avarageToHzList = new List<double>();
+            for (int j = 0; j <= 100; j++)
+            {
+                BW_kHz = j*10;
+                taskParameters.MinFreq_MHz = Freq_MHz - BW_kHz / 2000;
+                taskParameters.MaxFreq_MHz = Freq_MHz + BW_kHz / 2000;
+                taskParameters.RBW_Hz = BW_kHz * 1000;
+                taskParameters.VBW_Hz = BW_kHz * 1000;
+                sDRParameters.MinFreq_MHz = taskParameters.MinFreq_MHz;
+                sDRParameters.MaxFreq_MHz = taskParameters.MaxFreq_MHz;
+                sDRParameters.RBW_Hz = taskParameters.RBW_Hz;
+                sDRParameters.VBW_Hz = taskParameters.VBW_Hz;
+                if (SDR.GetSDRState() == SDRState.ReadyForMeasurements)
+                {
+                    SDR.SetConfiguration(sDRParameters); // Конфигурируем сенсор
+                    if (SDR.SetConfiguration(sDRParameters))
+                    {
+                        // Стартуем измерение 
+                        ReceivedIQStream receivedIQStream = new ReceivedIQStream();
+                        bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, false);
+                        if (done == true)
+                        { // поток приняли !!!
+                            double avarage = 0;
+                            receivedIQStream.CalcAmpl();
+                            for (int i = 0; receivedIQStream.Ampl[0].Length > i; i++)
+                            {
+                                avarage = avarage + receivedIQStream.Ampl[0][i];
+                            }
+                            avarage = avarage / receivedIQStream.Ampl[0].Length;
+                            avarageList.Add(10*Math.Log10(avarage));
+                            avarageToHzList.Add(10 * Math.Log10(avarage)-10*Math.Log10(BW_kHz*1000));
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 {
+    [Serializable]
     public class BlockOfSignal
     {
         public float[] IQStream;

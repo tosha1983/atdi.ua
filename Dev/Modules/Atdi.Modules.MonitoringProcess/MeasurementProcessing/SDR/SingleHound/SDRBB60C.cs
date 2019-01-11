@@ -112,7 +112,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
             try
             {
                 // константа
-                int max_count = 150;
+                int max_count = 1500;
                 // конец констант
 
                 int NumberPass = 0;
@@ -121,6 +121,10 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                 receivedIQStream.TimeMeasStart = DateTime.Now;
                 receivedIQStream.iq_samples = new List<float[]>();
                 receivedIQStream.triggers = new List<int[]>();
+                receivedIQStream.dataRemainings = new List<int>();
+                receivedIQStream.sampleLosses = new List<int>();
+                receivedIQStream.iqSeces = new List<int>();
+                receivedIQStream.iqNanos = new List<int>();
                 //float* bufer = stackalloc float[return_len * 2];
                 //int* triggers = stackalloc int[71];
                 //bbIQPacket pkt = new bbIQPacket();
@@ -129,10 +133,14 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                 //pkt.triggers = triggers;
                 //pkt.triggerCount = 70;
                 //pkt.purge = 1;
-                long[] ticks = new long[NumberPass+1];
-                long[] ticks1 = new long[NumberPass + 1];
+                //long[] ticks = new long[NumberPass+1];
+                //long[] ticks1 = new long[NumberPass + 1];
                 List<float[]> IQData = new List<float[]>();
                 List<int []> TrData = new List<int[]>();
+                List<int> dataRemainings = new List<int>();
+                List<int> sampleLosses = new List<int>();
+                List<int> iqSeces = new List<int>();
+                List<int> iqNanos = new List<int>();
 
 
                 for (int i = 0; i < NumberPass; i++)
@@ -141,9 +149,13 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     int[] triggersX = new int[71];
                     IQData.Add(iqSamplesX);
                     TrData.Add(triggersX);
+                    dataRemainings.Add(-1);
+                    sampleLosses.Add(-1);
+                    iqSeces.Add(-1);
+                    iqNanos.Add(-1);
                 }
-                int dataRemaining = 1, sampleLoss = 0, iqSec = 0, iqNano = 0;  //ВАЖНО КОСТЫЛЬ
-                long time = DateTime.Now.Ticks;
+                                int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;  //ВАЖНО КОСТЫЛЬ
+                //long time = DateTime.Now.Ticks;
                 int count = 0;
                 for (int i = 0; i < NumberPass; i++)
                 {
@@ -151,6 +163,11 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     //ticks[i] = DateTime.Now.Ticks - tick;
                     bb_api.bbGetIQUnpacked(id_dev, IQData[i], return_len, TrData[i], 71, 1,
                             ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
+                    
+                    dataRemainings[i] = dataRemaining;
+                    sampleLosses[i] = sampleLoss;
+                    iqSeces[i] = iqSec;
+                    iqNanos[i] = iqNano;
                     if (TrData[i][0] != 0)
                     {
                         AfterPPS = false;
@@ -159,14 +176,22 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     {
                         i--;
                     }
+                    //else
+                    //{
+                    //    if (TrData[i][0] == 0)
+                    //    {
+                    //        i--;
+                    //    }
+                    //    //    System.Threading.Thread.Sleep(i);
+                    //}
                     count++;
                     if (count >= max_count) { break;}
                     //long tick1 = DateTime.Now.Ticks;
                     //ticks1[i] = DateTime.Now.Ticks - tick1;
-                    //System.Threading.Thread.Sleep(1);
+                    
                 }
-                long time1 = DateTime.Now.Ticks - time;
-                time = DateTime.Now.Ticks;
+                //long time1 = DateTime.Now.Ticks - time;
+                //time = DateTime.Now.Ticks;
                 for (int i = 0; i < NumberPass; i++)
                 {
                     float[] iq_sample = new float[return_len * 2];
@@ -182,8 +207,13 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     }
                     receivedIQStream.iq_samples.Add(iq_sample);
                     receivedIQStream.triggers.Add(trigger);
+                    receivedIQStream.dataRemainings.Add(dataRemainings[i]);
+                    receivedIQStream.sampleLosses.Add(sampleLosses[i]);
+                    receivedIQStream.iqSeces.Add(iqSeces[i]);
+                    receivedIQStream.iqNanos.Add(iqNanos[i]);
+
                 }
-                time1 = (DateTime.Now.Ticks - time)/10000000;
+                //time1 = (DateTime.Now.Ticks - time)/10000000;
                 receivedIQStream.durationReceiving_sec = durationReceiving_sec;
                 done = true;
             }

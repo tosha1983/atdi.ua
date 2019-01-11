@@ -76,6 +76,10 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
                     number++;
                 }
             }
+            if (_IndexStartFlange.Count > 0)
+            {
+                if (_IndexStartFlange[0] < 0) {_IndexStartFlange[0] = 0; }
+            }
             IndexStartFlange = _IndexStartFlange.ToArray();
             IndexStopFlange = _IndexStopFlange.ToArray();
         }
@@ -198,14 +202,17 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
         /// </summary>
         public void CalcDurationSignalPause()
         {
-            List<Double> _TimeDurationSignal = new List<double>();
-            List<Double> _TimeDurationPause = new List<double>();
-            for (int i = 1; i < IndexStartFlange.Length-1; i++)
+            List<double> _TimeDurationSignal = new List<double>();
+            List<double> _TimeDurationPause = new List<double>();
+            for (int i = 0; i < IndexStartFlange.Length; i++)
             {
-                Double TimeSignal = (IndexStopFlange[i] - IndexStartFlange[i]) * (1000000.0 / samples_per_sec);
+                double TimeSignal = (IndexStopFlange[i] - IndexStartFlange[i]) * (1000000.0 / samples_per_sec);
                 _TimeDurationSignal.Add(TimeSignal);
-                Double TimePause = (IndexStartFlange[i] - IndexStopFlange[i - 1]) * (1000000.0 / samples_per_sec);
-                _TimeDurationPause.Add(TimePause);
+                if (i != 0)
+                {
+                    double TimePause = (IndexStartFlange[i] - IndexStopFlange[i - 1]) * (1000000.0 / samples_per_sec);
+                    _TimeDurationPause.Add(TimePause);
+                }
             }
             TimeDurationSignal = _TimeDurationSignal.ToArray();
             TimeDurationPause = _TimeDurationPause.ToArray();
@@ -217,6 +224,9 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
         /// <param name="MinTimeDuration"></param>
         public void CreateBlockSignal(ReceivedIQStream IQStream, Double MinTimeDurationmks)
         {
+            // константа
+            double MaxDurationSequence_mks = 10000; //0.01 c это 3 тыс км
+            // 
             BlockOfSignals = new List<BlockOfSignal>();
             // создание одного большого массива
             int IndexesInBigArr = IQStream.iq_samples.Count*IQStream.iq_samples[0].Length;
@@ -225,15 +235,44 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             {
                 Array.Copy(IQStream.iq_samples[i], 0, GlobalStream, IQStream.iq_samples[i].Length*i,IQStream.iq_samples[i].Length);
             }
+            // Создаем новые фланги для укорачивания длительности импульсов
+            double MaxNumberIndexForBlock = samples_per_sec * MaxDurationSequence_mks / 1000000.0;
+            List<int> _IndexStartFlange = new List<int>();
+            List<int> _IndexStopFlange = new List<int>();
+
             for (int i = 0; i < IndexStartFlange.Length; i++)
             {
                 if (IndexStopFlange.Length <= i) { break; }
+                if (IndexStopFlange[i] - IndexStartFlange[i] > MaxNumberIndexForBlock)
+                {
+                    int s = (int)Math.Floor((IndexStopFlange[i] - IndexStartFlange[i]) / MaxNumberIndexForBlock);
+                    for (int j = 0; j <= s; j++)
+                    {
+                        _IndexStartFlange.Add(IndexStartFlange[i] + (int)MaxNumberIndexForBlock*j);
+                        _IndexStopFlange.Add((IndexStartFlange[i] + (int)MaxNumberIndexForBlock * (j+1)));
+                    }
+                    _IndexStartFlange.Add(IndexStartFlange[i] + (int)MaxNumberIndexForBlock * s - 1);
+                    _IndexStopFlange.Add(IndexStopFlange[i]);
+
+                }
+                else
+                {
+                    _IndexStartFlange.Add(IndexStartFlange[i]);
+                    _IndexStopFlange.Add(IndexStopFlange[i]);
+                }
+
+            }
+
+
+            for (int i = 0; i < _IndexStartFlange.Count; i++)
+            {
+                if (_IndexStopFlange.Count <= i) { break; }
                 BlockOfSignal Signal = new BlockOfSignal();
-                int SizeBlock = (IndexStopFlange[i] - IndexStartFlange[i]) * 2;
+                int SizeBlock = (_IndexStopFlange[i] - _IndexStartFlange[i]) * 2;
                 Signal.IQStream = new float [SizeBlock];
-                Signal.StartIndexIQ = IndexStartFlange[i] * 2;
-                Array.Copy(GlobalStream, Signal.StartIndexIQ, Signal.IQStream, 0, SizeBlock);
-                Signal.Durationmks = (IndexStopFlange[i] - IndexStartFlange[i]) * (1000000.0 / samples_per_sec);
+                Signal.StartIndexIQ = _IndexStartFlange[i];
+                Array.Copy(GlobalStream, Signal.StartIndexIQ*2, Signal.IQStream, 0, SizeBlock);
+                Signal.Durationmks = (_IndexStopFlange[i] - _IndexStartFlange[i]) * (1000000.0 / samples_per_sec);
                 if (Signal.Durationmks >= MinTimeDurationmks) 
                 {
                     BlockOfSignals.Add(Signal); 
