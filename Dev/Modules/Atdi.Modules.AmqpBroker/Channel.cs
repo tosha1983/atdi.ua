@@ -11,11 +11,21 @@ namespace Atdi.Modules.AmqpBroker
 {
     public class Channel : IDisposable
     {
+        private enum MessageSendingState
+        {
+            None = 0,
+            Sending,
+            Returned,
+            Nacks,
+            Aborted,
+            Sent
+        }
         private readonly Connection _connection;
         private readonly IBrokerObserver _logger;
         private RBC.IModel _channel;
         private int _channelNumber;
         private Dictionary<string, ConsumerDescriptor> _consumers;
+        private MessageSendingState _messageSendingState;
 
         internal Channel(Connection connection, IBrokerObserver logger)
         {
@@ -45,10 +55,16 @@ namespace Atdi.Modules.AmqpBroker
                 }
 
                 this._channel = this._connection.RealConnection.CreateModel();
+                _channel.ConfirmSelect();
+                _channel.BasicQos(0, 1, false);
+
                 _channelNumber = _channel.ChannelNumber;
 
                 this._channel.CallbackException += _channel_CallbackException;
                 this._channel.ModelShutdown += _channel_ModelShutdown;
+                this._channel.BasicAcks += _channel_BasicAcks;
+                this._channel.BasicNacks += _channel_BasicNacks;
+                this._channel.BasicReturn += _channel_BasicReturn;
 
                 this._logger.Verbouse("RabbitMQ.EstablishChannel", $"The channel #{_channelNumber} is established successfully", this);
             }
@@ -59,9 +75,40 @@ namespace Atdi.Modules.AmqpBroker
             }
         }
 
+        private void _channel_BasicReturn(object sender, RBE.BasicReturnEventArgs e)
+        {
+            this._logger.Verbouse("RabbitMQ.Channel.BasicReturn", $"The message was returned: ReplyText = '{e.ReplyText}', RoutingKey = '{e.RoutingKey}', Exchange = '{e.Exchange}', MessageId = '{e.BasicProperties.MessageId}'", this);
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Returned;
+            }
+        }
+
+        private void _channel_BasicNacks(object sender, RBE.BasicNackEventArgs e)
+        {
+            this._logger.Verbouse("RabbitMQ.Channel.BasicNacks", $"The message was Nacks: DeliveryTag = '{e.DeliveryTag}', Multiple = '{e.Multiple}', Requeue = '{e.Requeue}'", this);
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Nacks;
+            }
+        }
+
+        private void _channel_BasicAcks(object sender, RBE.BasicAckEventArgs e)
+        {
+            this._logger.Verbouse("RabbitMQ.Channel.BasicAcks", $"The message was Acks: DeliveryTag = '{e.DeliveryTag}', Multiple = '{e.Multiple}'", this);
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Sent;
+            }
+        }
+
         private void _channel_ModelShutdown(object sender, RBC.ShutdownEventArgs e)
         {
             this._logger.Verbouse("RabbitMQ.ShutdownChannel", $"The channel #'{this._channelNumber}' is shutted down: Connection: '{_connection.Config.ConnectionName}', Initiator: '{e.Initiator}', Reasone: '{e.ReplyText}', Code: #{e.ReplyCode}", this);
+            if (this._messageSendingState == MessageSendingState.Sending)
+            {
+                this._messageSendingState = MessageSendingState.Aborted;
+            }
         }
 
         private void _channel_CallbackException(object sender, RBE.CallbackExceptionEventArgs e)
@@ -265,7 +312,23 @@ namespace Atdi.Modules.AmqpBroker
                 props.Timestamp = new RBC.AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
                 props.Headers = message.Headers;
 
+                this._messageSendingState = MessageSendingState.Sending;
                 this._channel.BasicPublish(exchange, routingKey, false, props, message.Body);
+                this._channel.WaitForConfirmsOrDie();
+                if (this._messageSendingState != MessageSendingState.Sent)
+                {
+                    switch (this._messageSendingState)
+                    {
+                        case MessageSendingState.Returned:
+                            throw new InvalidOperationException("The message was returned");
+                        case MessageSendingState.Nacks:
+                            throw new InvalidOperationException("The message was rejected");
+                        case MessageSendingState.Aborted:
+                            throw new InvalidOperationException("The message sending was aborted");
+                        default:
+                            throw new InvalidOperationException("The message was not sent");
+                    }
+                }
 
                 this._logger.Verbouse("RabbitMQ.PublisheMessage", $"The message '{message.Type}' is published successfully: Exchange: '{exchange}', Routing= '{routingKey}', Id = '{message.Id}'", this);
 
