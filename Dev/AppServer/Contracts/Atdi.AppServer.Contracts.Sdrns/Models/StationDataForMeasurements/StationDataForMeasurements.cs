@@ -9,13 +9,14 @@ namespace Atdi.AppServer.Contracts.Sdrns
 {
     
     [DataContract(Namespace = ServicesSpecification.Namespace)]
+    [KnownType(typeof(StationDataForMeasurementsExtend))]
     [KnownType(typeof(StationDataForMeasurements))]
     [KnownType(typeof(SiteStationForMeas))]
     [KnownType(typeof(SectorStationForMeas))]
     [KnownType(typeof(PermissionForAssignment))]
     [KnownType(typeof(FrequencyForSectorFormICSM))]
     [KnownType(typeof(MaskElements))]
-    public class StationDataForMeasurements // этот класс необходим для передачи данных станций для которых производиться обмер
+    public class StationDataForMeasurements  // этот класс необходим для передачи данных станций для которых производиться обмер
     {
         [DataMember]
         public OwnerData Owner;

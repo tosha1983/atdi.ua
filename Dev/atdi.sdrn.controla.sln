@@ -89,6 +89,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.ControlA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.Api.Sdrn.Device.BusController", "Test\Atdi.Test.Api.Sdrn.Device.BusController\Atdi.Test.Api.Sdrn.Device.BusController.csproj", "{291436B1-151E-44AD-9153-3AE2F8F70E0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Contracts.Sdrns", "AppServer\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj", "{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Modules.Sdrn.MonitoringProcess", "Modules\Atdi.Modules.Sdrn.MonitoringProcess\Atdi.Modules.Sdrn.MonitoringProcess.csproj", "{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -291,6 +295,22 @@ Global
 		{291436B1-151E-44AD-9153-3AE2F8F70E0C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{291436B1-151E-44AD-9153-3AE2F8F70E0C}.Release|x64.ActiveCfg = Release|Any CPU
 		{291436B1-151E-44AD-9153-3AE2F8F70E0C}.Release|x64.Build.0 = Release|Any CPU
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Debug|x64.ActiveCfg = Debug|x64
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Debug|x64.Build.0 = Debug|x64
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Release|x64.ActiveCfg = Release|x64
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421}.Release|x64.Build.0 = Release|x64
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Debug|x64.ActiveCfg = Debug|x64
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Debug|x64.Build.0 = Debug|x64
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Release|x64.ActiveCfg = Release|x64
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -336,6 +356,8 @@ Global
 		{82246780-3611-456E-BEE5-B97855FB0639} = {63B2DE19-0D82-4671-8371-2FCD60E49357}
 		{03A4EA9A-9225-4A61-BE34-E26A2EA22F4B} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 		{291436B1-151E-44AD-9153-3AE2F8F70E0C} = {8489C394-6CB0-4100-A850-702CF94BAE52}
+		{6D87B586-9D0C-4B2F-9D8A-0D0EBD504421} = {00BA3C1B-8A9B-496B-8BDD-9A5774A1B442}
+		{D0646810-7C18-4C1D-92D7-CDE38DE1AED6} = {0497EBF9-0192-40AE-AA53-2A256FCBEDB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Atdi.AppUnits.Sdrn.ControlA" assembly="Atdi.AppUnits.Sdrn.ControlA">
+  <class name="NH_Sensor" table="NH_Sensor">
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+        <generator class="identity"/>
+    </id>
+    <property name="SensorIdentifier_Id" />
+    <property name="Status" />
+    <property name="Name" />
+    <property name="Administration" />
+    <property name="NetworkId" />
+    <property name="Remark" />
+    <property name="BiuseDate" />
+    <property name="EouseDate" />
+    <property name="Azimuth" />
+    <property name="Elevation" />
+    <property name="AGL" />
+    <property name="IdSysARGUS" />
+    <property name="TypeSensor" />
+    <property name="StepMeasTime" />
+    <property name="RxLoss" />
+    <property name="OpHHFr" />
+    <property name="OpHHTo" />
+    <property name="OpDays" />
+    <property name="CustTxt1" />
+    <property name="CustData1" />
+    <property name="CustNbr1" />
+    <property name="DateCreated" />
+    <property name="CreatedBy" />
+ </class>
+</hibernate-mapping>

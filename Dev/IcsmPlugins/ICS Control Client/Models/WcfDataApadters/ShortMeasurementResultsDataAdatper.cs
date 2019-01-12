@@ -23,7 +23,11 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Number = source.Number,
                 Status = source.Status,
                 TimeMeas = source.TimeMeas.ToNull(),
-                TypeMeasurements = source.TypeMeasurements
+                TypeMeasurements = source.TypeMeasurements,
+                SensorName = source.SensorName,
+                SensorTechId = source.SensorTechId,
+                CountStationMeasurements = source.CountStationMeasurements,
+                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements
             };
         }
     }

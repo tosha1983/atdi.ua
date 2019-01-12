@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Atdi.AppUnits.Sdrn.ControlA" assembly="Atdi.AppUnits.Sdrn.ControlA">
+  <class name="NH_SensorAntenna" table="NH_SensorAntenna">
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+        <generator class="identity"/>
+    </id>
+    <property name="Code" />
+    <property name="SlewAng" />
+    <property name="Manufacturer" />
+    <property name="Name" />
+    <property name="TechId" />
+    <property name="AntDir" />
+    <property name="HBeamwidth" />
+    <property name="VBeamwidth" />
+    <property name="Polarization" />
+    <property name="UseType" />
+    <property name="Category" />
+    <property name="GainType" />
+    <property name="GainMax" />
+    <property name="LowerFreq" />
+    <property name="UpperFreq" />
+    <property name="AddLoss" />
+    <property name="XPD" />
+    <property name="AntClass" />
+    <property name="Remark" />
+    <property name="CustTxt1" />
+    <property name="CustData1" />
+    <property name="CustNbr1" />
+    <property name="SensorID" />
+  </class>
+</hibernate-mapping>
+

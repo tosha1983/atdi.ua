@@ -66,6 +66,7 @@
     <Compile Include="Enums\MeasTaskExecutionMode.cs" />
     <Compile Include="Enums\MeasTaskResultType.cs" />
     <Compile Include="Enums\MeasTaskType.cs" />
+    <Compile Include="Enums\PointStayType.cs" />
     <Compile Include="Enums\SpectrumOccupationType.cs" />
     <Compile Include="Enums\SpectrumScanType.cs" />
     <Compile Include="Enums\DetectingType.cs" />
@@ -76,6 +77,11 @@
     <Compile Include="Enums\AntennaPolarization.cs" />
     <Compile Include="Enums\AntennaDirectional.cs" />
     <Compile Include="ISdrnsController.cs" />
+    <Compile Include="Models\Analitics\GetShortMeasResultsByDateValue.cs" />
+    <Compile Include="Models\Analitics\LevelsByTaskParams.cs" />
+    <Compile Include="Models\Analitics\GetSOformMeasResultStation.cs" />
+    <Compile Include="Models\Analitics\StationLevelsByTask.cs" />
+    <Compile Include="Models\Analitics\SOFrequency.cs" />
     <Compile Include="Models\Devices\BB60C\FSemples.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrBandWidthResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrLoc.cs" />
@@ -83,11 +89,17 @@
     <Compile Include="Models\Devices\BB60C\MeasSdrResults.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrSOParam.cs" />
     <Compile Include="Models\Devices\BB60C\MeasSdrTask.cs" />
+    <Compile Include="Models\Measurements\GeoLocation.cs" />
     <Compile Include="Models\Measurements\MeasurementResultsIdentifier.cs" />
     <Compile Include="Models\Measurements\MeasurementResults\LevelMeasurementOnlineResult.cs" />
+    <Compile Include="Models\Measurements\Route.cs" />
+    <Compile Include="Models\Measurements\RoutePoint.cs" />
+    <Compile Include="Models\Measurements\ShortMeasurementResultsExtend.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStationExtended.cs" />
     <Compile Include="Models\ResultsMeasurementsStation\ResultsMeasurementsStation.cs" />
+    <Compile Include="Models\ResultsMeasurementsStation\ShortResultsMeasurementsStation.cs" />
     <Compile Include="Models\Sensors\AntennaPattern.cs" />
     <Compile Include="Models\Sensors\SensorPoligonPoint.cs" />
     <Compile Include="Models\StationDataForMeasurements\FrequencyForSectorFormICSM.cs" />
@@ -96,6 +108,8 @@
     <Compile Include="Models\StationDataForMeasurements\PermissionForAssignment.cs" />
     <Compile Include="Models\StationDataForMeasurements\SectorStationForMeas.cs" />
     <Compile Include="Models\StationDataForMeasurements\SiteStationForMeas.cs" />
+    <Compile Include="Models\StationDataForMeasurements\SiteStationForMeasExtend.cs" />
+    <Compile Include="Models\StationDataForMeasurements\StationDataForMeasurementsExtend.cs" />
     <Compile Include="Models\StationDataForMeasurements\StationDataForMeasurements.cs" />
     <Compile Include="Models\Tasks\MeasDtParam.cs" />
     <Compile Include="Models\Tasks\MeasFreq.cs" />

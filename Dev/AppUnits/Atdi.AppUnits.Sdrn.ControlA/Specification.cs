@@ -14,17 +14,22 @@ namespace Atdi.AppUnits.Sdrn.ControlA
 
     static class Categories
     {
-        //public static readonly EventCategory MessageProcessing = "Processing";
-        //public static readonly EventCategory Notify = "Notify";
+        public static readonly EventCategory MessageCheckLocation = "Check location";
+        public static readonly EventCategory MeasSdrTaskUpdateStatus = "Update MeasSdrTask";
+        public static readonly EventCategory UpdateSensorStatus = "Update sensor";
+        public static readonly EventCategory LoadSensor = "Load sensor";
+        public static readonly EventCategory CreateNewObjectSensor = "Create sensor";
+        
+
     }
 
     static class Events
     {
-        //public static readonly EventText UnableToCreateHost = "Unable to create the service host: {0}";
-        //public static readonly EventText UnableToOpenHost = "Unable to open the service host: {0}";
-        //public static readonly EventText UnableToCloseHost = "Unable to close the service host: {0}";
-        //public static readonly EventText UnableToDisposeHost = "Unable to dispose the service host: {0}";
-        //public static readonly EventText ServiceHostDescriptor = "{0}";
+        public static readonly EventText CheckLocation = "Check location coordinates";
+        public static readonly EventText UpdateStatus = "Update status MeasSdrTask";
+        public static readonly EventText UpdateSensorStatus = "Update status MeasSdrTask";
+        public static readonly EventText LoadSensor = "Load sensor";
+        public static readonly EventText CreateNewObjectSensor = "Create sensor";
     }
     static class TraceScopeNames
     {

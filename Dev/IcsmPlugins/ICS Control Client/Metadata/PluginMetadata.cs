@@ -35,6 +35,7 @@ namespace XICSM.ICSControlClient
             {
                 public static readonly string Run = "Run ...";
                 public static readonly string About = "About";
+                public static readonly string MeasResults = "Meas. results";
             }
         }
 
@@ -52,8 +53,13 @@ namespace XICSM.ICSControlClient
             public static class Allotment
             {
                 public static readonly string StartMeasurementsSO = "Start measurements spectrum occupation";
+                public static readonly string CalcSOByMeasResult = "Calc spectrum occupation by MeasResults";
+            }
+            public static class Inspection
+            {
+                public static readonly string ExportFieldStrength = "Export field strength";
             }
         }
-        
+
     }
 }

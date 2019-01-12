@@ -8,7 +8,7 @@ namespace XICSM.ICSControlClient.Models.Views
 {
     public class ResultsMeasurementsStationViewModel
     {
-        public int? StationId { get; set; }
+        public string StationId { get; set; }
 
         public int? SectorId { get; set; }
 
@@ -49,10 +49,13 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public DateTime? GeneralResultTimeFinishMeas { get; set; }
 
-
         public int? NumberPointsOfSpectrum { get; set; }
+
         public double? T1 { get; set; }
+
         public double? T2 { get; set; }
+
         public double? Marker { get; set; }
+
     }
 }

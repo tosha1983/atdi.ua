@@ -63,6 +63,13 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetMeasTaskHeaderAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasTaskHeaderAppOperation() : base("GetMeasTaskHeader")
+            { }
+        }
+
+
         public sealed class GetMeasTasksAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
             public GetMeasTasksAppOperation() : base("GetMeasTasks")
@@ -105,9 +112,59 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetShortMeasResultsSpecialAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResultsSpecialAppOperation() : base("GetShortMeasResultsSpecial")
+            { }
+        }
+
+
+        public sealed class GetMeasResultsHeaderSpecialAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasResultsHeaderSpecialAppOperation() : base("GetMeasResultsHeaderSpecial")
+            { }
+        }
+
+    
+        public sealed class GetShortMeasResultsByTypeAndTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResultsByTypeAndTaskIdAppOperation() : base("GetShortMeasResultsByTypeAndTaskId")
+            { }
+        }
+
+
         public sealed class GetShortMeasResultsByIdAppOperation : AppOperationBase<SdrnsControllerAppService>
         {
             public GetShortMeasResultsByIdAppOperation() : base("GetShortMeasResultsById")
+            { }
+        }
+
+        public sealed class GetShortMeasResStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResStationAppOperation() : base("GetShortMeasResStation")
+            { }
+        }
+        public sealed class GetRoutesAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetRoutesAppOperation() : base("GetRoutes")
+            { }
+        }
+
+        public sealed class GetSensorPoligonPointAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetSensorPoligonPointAppOperation() : base("GetSensorPoligonPoint")
+            { }
+        }
+
+        public sealed class GetResMeasStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetResMeasStationAppOperation() : base("GetResMeasStation")
+            { }
+        }
+
+        public sealed class GetResMeasStationByIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetResMeasStationByIdAppOperation() : base("GetResMeasStationById")
             { }
         }
 
@@ -123,9 +180,53 @@ namespace Atdi.AppServer.Models.AppServices
             { }
         }
 
+        public sealed class GetSOformMeasResultStationAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetSOformMeasResultStationAppOperation() : base("GetSOformMeasResultStation")
+            { }
+        }
+
+        public sealed class GetShortMeasResultsByDatesAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetShortMeasResultsByDatesAppOperation() : base("GetShortMeasResultsByDates")
+            { }
+        }
+
+        public sealed class GetMeasResultsHeaderByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasResultsHeaderByTaskIdAppOperation() : base("GetMeasResultsHeaderByTaskId")
+            { }
+        }
+
+        public sealed class GetResMeasStationHeaderByResIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetResMeasStationHeaderByResIdAppOperation() : base("GetResMeasStationHeaderByResId")
+            { }
+        }
 
 
-        public SdrnsControllerAppService() 
+        public sealed class GetMeasurementResultByResIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetMeasurementResultByResIdAppOperation() : base("GetMeasurementResultByResId")
+            { }
+        }
+
+
+        public sealed class GetStationDataForMeasurementsByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetStationDataForMeasurementsByTaskIdAppOperation() : base("GetStationDataForMeasurementsByTaskId")
+            { }
+        }
+
+        public sealed class GetStationLevelsByTaskIdAppOperation : AppOperationBase<SdrnsControllerAppService>
+        {
+            public GetStationLevelsByTaskIdAppOperation() : base("GetStationLevelsByTask")
+            { }
+        }
+
+
+
+        public SdrnsControllerAppService()
             : base("SdrnsController")
         {
             this._operations.AddRange(
@@ -148,8 +249,25 @@ namespace Atdi.AppServer.Models.AppServices
                      new GetShortMeasResultsAppOperation(),
                      new GetShortMeasResultsByIdAppOperation(),
                      new GetShortMeasResultsByTaskIdAppOperation(),
-                     new DeleteMeasResultsAppOperation()
-                    }
+                     new DeleteMeasResultsAppOperation(),
+                     new GetShortMeasResultsSpecialAppOperation(),
+                     new GetShortMeasResStationAppOperation(),
+                     new GetRoutesAppOperation(),
+                     new GetSensorPoligonPointAppOperation(),
+                     new GetResMeasStationAppOperation(),
+                     new GetSOformMeasResultStationAppOperation(),
+                     new GetSOformMeasResultStationAppOperation(),
+                     new GetShortMeasResultsByDatesAppOperation(),
+                     new GetMeasResultsHeaderByTaskIdAppOperation(),
+                     new GetResMeasStationByIdAppOperation(),
+                     new GetResMeasStationHeaderByResIdAppOperation(),
+                     new GetMeasurementResultByResIdAppOperation(),
+                     new GetMeasTaskHeaderAppOperation(),
+                     new GetStationDataForMeasurementsByTaskIdAppOperation(),
+                     new GetStationLevelsByTaskIdAppOperation(),
+                     new GetShortMeasResultsByTypeAndTaskIdAppOperation(),
+                     new GetMeasResultsHeaderSpecialAppOperation()
+                }
                 );
         }
     }

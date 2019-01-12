@@ -18,6 +18,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         public List<ConcumerDescribe> listConcumerDescribe { get; set; }
         public Task[] tasks { get; set; }
         public string RabbitHostName { get; set; }
+        public string RabbitVirtualHostName { get; set; }
         public string RabbitUserName { get; set; }
         public string RabbitPassword { get; set; }
         public string NameServer { get; set; }
@@ -27,8 +28,9 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         public string StartNameQueueDevice { get; set; }
         public string ConcumerDescribe { get; set; }
         public static string apiVersion  { get; set; }
-    private IWindsorContainer _container { get; set; }
+        private IWindsorContainer _container { get; set; }
         private ILogger _logger { get; set; }
+        public static List<Atdi.AppServer.Contracts.Sdrns.Sensor> listAllSensors { get; set; }
 
 
         public ConfigurationRabbitOptions(IWindsorContainer container, ILogger logger)
@@ -40,6 +42,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 listConcumerDescribe = new List<AppServer.ConfigurationSdrnController.ConcumerDescribe>();
                 listRabbitOptions = new Dictionary<IModel, RabbitOptions>();
                 RabbitHostName = ConfigurationManager.AppSettings["RabbitHostName"];
+                RabbitVirtualHostName = ConfigurationManager.AppSettings["RabbitVirtualHostName"];
                 RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"];
                 RabbitPassword = ConfigurationManager.AppSettings["RabbitMQ.Password"];
                 NameServer = ConfigurationManager.AppSettings["ServerInstance"];
@@ -49,6 +52,9 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 StartNameQueueDevice = ConfigurationManager.AppSettings["StartNameQueueDevice"];
                 ConcumerDescribe = ConfigurationManager.AppSettings["ConcumerDescribe"];
                 apiVersion = ConfigurationManager.AppSettings["ApiVersion"];
+
+
+
                 string[] val = ConcumerDescribe.Split(new char[] { '}' });
                 foreach (string v in val)
                 {
@@ -74,12 +80,24 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 }
                 tasks = new Task[listConcumerDescribe.Count];
                 factory = new ConnectionFactory() { HostName = RabbitHostName, UserName = RabbitUserName, Password = RabbitPassword };
+                if (!string.IsNullOrEmpty(RabbitVirtualHostName))
+                {
+                    factory.VirtualHost = RabbitVirtualHostName;
+                }
+                factory.AutomaticRecoveryEnabled = true;;
+                factory.NetworkRecoveryInterval = new TimeSpan(0,1,0);
                 _connection = factory.CreateConnection($"SDRN service (Activate) #{System.Threading.Thread.CurrentThread.ManagedThreadId}");
+                _connection.ConnectionShutdown += _connection_ConnectionShutdown;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message);
             }
+        }
+
+        private void _connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        {
+            _logger.Error(e.ReplyText);
         }
 
         public void CreateChannelsAndQueues(List<Sensor> listSensors)
@@ -89,15 +107,24 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 if (listConcumerDescribe != null)
                 {
                     Dictionary<IModel, RabbitOptions> dictionary = new Dictionary<IModel, RabbitOptions>();
+
+                    var channel_ = _connection.CreateModel();
+                    channel_.ModelShutdown += Channel_ModelShutdown;
+                    channel_.ExchangeDeclare(exchange: ExchangePointFromDevices + ".[" + apiVersion + "]", type: "direct", durable: true);
+                    QueueDeclareConcumer(StartNameQueueServer, "errors", channel_, ExchangePointFromDevices + ".[" + apiVersion + "]");
+
                     foreach (ConcumerDescribe d in listConcumerDescribe)
                     {
                         var channel = _connection.CreateModel();
+                        channel.ModelShutdown += Channel_ModelShutdown;
                         channel.ExchangeDeclare(exchange: ExchangePointFromDevices + ".[" + apiVersion + "]", type: "direct", durable: true);
                         var queueName = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}].[{apiVersion}]";
                         var routingKey = $"{StartNameQueueServer}.[{this.NameServer}].[{d.NameConcumer}]";
                         dictionary.Add(channel, new RabbitOptions(StartNameQueueServer, routingKey, queueName, d.NameConcumer));
                         listRabbitOptions.Add(channel, new RabbitOptions(StartNameQueueServer, routingKey, queueName, d.NameConcumer));
                     }
+
+                    
                     int i = 0;
                     foreach (KeyValuePair<IModel, RabbitOptions> lo in dictionary)
                     {
@@ -133,6 +160,11 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 _logger.Error(ex.Message);
             }
 
+        }
+
+        private void Channel_ModelShutdown(object sender, ShutdownEventArgs e)
+        {
+            _logger.Error(e.ReplyText);
         }
 
         public void QueueDeclareConcumer(string ExchangePoint, string ConsumersQueue, IModel channel, string Point)
@@ -230,7 +262,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 {
                     try
                     {
-                        consumer.HandleMessage(channel, ea, _container, StartName,  ExchangePoint, connection, ExchangePointFromServer, StartNameQueueDevice);
+                        consumer.HandleMessage(channel, ea, _container, StartName,  ExchangePoint, connection, ExchangePointFromServer, StartNameQueueDevice, _logger);
                     }
                     catch (Exception e)
                     {

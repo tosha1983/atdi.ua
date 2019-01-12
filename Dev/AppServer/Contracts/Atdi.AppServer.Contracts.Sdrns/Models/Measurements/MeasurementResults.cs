@@ -97,5 +97,30 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// </summary>
         [DataMember]
         public ResultsMeasurementsStation[] ResultsMeasStation;
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public Route[] Routes;
+        /// <summary>
+        /// Sensor name
+        /// </summary>
+        [DataMember]
+        public string SensorName;
+        /// <summary>
+        /// Sensor TechId
+        /// </summary>
+        [DataMember]
+        public string SensorTechId;
+        /// <summary>
+        /// Count measurements
+        /// </summary>
+        [DataMember]
+        public int? CountStationMeasurements;
+        /// <summary>
+        /// Count Unknown Station Measurements
+        /// </summary>
+        [DataMember]
+        public int? CountUnknownStationMeasurements;
     }
 }

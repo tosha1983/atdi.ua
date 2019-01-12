@@ -37,7 +37,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                 throw new InvalidOperationException($"Not found any inspection records by the tour #{tour.Id}");
             }
 
-            var measTask = WCF.SdrnsControllerWcfClient.GetMeasTaskById(tour.MeasTaskId);
+            var measTask = WCF.SdrnsControllerWcfClient.GetMeasTaskHeaderById(tour.MeasTaskId);
 
             if (measTask == null)
             {
@@ -55,7 +55,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
             {
                 if (measTaskResult.Where(r => r.ResultsMeasStation != null && r.ResultsMeasStation.Where(s=> 
                 {
-                    if (!s.Idstation.HasValue)
+                    if (string.IsNullOrEmpty(s.Idstation))
                     {
                         return false;
                     }
@@ -66,7 +66,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                     {
                         return false;
                     }
-                    return s.Idstation.Value == stationId;
+                    return s.Idstation == stationId.ToString();
 
                 }).Count() > 0 ).Count() > 0)
                 {

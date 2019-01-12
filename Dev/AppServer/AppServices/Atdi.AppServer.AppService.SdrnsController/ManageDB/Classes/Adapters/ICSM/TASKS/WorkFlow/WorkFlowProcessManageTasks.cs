@@ -102,6 +102,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 ClassConvertTasks ts = new ClassConvertTasks(logger);
                 List<MeasSdrTask> Checked_L = new List<MeasSdrTask>();
                 List<Atdi.DataModels.Sdrns.Device.MeasTask> Checked_L_Device = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
+                List<Atdi.AppServer.Contracts.Sdrns.MeasSdrTask> Checked_L_Device_3_0 = new List<Atdi.AppServer.Contracts.Sdrns.MeasSdrTask>();
+                
 
                 System.Threading.Thread tsk_main = new System.Threading.Thread(() =>
                 {
@@ -146,7 +148,37 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                                                 if (ActionType == "New")
                                                 {
+                                                    M.CreateeasTaskSDRsApi1_0(ActionType);
                                                     IdTsk = Create_New_Meas_Task(M, "New");
+                                                    var mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(IdTsk.Value)).ToList();
+                                                    if (mts_.Count()> 0)
+                                                    {
+                                                        var measTaskOld = M; 
+                                                        M = new MeasTask()
+                                                        {
+                                                            CreatedBy = mts_[0].CreatedBy,
+                                                            DateCreated = mts_[0].DateCreated,
+                                                            ExecutionMode = mts_[0].ExecutionMode,
+                                                            Id = mts_[0].Id,
+                                                            MaxTimeBs = mts_[0].MaxTimeBs,
+                                                            MeasDtParam = mts_[0].MeasDtParam,
+                                                            MeasFreqParam = mts_[0].MeasFreqParam,
+                                                            MeasLocParams = mts_[0].MeasLocParams,
+                                                            MeasOther = mts_[0].MeasOther,
+                                                            MeasSubTasks = mts_[0].MeasSubTasks,
+                                                            MeasTimeParamList = mts_[0].MeasTimeParamList,
+                                                            Name = mts_[0].Name,
+                                                            OrderId = mts_[0].OrderId,
+                                                            Prio = mts_[0].Prio,
+                                                            ResultType = mts_[0].ResultType,
+                                                            Status = mts_[0].Status,
+                                                            Task = mts_[0].Task,
+                                                            Type = mts_[0].Type,
+                                                            Stations = measTaskOld.Stations,
+                                                            StationsForMeasurements = measTaskOld.StationsForMeasurements
+                                                        };
+                                                        //M = mts_[0];
+                                                    }
                                                 }
 
                                                 LM_SDR = M.CreateeasTaskSDRsApi1_0(ActionType);
@@ -188,9 +220,40 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             {
                                                 if (ActionType == "New")
                                                 {
+                                                    M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, IdTsk, ActionType);
                                                     IdTsk = Create_New_Meas_Task(M, "New");
+                                                    var mts_ = ts.ConvertToShortMeasTasks(cl.ShortReadTask(IdTsk.Value)).ToList();
+                                                    if (mts_.Count() > 0)
+                                                    {
+                                                        var measTaskOld = M;
+                                                        M = new MeasTask()
+                                                        {
+                                                            CreatedBy = mts_[0].CreatedBy,
+                                                            DateCreated = mts_[0].DateCreated,
+                                                            ExecutionMode = mts_[0].ExecutionMode,
+                                                            Id = mts_[0].Id,
+                                                            MaxTimeBs = mts_[0].MaxTimeBs,
+                                                            MeasDtParam = mts_[0].MeasDtParam,
+                                                            MeasFreqParam = mts_[0].MeasFreqParam,
+                                                            MeasLocParams = mts_[0].MeasLocParams,
+                                                            MeasOther = mts_[0].MeasOther,
+                                                            MeasSubTasks = mts_[0].MeasSubTasks,
+                                                            MeasTimeParamList = mts_[0].MeasTimeParamList,
+                                                            Name = mts_[0].Name,
+                                                            OrderId = mts_[0].OrderId,
+                                                            Prio = mts_[0].Prio,
+                                                            ResultType = mts_[0].ResultType,
+                                                            Status = mts_[0].Status,
+                                                            Task = mts_[0].Task,
+                                                            Type = mts_[0].Type,
+                                                            Stations = measTaskOld.Stations,
+                                                            StationsForMeasurements = measTaskOld.StationsForMeasurements
+                                                        };
+                                                        //M = mts_[0];
+                                                    }
                                                 }
-                                                LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, ActionType);
+                                                else IdTsk = mt.Id.Value;
+                                                LM_SDR_Device = M.CreateeasTaskSDRsApi2_0(fnd_s.Name, GlobalInit.NameServer, fnd_s.Equipment.TechId, IdTsk, ActionType);
                                                 if (LM_SDR_Device != null)
                                                 {
 
@@ -222,24 +285,17 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                             }
                                         }
                                         M.MeasSubTasks = msbd_old;
-                                        //MeasTask fnd = GlobalInit.LIST_MEAS_TASK.Find(j => j.Id.Value == Id_Old);
-                                        //if (fnd != null)
-                                        //GlobalInit.LIST_MEAS_TASK.ReplaceAll<MeasTask>(fnd, M);
-                                        //else GlobalInit.LIST_MEAS_TASK.Add(M);
-                                        //if (ActionType == "Del")
-                                        //{
-                                            //isSuccessTemp = cl.SetHistoryStatusTasksInDB(M, "Z");
-                                            //GlobalInit.LIST_MEAS_TASK.RemoveAll(t => t.Id.Value == M.Id.Value);
-                                        //}
                                     }
 
-                                    if (Checked_L.Count > 0)
+                                    /*
+                                    if (Checked_L.Count > 0) 
                                     {
                                         BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
                                         // Отправка сообщения в СТОП-ЛИСТ
                                         if ((ActionType == "Stop") && (isOnline) && ((Checked_L[0].status == "F") || (Checked_L[0].status == "P")))
                                         {
-                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            //if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString(), XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Stop_List + fnd_s.Name + fnd_s.Equipment.TechId + Checked_L[0].MeasTaskId.Value.ToString() + Checked_L[0].SensorId.Value.ToString()))
                                             {
                                                 isSendSuccess = true;
                                                 isSuccessTemp = true;
@@ -247,16 +303,42 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         }
                                         else
                                         {
-                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            //if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId, XMLLibrary.BaseXMLConfiguration.xml_conf._TimeExpirationTask.ToString()))
+                                            if (busManager.SendDataObject(Checked_L, GlobalInit.Template_MEAS_TASK_Main_List_APPServer + fnd_s.Name + fnd_s.Equipment.TechId))
                                             {
                                                 isSendSuccess = true;
                                             }
                                             else
                                             {
                                                 isSendSuccess = false;
-                                                //Sheduler_Send_MeasSdr shed = new Sheduler_Send_MeasSdr();
-                                                //если отправка не получилась - пытаемся отправить сообщение через 1 минуту
-                                                //shed.ShedulerRepeatStart(60, mt, SensorIds, ActionType, isOnline);
+                                            }
+                                        }
+                                        Checked_L.Clear();
+                                    }
+                                    */
+
+                                    //Отправка тасков в очередь специфичную для версии API 2.0
+                                    if (Checked_L.Count > 0)
+                                    {
+                                        string Queue = $"{GlobalInit.StartNameQueueDevice}.[{fnd_s.Name}].[{fnd_s.Equipment.TechId}].[{apiVer}]";
+                                        BusManager<List<MeasSdrTask>> busManager = new BusManager<List<MeasSdrTask>>();
+                                        if (ActionType == "Stop")
+                                        {
+                                            if (busManager.SendDataToDeviceCrypto<List<MeasSdrTask>>("StopMeasSdrTask", Checked_L, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
+                                            {
+                                                isSendSuccess = true;
+                                                isSuccessTemp = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (busManager.SendDataToDeviceCrypto<List<MeasSdrTask>>("SendMeasSdrTask", Checked_L, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
+                                            {
+                                                isSendSuccess = true;
+                                            }
+                                            else
+                                            {
+                                                isSendSuccess = false;
                                             }
                                         }
                                         Checked_L.Clear();
@@ -270,14 +352,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>> busManager = new BusManager<List<Atdi.DataModels.Sdrns.Device.MeasTask>>();
                                         if (ActionType == "Stop")
                                         {
-                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_stop = new DataModels.Sdrns.Device.DeviceCommand();
-                                            //command_stop.CommandId = Guid.NewGuid().ToString();
-                                            //command_stop.Command = "StopMeasTask";
-                                            //command_stop.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
-                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_stop)), apiVer, "SendCommand"))
                                             foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
                                             {
-                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "StopMeasTask"))
+                                                if (busManager.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.MeasTask>("StopMeasTask", task, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
                                                 {
                                                     isSendSuccess = true;
                                                     isSuccessTemp = true;
@@ -286,16 +363,10 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         }
                                         else
                                         {
-                                            //Atdi.DataModels.Sdrns.Device.DeviceCommand command_send = new DataModels.Sdrns.Device.DeviceCommand();
-                                            //command_send.CommandId = Guid.NewGuid().ToString();
-                                            //command_send.Command = "SendMeasTask";
-                                            //command_send.CustTxt1 = JsonConvert.SerializeObject(Checked_L_Device);
-                                            //if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command_send)), apiVer, "SendCommand"))
                                             foreach (Atdi.DataModels.Sdrns.Device.MeasTask task in Checked_L_Device)
                                             {
-                                                if (busManager.SendDataToServer(fnd_s.Name, fnd_s.Equipment.TechId, UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(task)), apiVer, "SendMeasTask"))
+                                                if (busManager.SendDataToDeviceCrypto<Atdi.DataModels.Sdrns.Device.MeasTask>("SendMeasTask", task, fnd_s.Name, fnd_s.Equipment.TechId, "v2.0", Guid.NewGuid().ToString()))
                                                 {
-
                                                     isSendSuccess = true;
                                                 }
                                                 else

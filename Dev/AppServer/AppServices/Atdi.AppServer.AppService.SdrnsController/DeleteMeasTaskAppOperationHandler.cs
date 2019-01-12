@@ -45,7 +45,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         ClassConvertTasks ts = new ClassConvertTasks(Logger);
                         ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
                         MeasTask[] Res = ts.ConvertToShortMeasTasks(cl.VeryShortReadTask(options.TaskId.Value));
-                        //MeasTask mt = GlobalInit.LIST_MEAS_TASK.Find(z => z.Id.Value == options.TaskId.Value);
                         MeasTask mt = null;
                         if (Res.Length > 0) mt = Res[0];
                         if (mt != null)

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Atdi.AppUnits.Sdrn.ControlA" assembly="Atdi.AppUnits.Sdrn.ControlA">
+  <class name="NH_SensorLocation" table="NH_SensorLocation">
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+        <generator class="identity"/>
+    </id>
+    <property name="DataFrom" />
+    <property name="DataTo" />
+    <property name="DataCreated" />
+    <property name="Status" />
+    <property name="Lon" />
+    <property name="Lat" />
+    <property name="ASL" />
+    <property name="SensorID" />
+  </class>
+</hibernate-mapping>
+
+
+

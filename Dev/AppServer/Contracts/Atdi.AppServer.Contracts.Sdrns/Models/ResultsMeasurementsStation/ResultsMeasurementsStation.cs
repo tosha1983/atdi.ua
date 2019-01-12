@@ -14,7 +14,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
     public class ResultsMeasurementsStation // этот класс необходим для передачи данных станций для которых производиться обмер
     {
         [DataMember]
-        public int? Idstation;
+        public string Idstation;
         [DataMember]
         public int? IdSector;
         [DataMember]
@@ -27,6 +27,12 @@ namespace Atdi.AppServer.Contracts.Sdrns
         public LevelMeasurementsCar[] LevelMeasurements;
         [DataMember]
         public MeasurementsParameterGeneral GeneralResult;
+        [DataMember]
+        public string Standard;
+        [DataMember]
+        public double? CentralFrequencyMeas_MHz;
+        [DataMember]
+        public string StationSysInfo { get; set; }
     }
 }
 

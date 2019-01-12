@@ -68,26 +68,11 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        MeasurementResults[] ISdrnsController.GetMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs)
+      
+        StationDataForMeasurements[] ISdrnsController.GetStationDataForMeasurementsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
         {
             var result =
-                Operation<SdrnsControllerAppService.GetMeasResultsAppOperation, MeasurementResults[]>()
-                    .Invoke(
-                        new GetMeasResultsAppOperationOptions
-                        {
-                            Constraint = constraint,
-                            OtherArgs = otherArgs
-                        },
-                        this.OperationContext
-                    );
-
-            return result;
-        }
-
-        MeasTask ISdrnsController.GetMeasTask(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
-        {
-            var result =
-                Operation<SdrnsControllerAppService.GetMeasTaskAppOperation, MeasTask>()
+                Operation<SdrnsControllerAppService.GetStationDataForMeasurementsByTaskIdAppOperation, StationDataForMeasurements[]>()
                     .Invoke(
                         new GetMeasTaskAppOperationOptions
                         {
@@ -100,14 +85,16 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        MeasTask[] ISdrnsController.GetMeasTasks(DataConstraint constraint, CommonOperationArguments otherArgs)
+        
+
+        MeasTask ISdrnsController.GetMeasTaskHeader(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
         {
             var result =
-                Operation<SdrnsControllerAppService.GetMeasTasksAppOperation, MeasTask[]>()
+                Operation<SdrnsControllerAppService.GetMeasTaskHeaderAppOperation, MeasTask>()
                     .Invoke(
-                        new GetMeasTasksAppOperationOptions
+                        new GetMeasTaskAppOperationOptions
                         {
-                            Constraint = constraint,
+                            TaskId = taskId,
                             OtherArgs = otherArgs
                         },
                         this.OperationContext
@@ -115,6 +102,8 @@ namespace Atdi.AppServer.Services.Sdrns
 
             return result;
         }
+
+       
 
         Sensor[] ISdrnsController.GetSensors(DataConstraint constraint, CommonOperationArguments otherArgs)
         {
@@ -131,6 +120,62 @@ namespace Atdi.AppServer.Services.Sdrns
 
             return result;
         }
+
+        ShortMeasurementResults[] ISdrnsController.GetShortMeasResultsSpecial(MeasurementType measurementType, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetShortMeasResultsSpecialAppOperation, ShortMeasurementResults[]>()
+                    .Invoke(
+                        new GetShortMeasResultsSpecialAppOperationOptions
+                        {
+                            measurementType = measurementType,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+
+        
+
+        MeasurementResults[] ISdrnsController.GetMeasResultsHeaderSpecial(MeasurementType measurementType, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetMeasResultsHeaderSpecialAppOperation, MeasurementResults[]>()
+                    .Invoke(
+                        new GetShortMeasResultsSpecialAppOperationOptions
+                        {
+                            measurementType = measurementType,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+
+        ShortMeasurementResultsExtend[] ISdrnsController.GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetShortMeasResultsByTypeAndTaskIdAppOperation , ShortMeasurementResultsExtend[]>()
+                    .Invoke(
+                        new GetShortMeasResultsByTypeAndTaskIdAppOperationOptions
+                        {
+                            measurementType = measurementType,
+                            TaskId = taskId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        
+
 
         ShortMeasurementResults[] ISdrnsController.GetShortMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs)
         {
@@ -260,22 +305,7 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        MeasurementResults ISdrnsController.GetMeasResultsById(MeasurementResultsIdentifier measResultsId, CommonOperationArguments otherArgs)
-        {
-            var result =
-                Operation<SdrnsControllerAppService.GetMeasResultsByIdAppOperation, MeasurementResults>()
-                    .Invoke(
-                        new GetMeasResultsByIdAppOperationOptions
-                        {
-                            MeasResultsId = measResultsId,
-                            OtherArgs = otherArgs
-                        },
-                        this.OperationContext
-                    );
-
-            return result;
-        }
-
+     
         MeasurementResults[] ISdrnsController.GetMeasResultsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
         {
             var result =
@@ -308,6 +338,88 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
+        ShortResultsMeasurementsStation[] ISdrnsController.GetShortMeasResStation(int measResultsId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetShortMeasResStationAppOperation, ShortResultsMeasurementsStation[]>()
+                    .Invoke(
+                        new GetShortMeasResStationAppOperationOptions
+                        {
+                            ResId = measResultsId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        Route[] ISdrnsController.GetRoutes(int measResultsId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetRoutesAppOperation, Route[]>()
+                    .Invoke(
+                        new GetShortMeasResStationAppOperationOptions
+                        {
+                            ResId = measResultsId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        SensorPoligonPoint[] ISdrnsController.GetSensorPoligonPoint(int measResultsId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetSensorPoligonPointAppOperation, SensorPoligonPoint[]>()
+                    .Invoke(
+                        new GetShortMeasResStationAppOperationOptions
+                        {
+                            ResId = measResultsId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        ResultsMeasurementsStation[] ISdrnsController.GetResMeasStation(int measResultsId, int StationId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetResMeasStationAppOperation, ResultsMeasurementsStation[]>()
+                    .Invoke(
+                        new GetResMeasStationAppOperationOptions
+                        {
+                            ResId = measResultsId,
+                             StationId = StationId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+
+        ResultsMeasurementsStation ISdrnsController.GetResMeasStationById(int StationId, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetResMeasStationByIdAppOperation, ResultsMeasurementsStation>()
+                    .Invoke(
+                        new GetResMeasStationByIdAppOperationOptions
+                        {
+                            StationId = StationId,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
         ShortMeasurementResults[] ISdrnsController.GetShortMeasResultsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
         {
             var result =
@@ -323,5 +435,109 @@ namespace Atdi.AppServer.Services.Sdrns
 
             return result;
         }
+
+        SOFrequency[] ISdrnsController.GetSOformMeasResultStation(GetSOformMeasResultStationValue options, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetSOformMeasResultStationAppOperation, SOFrequency[]>()
+                    .Invoke(
+                        new GetSOformMeasResultStationAppOperationOptions
+                        {
+                            val = options, 
+                            
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+        public ShortMeasurementResultsExtend[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue options, CommonOperationArguments otherArgs)
+        {
+            var result =
+               Operation<SdrnsControllerAppService.GetShortMeasResultsByDatesAppOperation, ShortMeasurementResultsExtend[]>()
+                   .Invoke(
+                       new GetShortMeasResultsByDateAppOperationOptions
+                       {
+                           options = options,
+                           OtherArgs = otherArgs
+                       },
+                       this.OperationContext
+                   );
+
+            return result;
+        }
+
+        MeasurementResults[] ISdrnsController.GetMeasResultsHeaderByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
+        {
+            var result =
+              Operation<SdrnsControllerAppService.GetMeasResultsHeaderByTaskIdAppOperation, MeasurementResults[]>()
+                  .Invoke(
+                      new GetMeasResultsByTaskIdAppOperationOptions
+                      {
+                          TaskId = taskId,
+                          OtherArgs = otherArgs
+                      },
+                      this.OperationContext
+                  );
+
+            return result;
+        }
+
+
+        ResultsMeasurementsStationExtended[] ISdrnsController.GetResMeasStationHeaderByResId(int measResultsId, CommonOperationArguments otherArgs)
+        {
+            var result =
+              Operation<SdrnsControllerAppService.GetResMeasStationHeaderByResIdAppOperation, ResultsMeasurementsStationExtended[]>()
+                  .Invoke(
+                      new GetShortMeasResStationAppOperationOptions
+                      {
+                          ResId = measResultsId,
+                          OtherArgs = otherArgs
+                      },
+                      this.OperationContext
+                  );
+
+            return result;
+        }
+
+
+        MeasurementResults ISdrnsController.GetMeasurementResultByResId(int measResultsId, CommonOperationArguments otherArgs)
+        {
+            var result =
+              Operation<SdrnsControllerAppService.GetMeasurementResultByResIdAppOperation, MeasurementResults>()
+                  .Invoke(
+                      new GetShortMeasResStationAppOperationOptions
+                      {
+                          ResId = measResultsId,
+                          OtherArgs = otherArgs
+                      },
+                      this.OperationContext
+                  );
+
+            return result;
+        }
+
+
+
+        StationLevelsByTask[] ISdrnsController.GetStationLevelsByTask(LevelsByTaskParams options, CommonOperationArguments otherArgs)
+        {
+            var result =
+                Operation<SdrnsControllerAppService.GetStationLevelsByTaskIdAppOperation, StationLevelsByTask[]>()
+                    .Invoke(
+                        new GetStationLevelsByTaskIdAppOperationOptions
+                        {
+                            val = options,
+                            OtherArgs = otherArgs
+                        },
+                        this.OperationContext
+                    );
+
+            return result;
+        }
+
+
+
     }
 }
