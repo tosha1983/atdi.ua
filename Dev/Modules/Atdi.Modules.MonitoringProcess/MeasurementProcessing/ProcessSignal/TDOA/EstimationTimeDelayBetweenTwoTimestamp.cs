@@ -17,31 +17,77 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             SimulateTimeShtamp simulateTimeShtamp = new SimulateTimeShtamp();
             double MetricAngle = 0;
             double MetricIndex = 0;
-            TimeStampBlock WrongTimeStampBlock = simulateTimeShtamp.SimulateTimeStamp(IQStreamTimeStampBloks1.TimeStampBlocks[0], 30, 15, 10, 0);
-            ComparerTwoBlockSignals(IQStreamTimeStampBloks1.TimeStampBlocks[0], WrongTimeStampBlock, 0, out MetricAngle, out MetricIndex);
+            //TimeStampBlock WrongTimeStampBlock = simulateTimeShtamp.SimulateTimeStamp(IQStreamTimeStampBloks1.TimeStampBlocks[0], 30, 15, 10, 0);
+            //ComparerTwoBlockSignals(IQStreamTimeStampBloks1.TimeStampBlocks[0], WrongTimeStampBlock, 0, out MetricAngle, out MetricIndex);
             List<double> MetricAngles;
             List<double> MetricIndexs;
-            double best = 9999999;
+            List<double> BestList = new List<double>();
+            List<double> BestListAngle = new List<double>();
+            List<int> IndexPoint = new List<int>();
+            List<int> IndexOtherBloks = new List<int>();
+            List<double> TimeDiff = new List<double>();
+            double best = 999999;
+            int best_j = -1;
+            int best_i = -1;
+            double best_angle = -1;
+            int best_timeshift = -1;
+            int PPSdiff = IQStreamTimeStampBloks1.IndexPPS[0] - IQStreamTimeStampBloks2.IndexPPS[0];
             for (int k = 0; k < IQStreamTimeStampBloks1.TimeStampBlocks.Count; k++)
-            { 
+            {
+
                 for (int j = 0; j < IQStreamTimeStampBloks2.TimeStampBlocks.Count; j++)
                 {
-                    MetricAngles = new List<double>();
-                    MetricIndexs = new List<double>();
-                    for (int i = 0; i < 100; i++)
+                    // подбор блоков исходя из возможной дистанции до 1000 км 
+                    int MaxDistanceInSemples = (int) ((1000.0 * 1000.0 / (3.0 * 100000000.0)) * IQStreamTimeStampBloks1.SemplePerSecond);
+                    int index_min_block1 = IQStreamTimeStampBloks1.TimeStampBlocks[k].StartIndexOfBlock - PPSdiff; 
+                    int index_max_block1 = index_min_block1 + IQStreamTimeStampBloks1.TimeStampBlocks[k].RotationIndex[IQStreamTimeStampBloks1.TimeStampBlocks[k].RotationIndex.Count-1] - PPSdiff;
+                    int index_min_block2 = IQStreamTimeStampBloks2.TimeStampBlocks[j].StartIndexOfBlock;
+                    int index_max_block2 = index_min_block2 + IQStreamTimeStampBloks2.TimeStampBlocks[j].RotationIndex[IQStreamTimeStampBloks2.TimeStampBlocks[j].RotationIndex.Count - 1];
+                    bool hit = false;
+                    if (index_min_block1 > index_min_block2)
                     {
-                        if (k != j)
+                        if (index_max_block2 + MaxDistanceInSemples > index_min_block1) { hit = true; }
+                    }
+                    else
+                    {
+                        if (index_max_block1 + MaxDistanceInSemples > index_min_block2) { hit = true; }
+                    }
+
+                    if (hit)
+                    {
+                        MetricAngles = new List<double>();
+                        MetricIndexs = new List<double>();
+                        for (int i = 0; i < 1000; i++)
                         {
-                            ComparerTwoBlockSignals(IQStreamTimeStampBloks1.TimeStampBlocks[k], IQStreamTimeStampBloks2.TimeStampBlocks[j], i - 50, out MetricAngle, out MetricIndex);
+                            int shift = i - 500;
+                            //if (k != j)
+                            //{
+                            //if (i == 334)
+                            //{
+                            //    int kkk = 0;
+                            //}
+                            ComparerTwoBlockSignals(IQStreamTimeStampBloks1.TimeStampBlocks[k], IQStreamTimeStampBloks2.TimeStampBlocks[j], shift, out MetricAngle, out MetricIndex);
                             if (MetricIndex < best)
                             {
                                 best = MetricIndex;
+                                best_j = j;
+                                best_i = i;
+                                best_angle = MetricAngle;
+                                best_timeshift = IQStreamTimeStampBloks1.TimeStampBlocks[k].StartIndexOfBlock + shift - IQStreamTimeStampBloks2.TimeStampBlocks[j].StartIndexOfBlock - PPSdiff*2;
                             }
                             MetricAngles.Add(MetricAngle);
                             MetricIndexs.Add(MetricIndex);
+                            //}
                         }
                     }
                 }
+                BestList.Add(best);
+                BestListAngle.Add(best_angle);
+                IndexPoint.Add(best_i);
+                IndexOtherBloks.Add(best_j);
+                TimeDiff.Add(best_timeshift);
+;
+                best = 999999;
             }
         }
         /// <summary>
@@ -54,6 +100,7 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             //Константы 
             int IndexAccuracy = 1;
             double AngleAccuracy = 1;
+            int count_for_correlation = 4;
             List<double> MetricAngle = new List<double>(); // метрика штрафов Пусть это будет разность углов прыжка
             List<int> MetricIndex = new List<int>(); // метрика штрафов Пусть это будет разница между пиками
             for (int i = 0; i < timeStampBlock1.RotationIndex.Count - 1; i++)
@@ -83,18 +130,20 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             SumMetricAngle = 0; 
             for (int i = 0; i < MetricAngle.Count; i++)
             {
-                count++;
-                if (MetricAngle[i] != -1) { SumMetricAngle = SumMetricAngle + MetricAngle[i];}
+                if (MetricAngle[i] != -1) { SumMetricAngle = SumMetricAngle + MetricAngle[i];
+                    count++;
+                }
             }
-            SumMetricAngle = SumMetricAngle / count;
+            if (count > count_for_correlation) { SumMetricAngle = SumMetricAngle / count; }
+            else { SumMetricAngle = 9999999; }
             count = 0;
             SumMetricIndex = 0;
             for (int i = 0; i < MetricAngle.Count; i++)
             {
-                count++;
-                if (MetricIndex[i] != -1) { SumMetricIndex = SumMetricIndex + MetricIndex[i]; }
+                if (MetricIndex[i] != -1) { SumMetricIndex = SumMetricIndex + MetricIndex[i]; count++; }
             }
-            SumMetricIndex = SumMetricIndex / count;
+            if (count > count_for_correlation) { SumMetricIndex = SumMetricIndex / count; }
+            else { SumMetricIndex = 9999999; }
         }
         private double CalcAngleRotation(double angl1, double angl2)
         {

@@ -242,7 +242,7 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
                 // используем метод оптимизации мультистарта по двум параметрам, фаза и частота.
                 int StartIndex = 2;
                 int CountIndexForFind = RotationIndex.Count - 2;
-                CalcSimbolFrequencyAndPhaceStartIndexFromIndexesList(ref RotationIndex, SamplesPerSec, BWkHz, StartIndex, CountIndexForFind, out Double Freq, out Double Phase, out Double bestPenalty);
+                CalcSimbolFrequencyAndPhaceStartIndexFromIndexesList(ref RotationIndex, SamplesPerSec, BWkHz, StartIndex, CountIndexForFind, out double Freq, out double Phase, out Double bestPenalty);
                 TimeStampToneParameter timeStampToneParameter = new TimeStampToneParameter();
                 timeStampToneParameter.Penalty = bestPenalty;
                 timeStampToneParameter.SempleShiftOfSimbol = Phase;
@@ -376,19 +376,19 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             RotationIndex = new List<int>();
             RotationPhase = new List<Double>();
 
-            Double PointStart;
-            Double LastPhase;
+            double PointStart;
+            double LastPhase;
             bool lastRotationR = false;
-            Double PointWithMaxAngleDistanse = 0;
+            double PointWithMaxAngleDistanse = 0;
             int IndexWithMaxDistanse = 0;
 
             PointStart = CalcAnglFromIQDegree(block.IQStream[0], block.IQStream[1]);
             LastPhase = PointStart;
-            Double CurrentAnglDistanse = 0;
+            double CurrentAnglDistanse = 0;
             for (int i = 2; i < block.IQStream.Length - 1; i = i + 2)
             {
-                Double Phase = CalcAnglFromIQDegree(block.IQStream[i], block.IQStream[i + 1]);
-                Double CurrentDeltaPhase = 0; bool CurrentRotationR = true;
+                double Phase = CalcAnglFromIQDegree(block.IQStream[i], block.IQStream[i + 1]);
+                double CurrentDeltaPhase = 0; bool CurrentRotationR = true;
                 CalcPhaseAndRotation(LastPhase, Phase, ref CurrentRotationR, ref CurrentDeltaPhase);
                 if (lastRotationR == CurrentRotationR) { CurrentAnglDistanse = CurrentAnglDistanse + CurrentDeltaPhase; } else { CurrentAnglDistanse = CurrentAnglDistanse - CurrentDeltaPhase; }
                 if (PointWithMaxAngleDistanse < CurrentAnglDistanse) { PointWithMaxAngleDistanse = CurrentAnglDistanse; IndexWithMaxDistanse = i; }

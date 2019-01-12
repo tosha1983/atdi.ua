@@ -13,6 +13,10 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
         public List<float[]> iq_samples;
         public List<int[]> triggers;
         public List<float[]> Ampl;
+        public List<int> dataRemainings;
+        public List<int> sampleLosses;
+        public List<int> iqSeces;
+        public List<int> iqNanos;
         public double MinLevel;
         public double MaxLevel;
         public DateTime TimeMeasStart; // время начала измерения потока IQ

@@ -17,6 +17,8 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
         public double TimeReceivingSec;
         public double MinDurationSignalForAnalizemks;
         public IQStreamTimeStampBloks IQStreamTimeStampBloks;
+        public BlockOfSignal TestBlock;
+        public List<int> RotationIndexTest;
         public enum TypeTechnology {GSM, UMTS, CDMA, LTE, PMR, Ununknown}
         public TypeTechnology SignalTechnology;
         #endregion
@@ -65,15 +67,15 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
         {
             SignalTechnology =_SignalTechnology;
             // Константы
-            MinDurationSignalForAnalizemks = 100000.0/(spankHz);
+            MinDurationSignalForAnalizemks = 50000.0/(spankHz);
             bool FilteringForFindSignalAndPause = true; 
             // конец констант
             DateTime TimeMeas = DateTime.Now; // КОСТЫЛЬ
             //считывание объекта с файла используется для тестов
-            if (IQStream is null)
-            {
-                IQStream = (DeserializeObject("C:\\projects\\Monitoring projects\\SDR\\DataSignal\\GSM_900_2.bin") as ReceivedIQStream);
-            }
+            //if (IQStream is null)
+            //{
+            //    IQStream = (DeserializeObject("C:\\projects\\Monitoring projects\\SDR\\DataSignal\\GSM_900_2.bin") as ReceivedIQStream);
+            //}
             TimeReceivingSec = IQStream.durationReceiving_sec;
             IQStream.CalcAmpl();
 
@@ -85,12 +87,18 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             switch (SignalTechnology)
             {
                 case TypeTechnology.GSM:
-                case TypeTechnology.PMR:
                     methodForTimeDivision = IQStreamTimeStampBloks.MethodForTimeDivision.ChangeOfFlanks;
                     methodForSelectCriticalPoint = IQStreamTimeStampBloks.MethodForSelectCriticalPoint.PhaseRotation;
                     methodForCalcFreqFromCriticalPoint = IQStreamTimeStampBloks.MethodForCalcFreqFromCriticalPoint.SingleToneByBlock;
                     CalcFreqTone = true;
                     break;
+                case TypeTechnology.PMR:
+                    methodForTimeDivision = IQStreamTimeStampBloks.MethodForTimeDivision.TriggerLevel;
+                    methodForSelectCriticalPoint = IQStreamTimeStampBloks.MethodForSelectCriticalPoint.PhaseRotation;
+                    methodForCalcFreqFromCriticalPoint = IQStreamTimeStampBloks.MethodForCalcFreqFromCriticalPoint.SingleToneByBlock;
+                    CalcFreqTone = true;
+                    break;
+
                 case TypeTechnology.CDMA:
                 case TypeTechnology.UMTS:
                 case TypeTechnology.LTE:
@@ -119,7 +127,7 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
                 for (int j = 0; j < IQStream.triggers[i].Length; j++)
                 {
                     if (IQStream.triggers[i][j] != 0)
-                    { IQStreamTimeStampBloks.IndexPPS.Add(IQStream.triggers[i][j] + i * IQStream.iq_samples[0].Length);}else{break;}
+                    { IQStreamTimeStampBloks.IndexPPS.Add((IQStream.triggers[i][j] + i * IQStream.iq_samples[0].Length)/2);}else{break;}
                 }
             }
             IQStreamTimeStampBloks.SemplePerSecond = semple_per_second;
@@ -134,13 +142,18 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
 
 
             //Нужно только для тестов
-            //RotationIndexTest = new List<int>(); RotationPhaseTest = new List<double>();
-            //Test_block = IQstreamSignalFlange.BlockOfSignals[6];
-            //PhaseProcess.RotationCalculation(methodForSelectCriticalPoint, IQstreamSignalFlange.BlockOfSignals[6], out RotationIndexTest, out RotationAmpl);
+            RotationIndexTest = new List<int>();
+            List<double> RotationPhaseTest = new List<double>();
+            List<double> RotationAmplTest = new List<double>();
+            TestBlock = IQstreamSignalFlange.BlockOfSignals[0];
+            PhaseProcess.RotationCalculation(methodForSelectCriticalPoint, IQstreamSignalFlange.BlockOfSignals[0], out RotationIndexTest, out RotationAmplTest, out RotationPhaseTest);
             //Penalty = 0;
             //Нужно только для тестов
 
-            List<double> RotationAmpl = new List<double>();
+
+
+
+        List<double> RotationAmpl = new List<double>();
             List<double> RotationPhase = new List<double>();
             for (int i = 0; i < IQstreamSignalFlange.BlockOfSignals.Count; i++) 
             {
