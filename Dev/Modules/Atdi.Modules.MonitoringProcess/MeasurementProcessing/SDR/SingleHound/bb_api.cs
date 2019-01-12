@@ -309,22 +309,26 @@ triggerCount, int purge, ref int dataRemaining, ref int sampleLoss, ref int sec,
 
     public static void OnUsbDevice()
     {
-        var psi = new System.Diagnostics.ProcessStartInfo(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\devcon.exe");
-        {
-            psi.UseShellExecute = false;
-        };
-        psi.Arguments = @"enable @USB\VID_055F&PID_021B\5&E44C69F&0&6";
-        System.Diagnostics.Process pDisable = System.Diagnostics.Process.Start(psi);
+        // нужно переписать следующий закоментаренны йкод - нельзя использовать System.Windows.Forms
+        throw new InvalidOperationException("нужно переписать следующий закоментаренны йкод - нельзя использовать System.Windows.Forms");
+        //var psi = new System.Diagnostics.ProcessStartInfo(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\devcon.exe");
+        //{
+        //    psi.UseShellExecute = false;
+        //};
+        //psi.Arguments = @"enable @USB\VID_055F&PID_021B\5&E44C69F&0&6";
+        //System.Diagnostics.Process pDisable = System.Diagnostics.Process.Start(psi);
     }
 
     public static void OffUsbDevice()
     {
-        var psi = new System.Diagnostics.ProcessStartInfo(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\devcon.exe");
-        {
-            psi.UseShellExecute = false;
-        };
-        psi.Arguments = @"disable @USB\VID_055F&PID_021B\5&E44C69F&0&6";
-        System.Diagnostics.Process pDisable = System.Diagnostics.Process.Start(psi);
+        // нужно переписать следующий закоментаренны йкод - нельзя использовать System.Windows.Forms
+        throw new InvalidOperationException("нужно переписать следующий закоментаренны йкод - нельзя использовать System.Windows.Forms");
+        //var psi = new System.Diagnostics.ProcessStartInfo(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\devcon.exe");
+        //{
+        //    psi.UseShellExecute = false;
+        //};
+        //psi.Arguments = @"disable @USB\VID_055F&PID_021B\5&E44C69F&0&6";
+        //System.Diagnostics.Process pDisable = System.Diagnostics.Process.Start(psi);
 
     }
 }
