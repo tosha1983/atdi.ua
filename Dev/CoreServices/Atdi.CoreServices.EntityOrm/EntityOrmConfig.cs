@@ -12,9 +12,8 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
 using Atdi.CoreServices.EntityOrm;
-using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.DataConstraint;
-using Atdi.Contracts.Sdrn.Server;
+
 
 
 namespace Atdi.CoreServices.EntityOrm

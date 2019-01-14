@@ -9,7 +9,7 @@ namespace Atdi.Modules.MonitoringProcess.MeasurementProcessing.Measurements
 {
     public class Timestamp
     {
-        bool SuccessfulTimestamp = false;
+        public bool SuccessfulTimestamp = false;
         IQStreamTimeStampBloks IQStreamTimeStampBloks;
         public Timestamp(ISDR SDR, TaskParameters taskParameters)
         {

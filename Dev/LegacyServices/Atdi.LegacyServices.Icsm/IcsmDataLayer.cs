@@ -7,7 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServices.WebQuery;
+//using Atdi.AppServices.WebQuery;
 
 namespace Atdi.LegacyServices.Icsm
 {

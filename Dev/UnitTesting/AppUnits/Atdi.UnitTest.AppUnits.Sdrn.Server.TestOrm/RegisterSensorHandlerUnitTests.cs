@@ -1,5 +1,5 @@
 ﻿using System;
-using Atdi.AppUnits.Sdrn.MessageController;
+//using Atdi.AppUnits.Sdrn.MessageController;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Contracts.CoreServices.DataLayer;
@@ -34,8 +34,8 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.TestOrm
         [TestMethod]
         public void Test_CheckMessageType()
         {
-            var handler = new Atdi.AppUnits.Sdrn.MessageController.RegisterSensorFromDeviceHandler(this._busGate, _dataLayer, _environment, _eventEmitter, _logger);
-            handler.Handle();
+            //var handler = new Atdi.AppUnits.Sdrn.MessageController.RegisterSensorFromDeviceHandler(this._busGate, _dataLayer, _environment, _eventEmitter, _logger);
+            //handler.Handle();
         }
 
    

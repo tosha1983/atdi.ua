@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Atdi.DataModels.Sdrns.Server.Entities")]
+[assembly: AssemblyTitle("Atdi.DataModels.Sdrns.Server.Entities2")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Atdi.DataModels.Sdrns.Server.Entities")]
+[assembly: AssemblyProduct("Atdi.DataModels.Sdrns.Server.Entities2")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4178c008-8b0f-4ea8-a1d9-1b86bf8dc428")]
+[assembly: Guid("f3e641da-37a7-4137-bbcb-151b6474a62f")]
 
 // Version information for an assembly consists of the following four values:
 //
