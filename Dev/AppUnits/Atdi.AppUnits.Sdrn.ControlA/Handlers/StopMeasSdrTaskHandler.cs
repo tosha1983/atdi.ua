@@ -41,6 +41,7 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                                 sdrFindTask.status = "F";
                                 SaveMeasSDRResults.SaveStatusMeasTaskSDR(sdrFindTask);
                                 message.Result = MessageHandlingResult.Confirmed;
+                                Console.WriteLine($"stop meas task with ID = '{message.Data[i].Id}'");
                             }
                         }
                     }

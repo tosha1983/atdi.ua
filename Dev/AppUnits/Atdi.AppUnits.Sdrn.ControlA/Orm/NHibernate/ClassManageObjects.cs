@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.ControlA
                     session.Delete(string.Format("from {0} ", NameTable) + " p where p.ID = ?", ID, NHibernateUtil.Int32);
                     tr_1.Commit();
                 }
-                catch (Exception ex) { tr_1.Rollback(); }
+                catch (Exception) { tr_1.Rollback(); }
                 tr_1.Dispose();
                 session.Flush();
             }

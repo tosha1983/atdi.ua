@@ -2553,89 +2553,90 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 for (int n = 0; n < measResult.Length; n++)
                                 {
                                     MeasurementResult dt_param = measResult[n];
-                                    if ((obj.TypeMeasurements == MeasurementType.Level) || (obj.TypeMeasurements == MeasurementType.SpectrumOccupation))
-                                    {
-                                        YXbsResLevels dtrR = new YXbsResLevels();
-                                        dtrR.rs = yyy.rs;
-                                        dtrR.Format("*");
-                                        dtrR.Filter = "ID=-1";
-                                        dtrR.New();
-
-                                        if ((obj.TypeMeasurements == MeasurementType.Level) && (obj.Status != "O"))
+                                        if ((obj.TypeMeasurements == MeasurementType.Level) || (obj.TypeMeasurements == MeasurementType.SpectrumOccupation))
                                         {
-                                            if (dt_param != null)
-                                            {
-                                                if (dt_param is LevelMeasurementResult)
-                                                {
+                                            YXbsResLevels dtrR = new YXbsResLevels();
+                                            dtrR.rs = yyy.rs;
+                                            dtrR.Format("*");
+                                            dtrR.Filter = "ID=-1";
+                                            dtrR.New();
 
-                                                    if ((dt_param as LevelMeasurementResult).Value != null) dtrR.m_valuelvl = (dt_param as LevelMeasurementResult).Value.GetValueOrDefault();
-                                                    if ((dt_param as LevelMeasurementResult).PMax != null) dtrR.m_pmaxlvl = (dt_param as LevelMeasurementResult).PMax.GetValueOrDefault();
-                                                    if ((dt_param as LevelMeasurementResult).PMin != null) dtrR.m_pminlvl = (dt_param as LevelMeasurementResult).PMin.GetValueOrDefault();
-                                                    if (obj.FrequenciesMeasurements != null)
+                                            if ((obj.TypeMeasurements == MeasurementType.Level) && (obj.Status != "O"))
+                                            {
+                                                if (dt_param != null)
+                                                {
+                                                    if (dt_param is LevelMeasurementResult)
                                                     {
-                                                           dtrR.m_freqmeas = obj.FrequenciesMeasurements[n].Freq;
-                                                    }
-                                                    /*
-                                                    if (obj.FrequenciesMeasurements != null)
-                                                    {
-                                                        List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
-                                                        if (Fr_e != null)
+
+                                                        if ((dt_param as LevelMeasurementResult).Value != null) dtrR.m_valuelvl = (dt_param as LevelMeasurementResult).Value.GetValueOrDefault();
+                                                        if ((dt_param as LevelMeasurementResult).PMax != null) dtrR.m_pmaxlvl = (dt_param as LevelMeasurementResult).PMax.GetValueOrDefault();
+                                                        if ((dt_param as LevelMeasurementResult).PMin != null) dtrR.m_pminlvl = (dt_param as LevelMeasurementResult).PMin.GetValueOrDefault();
+                                                        if (obj.FrequenciesMeasurements != null)
                                                         {
-                                                            if (Fr_e.Count > 0)
+                                                            dtrR.m_freqmeas = obj.FrequenciesMeasurements[n].Freq;
+                                                        }
+                                                        /*
+                                                        if (obj.FrequenciesMeasurements != null)
+                                                        {
+                                                            List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
+                                                            if (Fr_e != null)
                                                             {
-                                                                foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
+                                                                if (Fr_e.Count > 0)
                                                                 {
-                                                                    if (dt_param_freq != null)
+                                                                    foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
                                                                     {
-                                                                        dtrR.m_freqmeas = dt_param_freq.Freq;
+                                                                        if (dt_param_freq != null)
+                                                                        {
+                                                                            dtrR.m_freqmeas = dt_param_freq.Freq;
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
+                                                        */
                                                     }
-                                                    */
                                                 }
                                             }
-                                        }
-                                        else if ((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) /*&& (obj.Status == "C")*/)
-                                        {
-                                            if (dt_param != null)
+                                            else if ((obj.TypeMeasurements == MeasurementType.SpectrumOccupation) /*&& (obj.Status == "C")*/)
                                             {
-                                                if (dt_param is SpectrumOccupationMeasurementResult)
+                                                if (dt_param != null)
                                                 {
-                                                    if ((dt_param as SpectrumOccupationMeasurementResult).Value != null) dtrR.m_valuespect = (dt_param as SpectrumOccupationMeasurementResult).Value.GetValueOrDefault();
-                                                    if ((dt_param as SpectrumOccupationMeasurementResult).Occupancy != null) dtrR.m_occupancyspect = (dt_param as SpectrumOccupationMeasurementResult).Occupancy.GetValueOrDefault();
-                                                    if (obj.FrequenciesMeasurements != null)
+                                                    if (dt_param is SpectrumOccupationMeasurementResult)
                                                     {
-                                                         dtrR.m_freqmeas = obj.FrequenciesMeasurements[n].Freq;
-                                                    }
-                                                    /*
-                                                    if (obj.FrequenciesMeasurements != null)
-                                                    {
-                                                        List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
-                                                        if (Fr_e != null)
+                                                        if ((dt_param as SpectrumOccupationMeasurementResult).Value != null) dtrR.m_valuespect = (dt_param as SpectrumOccupationMeasurementResult).Value.GetValueOrDefault();
+                                                        if ((dt_param as SpectrumOccupationMeasurementResult).Occupancy != null) dtrR.m_occupancyspect = (dt_param as SpectrumOccupationMeasurementResult).Occupancy.GetValueOrDefault();
+                                                        if (obj.FrequenciesMeasurements != null)
                                                         {
-                                                            if (Fr_e.Count > 0)
+                                                            dtrR.m_freqmeas = obj.FrequenciesMeasurements[n].Freq;
+                                                        }
+                                                        /*
+                                                        if (obj.FrequenciesMeasurements != null)
+                                                        {
+                                                            List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
+                                                            if (Fr_e != null)
                                                             {
-                                                                foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
+                                                                if (Fr_e.Count > 0)
                                                                 {
-                                                                    if (dt_param_freq != null)
+                                                                    foreach (FrequencyMeasurement dt_param_freq in Fr_e.ToArray())
                                                                     {
-                                                                        dtrR.m_freqmeas = dt_param_freq.Freq;
+                                                                        if (dt_param_freq != null)
+                                                                        {
+                                                                            dtrR.m_freqmeas = dt_param_freq.Freq;
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
+                                                        */
                                                     }
-                                                    */
                                                 }
                                             }
-                                        }
 
-                                        dtrR.m_xbsresmeasid = ID;
-                                        for (int i = 0; i < dtrR.getAllFields.Count; i++)
-                                            dtrR.getAllFields[i].Value = dtrR.valc[i];
-                                        BlockInsert_YXbsLevelmeasres1.Add(dtrR);
+                                            dtrR.m_xbsresmeasid = ID;
+                                            for (int i = 0; i < dtrR.getAllFields.Count; i++)
+                                                dtrR.getAllFields[i].Value = dtrR.valc[i];
+                                            BlockInsert_YXbsLevelmeasres1.Add(dtrR);
+                                            System.Threading.Thread.Yield();
                                     }
                                     if (dt_param != null)
                                     {
@@ -2655,7 +2656,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
 
                                     idx_cnt++;
-                                    System.Threading.Thread.Yield();
                                 }
                             }
                             if (BlockInsert_YXbsLevelmeasres1.Count > 0)

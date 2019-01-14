@@ -7,7 +7,6 @@ using System.Linq;
 using Atdi.AppUnits.Sdrn.ControlA;
 using System.Xml.Serialization;
 using Atdi.Modules.Licensing;
-using XMLLibrary;
 using Atdi.AppUnits.Sdrn.ControlA.Handlers;
 
 namespace GPS
@@ -76,7 +75,7 @@ namespace GPS
                                             if (se_curr.Locations != null)
                                             {
                                                 NH_Sensor sens_ = sensorDBExtension.LoadSensorFromDB(se_curr.Name, se_curr.Equipment.TechId);
-                                                List<SensorLocation> L_sensor_locations = se_curr.Locations.ToList().FindAll(t => Math.Abs(t.Lon.GetValueOrDefault() - Lon) <= BaseXMLConfiguration.xml_conf._Lon_Delta && Math.Abs(t.Lat.GetValueOrDefault() - Lat) <= BaseXMLConfiguration.xml_conf._Lat_Delta && t.Status != AllStatusLocation.Z.ToString());
+                                                List<SensorLocation> L_sensor_locations = se_curr.Locations.ToList().FindAll(t => Math.Abs(t.Lon.GetValueOrDefault() - Lon) <= Config._Lon_Delta && Math.Abs(t.Lat.GetValueOrDefault() - Lat) <= Config._Lat_Delta && t.Status != AllStatusLocation.Z.ToString());
                                                 if (L_sensor_locations.Count == 0)
                                                 {
                                                     if (sens_ != null)
@@ -94,7 +93,7 @@ namespace GPS
                                                                     {
                                                                         if (se_curr.Locations.Count() > 0)
                                                                         {
-                                                                            if (se_curr.Locations.ToList().FindAll(t => Math.Abs(t.Lon.GetValueOrDefault() - z_o.Lon.GetValueOrDefault()) <= BaseXMLConfiguration.xml_conf._Lon_Delta && Math.Abs(t.Lat.GetValueOrDefault() - z_o.Lat.GetValueOrDefault()) <= BaseXMLConfiguration.xml_conf._Lat_Delta && t.Status != AllStatusLocation.Z.ToString()) != null)
+                                                                            if (se_curr.Locations.ToList().FindAll(t => Math.Abs(t.Lon.GetValueOrDefault() - z_o.Lon.GetValueOrDefault()) <= Config._Lon_Delta && Math.Abs(t.Lat.GetValueOrDefault() - z_o.Lat.GetValueOrDefault()) <= Config._Lat_Delta && t.Status != AllStatusLocation.Z.ToString()) != null)
                                                                                 opt_DB.CloseOldSensorLocation(z_o);
                                                                         }
                                                                     }
@@ -115,7 +114,7 @@ namespace GPS
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             { 
                 return false;
             }

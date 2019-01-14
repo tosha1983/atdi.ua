@@ -144,18 +144,18 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                         {
                             for (int i = 0; i < taskSDR.MeasLocParam.Count(); i++)
                             {
-                                Sensor se_ = extension.GetCurrentSensor();
-                                if (se_ != null)
+                                Sensor se = extension.GetCurrentSensor();
+                                if (se != null)
                                 {
-                                    if (se_.Locations != null)
+                                    if (se.Locations != null)
                                     {
-                                        List<SensorLocation> location_curr = se_.Locations.ToList().FindAll(r => r.Status == "A");
-                                        if (location_curr != null)
+                                        List<SensorLocation> locationCurr = se.Locations.ToList().FindAll(r => r.Status == "A");
+                                        if (locationCurr != null)
                                         {
-                                            if (location_curr.Count > 0)
+                                            if (locationCurr.Count > 0)
                                             {
-                                                location_curr.Sort((a1, a2) => a1.DataFrom.GetValueOrDefault().CompareTo(a2.DataFrom.GetValueOrDefault()));
-                                                SensorLocation sloc = location_curr[location_curr.Count - 1];
+                                                locationCurr.Sort((a1, a2) => a1.DataFrom.GetValueOrDefault().CompareTo(a2.DataFrom.GetValueOrDefault()));
+                                                SensorLocation sloc = locationCurr[locationCurr.Count - 1];
                                                 if (sloc != null)
                                                 {
                                                     double Dist_curr = calculateTheDistance(sloc.Lat.GetValueOrDefault(), sloc.Lon.GetValueOrDefault(), taskSDR.MeasLocParam[i].Lat.GetValueOrDefault(), taskSDR.MeasLocParam[i].Lon.GetValueOrDefault());

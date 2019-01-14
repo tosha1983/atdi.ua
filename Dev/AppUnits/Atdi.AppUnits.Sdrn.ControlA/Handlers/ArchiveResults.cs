@@ -11,11 +11,11 @@ using SM = Atdi.AppServer.Contracts.Sdrns;
 
 namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
 {
-    public class SensorActivity
+    public class ArchiveResults
     {
         public static System.Timers.Timer timer = new System.Timers.Timer();
         public static Int64 cntSeconds = 0;
-        public SensorActivity()
+        public ArchiveResults()
         {
             timer.Interval = 1000;
             timer.Elapsed += Timer_Elapsed;
@@ -25,20 +25,24 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             cntSeconds++;
-            if (cntSeconds> Config._PeriodSendActivitySensor)
+            if (cntSeconds> Config._TimeArchiveResult)
             {
                 timer.Enabled = false;
-                SensorDBExtension sensorAction = new SensorDBExtension();
-                List<SM.Sensor> L_ser = sensorAction.LoadObjectSensor();
-                if (L_ser != null)
+                SaveMeasSDRResults msres = new SaveMeasSDRResults();
+                LoadDataMeasTask loadDataMeasTask = new LoadDataMeasTask();
+                List<SM.MeasSdrResults> MRes = loadDataMeasTask.LoadActiveTaskSdrResults();
+                if (MRes != null)
                 {
-                    if (L_ser.Count > 0)
+                    foreach (SM.MeasSdrResults item in MRes.ToArray())
                     {
-                        BusManager._messagePublisher.Send("SendActivitySensor", L_ser[0]);
-                        cntSeconds = 0;
-                        System.Console.WriteLine("Start SendActivitySensor...");
+                        if (item.FindAndDestroyObject(2 * Config._TimeArchiveResult, "C"))
+                        {
+                            msres.SaveStatusResultSDR(item, "Z");
+                            cntSeconds = 0;
+                        }
                     }
                 }
+                MRes.Clear();
                 timer.Enabled = true;
             }
         }

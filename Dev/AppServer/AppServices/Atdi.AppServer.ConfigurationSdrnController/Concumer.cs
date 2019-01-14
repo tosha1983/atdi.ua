@@ -208,6 +208,33 @@ namespace Atdi.AppServer.ConfigurationSdrnController
 
                         result = true;
                         break;
+
+                    case "SendMeasSdrTask":
+                        ClassesDBGetTasks clDBGetTasks = new ClassesDBGetTasks(logger);
+                        ClassConvertTasks tsConvertTasks = new ClassConvertTasks(logger);
+                        MessageObject dataSendMeasSdrTask = Concumer.UnPackObject(messageResponse);
+                        List<Atdi.AppServer.Contracts.Sdrns.MeasSdrTask> fnd_s = dataSendMeasSdrTask.Object as List<Atdi.AppServer.Contracts.Sdrns.MeasSdrTask>;
+                        if (fnd_s != null)
+                        {
+                            foreach (Atdi.AppServer.Contracts.Sdrns.MeasSdrTask h in fnd_s)
+                            {
+                                if (h.MeasTaskId != null)
+                                {
+                                    Atdi.AppServer.Contracts.Sdrns.MeasTask[] ResMeasTasks = tsConvertTasks.ConvertToShortMeasTasks(clDBGetTasks.ShortReadTask(h.MeasTaskId.Value));
+                                    if (ResMeasTasks != null)
+                                    {
+                                        Atdi.AppServer.Contracts.Sdrns.MeasTask tsk = ResMeasTasks.ToList().Find(t => t.Id.Value == h.MeasTaskId.Value);
+                                        if (tsk != null)
+                                        {
+                                            tsk.Status = h.status;
+                                            clDBGetTasks.SaveStatusTaskToDB(tsk);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        result = true;
+                        break;
                     case "SendMeasSdrResults":
                         SaveMeasSdrResults saveMeasSdrResults = new SaveMeasSdrResults();
                         saveMeasSdrResults.Handle(messageResponse, _logger);
@@ -287,10 +314,10 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         break;
 
                     case "SendActivitySensor":
-                         this._logger.Trace("Get activity sensor message");
-                         MessageObject dataSendActivitySensor = UnPackObject(messageResponse);
-                         var dataSendActivitySensorRecognize = dataSendActivitySensor.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
-                         CheckActivitySensor(dataSendActivitySensorRecognize, true, _logger);
+                        this._logger.Trace("Get activity sensor message");
+                        MessageObject dataSendActivitySensor = UnPackObject(messageResponse);
+                        var dataSendActivitySensorRecognize = dataSendActivitySensor.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
+                        CheckActivitySensor(dataSendActivitySensorRecognize, true, _logger);
                         result = true;
                         break;
                     case "UpdateSensorLocation":
@@ -299,6 +326,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         var dataSensor = dataSensorRecognize.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
                         ClassDBGetSensor DB = new ClassDBGetSensor(_logger);
                         DB.SaveLocationCoordSensor(dataSensor);
+                        PublishMessage<Atdi.AppServer.Contracts.Sdrns.Sensor>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "UpdateSensorLocationResult", channel, dataSensor, message.BasicProperties.CorrelationId);
                         ConfigurationRabbitOptions.listAllSensors = DB.LoadObjectAllSensor();
                         DB.Dispose();
                         result = true;
@@ -306,7 +334,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                     case "SendEntityPart":
                         MessageObject datapartEntityP = UnPackObject(messageResponse);
                         var datapartEntityPart = datapartEntityP.Object as Atdi.DataModels.Sdrns.Device.EntityPart;
-                        //var datapartEntityPart = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.EntityPart)) as Atdi.DataModels.Sdrns.Device.EntityPart;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntityPart = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
                         int? ID1 = DbGetResEntityPart.SaveEntityPart(datapartEntityPart);
                         if (ID1 > 0)
@@ -588,7 +615,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                                 }
                             }
 
-                            if (!isCheck) busManager.DeleteQueue(GlobalInit.Template_Event_CheckActivitySensor_Req + se.se.Name + se.se.Equipment.TechId);
                             if (!isCheck) se.Cnt_sensor_Old++;
                             if ((se.Cnt_sensor_New == 0) || (se.Cnt_sensor_Old > 2))
                             {

@@ -68,6 +68,115 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
     {
 
         /// <summary>
+        /// Загрузка результатов измерений изБД в память
+        /// </summary>
+        public List<MeasSdrResults> LoadActiveTaskSdrResults()
+        {
+            List<MeasSdrResults> listRes = new List<MeasSdrResults>();
+            try
+            {
+                SensorDBExtension sensorDBExtension = new SensorDBExtension();
+                if (Domain.sessionFactory == null) Domain.Init();
+                ISession session = Domain.CurrentSession;
+                {
+                    session.Clear();
+                    var s_l_NH_Meas_SDR_Results = session.QueryOver<NH_MeasSDRResults>().Fetch(x => x.ID).Eager;
+                    if (s_l_NH_Meas_SDR_Results.RowCount() > 0)
+                    {
+                        List<NH_MeasSDRResults> F_SDR_Results = (List<NH_MeasSDRResults>)s_l_NH_Meas_SDR_Results.Where(t => t.status == "C").List();
+                        if (F_SDR_Results.Count > 0)
+                        {
+                            Sensor se_ = sensorDBExtension.GetCurrentSensor();
+                            if (se_ != null)
+                            {
+                                foreach (NH_MeasSDRResults s in F_SDR_Results)
+                                {
+                                    MeasSdrResults SD = new MeasSdrResults();
+                                    SD.DataMeas = s.DataMeas.GetValueOrDefault();
+                                    SD.Id = s.ID.GetValueOrDefault();
+                                    MeasurementType out_MeasurementType;
+                                    if (Enum.TryParse<MeasurementType>(s.MeasDataType, out out_MeasurementType))
+                                        SD.MeasDataType = out_MeasurementType;
+
+                                    SD.MeasSubTaskId = new MeasTaskIdentifier();
+                                    SD.MeasSubTaskId.Value = s.MeasSubTaskId.GetValueOrDefault();
+                                    SD.MeasSubTaskStationId = s.MeasSubTaskStationId.GetValueOrDefault();
+                                    SD.MeasTaskId = new MeasTaskIdentifier();
+                                    SD.MeasTaskId.Value = s.MeasTaskId.GetValueOrDefault();
+                                    SD.NN = s.NN.GetValueOrDefault();
+                                    SD.SensorId = new SensorIdentifier();
+                                    SD.SensorId.Value = s.SensorId.GetValueOrDefault();
+                                    SD.status = s.status;
+                                    SD.SwNumber = s.SwNumber.GetValueOrDefault();
+                                    SD.FSemples = (new List<FSemples>()).ToArray();
+                                    List<FSemples> FSD = new List<FSemples>();
+                                    var s_l_NH_SDR_FSemples = session.QueryOver<NH_FSemples>().Fetch(x => x.ID).Eager;
+                                    if (s_l_NH_SDR_FSemples.RowCount() > 0)
+                                    {
+                                        List<NH_FSemples> F_SDR_So_Semples = (List<NH_FSemples>)s_l_NH_SDR_FSemples.Where(t => t.ID_MeasSDRResults == s.ID).List();
+                                        foreach (NH_FSemples s_sNH_FSemples in F_SDR_So_Semples)
+                                        {
+                                            FSemples smp = new FSemples();
+                                            if (s_sNH_FSemples.Freq != null) smp.Freq = (float)s_sNH_FSemples.Freq.GetValueOrDefault();
+                                            if (s_sNH_FSemples.LeveldBm != null) smp.LeveldBm = (float)s_sNH_FSemples.LeveldBm.GetValueOrDefault();
+                                            if (s_sNH_FSemples.LeveldBmkVm != null) smp.LeveldBmkVm = (float)s_sNH_FSemples.LeveldBmkVm.GetValueOrDefault();
+                                            if (s_sNH_FSemples.LevelMaxdBm != null) smp.LevelMaxdBm = (float)s_sNH_FSemples.LevelMaxdBm.GetValueOrDefault();
+                                            if (s_sNH_FSemples.LevelMindBm != null) smp.LevelMindBm = (float)s_sNH_FSemples.LevelMindBm.GetValueOrDefault();
+                                            if (s_sNH_FSemples.OcupationPt != null) smp.OcupationPt = (float)s_sNH_FSemples.OcupationPt.GetValueOrDefault();
+                                            FSD.Add(smp);
+                                        }
+                                    }
+                                    SD.FSemples = FSD.ToArray();
+                                    List<float> Levels = new List<float>();
+                                    var s_l_NH_MeasResultsLevel = session.QueryOver<NH_MeasResultsLevel>().Fetch(x => x.ID).Eager;
+                                    if (s_l_NH_MeasResultsLevel.RowCount() > 0)
+                                    {
+                                        List<NH_MeasResultsLevel> F_SDR_So_Level = (List<NH_MeasResultsLevel>)s_l_NH_MeasResultsLevel.Where(t => t.ID_NH_MeasSDRResults == s.ID).List();
+                                        foreach (NH_MeasResultsLevel s_sNH_FSemples in F_SDR_So_Level)
+                                        {
+                                            Levels.Add((float)s_sNH_FSemples.Level.GetValueOrDefault());
+                                        }
+                                    }
+                                    SD.Level = Levels.ToArray();
+
+                                    List<float> Freqs = new List<float>();
+                                    var s_l_NH_MeasResultsFreqs = session.QueryOver<NH_MeasResultsFreq>().Fetch(x => x.ID).Eager;
+                                    if (s_l_NH_MeasResultsFreqs.RowCount() > 0)
+                                    {
+                                        List<NH_MeasResultsFreq> F_SDR_So_Freqs = (List<NH_MeasResultsFreq>)s_l_NH_MeasResultsFreqs.Where(t => t.ID_NH_MeasSDRResults == s.ID).List();
+                                        foreach (NH_MeasResultsFreq s_sNH_FSemples in F_SDR_So_Freqs)
+                                        {
+                                            Freqs.Add((float)s_sNH_FSemples.Freq.GetValueOrDefault());
+                                        }
+                                    }
+                                    SD.Freqs = Freqs.ToArray();
+                                    SD.MeasSDRLoc = new LocationSensorMeasurement();
+                                    var s_l_NH_MeasSDRLoc = session.QueryOver<NH_LocationSensor>().Fetch(x => x.ID).Eager;
+                                    if (s_l_NH_MeasSDRLoc.RowCount() > 0)
+                                    {
+                                        List<NH_LocationSensor> F_SDR_MeasSDRLo = (List<NH_LocationSensor>)s_l_NH_MeasSDRLoc.Where(t => t.ID_MeasSDRResults == s.ID).List();
+                                        foreach (NH_LocationSensor s_sNH_FMeasSDRLo in F_SDR_MeasSDRLo)
+                                        {
+                                            if (s_sNH_FMeasSDRLo.ASL != null) SD.MeasSDRLoc.ASL = (float)s_sNH_FMeasSDRLo.ASL.GetValueOrDefault();
+                                            if (s_sNH_FMeasSDRLo.Lat != null) SD.MeasSDRLoc.Lat = (float)s_sNH_FMeasSDRLo.Lat.GetValueOrDefault();
+                                            if (s_sNH_FMeasSDRLo.Lon != null) SD.MeasSDRLoc.Lon = (float)s_sNH_FMeasSDRLo.Lon.GetValueOrDefault();
+                                        }
+                                    }
+                                    listRes.Add(SD);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.LoadActiveTaskSdrResults, Events.LoadActiveTaskSdrResults, ex.Message, null);
+            }
+            return listRes;
+        }
+
+        /// <summary>
         /// Основной цикл обработки тасков
         /// </summary>
         public void ProcessBB60C()
@@ -161,20 +270,26 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                                     }
                                 }
 
-                                if (M_DR == null) continue;
+                                if (M_DR == null)
+                                {
+                                    continue;
+                                }
                                 if (M_DR.MeasTaskId != null)
                                 {
                                     if ((M_DR.Time_start < DateTime.Now) && (M_DR.Time_stop > DateTime.Now))
                                     {
+                                        //int NN_max = 1;
                                         MeasSdrResults Res_H = Res_History.Find(t => t.MeasSubTaskId.Value == M_DR.MeasSubTaskId.Value && t.MeasSubTaskStationId == M_DR.MeasSubTaskStationId && t.MeasTaskId.Value == M_DR.MeasTaskId.Value && t.SensorId.Value == M_DR.SensorId.Value);
                                         if (Res_H != null)
                                         {
-                                            System.Console.WriteLine(string.Format("Res_H.TaskId = {0}, Res_H.NN = {1}", Res_H.MeasTaskId.Value, Res_H.NN));
                                             CirculatingData circulatingData = new CirculatingData();
                                             Res = MeasProcessing.TaskProcessing(BusManager.SDR, M_DR, se_, ref circulatingData, Res_H) as MeasSdrResults;
+                                            System.Console.WriteLine(string.Format("Res_H.TaskId = {0}, Res_H.NN = {1}", Res_H.MeasTaskId.Value, Res_H.NN));
                                             Res_History.RemoveAll(t => t.MeasSubTaskId.Value == M_DR.MeasSubTaskId.Value && t.MeasSubTaskStationId == M_DR.MeasSubTaskStationId && t.MeasTaskId.Value == M_DR.MeasTaskId.Value && t.SensorId.Value == M_DR.SensorId.Value);
                                             if (Res.MeasSubTaskId != null)
+                                            {
                                                 Res_History.Add(Res);
+                                            }
                                         }
                                         else
                                         {
@@ -193,9 +308,16 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                                             int maxValue = sv_SdrRes.GetMaxIdFromResults();
                                             if (maxValue >= 0)
                                             {
-                                                idx_max++;
+                                                idx_max = maxValue == 0 ? 1 : maxValue+1;
                                             }
                                             Res.Id = idx_max;
+                                            //int NN_max = 1;
+                                            //int maxNNValue = sv_SdrRes.GetMaxNNFromResults(M_DR.MeasSubTaskId.Value, M_DR.MeasSubTaskStationId, M_DR.MeasTaskId.Value, M_DR.SensorId.Value);
+                                            //if (maxNNValue >= 0)
+                                            //{
+                                                //NN_max = maxNNValue == 0 ? 1 : maxNNValue + 1;
+                                            //}
+                                            //Res.NN = NN_max;
                                             if (Res.FSemples != null)
                                             {
                                                 if (Res.FSemples.Count() > 0)
@@ -253,29 +375,30 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                                             {
                                                 sv_SdrRes.SaveMeasResultSDR(Res, "C");
                                             }
-                                            
+
                                             var ResDX = FindMeasTaskSDR(Res.SensorId.Value, Res.MeasTaskId.Value, Res.MeasSubTaskStationId, Res.MeasSubTaskId.Value);
-                                            if ((ResDX != null) && (ResDX.Count>0))
+                                            if ((ResDX != null) && (ResDX.Count > 0))
                                             {
                                                 ResDX[0].status = Res.status;
                                                 SaveMeasSDRResults.SaveStatusMeasTaskSDR(ResDX[0]);
                                             }
                                         }
                                     }
-                                    if (M_DR != null)
-                                    {
-                                        if (M_DR.MeasSubTaskId != null)
-                                        {
-                                            SaveMeasSDRResults.SaveStatusMeasTaskSDR(M_DR);
-                                        }
-                                    }
-
-
+                                    //if (M_DR != null)
+                                    //{
+                                    //if (M_DR.MeasSubTaskId != null)
+                                    //{
+                                    //SaveMeasSDRResults.SaveStatusMeasTaskSDR(M_DR);
+                                    //}
+                                    //}
+                                    System.Threading.Thread.Yield();
                                 }
                             }
                         }
                         catch (Exception ex)
-                        { /*GlobalInit.log.Trace("Error in ProcessWorkBB60C: " + ex.Message); */ }
+                        {
+                            BusManager._logger.Error(Contexts.ThisComponent, Categories.ProcessMeasurements, Events.ProcessMeasurements, ex.Message, null);
+                        }
                     }
                 });
                 Task task_swwsb = new Task(task_ssb);
@@ -424,7 +547,9 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in ProcessMultyMeas: " + ex.Message);*/ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.FindMeasTaskSDR, Events.FindMeasTaskSDR, ex.Message, null);
+            }
             return listMeasSdrTask;
         }
 
@@ -443,7 +568,7 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                         var s_l_NH_Meas_Task_SDR = session.QueryOver<NH_MeasTaskSDR>().Fetch(x => x.ID).Eager;
                         if (s_l_NH_Meas_Task_SDR.RowCount() > 0)
                         {
-                            List<NH_MeasTaskSDR> F = (List<NH_MeasTaskSDR>)s_l_NH_Meas_Task_SDR.Where(t => t.status!="Z" && t.status != "F" && t.status != "P").List();
+                            List<NH_MeasTaskSDR> F = (List<NH_MeasTaskSDR>)s_l_NH_Meas_Task_SDR.Where(t => t.status != "Z" && t.status != "F" && t.status != "P").List();
                             foreach (NH_MeasTaskSDR s in F)
                             {
                                 MeasSdrTask M_DR = new MeasSdrTask();
@@ -568,164 +693,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in ProcessMultyMeas: " + ex.Message);*/ }
-            return listMeasSdrTask;
-        }
-
-
-        /// <summary>
-        ///Получить список всех тасков в БД 
-        /// </summary>
-        /// <param name="CountMeasTask">Количество тасков в БД</param>
-        /// <param name="OnlyGetCount">Признак, который указаывает режим работы метода, если  OnlyGetCount = false - то объекты в памяти могут обновляться, OnlyGetCount = true - то объекты в памяти обновляться не могут </param>
-        /// <returns></returns>
-        public bool LoadMeasTaskSDR(out int CountMeasTask, bool OnlyGetCount = false)
-        {
-            CountMeasTask = 0;
-            bool isSuccess = false;
-            try
             {
-                if (Domain.sessionFactory == null) Domain.Init();
-                ISession session = Domain.CurrentSession;
-                {
-                    #region NH_Meas_Task_SDR
-                    {
-                        session.Clear();
-                        var s_l_NH_Meas_Task_SDR = session.QueryOver<NH_MeasTaskSDR>().Fetch(x => x.ID).Eager;
-                        if (s_l_NH_Meas_Task_SDR.RowCount() > 0)
-                        {
-                            // Проверка по статусам A,E_L,E_B,O
-                            List<NH_MeasTaskSDR> F = (List<NH_MeasTaskSDR>)s_l_NH_Meas_Task_SDR.Where(t => t.status != "Z").List();//.OrderBy(u=>u.TypeM);
-                            foreach (NH_MeasTaskSDR s in F)
-                            {
-                                ///Предварительная проверка перед постановкой задачи устройству
-
-
-
-                                MeasSdrTask M_DR = new MeasSdrTask();
-
-                                M_DR.MeasTaskId = new MeasTaskIdentifier();
-                                if (s.MeasTaskId != null) M_DR.MeasTaskId.Value = s.MeasTaskId.GetValueOrDefault();
-                                M_DR.MeasSubTaskId = new MeasTaskIdentifier();
-                                if (s.MeasSubTaskId != null) M_DR.MeasSubTaskId.Value = s.MeasSubTaskId.GetValueOrDefault();
-                                if (s.ID != null) M_DR.Id = s.ID.GetValueOrDefault();
-                                if (s.MeasSubTaskStationId != null) M_DR.MeasSubTaskStationId = s.MeasSubTaskStationId.GetValueOrDefault();
-                                MeasurementType out_MeasurementType;
-                                if (Enum.TryParse<MeasurementType>(s.MeasDataType, out out_MeasurementType))
-                                    M_DR.MeasDataType = out_MeasurementType;
-                                M_DR.status = s.status;
-                                M_DR.SensorId = new SensorIdentifier();
-                                if (s.SensorId != null) M_DR.SensorId.Value = s.SensorId.GetValueOrDefault();
-                                if (s.SwNumber != null) M_DR.SwNumber = s.SwNumber.GetValueOrDefault();
-                                if (s.Time_start != null) M_DR.Time_start = s.Time_start.GetValueOrDefault();
-                                if (s.Time_stop != null) M_DR.Time_stop = s.Time_stop.GetValueOrDefault();
-                                M_DR.NumberScanPerTask = -999;
-                                if (s.PerInterval != null) M_DR.PerInterval = s.PerInterval.GetValueOrDefault();
-
-                                SpectrumScanType out_SpectrumScanType;
-                                if (Enum.TryParse<SpectrumScanType>(s.TypeM, out out_SpectrumScanType))
-                                    M_DR.TypeM = out_SpectrumScanType;
-
-
-                                M_DR.MeasSDRSOParam = new MeasSdrSOParam();
-                                var s_l_NH_SDR_So_Param = session.QueryOver<NH_MeasSDRSOParam>().Fetch(x => x.ID).Eager;
-                                if (s_l_NH_SDR_So_Param.RowCount() > 0)
-                                {
-                                    List<NH_MeasSDRSOParam> F_SDR_So_Param = (List<NH_MeasSDRSOParam>)s_l_NH_SDR_So_Param.Where(t => t.ID_MeasTaskSDR == s.ID).List();
-                                    foreach (NH_MeasSDRSOParam s_so_param in F_SDR_So_Param)
-                                    {
-                                        if (s_so_param.LevelMinOccup != null) M_DR.MeasSDRSOParam.LevelMinOccup = s_so_param.LevelMinOccup.GetValueOrDefault();
-                                        if (s_so_param.NChenal != null) M_DR.MeasSDRSOParam.NChenal = s_so_param.NChenal.GetValueOrDefault();
-
-                                        SpectrumOccupationType out_SpectrumOccupationType;
-                                        if (Enum.TryParse<SpectrumOccupationType>(s_so_param.TypeSO, out out_SpectrumOccupationType))
-                                            M_DR.MeasSDRSOParam.TypeSO = out_SpectrumOccupationType;
-                                        break;
-                                    }
-                                }
-                                //--------------------------------------------------
-                                M_DR.MeasSDRParam = new MeasSdrParam();
-                                var s_l_NH_MEAS_SDR_PARAM = session.QueryOver<NH_MeasSDRParam>().Fetch(x => x.ID).Eager;
-                                if (s_l_NH_MEAS_SDR_PARAM.RowCount() > 0)
-                                {
-                                    List<NH_MeasSDRParam> F_SDR_Sdr_Param = (List<NH_MeasSDRParam>)s_l_NH_MEAS_SDR_PARAM.Where(t => t.ID_MeasTaskSDR == s.ID).List();
-                                    foreach (NH_MeasSDRParam s_sdr_param in F_SDR_Sdr_Param)
-                                    {
-                                        DetectingType out_DetectingType;
-                                        if (Enum.TryParse<DetectingType>(s_sdr_param.DetectTypeSDR, out out_DetectingType))
-                                            M_DR.MeasSDRParam.DetectTypeSDR = out_DetectingType;
-
-                                        //M_DR.MeasSDRParam. ID = s_sdr_param.ID.GetValueOrDefault();
-                                        if (s_sdr_param.PreamplificationSDR != null) M_DR.MeasSDRParam.PreamplificationSDR = s_sdr_param.PreamplificationSDR.GetValueOrDefault();
-                                        if (s_sdr_param.VBW != null) M_DR.MeasSDRParam.VBW = s_sdr_param.VBW.GetValueOrDefault();
-                                        if (s_sdr_param.RBW != null) M_DR.MeasSDRParam.RBW = s_sdr_param.RBW.GetValueOrDefault();
-                                        if (s_sdr_param.ref_level_dbm != null) M_DR.MeasSDRParam.ref_level_dbm = s_sdr_param.ref_level_dbm.GetValueOrDefault();
-                                        if (s_sdr_param.RfAttenuationSDR != null) M_DR.MeasSDRParam.RfAttenuationSDR = s_sdr_param.RfAttenuationSDR.GetValueOrDefault();
-                                        if (s_sdr_param.MeasTime != null) M_DR.MeasSDRParam.MeasTime = s_sdr_param.MeasTime.GetValueOrDefault();
-                                        break;
-                                    }
-                                }
-                                //--------------------------------------------------
-                                List<MeasLocParam> LMSZ = new List<MeasLocParam>();
-                                M_DR.MeasLocParam = (new List<MeasLocParam>()).ToArray();
-                                var s_l_NH_MEAS_SDR_LOC_PARAM = session.QueryOver<NH_MeasSDRLoc>().Fetch(x => x.ID).Eager;
-                                if (s_l_NH_MEAS_SDR_LOC_PARAM.RowCount() > 0)
-                                {
-                                    List<NH_MeasSDRLoc> F_SDR_Sdr_Loc_Param = (List<NH_MeasSDRLoc>)s_l_NH_MEAS_SDR_LOC_PARAM.Where(t => t.ID_MeasSDRID == s.ID).List();
-                                    foreach (NH_MeasSDRLoc s_sdr_loc_param in F_SDR_Sdr_Loc_Param)
-                                    {
-                                        MeasLocParam cr_sdr_loc = new MeasLocParam();
-                                        if (s_sdr_loc_param.ASL != null) cr_sdr_loc.ASL = s_sdr_loc_param.ASL.GetValueOrDefault();
-                                        if (s_sdr_loc_param.Lat != null) cr_sdr_loc.Lat = s_sdr_loc_param.Lat.GetValueOrDefault();
-                                        if (s_sdr_loc_param.Lon != null) cr_sdr_loc.Lon = s_sdr_loc_param.Lon.GetValueOrDefault();
-                                        //cr_sdr_loc.MAX_DIST = s_sdr_loc_param.MAX_DIST.GetValueOrDefault();
-                                        LMSZ.Add(cr_sdr_loc);
-                                    }
-                                }
-                                M_DR.MeasLocParam = LMSZ.ToArray();
-                                //--------------------------------------------------
-                                M_DR.MeasFreqParam = new MeasFreqParam();
-                                var s_l_NH_MEAS_SDR_FREQ_PARAM = session.QueryOver<NH_MeasSDRFreqParam>().Fetch(x => x.ID).Eager;
-                                if (s_l_NH_MEAS_SDR_FREQ_PARAM.RowCount() > 0)
-                                {
-                                    List<NH_MeasSDRFreqParam> F_SDR_MEAS_SDR_FREQ_PARAM = (List<NH_MeasSDRFreqParam>)s_l_NH_MEAS_SDR_FREQ_PARAM.Where(t => t.id_meas_task_sdr == s.ID).List();
-                                    foreach (NH_MeasSDRFreqParam s_sdr_freq_param in F_SDR_MEAS_SDR_FREQ_PARAM)
-                                    {
-                                        //M_DR.MeasFreqParam.BW_CH = s_sdr_freq_param.BW_CH.GetValueOrDefault();
-                                        if (s_sdr_freq_param.RgU != null) M_DR.MeasFreqParam.RgU = s_sdr_freq_param.RgU.GetValueOrDefault();
-                                        if (s_sdr_freq_param.RgL != null) M_DR.MeasFreqParam.RgL = s_sdr_freq_param.RgL.GetValueOrDefault();
-                                        if (s_sdr_freq_param.Step != null) M_DR.MeasFreqParam.Step = s_sdr_freq_param.Step.GetValueOrDefault();
-                                        FrequencyMode out_FrequencyMode;
-                                        if (Enum.TryParse<FrequencyMode>(s_sdr_freq_param.Mode, out out_FrequencyMode))
-                                            M_DR.MeasFreqParam.Mode = out_FrequencyMode;
-
-                                        List<MeasFreq> FRL = new List<MeasFreq>();
-                                        var s_l_NH_MEAS_FREQ_LST = session.QueryOver<NH_MeasSDRFreq>().Fetch(x => x.ID).Eager;
-                                        if (s_l_NH_MEAS_FREQ_LST.RowCount() > 0)
-                                        {
-                                            List<NH_MeasSDRFreq> F_SDR_MEAS_FREQ_LST = (List<NH_MeasSDRFreq>)s_l_NH_MEAS_FREQ_LST.Where(t => t.ID_MeasSDRFreqParam == s_sdr_freq_param.ID).List();
-                                            foreach (NH_MeasSDRFreq s_sdr_freq_lst in F_SDR_MEAS_FREQ_LST)
-                                            {
-                                                MeasFreq FR_L = new MeasFreq();
-                                                if (s_sdr_freq_lst.Freq != null) FR_L.Freq = s_sdr_freq_lst.Freq.GetValueOrDefault();
-                                                FRL.Add(FR_L);
-                                            }
-                                        }
-                                        M_DR.MeasFreqParam.MeasFreqs = FRL.ToArray();
-                                        break;
-                                    }
-                                }
-                                CountMeasTask++;
-                                isSuccess = true;
-                            }
-                            #endregion
-                        }
-                    }
-                }
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.GetAllMeasTaskSDR, Events.GetAllMeasTaskSDR, ex.Message, null);
             }
-            catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in ProcessMultyMeas: " + ex.Message); */ isSuccess = false; }
-            return isSuccess;
+            return listMeasSdrTask;
         }
     }
     /// <summary>
@@ -747,8 +718,49 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in GetMaxIdFromResults: " + ex.Message); */ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.GetMaxIdFromResults, Events.GetMaxIdFromResults, ex.Message, null);
+            }
             return maxId;
+        }
+
+        public int GetMaxNNFromResults(int MeasSubTaskId, int MeasSubTaskStationId, int MeasTaskId, int SensorId)
+        {
+            int maxNN = 0;
+            try
+            {
+                if (Domain.sessionFactory == null) Domain.Init();
+                ISession session = Domain.CurrentSession;
+                {
+                    session.Clear();
+                    var s_l_NH_MeasSDRResults = session.QueryOver<NH_MeasSDRResults>().Fetch(x=>x.ID).Eager;
+                    if (s_l_NH_MeasSDRResults.RowCount() > 0)
+                    {
+                        List<NH_MeasSDRResults> F = (List<NH_MeasSDRResults>)s_l_NH_MeasSDRResults.Where(x => x.MeasSubTaskId == MeasSubTaskId && x.MeasSubTaskStationId == MeasSubTaskStationId && x.MeasTaskId == MeasTaskId && x.SensorId == SensorId).List();
+                        if (F != null)
+                        {
+                            List<int> maxValues = new List<int>();
+                            foreach (NH_MeasSDRResults s in F)
+                            {
+                                maxValues.Add(s.NN.Value);
+                            }
+                            maxValues.Sort();
+                            maxValues.Reverse();
+                            if (maxValues.Count>0)
+                            {
+                                maxNN = maxValues[0];
+                            }
+                        }
+                    }
+                    //var max = session.QueryOver<NH_MeasSDRResults>().Where(x=>x.MeasSubTaskId== MeasSubTaskId && x.MeasSubTaskStationId== MeasSubTaskStationId && x.MeasTaskId == MeasTaskId && x.SensorId == SensorId).Select(Projections.Max<NH_MeasSDRResults>(x => x.NN)).SingleOrDefault<object>();
+                    //maxNN = (max == null ? 0 : Convert.ToInt32(max));
+                }
+            }
+            catch (Exception ex)
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.GetMaxIdFromResults, Events.GetMaxIdFromResults, ex.Message, null);
+            }
+            return maxNN;
         }
 
         public DateTime? LoadDataMeasByTaskId(int TaskId)
@@ -774,7 +786,9 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in LoadDataMeasByTaskId: " + ex.Message);*/ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.LoadDataMeasByTaskId, Events.LoadDataMeasByTaskId, ex.Message, null);
+            }
             return DataMeas;
         }
 
@@ -807,7 +821,9 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in Save_Status_Meas_Task_SDRResults: " + ex.Message);*/ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.SaveisSendMeasTaskSDRResults, Events.SaveisSendMeasTaskSDRResults, ex.Message, null);
+            }
             return isSuccess;
         }
 
@@ -838,7 +854,9 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
             }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in SaveStatusMeasTaskSDRResults: " + ex.Message);*/ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.SaveStatusMeasTaskSDRResults, Events.SaveStatusMeasTaskSDRResults, ex.Message, null);
+            }
             return isSuccess;
         }
 
@@ -852,7 +870,6 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 session.Clear();
                 var s_l_NH_Meas_Task_SDR = session.QueryOver<NH_MeasTaskSDR>().Fetch(x => x.ID).Eager;
                 if (s_l_NH_Meas_Task_SDR.RowCount() > 0) {
-                    //sdrM.UpdateStatus();
                     List<NH_MeasTaskSDR> F = (List<NH_MeasTaskSDR>)s_l_NH_Meas_Task_SDR.Where(t => t.SensorId.Value == sdrM.SensorId.Value && t.MeasTaskId.Value == sdrM.MeasTaskId.Value && t.MeasSubTaskStationId == sdrM.MeasSubTaskStationId && t.MeasSubTaskId.Value == sdrM.MeasSubTaskId.Value).List();
                     if (F != null) {
                         ITransaction tr_1 = session.BeginTransaction();
@@ -860,7 +877,6 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                             ClassObjectsSensorOnSDR cl = new ClassObjectsSensorOnSDR();
                             s.status = sdrM.status;
                             cl.UpdateObject<NH_MeasTaskSDR>(s.ID.GetValueOrDefault(), s);
-                            //break;
                         }
                         tr_1.Commit();
                         session.Flush();
@@ -871,13 +887,15 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
             }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in Save_Status_Meas_Task_SDR: " + ex.Message);*/ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.SaveStatusMeasTaskSDR, Events.SaveStatusMeasTaskSDR, ex.Message, null);
+            }
             return isCorrect;
         }
 
 
 
-        public static void Save_Status_Meas_Task_SDR(NH_MeasTaskSDR nh_Task_SDR, string newStatus)
+        public static void SaveStatusMeasTaskSDR(NH_MeasTaskSDR nh_Task_SDR, string newStatus)
         {
             try
             {
@@ -895,7 +913,9 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in Save_Status_Meas_Task_SDR: " + ex.Message);*/ }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.SaveStatusMeasTaskSDR, Events.SaveStatusMeasTaskSDR, ex.Message, null);
+            }
         }
 
         /// <summary>
@@ -916,8 +936,6 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                     var s_l_NH_Meas_Task_SDR = session.QueryOver<NH_MeasSDRResults>().Fetch(x => x.ID).Eager;
                     if (s_l_NH_Meas_Task_SDR.RowCount() > 0)
                     {
-                        //sdrM.UpdateStatus();
-                        //List<NH_MeasSDRResults> F = (List<NH_MeasSDRResults>)s_l_NH_Meas_Task_SDR.Where(t => t.SensorId.Value == M_SDR_RES.SensorId.Value && t.MeasTaskId.Value == M_SDR_RES.MeasTaskId.Value && t.MeasSubTaskStationId == M_SDR_RES.MeasSubTaskStationId && t.MeasSubTaskId.Value == M_SDR_RES.MeasSubTaskId.Value).List();
                         List<NH_MeasSDRResults> F = (List<NH_MeasSDRResults>)s_l_NH_Meas_Task_SDR.Where(t => t.ID == M_SDR_RES.Id).List();
                         if (F != null)
                         {
@@ -928,7 +946,6 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                                 s.status = Status;
                                 cl.UpdateObject<NH_MeasSDRResults>(s.ID.GetValueOrDefault(), s);
                                 Console.WriteLine("Successfully saved into table - NH_MeasSDRResults");
-                                //break;
                             }
                             tr_1.Commit();
                             session.Flush();
@@ -939,7 +956,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in SaveStatusResultSDR: " + ex.Message);*/ isCorrect = false; }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.SaveStatusResultSDR, Events.SaveStatusResultSDR, ex.Message, null);
+                isCorrect = false;
+            }
             return isCorrect;
         }
 
@@ -962,7 +982,7 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                     NH_MeasSDRResults nh_Meas_SDR_Results = new NH_MeasSDRResults();
                     nh_Meas_SDR_Results.NN = M_SDR_RES.NN;
                     nh_Meas_SDR_Results.DataMeas = M_SDR_RES.DataMeas;
-                    if (M_SDR_RES.MeasDataType != null) nh_Meas_SDR_Results.MeasDataType = M_SDR_RES.MeasDataType.ToString();
+                    nh_Meas_SDR_Results.MeasDataType = M_SDR_RES.MeasDataType.ToString();
                     if (M_SDR_RES.MeasSubTaskId != null) nh_Meas_SDR_Results.MeasSubTaskId = M_SDR_RES.MeasSubTaskId.Value;
                     nh_Meas_SDR_Results.MeasSubTaskStationId = M_SDR_RES.MeasSubTaskStationId;
                     if (M_SDR_RES.SensorId != null) nh_Meas_SDR_Results.SensorId = M_SDR_RES.SensorId.Value;
@@ -977,9 +997,6 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                     if (M_SDR_RES.FSemples != null) {
                         int idx_cnt = 0;
                         foreach (FSemples f_s in M_SDR_RES.FSemples) {
-                            //if (M_SDR_RES.MeasDataType == MeasurementType.SpectrumOccupation) {
-                                //if (idx_cnt != M_SDR_RES.FSemples.Count() - 1) continue;
-                            //}
                                 if (f_s.Freq != 0) {
                                 NH_FSemples nh_F_SEMPLES = new NH_FSemples();
                                 nh_F_SEMPLES.Freq = f_s.Freq;
@@ -1010,9 +1027,6 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                     {
                         int idx_cnt = 0;
                         foreach (float f_s in M_SDR_RES.Freqs) {
-                            //if (M_SDR_RES.MeasDataType == MeasurementType.SpectrumOccupation) {
-                                //if (idx_cnt != M_SDR_RES.Freqs.Count() - 1) continue;
-                            //}
                             NH_MeasResultsFreq NH_NH_MeasResultsFreq = new NH_MeasResultsFreq();
                                 NH_NH_MeasResultsFreq.Freq = f_s;
                                 NH_NH_MeasResultsFreq.ID_NH_MeasSDRResults = Convert.ToInt32(ID);
@@ -1042,7 +1056,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in SaveMeasResultSDR: " + ex.Message);*/ isCorrect = false; }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.SaveMeasResultSDR, Events.SaveMeasResultSDR, ex.Message, null);
+                isCorrect = false;
+            }
             return isCorrect;
         }
 
@@ -1233,7 +1250,8 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
 
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in CreateNewMeasTaskSDR: " + ex.Message);*/
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.CreateNewMeasTaskSDR, Events.CreateNewMeasTaskSDR, ex.Message, null);
             }
             return isCorrect;
         }
@@ -1271,7 +1289,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in DeleteMeasTaskSDR: " + ex.Message); */  isCorrect = false;}
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.DeleteMeasTaskSDR, Events.DeleteMeasTaskSDR, ex.Message, null);
+                isCorrect = false;
+            }
             
             return isCorrect;
         }
@@ -1309,7 +1330,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                 }
             }
             catch (Exception ex)
-            { /*GlobalInit.log.Trace("Error in ArchiveMeasTaskSDR: " + ex.Message); */ isCorrect = false; }
+            {
+                BusManager._logger.Error(Contexts.ThisComponent, Categories.ArchiveMeasTaskSDR, Events.ArchiveMeasTaskSDR, ex.Message, null);
+                isCorrect = false;
+            }
             return isCorrect;
         }
     }

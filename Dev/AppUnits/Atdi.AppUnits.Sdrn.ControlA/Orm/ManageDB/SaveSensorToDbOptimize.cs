@@ -218,7 +218,7 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                     }
                 }
             }
-            catch (Exception ex) { tr_1.Rollback(); }
+            catch (Exception) { tr_1.Rollback(); }
             tr_1.Dispose();
             return s_l_loc_;
         }
