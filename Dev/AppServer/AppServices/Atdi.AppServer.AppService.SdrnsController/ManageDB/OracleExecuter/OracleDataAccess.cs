@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System.Data.Common;
 
 
@@ -60,13 +60,10 @@ namespace Atdi.Oracle.DataAccess
             catch (Exception e)
             {
                 isSucess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
-                    {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
-                    }
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
                 }
                 System.Console.WriteLine(e.ToString());
             }
@@ -78,7 +75,7 @@ namespace Atdi.Oracle.DataAccess
             DbConnection newConnection = null;
             try
             {
-                        DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+                        DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.ManagedDataAccess.Client");
                         newConnection = factory.CreateConnection();
                         newConnection.ConnectionString = connectionStringValue;
                         newConnection.Open();
@@ -102,9 +99,17 @@ namespace Atdi.Oracle.DataAccess
             int? ID = null;
             System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
-            try
-            {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                try
+                {
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+
                     if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -151,20 +156,22 @@ namespace Atdi.Oracle.DataAccess
                                 System.Console.WriteLine("Error value: " + o);
                             }
                         }
+                        command.Dispose();
                     }
-            }
-            catch (Exception e)
-            {
-                    if (e is OracleException)
+                }
+                catch (Exception e)
+                {
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                           ID = InsertRecord(OraParametr, TableName, dbConnection, dbTransaction);
                         }
                     }
-                    System.Console.WriteLine("Neither record was written to database: "+e.ToString());
-            }
+                    System.Console.WriteLine("Neither record was written to database: " + e.ToString());
+                }
             });
             tsk.Start();
             tsk.Join();
@@ -184,7 +191,15 @@ namespace Atdi.Oracle.DataAccess
             {
                 try
                 {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+
                     if (((dbConnection!=null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -210,12 +225,13 @@ namespace Atdi.Oracle.DataAccess
                 }
                 catch (Exception e)
                 {
-                    if (e is OracleException)
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            ID_VALUE = UpdateRecord(OraParametr, TableName, ID, dbConnection, dbTransaction);
                         }
                     }
                     System.Console.WriteLine(e.ToString());
@@ -241,7 +257,15 @@ namespace Atdi.Oracle.DataAccess
             {
                 try
                 {
-                    if (connection == null) connection = NewConnection(GetConnectionString());
+                    if (connection == null)
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+                    else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                    {
+                        connection = NewConnection(GetConnectionString());
+                    }
+
                     if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                     {
                         DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -266,12 +290,13 @@ namespace Atdi.Oracle.DataAccess
                 }
                 catch (Exception e)
                 {
-                    if (e is OracleException)
+                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                     {
-                        if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                        connection.Close();
+                        connection = NewConnection(GetConnectionString());
+                        if ((connection != null) && (connection.State == ConnectionState.Open))
                         {
-                            CloseConnection();
-                            OpenConnection(GetConnectionString());
+                            isSuccess = UpdateRecord(OraParametr, TableName, sql, dbConnection, dbTransaction);
                         }
                     }
                     System.Console.WriteLine(e.ToString());
@@ -292,7 +317,16 @@ namespace Atdi.Oracle.DataAccess
             bool isSuccess = false;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
+
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
@@ -305,12 +339,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return DeleteRecord(TableName, ID, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -327,7 +362,15 @@ namespace Atdi.Oracle.DataAccess
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -350,12 +393,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetMaxId(TableName);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -368,7 +412,15 @@ namespace Atdi.Oracle.DataAccess
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -391,12 +443,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetMaxId(TableName, NameField);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -409,7 +462,15 @@ namespace Atdi.Oracle.DataAccess
             object value = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -420,12 +481,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValueFromField(FieldName, TableName,  ID);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -438,7 +500,15 @@ namespace Atdi.Oracle.DataAccess
             int? Id = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -461,12 +531,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetNextId(sequenceName);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -486,7 +557,15 @@ namespace Atdi.Oracle.DataAccess
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -514,12 +593,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValues(Columns, TableName, ID, OrderBy);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -533,7 +613,15 @@ namespace Atdi.Oracle.DataAccess
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -544,12 +632,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValuesSql(sql);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -570,7 +659,15 @@ namespace Atdi.Oracle.DataAccess
             DbDataReader reader = null;
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
+                if (connection == null)
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+                else if ((connection != null) && (connection.State == ConnectionState.Closed))
+                {
+                    connection = NewConnection(GetConnectionString());
+                }
+
                 if (connection.State == ConnectionState.Open)
                 {
                     DbCommand command = connection.CreateCommand();
@@ -612,12 +709,13 @@ namespace Atdi.Oracle.DataAccess
             }
             catch (Exception e)
             {
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return GetValues(Columns, TableName, sql, OrderBy);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
@@ -631,49 +729,68 @@ namespace Atdi.Oracle.DataAccess
         /// <param name="TableName_Level1"></param>
         /// <param name="Cnt"></param>
         /// <returns></returns>
-        public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, int Cnt, DbConnection dbConnection, DbTransaction dbTransaction)
+        public bool InsertBulkRecords(List<OracleParameter[]> OraParametr_Level1, string TableName_Level1, int Cnt, DbConnection dbConnection, DbTransaction dbTransaction)
         {
             bool isSuccess = false;
-            const int CountInsertRecordInOneBlock = 800; 
+            const int CountInsertRecordInOneBlock = 800;
             int Temp_Count = 0;
             List<string> SQL_PART = new List<string>();
             string SQL = ""; string SQL_INSERT = "";
             string allSql = "";
             try
             {
-                if (connection == null) connection = NewConnection(GetConnectionString());
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
                     if (dbTransaction != null) command.Transaction = dbTransaction;
                     command.Parameters.Clear();
-                    foreach (OracleParameter p in OraParametr_Level1)
-                        command.Parameters.Add(p);
                     string AllColumns_level1 = ""; string AllValues_level1 = "";
                     List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
-                    for (int z = 1; z <= Cnt; z++)
+                    var allData = OraParametr_Level1.ToList();
+                    for (int z = 0; z < Cnt; z++)
                     {
+                        //command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
+                        //if (dbTransaction != null) command.Transaction = dbTransaction;
+                        //command.Parameters.Clear();
+
                         AllColumns_level1 = ""; AllValues_level1 = "";
-                        foreach (OracleParameter p in OraParametr_Level1.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
+                        var findData = allData[z]; //.FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\""));
+                        if (findData != null)
                         {
-                            if (p.OracleDbType != OracleDbType.Object)
-                                AllValues_level1 += p.ParameterName + ",";
-                            else
+                            for (int i = 0; i < findData.Length; i++)
                             {
-                                AllValues_level1 += p.Value.ToString() + ",";
-                                DelObj_Level1.Add(p);
+                                OracleParameter p = findData[i];
+                                command.Parameters.Add(p);
+
+                                if (p.OracleDbType != OracleDbType.Raw)
+                                    AllValues_level1 += p.ParameterName + ",";
+                                else
+                                {
+                                    AllValues_level1 += p.Value.ToString() + ",";
+                                    DelObj_Level1.Add(p);
+                                }
+
+                                AllColumns_level1 += p.SourceColumn + ",";
                             }
 
-                            AllColumns_level1 += p.SourceColumn + ",";
                         }
-                        while (DelObj_Level1.Count > 0)
+                        if (DelObj_Level1.Count > 0)
                         {
-                            command.Parameters.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                            DelObj_Level1.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
+                            while (DelObj_Level1.Count > 0)
+                            {
+                                command.Parameters.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
+                                DelObj_Level1.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
+                            }
                         }
+
                         if (AllValues_level1.Length > 0) AllValues_level1 = AllValues_level1.Remove(AllValues_level1.Length - 1, 1);
                         if (AllColumns_level1.Length > 0) AllColumns_level1 = AllColumns_level1.Remove(AllColumns_level1.Length - 1, 1);
-                        allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level1, AllColumns_level1, AllValues_level1) + Environment.NewLine;
+                        if ((AllValues_level1.Length > 0) && (AllColumns_level1.Length > 0))
+                        {
+                            allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level1, AllColumns_level1, AllValues_level1) + Environment.NewLine;
+                        }
+
+                        Temp_Count++;
 
                         if (Temp_Count == CountInsertRecordInOneBlock)
                         {
@@ -686,9 +803,10 @@ namespace Atdi.Oracle.DataAccess
                                 command.ExecuteNonQuery();
                                 allSql = "";
                                 Temp_Count = 0;
+                                command.Parameters.Clear();
+                                //command.Dispose();
                             }
                         }
-                        Temp_Count++;
                     }
                     if (allSql.Length > 0)
                     {
@@ -702,390 +820,28 @@ namespace Atdi.Oracle.DataAccess
                     isSuccess = true;
                     command.Dispose();
                 }
+
+                OraParametr_Level1.Clear();
+                OraParametr_Level1 = null;
             }
             catch (Exception e)
             {
                 isSuccess = false;
-                if (e is OracleException)
+                if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135) || ((e as OracleException).Number == 12537) || ((e as OracleException).Number == 12571))
                 {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
+                    connection.Close();
+                    connection = NewConnection(GetConnectionString());
+                    if ((connection != null) && (connection.State == ConnectionState.Open))
                     {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
+                        return InsertBulkRecords(OraParametr_Level1, TableName_Level1, Cnt, dbConnection, dbTransaction);
                     }
                 }
                 System.Console.WriteLine(e.ToString());
             }
             return true;
+
         }
 
-        public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, int Cnt1, List<OracleParameter> OraParametr_Level2, string TableName_Level2, int Cnt2, OracleParameter[] oracleParameterRefId, DbConnection dbConnection, DbTransaction dbTransaction)
-        {
-            bool isSuccess = false;
-            const int CountInsertRecordInOneBlock = 800;
-            int Temp_Count = 0;
-            List<string> SQL_PART = new List<string>();
-            string SQL = ""; string SQL_INSERT = "";
-            string allSql = "";//"INSERT ALL ";
-            try
-            {
-                if (connection == null) connection = NewConnection(GetConnectionString());
-                if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
-                {
-                    DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
-                    if (dbTransaction != null) command.Transaction = dbTransaction;
-                    command.Parameters.Clear();
-                    foreach (OracleParameter p in OraParametr_Level1)
-                        command.Parameters.Add(p);
-                    string AllColumns_level1 = ""; string AllValues_level1 = "";
-                    List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
-                    for (int z = 1; z <= Cnt1; z++)
-                    {
-                        AllColumns_level1 = ""; AllValues_level1 = "";
-                        foreach (OracleParameter p in OraParametr_Level1.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
-                        {
-                            if (p.OracleDbType != OracleDbType.Object)
-                                AllValues_level1 += p.ParameterName + ",";
-                            else
-                            {
-                                AllValues_level1 += p.Value.ToString() + ",";
-                                DelObj_Level1.Add(p);
-                            }
-
-                            AllColumns_level1 += p.SourceColumn + ",";
-                        }
-                        while (DelObj_Level1.Count > 0)
-                        {
-                            command.Parameters.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                            DelObj_Level1.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                        }
-                        if (AllValues_level1.Length > 0) AllValues_level1 = AllValues_level1.Remove(AllValues_level1.Length - 1, 1);
-                        if (AllColumns_level1.Length > 0) AllColumns_level1 = AllColumns_level1.Remove(AllColumns_level1.Length - 1, 1);
-                        allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level1, AllColumns_level1, AllValues_level1) + Environment.NewLine;
-
-                    }
-
-                    string AllColumns_level2 = ""; string AllValues_level2 = "";
-                    List<OracleParameter> DelObj_Level2 = new List<OracleParameter>();
-                    for (int z = 1; z <= Cnt2; z++)
-                    {
-                        AllColumns_level2 = ""; AllValues_level2 = "";
-                        foreach (OracleParameter p in OraParametr_Level2.ToList().FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\"")))
-                        {
-                            if (p.OracleDbType != OracleDbType.Object)
-                                AllValues_level2 += p.ParameterName + ",";
-                            else
-                            {
-                                AllValues_level2 += p.Value.ToString() + ",";
-                                DelObj_Level2.Add(p);
-                            }
-
-                            AllColumns_level2 += p.SourceColumn + ",";
-                        }
-                        while (DelObj_Level2.Count > 0)
-                        {
-                            command.Parameters.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
-                            DelObj_Level2.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
-                        }
-                        if (AllValues_level2.Length > 0) AllValues_level2 = AllValues_level2.Remove(AllValues_level2.Length - 1, 1);
-                        if (AllColumns_level2.Length > 0) AllColumns_level2 = AllColumns_level2.Remove(AllColumns_level2.Length - 1, 1);
-                        allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level2, AllColumns_level2, AllValues_level2) + Environment.NewLine;
-
-                    }
-                    if (allSql.Length > 0)
-                    {
-                        allSql += "SELECT 1 FROM DUAL" + Environment.NewLine;
-                        allSql += "COMMIT";
-                        allSql = allSql.Insert(0, "INSERT ALL" + Environment.NewLine);
-                    }
-                    command.CommandText = allSql;
-                    command.ExecuteNonQuery();
-                    isSuccess = true;
-                    command.Dispose();
-                }
-            }
-            catch (Exception e)
-            {
-                isSuccess = false;
-                if (e is OracleException)
-                {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
-                    {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
-                    }
-                }
-                System.Console.WriteLine(e.ToString());
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Batch insert process for two tables joined
-        /// </summary>
-        /// <param name="OraParametr_Level1"></param>
-        /// <param name="TableName_Level1"></param>
-        /// <param name="OraParametr_Level2"></param>
-        /// <param name="TableName_Level2"></param>
-        /// <returns></returns>
-        public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, List<OracleParameter> OraParametr_Level2_Const, List<OracleParameter[]> OraParametr_Level2_records, string TableName_Level2, DbConnection dbConnection, DbTransaction dbTransaction)
-        {
-            bool isSuccess = false;
-            string allSql = "INSERT ALL ";
-            try
-            {
-                if (connection == null) connection = NewConnection(GetConnectionString());
-                if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
-                {
-                    DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
-                    if (dbTransaction != null) command.Transaction = dbTransaction;
-                    command.Parameters.Clear();
-                    foreach (OracleParameter p in OraParametr_Level1)
-                        command.Parameters.Add(p);
-                    string AllColumns_level1 = ""; string AllValues_level1 = "";
-                    List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
-                    foreach (OracleParameter p in OraParametr_Level1)
-                    {
-                        if (p.OracleDbType != OracleDbType.Object)
-                            AllValues_level1 += p.ParameterName + ",";
-                        else
-                        {
-                            AllValues_level1 += p.Value.ToString() + ",";
-                            DelObj_Level1.Add(p);
-                        }
-
-                        AllColumns_level1 += p.SourceColumn + ",";
-                    }
-                    while (DelObj_Level1.Count > 0)
-                    {
-                        command.Parameters.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                        DelObj_Level1.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                    }
-                    if (AllValues_level1.Length > 0) AllValues_level1 = AllValues_level1.Remove(AllValues_level1.Length - 1, 1);
-                    if (AllColumns_level1.Length > 0) AllColumns_level1 = AllColumns_level1.Remove(AllColumns_level1.Length - 1, 1);
-                    allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level1, AllColumns_level1, AllValues_level1);
-
-                    foreach (OracleParameter p in OraParametr_Level2_Const)
-                        command.Parameters.Add(p);
-
-                    string AllColumns_level2 = ""; string AllValues_level2 = "";
-                    List<OracleParameter> DelObj_Level2 = new List<OracleParameter>();
-                    foreach (OracleParameter p in OraParametr_Level2_Const)
-                    {
-                        if (p.OracleDbType != OracleDbType.Object)
-                            AllValues_level2 += p.ParameterName + ",";
-                        else
-                        {
-                            AllValues_level2 += p.Value.ToString() + ",";
-                            DelObj_Level2.Add(p);
-                        }
-
-                        AllColumns_level2 += p.SourceColumn + ",";
-                    }
-                    while (DelObj_Level2.Count > 0)
-                    {
-                        command.Parameters.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
-                        DelObj_Level2.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
-                    }
-
-                    foreach (OracleParameter[] p in OraParametr_Level2_records)
-                        command.Parameters.AddRange(p);
-
-                    foreach (OracleParameter[] p in OraParametr_Level2_records)
-                    {
-                        string AllValues_level2_records = AllValues_level2;
-                        string AllColumns_level2_records = AllColumns_level2;
-                        foreach (OracleParameter sp in p)
-                        {
-                            if (sp.OracleDbType != OracleDbType.Object)
-                            {
-                                AllValues_level2_records += sp.ParameterName + ",";
-                                AllColumns_level2_records += sp.SourceColumn + ",";
-                            }
-                        }
-
-                        if (AllValues_level2_records.Length > 0) AllValues_level2_records = AllValues_level2_records.Remove(AllValues_level2_records.Length - 1, 1);
-                        if (AllColumns_level2_records.Length > 0) AllColumns_level2_records = AllColumns_level2_records.Remove(AllColumns_level2_records.Length - 1, 1);
-                        allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level2, AllColumns_level2_records, AllValues_level2_records);
-                    }
-                    allSql += " SELECT * FROM dual";
-                    command.CommandText = allSql;
-                    command.ExecuteNonQuery();
-                    isSuccess = true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                isSuccess = false;
-                if (e is OracleException)
-                {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
-                    {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
-                    }
-                }
-                System.Console.WriteLine(e.ToString());
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Batch insert process for two tables joined
-        /// </summary>
-        /// <param name="OraParametr_Level1"></param>
-        /// <param name="TableName_Level1"></param>
-        /// <param name="OraParametr_Level2"></param>
-        /// <param name="TableName_Level2"></param>
-        /// <returns></returns>
-        public bool InsertBulkRecords(List<OracleParameter> OraParametr_Level1, string TableName_Level1, List<OracleParameter> OraParametr_Level2_Const, List<OracleParameter[]> OraParametr_Level2_records, string TableName_Level2, List<OracleParameter> OraParametr_Level3_Const, List<OracleParameter[]> OraParametr_Level3_records, string TableName_Level3, DbConnection dbConnection, DbTransaction dbTransaction)
-        {
-            bool isSuccess = false;
-            string allSql = "INSERT ALL ";
-            try
-            {
-                if (connection == null) connection = NewConnection(GetConnectionString());
-                if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
-                {
-                    DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
-                    if (dbTransaction != null) command.Transaction = dbTransaction;
-                    command.Parameters.Clear();
-                    foreach (OracleParameter p in OraParametr_Level1)
-                        command.Parameters.Add(p);
-                    string AllColumns_level1 = ""; string AllValues_level1 = "";
-                    List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
-                    foreach (OracleParameter p in OraParametr_Level1)
-                    {
-                        if (p.OracleDbType != OracleDbType.Object)
-                            AllValues_level1 += p.ParameterName + ",";
-                        else
-                        {
-                            AllValues_level1 += p.Value.ToString() + ",";
-                            DelObj_Level1.Add(p);
-                        }
-
-                        AllColumns_level1 += p.SourceColumn + ",";
-                    }
-                    while (DelObj_Level1.Count > 0)
-                    {
-                        command.Parameters.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                        DelObj_Level1.Remove(DelObj_Level1[DelObj_Level1.Count - 1]);
-                    }
-                    if (AllValues_level1.Length > 0) AllValues_level1 = AllValues_level1.Remove(AllValues_level1.Length - 1, 1);
-                    if (AllColumns_level1.Length > 0) AllColumns_level1 = AllColumns_level1.Remove(AllColumns_level1.Length - 1, 1);
-                    allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level1, AllColumns_level1, AllValues_level1);
-                    foreach (OracleParameter p in OraParametr_Level2_Const)
-                        command.Parameters.Add(p);
-
-                    string AllColumns_level2 = ""; string AllValues_level2 = "";
-                    List<OracleParameter> DelObj_Level2 = new List<OracleParameter>();
-                    foreach (OracleParameter p in OraParametr_Level2_Const)
-                    {
-                        if (p.OracleDbType != OracleDbType.Object)
-                            AllValues_level2 += p.ParameterName + ",";
-                        else
-                        {
-                            AllValues_level2 += p.Value.ToString() + ",";
-                            DelObj_Level2.Add(p);
-                        }
-
-                        AllColumns_level2 += p.SourceColumn + ",";
-                    }
-                    while (DelObj_Level2.Count > 0)
-                    {
-                        command.Parameters.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
-                        DelObj_Level2.Remove(DelObj_Level2[DelObj_Level2.Count - 1]);
-                    }
-
-                    foreach (OracleParameter[] p in OraParametr_Level2_records)
-                        command.Parameters.AddRange(p);
-
-                    foreach (OracleParameter[] p in OraParametr_Level2_records)
-                    {
-                        string AllValues_level2_records = AllValues_level2;
-                        string AllColumns_level2_records = AllColumns_level2;
-                        foreach (OracleParameter sp in p)
-                        {
-                            if (sp.OracleDbType != OracleDbType.Object)
-                            {
-                                AllValues_level2_records += sp.ParameterName + ",";
-                                AllColumns_level2_records += sp.SourceColumn + ",";
-                            }
-                        }
-
-                        if (AllValues_level2_records.Length > 0) AllValues_level2_records = AllValues_level2_records.Remove(AllValues_level2_records.Length - 1, 1);
-                        if (AllColumns_level2_records.Length > 0) AllColumns_level2_records = AllColumns_level2_records.Remove(AllColumns_level2_records.Length - 1, 1);
-                        allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level2, AllColumns_level2_records, AllValues_level2_records);
-                    }
-
-
-                    foreach (OracleParameter p in OraParametr_Level3_Const)
-                        command.Parameters.Add(p);
-
-                    string AllColumns_level3 = ""; string AllValues_level3 = "";
-                    List<OracleParameter> DelObj_Level3 = new List<OracleParameter>();
-                    foreach (OracleParameter p in OraParametr_Level3_Const)
-                    {
-                        if (p.OracleDbType != OracleDbType.Object)
-                            AllValues_level3 += p.ParameterName + ",";
-                        else
-                        {
-                            AllValues_level3 += p.Value.ToString() + ",";
-                            DelObj_Level3.Add(p);
-                        }
-
-                        AllColumns_level3 += p.SourceColumn + ",";
-                    }
-                    while (DelObj_Level3.Count > 0)
-                    {
-                        command.Parameters.Remove(DelObj_Level3[DelObj_Level3.Count - 1]);
-                        DelObj_Level3.Remove(DelObj_Level3[DelObj_Level3.Count - 1]);
-                    }
-
-                    foreach (OracleParameter[] p in OraParametr_Level3_records)
-                        command.Parameters.AddRange(p);
-
-                    foreach (OracleParameter[] p in OraParametr_Level3_records)
-                    {
-                        string AllValues_level3_records = AllValues_level3;
-                        string AllColumns_level3_records = AllColumns_level3;
-                        foreach (OracleParameter sp in p)
-                        {
-                            if (sp.OracleDbType != OracleDbType.Object)
-                            {
-                                AllValues_level3_records += sp.ParameterName + ",";
-                                AllColumns_level3_records += sp.SourceColumn + ",";
-                            }
-                        }
-
-                        if (AllValues_level3_records.Length > 0) AllValues_level3_records = AllValues_level3_records.Remove(AllValues_level3_records.Length - 1, 1);
-                        if (AllColumns_level3_records.Length > 0) AllColumns_level3_records = AllColumns_level3_records.Remove(AllColumns_level3_records.Length - 1, 1);
-                        allSql += string.Format(" INTO {0}({1}) VALUES ({2}) ", TableName_Level3, AllColumns_level3_records, AllValues_level3_records);
-                    }
-
-
-                    allSql += " SELECT * FROM dual";
-                    command.CommandText = allSql;
-                    command.ExecuteNonQuery();
-                    isSuccess = true;
-                }
-            }
-            catch (Exception e)
-            {
-                isSuccess = false;
-                if (e is OracleException)
-                {
-                    if (((e as OracleException).Number == 3114) || ((e as OracleException).Number == 3135))
-                    {
-                        CloseConnection();
-                        OpenConnection(GetConnectionString());
-                    }
-                }
-                System.Console.WriteLine(e.ToString());
-            }
-            return true;
-        }
 
     }
 

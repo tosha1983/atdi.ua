@@ -188,6 +188,10 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasDeviceId = source.StationMeasurements == null ? (int?)null : source.StationMeasurements.StationId.Value,
                 StationsNumber = source.ResultsMeasStation == null ? (int?)null : source.ResultsMeasStation.Length,
                 PointsNumber = source.MeasurementsResults == null ? (int?)null : source.MeasurementsResults.Length,
+                SensorName = source.SensorName,
+                SensorTechId = source.SensorTechId,
+                CountStationMeasurements = source.CountStationMeasurements,
+                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements
             };
         }
 
@@ -226,7 +230,28 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 LevelMeasurementsLength = source.LevelMeasurements == null ? (int?)null : source.LevelMeasurements.Length,
                 MeasGlobalSID = source.MeasGlobalSID,
                 SectorId = source.IdSector.ToNull(),
-                StationId = source.Idstation.ToNull(),
+                StationId = source.Idstation,
+                Status = source.Status
+            };
+        }
+        public static VM.ResultsMeasurementsStationExtentedViewModel Map(SDR.ResultsMeasurementsStationExtended source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.ResultsMeasurementsStationExtentedViewModel
+            {
+                CentralFrequencyMeas_MHz = source.GeneralResult.CentralFrequencyMeas,
+                CentralFrequencyMHz = source.GeneralResult.CentralFrequency,
+                Id = source.Id,
+                SectorId = source.IdSector.ToNull(),
+                StationId = source.Idstation,
+                Standard = source.Standard,
+                StationSysInfo = source.StationSysInfo,
+                GlobalSID = source.GlobalSID,
+                MeasGlobalSID = source.MeasGlobalSID,
                 Status = source.Status
             };
         }

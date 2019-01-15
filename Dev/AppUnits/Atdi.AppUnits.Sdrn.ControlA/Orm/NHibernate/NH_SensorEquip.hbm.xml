@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Atdi.AppUnits.Sdrn.ControlA" assembly="Atdi.AppUnits.Sdrn.ControlA">
+  <class name="NH_SensorEquip" table="NH_SensorEquip">
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+        <generator class="identity"/>
+    </id>
+    <property name="Code" />
+    <property name="Manufacturer" />
+    <property name="Name" />
+    <property name="Family" />
+    <property name="TechId" />
+    <property name="Version" />
+    <property name="LowerFreq" />
+    <property name="UpperFreq" />
+    <property name="RBWMin" />
+    <property name="RBWMax" />
+    <property name="VBWMin" />
+    <property name="VBWMax" />
+    <property name="Mobility" />
+    <property name="FFTPointMax" />
+    <property name="RefLeveldBm" />
+    <property name="OperationMode" />
+    <property name="Type" />
+    <property name="EquipClass" />
+    <property name="TuningStep" />
+    <property name="UseType" />
+    <property name="Category" />
+    <property name="Remark" />
+    <property name="CustTxt1" />
+    <property name="CustData1" />
+    <property name="CustNbr1" />
+    <property name="SensorID" />
+  </class>
+</hibernate-mapping>

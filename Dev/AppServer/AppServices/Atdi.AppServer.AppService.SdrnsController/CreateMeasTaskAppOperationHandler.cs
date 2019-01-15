@@ -78,7 +78,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                         bool isSuccessTemp = false;
                         int? ID = null;
                         tasks.Process_Multy_Meas(mt, SensorIds, "New", false, out isSuccessTemp, out ID);
-                        //int? ID = tasks.Create_New_Meas_Task(mt, "New");
                         md.Value = ID.Value;
                     }
                 }

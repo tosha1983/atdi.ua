@@ -15,9 +15,26 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
         public Brush Color;
         public Brush Fill;
         public Location Location;
+        public double Opacity;
+        public double Width;
+        public double Height;
+    }
+    public class MapDrawingDataRoute
+    {
+        public System.Windows.Media.Color Color;
+        public System.Windows.Media.Color Fill;
+        public Location[] Points;
+    }
+    public class MapDrawingDataPolygon
+    {
+        public System.Windows.Media.Color Color;
+        public System.Windows.Media.Color Fill;
+        public Location[] Points;
     }
     public class MapDrawingData
     {
         public MapDrawingDataPoint[] Points { get; set; }
+        public MapDrawingDataRoute[] Routes { get; set; }
+        public MapDrawingDataPolygon[] Polygons { get; set; }
     }
 }

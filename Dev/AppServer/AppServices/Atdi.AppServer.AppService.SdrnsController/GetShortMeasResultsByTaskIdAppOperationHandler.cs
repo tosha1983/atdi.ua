@@ -26,31 +26,35 @@ namespace Atdi.AppServer.AppServices.SdrnsController
 
         public override ShortMeasurementResults[] Handle(GetShortMeasResultsByTaskIdAppOperationOptions options, IAppOperationContext operationContext)
         {
+            ShortMeasurementResults[] ShortMeas = null;
+            MeasurementResults[] res = null;
+            ClassesDBGetResultOptimize resDb = new ClassesDBGetResultOptimize(Logger);
+            ClassConvertToSDRResultsOptimize conv = new ClassConvertToSDRResultsOptimize(Logger);
             Logger.Trace(this, options, operationContext);
-            List<ShortMeasurementResults> ShortMeas = new List<ShortMeasurementResults>();
-            ClassesDBGetResult resDb = new ClassesDBGetResult(Logger);
-            ClassConvertToSDRResults conv = new ClassConvertToSDRResults(Logger);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
                 try
                 {
-                    //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
-                    List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDBTask(options.TaskId.Value)).ToList();
-                    List<MeasurementResults> msrt = LST_MeasurementResults.FindAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
-                    if (msrt != null)
+                    if (options.TaskId != null)
                     {
-                        foreach (MeasurementResults rs in msrt)
+                        res = conv.ConvertMeasurementResults(resDb.ReadGetMeasurementResultsByTaskId(options.TaskId.Value)).ToArray();
+                        if (res != null)
                         {
-                            ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = rs.DataRank, Id = rs.Id, Number = rs.N!=null ? rs.N.Value : -1, Status = rs.Status, TimeMeas = rs.TimeMeas, TypeMeasurements = rs.TypeMeasurements };
-                            if (rs.LocationSensorMeasurement != null)
+                            ShortMeas = new ShortMeasurementResults[res.Length];
+                            for (int i = 0; i < res.Length; i++)
                             {
-                                if (rs.LocationSensorMeasurement.Count() > 0)
+                                ShortMeas[i] = new ShortMeasurementResults();
+                                ShortMeasurementResults ShMsrt = new ShortMeasurementResults { DataRank = res[i].DataRank, Id = res[i].Id, Number = res[i].N != null ? res[i].N.Value : -1, Status = res[i].Status, TimeMeas = res[i].TimeMeas, TypeMeasurements = res[i].TypeMeasurements };
+                                if (res[i].LocationSensorMeasurement != null)
                                 {
-                                    ShMsrt.CurrentLat = rs.LocationSensorMeasurement[rs.LocationSensorMeasurement.Count() - 1].Lat;
-                                    ShMsrt.CurrentLon = rs.LocationSensorMeasurement[rs.LocationSensorMeasurement.Count() - 1].Lon;
+                                    if (res[i].LocationSensorMeasurement.Count() > 0)
+                                    {
+                                        ShMsrt.CurrentLat = res[i].LocationSensorMeasurement[res[i].LocationSensorMeasurement.Count() - 1].Lat;
+                                        ShMsrt.CurrentLon = res[i].LocationSensorMeasurement[res[i].LocationSensorMeasurement.Count() - 1].Lon;
+                                    }
                                 }
+                                ShortMeas[i] = ShMsrt;
                             }
-                            ShortMeas.Add(ShMsrt);
                         }
                     }
                 }
@@ -61,7 +65,8 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             });
             th.Start();
             th.Join();
-            return ShortMeas.ToArray();
+        
+            return ShortMeas;
         }
     }
 

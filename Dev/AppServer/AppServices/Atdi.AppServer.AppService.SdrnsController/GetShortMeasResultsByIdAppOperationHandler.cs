@@ -38,7 +38,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                     {
                         if (options.MeasResultsId != null)
                         {
-                            //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasSdrResultsId == options.MeasResultsId.MeasSdrResultsId);
                             List<MeasurementResults> msrtList = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDB(options.MeasResultsId)).ToList();
                             if (msrtList != null)
                             {

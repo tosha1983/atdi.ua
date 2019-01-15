@@ -26,6 +26,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Refersh Meas Tasks" Command="{Binding RefreshShortTasksCommand}"/>
 
+            <MenuItem Header="Create Meas Task" Command="{Binding CreateMeasTaskCommand}"/>
             <MenuItem Header="Run Meas Task" Command="{Binding RunMeasTaskCommand}"/>
             <MenuItem Header="Stop Meas Task" Command="{Binding StopMeasTaskCommand}"/>
             <MenuItem Header="Delete Meas Task" Command="{Binding DeleteMeasTaskCommand}"/>
@@ -33,6 +34,7 @@
             <MenuItem Header="Refersh Sensors" Command="{Binding RefreshShortSensorsCommand}"/>
             <MenuItem Header="Show/Hide Meas Task Detail" Command="{Binding ShowHideMeasTaskDetailCommand}"/>
             <MenuItem Header="Show/Hide Meas Results Detail" Command="{Binding ShowHideMeasResultsDetailCommand}"/>
+            <MenuItem Header="Meas. result" Command="{Binding MeasResultCommand}"/>
         </Menu>
         <Grid >
             <Grid.ColumnDefinitions>
@@ -255,7 +257,7 @@
                                         <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasOtherTypeSpectrumScan}"  IsReadOnly="True"/>
                                     
                                         <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "TypeMeasurements"  />
-                                        <TextBox x:Name ="aaa" Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamTypeMeasurements}"  IsReadOnly="True"/>
+                                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamTypeMeasurements}"  IsReadOnly="True"/>
                                      </Grid>
                                 </Expander>                              
                             </Grid>
@@ -341,7 +343,7 @@
                             </Style>
                         </Grid.Style>                      
                         
-                        <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasResults}" SelectedItem="{Binding CurrentShortMeasurementResults}" >
+                        <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResults}" >
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
                                     <Style.Triggers>
@@ -424,7 +426,7 @@
                                   <DataGridTextColumn Header="MeasGlobalSID" Binding="{Binding Path=MeasGlobalSID}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="№ Meas. Location" Binding="{Binding Path=LevelMeasurementsLength}"></DataGridTextColumn>
-                                  <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=GeneralResultCentralFrequency}"></DataGridTextColumn>
+                                  <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
                               </DataGrid.Columns> 
                             </DataGrid>
                         </GroupBox>
@@ -538,7 +540,7 @@
                                                 </Style.Triggers>                                          
                                            </Style>
                                         </Expander.Style>                                        
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStation}">
+                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="110" />
                                                 <ColumnDefinition Width="*" />
@@ -573,7 +575,7 @@
                                                 </Style.Triggers>                                          
                                            </Style>
                                         </Expander.Style>                                          
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStation}">
+                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -604,7 +606,7 @@
                                                 </Style.Triggers>                                          
                                            </Style>
                                         </Expander.Style>                                          
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStation}">
+                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -643,7 +645,7 @@
                                                 </Style.Triggers>                                          
                                            </Style>
                                         </Expander.Style>                                          
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStation}">
+                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -657,7 +659,6 @@
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "TimeFinishMeas"  />
                                             <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GeneralResultTimeFinishMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
-                                    
                                          </Grid>
                                     </Expander>
                                     <Expander Grid.Column="0" Grid.Row="6" Header="LevelMeasurements">
@@ -670,9 +671,26 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>                                          
                                            </Style>
-                                        </Expander.Style>                                          
-                                        <DataGrid IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}">
-                                          <DataGrid.Columns>
+                                        </Expander.Style>
+                                        <Grid>
+                                          <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                          </Grid.ColumnDefinitions>
+                                          <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                          </Grid.RowDefinitions>
+                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
+                                          <Button Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
+                                          <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}">
+                                            <DataGrid.Columns>
                                               <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
                                               <DataGridTextColumn Header="Lat, DEC" Binding="{Binding Path=Lat}"></DataGridTextColumn>
                                               <DataGridTextColumn Header="Alt, m" Binding="{Binding Path=Altitude}"></DataGridTextColumn>
@@ -684,8 +702,9 @@
                                               <DataGridTextColumn Header="Diff.Timestamp, 10^-9" Binding="{Binding Path=DifferenceTimestamp}"></DataGridTextColumn>
                                               <DataGridTextColumn Header="RBW, kHz" Binding="{Binding Path=RBW}"></DataGridTextColumn>
                                               <DataGridTextColumn Header="VBW, kHz" Binding="{Binding Path=VBW}"></DataGridTextColumn>
-                                          </DataGrid.Columns> 
-                                        </DataGrid>  
+                                            </DataGrid.Columns>
+                                          </DataGrid>
+                                        </Grid>
                                     </Expander>
                                 </Grid>
                             </ScrollViewer>

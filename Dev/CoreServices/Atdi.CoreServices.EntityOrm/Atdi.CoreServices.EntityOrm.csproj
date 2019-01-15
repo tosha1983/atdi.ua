@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Atdi.CoreServices.EntityOrm</RootNamespace>
     <AssemblyName>Atdi.CoreServices.EntityOrm</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -80,10 +78,6 @@
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.csproj">
-      <Project>{dc9f7815-c9ca-495c-a383-234913fccce6}</Project>
-      <Name>Atdi.AppUnits.Sdrn.Server.PrimaryHandlers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
@@ -96,21 +90,9 @@
       <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
       <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj">
-      <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
-      <Name>Atdi.Contracts.Sdrn.Server</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities2.csproj">
-      <Project>{f3e641da-37a7-4137-bbcb-151b6474a62f}</Project>
-      <Name>Atdi.DataModels.Sdrns.Server.Entities2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.Entities.csproj">
-      <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
-      <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>

@@ -9,7 +9,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
 using System.Security.Cryptography;
 using Atdi.DataModels.DataConstraint;
-using Atdi.AppServices.WebQuery;
+//using Atdi.AppServices.WebQuery;
 using Atdi.DataModels.WebQuery;
 
 namespace Atdi.LegacyServices.Icsm

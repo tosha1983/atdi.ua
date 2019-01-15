@@ -23,6 +23,7 @@ namespace XICSM.ICSControlClient
         {
             mainMenu.SetLocation();
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.Run, PluginCommands.OnRunCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.MeasResults, PluginCommands.OnMeasResultsCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, PluginCommands.OnAboutCommand);
         }
 
@@ -35,6 +36,7 @@ namespace XICSM.ICSControlClient
         {
             b.RegisterQueryMenuBuilder(MD.Tours.TableName, ToursContextMenuBuilder.Build);
             b.RegisterQueryMenuBuilder(MD.Allotments.TableName, AllotmentsContextMenuBuilder.Build);
+            b.RegisterQueryMenuBuilder(MD.Inspection.TableName, InspectionsContextMenuBuilder.Build);
         }
 
         public void RegisterSchema(IMSchema s)

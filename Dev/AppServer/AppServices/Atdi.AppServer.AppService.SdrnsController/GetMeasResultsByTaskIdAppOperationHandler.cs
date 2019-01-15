@@ -33,7 +33,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             Logger.Trace(this, options, operationContext);
             System.Threading.Thread th = new System.Threading.Thread(() =>
             {
-                //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList().FindAll(t => t.Id.MeasTaskId.Value == options.TaskId.Value);
                 try
                 {
                     List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadResultFromDBTask(options.TaskId.Value)).ToList();
@@ -46,6 +45,7 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             th.Start();
             th.Join();
             return res.ToArray();
+            throw new NotImplementedException("Method GetMeasResultsByTaskId not implemented.");
         }
     }
 

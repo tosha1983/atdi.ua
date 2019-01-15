@@ -6,9 +6,8 @@ using Quartz.Impl;
 using Atdi.SDNRS.AppServer.BusManager;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 using Atdi.AppServer.Contracts.Sdrns;
-using EasyNetQ;
 using Atdi.AppServer;
-
+using RabbitMQ.Client;
 
 namespace Atdi.SDNRS.AppServer.Sheduler
 {
@@ -75,12 +74,12 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                         List<Sensor> SensorListSDRNS = gsd.LoadObjectAllSensor();
                         foreach (Sensor s in SensorListSDRNS.ToArray())
                         {
-                            if (ClassStaticBus.bus.Advanced.IsConnected)
+                            if (ClassStaticBus.factory != null)
                             {
                                 uint cnt = busManager.GetMessageCount(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
                                 for (int i = 0; i < cnt; i++)
                                 {
-                                    var message = busManager.GetDataObject(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
+                                    var message = busManager.GetDataObject<List<MeasSdrTask>>(GlobalInit.Template_MEAS_TASK_SDR_Main_List_SDR + s.Name + s.Equipment.TechId);
                                     if (message != null)
                                     {
                                         List<MeasSdrTask> fnd_s = message as List<MeasSdrTask>;
@@ -106,9 +105,7 @@ namespace Atdi.SDNRS.AppServer.Sheduler
                             }
                             else
                             {
-                                ClassStaticBus.bus.Dispose();
-                                GC.SuppressFinalize(ClassStaticBus.bus);
-                                ClassStaticBus.bus = RabbitHutch.CreateBus(GlobalInit.MainRabbitMQServices);
+                                ClassStaticBus.factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost, SocketReadTimeout = 2147000000, SocketWriteTimeout = 2147000000 };
                             }
                         }
                         cl.Dispose();

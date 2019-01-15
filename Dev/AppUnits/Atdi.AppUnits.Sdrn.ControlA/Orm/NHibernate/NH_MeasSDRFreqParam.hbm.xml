@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Atdi.AppUnits.Sdrn.ControlA" assembly="Atdi.AppUnits.Sdrn.ControlA">
+  <class name="NH_MeasSDRFreqParam" table="NH_MeasSDRFreqParam">
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+        <generator class="identity"/>
+    </id>
+
+    <property name="Mode" />
+    <property name="RgL" />
+    <property name="RgU" />
+    <property name="Step" />
+    <property name="id_meas_task_sdr" />
+ </class>
+</hibernate-mapping>
+
+
