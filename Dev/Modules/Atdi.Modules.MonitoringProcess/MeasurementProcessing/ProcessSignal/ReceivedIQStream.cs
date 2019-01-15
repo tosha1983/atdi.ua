@@ -22,22 +22,40 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
         public DateTime TimeMeasStart; // время начала измерения потока IQ
         public double durationReceiving_sec; 
         #endregion
-        public void CalcAmpl()
+        public void CalcAmpl(bool BB60C)
         {
             Ampl = new List<float[]>();
             MinLevel = 1000;
-            MaxLevel = 0; 
-            for (int i = 0; i < iq_samples.Count; i++)
+            MaxLevel = 0;
+            if (BB60C)
             {
-                float[] arrAmpl = new float[iq_samples[i].Length/2];
-                for (int j = 0; j<iq_samples[i].Length; j=j+2)
+                for (int i = 0; i < iq_samples.Count; i++)
                 {
-                    float _arrAmpl = (float)Math.Sqrt(iq_samples[i][j] * iq_samples[i][j] + iq_samples[i][j+1] * iq_samples[i][j+1]);
-                    if (MinLevel > _arrAmpl) { MinLevel = _arrAmpl; }
-                    if (MaxLevel < _arrAmpl) { MaxLevel = _arrAmpl; }
-                    arrAmpl[j / 2] = _arrAmpl;
+                    float[] arrAmpl = new float[iq_samples[i].Length / 2];
+                    for (int j = 0; j < iq_samples[i].Length; j = j + 2)
+                    {
+                        float _arrAmpl = (float)(iq_samples[i][j] * iq_samples[i][j] + iq_samples[i][j + 1] * iq_samples[i][j + 1]);
+                        if (MinLevel > _arrAmpl) { MinLevel = _arrAmpl; }
+                        if (MaxLevel < _arrAmpl) { MaxLevel = _arrAmpl; }
+                        arrAmpl[j / 2] = _arrAmpl;
+                    }
+                    Ampl.Add(arrAmpl);
                 }
-                Ampl.Add(arrAmpl);
+            }
+            else
+            {
+                for (int i = 0; i < iq_samples.Count; i++)
+                {
+                    float[] arrAmpl = new float[iq_samples[i].Length / 2];
+                    for (int j = 0; j < iq_samples[i].Length; j = j + 2)
+                    {
+                        float _arrAmpl = (float)Math.Sqrt(iq_samples[i][j] * iq_samples[i][j] + iq_samples[i][j + 1] * iq_samples[i][j + 1]);
+                        if (MinLevel > _arrAmpl) { MinLevel = _arrAmpl; }
+                        if (MaxLevel < _arrAmpl) { MaxLevel = _arrAmpl; }
+                        arrAmpl[j / 2] = _arrAmpl;
+                    }
+                    Ampl.Add(arrAmpl);
+                }
             }
         } 
     }

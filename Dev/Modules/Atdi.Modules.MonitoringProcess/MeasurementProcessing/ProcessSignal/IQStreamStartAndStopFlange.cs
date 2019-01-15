@@ -76,6 +76,7 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
                     number++;
                 }
             }
+            if (flag) { _IndexStopFlange.Add(number); } 
             if (_IndexStartFlange.Count > 0)
             {
                 if (_IndexStartFlange[0] < 0) {_IndexStartFlange[0] = 0; }
@@ -246,7 +247,7 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
                 if (IndexStopFlange[i] - IndexStartFlange[i] > MaxNumberIndexForBlock)
                 {
                     int s = (int)Math.Floor((IndexStopFlange[i] - IndexStartFlange[i]) / MaxNumberIndexForBlock);
-                    for (int j = 0; j <= s; j++)
+                    for (int j = 0; j <= s-1; j++)
                     {
                         _IndexStartFlange.Add(IndexStartFlange[i] + (int)MaxNumberIndexForBlock*j);
                         _IndexStopFlange.Add((IndexStartFlange[i] + (int)MaxNumberIndexForBlock * (j+1)));
