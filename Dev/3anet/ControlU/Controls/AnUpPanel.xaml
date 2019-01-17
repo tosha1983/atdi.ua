@@ -1,0 +1,343 @@
+﻿<UserControl x:Class="ControlU.Controls.AnUpPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="600">
+    <Grid >
+        <Grid.Resources>
+            <local:TimeConverter x:Key="TimeConverter"/>
+            <local:FreqConverterDecimal x:Key="FreqConverterdec"/>
+            <local:FreqConverterDouble x:Key="FreqConverterdou"/>
+            <local:MultiValueLevelConverter x:Key="MultiValueLevelConverter"/>
+            <local:LevelConverter x:Key="LevelConverter"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="16"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="80*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel>
+            <TextBlock Text="Ref" HorizontalAlignment="Left" Margin="5,0,0,0" FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource MultiValueLevelConverter}">
+                        <Binding Path="RefLevel" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="LevelUnit" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DockPanel>
+        <DockPanel Grid.Row="1">
+            <TextBlock Text="Att" HorizontalAlignment="Left" Margin="5,0,0,0" FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=AttLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource LevelConverter},ConverterParameter=dB}" HorizontalAlignment="Left" Margin="4,0,0,0" FontSize="14" VerticalAlignment="Center"/>
+        </DockPanel>
+        <DockPanel Grid.Column="2">
+            <Path Data="M 0 0 L 5 0 5 5 0 5 Z"  StrokeLineJoin="Round" Fill="#7F08B400" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" >
+                <Path.Style>
+                    <Style TargetType="{x:Type Path}">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AutoSweepTime, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true" >
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            <TextBlock Text="SWT" HorizontalAlignment="Left" Margin="4,0,0,0"  FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=SweepTime, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TimeConverter}}"  HorizontalAlignment="Left" Margin="4,0,0,0"  FontSize="14" VerticalAlignment="Center"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <TextBlock Text="Preamp" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"  FontSize="14"/>
+            <TextBlock HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"  FontSize="14">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="Text" Value="OFF"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding PreAmp, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true" >
+                                <Setter Property="Text" Value="ON"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </DockPanel>
+        <DockPanel Grid.Column="4">
+            <Path Data="M 0 0 L 5 0 5 5 0 5 Z"  StrokeLineJoin="Round" Fill="#7F08B400" VerticalAlignment="Center" HorizontalAlignment="Left" >
+                <Path.Style>
+                    <Style TargetType="{x:Type Path}">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AutoRBW, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true" >
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            <TextBlock Text="RBW" HorizontalAlignment="Left" Margin="4,0,0,0"  FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=RBW, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverterdec}}" HorizontalAlignment="Left" Margin="4,0,0,0"  Height="20" VerticalAlignment="Center" FontSize="14"/>
+        </DockPanel>
+
+        <DockPanel Grid.Column="4" Grid.Row="1">
+            <Path Data="M 0 0 L 5 0 5 5 0 5 Z"  StrokeLineJoin="Round" Fill="#7F08B400" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <Path.Style>
+                    <Style TargetType="{x:Type Path}">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AutoVBW, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true" >
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            <TextBlock Text="VBW" HorizontalAlignment="Left"  FontSize="14" Margin="4,0,0,0"/>
+            <TextBlock Text="{Binding Path=VBW, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverterdec}}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1"  FontSize="14" VerticalAlignment="Center"/>
+        </DockPanel>
+        <TextBlock Text="Trace:" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="2"  FontSize="12" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="7" Margin="40,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Grid Height="16" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Path Data="M 5 5 L 11 5 11 11 5 11 Z"  StrokeLineJoin="Round" Fill="#FF5AA0C8"/>
+                <TextBlock HorizontalAlignment="Left" Grid.Row="1"  FontSize="12" Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Text" >
+                                <Setter.Value>
+                                    <MultiBinding StringFormat="{}{0}({1}) ">
+                                        <Binding Path="Trace1Type.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="Trace1Detector.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Trace1Type.UI, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Avarege" >
+                                    <Setter Property="Text" >
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0}({1}) [{2}/{3}] ">
+                                                <Binding Path="Trace1Type.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="Trace1Detector.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="NumberOfSweeps" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="AveragingCount" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+            <Grid Height="16" HorizontalAlignment="Left">
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Trace2Type.UI, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Blank" >
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Path Data="M 5 5 L 11 5 11 11 5 11 Z"  StrokeLineJoin="Round" Fill="#FF00CC1E"/>
+                <TextBlock HorizontalAlignment="Left" Grid.Row="1"  FontSize="12" Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Text" >
+                                <Setter.Value>
+                                    <MultiBinding StringFormat="{}{0}({1}) ">
+                                        <Binding Path="Trace2Type.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="Trace2Detector.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Trace2Type.UI, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Avarege" >
+                                    <Setter Property="Text" >
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0}({1}) [{2}/{3}] ">
+                                                <Binding Path="Trace2Type.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="Trace2Detector.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="NumberOfSweeps" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="AveragingCount" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+            <Grid Height="16" HorizontalAlignment="Left">
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Trace3Type.UI, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Blank" >
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Path Data="M 5 5 L 11 5 11 11 5 11 Z"  StrokeLineJoin="Round" Fill="#FFC33C3C"/>
+
+                <TextBlock HorizontalAlignment="Left" Grid.Row="1" FontSize="12" Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Text" >
+                                <Setter.Value>
+                                    <MultiBinding StringFormat="{}{0}({1}) ">
+                                        <Binding Path="Trace3Type.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="Trace3Detector.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Trace3Type.UI, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Avarege" >
+                                    <Setter Property="Text" >
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0}({1}) [{2}/{3}] ">
+                                                <Binding Path="Trace3Type.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="Trace3Detector.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="NumberOfSweeps" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="AveragingCount" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </StackPanel>
+        <!--<StackPanel Grid.Row="2" Grid.ColumnSpan="7" Margin="40,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Grid Name="Trace1Legend" Height="16" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Path Name="Trace1Legend_color" Data="M 5 5 L 11 5 11 11 5 11 Z"  StrokeLineJoin="Round" Fill="#FF5AA0C8" Margin="0" />
+                <TextBlock Name="Trace1LegendGui" Text="{Binding Path=Trace1Legend, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Grid.Row="1"  FontSize="12" Grid.Column="1" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Name="Trace2Legend" Height="16" HorizontalAlignment="Left">
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding UniqueData.NumberOfTrace, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="1" >
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Path Name="Trace2Legend_color" Data="M 5 5 L 11 5 11 11 5 11 Z"  StrokeLineJoin="Round" Fill="#FF00CC1E" Margin="0" />
+                <TextBlock Name="Trace2LegendGui" Text="{Binding Path=Trace2Legend, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Grid.Row="1"  FontSize="12" Grid.Column="1" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Name="Trace3Legend" Height="16" HorizontalAlignment="Left">
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding UniqueData.NumberOfTrace, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="1" >
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Path Name="Trace3Legend_color" Data="M 5 5 L 11 5 11 11 5 11 Z"  StrokeLineJoin="Round" Fill="#FFC33C3C" Margin="0" />
+                <TextBlock x:Name="Printiten" Text="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" Panel.ZIndex="-2" Height="0" Width="0" VerticalAlignment="Center"/>
+
+                <TextBlock Name="Trace3LegendGui" Text="{Binding Path=Trace3Legend, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Grid.Row="1"  FontSize="12" Grid.Column="1" VerticalAlignment="Center"/>
+            </Grid>
+        </StackPanel>-->
+        <TextBlock Text="{Binding Path=PowerRegisterStr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0" Grid.Column="6" FontSize="14" TextAlignment="Center" Foreground="Red" FontWeight="Bold">
+
+        </TextBlock>
+
+        <Grid Grid.Column="6" Width="42" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="17" Margin="6,0,0,0" VerticalAlignment="Center">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding UniqueData.Battery, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True" >
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Path Data="M-21,-10, -21,10 25,10 25,5 28,5 28,-5 25,-5 25,-10z" Stretch="Uniform" Stroke="#FF4F4F4F" Width="48" Grid.Column="6" Margin="0" HorizontalAlignment="Left"/>
+            <Path Data="M-19,-10, -19,10 -10,10 -10,-10z" Stretch="Uniform" Stroke="#FF4F4F4F" Grid.Column="6" StrokeThickness="0" Fill="#7F08B400" Margin="2,2,0,2" HorizontalAlignment="Left" Height="14" Width="6"/>
+            <Path Data="M-19,-10, -19,10 -10,10 -10,-10z" Stretch="Uniform" Stroke="#FF4F4F4F" StrokeThickness="0" Fill="#7F08B400" Margin="9,2,0,2" HorizontalAlignment="Left" Height="14" Width="6"/>
+            <Path Data="M-19,-10, -19,10 -10,10 -10,-10z" Stretch="Uniform" Stroke="#FF4F4F4F" StrokeThickness="0" Fill="#7F08B400" Margin="16,2,0,2" HorizontalAlignment="Left" Height="14" Width="6"/>
+            <Path Data="M-19,-10, -19,10 -10,10 -10,-10z" Stretch="Uniform" Stroke="#FF4F4F4F" StrokeThickness="0" Fill="#7F08B400" Margin="23,2,0,2" HorizontalAlignment="Left" Height="14" Width="6"/>
+            <Path Data="M-19,-10, -19,10 -10,10 -10,-10z" Stretch="Uniform" Stroke="#FF4F4F4F" StrokeThickness="0" Fill="#7F08B400" Margin="30,2,0,2" HorizontalAlignment="Left" Height="14" Width="6"/>
+            <TextBlock Name="PoweRegisterGui" Text="{Binding Path=BatteryCharge, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,1,2,2" Grid.Column="6" FontSize="10" TextAlignment="Center" FontWeight="Bold">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding BatteryCharging, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true" >
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Path Data="M215.93,279.59c-0.014-7.476-0.07-14.953-0.007-22.429c-36.403,7.176-72.73,14.827-109.203,21.64
+                  c43.761-14.896,87.683-29.347,131.548-43.943c0.119,7.435-0.091,14.869,0.077,22.304c36.389-7.176,72.709-14.813,109.155-21.646
+                  C303.76,250.516,259.734,264.742,215.93,279.59z" Stretch="Uniform" Stroke="#FF4F4F4F" StrokeThickness="0" Fill="#FF4F4F4F" Margin="2,2,6,1" VerticalAlignment="Center">
+                <Path.Style>
+                    <Style TargetType="{x:Type Path}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding BatteryCharging, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true" >
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+
+        </Grid>
+        <DockPanel Grid.Column="6" Grid.Row="1" >
+            <TextBlock Text="Mode" HorizontalAlignment="Left" Margin="5,0,0,0" FontSize="14"  VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=SweepTypeSelected.UI, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"/>
+        </DockPanel>
+
+
+    </Grid>
+</UserControl>
