@@ -81,33 +81,26 @@
     <StartupObject>ControlU.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atdi.Api.Sdrn.Device.BusController, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.Api.Sdrn.Device.BusController.dll</HintPath>
+    <Reference Include="Atdi.Api.Sdrn.Device.BusController">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.Api.Sdrn.Device.BusController.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.Contracts.Api.Sdrn.MessageBus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.Contracts.Api.Sdrn.MessageBus.dll</HintPath>
+    <Reference Include="Atdi.Contracts.Api.Sdrn.MessageBus">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.Contracts.Api.Sdrn.MessageBus.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.DataModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.DataModels.dll</HintPath>
+    <Reference Include="Atdi.DataModels">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.DataModels.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.DataModels.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.DataModels.Sdrns.dll</HintPath>
+    <Reference Include="Atdi.DataModels.Sdrns">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.DataModels.Sdrns.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.DataModels.Sdrns.Device, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.DataModels.Sdrns.Device.dll</HintPath>
+    <Reference Include="Atdi.DataModels.Sdrns.Device">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.DataModels.Sdrns.Device.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.Modules.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=79d55ebd8cf97c51, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.Modules.Licensing.dll</HintPath>
+    <Reference Include="Atdi.Modules.Licensing">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.Modules.Licensing.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.Modules.Sdrn.MessageBus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\---==ATDI==---\API_v2.3\Atdi.Modules.Sdrn.MessageBus.dll</HintPath>
+    <Reference Include="Atdi.Modules.Sdrn.MessageBus">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\---==ATDI==---\API_v2.3\Atdi.Modules.Sdrn.MessageBus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
@@ -637,7 +630,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Rel_v3\MapControl\MapControl.csproj">
+    <ProjectReference Include="..\MapControl\MapControl.csproj">
       <Project>{53c9ea7e-d66a-4e17-b54d-e6e0b3947efa}</Project>
       <Name>MapControl</Name>
     </ProjectReference>
