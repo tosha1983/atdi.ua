@@ -23,7 +23,7 @@ namespace ControlU.Equipment
     public class TSMxReceiver : INotifyPropertyChanged
     {
 
-        string ViComBinPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\bin\"; // @"c:\RuS\RS-ViCom-16.20.0.474\bin\";//@"c:\RuS\RS-ViCom-16.5.0.0\bin\";
+        string ViComBinPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\bin\"; //@"c:\RuS\RS-ViCom-Pro-16.25.0.743\bin\";//@"c:\RuS\RS-ViCom-16.5.0.0\bin\";
         LocalMeasurement LM = new LocalMeasurement();
         string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         public delegate void DoubMod();

@@ -122,11 +122,11 @@
     </Reference>
     <Reference Include="RohdeSchwarz.Tools.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\x64\Debug\bin\RohdeSchwarz.Tools.Net.dll</HintPath>
+      <HintPath>.\RohdeSchwarz.Tools.Net.dll</HintPath>
     </Reference>
     <Reference Include="RohdeSchwarz.ViCom.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\x64\Debug\bin\RohdeSchwarz.ViCom.Net.dll</HintPath>
+      <HintPath>.\RohdeSchwarz.ViCom.Net.dll</HintPath>
     </Reference>
     <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>

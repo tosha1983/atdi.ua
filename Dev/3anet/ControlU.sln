@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlU", "ControlU\ControlU.csproj", "{AC02473D-87E7-4F55-81E7-43A953F7BCF5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A", "A", "{49961C20-11E1-4069-86B7-4FBA9F64C7BE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapControl", "MapControl\MapControl.csproj", "{53C9EA7E-D66A-4E17-B54D-E6E0B3947EFA}"
 EndProject
 Global
