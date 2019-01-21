@@ -78,6 +78,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             }
                             MRs.ResultsMeasStation[i].GlobalSID = sdrRes.StationResults[i].TaskGlobalSid;
                             MRs.ResultsMeasStation[i].MeasGlobalSID = sdrRes.StationResults[i].RealGlobalSid;
+                            MRs.ResultsMeasStation[i].Standard = sdrRes.StationResults[i].Standard;
                             int SectorId; if (int.TryParse(sdrRes.StationResults[i].SectorId, out SectorId)) MRs.ResultsMeasStation[i].IdSector = SectorId;
                             int Idstation; if (int.TryParse(sdrRes.StationResults[i].StationId, out Idstation)) MRs.ResultsMeasStation[i].Idstation = Idstation.ToString();
 

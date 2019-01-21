@@ -41,8 +41,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
         {
             try{ 
             BusManager<Sensor> busManager = new BusManager<Sensor>();
-              System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+              //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure ReceiveAllSensorList...");
                     ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                     List<Sensor> SensorListSDRNS = DB.LoadObjectSensor();
@@ -127,9 +127,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         ClassStaticBus.factory = new ConnectionFactory() { HostName = GlobalInit.RabbitHostName, UserName = GlobalInit.RabbitUserName, Password = GlobalInit.RabbitPassword, VirtualHost = GlobalInit.RabbitVirtualHost, SocketReadTimeout = 2147000000, SocketWriteTimeout = 2147000000 };
                     }
                     logger.Trace("End procedure ReceiveAllSensorList.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             catch (Exception ex) {
                 logger.Error("Error in ReceiveAllSensorList:" + ex.Message);

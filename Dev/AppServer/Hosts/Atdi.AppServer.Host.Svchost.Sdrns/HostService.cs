@@ -71,7 +71,7 @@ namespace Atdi.AppServer.Host.Svchost.Sdrns
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
             try
             {
-                var sdrnsControllerAppServiceHost = new AppServiceHostServerComponent<SdrnsControllerAppService, GetMeasTaskAppOperationHandler>();
+                var sdrnsControllerAppServiceHost = new AppServiceHostServerComponent<SdrnsControllerAppService, GetMeasTaskHeaderAppOperationHandler>();
                 var sdrnsControllerWcfServiceHost = new WcfServiceHostServerComponent<ISdrnsController, SdrnsControllerService>();
                 var coreServicesComponent = new CoreServicesServerComponent();
                 var sdrnsConfigurationController = new ConfigurationSdrnController.ConfigurationSdrnController();

@@ -739,24 +739,24 @@ namespace Atdi.Oracle.DataAccess
             string allSql = "";
             try
             {
-
                 if (((dbConnection != null) && (dbConnection.State == ConnectionState.Open)) || ((connection != null) && (connection.State == ConnectionState.Open)))
                 {
                     DbCommand command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
                     if (dbTransaction != null) command.Transaction = dbTransaction;
                     command.Parameters.Clear();
-                    //foreach (OracleParameter p in OraParametr_Level1)
-                    //    command.Parameters.Add(p);
                     string AllColumns_level1 = ""; string AllValues_level1 = "";
                     List<OracleParameter> DelObj_Level1 = new List<OracleParameter>();
                     var allData = OraParametr_Level1.ToList();
                     for (int z = 0; z < Cnt; z++)
                     {
+                        //command = dbConnection != null ? dbConnection.CreateCommand() : connection.CreateCommand();
+                        //if (dbTransaction != null) command.Transaction = dbTransaction;
+                        //command.Parameters.Clear();
+
                         AllColumns_level1 = ""; AllValues_level1 = "";
                         var findData = allData[z]; //.FindAll(r => r.ParameterName.EndsWith("_" + z.ToString() + "\""));
                         if (findData != null)
                         {
-
                             for (int i = 0; i < findData.Length; i++)
                             {
                                 OracleParameter p = findData[i];
@@ -804,9 +804,9 @@ namespace Atdi.Oracle.DataAccess
                                 allSql = "";
                                 Temp_Count = 0;
                                 command.Parameters.Clear();
+                                //command.Dispose();
                             }
                         }
-                        //Temp_Count++;
                     }
                     if (allSql.Length > 0)
                     {
@@ -820,6 +820,9 @@ namespace Atdi.Oracle.DataAccess
                     isSuccess = true;
                     command.Dispose();
                 }
+
+                OraParametr_Level1.Clear();
+                OraParametr_Level1 = null;
             }
             catch (Exception e)
             {

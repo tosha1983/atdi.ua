@@ -330,7 +330,11 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     r++;
                     AllPropertiesColumns_.Add(paramsOracle.ToArray());
                 }
-                isSuccess = oracleData.InsertBulkRecords(AllPropertiesColumns_, yyy.GetTableName(), ListY.Count, dbConnection, dbTransaction);
+                var cnt = ListY.Count;
+                var tableName = yyy.GetTableName();
+                ListY.Clear();
+                ListY = null;
+                isSuccess = oracleData.InsertBulkRecords(AllPropertiesColumns_, tableName, cnt, dbConnection, dbTransaction);
             }
             catch (Exception e) { System.Console.WriteLine(e.ToString()); }
             return isSuccess;

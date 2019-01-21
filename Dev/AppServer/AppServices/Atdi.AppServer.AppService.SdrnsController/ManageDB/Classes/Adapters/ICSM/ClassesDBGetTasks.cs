@@ -45,7 +45,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 #region Load Tasks from DB
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
                     try
                     {
@@ -209,9 +209,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ReadTask... " + ex.Message);
                     }
                     logger.Trace("End procedure ReadTask.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -228,7 +228,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 #region Load Tasks from DB
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
                     try
                     {
@@ -376,9 +376,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ReadTask... " + ex.Message);
                     }
                     logger.Trace("End procedure ReadTask.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -394,7 +394,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 #region Load Tasks from DB
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+               // System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadTask...");
                     try
                     {
@@ -459,9 +459,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ReadTask... " + ex.Message);
                     }
                     logger.Trace("End procedure ReadTask.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -482,7 +482,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 #region Load Tasks from DB
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     logger.Trace("Start procedure ReadlAllSTasksFromDB...");
                     try
                     {
@@ -646,9 +646,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ReadlAllSTasksFromDB... " + ex.Message);
                     }
                     logger.Trace("End procedure ReadlAllSTasksFromDB.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -669,8 +669,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure SaveStatusTaskToDB...");
                     try
                     {
@@ -718,9 +718,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure SaveStatusTaskToDB... " + ex.Message);
                     }
                     logger.Trace("End procedure SaveStatusTaskToDB.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             catch (Exception ex)
             {
@@ -739,8 +739,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure SaveStatusTaskToDB...");
                     try
                     {
@@ -788,9 +788,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure SaveStatusTaskToDB... " + ex.Message);
                     }
                     logger.Trace("End procedure SaveStatusTaskToDB.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
 
             }
             catch (Exception ex)
@@ -810,8 +810,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure SaveIdsSdrTasks...");
                     try
                     {
@@ -830,9 +830,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure SaveIdsSdrTasks... " + ex.Message);
                     }
                     logger.Trace("End procedure SaveIdsSdrTasks.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             catch (Exception ex)
             {
@@ -851,8 +851,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 string ids = "";
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure GetMaXIdsSdrTasks...");
                     try
                     {
@@ -892,9 +892,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure GetMaXIdsSdrTasks... " + ex.Message);
                     }
                     logger.Trace("End procedure GetMaXIdsSdrTasks.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             catch (Exception ex)
             {
@@ -913,8 +913,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             int MaxIDs = -1;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure GetMaXIdsSdrResults...");
                     try
                     {
@@ -937,9 +937,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure GetMaXIdsSdrResults... " + ex.Message);
                     }
                     logger.Trace("End procedure GetMaXIdsSdrResults.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             catch (Exception ex)
             {
@@ -958,8 +958,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             bool isSuccess = true;
             try
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure SetHistoryStatusTasksInDB...");
                     try
                     {
@@ -1015,9 +1015,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure SetHistoryStatusTasksInDB... " + ex.Message);
                     }
                     logger.Trace("End procedure SetHistoryStatusTasksInDB.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
             }
             catch (Exception ex)
             {
@@ -1036,8 +1036,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, string TaskId, int SensorId)
         {
             int? NUM_Val = null;
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread thread = new System.Threading.Thread(() =>
+            //{
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
                 if (dbConnect.State == System.Data.ConnectionState.Open)
@@ -1089,9 +1089,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         dbConnect.Dispose();
                     }
                 }
-            });
-            thread.Start();
-            thread.Join();
+            //});
+            //thread.Start();
+            //thread.Join();
             return NUM_Val;
         }
 
@@ -1105,8 +1105,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             Dictionary<List<string>, int?> dicXbsSectorFreq = new Dictionary<List<string>, int?>();
             int? ID = Constants.NullI;
             #region Save Task
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread thread = new System.Threading.Thread(() =>
+            //{
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
                 if (dbConnect.State == System.Data.ConnectionState.Open)
@@ -1665,9 +1665,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 }
                 //GlobalInit.blockingCollectionMeasTask.TryAdd(obj.Id.Value, obj);
                 #endregion
-            });
-            thread.Start();
-            thread.Join();
+            //});
+            //thread.Start();
+            //thread.Join();
             logger.Trace("End procedure SaveTaskToDB.");
             return ID;
         }

@@ -27,8 +27,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
            int _SubTaskId = 0;
            int _SubTaskStationId = 0;
            int _SensorId = 0;
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread thread = new System.Threading.Thread(() =>
+            //{
                 try
                 { 
                     YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
@@ -48,9 +48,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     logger.Trace("Error in procedure GetMeasTaskSDRNum... " + ex.Message);
                 }
 
-            });
-            thread.Start();
-            thread.Join();
+            //});
+           // thread.Start();
+           // thread.Join();
 
             TaskId = _TaskId;
             SubTaskId = _SubTaskId;
@@ -64,8 +64,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             int _SubTaskId = 0;
             int _SubTaskStationId = 0;
             int _SensorId = 0;
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+           // System.Threading.Thread thread = new System.Threading.Thread(() =>
+           // {
                 try
                 {
                     YXbsMeasTaskSDR meastask = new YXbsMeasTaskSDR();
@@ -85,9 +85,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     logger.Trace("Error in procedure GetMeasTaskSDRIdentifier... " + ex.Message);
                 }
 
-            });
-            thread.Start();
-            thread.Join();
+           // });
+           // thread.Start();
+           // thread.Join();
 
             TaskId = _TaskId;
             SubTaskId = _SubTaskId;
@@ -105,8 +105,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public static int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, string TaskId, int SensorId)
         {
             int? NUM_Val = null;
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread thread = new System.Threading.Thread(() =>
+            //{
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = null;
                 try
@@ -163,9 +163,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     dbConnect.Close();
                     dbConnect.Dispose();
                 }
-            });
-            thread.Start();
-            thread.Join();
+            //});
+            //thread.Start();
+            //thread.Join();
             return NUM_Val;
         }
         

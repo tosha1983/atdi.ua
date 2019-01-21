@@ -34,10 +34,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
                 try
                 {
                     List<MeasTask> ResMeasTasks = new List<MeasTask>();
-                    //List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList().FindAll(t => t.Key == options.TaskId.Value);
-                    //foreach (KeyValuePair<int, MeasTask> v in mtsk)
-                    //ResMeasTasks.Add(v.Value);
-
                     ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ShortReadTask(options.TaskId.Value)).ToList();
                     if (ResMeasTasks != null)
                     {

@@ -300,10 +300,10 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         {
                             var dictionary = new Dictionary<string, object>();
                             dictionary.Add("SdrnServer", "ServerSDRN01");
-                            //dictionary.Add("SensorName", "INS-DV-2018-TEST");
-                            //dictionary.Add("SensorTechId", "MMS-02");
-                            dictionary.Add("SensorName", "SENSOR-DBD13-G65-2314");
-                            dictionary.Add("SensorTechId", "{1645B8D8-AB87-4292-91E3-8AE2D614CEEC}");
+                            dictionary.Add("SensorName", "INS-DV-2018-TEST");
+                            dictionary.Add("SensorTechId", "MMS-02");
+                            //dictionary.Add("SensorName", "SENSOR-DBD13-G65-2314");
+                            //dictionary.Add("SensorTechId", "{1645B8D8-AB87-4292-91E3-8AE2D614CEEC}");
 
 
                             channel.QueueDeclare(
