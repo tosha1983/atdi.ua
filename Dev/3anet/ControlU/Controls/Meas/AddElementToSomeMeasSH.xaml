@@ -1,0 +1,438 @@
+﻿<UserControl x:Class="ControlU.Controls.Meas.AddElementToSomeMeasSH"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls.Meas"
+             xmlns:controls="clr-namespace:ControlU.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="334" d:DesignWidth="584"
+             >
+    <Grid >
+        <Grid.Resources>
+            <controls:FreqConverterDecimal x:Key="FreqConverter"/>
+            <controls:TimeConverter x:Key="TimeConverter"/>
+            <controls:LevelConverter x:Key="LevelConverter"/>
+            <controls:MultiValueLevelConverter x:Key="MultiValueLevelConverter"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="2"/>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="2"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <GroupBox Name="FreqType" Header="Freq Type " FontSize="12" Height="136">
+                <StackPanel>
+                    <ComboBox SelectedIndex="{Binding Data.FreqType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,0">
+                        <ComboBoxItem Content="Centr/Span"/>
+                        <ComboBoxItem Content="Start/Stop"/>
+                        <ComboBoxItem Content="GSM Down"/>
+                        <ComboBoxItem Content="GSM Up"/>
+                        <ComboBoxItem Content="UMTS Down"/>
+                        <ComboBoxItem Content="UMTS Up"/>
+                    </ComboBox>
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Data.FreqType,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <GroupBox Header="Frequency Center " FontSize="12" >
+                            <TextBox Text="{Binding Path=Data.FreqCentr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                     MouseWheel="FreqCentr_MouseWheel" KeyDown="FreqCentr_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                        </GroupBox>
+                        <GroupBox Header="Frequency Span " FontSize="12" >
+                            <TextBox Text="{Binding Path=Data.FreqSpan, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                     MouseWheel="FreqSpan_MouseWheel" KeyDown="FreqSpan_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                        </GroupBox>
+                    </StackPanel>
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Data.FreqType,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="1">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <GroupBox Header="Frequency Start " FontSize="12" >
+                            <TextBox Text="{Binding Path=Data.FreqStart, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                     MouseWheel="FreqStart_MouseWheel" KeyDown="FreqStart_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                        </GroupBox>
+                        <GroupBox Header="Frequency Stop " FontSize="12">
+                            <TextBox Text="{Binding Path=Data.FreqStop, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                     MouseWheel="FreqStop_MouseWheel" KeyDown="FreqStop_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture"
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                        </GroupBox>
+                    </StackPanel>
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Data.FreqType,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="2">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.FreqType,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="3">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.FreqType,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="4">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.FreqType,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="5">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                            <GroupBox Header="Channel " FontSize="12" Margin="0,0,1,0" >
+                                <TextBox Text="{Binding Path=Data.Channel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     KeyDown="Channel_KeyDown" MouseWheel="Channel_MouseWheel" PreviewTextInput="Uni_PreKeyDownInteger" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                            </GroupBox>
+                            <GroupBox Header="Frequency" FontSize="12" Grid.Column="1" Margin="1,0,0,0" >
+                                <TextBox Text="{Binding Path=Data.FreqCentr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                     MouseWheel="FreqCentr_MouseWheel" KeyDown="FreqCentr_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                            </GroupBox>
+                        </Grid>
+
+                        <GroupBox Header="Frequency Span " FontSize="12" >
+                            <TextBox Text="{Binding Path=Data.FreqSpan, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                     MouseWheel="FreqSpan_MouseWheel" KeyDown="FreqSpan_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Height="27"/>
+                        </GroupBox>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="RBW " FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <RepeatButton Click="RBWMinus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.RowSpan="2">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </RepeatButton>
+                    <TextBlock Text="{Binding Path=Data.RBW, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                       Height="18" TextWrapping="Wrap" TextAlignment="Center" FontSize="14" Grid.Column="1" VerticalAlignment="Center"/>
+                    <RepeatButton Click="RBWPlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2" Grid.RowSpan="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </RepeatButton>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="VBW " FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <RepeatButton Click="VBWMinus_Click" Height="27" VerticalAlignment="Top" Width="27" Margin="0">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </RepeatButton>
+                    <TextBlock Text="{Binding Path=Data.VBW, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" 
+                                       Height="18" TextWrapping="Wrap" TextAlignment="Center" FontSize="14" Grid.Column="1" VerticalAlignment="Center"/>
+                    <RepeatButton Click="VBWPlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </RepeatButton>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Sweep Time " FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <RepeatButton Click="SweepTimeMinus_Click" Height="27" VerticalAlignment="Top" Width="27" Margin="0">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </RepeatButton>
+                    <TextBox MouseWheel="SweepTime_MouseWheel" KeyDown="SweepTime_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     Text="{Binding Path=Data.SweepTime, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TimeConverter}}" Height="24" TextWrapping="Wrap" TextAlignment="Center" FontSize="14" Grid.Column="1" VerticalAlignment="Center"/>
+                    <RepeatButton Click="SweepTimePlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </RepeatButton>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Level Unit" FontSize="12">
+                <ComboBox ItemsSource="{Binding Path=LevelUnits}" 
+                          SelectedItem="{Binding Path=Data.LevelUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                          Margin="0,2,0,0" Height="25" FontSize="14" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=UI}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </GroupBox>
+        </StackPanel>
+        <StackPanel Grid.Column="2">
+            <GroupBox Header="Reference Level" FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <RepeatButton Click="RefLevelMinus_Click" Height="27" VerticalAlignment="Top" Width="27" Margin="0,3,0,0">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </RepeatButton>
+                    <TextBlock MouseWheel="RefLevel_MouseWheel" Height="18" TextWrapping="Wrap" TextAlignment="Center" Margin="0,3,0,0" FontSize="14" Grid.Column="1">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource MultiValueLevelConverter}">
+                                <Binding Path="Data.RefLevel" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                <Binding Path="Data.LevelUnit.UI" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <RepeatButton Click="RefLevelPlus_Click" Height="27" VerticalAlignment="Top" Width="27" Margin="0,3,0,0" Grid.Column="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </RepeatButton>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Range" FontSize="12">
+                <Grid Margin="0,3,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Click="RangeMinus_Click" Height="27" Width="27" >
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </Button>
+                    <TextBlock MouseWheel="Range_MouseWheel" Height="18" TextAlignment="Center" FontSize="14" VerticalAlignment="Center" Grid.Column="1"
+                               Text="{Binding Path=Data.Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                               Converter={StaticResource LevelConverter},ConverterParameter=dB}" >
+                    </TextBlock>
+                    <Button Click="RangePlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </Button>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Gain" FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Click="GainMinus_Click" Height="27" VerticalAlignment="Top" Width="27" Margin="0">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </Button>
+                    <TextBlock MouseWheel="Gain_MouseWheel" Height="18" TextWrapping="Wrap" TextAlignment="Center" FontSize="14" Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Data.GainIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="-1">
+                                        <Setter Property="Text" Value="Auto"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.GainIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                        <Setter Property="Text" Value="0 dB"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.GainIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="1">
+                                        <Setter Property="Text" Value="10 dB"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.GainIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="2">
+                                        <Setter Property="Text" Value="20 dB"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.GainIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="3">
+                                        <Setter Property="Text" Value="30 dB"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Button Click="GainPlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </Button>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Attenuation" FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Click="AttMinus_Click" Height="27" VerticalAlignment="Top" Width="27" Margin="0">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </Button>
+                    <TextBlock MouseWheel="Att_MouseWheel" Height="18" TextAlignment="Center" FontSize="14" Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Data.AttIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="-1">
+                                        <Setter Property="Text" Value="Auto"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.AttIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                        <Setter Property="Text" Value="0 dB"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.AttIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="1">
+                                        <Setter Property="Text" Value="10 dB"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.AttIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="2">
+                                        <Setter Property="Text" Value="20 dB"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Data.AttIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="3">
+                                        <Setter Property="Text" Value="30 dB"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Button Click="AttPlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </Button>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Trace Type " FontSize="14">
+                <Grid Margin="0,2,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="27"/>
+                        <RowDefinition >
+                            <RowDefinition.Resources>
+                                <Style TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedIndex,ElementName=Trace_CB}" Value="1">
+                                            <Setter Property="Height" Value="30"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RowDefinition.Resources>
+                        </RowDefinition>
+                        <RowDefinition >
+                            <RowDefinition.Resources>
+                                <Style TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedIndex,ElementName=Trace_CB}" Value="2">
+                                            <Setter Property="Height" Value="30"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RowDefinition.Resources>
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="27"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Name="Trace_CB" ItemsSource="{Binding Path=TraceTypes}" 
+                                      SelectedIndex="{Binding Path=Data.TraceTypeIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                      FontSize="14">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=UI}" >
+                                    <TextBlock.Resources>
+                                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Parameter}" Value="6" >
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Resources>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.Resources>
+                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                                <Setter Property="Grid.ColumnSpan" Value="3"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="1" >
+                                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                                        <Setter Property="Margin" Value="0,0,2,0"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="2" >
+                                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                                        <Setter Property="Margin" Value="0,0,2,0"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="3" >
+                                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                                        <Setter Property="Margin" Value="0,0,2,0"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="4" >
+                                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                                        <Setter Property="Margin" Value="0,0,2,0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Resources>
+                    </ComboBox>
+                    <Button Click="TraceReset_Click" Grid.Column="3">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="0" >
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="5" >
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedIndex,ElementName=Trace_CB}" Value="6" >
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Resources>
+                        <Path Data="{StaticResource Update_PathData}" Stretch="Uniform" Fill="{DynamicResource Brush_Foreground_Normal}" Width="19" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Button>
+
+                    <RepeatButton Click="TraceAverageMinus_Click" Height="27" VerticalAlignment="Bottom" Width="27" Grid.Row="1">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </RepeatButton>
+                    <TextBox Text="{Binding Path=Data.TraceAveragedList.AveragingCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                     KeyDown="TraceAverage_KeyDown" PreviewTextInput="Uni_PreKeyDownInteger" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" Height="23" Grid.Column="1" VerticalAlignment="Center" Grid.Row="1"/>
+                    <RepeatButton Click="TraceAveragePlus_Click" Height="27" VerticalAlignment="Bottom" Width="27" Grid.Column="2" Grid.Row="1">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </RepeatButton>
+
+                    <RepeatButton Click="TraceTrackingMinus_Click" Height="27" VerticalAlignment="Bottom" Width="27" Grid.Row="2">
+                        <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                    </RepeatButton>
+                    <TextBox Text="{Binding Path=Data.TraceTrackedList.TrackingCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                     KeyDown="TraceTracking_KeyDown" PreviewTextInput="Uni_PreKeyDownInteger" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" FontSize="14" Height="23" Grid.Column="1" VerticalAlignment="Center" Grid.Row="2"/>
+                    <RepeatButton Click="TraceTrackingPlus_Click" Height="27" VerticalAlignment="Bottom" Width="27" Grid.Column="2" Grid.Row="4">
+                        <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                    </RepeatButton>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

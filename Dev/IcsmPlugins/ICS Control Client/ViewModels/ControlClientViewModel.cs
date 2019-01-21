@@ -769,15 +769,17 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var count = result.FrequenciesMeasurements.Length;
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+
+            var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
             var max = default(double);
             var min = default(double);
             for (int i = 0; i < count; i++)
             {
-                var ms = result.MeasurementsResults[i] as SDR.SpectrumOccupationMeasurementResult;
-                var valX = result.FrequenciesMeasurements[i].Freq;
-                var valY = ms.Occupancy ?? 0;
+                var ms = sdrMeasResults.MeasurementsResults[i] as SDR.SpectrumOccupationMeasurementResult;
+                var valX = sdrMeasResults.FrequenciesMeasurements[i].Freq;
+                var valY = ms.Value ?? 0;
                 var point = new Point
                 {
                     X = valX,
@@ -825,7 +827,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var count = result.FrequenciesMeasurements.Length;
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+
+            var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
             
             var maxX = default(double);
@@ -836,8 +840,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
             for (int i = 0; i < count; i++)
             {
-                var ms = result.MeasurementsResults[i] as SDR.LevelMeasurementResult;
-                var valX = result.FrequenciesMeasurements[i].Freq;
+                var ms = sdrMeasResults.MeasurementsResults[i] as SDR.LevelMeasurementResult;
+                var valX = sdrMeasResults.FrequenciesMeasurements[i].Freq;
                 var valY = ms.Value ?? 0;
                 var point = new Point
                 {
@@ -871,8 +875,13 @@ namespace XICSM.ICSControlClient.ViewModels
             option.YMax = preparedDataY.MaxValue;
             option.YMin = preparedDataY.MinValue;
 
-            var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 8);
-            option.XTick = preparedDataX.Step;
+            //var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 8);
+            //option.XTick = preparedDataX.Step;
+            //option.XMin = preparedDataX.MinValue;
+            //option.XMax = preparedDataX.MaxValue;
+
+            var preparedDataX = Environment.Utitlity.CalcLevelRange(minX - 5, maxX + 5);
+            option.XTick = 50;
             option.XMin = preparedDataX.MinValue;
             option.XMax = preparedDataX.MaxValue;
 

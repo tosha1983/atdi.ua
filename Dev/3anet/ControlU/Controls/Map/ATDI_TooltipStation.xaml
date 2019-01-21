@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="ControlU.Controls.Map.ATDI_TooltipStation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls.Map"
+             xmlns:ctrl="clr-namespace:ControlU.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="1000">
+    <DataGrid x:Name="Data" 
+              IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False" 
+              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+              VirtualizingStackPanel.ScrollUnit="Pixel" HeadersVisibility="Column">
+        <DataGrid.Resources>
+            <ctrl:FreqConverterDecimal x:Key="FreqConverter"/>
+            <ctrl:CoorConverter x:Key="CoorConverter"/>
+            <ctrl:ATDIFreqToStringConverter x:Key="ATDI_FreqsConverter"/>
+            <ctrl:OwnerToShortConverter x:Key="OwnerToShortConverter"/>
+        </DataGrid.Resources>
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="{DynamicResource DB_Result}" Binding="{Binding obj.meas_data_exist,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=obj.meas_data_exist,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                <Setter Property="Background" Value="{x:Null}"/>
+                                <Setter Property="Text" Value="No"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=obj.meas_data_exist,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Background" Value="#4C0CFF00"/>
+                                <Setter Property="Text" Value="Yes"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Header="{DynamicResource DB_Identified}" Binding="{Binding obj.IsIdentified,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_Standard}" Binding="{Binding obj.standard,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_Callsign_DB}" Binding="{Binding obj.callsign_db,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="DB_S0" Binding="{Binding obj.Callsign_db_S0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="DB_S1" Binding="{Binding obj.Callsign_db_S1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="DB_S2" Binding="{Binding obj.Callsign_db_S2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="DB_S3" Binding="{Binding obj.Callsign_db_S3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_Callsign_Radio}" Binding="{Binding obj.callsign_radio,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="R_S0" Binding="{Binding obj.Callsign_radio_S0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="R_S1" Binding="{Binding obj.Callsign_radio_S1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="R_S2" Binding="{Binding obj.Callsign_radio_S2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="R_S3" Binding="{Binding obj.Callsign_radio_S3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_StationAddress}" Binding="{Binding obj.site.address,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_StationRegion}" Binding="{Binding obj.site.region,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_StationLatitude}" Binding="{Binding obj.site.location.latitude,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CoorConverter}}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_StationLongitude}" Binding="{Binding obj.site.location.longitude,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource CoorConverter}}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_Status}" Binding="{Binding obj.status,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_Permission}" Binding="{Binding obj.license.name,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_PermissionStart}" Binding="{Binding obj.license.start_date,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:yyyy-MM-dd}}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_PermissionEnd}" Binding="{Binding obj.license.end_date,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:yyyy-MM-dd}}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_PermissionClose}" IsReadOnly="True">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Text" Value="{Binding obj.license.close_date,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:yyyy-MM-dd}}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=obj.license.close_date}" Value="0001-01-01 00:00:00">
+                                <Setter Property="Text" Value="-"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Header="{DynamicResource DB_Owner}" Binding="{Binding obj.owner.name,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource OwnerToShortConverter}}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_OwnerCode}" Binding="{Binding obj.owner.code,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_OwnerOKPO}" Binding="{Binding obj.owner.okpo,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_OwnerZIP}" Binding="{Binding obj.owner.zip,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="{DynamicResource DB_OwnerAddress}" Binding="{Binding obj.owner.address,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

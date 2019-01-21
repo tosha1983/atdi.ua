@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="ControlU.Controls.SatelliteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls"
+             mc:Ignorable="d" 
+             >
+    <Grid Margin="5" x:Name="satellites">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" MinWidth="150"/>
+        </Grid.ColumnDefinitions>
+        <Grid Name="sat" Opacity=".5" Margin="0" Width="150" Height="{Binding ActualWidth, ElementName=sat}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Ellipse Stroke="{DynamicResource Brush_Foreground_Dark}" StrokeThickness="1"
+					 Grid.RowSpan="4" Grid.ColumnSpan="4"
+					 Fill="{DynamicResource Brush_Background_Light}"
+					 >
+
+            </Ellipse>
+            <Ellipse Stroke="{DynamicResource Brush_Foreground_Dark}" StrokeThickness="1"
+					 Grid.Row="1" Grid.Column="1"
+					 Grid.RowSpan="2" Grid.ColumnSpan="2">
+
+            </Ellipse>
+
+            <Path Stroke="{DynamicResource Brush_Foreground_Dark}" StrokeThickness="1"
+				  Grid.RowSpan="4" Grid.ColumnSpan="4"
+				  Stretch="Fill"
+				  Data="M0,1 L 2,1 M 1,0 L 1,2" />
+        </Grid>
+        <ItemsControl Margin="0" ItemsSource="{Binding Satelite,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+					  HorizontalAlignment="Stretch">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:PolarPlacementItem Azimuth="{Binding Azimuth}"
+                                              Elevation="{Binding Elevation}" >
+                        <Canvas Width="8" Height="8">
+                            <Ellipse Fill="{DynamicResource Brush_Blue_Normal}"
+                                     Width="8" Height="8" >
+                                <Ellipse.ToolTip>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Azimuth, StringFormat=Azimuth: {0}}" />
+                                        <TextBlock Text="{Binding Elevation, StringFormat=Elevation: {0}}" />
+                                        <TextBlock Text="{Binding SatLevel, StringFormat=SNR: {0}}" />
+                                    </StackPanel>
+                                </Ellipse.ToolTip>
+                            </Ellipse>
+                            <TextBlock Text="{Binding SatNum}" Margin="8,-8" />
+                        </Canvas>
+                    </local:PolarPlacementItem>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Path Data="M0,-10 L-6,10 L0,6 L6,10 L0,-10 M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Light}" Width="50" Height="50">
+            <Path.LayoutTransform>
+                <RotateTransform Angle="{Binding Path=AngleCourse, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Path.LayoutTransform>
+        </Path>
+        <Grid Grid.Column="1" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Height="100" >
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+
+
+                <Path Stroke="{DynamicResource Brush_BorderColor_Normal}" StrokeThickness="1"
+				  Grid.RowSpan="4" Grid.ColumnSpan="4"
+				  Stretch="Fill"
+				  Data="M0,0 L 1,0 M 0,1 L 1,1 M 0,2 L 1,2 M 0,3 L 1,3 M 0,4 L 1,4" />
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding Satelite,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+					  HorizontalAlignment="Stretch" 
+					  VerticalAlignment="Stretch" Height="100" Margin="3,0" >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Height="{Binding SatLevel,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+							Background="{DynamicResource Brush_Background_Light}"
+							BorderBrush="{DynamicResource Brush_BorderColor_Normal}" 
+							Margin="0,0,3,0" Width="18"
+							BorderThickness="1"
+							ToolTip="{Binding SatLevel}"
+							VerticalAlignment="Bottom">
+                            <TextBlock Text="{Binding SatNum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                                       HorizontalAlignment="Center" FontSize="11" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid Grid.Row="1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock VerticalAlignment="Center" Margin="5,0">
+                    <Run Text="Antenna State: "/>
+                    <Run Text="{Binding Path=GPSAntennaState, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </TextBlock>
+                <TextBlock VerticalAlignment="Center" Margin="5,0" Grid.Row="1" >
+                    <Run Text="Speed: "/>
+                    <Run Text="{Binding Path=SpeedKmPerH, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Run Text=" km/h"/>
+                </TextBlock>
+                <TextBlock VerticalAlignment="Center" Margin="5,0" Grid.Row="2" >
+                    <Run Text="Course: "/>
+                    <Run Text="{Binding Path=AngleCourse, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Run Text="°"/>
+                </TextBlock>
+            </Grid>
+
+
+        </Grid>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="ControlU.Controls.Map.DrawCircle"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls.Map"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Name="ConnectorRoot">
+    <Grid>
+        <Ellipse x:Name="Circle" DataContext="{Binding ElementName=ConnectorRoot}"
+                 Stroke="{Binding Foreground}" StrokeThickness="1.5"/>
+        <!--незнаю чего но без этой линии неработает-->
+        <Line X1="0" Y1="0" X2="1" Y2="0"/>
+    </Grid>
+</UserControl>
