@@ -28,6 +28,59 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._eventEmitter = eventEmitter;
             this._logger = logger;
         }
+       /*
+        public bool CreateNewObjectSensor(ISdrnIncomingEnvelope<Sensor> incomingEnvelope)
+        {
+            var sensorRegistration = false;
+            var sensorExistsInDb = false;
+            var query = this._dataLayer.GetBuilder<MD.ISensor>()
+            .From()
+            .Select(c => c.Name)
+            .Select(c => c.Id)
+            .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
+            .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
+            .OrderByAsc(c => c.Id)
+            ;
+
+           sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+            .Execute(query) == 1;
+
+
+            if (!sensorExistsInDb)
+            {
+              
+                var idSensor = this._dataLayer.Executor<SdrnServerDataContext>()
+                               .ExecuteScalar(string.Format("SELECT ICSM.GetID('{0}') as NEXT_ID from dual", "XBS_SENSOR"));
+
+
+
+                var insertCommand = this._dataLayer.GetBuilder<MD.ISensor>()
+                                         .Insert()
+                                         .SetValue(c=>c.Id, idSensor)
+                                         .SetValue(c => c.Administration, incomingEnvelope.DeliveryObject.Administration)
+                                         .SetValue(c => c.BiuseDate, incomingEnvelope.DeliveryObject.BiuseDate)
+                                         .SetValue(c => c.CreatedBy, incomingEnvelope.DeliveryObject.CreatedBy)
+                                         .SetValue(c => c.CustData1, incomingEnvelope.DeliveryObject.CustDate1)
+                                         .SetValue(c => c.CustNbr1, incomingEnvelope.DeliveryObject.CustNbr1)
+                                         .SetValue(c => c.CustTxt1, incomingEnvelope.DeliveryObject.CustTxt1)
+                                         .SetValue(c => c.DateCreated, incomingEnvelope.DeliveryObject.Created)
+                                         .SetValue(c => c.EouseDate, incomingEnvelope.DeliveryObject.EouseDate)
+                                         .SetValue(c => c.Name, incomingEnvelope.DeliveryObject.Name)
+                                         .SetValue(c => c.NetworkId, incomingEnvelope.DeliveryObject.NetworkId)
+                                         .SetValue(c => c.Remark, incomingEnvelope.DeliveryObject.Remark)
+                                         .SetValue(c => c.RxLoss, incomingEnvelope.DeliveryObject.RxLoss)
+                                         .SetValue(c => c.Status, incomingEnvelope.DeliveryObject.Status)
+                                         .SetValue(c => c.StepMeasTime, incomingEnvelope.DeliveryObject.StepMeasTime)
+                                         .SetValue(c => c.TypeSensor, incomingEnvelope.DeliveryObject.Type)
+                                         .SetValue(c => c.ApiVersion, "2.0")
+                                         .SetValue(c => c.TechId, incomingEnvelope.DeliveryObject.Equipment.TechId);
+
+                                         sensorRegistration = this._dataLayer.Executor<SdrnServerDataContext>()
+                                         .Execute(insertCommand) == 1;
+            }
+            return true;
+        }
+       */
 
         public void Handle(ISdrnIncomingEnvelope<Sensor> incomingEnvelope, ISdrnMessageHandlingResult result)
         {
@@ -39,7 +92,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 var sensorExistsInDb = false;
                 try
                 {
-
                   
                     var query = this._dataLayer.GetBuilder<MD.ISensor>()
                     .From()
@@ -56,12 +108,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (!sensorExistsInDb)
                     {
-                        var insertCommand = this._dataLayer.GetBuilder<MD.ISensor>()
-                            .Insert()
-                            .SetValue(c => c.Name, incomingEnvelope.DeliveryObject.Name)
-                            .SetValue(c => c.TechId, incomingEnvelope.DeliveryObject.Equipment.TechId);
-                         sensorRegistration = this._dataLayer.Executor<SdrnServerDataContext>()
-                            .Execute(insertCommand) == 1;
+                        
                     }
 
                     // с этого момента нужно считать что сообщение удачно обработано

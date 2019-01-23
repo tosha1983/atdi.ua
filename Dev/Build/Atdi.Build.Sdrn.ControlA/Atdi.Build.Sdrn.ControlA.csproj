@@ -160,19 +160,54 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)\Atdi.Tools.LicenseAnalyzer.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+    <PostBuildEvent>copy "..\..\..\..\Hosts\Atdi.AppServer.Sdrn.ControlA.Console\bin\$(ConfigurationName)\Atdi.AppServer.Sdrn.ControlA.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Hosts\Atdi.AppServer.Sdrn.ControlA.Console\bin\$(ConfigurationName)\Atdi.AppServer.Sdrn.ControlA.Console.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Atdi.AppServer.Sdrn.ControlA.Console.exe.settings" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Hosts\Atdi.AppServer.Sdrn.ControlA.Svchost\bin\$(ConfigurationName)\Atdi.AppServer.Sdrn.ControlA.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Hosts\Atdi.AppServer.Sdrn.ControlA.Svchost\bin\$(ConfigurationName)\Atdi.AppServer.Sdrn.ControlA.Svchost.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
 
 
 
-copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
-copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Atdi*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\NHibernate.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\NHibernate.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Orm\NHibernate\Nhibernate.cfg.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\sensor.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Remotion.Linq.EagerFetching.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Remotion.Linq.EagerFetching.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Iesi.Collections.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Iesi.Collections.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Remotion.Linq.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Remotion.Linq.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Antlr3.Runtime.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\Antlr3.Runtime.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\DllApi\ftd2xx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppUnits\Atdi.AppUnits.Sdrn.ControlA\bin\$(ConfigurationName)\DllApi\bb_api.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+copy "..\..\..\..\Platform\Atdi.Platform\bin\$(ConfigurationName)\Atdi.Platform.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Platform\Atdi.Platform.AppServer\bin\$(ConfigurationName)\Atdi.Platform.AppServer.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Platform\Atdi.Platform.Logging\bin\$(ConfigurationName)\Atdi.Platform.Logging.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Platform\Atdi.Platform.ServicesContainer\bin\$(ConfigurationName)\Atdi.Platform.ServicesContainer.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\Platform\Atdi.Platform.Configurator\bin\$(ConfigurationName)\Atdi.Platform.Configurator.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+
+copy "..\..\..\..\packages\Castle.Windsor.4.1.1\lib\net45\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\Castle.Windsor.4.1.1\lib\net45\Castle.Windsor.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+copy "..\..\..\..\packages\Castle.WcfIntegrationFacility.4.1.1\lib\net45\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\Castle.WcfIntegrationFacility.4.1.1\lib\net45\Castle.Facilities.WcfIntegration.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\ControlA\Bin$(ConfigurationName)"
+
+
+
+
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

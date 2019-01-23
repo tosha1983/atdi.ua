@@ -34,7 +34,15 @@ namespace Atdi.AppUnits.Sdrn.ControlA
         public static readonly EventCategory CreateNewMeasTaskSDR = "Create new MeasTaskSDR";
         public static readonly EventCategory DeleteMeasTaskSDR = "Delete MeasTaskSDR";
         public static readonly EventCategory ArchiveMeasTaskSDR = "Archive MeasTaskSDR";
-        
+        public static readonly EventCategory BusManagerInit = "Init BusManager";
+        public static readonly EventCategory ArchiveResult = "Archive Result";
+        public static readonly EventCategory SendActivitySensor = "Send activity sensor";
+        public static readonly EventCategory StopMeasSdrTask = "Stop MeasSdrTask";
+        public static readonly EventCategory SendMeasSdrTask = "Send MeasSdrTask";
+        public static readonly EventCategory GetIdentTaskFromMeasTaskSDR = "Get MeasSdrTask properties";
+        public static readonly EventCategory RecievedSensorLocation = "Recieved location sensor";
+        public static readonly EventCategory StartGPS = "Start GPS";
+
 
     }
 
@@ -61,7 +69,39 @@ namespace Atdi.AppUnits.Sdrn.ControlA
         public static readonly EventText DeleteMeasTaskSDR = "Delete MeasTaskSDR";
         public static readonly EventText ArchiveMeasTaskSDR = "Archive MeasTaskSDR";
         public static readonly EventText TaskProperties = "TaskId = {0}, NN = {1}";
-    }
+        public static readonly EventText BusManagerInit = "Init BusManager";
+        public static readonly EventText SuccessfullySavedIntoTableNH_MeasSDRResults = "Successfully saved into table - NH_MeasSDRResults";
+        public static readonly EventText SuccessfullySavedIntoTableNHFSEMPLES = "Successfully saved into table - NH_FSEMPLES";
+        public static readonly EventText SuccessfullySavedIntoTablenHMeasResultsLevel = "Successfully saved into table - nHMeasResultsLevel";
+        public static readonly EventText SuccessfullySavedIntoTablenHMeasResultsFreq = "Successfully saved into table - nHMeasResultsFreq";
+        public static readonly EventText SuccessfullySavedIntoTablenhFMeasSDRLoc = "Successfully saved into table - nhFMeasSDRLoc";
+        public static readonly EventText ArchiveResult = "Archive result";
+        public static readonly EventText SendActivitySensor = "Send activity sensor";
+        public static readonly EventText StopMeasSdrTask = "stop meas task with ID = '{0}'";
+        public static readonly EventText RecievedEventStop = "Recieved event stop meas task with ID = '{0}'";
+        public static readonly EventText RecievedSensorLocation = "Recieved sensor location with ID = '{0}'";
+        public static readonly EventText resHNotNull = "resH.TaskId = '{0}', resH.NN = '{1}', mDR.Id = '{2}'";
+        public static readonly EventText resNotNull = "res.TaskId = '{0}', res.NN = '{1}', mDR.Id = '{2}'";
+        public static readonly EventText SuccessfullySavedIntoTablenhMeasTaskSDR = "Successfully saved into table - nhMeasTaskSDR";
+        public static readonly EventText SuccessfullySavedIntoTablenMeasSDRFREQPARAM = "Successfully saved into table - nMeasSDRFREQPARAM";
+        public static readonly EventText SuccessfullySavedIntoTableNH_MeasSDRFreq = "Successfully saved into table - NH_MeasSDRFreq";
+        public static readonly EventText SuccessfullySavedIntoTablenMeas_SDRLocParam = "Successfully saved into table - nMeas_SDRLocParam";
+        public static readonly EventText SuccessfullySavedIntoTablenNHMeasSDRSoParam = "Successfully saved into table - nNHMeasSDRSoParam";
+        public static readonly EventText RemoveRecordFromTableNH_MeasTaskSDR = "Remove record from table - NH_MeasTaskSDR";
+        public static readonly EventText ArchiveRecordTableNH_MeasTaskSDR = "Archive record  table - NH_MeasTaskSDR";
+        public static readonly EventText SuccessfullySavedIntoTablenHSensLocation = "Successfully saved into table - nHSensLocation";
+        public static readonly EventText SuccessfullySavedIntoTableNH_Sensor = "Successfully saved into table - NH_Sensor";
+        public static readonly EventText SuccessfullySavedIntoTableNH_SensorAntenna = "Successfully saved into table - NH_SensorAntenna";
+        public static readonly EventText SuccessfullySavedIntoTableNH_AntennaPattern = "Successfully saved into table - NH_AntennaPattern";
+        public static readonly EventText SuccessfullySavedIntoTableNH_SensorEquip = "Successfully saved into table - NH_SensorEquip";
+        public static readonly EventText SuccessfullySavedIntoTablenHSensorEquipSensitivity = "Successfully saved into table - nHSensorEquipSensitivity";
+        public static readonly EventText RecievedMeasTaskWithID = "Recieved meas task with ID = '{0}'";
+        public static readonly EventText GetIdentTaskFromMeasTaskSDR = "Get MeasSdrTask properties";
+        public static readonly EventText UnableStartGNSSWrapper = "Unable start GNSSWrapper due to {0}";
+        public static readonly EventText UnableStopGNSSWrapper = "Unable stop GNSSWrapper due to {0}";
+        public static readonly EventText UnableLoadSettings = "Unable load settings from {0} properly due to {1}, default settings will be used instead";
+        
+}
     static class TraceScopeNames
     {
         //public static readonly TraceScopeName MessageProcessing = "Message processing";

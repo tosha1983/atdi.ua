@@ -11,9 +11,7 @@ namespace Atdi.AppServer.Sdrn.ControlA
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Press any key to start SDRN Server ...");
-            Console.ReadLine();
-
+            Console.WriteLine($"Start SDR-A Server ...");
             using (var host = PlatformConfigurator.BuildHost())
             {
                 try

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sensor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <AGL>10</AGL>
+  <Administration>UKR</Administration>
+  <Antenna>
+    <AddLoss>0</AddLoss>
+    <AntDir>NotDirectional</AntDir>
+    <AntennaPatterns>
+      <AntennaPattern>
+        <DiagA>HV</DiagA>
+        <DiagH>VECTOR 10 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</DiagH>
+        <DiagV>VECTOR 10 10.5 10.5 10.5 8.46 5.01 2.84 1.46 0.61 0.15 0 0.15 0.61 1.46 2.84 5.01 8.46</DiagV>
+        <Freq>200</Freq>
+        <Gain>0</Gain>
+      </AntennaPattern>
+      <AntennaPattern>
+        <DiagA>HV</DiagA>
+        <DiagH>VECTOR 10 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</DiagH>
+        <DiagV>VECTOR 10 10.5 10.5 10.5 8.46 5.01 2.84 1.46 0.61 0.15 0 0.15 0.61 1.46 2.84 5.01 8.46</DiagV>
+        <Freq>1000</Freq>
+        <Gain>1.15</Gain>
+      </AntennaPattern>
+      <AntennaPattern>
+        <DiagA>HV</DiagA>
+        <DiagH>VECTOR 10 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</DiagH>
+        <DiagV>VECTOR 10 10.5 10.5 10.5 8.46 5.01 2.84 1.46 0.61 0.15 0 0.15 0.61 1.46 2.84 5.01 8.46</DiagV>
+        <Freq>2000</Freq>
+        <Gain>2.15</Gain>
+      </AntennaPattern>
+    </AntennaPatterns>
+    <GainMax>2.15</GainMax>
+    <GainType>I</GainType>
+    <HBeamwidth>360</HBeamwidth>
+    <LowerFreq>200</LowerFreq>
+    <Manufacturer>SIRIO ANTENNE</Manufacturer>
+    <Name>SD 2000 U</Name>
+    <Polarization>V</Polarization>
+    <TechId>test_123456</TechId>
+    <UpperFreq>2000</UpperFreq>
+    <UseType>Discone</UseType>
+    <VBeamwidth>70</VBeamwidth>
+  </Antenna>
+  <Azimuth>0</Azimuth>
+  <BiuseDate>2017-12-16T00:00:00.573457+02:00</BiuseDate>
+  <Elevation>0</Elevation>
+  <EouseDate>2018-12-16T23:59:59.573457+02:00</EouseDate>
+<Equipment>
+    <FFTPointMax>8192</FFTPointMax>
+    <Family>Real-Time Spectrum Analyzer</Family>
+    <LowerFreq>0.009</LowerFreq>
+    <Manufacturer>Signal Hound</Manufacturer>
+    <Mobility>0</Mobility>
+    <Name>BB60C</Name>
+    <RBWMax>10000</RBWMax>
+    <RBWMin>0.01</RBWMin>
+    <RefLeveldBm>-40</RefLeveldBm>
+    <SensorEquipSensitivities>
+      <SensorEquipSensitivity>
+        <AddLoss>0</AddLoss>
+        <Freq>1000</Freq>
+        <NoiseF>5</NoiseF>
+      </SensorEquipSensitivity>
+    </SensorEquipSensitivities>
+    <TechId>1Tech_SpecialDev222</TechId>
+    <UpperFreq>6000</UpperFreq>
+    <VBWMax>10000</VBWMax>
+    <VBWMin>0.01</VBWMin>
+    <Version>1.0</Version>
+  </Equipment>
+  <Name>SENSOR-DBD12-A00-1692</Name>
+  <NetworkId>1</NetworkId>
+  <RxLoss>5</RxLoss>
+  <TypeSensor>Sensor</TypeSensor>
+<Poligon>
+</Poligon>
+</Sensor>

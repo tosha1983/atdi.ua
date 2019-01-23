@@ -730,6 +730,11 @@ namespace Atdi.LegacyServices.Icsm
             return command;
         }
 
+        public int ExecuteScalar(IQueryStatement statement)
+        {
+            throw new NotImplementedException();
+        }
+
 
         //public EngineCommand BuildSelectCommand<TModel>(IQuerySelectStatement statement)
         //{

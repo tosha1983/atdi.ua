@@ -1,11 +1,9 @@
 ﻿using Atdi.Contracts.Api.Sdrn.MessageBus;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DM = Atdi.AppServer.Contracts.Sdrns;
-
+using Atdi.AppUnits.Sdrn.ControlA.ManageDB;
+using Atdi.AppUnits.Sdrn.ControlA.Bus;
 
 
 namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
@@ -26,10 +24,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
             {
                 for (int i = 0; i < message.Data.Count; i++)
                 {
-                    Console.WriteLine($"Recieved meas task with ID = '{message.Data[i].Id}'");
-                    LoadDataMeasTask loadTask = new LoadDataMeasTask();
-                    SaveMeasTaskSDR svTsk = new SaveMeasTaskSDR();
-                    DM.MeasSdrTask mtSDR = message.Data[i];
+                    Launcher._logger.Info(Contexts.ThisComponent, Categories.SendMeasSdrTask,  string.Format(Events.RecievedMeasTaskWithID.ToString(), message.Data[i].Id));
+                    var loadTask = new LoadDataMeasTask();
+                    var svTsk = new SaveMeasTaskSDR();
+                    var mtSDR = message.Data[i];
                     {
                         var measTaskFind = (loadTask.FindMeasTaskSDR(mtSDR.SensorId.Value, mtSDR.MeasTaskId.Value, mtSDR.MeasSubTaskStationId, mtSDR.MeasSubTaskId.Value));
                         if (measTaskFind.Count == 0)
@@ -37,14 +35,17 @@ namespace Atdi.AppUnits.Sdrn.ControlA.Handlers
                             mtSDR.NumberScanPerTask = -999;
                             svTsk.CreateNewMeasTaskSDR(message.Data[i]);
                             message.Result = MessageHandlingResult.Confirmed;
+                            Launcher._logger.Info(Contexts.ThisComponent, Categories.CreateNewMeasTaskSDR, Events.CreateNewMeasTaskSDR);
                         }
                         else
                         {
-                            DM.MeasSdrTask sdrFindTask = measTaskFind.Find(v => v.SensorId.Value == mtSDR.SensorId.Value && v.MeasTaskId.Value == mtSDR.MeasTaskId.Value && v.MeasSubTaskStationId == mtSDR.MeasSubTaskStationId && v.MeasSubTaskId.Value == mtSDR.MeasSubTaskId.Value);
+                            SaveMeasTaskSDR saveMeasTaskSDR = new SaveMeasTaskSDR();
+                            var sdrFindTask = measTaskFind.Find(v => v.SensorId.Value == mtSDR.SensorId.Value && v.MeasTaskId.Value == mtSDR.MeasTaskId.Value && v.MeasSubTaskStationId == mtSDR.MeasSubTaskStationId && v.MeasSubTaskId.Value == mtSDR.MeasSubTaskId.Value);
                             sdrFindTask.NumberScanPerTask = -999;
                             sdrFindTask.status = mtSDR.status;
-                            SaveMeasSDRResults.SaveStatusMeasTaskSDR(sdrFindTask);
+                            saveMeasTaskSDR.SaveStatusMeasTaskSDR(sdrFindTask);
                             message.Result = MessageHandlingResult.Confirmed;
+                            Launcher._logger.Info(Contexts.ThisComponent, Categories.SaveStatusMeasTaskSDR, Events.SaveStatusMeasTaskSDR);
                         }
                     }
                 }

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<SettingsContainer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <PortSettings>
+    <PortName>COM17</PortName>
+    <PortBaudRate>baudRate9600</PortBaudRate>
+    <PortParity>None</PortParity>
+    <PortDataBits>dataBits8</PortDataBits>
+    <PortStopBits>One</PortStopBits>
+    <PortHandshake>None</PortHandshake>
+  </PortSettings>
+</SettingsContainer>

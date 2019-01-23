@@ -1,11 +1,7 @@
 ﻿// нет уже компоненты Atdi.AppServer.Contracts.Sdrns
 // этот контракт нужно перенести в версию 2.0
-/*
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Modules.MonitoringProcess.Measurement;
 using Atdi.Modules.MonitoringProcess;
@@ -50,8 +46,8 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
                 return null;
             }
             DateTime Time_start = DateTime.Now; // замер времени измерения
-            //var MSDRRes = TaskProcessing(SDR, taskParameters, lastResultParameters, sensorParameters, ref circulatingData, referenceSignals);
-            var MSDRRes = TaskProcessing(SDR, taskParameters, taskSDR as MeasSdrTask, lastResultParameters, sensorParameters, ref circulatingData, referenceSignals);
+            var MSDRRes = TaskProcessing(SDR, taskParameters, lastResultParameters, sensorParameters, ref circulatingData, referenceSignals);
+            //var MSDRRes = TaskProcessing(SDR, taskParameters, taskSDR as MeasSdrTask, lastResultParameters, sensorParameters, ref circulatingData, referenceSignals);
             TimeSpan TimeMeasurements = DateTime.Now - Time_start;
             // формирование версии ответа 
             var Result = CreateResultCorrectVersion(MSDRRes, lastResultParameters);
@@ -68,7 +64,7 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
 
                 MSDRRes.MeasSubTaskId = null;
                 MSDRRes.MeasSubTaskStationId = 0;
-                MSDRRes.MeasTaskId = new MeasTaskIdentifier{Value = taskParameters.TaskId};
+                MSDRRes.MeasTaskId = new MeasTaskIdentifier { Value = taskParameters.TaskId };
                 MSDRRes.DataMeas = DateTime.Now;
                 MSDRRes.MeasDataType = GetMeasurementTypeFromMeasType(taskParameters.MeasurementType);
                 MSDRRes.status = "N";
@@ -122,68 +118,7 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
             return MSDRRes;
         }
 
-        private object TaskProcessing(ISDR SDR, TaskParameters taskParameters, MeasSdrTask measSdrTask, LastResultParameters lastResultParameters, SensorParameters sensorParameters, ref CirculatingData circulatingData, ReferenceSignal[] referenceSignals)
-        {
-            MeasSdrResults_v2 MSDRRes = new MeasSdrResults_v2();
-            //try
-            //{
-            // заполнение основных параметров таска
-            MSDRRes.MeasSubTaskId = new MeasTaskIdentifier {  Value = measSdrTask.MeasSubTaskId.Value };
-            MSDRRes.MeasSubTaskStationId = measSdrTask.MeasSubTaskStationId;
-            MSDRRes.SensorId = new SensorIdentifier { Value = measSdrTask.SensorId.Value };
-            MSDRRes.MeasTaskId = new MeasTaskIdentifier { Value = taskParameters.TaskId };
-            MSDRRes.DataMeas = DateTime.Now;
-            MSDRRes.MeasDataType = GetMeasurementTypeFromMeasType(taskParameters.MeasurementType);
-            MSDRRes.status = "N";
-            // сканирование спектра 
-            if (taskParameters.MeasurementType == MeasType.Level)
-            {
-                // измерение уровня сигнала.
-                Trace trace = new Trace(SDR, taskParameters, sensorParameters, lastResultParameters);
-                if (trace.Frequencies_MHz != null) { MSDRRes.Freqs = trace.Frequencies_MHz; }
-                if (trace.Levels_dBm != null) { MSDRRes.Level = trace.Levels_dBm; }
-                if (trace.fSemples != null) { MSDRRes.FSemples = GetFemplesFromSemplesFreq(trace.fSemples); }
-            }
-            //занатие полос частот и каналов
-            if (taskParameters.MeasurementType == MeasType.SpectrumOccupation)
-            {
-                SpectrumOcupation spectrumOcupation = new SpectrumOcupation(SDR, taskParameters, sensorParameters, lastResultParameters);
-                if (spectrumOcupation.fSemplesResult != null) { MSDRRes.FSemples = GetFemplesFromSemplesFreq(spectrumOcupation.fSemplesResult); }
-                MSDRRes.NN = spectrumOcupation.NN;
-            }
-            if (taskParameters.MeasurementType == MeasType.BandwidthMeas)
-            {
-                Bandwidth bandwidth = new Bandwidth(SDR, taskParameters, sensorParameters, lastResultParameters);
-                MSDRRes.FSemples = GetFemplesFromSemplesFreq(bandwidth.fSemples);
-                MSDRRes.ResultsBandwidth = GetMeasSdrBandwidthResultsFromMeasBandwidthResult(bandwidth.measSdrBandwidthResults);
-            }
-            if (taskParameters.MeasurementType == MeasType.Signaling)// пока не доделано и не дотестированно
-            {
-                Signaling signaling = new Signaling(SDR, taskParameters, sensorParameters, lastResultParameters, ref circulatingData, referenceSignals);
-                MSDRRes.emittings = signaling.emittingsComplete;
-            }
-            if (taskParameters.MeasurementType == MeasType.IQReceive)// пока не доделано и не дотестированно
-            {
-                IQStreem iQStreem = new IQStreem(SDR, taskParameters);
-            }
-            if (taskParameters.MeasurementType == MeasType.Timetimestamp)// пока не доделано и не дотестированно
-            {
-                IQStreem iQStreem = new IQStreem(SDR, taskParameters);
-                GetTimeStamp getTimeStamp = new GetTimeStamp(null, 40000000, 200, GetTimeStamp.TypeTechnology.GSM);
-                // функционал для тестирования 
-                //    EstimationTimeDelayBetweenTwoTimestamp estimationTimeDelayBetweenTwoTimestamp = new EstimationTimeDelayBetweenTwoTimestamp(getTimeStamp.IQStreamTimeStampBloks, getTimeStamp.IQStreamTimeStampBloks);
-                // 
-
-
-                // функционал для тестирования 
-            }
-
-
-            //}
-            //catch { MSDRRes = null; error = MeasError.Measurements; }
-
-            return MSDRRes;
-        }
+   
         private object CreateResultCorrectVersion(object measSdrResults, LastResultParameters lastResultParameters) // внедрен костыль временный
         {
             switch (lastResultParameters.APIversion)
@@ -674,4 +609,3 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
     }
 }
 
-*/
