@@ -51,10 +51,13 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         string SelectExpression(string[] selectColumns, string fromExpression, string whereExpression = null, string[] orderByColumns = null, DataLimit limit = null, string[] groupByColumns = null);
 
-        string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression);
+        string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression, string selectedColumnsExpression = null, string whereExpression = null, string identyFieldName = null);
 
         string UpdateExpression(string sourceExpression, string valuesExpression, string fromExpression = null, string whereExpression = null);
 
         string DeleteExpression(string sourceExpression, string fromExpression = null, string whereExpression = null);
+
+        // MS SQL: insert (columnsExpression) select valuesExpression; declare @newId = @@identity, select needColumns where identyFieldName = @newId and" + whereExpression
+        // ORACLE:  declare @newId int = GteSomeNextId(); insert (identyFieldName, " + valuesExpression) select @newId, " |+ valuesExpression + "; select needColumns where identyFieldName = @newId and" + whereExpression
     }
 }
