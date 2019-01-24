@@ -14,11 +14,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         IQueryInsertStatement SetValue(ColumnValue columnValue);
 
         IQueryInsertStatement SetValues(ColumnValue[] columnsValues);
+
+        IQueryInsertStatement Select(params string[] columns);
     }
 
-    public interface IQueryInsertStatement<TModel> : IQueryStatement
+    public interface IQueryInsertStatement<TModel> : IQueryStatement<TModel>
     {
         IQueryInsertStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value);
+
+        IQueryInsertStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions);
     }
 
     public static class QueryInsertStatementExtensitons

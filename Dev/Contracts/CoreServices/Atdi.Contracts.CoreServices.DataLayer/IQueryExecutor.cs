@@ -19,7 +19,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int Execute(IQueryStatement statement);
 
-        int ExecuteTransaction(IQueryStatement statement);
+        TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<IDataReader, TResult> handler);
+
+        TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler);
 
         void BeginTransaction();
 
