@@ -119,7 +119,10 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                 // конец констант
 
                 int NumberPass = 0;
+                // расчет количества шагов которое мы должны записать. NumberPass
                 if (durationReceiving_sec < 0) { NumberPass = 1; } else { NumberPass = (int)Math.Ceiling(durationReceiving_sec * samples_per_sec / return_len); }
+                
+                // Формирование пустого места для записи данных
                 receivedIQStream = new ReceivedIQStream();
                 receivedIQStream.TimeMeasStart = DateTime.Now;
                 receivedIQStream.iq_samples = new List<float[]>();
@@ -145,17 +148,23 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     iqSeces.Add(-1);
                     iqNanos.Add(-1);
                 }
+                // сформировано пустое место
+
                 int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0; 
                 int count = 0; int number_bloks = 0;
+
                 for (int i = 0; i < NumberPass; i++)
                 {
+                    // снятие данных
                     bb_api.bbGetIQUnpacked(id_dev, IQData[i], return_len, TrData[i], 71, 1,
                             ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
-                    
+                    // конец снятия данных
                     dataRemainings[i] = dataRemaining;
                     sampleLosses[i] = sampleLoss;
                     iqSeces[i] = iqSec;
                     iqNanos[i] = iqNano;
+
+
                     if (TrData[i][0] != 0)
                     {
                         AfterPPS = false;
@@ -179,13 +188,6 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     {
                         i--;
                     }
-                    //else
-                    //{
-                    //    if (TrData[i][0] == 0)
-                    //    {
-                    //        i--;
-                    //    }
-                    //}
                     if ((JustWithSignal)&&(!AfterPPS))
                     {
                         // Константы
@@ -213,13 +215,15 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                         if (!signal)
                         {
                             i--;
+                            TrData[i][0] = 0;
                         }
                     }
                         count++;
                     number_bloks = i+1;
                     if (count >= max_count) { break;}
-                    
                 }
+
+                // перегрупировка данных в нужный формат
                 for (int i = 0; i < number_bloks; i++)
                 {
                     float[] iq_sample = new float[return_len * 2];
@@ -239,7 +243,6 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     receivedIQStream.sampleLosses.Add(sampleLosses[i]);
                     receivedIQStream.iqSeces.Add(iqSeces[i]);
                     receivedIQStream.iqNanos.Add(iqNanos[i]);
-
                 }
                 receivedIQStream.durationReceiving_sec = durationReceiving_sec;
                 done = true;

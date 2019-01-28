@@ -11,7 +11,7 @@ namespace Atdi.Modules.MonitoringProcess
     public class TaskParameters
     {
         #region parameters
-        public int TaskId;
+        public int SDRTaskId;
         public MeasType MeasurementType;
         public double MinFreq_MHz;
         public double MaxFreq_MHz;

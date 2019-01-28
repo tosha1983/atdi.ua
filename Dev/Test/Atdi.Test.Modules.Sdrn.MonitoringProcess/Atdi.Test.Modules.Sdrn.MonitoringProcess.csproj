@@ -84,6 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bb_api.cs" />
+    <Compile Include="DeviceMicroBUS\DeviceControler.cs" />
+    <Compile Include="DeviceMicroBUS\ConfigurationDeviceParameters.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

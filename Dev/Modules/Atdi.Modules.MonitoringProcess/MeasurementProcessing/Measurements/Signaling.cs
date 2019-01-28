@@ -20,8 +20,8 @@ namespace Atdi.Modules.MonitoringProcess.Measurement
 
             if (circulatingData == null)
             {// т.е. еще ничего не измерялось
-                //circulatingData = new CirculatingData();
-                circulatingData.TaskId = taskParameters.TaskId;
+                circulatingData = new CirculatingData();
+                circulatingData.TaskId = taskParameters.SDRTaskId;
                 SDRTraceParameters sDRTraceParameters = SDR.GetSDRTraceParameters();
                 circulatingData.referenceLevels = new ReferenceLevels(referenceSignals, sDRTraceParameters, triggerLevel_dBm_Hz, sensorParameters);
             }
