@@ -81,7 +81,7 @@ namespace ControlU.Equipment
         public int[] GetMeasNDB(tracepoint[] tr, int freqMeasPeak, double NdBLevel)
         {
             #region
-            int[] outarr = new int[3] { freqMeasPeak, - 1, -1 };
+            int[] outarr = new int[3] { freqMeasPeak, -1, -1 };
             try
             {
                 if (freqMeasPeak > -1 && freqMeasPeak < tr.Length)

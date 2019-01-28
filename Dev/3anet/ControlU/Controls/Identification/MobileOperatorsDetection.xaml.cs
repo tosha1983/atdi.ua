@@ -125,6 +125,12 @@ namespace ControlU.Controls.Identification
             if (data.Techonology == "GSM")
             {
                 #region
+                data.MCCUseFixed = true;
+                data.MCCUse = true;
+                data.MNCUseFixed = true;
+                data.MNCUse = true;
+                data.IDUseFixed = true;
+                data.IDUse = true;
                 MCCParameters = new ObservableCollection<string>() { "MCC" };
                 MNCParameters = new ObservableCollection<string>() { "MNC" };
                 AreaParameters = new ObservableCollection<string>() { "LAC" };
@@ -176,6 +182,12 @@ namespace ControlU.Controls.Identification
             else if (data.Techonology == "UMTS")
             {
                 #region
+                data.MCCUseFixed = true;
+                data.MCCUse = true;
+                data.MNCUseFixed = true;
+                data.MNCUse = true;
+                data.IDUseFixed = true;
+                data.IDUse = true;
                 MCCParameters = new ObservableCollection<string>() { "MCC" };
                 MNCParameters = new ObservableCollection<string>() { "MNC" };
                 AreaParameters = new ObservableCollection<string>() { "LAC" };
@@ -238,6 +250,12 @@ namespace ControlU.Controls.Identification
             else if (data.Techonology == "LTE")
             {
                 #region
+                data.MCCUseFixed = true;
+                data.MCCUse = true;
+                data.MNCUseFixed = true;
+                data.MNCUse = true;
+                data.IDUseFixed = true;
+                data.IDUse = true;
                 MCCParameters = new ObservableCollection<string>() { "MCC" };
                 MNCParameters = new ObservableCollection<string>() { "MNC" };
                 AreaParameters = new ObservableCollection<string>() { "TAC", "PCI" };
@@ -304,6 +322,12 @@ namespace ControlU.Controls.Identification
             else if (data.Techonology == "CDMA")
             {
                 #region
+                data.MCCUseFixed = false;
+                //data.MCCUse = true;
+                data.MNCUseFixed = false;
+                //data.MNCUse = true;
+                data.IDUseFixed = false;
+                //data.IDUse = true;
                 MCCParameters = new ObservableCollection<string>() { "MCC", "NID" };
                 MNCParameters = new ObservableCollection<string>() { "MNC", "NID", "SID" };
                 AreaParameters = new ObservableCollection<string>() { "LAC" };

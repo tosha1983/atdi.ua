@@ -325,7 +325,7 @@ namespace ControlU.Equipment
         public int SectorIDFromIdent
         {
             get { return _SectorIDFromIdent; }
-            set { _SectorIDFromIdent = value; /*OnPropertyChanged("SectorIDFromIdent");*/ }
+            set { _SectorIDFromIdent = value; OnPropertyChanged("SectorIDFromIdent"); }
         }
         private int _SectorIDFromIdent = -1;
 

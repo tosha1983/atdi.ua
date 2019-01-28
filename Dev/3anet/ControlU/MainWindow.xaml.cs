@@ -46,7 +46,7 @@ namespace ControlU
         public static Equipment.RsReceiver_v2 Rcvr = new Equipment.RsReceiver_v2();
         public static Equipment.TSMxReceiver tsmx = new Equipment.TSMxReceiver();
         public static Equipment.SignalHound SHReceiver = new Equipment.SignalHound();
-        public static Equipment.GPSNMEA gps = new Equipment.GPSNMEA();
+        public static Equipment.GNSSNMEA gps = new Equipment.GNSSNMEA();
         public static Equipment.RCRomes RCR = new Equipment.RCRomes();
         public static Helpers.Helper help = new Helpers.Helper();
         public static DB.NpgsqlDB_v2 db_v2 = new DB.NpgsqlDB_v2();

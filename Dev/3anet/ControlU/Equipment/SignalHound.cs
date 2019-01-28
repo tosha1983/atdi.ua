@@ -2428,7 +2428,7 @@ namespace ControlU.Equipment
         public void SetMeasMon()
         {
             #region
-            if (Run && IsRuning == true && MainWindow.gps.GPSIsValid && MainWindow.db_v2.MeasMon.Data.Count > 0)//)//
+            if (Run && IsRuning == true && MainWindow.gps.GNSSIsValid && MainWindow.db_v2.MeasMon.Data.Count > 0)//)//
             {
                 //((MainWindow)App.Current.MainWindow).Message = DateTime.Now.ToString() + "";
                 try

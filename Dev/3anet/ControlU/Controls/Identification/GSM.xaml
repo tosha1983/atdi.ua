@@ -343,7 +343,37 @@
                             </Grid>
                         </DataGridTextColumn.Header>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Sector" Binding="{Binding SectorID,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="ToolTip" Value="Cell From ID(Cell)"/>
+                                <Setter Property="ContextMenu" Value="{StaticResource ColumnChooserMenu}"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding SectorIDFromIdent,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DecimalWithDefaultMinusOne}}"/>
+                                    <Run Text="["/>
+                                    <Run Text="{Binding SectorID,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DecimalWithDefaultMinusOne}}"/>
+                                     <Run Text="]"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="17" MaxWidth="17"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Sector" Padding="0,0,3,0"/>
+                                <!--<Button Click="btnFilter_Click" Padding="0,0,3,0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1">
+                                    <Path Data="{StaticResource Filter_PathData}" Stretch="Uniform" Stroke="#FF4F4F4F" VerticalAlignment="Center" HorizontalAlignment="Center" Width="11" StrokeThickness="1" Height="11" Margin="2"/>
+                                </Button>-->
+                            </Grid>
+                        </DataGridTemplateColumn.Header>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Binding="{Binding GCID,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserSort="False">
                         <DataGridTextColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">

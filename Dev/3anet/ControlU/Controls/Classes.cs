@@ -174,6 +174,39 @@ namespace ControlU.Controls
         }
     }
 
+    /// <summary>
+    /// Конвертер bool to !bool (инвертированный)
+    /// </summary>
+    [Localizability(LocalizationCategory.NeverLocalize)]
+    public sealed class LocalBooleanInvertedConverter : IValueConverter
+    {
+        /// <summary> 
+        /// Convert bool or Nullable<bool> to Visibility
+        /// </summary> 
+        /// <param name="value">bool or Nullable<bool>
+        /// <param name="targetType">Visibility
+        /// <param name="parameter">null
+        /// <param name="culture">null 
+        /// <returns>Visible or Collapsed</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value;
+        }
+
+        /// <summary>
+        /// Convert Visibility to boolean 
+        /// </summary>
+        /// <param name="value"> 
+        /// <param name="targetType"> 
+        /// <param name="parameter">
+        /// <param name="culture"> 
+        /// <returns></returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value;
+        }
+    }
+
 
     [Localizability(LocalizationCategory.NeverLocalize)]
     public sealed class Measured_ToColor_Converter : IValueConverter
@@ -702,7 +735,7 @@ namespace ControlU.Controls
 
         #endregion
     }
-    
+
     [ValueConversion(typeof(DB.localatdi_sector_frequency[]), typeof(string))]
     public class ATDIFreqsToStringMultiConverter : IMultiValueConverter
     {
