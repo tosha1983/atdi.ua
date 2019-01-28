@@ -68,38 +68,7 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        MeasurementResults[] ISdrnsController.GetMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs)
-        {
-            var result =
-                Operation<SdrnsControllerAppService.GetMeasResultsAppOperation, MeasurementResults[]>()
-                    .Invoke(
-                        new GetMeasResultsAppOperationOptions
-                        {
-                            Constraint = constraint,
-                            OtherArgs = otherArgs
-                        },
-                        this.OperationContext
-                    );
-
-            return result;
-        }
-
-        MeasTask ISdrnsController.GetMeasTask(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
-        {
-            var result =
-                Operation<SdrnsControllerAppService.GetMeasTaskAppOperation, MeasTask>()
-                    .Invoke(
-                        new GetMeasTaskAppOperationOptions
-                        {
-                            TaskId = taskId,
-                            OtherArgs = otherArgs
-                        },
-                        this.OperationContext
-                    );
-
-            return result;
-        }
-
+      
         StationDataForMeasurements[] ISdrnsController.GetStationDataForMeasurementsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
         {
             var result =
@@ -134,21 +103,7 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        MeasTask[] ISdrnsController.GetMeasTasks(DataConstraint constraint, CommonOperationArguments otherArgs)
-        {
-            var result =
-                Operation<SdrnsControllerAppService.GetMeasTasksAppOperation, MeasTask[]>()
-                    .Invoke(
-                        new GetMeasTasksAppOperationOptions
-                        {
-                            Constraint = constraint,
-                            OtherArgs = otherArgs
-                        },
-                        this.OperationContext
-                    );
-
-            return result;
-        }
+       
 
         Sensor[] ISdrnsController.GetSensors(DataConstraint constraint, CommonOperationArguments otherArgs)
         {
@@ -350,22 +305,7 @@ namespace Atdi.AppServer.Services.Sdrns
             return result;
         }
 
-        MeasurementResults ISdrnsController.GetMeasResultsById(MeasurementResultsIdentifier measResultsId, CommonOperationArguments otherArgs)
-        {
-            var result =
-                Operation<SdrnsControllerAppService.GetMeasResultsByIdAppOperation, MeasurementResults>()
-                    .Invoke(
-                        new GetMeasResultsByIdAppOperationOptions
-                        {
-                            MeasResultsId = measResultsId,
-                            OtherArgs = otherArgs
-                        },
-                        this.OperationContext
-                    );
-
-            return result;
-        }
-
+     
         MeasurementResults[] ISdrnsController.GetMeasResultsByTaskId(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs)
         {
             var result =

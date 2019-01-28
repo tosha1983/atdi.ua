@@ -77,7 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SensorActivity.cs" />
     <Compile Include="Concumer.cs" />
     <Compile Include="ConcumerDescribe.cs" />
     <Compile Include="RabbitOptions.cs" />

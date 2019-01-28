@@ -36,8 +36,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 logger.Trace("Start procedure ConvertTo_ResultsMeasurementsStation...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         foreach (ClassSDRResults obj in objs.ToArray())
@@ -168,9 +168,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         logger.Trace("Error in procedure ConvertTo_ResultsMeasurementsStation... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure ConvertTo_ResultsMeasurementsStation...");
             }
             catch (Exception ex)
@@ -186,8 +186,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 logger.Trace("Start procedure ConvertTo_ShortResultsMeasurementsStation...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         foreach (ClassSDRResults obj in objs.ToArray())
@@ -252,9 +252,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         logger.Trace("Error in procedure ConvertTo_ShortResultsMeasurementsStation... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+               // tsk.Join();
                 logger.Trace("End procedure ConvertTo_ShortResultsMeasurementsStation...");
             }
             catch (Exception ex)
@@ -271,8 +271,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 logger.Trace("Start procedure ConvertTo_SDRObjects...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     { 
                     foreach (ClassSDRResults obj in objs.ToArray())
@@ -436,15 +436,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                     if (x.m_timestartmeasdate != null) s_out.ResultsMeasStation[ii].GeneralResult.TimeStartMeas = x.m_timestartmeasdate;
 
 
-                                                    if (x.m_resstmaskelm != null)
-                                                    {
-                                                        object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
-                                                        if (m_resstmaskelm != null)
-                                                        {
-                                                            s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
-                                                        }
-                                                    }
-                                                    else
+                                                    //if (x.m_resstmaskelm != null)
+                                                    //{
+                                                    //    object m_resstmaskelm = Deserialize<MaskElements[]>(x.m_resstmaskelm);
+                                                    //    if (m_resstmaskelm != null)
+                                                    //    {
+                                                    //        s_out.ResultsMeasStation[ii].GeneralResult.MaskBW = m_resstmaskelm as MaskElements[];
+                                                    //    }
+                                                   // }
+                                                    //else
                                                     {
 
                                                         if (obj.XbsResmaskBw != null)
@@ -465,15 +465,15 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                         }
                                                     }
 
-                                                    if (x.m_resstlevelsspect != null)
-                                                    {
-                                                        object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
-                                                        if (m_resstlevelsspect != null)
-                                                        {
-                                                            s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
-                                                        }
-                                                    }
-                                                    else
+                                                    //if (x.m_resstlevelsspect != null)
+                                                    //{
+                                                    //    object m_resstlevelsspect = Deserialize<float[]>(x.m_resstlevelsspect);
+                                                    //    if (m_resstlevelsspect != null)
+                                                    //    {
+                                                    //        s_out.ResultsMeasStation[ii].GeneralResult.LevelsSpecrum = m_resstlevelsspect as float[];
+                                                    //    }
+                                                    //}
+                                                    //else
                                                     {
                                                         if (obj.XbsLevelSpecrum != null)
                                                         {
@@ -544,9 +544,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         logger.Trace("Error in procedure ConvertTo_SDRObjects... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure ConvertTo_SDRObjects...");
             }
             catch (Exception ex)
@@ -564,8 +564,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 logger.Trace("Start procedure ConvertTo_SDRObjects...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         foreach (ClassSDRResults obj in objs.ToArray())
@@ -780,17 +780,19 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             }
 
                             s_out.MeasurementsResults = L_MSR.ToArray();
+                            s_out.CountStationMeasurements = obj.CountRecognizeStation;
+                            s_out.CountUnknownStationMeasurements = obj.CountNotRecognizeStation;
 
-                            L_OUT.Add(new KeyValuePair<MeasurementResults, string>(s_out, SensorName));
+                        L_OUT.Add(new KeyValuePair<MeasurementResults, string>(s_out, SensorName));
                         }
                     }
                     catch (Exception ex)
                     {
                         logger.Trace("Error in procedure ConvertTo_SDRObjects... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure ConvertTo_SDRObjects...");
             }
             catch (Exception ex)

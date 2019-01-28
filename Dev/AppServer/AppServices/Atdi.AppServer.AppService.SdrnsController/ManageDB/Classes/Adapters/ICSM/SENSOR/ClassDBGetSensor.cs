@@ -38,8 +38,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 try
                 {
                     logger.Trace("Start procedure LoadObjectAllSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         YXbsSensor s_l_sensor = new YXbsSensor();
                         s_l_sensor.Format("*");
                         // выбирать только сенсоры, для которых STATUS не NULL
@@ -182,9 +182,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                         s_l_sensor.Close();
                         s_l_sensor.Dispose();
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
                     logger.Trace("End procedure LoadObjectAllSensor.");
                 }
                 catch (Exception ex) {
@@ -201,6 +201,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             Yyy yyy = new Yyy();
             object rx = yyy.GetValueFromField("APIVERSION", "XBS_SENSOR", IdSensor);
             apiVer = (rx!=DBNull.Value ? rx.ToString() : "v1.0");
+            yyy.Close();
+            yyy.Dispose();
             return apiVer;
         }
 
@@ -211,8 +213,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 try
                 {
                     logger.Trace("Start procedure LoadObjectAllSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         YXbsSensor s_l_sensor = new YXbsSensor();
                         s_l_sensor.Format("*");
                         // выбирать только сенсоры, для которых STATUS не NULL
@@ -333,7 +335,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             List<SensorLocation> L_Sens_loc = new List<SensorLocation>();
                             YXbsSensorlocation mpt_loc = new YXbsSensorlocation();
                             mpt_loc.Format("*");
-                            mpt_loc.Filter = string.Format("(SENSORID={0})", it_out.Id.Value);
+                            mpt_loc.Filter = string.Format("(SENSORID={0}) AND (STATUS='A')", it_out.Id.Value);
                             for (mpt_loc.OpenRs(); !mpt_loc.IsEOF(); mpt_loc.MoveNext())
                             {
                                 SensorLocation s_l = new SensorLocation();
@@ -354,9 +356,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                         s_l_sensor.Close();
                         s_l_sensor.Dispose();
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
                     logger.Trace("End procedure LoadObjectAllSensor.");
                 }
                 catch (Exception ex)
@@ -375,8 +377,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 try
                 {
                     logger.Trace("Start procedure LoadObjectSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         YXbsSensor s_l_sensor = new YXbsSensor();
                         s_l_sensor.Format("*");
                         // выбирать только сенсоры, для которых STATUS не NULL
@@ -518,9 +520,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         }
                         s_l_sensor.Close();
                         s_l_sensor.Dispose();
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
                     
                     logger.Trace("End procedure LoadObjectSensor.");
                 }
@@ -658,7 +660,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     List<SensorLocation> L_Sens_loc = new List<SensorLocation>();
                     YXbsSensorlocation mpt_loc = new YXbsSensorlocation();
                     mpt_loc.Format("*");
-                    mpt_loc.Filter = string.Format("(SENSORID={0})", it_out.Id.Value);
+                    mpt_loc.Filter = string.Format("(SENSORID={0}) AND (STATUS='A')", it_out.Id.Value);
                     for (mpt_loc.OpenRs(); !mpt_loc.IsEOF(); mpt_loc.MoveNext())
                     {
                         SensorLocation s_l = new SensorLocation();
@@ -695,8 +697,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         {
             var val = new List<Sensor>();
             logger.Trace("Start procedure LoadObjectSensor...");
-            System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+            //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         YXbsSensor s_l_sensor = new YXbsSensor();
@@ -859,9 +861,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     catch (Exception ex) {
                         logger.Error("Error in procedure LoadObjectSensor." + ex.Message);
                     }
-                });
-            tsk.Start();
-            tsk.Join();
+                //});
+            //tsk.Start();
+            //tsk.Join();
             
             logger.Trace("End procedure LoadObjectSensor.");
             return val;
@@ -872,8 +874,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         {
             if (sens != null)
             {
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     Yyy yyy = new Yyy();
                     DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
                     if (dbConnect.State == System.Data.ConnectionState.Open)
@@ -957,9 +959,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         dbConnect.Close();
                         dbConnect.Dispose();
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure SaveLocationCoordSensor.");
             }
             return true;
@@ -972,8 +974,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         /// <returns></returns>
         public bool CreateNewObjectSensor(Sensor sens)
         {
-            System.Threading.Thread tsk = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+            //{
                 logger.Trace("Start procedure CreateNewObjectSensor...");
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = yyy.NewConnection(yyy.GetConnectionString());
@@ -1262,9 +1264,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     dbConnect.Close();
                     dbConnect.Dispose();
                 }
-            });
-            tsk.Start();
-            tsk.Join();
+            //});
+            //tsk.Start();
+            //tsk.Join();
             logger.Trace("End procedure CreateNewObjectSensor.");
             return true;
         }
@@ -1309,7 +1311,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 logger.Trace("Start procedure UpdateStatusSensorWithArchive...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() => {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() => {
                     if (sens != null)
                     {
                         YXbsSensor se = new YXbsSensor();
@@ -1326,9 +1328,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
 
                         isSaved = true;
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End  procedure UpdateStatusSensorWithArchive...");
             }
             catch (Exception ex)

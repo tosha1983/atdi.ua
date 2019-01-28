@@ -89,24 +89,6 @@ namespace Atdi.AppServer.Contracts.Sdrns
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="taskId"></param>
-        /// <param name="otherArgs"></param>
-        /// <returns></returns>
-        [OperationContract]
-        MeasTask GetMeasTask(MeasTaskIdentifier taskId, CommonOperationArguments otherArgs);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="constraint"></param>
-        /// <param name="otherArgs"></param>
-        /// <returns></returns>
-        [OperationContract]
-        MeasTask[] GetMeasTasks(DataConstraint constraint, CommonOperationArguments otherArgs);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="constraint"></param>
         /// <param name="otherArgs"></param>
         /// <returns></returns>
@@ -122,24 +104,7 @@ namespace Atdi.AppServer.Contracts.Sdrns
         [OperationContract]
         ShortMeasTask[] GetShortMeasTasks(DataConstraint constraint, CommonOperationArguments otherArgs);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="constraint"></param>
-        /// <param name="otherArgs"></param>
-        /// <returns></returns>
-        [OperationContract]
-        MeasurementResults[] GetMeasResults(DataConstraint constraint, CommonOperationArguments otherArgs);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="measResultsId"></param>
-        /// <param name="otherArgs"></param>
-        /// <returns></returns>
-        [OperationContract]
-        MeasurementResults GetMeasResultsById(MeasurementResultsIdentifier measResultsId, CommonOperationArguments otherArgs);
-
+                
         /// <summary>
         /// 
         /// </summary>

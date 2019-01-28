@@ -135,15 +135,12 @@
     <Compile Include="CreateMeasTaskAppOperationHandler.cs" />
     <Compile Include="DeleteMeasResultsAppOperationHandler.cs" />
     <Compile Include="DeleteMeasTaskAppOperationHandler.cs" />
-    <Compile Include="GetMeasResultsAppOperationHandler.cs" />
     <Compile Include="GetShortMeasResultsByTypeAndTaskIdAppOperation.cs" />
     <Compile Include="GetMeasResultsHeaderSpecialAppOperation.cs" />
     <Compile Include="GetStationDataForMeasurementsByTaskIdAppOperationHandler.cs" />
     <Compile Include="GetMeasTaskHeaderAppOperationHandler.cs" />
     <Compile Include="GetMeasurementResultByResIdAppOperationHandler.cs" />
     <Compile Include="GetMeasResultsHeaderByTaskIdAppOperationHandler.cs" />
-    <Compile Include="GetMeasTaskAppOperationHandler.cs" />
-    <Compile Include="GetMeasTasksAppOperationHandler.cs" />
     <Compile Include="GetResMeasStationHeaderByResIdAppOperationHandle.cs" />
     <Compile Include="GetResMeasStationByIdAppOperationHandle.cs" />
     <Compile Include="GetResMeasStationAppOperationHandle.cs" />
@@ -154,7 +151,6 @@
     <Compile Include="GetShortMeasResultsByDateAppOperationHandler.cs" />
     <Compile Include="GetShortSensorAppOperationHandler.cs" />
     <Compile Include="GetShortMeasTaskAppOperationHandler.cs" />
-    <Compile Include="GetMeasResultsByIdAppOperationHandler.cs" />
     <Compile Include="GetMeasResultsByTaskIdAppOperationHandler.cs" />
     <Compile Include="GetShortMeasResultsByIdAppOperationHandler.cs" />
     <Compile Include="GetShortMeasResultsByTaskIdAppOperationHandler.cs" />

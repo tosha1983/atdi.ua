@@ -36,8 +36,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             List<MeasTask> L_OUT = new List<MeasTask>();
             try
             {
-                System.Threading.Thread thread = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure ConvertTo_MEAS_TASKObjects...");
                     try
                     {
@@ -357,9 +357,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ConvertTo_MEAS_TASKObjects... " + ex.Message);
                     }
                     logger.Trace("End procedure ConvertTo_MEAS_TASKObjects...");
-                });
-                thread.Start();
-                thread.Join();
+                //});
+                //thread.Start();
+                //thread.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -376,8 +376,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             List<MeasTask> L_OUT = new List<MeasTask>();
             try
             {
-                System.Threading.Thread thread = new System.Threading.Thread(()=>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(()=>
+                //{
                 logger.Trace("Start procedure ConvertTo_MEAS_TASKObjects...");
                     try
                     {
@@ -771,9 +771,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ConvertTo_MEAS_TASKObjects... " + ex.Message);
                     }
                 logger.Trace("End procedure ConvertTo_MEAS_TASKObjects...");
-                });
-                thread.Start();
-                thread.Join();
+                //});
+                //thread.Start();
+                //thread.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -788,8 +788,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             List<MeasTask> L_OUT = new List<MeasTask>();
             try
             {
-                System.Threading.Thread thread = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure ConvertTo_MEAS_TASKObjects...");
                     try { 
                     #region Convert to MeasTask
@@ -969,9 +969,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ConvertTo_MEAS_TASKObjects... " + ex.Message);
                     }
                     logger.Trace("End procedure ConvertTo_MEAS_TASKObjects...");
-                });
-                thread.Start();
-                thread.Join();
+                //});
+                //thread.Start();
+                //thread.Join();
                 #endregion
             }
             catch (Exception ex)

@@ -232,8 +232,8 @@ namespace Atdi.Oracle.DataAccess
         public double? m_specrumsteps { get { return getDouble(12); } set { setDouble(12, value); } }
         public int? m_ñorrectnessestim { get { return getInt(13); } set { setInt(13, value); } }
         public int? m_tracecount { get { return getInt(14); } set { setInt(14, value); } }
-        public byte[] m_resstmaskelm { get { return getBlob(15); } set { setBlob(15, value); } }
-        public byte[] m_resstlevelsspect { get { return getBlob(16); } set { setBlob(16, value); } }
+        //public byte[] m_resstmaskelm { get { return getBlob(15); } set { setBlob(15, value); } }
+        //public byte[] m_resstlevelsspect { get { return getBlob(16); } set { setBlob(16, value); } }
     }
 
     public class YXbsResStMaskElm : Yyy
@@ -870,8 +870,17 @@ namespace Atdi.Oracle.DataAccess
 
     public static class Utils
     {
+        public static Dictionary<List<OracleParameter>, Type> listOracleParameter = new Dictionary<List<OracleParameter>, Type>();
         public static List<OracleParameter> GetAllProps(Type tp)
         {
+            //foreach (var fnd in listOracleParameter)
+            //{
+            //    if (fnd.Value== tp)
+            //    {
+            //        return fnd.Key;
+            //    }
+            //}
+
             List<OracleParameter> value = new List<OracleParameter>();
             PropertyInfo[] memberInfo;
             memberInfo = tp.GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -925,6 +934,7 @@ namespace Atdi.Oracle.DataAccess
                     Direction = System.Data.ParameterDirection.Input,
                 });
             }
+            //listOracleParameter.Add(value, tp);
             return value;
         }
     }

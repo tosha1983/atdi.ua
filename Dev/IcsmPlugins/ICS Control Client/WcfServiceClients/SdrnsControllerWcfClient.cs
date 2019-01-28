@@ -84,26 +84,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        //public static MeasTask GetMeasTaskById(int taskId)
-        //{
-        //    var result = Execute(contract => contract.GetMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
-
-        //    return result;
-        //}
-        public static MeasurementResults GetMeasResultsById(int measSdrResultsId, int measTaskId, int subMeasTaskId, int subMeasTaskStationId)
-        {
-            var id = new MeasurementResultsIdentifier
-            {
-                MeasSdrResultsId = measSdrResultsId,
-                MeasTaskId = new MeasTaskIdentifier { Value = measTaskId },
-                SubMeasTaskId = subMeasTaskId,
-                SubMeasTaskStationId = subMeasTaskStationId
-            };
-
-            var result = Execute(contract => contract.GetMeasResultsById(id, GetDefaultOtherArgs()));
-
-            return result;
-        }
+      
         public static Sensor GetSensorById(int sensorId)
         {
             var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }, GetDefaultOtherArgs()));

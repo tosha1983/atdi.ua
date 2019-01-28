@@ -25,7 +25,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         private ShedulerCheckActivitySensor CheckActivitySensor;
         private ShedulerGetMeasTask getMeasTask;
         private ShedulerCheckStart Quartz;
-        public static List<SensorActivity> listSensorActivity = new List<SensorActivity>();
 
         public ConfigurationSdrnController()
         {
@@ -61,7 +60,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                      dyn.Clear();
                   }
                
-  
+
+
                 GlobalInit.Initialization();
                 Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
@@ -78,10 +78,9 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 //BusManager<List<MeasSdrResults>> ressd = new BusManager<List<MeasSdrResults>>();
                 //List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults> dyn = (List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>)JsonConvert.DeserializeObject(System.IO.File.ReadAllText("C:\\TEMP\\_rabbit_queue_message_2018-Oct-12_1716306813.json"), typeof(List<Atdi.AppServer.Contracts.Sdrns.MeasSdrResults>));
                 //ressd.SendDataObject(dyn, "MEAS_SDR_RESULTS_Main_List_APPServer_INS-DV-2018-TESTMMS-02");
-  */  
+   */ 
 
-
-                Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                //Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 InitConnectionString.oraDbString = ConfigurationManager.ConnectionStrings["ORACLE_DB_ICSM_ConnectionString"].ConnectionString;
                 _oracleDataAccess.OpenConnection(InitConnectionString.oraDbString);
                 Atdi.Oracle.DataAccess.OracleDataAccess oracleDataAccess = new Atdi.Oracle.DataAccess.OracleDataAccess();
@@ -110,12 +109,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         {
                             
                             var lstAllSensors = _classDBGetSensor.LoadObjectAllSensorAPI1_0();
-                            foreach (var c in lstAllSensors)
-                            {
-                                listSensorActivity.Add(new SensorActivity(c));
-                            }
                             _configurationRabbitOptions.CreateChannelsAndQueues(_classDBGetSensor.LoadObjectAllSensorAPI2_0());
-                            
                             BaseXMLConfiguration xml_conf = new BaseXMLConfiguration();
                             GlobalInit.Initialization();
                           

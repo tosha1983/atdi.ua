@@ -54,8 +54,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
         {
             logger.Trace("Start procedure CreateShortSensorList...");
             List<ShortSensor> val = new List<ShortSensor>();
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread thread = new System.Threading.Thread(() =>
+            //{
                 ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                 List<Sensor> val_all_s = DB.LoadObjectSensor();
                 {
@@ -93,9 +93,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         }
                     }
                 }
-            });
-            thread.Start();
-            thread.Join();
+            //});
+            //thread.Start();
+            //thread.Join();
             logger.Trace("End procedure CreateShortSensorList.");
             return val;
         }
@@ -108,8 +108,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
         {
             logger.Trace("Start procedure CreateShortSensorListBySensorId...");
             ShortSensor val = new ShortSensor();
-            System.Threading.Thread thread = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread thread = new System.Threading.Thread(() =>
+            //{
                 ClassDBGetSensor DB = new ClassDBGetSensor(logger);
                 Sensor sd = DB.LoadObjectSensor(Id);
                 if (sd != null)
@@ -141,9 +141,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                     sh.BiuseDate = sd.BiuseDate;
                     val = sh;
                 }
-            });
-            thread.Start();
-            thread.Join();
+            //});
+            //thread.Start();
+            //thread.Join();
             logger.Trace("End procedure CreateShortSensorListBySensorId.");
             return val;
         }
@@ -155,8 +155,8 @@ namespace Atdi.SDNRS.AppServer.BusManager
             try
             {
                 logger.Trace("Start procedure CheckActivitySensor...");
-                System.Threading.Thread thread = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(() =>
+                //{
                     ClassDBGetSensor gsd = new ClassDBGetSensor(logger);
                     BusManager<Sensor> busManager = new BusManager<Sensor>();
                     List<Sensor> L_S = gsd.LoadObjectAllSensor();
@@ -300,9 +300,9 @@ namespace Atdi.SDNRS.AppServer.BusManager
                         }
                     }
                     gsd.Dispose();
-                });
-                thread.Start();
-                thread.Join();
+                //});
+                //thread.Start();
+                //thread.Join();
                 logger.Trace("End procedure CheckActivitySensor.");
             }
             catch (Exception ex)
