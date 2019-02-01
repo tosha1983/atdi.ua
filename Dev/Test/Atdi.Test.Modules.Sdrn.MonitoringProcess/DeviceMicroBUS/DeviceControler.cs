@@ -193,10 +193,11 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess.DeviceControler
         int SectorFromCID;
         string GCID;  // с TSMX Global CID
         public int CIDToDB; // Женя притягивает к БД ICSM
-        float[] Powers; //dBm -> LevelCar
-        long[] TimeStamps; //Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
-        float[] Strenghts;// напряженность этого сигнала
-        float[] CarToInts;
+        float Powers; //dBm -> LevelCar
+        long TimeStamps; //Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
+        float Strenghts;// напряженность этого сигнала
+        float CarToInts;
+        LevelCar[] LevelCars;
     }
     class UMTSBTSData
     {
@@ -213,13 +214,14 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess.DeviceControler
         int CarrierFromCID; // номер несущей из идентификатора
         string GCID;
         int SectorIDToDB;
-        float[] ISCPs; // c TSMX интегральный уровень сигнала
-        float[] RSCPs; // c TSMX  уровень сигнала -> LevelCar
-        long[] TimeStamps;
-        float[] Strenghts;
-        float[] InbandPowers; // P total
-        float[] CodePowers; //TSMX  уровень сигнала 
-        float[] IcIos; // TSMX  C/I 
+        float ISCPs; // c TSMX интегральный уровень сигнала
+        float RSCPs; // c TSMX  уровень сигнала -> LevelCar
+        long TimeStamps;
+        float Strenghts;
+        float InbandPowers; // P total
+        float CodePowers; //TSMX  уровень сигнала 
+        float IcIos; // TSMX  C/I 
+        LevelCar[] LevelCars;
     }
     public class CDMABTSData
     {
@@ -233,12 +235,13 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess.DeviceControler
         int MNC;
         int BaseID; //Идентификатор БС
         string GCID;
-        float[] RSCPs; // Уровень в LevelCar 
-        float[] Strenghts;
-        float[] PTotals; //
-        float[] AverageInbandPowers; //
-        float[] IcIos;
-        long[] TimeStamps;
+        float RSCPs; // Уровень в LevelCar 
+        float Strenghts;
+        float PTotals; //
+        float AverageInbandPowers; //
+        float IcIos;
+        long TimeStamps;
+        LevelCar[] LevelCars;
     }
     public class LTEBTSData
     {
@@ -255,17 +258,23 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess.DeviceControler
         int CIDToDB;
         string MIMO_2x2;
         string eNodeB_Name; // ????
-        float[] CIRofCPs; // CtoI
+        float CIRofCPs; // CtoI
         string GCID;
-        float[] Powers; // - > Некий уровень
-        float[] InbandPowers; // - > Некий уровень
-        float[] WB_RS_RSSIs; // - > Некий уровень
-        float[] RSRPs; // - > Level CAR
-        float[] Strenghts;
-        float[] WB_RSRPs; // - > Некий уровень
-        float[] RSRQs; // - > Некий уровень
-        float[] WB_RSRQs; // - > Некий уровень
-        long[] TimeStamps;
+        float Powers; // - > Некий уровень
+        float InbandPowers; // - > Некий уровень
+        float WB_RS_RSSIs; // - > Некий уровень
+        float RSRPs; // - > Level CAR
+        float Strenghts;
+        float WB_RSRPs; // - > Некий уровень
+        float RSRQs; // - > Некий уровень
+        float WB_RSRQs; // - > Некий уровень
+        long TimeStamps;
+        LevelCar[] LevelCars;
+    }
+    class LevelCar
+    {
+        float Level;
+        long TimeStamps;
     }
     class DF : Trace
     {
