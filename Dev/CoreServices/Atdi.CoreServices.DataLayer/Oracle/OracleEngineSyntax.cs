@@ -384,32 +384,39 @@ namespace Atdi.CoreServices.DataLayer
 
         public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression, string selectedColumnsExpression = null, string whereExpression = null, string identyFieldName = null)
         {
-            var templateSequence = string.Format("{0}_SEQ", sourceExpression);
             var statement = new StringBuilder();
             if (identyFieldName != null)
             {
-                var nextValueScript = string.Format("{0}.nextval", templateSequence);
-                var allSelectedFields = columnsExpression.Split(new char[] { ',','\"' }, StringSplitOptions.RemoveEmptyEntries);
-                var allSelectedValues = valuesExpression.Split(new char[] { ',', '\"' }, StringSplitOptions.RemoveEmptyEntries);
-                if ((!allSelectedFields.Contains(identyFieldName)) &&  (!allSelectedFields.Contains("\""+identyFieldName+"\"")))
+                string tableName = "";
+                var sourceValues = sourceExpression.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                if ((sourceValues!=null) && (sourceValues.Length>1))
                 {
-                    statement.AppendLine($"INSERT INTO {sourceExpression} ({identyFieldName},{columnsExpression})");
-                    statement.AppendLine($"VALUES ({nextValueScript},{valuesExpression})");
-                    statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
-                    
+                    tableName = sourceValues[1];
                 }
-                else
+                if (!string.IsNullOrEmpty(tableName))
                 {
-                    for (int i=0; i< allSelectedFields.Length; i++)
+                    var nextValueScript = string.Format("GetID('{0}')", tableName);
+                    var allSelectedFields = columnsExpression.Split(new char[] { ',', '\"' }, StringSplitOptions.RemoveEmptyEntries);
+                    var allSelectedValues = valuesExpression.Split(new char[] { ',', '\"' }, StringSplitOptions.RemoveEmptyEntries);
+                    if ((!allSelectedFields.Contains(identyFieldName)) && (!allSelectedFields.Contains("\"" + identyFieldName + "\"")))
                     {
-                        if (allSelectedFields[i]== identyFieldName)
+                        statement.AppendLine($"INSERT INTO {tableName} ({identyFieldName},{columnsExpression})");
+                        statement.AppendLine($"VALUES ({nextValueScript},{valuesExpression})");
+                        statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < allSelectedFields.Length; i++)
                         {
-                            allSelectedValues[i] = nextValueScript;
-                            var val = string.Join(", ", allSelectedValues);
-                            statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression})");
-                            statement.AppendLine($"VALUES ({val})");
-                            statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
-                            break;
+                            if (allSelectedFields[i] == identyFieldName)
+                            {
+                                allSelectedValues[i] = nextValueScript;
+                                var val = string.Join(", ", allSelectedValues);
+                                statement.AppendLine($"INSERT INTO {tableName} ({columnsExpression})");
+                                statement.AppendLine($"VALUES ({val})");
+                                statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
+                                break;
+                            }
                         }
                     }
                 }
