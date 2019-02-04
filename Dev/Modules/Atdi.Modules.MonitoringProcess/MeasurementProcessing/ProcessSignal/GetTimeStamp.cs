@@ -77,7 +77,7 @@ namespace Atdi.Modules.MonitoringProcess.ProcessSignal
             //    IQStream = (DeserializeObject("C:\\projects\\Monitoring projects\\SDR\\DataSignal\\GSM_900_2.bin") as ReceivedIQStream);
             //}
             TimeReceivingSec = IQStream.durationReceiving_sec;
-            IQStream.CalcAmpl();
+            IQStream.CalcAmpl(true);
 
             //Установка констант
             IQStreamTimeStampBloks.MethodForTimeDivision methodForTimeDivision;
