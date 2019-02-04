@@ -53,10 +53,11 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
             //===============================================
             // VIEWS
             //===============================================
-            CreateViewForAccess(s, "XV_WEB_BC", "WebQuery_BS-3_View", plugin3, "MOB_STATION2", "WebQuery_BS-3");
+            CreateViewForAccess(s, "XV_WEB_BC", "WebQuery_BS_3_View", plugin3, "MOB_STATION2", "WebQuery_BS_3");
             {
                 s.DeclareField("LICENCE", "VARCHAR(200)", null, null, null);
                 s.DeclareField("LIC_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("RADIOTECH", "VARCHAR(10)", null, null, null);
                 s.DeclareField("CONC_NUMBER", "VARCHAR(200)", null, null, null);
                 s.DeclareField("CONC_DATE_FROM", "DATE", "Date", null, null);
                 s.DeclareField("DOZV_NUMBER", "VARCHAR(200)", null, null, null);
@@ -68,6 +69,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("POS_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("LONGITUDE", "NUMBER(10,6)", null, null, null);
                 s.DeclareField("LATITUDE", "NUMBER(10,6)", null, null, null);
+                s.DeclareField("PROVINCE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("POWER", "NUMBER(22,8)", null, null, null);
                 s.DeclareField("ANTENNA_NAME", "VARCHAR(50)", null, null, null);
                 s.DeclareField("ANTENNA_ID", "NUMBER(9,0)", null, null, null);

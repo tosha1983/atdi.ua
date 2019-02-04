@@ -32,7 +32,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string AntClass { get; set; }
         string Remark { get; set; }
         string CustTxt1 { get; set; }
-        string CustData1 { get; set; }
+        DateTime CustData1 { get; set; }
         double? CustNbr1 { get; set; }
         ISensor SENSOR { get; set; }
     }

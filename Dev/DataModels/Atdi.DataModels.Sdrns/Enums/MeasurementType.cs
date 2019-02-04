@@ -26,23 +26,23 @@ namespace Atdi.DataModels.Sdrns
         /// <summary>
         /// Frequency offset
         /// </summary>
-        [EnumMember]
-        Offset,
+        //[EnumMember]
+        //Offset,
         /// <summary>
         /// Frequency
         /// </summary>
-        [EnumMember]
-        Frequency,
+        //[EnumMember]
+        //Frequency,
         /// <summary>
         /// Frequency modulation
         /// </summary>
-        [EnumMember]
-        FreqModulation,
+        //[EnumMember]
+        //FreqModulation,
         /// <summary>
         /// Amplitude modulation
         /// </summary>
-        [EnumMember]
-        AmplModulation,
+        //[EnumMember]
+        //AmplModulation,
         /// <summary>
         /// Bandwidth
         /// </summary>
@@ -51,33 +51,33 @@ namespace Atdi.DataModels.Sdrns
         /// <summary>
         /// Bearing
         /// </summary>
-        [EnumMember]
-        Bearing,
+        //[EnumMember]
+        //Bearing,
         /// <summary>
         /// Audio sub-tone
         /// </summary>
-        [EnumMember]
-        SubAudioTone,
+        //[EnumMember]
+        //SubAudioTone,
         /// <summary>
         /// Program
         /// </summary>
-        [EnumMember]
-        Program,
+        //[EnumMember]
+        //Program,
         /// <summary>
         /// PI code
         /// </summary>
-        [EnumMember]
-        PICode,
+        //[EnumMember]
+        //PICode,
         /// <summary>
         /// Sound ID
         /// </summary>
-        [EnumMember]
-        SoundID,
+        //[EnumMember]
+        //SoundID,
         /// <summary>
         /// Location
         /// </summary>
-        [EnumMember]
-        Location,
+        //[EnumMember]
+        //Location,
         /// <summary>
         /// Monitoring stations
         /// </summary>
@@ -85,6 +85,11 @@ namespace Atdi.DataModels.Sdrns
         MonitoringStations,
         /// <summary>
         /// Signaling unauthorized emissions
+        /// </summary>
+        //[EnumMember]
+        //Signaling
+        /// <summary>
+        /// Specter
         /// </summary>
         [EnumMember]
         Signaling

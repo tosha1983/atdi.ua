@@ -11,7 +11,6 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents the sensor for measurement. Includes administrative and technical data
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-
     public class Sensor
     {
         /// <summary>
@@ -160,8 +159,8 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// <summary>
         ///// Sensor locations
         ///// </summary>
-        //[DataMember]
-        //public SensorLocation[] Locations { get; set; }
+        [DataMember]
+        public SensorLocation[] Locations { get; set; }
 
         /// <summary>
         /// Defines the points of assigned Sensor polygon

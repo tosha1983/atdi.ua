@@ -24,6 +24,11 @@ namespace Atdi.LegacyServices.Icsm
 
         public List<ColumnValue> ColumnsValues => this._columnsValues;
 
+        public IQueryInsertStatement Select(params string[] columns)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryInsertStatement SetValue(ColumnValue columnValue)
         {
             if (columnValue == null)

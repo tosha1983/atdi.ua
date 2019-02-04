@@ -20,9 +20,12 @@
     <Field Desc="DataRank" Title="DataRank" Name="DataRank" DataType="Integer.32" SourceName="DATARANK" SourceType="Column" Required="false"/>
     <Field Desc="N" Title="N" Name="N" DataType="Integer.32" SourceName="N" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
-    <Field Desc="MeasResultSID" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.50" SourceName="MEASSDRRESULTSID" SourceType="Column" Required="false"/>
-    <Field Desc="Type" Title="Type" Name="Type" DataType="Text.450" SourceName="TYPE" SourceType="Column" Required="false"/>
-    <Field Desc="Synchronized" Title="Synchronized" Name="Synchronized" DataType="Boolean" SourceName="SYNCHRONIZED" SourceType="Column" Required="true"/>\
+    <Field Desc="MeasResultSID" Title="TypeMeasurements" Name="MeasResultSID" DataType="Text.50" SourceName="MEASSDRRESULTSID" SourceType="Column" Required="false"/>
+    <Field Desc="TypeMeasurements" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.450" SourceName="TYPEMEASUREMENTS" SourceType="Column" Required="false"/>
+    <Field Desc="Synchronized" Title="Synchronized" Name="Synchronized" DataType="Boolean" SourceName="SYNCHRONIZED" SourceType="Column" Required="true"/>
+    <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="STARTTIME" SourceType="Column" Required="false"/>
+    <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOPTIME" SourceType="Column" Required="false"/>
+    <Field Desc="ScansNumber" Title="ScansNumber" Name="ScansNumber" DataType="Integer.32" SourceName="SCANSNUMBER" SourceType="Column" Required="false"/>
     <Field Name="MEASSUBTASK" SourceType="Reference" SourceName="MeasSubTask" Title="Relation ResMeas to MeasSubTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskId</Mapped>

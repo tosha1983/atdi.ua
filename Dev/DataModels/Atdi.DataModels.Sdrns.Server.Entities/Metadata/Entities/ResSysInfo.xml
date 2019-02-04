@@ -23,7 +23,7 @@
     <Field Desc="Freq" Title="Freq" Name="Freq" DataType="Decimal.22.8" SourceName="FREQ" SourceType="Column" Required="false"/>
     <Field Desc="Icio" Title="Icio" Name="Icio" DataType="Decimal.22.8" SourceName="ICIO" SourceType="Column" Required="false"/>
     <Field Desc="InbandPower" Title="InbandPower" Name="InbandPower" DataType="Decimal.22.8" SourceName="INBAND_POWER" SourceType="Column" Required="false"/>
-    <Field Desc="Iscp" Title="Freq" Name="Freq" DataType="Decimal.22.8" SourceName="ISCP" SourceType="Column" Required="false"/>
+    <Field Desc="Iscp" Title="Iscp" Name="Iscp" DataType="Decimal.22.8" SourceName="ISCP" SourceType="Column" Required="false"/>
     <Field Desc="Lac" Title="Lac" Name="Lac" DataType="Integer.32" SourceName="LAC" SourceType="Column" Required="false"/>
     <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
     <Field Desc="Asl" Title="Asl" Name="Asl" DataType="Decimal.22.8" SourceName="ASL" SourceType="Column" Required="false"/>

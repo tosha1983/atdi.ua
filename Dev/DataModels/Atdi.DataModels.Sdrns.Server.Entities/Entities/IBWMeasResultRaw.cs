@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [Entity]
-    public interface IResLocSensorMeas
+    public interface IBWMeasResultRaw
     {
         int Id { get; set; }
-        double? Lon { get; set; }
-        double? Lat { get; set; }
-        double? Asl { get; set; }
-        double? Agl { get; set; }
+        int? MarkerIndex { get; set; }
+        int? T1 { get; set; }
+        int? T2 { get; set; }
+        double? BW_kHz { get; set; }
+        int? Сorrectnessestim { get; set; }
+        int? TraceCount { get; set; }
         int? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }

@@ -1703,21 +1703,21 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
-             try
-             {
-                 var listAlias = new List<AliasField>();
-                 var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
-                 var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
-                 var changedColumns = new string[statement.ColumnsValues.Count];
-                 var selectedParameters = new string[statement.ColumnsValues.Count];
-                 for (int i = 0; i < statement.ColumnsValues.Count; i++)
-                 {
+            try
+            {
+                var listAlias = new List<AliasField>();
+                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
+                var changedColumns = new string[statement.ColumnsValues.Count];
+                var selectedParameters = new string[statement.ColumnsValues.Count];
+                for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                {
                     KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
                     if (fieldName.Value != null)
                     {
                         var column = statement.ColumnsValues[i];
                         column.Name = fieldName.Value.SourceName;
-                        var columnValueReplaced =  QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                        var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
                         column = columnValueReplaced;
                         var parameter = new EngineCommandParameter
                         {
@@ -1732,22 +1732,118 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                     else
                     {
-                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." +statement.ColumnsValues[i].Name));
+                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + statement.ColumnsValues[i].Name));
                     }
-                 }
+                }
+                int cntPrimaryKey = 0;
+                string primaryKeyField = null;
+                if (entityMetadata.PrimaryKey != null)
+                {
+                    var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
+                    if (primaryKeys != null)
+                    {
+                        cntPrimaryKey = primaryKeys.Count;
+                        foreach (var item in primaryKeys)
+                        {
+                            primaryKeyField = item.Key;
+                            KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == primaryKeyField);
+                            if (fieldName.Value != null)
+                            {
+                                primaryKeyField = fieldName.Value.SourceName;
+                            }
+                            break;
+                        }
+                    }
+                }
 
-                 var columnsExpression = string.Join(", ", changedColumns);
-                 var valuesExpression = string.Join(", ", selectedParameters);
-                 var insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression);
-                 return insertStatement;
-             }
-             catch (Exception e)
-             {
-                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
-                 throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
-             }
+                var columnsExpression = string.Join(", ", changedColumns);
+                var valuesExpression = string.Join(", ", selectedParameters);
+                string insertStatement = null;
+                if (primaryKeyField == null)
+                {
+                    insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression);
+                }
+                else
+                {
+                    if (cntPrimaryKey==1)
+                    {
+                        insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression, null, null, primaryKeyField);
+                    }
+                    else
+                    {
+                        insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression);
+                    }
+                }
+                return insertStatement;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
          }
+        public KeyValuePair<string, DataType> GetIdentFieldFromTable(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            try
+            {
+                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                if (entityMetadata.PrimaryKey != null)
+                {
+                    var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
+                    if (primaryKeys != null)
+                    {
+                        foreach (var item in primaryKeys)
+                        {
+                            string name = item.Key;
+                            KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == name);
+                            if (fieldName.Value != null)
+                            {
+                                return new KeyValuePair<string, DataType>(fieldName.Value.SourceName, fieldName.Value.DataType.CodeVarType);
+                            }
+                            break;
+                        }
+                    }
+                }
+                return default(KeyValuePair<string, DataType>);
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
+        }
 
+        public string GetIdentFieldFromTable(QueryUpdateStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            string identFieldName = null;
+            try
+            {
+                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                if (entityMetadata.PrimaryKey != null)
+                {
+                    var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
+                    if (primaryKeys != null)
+                    {
+                        foreach (var item in primaryKeys)
+                        {
+                            identFieldName = item.Key;
+                            KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == identFieldName);
+                            if (fieldName.Value != null)
+                            {
+                                identFieldName = fieldName.Value.SourceName;
+                            }
+                            break;
+                        }
+                    }
+                }
+                return identFieldName;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
+        }
         /// <summary>
         ///  Генератор SQL запросов для Update
         /// </summary>

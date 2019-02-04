@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "BWMeasResultRaw"
+  Title       = "BWMeasResultRaw"
+  Desc        = "The BWMeasResultRaw"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_BWMEASRESULTRAW</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKERINDEX" SourceType="Column" Required="false"/>
+    <Field Desc="T1" Title="T1" Name="T1" DataType="Integer.32" SourceName="T1" SourceType="Column" Required="false"/>
+    <Field Desc="T2" Title="T2" Name="T2
+           " DataType="Integer.32" SourceName="T2" SourceType="Column" Required="false"/>
+    <Field Desc="BW, kHz" Title="BW, kHz" Name="BW_kHz" DataType="Decimal.30.10" SourceName="BWKHZ" SourceType="Column" Required="false" Unit="Frequency.kHz.xml"/>
+    <Field Desc="Сorrectnessestim" Title="Сorrectnessestim" Name="Сorrectnessestim" DataType="Integer.32" SourceName="СORRECTNESSESTIM" SourceType="Column" Required="false"/>
+    <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
+    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation BWMeasResultRaw to ResMeas">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

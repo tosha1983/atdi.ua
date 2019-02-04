@@ -17,6 +17,7 @@ namespace Atdi.CoreServices.DataLayer
         private const string IDENT = "    ";
         private readonly IFormatProvider _formatProvider = System.Globalization.CultureInfo.InvariantCulture;
 
+
         public IConstraintEngineSyntax Constraint => this;
 
         string IConstraintEngineSyntax.LikeAnyChar => "%";
@@ -332,5 +333,28 @@ namespace Atdi.CoreServices.DataLayer
             return $"{columnExpression} = {valueExpression}";
         }
 
+        public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression, string selectedColumnsExpression = null, string whereExpression = null, string identyFieldName = null)
+        {
+            var statement = new StringBuilder();
+            if (identyFieldName != null)
+            {
+                var nextValueScript = string.Format("SELECT @v_ID = IDENT_CURRENT('{0}')", sourceExpression);
+                if (identyFieldName != null)
+                {
+                    statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression})");
+                    statement.AppendLine($"SELECT {valuesExpression}");
+                    statement.AppendLine($"{nextValueScript}");
+                }
+                else
+                {
+                    InsertExpression(sourceExpression, columnsExpression, valuesExpression);
+                }
+            }
+            else
+            {
+                return InsertExpression(sourceExpression,  columnsExpression,  valuesExpression);
+            }
+            return statement.ToString();
+        }
     }
 }

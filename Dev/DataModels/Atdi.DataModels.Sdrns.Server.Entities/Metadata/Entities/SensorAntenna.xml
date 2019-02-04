@@ -28,11 +28,11 @@
     <Field Desc="Lower Frequency, MHz" Title="Lower Frequency, MHz" Name="LowerFreq" DataType="Decimal.22.8" SourceName="LOWERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz.xml"/>
     <Field Desc="Upper Frequency, MHz" Title="Upper Frequency, MHz" Name="UpperFreq" DataType="Decimal.22.8" SourceName="UPPERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz.xml"/>
     <Field Desc="Additional loss, dB" Title="Additional loss, dB" Name="AddLoss" DataType="Decimal.22.8" SourceName="ADDLOSS" SourceType="Column" Required="false" Unit="Power.dB.xml"/>
-    <Field Desc="XPD, dB" Title="XPD, dB" Name="Xpd" DataType="Double" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB.xml"/>
+    <Field Desc="XPD, dB" Title="XPD, dB" Name="Xpd" DataType="Decimal.22.8" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB.xml"/>
     <Field Desc="Class of antenna" Title="Class of antenna" Name="AntClass" DataType="Text.50" SourceName="ANTCLASS" SourceType="Column" Required="false"/>
     <Field Desc="Remark" Title="Remark" Name="Remark" DataType="Text.250" SourceName="REMARK" SourceType="Column" Required="false"/>
     <Field Desc="CustTxt1" Title="CustTxt1" Name="CustTxt1" DataType="Text.250" SourceName="CUSTTXT1" SourceType="Column" Required="false"/>
-    <Field Desc="CustData1" Title="CustData1" Name="CustData1" DataType="Text.250" SourceName="CUSTDATA1" SourceType="Column" Required="false"/>
+    <Field Desc="CustData1" Title="CustData1" Name="CustData1" DataType="DateTime" SourceName="CUSTDATA1" SourceType="Column" Required="false"/>
     <Field Desc="CustNbr1" Title="CustNbr1" Name="CustNbr1" DataType="Decimal.22.8" SourceName="CUSTNBR1" SourceType="Column" Required="false"/>
     <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation SensorAntenna to Sensor">
       <PrimaryKeyMapping>

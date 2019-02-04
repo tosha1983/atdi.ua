@@ -1532,6 +1532,7 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                     break;
                 case "System.Integer":
+                case "System.Int32":
                     result = new IntegerColumnValue
                     {
                         Value = (value == null) ? (int?)null : (int.Parse(value.ToString(), CultureEnUs) as int?),

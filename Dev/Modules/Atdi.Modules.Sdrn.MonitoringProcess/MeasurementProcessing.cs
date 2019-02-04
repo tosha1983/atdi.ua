@@ -1,8 +1,9 @@
 ﻿// нет уже компоненты Atdi.AppServer.Contracts.Sdrns
 // этот контракт нужно перенести в версию 2.0
+/*
 using System;
 using System.Collections.Generic;
-using Atdi.AppServer.Contracts.Sdrns;
+//using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Modules.MonitoringProcess.Measurement;
 using Atdi.Modules.MonitoringProcess;
 using Atdi.Modules.MonitoringProcess.ProcessSignal;
@@ -608,4 +609,4 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
         public Emitting[] emittings;
     }
 }
-
+*/

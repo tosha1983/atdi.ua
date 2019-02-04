@@ -45,6 +45,8 @@
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\IEntityPart.cs" />
     <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Entities\IBWMeasResultRaw.cs" />
+    <Compile Include="Entities\IResFreqLevelsRaw.cs" />
     <Compile Include="Entities\ILinkMeasStation.cs" />
     <Compile Include="Entities\ILinkResSensor.cs" />
     <Compile Include="Entities\ILinkSectorFreq.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="Entities\IOwnerData.cs" />
     <Compile Include="Entities\IResLevels.cs" />
     <Compile Include="Entities\IResLevMeasOnline.cs" />
+    <Compile Include="Entities\IFreqSampleRaw.cs" />
     <Compile Include="Entities\IResLocSensorMeas.cs" />
     <Compile Include="Entities\IResMeas.cs" />
     <Compile Include="Entities\IResMeasStation.cs" />
@@ -122,12 +125,15 @@
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\Entity.xml" />
     <Content Include="Metadata\Entities\EntityPart.xml" />
+    <Content Include="Metadata\Entities\BWMeasResultRaw.xml" />
+    <Content Include="Metadata\Entities\ResFreqLevelsRaw.xml" />
     <Content Include="Metadata\Entities\LinkMeasStation.xml" />
     <Content Include="Metadata\Entities\LinkResSensor.xml" />
     <Content Include="Metadata\Entities\LinkSectorFreq.xml" />
     <Content Include="Metadata\Entities\LinkSectorMaskElement.xml" />
     <Content Include="Metadata\Entities\ResLevels.xml" />
     <Content Include="Metadata\Entities\ResLevMeasOnline.xml" />
+    <Content Include="Metadata\Entities\FreqSampleRaw.xml" />
     <Content Include="Metadata\Entities\ResLocSensorMeas.xml" />
     <Content Include="Metadata\Entities\ResMeas.xml" />
     <Content Include="Metadata\Entities\ResRoutes.xml" />

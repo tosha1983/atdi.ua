@@ -64,10 +64,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppServer\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
-      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
-      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Atdi.Modules.MonitoringProcess\Atdi.Modules.MonitoringProcess.csproj">
       <Project>{bbee6fdf-95ce-4549-8d30-28e9b1a1a5bc}</Project>
       <Name>Atdi.Modules.MonitoringProcess</Name>

@@ -10,7 +10,9 @@ namespace Atdi.DataModels.Sdrns.Device
     /// <summary>
     /// Identifies the Sensor equipment
     /// </summary>
+    /// 
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class SensorDescriptor
     {
         /// <summary>
