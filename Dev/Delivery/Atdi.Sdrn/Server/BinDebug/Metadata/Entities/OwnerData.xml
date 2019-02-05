@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "OwnerData"
+  Title       = "OwnerData"
+  Desc        = "The owner data"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_OWNERDATA</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="OwnerName" Title="OwnerName" Name="OwnerName" DataType="Text.100" SourceName="OWNERNAME" SourceType="Column" Required="false"/>
+    <Field Desc="OKPO" Title="OKPO" Name="OKPO" DataType="Text.50" SourceName="OKPO" SourceType="Column" Required="false"/>
+    <Field Desc="ZIP" Title="ZIP" Name="ZIP" DataType="Text.50" SourceName="ZIP" SourceType="Column" Required="false"/>
+    <Field Desc="CODE" Title="CODE" Name="CODE" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
+    <Field Desc="Address" Title="Address" Name="Address" DataType="Text.2000" SourceName="ADDRES" SourceType="Column" Required="false"/>
+    <Field Desc="StationDatFormId" Title="StationDatFormId" Name="StationDatFormId" DataType="Integer.32" SourceName="ID_STATIONDATFORM" SourceType="Column" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
