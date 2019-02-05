@@ -786,7 +786,7 @@ namespace Atdi.CoreServices.EntityOrm
                 {
                     EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
                     engineCommandParameter.Name = nameIdentFieldParameter;
-                    engineCommandParameter.DataType = dicIdentField.Value;
+                    engineCommandParameter.DataType = DataType.Integer;
                     command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(nameIdentFieldParameter, engineCommandParameter));
                     addedIdentField = true;
                 }
@@ -863,7 +863,7 @@ namespace Atdi.CoreServices.EntityOrm
                 {
                     EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
                     engineCommandParameter.Name = nameIdentFieldParameter;
-                    engineCommandParameter.DataType = dicIdentField.Value;
+                    engineCommandParameter.DataType = DataType.Integer;
                     command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(nameIdentFieldParameter, engineCommandParameter));
                     addedIdentField = true;
                 }

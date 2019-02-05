@@ -37,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                int idEntity = -1;
+                string idEntity = "";
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 try
                 {
@@ -100,7 +100,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     {
                         deviceCommandResult.CustTxt1 = "Fault";
                     }
-                    else if (idEntity>-1)
+                    else if (!string.IsNullOrEmpty(idEntity))
                     {
                         deviceCommandResult.CustTxt1 = "Success";
                     }

@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IEntity
     {
-        int Id { get; set; }
+        string Id { get; set; }
         string Name { get; set; }
         string Description { get; set; }
         string ParentId { get; set; }
