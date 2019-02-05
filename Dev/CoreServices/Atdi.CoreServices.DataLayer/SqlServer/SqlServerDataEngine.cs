@@ -110,7 +110,7 @@ namespace Atdi.CoreServices.DataLayer
             {
                 using (var trace = this.Logger.StartTrace(Contexts.SqlServerEngine, Categories.DataProcessing, this))
                 {
-                    using (var executor = new SqlServerCommandExecuter(_engineConfig, command, this.Logger))
+                    using (var executor = new SqlServerCommandExecuter(_engineConfig, command, this.Logger, _sqlConnect))
                     {
                         if (this._dbTransaction != null)
                         {
