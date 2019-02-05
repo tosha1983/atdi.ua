@@ -1154,7 +1154,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                 if (sens.StepMeasTime != null) se.m_stepmeastime = sens.StepMeasTime.GetValueOrDefault();
                                 se.m_typesensor = sens.TypeSensor;
                                 se.m_techid = sens.Equipment.TechId;
-                                se.m_apiversion = "v2.0";
+                                se.m_apiversion = "v1.0";
                                 if (isNew)
                                 {
                                     m_ID_Sensor = se.Save(dbConnect, transaction);

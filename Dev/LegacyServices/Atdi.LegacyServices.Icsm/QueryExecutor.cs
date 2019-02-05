@@ -693,35 +693,6 @@ namespace Atdi.LegacyServices.Icsm
             return recordsAffected;
         }
 
-        public int ExecuteTransaction(IQueryStatement statement)
-        {
-            if (statement == null)
-            {
-                throw new ArgumentNullException(nameof(statement));
-            }
-
-            var command = new EngineCommand();
-            if (statement is QueryInsertStatement queryInsertStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
-            }
-            else if (statement is QueryUpdateStatement queryUpdateStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
-            }
-            else if (statement is QueryDeleteStatement queryDeleteStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
-            }
-
-            if (command == null)
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
-            }
-
-            var recordsAffected = this._dataEngine.ExecuteTransaction(command);
-            return recordsAffected;
-        }
 
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
@@ -730,41 +701,21 @@ namespace Atdi.LegacyServices.Icsm
             return command;
         }
 
+        public int ExecuteScalar(IQueryStatement statement)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public EngineCommand BuildSelectCommand<TModel>(IQuerySelectStatement statement)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public DataModels.DataSet Fetch<TModel>(IQuerySelectStatement<TModel> statement, DataSetColumn[] columns, DataSetStructure structure)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public int Execute<TModel>(IQuerySelectStatement<TModel> statement)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public int Execute<TModel>(IQueryDeleteStatement<TModel> statement)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public int Execute<TModel>(IQueryInsertStatement<TModel> statement)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public int Execute<TModel>(IQueryUpdateStatement<TModel> statement)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
 

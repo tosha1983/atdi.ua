@@ -19,11 +19,13 @@ namespace Atdi.CoreServices.DataLayer
         private DbConnection _connectionForTransaction;
         private DbConnection _connection;
         private DbCommand _command;
+        private EngineCommand _engineCommand;
+        private const string _nameIdentField = "v_ID";
 
         public OracleCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger, DbConnection connectionForTransaction = null) 
             : base(logger)
         {
-            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.ManagedDataAccess.Client");
             this._connection =  _dbProviderFactory.CreateConnection();
             this._connection.ConnectionString = _engineConfig.ConnectionString;
             this._connection.Open();
@@ -31,13 +33,14 @@ namespace Atdi.CoreServices.DataLayer
             this._command.Connection = connectionForTransaction == null ? this._connection : connectionForTransaction;
             this._command.CommandText = engineCommand.Text;
             this._command.CommandType = CommandType.Text;
+            this._engineCommand = engineCommand;
             this.PrepareCommandParameters(engineCommand.Parameters.Values);
         }
 
         public OracleCommandExecuter(IDataEngineConfig _engineConfig, ILogger logger)
            : base(logger)
         {
-            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+            DbProviderFactory _dbProviderFactory = DbProviderFactories.GetFactory("Oracle.ManagedDataAccess.Client");
             this._connectionForTransaction = _dbProviderFactory.CreateConnection();
             this._connectionForTransaction.ConnectionString = _engineConfig.ConnectionString;
             this._connectionForTransaction.Open();
@@ -61,6 +64,10 @@ namespace Atdi.CoreServices.DataLayer
             sqlParameter.ParameterName = ":" + parameter.Name;
             sqlParameter.DbType = ToSqlDbType(parameter.DataType);
             sqlParameter.Direction = ParameterDirection.Input;
+            if (parameter.Name== _nameIdentField)
+            {
+                sqlParameter.Direction = ParameterDirection.InputOutput;
+            }
             sqlParameter.Value = parameter.Value ?? DBNull.Value;
 
             if (parameter.DataType == DataType.String && parameter.Value != null) {
@@ -81,6 +88,8 @@ namespace Atdi.CoreServices.DataLayer
         {
             switch (dataType)
             {
+                case DataType.Long:
+                    return DbType.Int64;
                 case DataType.Guid:
                     return DbType.String;
                 case DataType.String:
@@ -136,6 +145,8 @@ namespace Atdi.CoreServices.DataLayer
             }
         }
 
+
+
         public int Execute()
         {
             this.OpenConnection();
@@ -144,7 +155,12 @@ namespace Atdi.CoreServices.DataLayer
                 using (var trace = StartTraceExecuting())
                 {
                     TraceCommand(trace);
-                    return this._command.ExecuteNonQuery();
+                    var res = this._command.ExecuteNonQuery();
+                    if (this._engineCommand.Parameters.ContainsKey(_nameIdentField))
+                    {
+                        this._engineCommand.Parameters[_nameIdentField].Value = this._command.Parameters[string.Format(":{0}", _nameIdentField)].Value;
+                    }
+                    return res;
                 }
             }
             catch (Exception e)

@@ -21,8 +21,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? N { get; set; }
         string Status { get; set; }
         string MeasResultSID { get; set; }
-        string Type { get; set; }
+        string TypeMeasurements { get; set; }
         bool Synchronized { get; set; }
+        DateTime? StartTime { get; set; }
+        DateTime? StopTime { get; set; }
+        int? ScansNumber { get; set; }
         IMeasSubTask MEASSUBTASK { get; set; }
         IMeasSubTaskSta MEASSUBTASKSTA { get; set; }
         ISensor SENSOR { get; set; }

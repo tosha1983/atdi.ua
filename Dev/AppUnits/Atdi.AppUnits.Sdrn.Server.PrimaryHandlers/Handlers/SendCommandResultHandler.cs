@@ -38,94 +38,72 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
                 this._eventEmitter.Emit("OnEvent2", "SendCommandResultProcess");
-                //this._eventEmitter.Emit("OnSendCommandResult", "SendCommandResultProcess");
-                result.Status = SdrnMessageHandlingStatus.Error;
-                //var sensorRegistration = false;
-                //var sensorExistsInDb = false;
+                result.Status = SdrnMessageHandlingStatus.Trash;
+                var sensorExistsInDb = false;
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                try
+                {
+                    queryExecuter.BeginTransaction();
+                    switch (incomingEnvelope.DeliveryObject.CommandId)
+                    {
+                        case "SendActivitySensor":
+                            var query = this._dataLayer.GetBuilder<MD.ISensor>()
+                       .From()
+                       .Select(c => c.Name)
+                       .Select(c => c.Id)
+                       .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.SensorName)
+                       .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.SensorTechId)
+                       .OrderByAsc(c => c.Id);
+                            sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
+                            .Execute(query) == 1;
 
-                //try
-                //{
-                //    // поиск сенсора в БД
-                //    var query = this._dataLayer.GetBuilder<MD.ISensor>()
-                //        .From()
-                //        .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
-                //        .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
-                //        .OnTop(1);
+                            if (sensorExistsInDb == true)
+                            {
+                                var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensor>().Update();
+                                builderUpdateSensor.Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.SensorTechId);
+                                builderUpdateSensor.Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.SensorName);
+                                builderUpdateSensor.SetValue(c => c.Status, "A");
+                                var cnt = queryExecuter
+                                 .Execute(builderUpdateSensor);
+                                if (cnt == 1)
+                                {
+                                    queryExecuter.CommitTransaction();
+                                    result.Status = SdrnMessageHandlingStatus.Confirmed;
+                                    this._eventEmitter.Emit("OnSensorActivity", "ActivitySensorProccesing");
+                                }
+                            }
+                            break;
+                        case "UpdateStatusMeasTask":
+                            var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
+                                .Update()
+                                .Where(c => c.Id, ConditionOperator.Equal, (int?)incomingEnvelope.DeliveryObject.CustNbr1)
+                                .SetValue(c => c.Status, incomingEnvelope.DeliveryObject.Status);
+                            var updated = queryExecuter
+                            .Execute(queryMeasTask) == 1;
+                            if (updated == true)
+                            {
+                                queryExecuter.CommitTransaction();
+                                result.Status = SdrnMessageHandlingStatus.Confirmed;
+                                this._eventEmitter.Emit("OnUpdateStatusMeasTask", "UpdateStatusMeasTaskProccesing");
+                            }
+                            break;
+                        case "UpdateSensorLocation":
+                            throw new NotImplementedException($"Handle for CommandId {incomingEnvelope.DeliveryObject.CommandId} not implemented");
+                        default:
+                            throw new NotImplementedException($"Handle for CommandId {incomingEnvelope.DeliveryObject.CommandId} not implemented");
+                    }
+                }
+                catch (Exception e)
+                {
+                    queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
+                    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
+                    {
+                        result.Status = SdrnMessageHandlingStatus.Error;
+                        result.ReasonFailure = e.ToString();
+                    }
+                }
 
-                //    sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                //        .Execute(query) == 0;
-
-                //    if (!sensorExistsInDb)
-                //    {
-                //        var insertCommand = this._dataLayer.GetBuilder<MD.ISensor>()
-                //            .Insert()
-                //            .SetValue(c => c.Name, incomingEnvelope.DeliveryObject.Name)
-                //            .SetValue(c => c.TechId, incomingEnvelope.DeliveryObject.Equipment.TechId)
-                //            // тут нужно дописать код для остальных полей
-                //            .SetValue(c => c.Status, "NEW");
-
-                //        sensorRegistration = this._dataLayer.Executor<SdrnServerDataContext>()
-                //            .Execute(insertCommand) == 1;
-                //    }
-
-                //    // с этого момента нужно считать что сообщение удачно обработано
-                //    result.Status = SdrnMessageHandlingStatus.Confirmed;
-
-                //    // отправка события если новый сенсор создан в БД
-                //    if (sensorRegistration)
-                //    {
-                //        this._eventEmitter.Emit("OnNewSensorRegistartion", "RegisterSensorProccesing");
-                //    }
-
-                //}
-                //catch (Exception e)
-                //{
-                //    this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
-                //    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
-                //    {
-                //        result.Status = SdrnMessageHandlingStatus.Error;
-                //        result.ReasonFailure = e.ToString();
-                //    }
-                //}
-                //finally
-                //{
-                //    // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
-                //    // формируем объект подтвержденяи регистрации
-                //    var registrationResult = new SensorRegistrationResult
-                //    {
-                //        EquipmentTechId = incomingEnvelope.SensorTechId,
-                //        SensorName = incomingEnvelope.SensorName,
-                //        SdrnServer = this._environment.ServerInstance
-                //    };
-
-                //    if (result.Status == SdrnMessageHandlingStatus.Error)
-                //    {
-                //        registrationResult.Status = "ERROR";
-                //        registrationResult.Message = "Something went wrong on the server";
-                //    }
-                //    else if (sensorExistsInDb)
-                //    {
-                //        registrationResult.Status = "REJECT";
-                //        registrationResult.Message = "The sensor has already been registered earlier";
-                //    }
-                //    else if (sensorRegistration)
-                //    {
-                //        registrationResult.Status = "OK";
-                //    }
-                //    else
-                //    {
-                //        registrationResult.Status = "ERROR";
-                //        registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
-                //    }
-
-                //    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
-
-                //    envelop.SensorName = incomingEnvelope.SensorName;
-                //    envelop.SensorTechId = incomingEnvelope.SensorTechId;
-                //    envelop.DeliveryObject = registrationResult;
-
-                //    _messagePublisher.Send(envelop);
-                //}
             }
         }
 

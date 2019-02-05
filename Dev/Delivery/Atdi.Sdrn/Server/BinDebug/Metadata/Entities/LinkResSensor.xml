@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkResSensor"
+  Title       = "LinkResSensor"
+  Desc        = "The LinkResSensor"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_LINKRESSENSOR</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="ID_XBS_SENSOR" SourceType="Column" Required="true"/>
+    <Field Desc="ResMeasStaId" Title="ResMeasStaId" Name="ResMeasStaId" DataType="Integer.64" SourceName="IDXBSRESMEASSTA" SourceType="Column" Required="true"/>
+    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation LinkResSensor to Sensor">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStation" Title="Relation LinkResSensor to ResMeasStation">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

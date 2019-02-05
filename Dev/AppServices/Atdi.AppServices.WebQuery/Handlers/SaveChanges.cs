@@ -88,7 +88,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                .Insert("NEXT_ID")
                .SetValue("NEXT", new IntegerValueOperand() { DataType = DataModels.DataType.Integer, Value = NextId })
                .SetValue("TABLE_NAME", new StringValueOperand() { DataType = DataModels.DataType.String, Value = table });
-                this._queryExecutor.ExecuteTransaction(insertQuery);
+                this._queryExecutor.Execute(insertQuery);
             }
             else
             {
@@ -98,7 +98,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                 .Where(new ConditionExpression() { LeftOperand = new ColumnOperand() { Type = OperandType.Column, ColumnName = "TABLE_NAME" }, Operator = ConditionOperator.Equal, RightOperand = new StringValueOperand() { Type = OperandType.Value, DataType = DataModels.DataType.String, Value = table } });
                 if (isTransaction)
                 {
-                    this._queryExecutor.ExecuteTransaction(updateQuery);
+                    this._queryExecutor.Execute(updateQuery);
                 }
                 else
                 {
@@ -626,7 +626,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                 {
                                     queryBuilderInsert.SetValues(columnValuesData);
                                 }
-                                this._queryExecutor.ExecuteTransaction(queryBuilderInsert);
+                                this._queryExecutor.Execute(queryBuilderInsert);
                             }
                         }
                         else
@@ -641,7 +641,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                             {
                                 queryBuilderInsert.SetValues(columnValuesData);
                             }
-                            this._queryExecutor.ExecuteTransaction(queryBuilderInsert);
+                            this._queryExecutor.Execute(queryBuilderInsert);
                         }
                     }
                 } 
@@ -668,7 +668,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                 {
                                     queryBuilderInsert.SetValues(columnValuesData);
                                 }
-                                this._queryExecutor.ExecuteTransaction(queryBuilderInsert);
+                                this._queryExecutor.Execute(queryBuilderInsert);
                             }
                         }
                         else
@@ -683,7 +683,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                             {
                                 queryBuilderInsert.SetValues(columnValuesData);
                             }
-                            this._queryExecutor.ExecuteTransaction(queryBuilderInsert);
+                            this._queryExecutor.Execute(queryBuilderInsert);
                         }
                     }
                 }
@@ -809,7 +809,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                     queryBuilderUpdate
                     .Where(conditions);
                 }
-                this._queryExecutor.ExecuteTransaction(queryBuilderUpdate);
+                this._queryExecutor.Execute(queryBuilderUpdate);
             }
         }
 
@@ -968,7 +968,7 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                     if (listLinkColumn.Find(x => x.LinkFieldName == columnProperties.NameField && x.TableName == columnProperties.NameTableFrom && FullColumnName.Contains(x.FullSourceName)) == null)
                                     {
                                         listLinkColumn.Add(linkColumnUpdate);
-                                        this._queryExecutor.ExecuteTransaction(queryBuilderUpdate);
+                                        this._queryExecutor.Execute(queryBuilderUpdate);
                                     }
                                 }
                             }

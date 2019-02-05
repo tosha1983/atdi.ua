@@ -23,9 +23,10 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
         private int sw_time;//
         private Double bin_size;//
         private Double start_freq;//
-        private int return_len; //IQ
-        private int samples_per_sec; //IQ
+        private int return_len; // IQ
+        private int samples_per_sec; // IQ
         private double bandwidth; // IQ
+        private int downsampleFactor; // IQ
 
 
 
@@ -104,19 +105,24 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
         {
             return sDRstate;
         }
+        private int LastPPSTime_sec;
+        private int LastPPSTime_nano = -1;
 
         #region IQStream
-        unsafe public bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving_sec = -1, bool AfterPPS = false)
+        unsafe public bool GetIQStream(ref ReceivedIQStream receivedIQStream, double durationReceiving_sec = -1, bool AfterPPS = false, bool JustWithSignal = false)
         {
             bool done = false;
             try
             {
                 // константа
-                int max_count = 1500;
+                int max_count = 500000;
                 // конец констант
 
                 int NumberPass = 0;
+                // расчет количества шагов которое мы должны записать. NumberPass
                 if (durationReceiving_sec < 0) { NumberPass = 1; } else { NumberPass = (int)Math.Ceiling(durationReceiving_sec * samples_per_sec / return_len); }
+                
+                // Формирование пустого места для записи данных
                 receivedIQStream = new ReceivedIQStream();
                 receivedIQStream.TimeMeasStart = DateTime.Now;
                 receivedIQStream.iq_samples = new List<float[]>();
@@ -125,24 +131,12 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                 receivedIQStream.sampleLosses = new List<int>();
                 receivedIQStream.iqSeces = new List<int>();
                 receivedIQStream.iqNanos = new List<int>();
-                //float* bufer = stackalloc float[return_len * 2];
-                //int* triggers = stackalloc int[71];
-                //bbIQPacket pkt = new bbIQPacket();
-                //pkt.iqData = bufer;
-                //pkt.iqCount = return_len;
-                //pkt.triggers = triggers;
-                //pkt.triggerCount = 70;
-                //pkt.purge = 1;
-                //long[] ticks = new long[NumberPass+1];
-                //long[] ticks1 = new long[NumberPass + 1];
                 List<float[]> IQData = new List<float[]>();
                 List<int []> TrData = new List<int[]>();
                 List<int> dataRemainings = new List<int>();
                 List<int> sampleLosses = new List<int>();
                 List<int> iqSeces = new List<int>();
                 List<int> iqNanos = new List<int>();
-
-
                 for (int i = 0; i < NumberPass; i++)
                 {
                     float[] iqSamplesX = new float[return_len * 2];
@@ -154,45 +148,83 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     iqSeces.Add(-1);
                     iqNanos.Add(-1);
                 }
-                                int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;  //ВАЖНО КОСТЫЛЬ
-                //long time = DateTime.Now.Ticks;
-                int count = 0;
+                // сформировано пустое место
+
+                int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0; 
+                int count = 0; int number_bloks = 0;
+
                 for (int i = 0; i < NumberPass; i++)
                 {
-                    //long tick = DateTime.Now.Ticks;
-                    //ticks[i] = DateTime.Now.Ticks - tick;
+                    // снятие данных
                     bb_api.bbGetIQUnpacked(id_dev, IQData[i], return_len, TrData[i], 71, 1,
                             ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
-                    
+                    // конец снятия данных
                     dataRemainings[i] = dataRemaining;
                     sampleLosses[i] = sampleLoss;
                     iqSeces[i] = iqSec;
                     iqNanos[i] = iqNano;
+
+
                     if (TrData[i][0] != 0)
                     {
                         AfterPPS = false;
+                        LastPPSTime_sec = iqSec;
+                        LastPPSTime_nano = iqNano + TrData[i][0]*(downsampleFactor * 25);
+                        //if (JustWithSignal)
+                        //{max_count = NumberPass; count = 0;}
+                    }
+                    else
+                    {
+                        if (LastPPSTime_nano != -1)
+                        {// В данном случае у нас был PPS ранее
+                            if (iqSec - LastPPSTime_sec < 10)
+                            {// еще не успело сильно растроиться время
+                                TrData[i][0] = -(int)((iqNano - LastPPSTime_nano) / (downsampleFactor * 25));
+                                if (TrData[i][0] > 0) { TrData[i][0] = (- 1000000000/ (downsampleFactor * 25)) + TrData[i][0];}
+                            }
+                        }
                     }
                     if (AfterPPS)
                     {
                         i--;
                     }
-                    //else
-                    //{
-                    //    if (TrData[i][0] == 0)
-                    //    {
-                    //        i--;
-                    //    }
-                    //    //    System.Threading.Thread.Sleep(i);
-                    //}
-                    count++;
+                    if ((JustWithSignal)&&(!AfterPPS))
+                    {
+                        // Константы
+                        double noise = 0.00001; // уровень шума в mW^2
+                        double SN = 10; // превышение шума в разах 
+                        // Конец констант 
+                        bool signal = false;
+                        int step = (int)(IQData[i].Length / 1000);
+                        if (step < 1) { step = 1; }
+                        double TrigerLevel = noise * SN;
+                        for (int j = 0; IQData[i].Length - 6 > j; j = j + step)
+                        {
+                            if ((IQData[i][j] >= TrigerLevel) || (IQData[i][j + 1] >= TrigerLevel))
+                            {
+                                if ((IQData[i][j + 2] >= TrigerLevel) || (IQData[i][j + 3] >= TrigerLevel))
+                                {
+                                    if ((IQData[i][j + 4] >= TrigerLevel) || (IQData[i][j + 5] >= TrigerLevel))
+                                    {
+                                        signal = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (!signal)
+                        {
+                            i--;
+                            TrData[i][0] = 0;
+                        }
+                    }
+                        count++;
+                    number_bloks = i+1;
                     if (count >= max_count) { break;}
-                    //long tick1 = DateTime.Now.Ticks;
-                    //ticks1[i] = DateTime.Now.Ticks - tick1;
-                    
                 }
-                //long time1 = DateTime.Now.Ticks - time;
-                //time = DateTime.Now.Ticks;
-                for (int i = 0; i < NumberPass; i++)
+
+                // перегрупировка данных в нужный формат
+                for (int i = 0; i < number_bloks; i++)
                 {
                     float[] iq_sample = new float[return_len * 2];
                     int[] trigger = new int[80];
@@ -211,9 +243,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
                     receivedIQStream.sampleLosses.Add(sampleLosses[i]);
                     receivedIQStream.iqSeces.Add(iqSeces[i]);
                     receivedIQStream.iqNanos.Add(iqNanos[i]);
-
                 }
-                //time1 = (DateTime.Now.Ticks - time)/10000000;
                 receivedIQStream.durationReceiving_sec = durationReceiving_sec;
                 done = true;
             }
@@ -224,6 +254,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
             
             return done;
         }
+
         #endregion
 
         #region Trace 
@@ -499,7 +530,7 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
             try
             {
                 // пока параметры будут константами временное решение для тестирования
-                int downsampleFactor = 1; //Коэфициент прореживания IQ потока
+                downsampleFactor = getDownsampleFactor(f_max * 1000 - f_min * 1000); //Коэфициент прореживания IQ потока
                 bb_api.bbConfigureLevel(id_dev, ref_level_dbm, atten);
                 bb_api.bbConfigureGain(id_dev, gain_SDR);
                 bb_api.bbConfigureCenterSpan(id_dev, (f_max * 1000000 + f_min * 1000000) / 2, f_max * 1000000 - f_min * 1000000);
@@ -592,6 +623,13 @@ namespace Atdi.Modules.MonitoringProcess.SingleHound
             catch { }
             return done;
             throw new NotImplementedException();
+        }
+        private int getDownsampleFactor(double BW_kHz)// подлежит Тестированию и уточнению
+        {
+            if (BW_kHz >= 200) { return 1; }
+            if (BW_kHz >= 50) { return 2; }
+            if (BW_kHz >= 20) { return 4; }
+            return 8;
         }
         #endregion
 

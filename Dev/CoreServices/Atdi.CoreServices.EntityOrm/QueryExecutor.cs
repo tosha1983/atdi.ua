@@ -738,25 +738,182 @@ namespace Atdi.CoreServices.EntityOrm
             return recordsAffected;
         }
 
-        public int ExecuteTransaction(IQueryStatement statement)
-        {
-            throw new NotImplementedException();
-        }
 
         public void BeginTransaction()
         {
-            throw new NotImplementedException();
+            this._dataEngine.BeginTransaction();
         }
 
         public void CommitTransaction()
         {
-            throw new NotImplementedException();
+            this._dataEngine.CommitTransaction();
         }
 
         public void RollbackTransaction()
         {
-            throw new NotImplementedException();
+            this._dataEngine.RollbackTransaction();
         }
+
+        public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        {
+            var addedIdentField = false;
+            var nameIdentFieldParameter = "v_ID";
+            var dicIdentField = new KeyValuePair<string, DataType>();
+            var propertyName = "Statement";
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
+            var extractType = statement.GetType();
+
+            if (extractType.Name.Contains(typeof(QueryInsertStatement).Name))
+            {
+                statement = extractType.GetProperty(propertyName).GetValue(statement, null) as QueryInsertStatement;
+            }
+            else
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+
+            var command = new EngineCommand();
+            if (statement is QueryInsertStatement queryInsertStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
+                if (!string.IsNullOrEmpty(dicIdentField.Key))
+                {
+                    EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
+                    engineCommandParameter.Name = nameIdentFieldParameter;
+                    engineCommandParameter.DataType = DataType.Integer;
+                    command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(nameIdentFieldParameter, engineCommandParameter));
+                    addedIdentField = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Not found primary key description");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+            var result = default(TResult);
+            if ((addedIdentField) && (statement is QueryInsertStatement))
+            {
+                int val = this._dataEngine.Execute(command);
+                object resIdentObject = command.Parameters[nameIdentFieldParameter].Value;
+                if (resIdentObject != null)
+                {
+                    var res = Int32.Parse(resIdentObject.ToString());
+                    var objectStatment = (statement as QueryInsertStatement).SelectStatement;
+                    if ((objectStatment != null) && (!string.IsNullOrEmpty(dicIdentField.Key)))
+                    {
+                        objectStatment.Where(dicIdentField.Key, res);
+                        var commandSelect = this.BuildSelectCommand(objectStatment);
+                        _dataEngine.Execute(commandSelect, reader =>
+                        {
+                            var columnsMapper = objectStatment.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
+                            var typedReader = new QueryDataReader(reader, columnsMapper);
+                            result = handler(typedReader);
+                        });
+                    }
+                }
+            }
+            else
+            { 
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+            return result;
+
+        }
+
+        public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
+        {
+            var addedIdentField = false;
+            var nameIdentFieldParameter = "v_ID";
+            var dicIdentField = new KeyValuePair<string, DataType>();
+            var propertyName = "Statement";
+            var extractType = statement.GetType();
+            IQueryStatement statementQuery = null;
+
+            if (extractType.Name.Contains(typeof(QueryInsertStatement).Name))
+            {
+                statementQuery = extractType.GetProperty(propertyName).GetValue(statement, null) as QueryInsertStatement;
+            }
+            else
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+
+            var command = new EngineCommand();
+            if (statementQuery is QueryInsertStatement queryInsertStatement)
+            {
+                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
+                if (!string.IsNullOrEmpty(dicIdentField.Key))
+                {
+                    EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
+                    engineCommandParameter.Name = nameIdentFieldParameter;
+                    engineCommandParameter.DataType = DataType.Integer;
+                    command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(nameIdentFieldParameter, engineCommandParameter));
+                    addedIdentField = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Not found primary key description");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statementQuery.GetType().Name));
+            }
+
+            if (command == null)
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+            }
+
+
+            var result = default(TResult);
+            if ((addedIdentField) && (statementQuery is QueryInsertStatement))
+            {
+                int val = this._dataEngine.Execute(command);
+                object resIdentObject = command.Parameters[nameIdentFieldParameter].Value;
+                if (resIdentObject != null)
+                {
+                    var res = Int32.Parse(resIdentObject.ToString());
+                    var objectStatment = (statement as QueryInsertStatement<TModel>).SelectStatement;
+                    if ((objectStatment != null) && (!string.IsNullOrEmpty(dicIdentField.Key)))
+                    {
+                        objectStatment.Where(dicIdentField.Key, res);
+                        var commandSelect = this.BuildSelectCommand(objectStatment);
+                        _dataEngine.Execute(commandSelect, reader =>
+                        {
+                            var columnsMapper = objectStatment.Table.SelectColumns.ToDictionary(k => k.Value.Name, e => e.Value.Alias);
+                            var typedReader = new QueryDataReader<TModel>(reader, columnsMapper);
+                            result = handler(typedReader);
+                        });
+                    }
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statementQuery.GetType().Name));
+            }
+            return result;
+
+        }
+
+     
     }
 }
 

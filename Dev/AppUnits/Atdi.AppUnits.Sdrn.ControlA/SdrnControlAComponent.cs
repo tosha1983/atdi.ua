@@ -1,10 +1,4 @@
-﻿using Atdi.Platform.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atdi.AppUnits.Sdrn.ControlA.Handlers;
+﻿using Atdi.AppUnits.Sdrn.ControlA.Bus;
 
 namespace Atdi.AppUnits.Sdrn.ControlA
 {
@@ -18,11 +12,10 @@ namespace Atdi.AppUnits.Sdrn.ControlA
         }
 
 
-
         protected override void OnInstallUnit()
         {
-            var busManager = new BusManager(this.Logger, this.Config);
-            this.Container.RegisterInstance(typeof(BusManager), busManager, Platform.DependencyInjection.ServiceLifetime.Singleton);
+            var busManager = new Launcher(this.Logger, this.Config);
+            this.Container.RegisterInstance(typeof(Launcher), busManager, Platform.DependencyInjection.ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()
@@ -34,6 +27,11 @@ namespace Atdi.AppUnits.Sdrn.ControlA
         }
         protected override void OnUninstallUnit()
         {
+            Launcher._messagePublisher.Dispose();
+            Launcher._messageDispatcher.Deactivate();
+            Launcher._messageDispatcher.Dispose();
+            Launcher._gate.Dispose();
+            Launcher._sdr = null;
         }
     }
 }

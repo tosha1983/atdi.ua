@@ -166,10 +166,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+    <PostBuildEvent>copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Metadata\Environment.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\Metadata"
+copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Metadata\DataTypes\Database\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\Metadata\DataTypes\Database"
+copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Metadata\Entities\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\Metadata\Entities"
+copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Metadata\Units\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\Metadata\Units"
+
+copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-
 
 
 copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
@@ -179,6 +184,8 @@ copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\B
 copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
+copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
 </PostBuildEvent>
   </PropertyGroup>

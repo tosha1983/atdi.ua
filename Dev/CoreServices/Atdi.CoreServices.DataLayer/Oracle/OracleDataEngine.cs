@@ -13,7 +13,7 @@ namespace Atdi.CoreServices.DataLayer
     {
         private readonly IDataEngineConfig _engineConfig;
         private readonly IEngineSyntax _syntax;
-        private DbTransaction _dbTransaction;
+        private  DbTransaction _dbTransaction;
         private  DbConnection _sqlConnect;
 
 
@@ -66,29 +66,27 @@ namespace Atdi.CoreServices.DataLayer
 
 
 
-
-        public int ExecuteTransaction(EngineCommand command)
-        {
-            using (var trace = this.Logger.StartTrace(Contexts.OracleEngine, Categories.DataProcessing, this))
-            {
-                using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger, _sqlConnect))
-                {
-                    if (this._dbTransaction != null)
-                    {
-                        executor.SetTransactionToDbCommand(this._dbTransaction);
-                    }
-                    return executor.Execute();
-                }
-            }
-        }
-
         public int Execute(EngineCommand command)
         {
             using (var trace = this.Logger.StartTrace(Contexts.OracleEngine, Categories.DataProcessing, this))
             {
-                using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger))
+                if (this._dbTransaction == null)
                 {
-                    return executor.Execute();
+                    using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger))
+                    {
+                        return executor.Execute();
+                    }
+                }
+                else
+                {
+                    using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger, _sqlConnect))
+                    {
+                        if (this._dbTransaction != null)
+                        {
+                            executor.SetTransactionToDbCommand(this._dbTransaction);
+                        }
+                        return executor.Execute();
+                    }
                 }
             }
         }
@@ -97,9 +95,23 @@ namespace Atdi.CoreServices.DataLayer
         {
             using (var trace = this.Logger.StartTrace(Contexts.OracleEngine, Categories.DataProcessing, this))
             {
-                using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger))
+                if (this._dbTransaction == null)
                 {
-                    executor.Execute(handler);
+                    using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger))
+                    {
+                        executor.Execute(handler);
+                    }
+                }
+                else
+                {
+                    using (var executor = new OracleCommandExecuter(_engineConfig, command, this.Logger, _sqlConnect))
+                    {
+                        if (this._dbTransaction != null)
+                        {
+                            executor.SetTransactionToDbCommand(this._dbTransaction);
+                        }
+                        executor.Execute(handler);
+                    }
                 }
             }
         }

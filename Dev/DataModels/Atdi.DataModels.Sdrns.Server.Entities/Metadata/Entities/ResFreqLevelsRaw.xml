@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResFreqLevelsRaw"
+  Title       = "ResFreqLevelsRaw"
+  Desc        = "The ResFreqLevelsRaw"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_RESFREQLEVELSRAW</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Frequency, MHz" Title="Frequency, MHz" Name="Freq_MHz" DataType="Decimal.30.10" SourceName="FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz.xml"/>
+    <Field Desc="Level, dBm" Title="Level, dBm" Name="Level_dBm" DataType="Decimal.30.10" SourceName="LVLDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
+    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResFreqLevelsRaw to ResMeas">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

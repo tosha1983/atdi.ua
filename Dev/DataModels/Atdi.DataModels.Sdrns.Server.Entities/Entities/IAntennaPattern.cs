@@ -15,6 +15,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Freq { get; set; }
         double? Gain { get; set; }
         string DiagA { get; set; }
+        string DiagH { get; set; }
         string DiagV { get; set; }
         ISensorAntenna SENSORANTENNA { get; set; }
     }

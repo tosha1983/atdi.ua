@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Contracts.CoreServices.EntityOrm;
+using System.Linq.Expressions;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -17,9 +18,13 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly string _tableName;
         private readonly List<ColumnValue> _columnsValues;
         private readonly QueryInsertStatement _statement;
+        private readonly List<string> _selectColumns;
+        private readonly QuerySelectStatement _selectStatement;
 
 
         public QueryInsertStatement Statement => _statement;
+        public QuerySelectStatement SelectStatement => _selectStatement;
+
 
 
         public QueryInsertStatement()
@@ -27,6 +32,8 @@ namespace Atdi.CoreServices.EntityOrm
             this._tableName = (ModelType.Name[0] == 'I' ? ModelType.Name.Substring(1, ModelType.Name.Length - 1) : ModelType.Name);
             this._columnsValues = new List<ColumnValue>();
             this._statement = new QueryInsertStatement(this._tableName);
+            this._selectColumns = new List<string>();
+            this._selectStatement = new QuerySelectStatement(TableName);
         }
 
         public QueryInsertStatement(string tableName)
@@ -74,21 +81,59 @@ namespace Atdi.CoreServices.EntityOrm
             this._statement.ColumnsValues.AddRange(columnsValues);
             return this;
         }
+
+        public IQueryInsertStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions)
+        {
+            if (columnsExpressions == null)
+            {
+                throw new ArgumentNullException(nameof(columnsExpressions));
+            }
+            for (int i = 0; i < columnsExpressions.Length; i++)
+            {
+                var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpressions[i]);
+                if (!string.IsNullOrEmpty(memberName))
+                {
+                    _selectColumns.Add(memberName);
+                }
+            }
+            _selectStatement.Select(_selectColumns.ToArray());
+            return this;
+        }
     }
     internal sealed class QueryInsertStatement : IQueryInsertStatement
     {
         private readonly string _tableName;
         private readonly List<ColumnValue> _columnsValues;
+        private readonly List<string> _selectColumns;
+        private readonly QuerySelectStatement _selectStatement;
 
         public QueryInsertStatement(string tableName)
         {
             this._tableName = tableName;
             this._columnsValues = new List<ColumnValue>();
+            this._selectColumns = new List<string>();
+            this._selectStatement = new QuerySelectStatement(TableName);
+
         }
 
         public string TableName => this._tableName;
 
         public List<ColumnValue> ColumnsValues => this._columnsValues;
+        public QuerySelectStatement SelectStatement => _selectStatement;
+
+        public IQueryInsertStatement Select(params string[] columns)
+        {
+            if (columns == null)
+            {
+                throw new ArgumentNullException(nameof(columns));
+            }
+            if (columns != null)
+            {
+                _selectColumns.AddRange(columns.ToList());
+            }
+            _selectStatement.Select(_selectColumns.ToArray());
+            return this;
+        }
 
         public IQueryInsertStatement SetValue(ColumnValue columnValue)
         {

@@ -4,13 +4,7 @@ using Castle.MicroKernel.Registration;
 using System.Configuration;
 using Atdi.SDNRS.AppServer.BusManager;
 using XMLLibrary;
-using Atdi.SDNRS.AppServer.Sheduler;
 using Atdi.Modules.Licensing;
-using Atdi.Platform.Cryptography;
-using Atdi.Platform.AppComponent;
-using Atdi.AppServer.Contracts.Sdrns;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using Atdi.SDNRS.AppServer.ManageDB.Adapters;
 
 namespace Atdi.AppServer.ConfigurationSdrnController
@@ -22,10 +16,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         private ConfigurationRabbitOptions _configurationRabbitOptions;
         private Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBGetSensor _classDBGetSensor;
         private Atdi.AppServer.AppService.SdrnsControllerv2_0.OracleDataAccess _oracleDataAccess;
-        private ShedulerUpMeasSDRResults Sc_Up_Meas_SDR;
-        private ShedulerCheckActivitySensor CheckActivitySensor;
-        private ShedulerGetMeasTask getMeasTask;
-        private ShedulerCheckStart Quartz;
+        
        
 
         public ConfigurationSdrnController()
@@ -118,14 +109,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                             ConfigurationRabbitOptions.listAllSensors = gsd.LoadObjectAllSensor();
                             gsd.Dispose();
                             Activity activity = new Activity(_logger);
-                            //Sc_Up_Meas_SDR = new ShedulerUpMeasSDRResults(_logger);
-                            //Sc_Up_Meas_SDR.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._TimeUpdateMeasResult);
-                            //CheckActivitySensor = new ShedulerCheckActivitySensor(_logger);
-                            //CheckActivitySensor.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._RescanActivitySensor);
-                            //getMeasTask = new ShedulerGetMeasTask(this._logger); getMeasTask.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ScanMeasTasks);
-                            //Quartz = new ShedulerCheckStart(this._logger);
-                            //Quartz.ShedulerRepeatStart(BaseXMLConfiguration.xml_conf._ReloadStart);
-
                         }
                         else
                         {
@@ -153,10 +136,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         void IAppServerComponent.Deactivate()
         {
             _configurationRabbitOptions.UnBindConcumers();
-            ShedulerUpMeasSDRResults.DisposeSheduler();
-            ShedulerCheckActivitySensor.DisposeSheduler();
-            ShedulerGetMeasTask.DisposeSheduler();
-            ShedulerCheckStart.DisposeSheduler();
             _oracleDataAccess.CloseConnection();
         }
 

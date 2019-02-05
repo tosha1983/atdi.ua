@@ -37,95 +37,86 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent3", "SendEntityProcess");
-                result.Status = SdrnMessageHandlingStatus.Trash;
-                //var sensorRegistration = false;
-                //var sensorExistsInDb = false;
+                string idEntity = "";
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                try
+                {
+                    this._eventEmitter.Emit("OnEvent3", "SendEntityProcess");
+                    result.Status = SdrnMessageHandlingStatus.Trash;
+                    var entityObject = incomingEnvelope.DeliveryObject;
 
-                //try
-                //{
-                //    // поиск сенсора в БД
-                //    var query = this._dataLayer.GetBuilder<MD.ISensor>()
-                //        .From()
-                //        .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Name)
-                //        .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
-                //        .OnTop(1);
+                    queryExecuter.BeginTransaction();
+                    var builderInsertIEntity = this._dataLayer.GetBuilder<MD.IEntity>().Insert();
+                    if (entityObject.ContentType != null) builderInsertIEntity.SetValue(c => c.ContentType, entityObject.ContentType);
+                    if (entityObject.Description != null) builderInsertIEntity.SetValue(c => c.Description, entityObject.Description);
+                    if (entityObject.HashAlgorithm != null) builderInsertIEntity.SetValue(c => c.HashAlgoritm, entityObject.HashAlgorithm);
+                    if (entityObject.HashCode != null) builderInsertIEntity.SetValue(c => c.HashCode, entityObject.HashCode);
+                    if (entityObject.Name != null) builderInsertIEntity.SetValue(c => c.Name, entityObject.Name);
+                    if (entityObject.ParentId != null) builderInsertIEntity.SetValue(c => c.ParentId, entityObject.ParentId);
+                    if (entityObject.ParentType != null) builderInsertIEntity.SetValue(c => c.ParentType, entityObject.ParentType);
 
-                //    sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                //        .Execute(query) == 0;
+                    builderInsertIEntity.Select(c => c.Id);
+                    queryExecuter
+                     .ExecuteAndFetch(builderInsertIEntity, reader =>
+                     {
+                         var resultValue = reader.Read();
+                         if (resultValue)
+                         {
+                             idEntity = reader.GetValue(c => c.Id);
+                         }
+                         return resultValue;
+                     });
 
-                //    if (!sensorExistsInDb)
-                //    {
-                //        var insertCommand = this._dataLayer.GetBuilder<MD.ISensor>()
-                //            .Insert()
-                //            .SetValue(c => c.Name, incomingEnvelope.DeliveryObject.Name)
-                //            .SetValue(c => c.TechId, incomingEnvelope.DeliveryObject.Equipment.TechId)
-                //            // тут нужно дописать код для остальных полей
-                //            .SetValue(c => c.Status, "NEW");
+                    queryExecuter.CommitTransaction();
+                    // с этого момента нужно считать что сообщение удачно обработано
+                    result.Status = SdrnMessageHandlingStatus.Confirmed;
+                    this._eventEmitter.Emit("OnSendEntity", "SendEntityProccesing");
+                }
+                catch (Exception e)
+                {
+                    queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
+                    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
+                    {
+                        result.Status = SdrnMessageHandlingStatus.Error;
+                        result.ReasonFailure = e.ToString();
+                    }
+                }
+                finally
+                {
+                    // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
+                    // формируем объект подтвержденяи о обновлении данных о сенсоре
+                    var deviceCommandResult = new DeviceCommand
+                    {
+                        EquipmentTechId = incomingEnvelope.SensorTechId,
+                        SensorName = incomingEnvelope.SensorName,
+                        SdrnServer = this._environment.ServerInstance,
+                        Command = "SendEntityResult",
+                        CommandId = "SendCommand",
+                        CustTxt1 = "Success"
+                    };
 
-                //        sensorRegistration = this._dataLayer.Executor<SdrnServerDataContext>()
-                //            .Execute(insertCommand) == 1;
-                //    }
+                    if (result.Status == SdrnMessageHandlingStatus.Error)
+                    {
+                        deviceCommandResult.CustTxt1 = "Fault";
+                    }
+                    else if (!string.IsNullOrEmpty(idEntity))
+                    {
+                        deviceCommandResult.CustTxt1 = "Success";
+                    }
+                    else
+                    {
+                        deviceCommandResult.CustTxt1 = "Fault";
+                    }
+                    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
+                    envelop.SensorName = incomingEnvelope.SensorName;
+                    envelop.SensorTechId = incomingEnvelope.SensorTechId;
+                    envelop.DeliveryObject = deviceCommandResult;
+                    _messagePublisher.Send(envelop);
+                }
 
-                //    // с этого момента нужно считать что сообщение удачно обработано
-                //    result.Status = SdrnMessageHandlingStatus.Confirmed;
-
-                //    // отправка события если новый сенсор создан в БД
-                //    if (sensorRegistration)
-                //    {
-                //        this._eventEmitter.Emit("OnNewSensorRegistartion", "RegisterSensorProccesing");
-                //    }
-
-                //}
-                //catch (Exception e)
-                //{
-                //    this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
-                //    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
-                //    {
-                //        result.Status = SdrnMessageHandlingStatus.Error;
-                //        result.ReasonFailure = e.ToString();
-                //    }
-                //}
-                //finally
-                //{
-                //    // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
-                //    // формируем объект подтвержденяи регистрации
-                //    var registrationResult = new SensorRegistrationResult
-                //    {
-                //        EquipmentTechId = incomingEnvelope.SensorTechId,
-                //        SensorName = incomingEnvelope.SensorName,
-                //        SdrnServer = this._environment.ServerInstance
-                //    };
-
-                //    if (result.Status == SdrnMessageHandlingStatus.Error)
-                //    {
-                //        registrationResult.Status = "ERROR";
-                //        registrationResult.Message = "Something went wrong on the server";
-                //    }
-                //    else if (sensorExistsInDb)
-                //    {
-                //        registrationResult.Status = "REJECT";
-                //        registrationResult.Message = "The sensor has already been registered earlier";
-                //    }
-                //    else if (sensorRegistration)
-                //    {
-                //        registrationResult.Status = "OK";
-                //    }
-                //    else
-                //    {
-                //        registrationResult.Status = "ERROR";
-                //        registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
-                //    }
-
-                //    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
-
-                //    envelop.SensorName = incomingEnvelope.SensorName;
-                //    envelop.SensorTechId = incomingEnvelope.SensorTechId;
-                //    envelop.DeliveryObject = registrationResult;
-
-                //    _messagePublisher.Send(envelop);
-                //}
             }
+        
         }
 
     }

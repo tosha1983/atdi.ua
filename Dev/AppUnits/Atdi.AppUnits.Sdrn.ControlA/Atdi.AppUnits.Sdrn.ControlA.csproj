@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,14 +32,45 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\NHibernate.dll</HintPath>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=5.2.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NHibernate.5.2.3\lib\net461\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -65,14 +97,20 @@
     <Compile Include="GPSNavigator\SettingsProvider.cs" />
     <Compile Include="GPSNavigator\SettingsProviderXML.cs" />
     <Compile Include="GPSNavigator\StrUtils.cs" />
-    <Compile Include="Handlers\BusManager.cs" />
+    <Compile Include="Bus\BusConfig.cs" />
+    <Compile Include="Launcher.cs" />
+    <Compile Include="Bus\ConfigParameters.cs" />
+    <Compile Include="Process\ArchiveResults.cs" />
+    <Compile Include="Handlers\UpdateSensorLocationResultHandler.cs" />
     <Compile Include="Handlers\StopMeasSdrTaskHandler.cs" />
-    <Compile Include="Orm\ManageDB\MeasTaskSDRExtend.cs" />
-    <Compile Include="Orm\ManageDB\SaveMeasTaskSDR.cs" />
-    <Compile Include="Orm\ManageDB\SaveSensorToDbOptimize.cs" />
-    <Compile Include="Handlers\SendCommandHandler.cs" />
+    <Compile Include="ManageDB\MeasTaskSDRExtend.cs" />
+    <Compile Include="ManageDB\LoadMeasTaskSDR.cs" />
+    <Compile Include="ManageDB\CheckMeasTask.cs" />
+    <Compile Include="ManageDB\SaveMeasSDRResults.cs" />
+    <Compile Include="ManageDB\SaveMeasTaskSDR.cs" />
+    <Compile Include="ManageDB\SensorDb.cs" />
     <Compile Include="Handlers\SendMeasSdrTaskHandler.cs" />
-    <Compile Include="Handlers\SensorActivity.cs" />
+    <Compile Include="Process\SensorActivity.cs" />
     <Compile Include="Orm\NHibernate\ClassManageObjects.cs" />
     <Compile Include="Orm\NHibernate\Constants.cs" />
     <Compile Include="Orm\NHibernate\Domain.cs" />
@@ -97,7 +135,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnControlAComponent.cs" />
     <Compile Include="Specification.cs" />
-    <Compile Include="Xml\XMLDirect.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
@@ -108,25 +145,9 @@
       <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
       <Name>Atdi.AppServer.Contracts.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
       <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
       <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
-      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
-      <Name>Atdi.DataModels.Sdrns.Device</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
-      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
-      <Name>Atdi.DataModels.Sdrns</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
       <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
@@ -150,11 +171,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dll\bb_api.dll" />
-    <Content Include="Dll\ftd2xx.dll" />
-    <Content Include="Dll\Nhibernate.cfg.xml" />
-    <Content Include="Dll\NHibernate.dll" />
-    <Content Include="Dll\NHibernate.xml" />
+    <Content Include="DllApi\bb_api.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DllApi\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Orm\NHibernate\Nhibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -163,7 +185,9 @@
     <EmbeddedResource Include="Orm\NHibernate\NH_LocationSensor.hbm.xml" />
     <EmbeddedResource Include="Orm\NHibernate\NH_MeasResultsFreq.hbm.xml" />
     <EmbeddedResource Include="Orm\NHibernate\NH_MeasResultsLevel.hbm.xml" />
-    <EmbeddedResource Include="Orm\NHibernate\NH_MeasSDRFreq.hbm.xml" />
+    <EmbeddedResource Include="Orm\NHibernate\NH_MeasSDRFreq.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Orm\NHibernate\NH_MeasSDRFreqParam.hbm.xml">
       <CustomToolNamespace>Atdi.AppUnits.Sdrn.ControlA</CustomToolNamespace>
     </EmbeddedResource>
@@ -181,9 +205,12 @@
     <Content Include="sensor.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ServerSetting.xml">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Atdi.AppServer.Sdrn.ControlA.Console.exe.settings">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

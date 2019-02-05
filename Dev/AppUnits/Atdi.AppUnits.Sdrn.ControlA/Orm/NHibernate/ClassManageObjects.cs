@@ -15,14 +15,17 @@ namespace Atdi.AppUnits.Sdrn.ControlA
             if (Domain.sessionFactory == null) Domain.Init();
             ISession session = Domain.CurrentSession;
             {
-                ITransaction tr_1 = session.BeginTransaction();
+                ITransaction transaction = session.BeginTransaction();
                 try
                 {
                     session.Delete(string.Format("from {0} ", NameTable) + " p where p.ID = ?", ID, NHibernateUtil.Int32);
-                    tr_1.Commit();
+                    transaction.Commit();
                 }
-                catch (Exception ex) { tr_1.Rollback(); }
-                tr_1.Dispose();
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+                transaction.Dispose();
                 session.Flush();
             }
         }
@@ -51,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.ControlA
 
         }
 
-      
+
     }
    
 }

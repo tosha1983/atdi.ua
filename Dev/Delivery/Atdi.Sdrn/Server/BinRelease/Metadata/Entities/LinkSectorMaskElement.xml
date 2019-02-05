@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkSectorMaskElement"
+  Title       = "LinkSectorMaskElement"
+  Desc        = "The LinkSectorMaskElement"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_LINKSECTORMASK</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="SectorMaskElementId" Title="SectorMaskElementId" Name="SectorMaskElementId" DataType="Integer.64" SourceName="ID_SECTORMASKELEM" SourceType="Column" Required="true"/>
+    <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="ID_XBS_SECTOR" SourceType="Column" Required="true"/>
+    <Field Name="SECTORMASKELEMENT" SourceType="Reference" SourceName="SectorMaskElement" Title="Relation LinkSectorMaskElement to SectorMaskElement">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SectorMaskElementId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation LinkSectorMaskElement to Sector">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SectorId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
+
+

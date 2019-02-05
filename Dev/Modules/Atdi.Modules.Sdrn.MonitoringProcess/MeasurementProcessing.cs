@@ -3,10 +3,7 @@
 /*
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
+//using Atdi.AppServer.Contracts.Sdrns;
 using Atdi.Modules.MonitoringProcess.Measurement;
 using Atdi.Modules.MonitoringProcess;
 using Atdi.Modules.MonitoringProcess.ProcessSignal;
@@ -51,6 +48,7 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
             }
             DateTime Time_start = DateTime.Now; // замер времени измерения
             var MSDRRes = TaskProcessing(SDR, taskParameters, lastResultParameters, sensorParameters, ref circulatingData, referenceSignals);
+            //var MSDRRes = TaskProcessing(SDR, taskParameters, taskSDR as MeasSdrTask, lastResultParameters, sensorParameters, ref circulatingData, referenceSignals);
             TimeSpan TimeMeasurements = DateTime.Now - Time_start;
             // формирование версии ответа 
             var Result = CreateResultCorrectVersion(MSDRRes, lastResultParameters);
@@ -67,7 +65,7 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
 
                 MSDRRes.MeasSubTaskId = null;
                 MSDRRes.MeasSubTaskStationId = 0;
-                MSDRRes.MeasTaskId = new MeasTaskIdentifier{Value = taskParameters.TaskId};
+                MSDRRes.MeasTaskId = new MeasTaskIdentifier { Value = taskParameters.TaskId };
                 MSDRRes.DataMeas = DateTime.Now;
                 MSDRRes.MeasDataType = GetMeasurementTypeFromMeasType(taskParameters.MeasurementType);
                 MSDRRes.status = "N";
@@ -120,6 +118,8 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
 
             return MSDRRes;
         }
+
+   
         private object CreateResultCorrectVersion(object measSdrResults, LastResultParameters lastResultParameters) // внедрен костыль временный
         {
             switch (lastResultParameters.APIversion)
@@ -609,5 +609,4 @@ namespace Atdi.Sdrn.Modules.MonitoringProcess
         public Emitting[] emittings;
     }
 }
-
 */

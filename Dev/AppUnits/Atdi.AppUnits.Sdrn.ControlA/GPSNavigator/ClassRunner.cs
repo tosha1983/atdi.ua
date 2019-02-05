@@ -1,6 +1,8 @@
 ﻿using System;
 using GNSSView;
-
+using Atdi.AppUnits.Sdrn.ControlA.Bus;
+using Atdi.Platform.Logging;
+using Atdi.AppUnits.Sdrn.ControlA;
 
 namespace GPS
 {
@@ -10,45 +12,43 @@ namespace GPS
         public static GNSSReceiverWrapper gnssWrapper;
         public void StartGPS()
         {
-            
-                SettingsProviderXML<SettingsContainer> settingsProvider = new SettingsProviderXML<SettingsContainer>();
-                settingsProvider.isSwallowExceptions = false;
-                var settingsFileName = StrUtils.GetExecutableFileNameWithNewExt(AppDomain.CurrentDomain.FriendlyName, "exe.settings");
+
+            SettingsProviderXML<SettingsContainer> settingsProvider = new SettingsProviderXML<SettingsContainer>();
+            settingsProvider.isSwallowExceptions = false;
+            var settingsFileName = StrUtils.GetExecutableFileNameWithNewExt(AppDomain.CurrentDomain.FriendlyName, "exe.settings");
+            try
+            {
+                settingsProvider.Load(StrUtils.GetExecutableFileNameWithNewExt(AppDomain.CurrentDomain.FriendlyName, "exe.settings"));
+            }
+            catch (Exception ex)
+            {
+                Launcher._logger.Error(Contexts.ThisComponent, Categories.StartGPS, string.Format(Events.UnableLoadSettings.ToString(), settingsFileName, ex.Message));
+            }
+            portSettings = settingsProvider.Data.PortSettings;
+            gnssWrapper = new GNSSReceiverWrapper(portSettings);
+            gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+            if (gnssWrapper.IsOpen)
+            {
                 try
                 {
-                    settingsProvider.Load(StrUtils.GetExecutableFileNameWithNewExt(AppDomain.CurrentDomain.FriendlyName, "exe.settings"));
+                    gnssWrapper.Close();
                 }
                 catch (Exception ex)
                 {
-                    System.Console.WriteLine(string.Format("Unable load settings from {0} properly due to {1}, default settings will be used instead", settingsFileName, ex.Message));
+                    Launcher._logger.Error(Contexts.ThisComponent, Categories.StartGPS, string.Format(Events.UnableStopGNSSWrapper.ToString(), ex.Message));
                 }
-                portSettings = settingsProvider.Data.PortSettings;
-                gnssWrapper = new GNSSReceiverWrapper(portSettings);
-                gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
-                if (gnssWrapper.IsOpen)
+            }
+            else
+            {
+                try
                 {
-                    try
-                    {
-                        gnssWrapper.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Console.WriteLine(string.Format("Unable stop GNSSWrapper due to {0}", ex.Message), "Error");
-                    }
+                    gnssWrapper.Open();
                 }
-                else
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        gnssWrapper.Open();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Console.WriteLine(string.Format("Unable start GNSSWrapper due to {0}", ex.Message), "Error");
-                    }
+                    Launcher._logger.Error(Contexts.ThisComponent, Categories.StartGPS, string.Format(Events.UnableStartGNSSWrapper.ToString(), ex.Message));
                 }
-            
-
+            }
         }
 
 

@@ -1118,12 +1118,12 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             // стартуем запись IQ потока 
             // заполняем таск 
             TaskParameters taskParameters = new TaskParameters();
-            taskParameters.MinFreq_MHz = Freq_MHz - 0.025;
-            taskParameters.MaxFreq_MHz = Freq_MHz + 0.025;
+            taskParameters.MinFreq_MHz = Freq_MHz - 0.024;
+            taskParameters.MaxFreq_MHz = Freq_MHz + 0.024;
             taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.PMR;
-            taskParameters.RBW_Hz = 50000;
-            taskParameters.VBW_Hz = 50000;
-            taskParameters.ReceivedIQStreemDuration_sec = 1.1;
+            taskParameters.RBW_Hz = 48000;
+            taskParameters.VBW_Hz = 48000;
+            taskParameters.ReceivedIQStreemDuration_sec = 1.4;
 
             // Создаем сенсор для измерения
             SDRBB60C SDR = new SDRBB60C();
@@ -1136,7 +1136,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             sDRParameters.MinFreq_MHz = taskParameters.MinFreq_MHz;
             sDRParameters.MaxFreq_MHz = taskParameters.MaxFreq_MHz;
             sDRParameters.PreamplificationSDR = -1;
-            sDRParameters.RefLevel_dBm = -40;
+            sDRParameters.RefLevel_dBm = -50;
             sDRParameters.RfAttenuationSDR = -1;
             sDRParameters.RBW_Hz = taskParameters.RBW_Hz;
             sDRParameters.VBW_Hz = taskParameters.VBW_Hz;
@@ -1153,7 +1153,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                         now_time = DateTime.Now;
                     }
                     while (now_time < TimeStart);
-                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, true);
+                    bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, false, true);
                     if (done == true)
                     { // поток приняли !!!
                         //GetTimeStamp TimeStamp = new GetTimeStamp(receivedIQStream, 40000000, 1000 * (taskParameters.MaxFreq_MHz - taskParameters.MinFreq_MHz), taskParameters.TypeTechnology);
@@ -1173,7 +1173,7 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         private void button10_Click(object sender, EventArgs e)
         {
             ReceivedIQStream receivedIQStream = (DeserializeObject(textBox4.Text) as ReceivedIQStream);
-            GetTimeStamp TimeStamp1 = new GetTimeStamp(receivedIQStream,10000000,50,GetTimeStamp.TypeTechnology.PMR);
+            GetTimeStamp TimeStamp1 = new GetTimeStamp(receivedIQStream,10000000,10,GetTimeStamp.TypeTechnology.PMR);
 
 
             CreatePictureForBlokIQ(TimeStamp1.TestBlock, TimeStamp1.RotationIndexTest[1] - 50, TimeStamp1.RotationIndexTest[4] + 50, TimeStamp1.RotationIndexTest.GetRange(1, 4));
@@ -1209,13 +1209,13 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
         private void button14_Click(object sender, EventArgs e)
         {
             
-            double Freq_MHz = 1500;
-            double BW_kHz = 50;
+            double Freq_MHz = 1500.0;
+            double BW_kHz = 200;
             // стартуем запись IQ потока 
             // заполняем таск 
             TaskParameters taskParameters = new TaskParameters();
             taskParameters.TypeTechnology = GetTimeStamp.TypeTechnology.PMR;
-            taskParameters.ReceivedIQStreemDuration_sec = 0.1;
+            taskParameters.ReceivedIQStreemDuration_sec = 1.0;
 
             // Создаем сенсор для измерения
             SDRBB60C SDR = new SDRBB60C();
@@ -1230,9 +1230,10 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
             sDRParameters.RfAttenuationSDR = -1;
             List<double> avarageList = new List<double>();
             List<double> avarageToHzList = new List<double>();
-            for (int j = 0; j <= 100; j++)
+            List<double> BW_kHz_list = new List<double> {200};
+            foreach (double BW_kHz_ in BW_kHz_list)
             {
-                BW_kHz = j*10;
+                BW_kHz = BW_kHz_;
                 taskParameters.MinFreq_MHz = Freq_MHz - BW_kHz / 2000;
                 taskParameters.MaxFreq_MHz = Freq_MHz + BW_kHz / 2000;
                 taskParameters.RBW_Hz = BW_kHz * 1000;
@@ -1248,11 +1249,11 @@ namespace Atdi.Test.Modules.Sdrn.MonitoringProcess
                     {
                         // Стартуем измерение 
                         ReceivedIQStream receivedIQStream = new ReceivedIQStream();
-                        bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, false);
+                        bool done = SDR.GetIQStream(ref receivedIQStream, taskParameters.ReceivedIQStreemDuration_sec, false, true);
                         if (done == true)
                         { // поток приняли !!!
                             double avarage = 0;
-                            receivedIQStream.CalcAmpl();
+                            receivedIQStream.CalcAmpl(true);
                             for (int i = 0; receivedIQStream.Ampl[0].Length > i; i++)
                             {
                                 avarage = avarage + receivedIQStream.Ampl[0][i];

@@ -18,22 +18,21 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         public void Handle(Message messageResponse, ILogger logger)
         {
             MessageObject dataU = Concumer.UnPackObject(messageResponse);
-            List<MeasSdrResults> measSdrResults = dataU.Object as List<MeasSdrResults>;
+            MeasSdrResults measSdrResults = dataU.Object as MeasSdrResults;
             ClassesDBGetResult bbGetRes = new ClassesDBGetResult(logger);
             ClassConvertToSDRResults conv = new ClassConvertToSDRResults(logger);
-            for (int i = 0; i < measSdrResults.Count; i++)
             {
-                if (measSdrResults[i] != null)
+                if (measSdrResults != null)
                 {
                     int? ID = -1;
-                    string Status_Original = measSdrResults[i].status;
-                    MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(measSdrResults[i]);
+                    string Status_Original = measSdrResults.status;
+                    MeasurementResults msReslts = ClassConvertToSDRResults.GenerateMeasResults(measSdrResults);
                     if (msReslts.TypeMeasurements == MeasurementType.SpectrumOccupation) msReslts.Status = Status_Original;
                     if (msReslts.MeasurementsResults != null)
                     {
                         if (msReslts.MeasurementsResults.Count() > 0)
                         {
-                            if (msReslts.MeasurementsResults[i] is LevelMeasurementOnlineResult)
+                            if (msReslts.MeasurementsResults is LevelMeasurementOnlineResult)
                             {
                                 msReslts.Status = "O";
                                 logger.Trace(string.Format("Start save online results..."));

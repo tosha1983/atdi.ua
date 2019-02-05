@@ -18,6 +18,8 @@ namespace Atdi.CoreServices.DataLayer
         private SqlConnection _connectionForTransaction;
         private SqlConnection _connection;
         private SqlCommand _command;
+        private EngineCommand _engineCommand;
+        private const string _nameIdentField = "v_ID";
 
         public SqlServerCommandExecuter(IDataEngineConfig _engineConfig, EngineCommand engineCommand, ILogger logger, SqlConnection connectionForTransaction = null) 
             : base(logger)
@@ -29,7 +31,7 @@ namespace Atdi.CoreServices.DataLayer
                 CommandType = CommandType.Text,
                 CommandText = engineCommand.Text
             };
-
+            this._engineCommand = engineCommand;
             this.PrepareCommandParameters(engineCommand.Parameters.Values);
         }
 
@@ -69,11 +71,13 @@ namespace Atdi.CoreServices.DataLayer
 
         private SqlParameter CreateSqlParameter(EngineCommandParameter parameter)
         {
+
             var sqlParameter = new SqlParameter
             {
                 ParameterName = "@" + parameter.Name,
                 SqlDbType = ToSqlDbType(parameter.DataType),
-                Value = parameter.Value ?? DBNull.Value
+                Value = parameter.Value ?? DBNull.Value,
+                Direction = (parameter.Name == _nameIdentField ?  ParameterDirection.InputOutput : ParameterDirection.Input)
             };
 
             if (parameter.DataType == DataType.String && parameter.Value != null)
@@ -150,6 +154,7 @@ namespace Atdi.CoreServices.DataLayer
             }
         }
 
+
         public int Execute()
         {
             this.OpenConnection();
@@ -158,7 +163,12 @@ namespace Atdi.CoreServices.DataLayer
                 using (var trace = StartTraceExecuting())
                 {
                     TraceCommand(trace);
-                    return _command.ExecuteNonQuery();
+                    var res = this._command.ExecuteNonQuery();
+                    if (this._engineCommand.Parameters.ContainsKey(_nameIdentField))
+                    {
+                        this._engineCommand.Parameters[_nameIdentField].Value = this._command.Parameters[string.Format("@{0}", _nameIdentField)].Value;
+                    }
+                    return res;
                 }
             }
             catch (Exception e)

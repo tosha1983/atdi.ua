@@ -14,103 +14,106 @@ namespace Atdi.DataModels.Sdrns.Device
     public class MeasResults
     {
         /// <summary>
-        /// Results identifier
+        /// Results identifier (SpectrumOccupation, Level, BandwidthMeas, MonitoringStations, Spectr)
         /// </summary>
         [DataMember]
         public string ResultId { get; set; }
 
         ///// <summary>
-        ///// Instance name of SDRN Server, which puts a measurement task
+        ///// Time start (SpectrumOccupation, Level, BandwidthMeas)
         ///// </summary>
-        //[DataMember]
-        //public string SdrnServer { get; set; }
+        [DataMember]
+        public DateTime StartTime { get; set; }
 
         ///// <summary>
-        ///// Sensor name
+        ///// Time stop  (SpectrumOccupation, Level, BandwidthMeas)
         ///// </summary>
-        //[DataMember]
-        //public string SensorName { get; set; }
-
-        ///// <summary>
-        ///// Equipment technical ID
-        ///// </summary>
-        //[DataMember]
-        //public string EquipmentTechId { get; set; }
+        [DataMember]
+        public DateTime StopTime { get; set; }
 
         /// <summary>
-        /// Task identifier
+        /// Task identifier (SpectrumOccupation, Level, BandwidthMeas, MonitoringStations, Spectr)
         /// </summary>
         [DataMember]
         public string TaskId { get; set; }
 
         /// <summary>
-        /// Time of measurement finish (for mobile measurement complexes it's a result sending time)
+        /// Time of measurement finish (for mobile measurement complexes it's a result sending time) 
+        /// (SpectrumOccupation, Level, BandwidthMeas, MonitoringStations, Spectr)
         /// </summary>
         [DataMember]
         public DateTime Measured { get; set; }
 
         /// <summary>
-        /// Result status
+        /// Result status (SpectrumOccupation, Level, BandwidthMeas, MonitoringStations, Spectr)
         /// </summary>
         [DataMember]
         public string Status { get; set; }
 
         ///// <summary>
         ///// Number of measurements, used for SO
+        ///// (SpectrumOccupation)
         ///// </summary>
-        //[DataMember]
-        //public int ScansSONumber { get; set; }
+        [DataMember]
+        public int ScansNumber { get; set; }
 
         /// <summary>
-        /// Number of scans at a time.
+        /// Number of scans at a time. 
+        /// (MonitoringStations)
         /// </summary>
         [DataMember]
         public int SwNumber { get; set; }
 
         ///// <summary>
-        ///// Geolocation
+        ///// Geolocation (SpectrumOccupation, Level, BandwidthMeas,Specter)
         ///// </summary>
-        //[DataMember]
-        //public GeoLocation Location { get; set; }
+        [DataMember]
+        public GeoLocation Location { get; set; }
 
         ///// <summary>
-        ///// Measurement type 
+        ///// Measurement type (SpectrumOccupation, Level, BandwidthMeas, MonitoringStations,Specter)
         ///// </summary>
-        //[DataMember]
-        //public MeasurementType Measurement { get; set; }
+        [DataMember]
+        public MeasurementType Measurement { get; set; }
 
         ///// <summary>
-        ///// Frequency samples
+        ///// Frequency samples 
+        ///// (Level, SpectrumOccupation)
         ///// </summary>
-        //[DataMember]
-        //public FrequencySample[] FrequencySamples { get; set; }
+        [DataMember]
+        public FrequencySample[] FrequencySamples { get; set; }
 
         ///// <summary>
         ///// Frequencies
+        /////(BandwidthMeas, Specter)
         ///// </summary>
-        //[DataMember]
-        //public float[] Frequencies { get; set; }
+        [DataMember]
+        public float[] Frequencies { get; set; }
 
         ///// <summary>
         ///// Signal levels, dBm
+        /////(BandwidthMeas, Specter)
         ///// </summary>
-        //[DataMember]
-        //public float[] Levels_dBm { get; set; }
+        [DataMember]
+        public float[] Levels_dBm { get; set; }
 
         /// <summary>
         /// Station measurement results
+        /// (MonitoringStations)
         /// </summary>
         [DataMember]
         public StationMeasResult[] StationResults { get; set; }
 
         ///// <summary>
         ///// Bandwidth measurement result
+        ///// (BandwidthMeas)
         ///// </summary>
-        //[DataMember]
-        //public BandwidthMeasResult BandwidthResult { get; set; }
+        [DataMember]
+        public BandwidthMeasResult BandwidthResult { get; set; }
 
         /// <summary>
         /// Routes during measurements
+        /// (MonitoringStations)
         /// </summary>
         [DataMember]
         public Route[] Routes { get; set; }

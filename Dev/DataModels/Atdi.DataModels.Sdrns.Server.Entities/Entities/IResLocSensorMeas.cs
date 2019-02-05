@@ -14,6 +14,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Lon { get; set; }
         double? Lat { get; set; }
         double? Asl { get; set; }
+        double? Agl { get; set; }
         int? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
