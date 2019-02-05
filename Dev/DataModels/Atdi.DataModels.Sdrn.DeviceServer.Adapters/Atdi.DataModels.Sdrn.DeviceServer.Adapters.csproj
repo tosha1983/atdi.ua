@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{97846F04-4D7D-43DA-95D8-A7A111B2D7BB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.AppServer.Sdrn.Device.Console</RootNamespace>
-    <AssemblyName>Atdi.AppServer.Sdrn.Device.Console</AssemblyName>
+    <ProjectGuid>{C5092A25-4D63-48B4-94EE-0AD9FDE0F6B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.DataModels.Sdrn.DeviceServer.Adapters</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrn.DeviceServer.Adapters</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -43,26 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="MesureGpsLocationExampleAdapterResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
-      <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
-      <Name>Atdi.Modules.Licensing</Name>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
+      <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
-      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
-      <Name>Atdi.Platform.Configurator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
-      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
-      <Name>Atdi.Platform</Name>
+    <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

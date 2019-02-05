@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppServer.Sdrn.Device
+namespace Atdi.AppServer.Sdrn.DeviceService
 {
     class Program
     {
