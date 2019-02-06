@@ -41,9 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\MesureTraceCommand.cs" />
     <Compile Include="Commands\MesureGpsLocationExampleCommand.cs" />
+    <Compile Include="Parameters\MesureTraceParameter.cs" />
     <Compile Include="Parameters\MesureGpsLocationExampleParameter.cs" />
+    <Compile Include="Parameters\MesureTrace\Enums\LevelUnit.cs" />
+    <Compile Include="Parameters\MesureTrace\Enums\TraceType.cs" />
+    <Compile Include="Parameters\MesureTrace\Enums\DetectorType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Results\MesureTraceResult.cs" />
     <Compile Include="Results\MesureGpsLocationExampleResult.cs" />
   </ItemGroup>
   <ItemGroup>
