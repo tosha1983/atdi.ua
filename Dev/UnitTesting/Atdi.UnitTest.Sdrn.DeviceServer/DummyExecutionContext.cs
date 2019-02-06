@@ -40,12 +40,32 @@ namespace Atdi.UnitTest.Sdrn.DeviceServer
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
         }
 
+        public void Lock(params Type[] commandType)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void Lock()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
         public void PushResult(ICommandResultPart result)
         {
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"PushResult");
         }
 
         public void Unlock(params CommandType[] types)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+        public void Unlock(params Type[] commandType)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+        public void Unlock()
         {
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
         }

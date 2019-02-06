@@ -33,7 +33,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         /// </summary>
         /// <param name="types"></param>
         void Lock(params CommandType[] types);
-        void Lock(params Type[] commandType);
+        void Lock(params Type[] commandTypes);
         void Lock();
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         /// </summary>
         /// <param name="types"></param>
         void Unlock(params CommandType[] types);
-        void Unlock(params Type[] commandType);
-        void UnLock();
+        void Unlock(params Type[] commandTypes);
+        void Unlock();
     }
 }
