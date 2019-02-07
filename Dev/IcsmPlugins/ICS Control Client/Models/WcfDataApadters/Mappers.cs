@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SDR = Atdi.AppServer.Contracts.Sdrns;
 using VM = XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
-
+using SVC = XICSM.ICSControlClient.WcfServiceClients;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
@@ -166,6 +166,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 return null;
             }
 
+            //var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(source.Id.MeasSdrResultsId);
+
             return new VM.MeasurementResultsViewModel
             {
                 AntVal = source.AntVal.ToNull(),
@@ -231,7 +233,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasGlobalSID = source.MeasGlobalSID,
                 SectorId = source.IdSector.ToNull(),
                 StationId = source.Idstation,
-                Status = source.Status
+                Status = source.Status,
+                StationSysInfo = source.StationSysInfo
             };
         }
         public static VM.ResultsMeasurementsStationExtentedViewModel Map(SDR.ResultsMeasurementsStationExtended source)

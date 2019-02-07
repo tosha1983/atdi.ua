@@ -45,7 +45,8 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public IList<MeasurementType> MeasDtParamTypeMeasurementsValues
         {
-            get { return Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>().ToList<MeasurementType>(); }
+            //get { return Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>().ToList<MeasurementType>(); }
+            get { return new List<MeasurementType>() { MeasurementType.Level, MeasurementType.SpectrumOccupation}; }
         }
 
         public double? MeasDtParamRBW { get; set; }

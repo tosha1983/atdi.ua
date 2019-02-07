@@ -70,6 +70,16 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private Visibility _measTaskDetailVisibility = Visibility.Hidden;
         private Visibility _measResultsDetailVisibility = Visibility.Hidden;
+        private Visibility _taskStationsVisibility = Visibility.Hidden;
+        private Visibility _resultStationsVisibility = Visibility.Hidden;
+        private Visibility _resFreq1Visibility = Visibility.Hidden;
+        private Visibility _resFreq2Visibility = Visibility.Hidden;
+        private Visibility _resIdStationVisibility = Visibility.Hidden;
+        private Visibility _resSpecVisibility = Visibility.Hidden;
+        private Visibility _resLevelMes1Visibility = Visibility.Hidden;
+
+        private double? _LowFreq;
+        private double? _UpFreq;
 
         #region Commands
         public WpfCommand GetCSVCommand { get; set; }
@@ -146,8 +156,6 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._currentModel, value);
         }
 
-        
-
         public CS.ChartOption CurrentChartOption
         {
             get => this._currentChartOption;
@@ -221,11 +229,56 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._measTaskDetailVisibility;
             set => this.Set(ref this._measTaskDetailVisibility, value, ReloadMeasTaskDetail);
         }
-
         public Visibility MeasResultsDetailVisibility
         {
             get => this._measResultsDetailVisibility;
             set => this.Set(ref this._measResultsDetailVisibility, value, ReloadMeasResaltDetail);
+        }
+        public Visibility TaskStationsVisibility
+        {
+            get => this._taskStationsVisibility;
+            set => this.Set(ref this._taskStationsVisibility, value);
+        }
+        public Visibility ResultStationsVisibility
+        {
+            get => this._resultStationsVisibility;
+            set => this.Set(ref this._resultStationsVisibility, value);
+        }
+        public Visibility ResFreq1Visibility
+        {
+            get => this._resFreq1Visibility;
+            set => this.Set(ref this._resFreq1Visibility, value);
+        }
+        public Visibility ResFreq2Visibility
+        {
+            get => this._resFreq2Visibility;
+            set => this.Set(ref this._resFreq2Visibility, value);
+        }
+        public Visibility ResIdStationVisibility
+        {
+            get => this._resIdStationVisibility;
+            set => this.Set(ref this._resIdStationVisibility, value);
+        }
+        public Visibility ResSpecVisibility
+        {
+            get => this._resSpecVisibility;
+            set => this.Set(ref this._resSpecVisibility, value);
+        }
+        public Visibility ResLevelMes1Visibility
+        {
+            get => this._resLevelMes1Visibility;
+            set => this.Set(ref this._resLevelMes1Visibility, value);
+        }
+
+        public double? LowFreq
+        {
+            get => this._LowFreq;
+            set => this.Set(ref this._LowFreq, value);
+        }
+        public double? UpFreq
+        {
+            get => this._UpFreq;
+            set => this.Set(ref this._UpFreq, value);
         }
 
         private void ReloadShortMeasTasks()
@@ -253,6 +306,10 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 taskId = this._currentShortMeasTask.Id;
             }
+            else
+            {
+                return;
+            }
             var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(taskId);
             var taskViewModel = Mappers.Map(task);
             this.CurrentMeasTask = taskViewModel;
@@ -270,6 +327,51 @@ namespace XICSM.ICSControlClient.ViewModels
                     this._measTaskDetailStations.Source = null;
                 }
             }
+
+            if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations && this.MeasTaskDetailVisibility == Visibility.Visible)
+            {
+                this.TaskStationsVisibility = Visibility.Visible;
+            }
+            else
+            {
+                this.TaskStationsVisibility = Visibility.Hidden;
+            }
+            ReloadDetailVisible();
+        }
+        private void ReloadDetailVisible()
+        {
+            if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations && this.MeasResultsDetailVisibility == Visibility.Visible)
+            {
+                this.ResFreq1Visibility = Visibility.Collapsed;
+                this.ResFreq2Visibility = Visibility.Visible;
+                this.ResIdStationVisibility = Visibility.Visible;
+                this.ResSpecVisibility = Visibility.Visible;
+                this.ResLevelMes1Visibility = Visibility.Visible;
+            }
+            else if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.SpectrumOccupation && this.MeasResultsDetailVisibility == Visibility.Visible)
+            {
+                this.ResFreq1Visibility = Visibility.Visible;
+                this.ResFreq2Visibility = Visibility.Collapsed;
+                this.ResIdStationVisibility = Visibility.Collapsed;
+                this.ResSpecVisibility = Visibility.Collapsed;
+                this.ResLevelMes1Visibility = Visibility.Collapsed;
+            }
+            else if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Level && this.MeasResultsDetailVisibility == Visibility.Visible)
+            {
+                this.ResFreq1Visibility = Visibility.Visible;
+                this.ResFreq2Visibility = Visibility.Collapsed;
+                this.ResIdStationVisibility = Visibility.Collapsed;
+                this.ResSpecVisibility = Visibility.Collapsed;
+                this.ResLevelMes1Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.ResFreq1Visibility = Visibility.Visible;
+                this.ResFreq2Visibility = Visibility.Visible;
+                this.ResIdStationVisibility = Visibility.Visible;
+                this.ResSpecVisibility = Visibility.Visible;
+                this.ResLevelMes1Visibility = Visibility.Visible;
+            }
         }
         private void ReloadMeasResaltDetail()
         {
@@ -277,12 +379,33 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
                 this._resultsMeasurementsStations.Source = sdrMeasResults;
+
+                if (this.MeasResultsDetailVisibility == Visibility.Visible)
+                {
+                    var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId);
+                    LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
+                    UpFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Max(f => f.Freq));
+                }
             }
             else
             {
                 this.CurrentMeasurementResults = null;
                 this._resultsMeasurementsStations.Source = null;
+                LowFreq = null;
+                UpFreq = null;
             }
+            if (this.CurrentMeasTask == null)
+                return;
+
+            if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations && this.MeasResultsDetailVisibility == Visibility.Visible)
+            {
+                this.ResultStationsVisibility = Visibility.Visible;
+            }
+            else
+            {
+                this.ResultStationsVisibility = Visibility.Hidden;
+            }
+            ReloadDetailVisible();
         }
         private void ReloadMeasResultStationDetail()
         {
@@ -422,16 +545,24 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (this._currentResultsMeasurementsStationData == null || string.IsNullOrEmpty(this._currentResultsMeasurementsStationData.MeasGlobalSID) || this._currentResultsMeasurementsStationData.MeasGlobalSID.Length < 5)
                     return;
 
-                string stationName = this._currentResultsMeasurementsStationData.MeasGlobalSID;
+                //string stationName = this._currentResultsMeasurementsStationData.MeasGlobalSID;
+                string stationName = this._currentResultsMeasurementsStationData.StationId.PadLeft(4, '0');
+
                 double? lonMin = null;
                 double? lonMax = null;
                 double? latMin = null;
                 double? latMax = null;
                 decimal? freq = null;
 
-                stationName = stationName.Substring(stationName.Length - 5, 4).TrimStart('0');
+                //stationName = stationName.Substring(stationName.Length - 5, 4).TrimStart('0');
 
+                if (LevelMeasurements.Source == null)
+                {
+                    MessageBox.Show("No Level Measurements data.");
+                    return;
+                }
                 int recCount = LevelMeasurements.Source.Count();
+
                 if (recCount == 0)
                 {
                     MessageBox.Show("No Level Measurements data.");
@@ -479,6 +610,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 for (source.Open(); !source.IsEOF(); source.MoveNext())
                 {
                     var rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                    rs.Select("ID,STA_ID,TX_FREQ");
                     rs.SetWhere("STA_ID", IMRecordset.Operation.Eq, source.GetI("ID"));
 
                     double? minFreq = null;

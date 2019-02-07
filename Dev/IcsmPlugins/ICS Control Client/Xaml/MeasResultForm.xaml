@@ -55,7 +55,19 @@
                         </Grid.RowDefinitions>
                     
                         <Grid Grid.Column="0" Grid.Row="0">
-                            <Grid.ColumnDefinitions>
+                          <Grid.Style>
+                            <Style TargetType="Grid">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding ResultStationsVisibility}" Value="Hidden">
+                                  <Setter Property="Grid.RowSpan" Value="3"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ResultStationsVisibility}" Value="Visible">
+                                  <Setter Property="Grid.Row" Value="0"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Grid.Style>
+                          <Grid.ColumnDefinitions>
                               <ColumnDefinition Width="110"/>
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
@@ -68,7 +80,7 @@
                             <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}"/>
 
                             <DataGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasResultsSpecial}" SelectedItem="{Binding CurrentMeasurementResults}" >
-                                  <DataGrid.Columns>
+                              <DataGrid.Columns>
                                       <DataGridTextColumn Header="Id" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
                                       <DataGridTextColumn Header="TaskId" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
                                       <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
@@ -87,10 +99,10 @@
                               <CheckBox Grid.Column="1" Grid.Row="2" Content="Show only this sensor" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding SensorOnlyChecked}"/>
                         </Grid>
                           
-                        <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <GridSplitter Grid.Column="0" Grid.Row="1" Visibility="{Binding ResultStationsVisibility}" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         </GridSplitter>
 
-                        <GroupBox Header=" Results of Stations "  Grid.Column="0" Grid.Row="2">
+                        <GroupBox Header=" Results of Stations "  Grid.Column="0" Grid.Row="2" Visibility="{Binding ResultStationsVisibility}">
                             <DataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ResultsMeasurementsStations}" SelectedItem="{Binding CurrentResultsMeasurementsStation}">
                               <DataGrid.Columns>
                                   <DataGridTextColumn Header="IdStation" Binding="{Binding Path=StationId}"></DataGridTextColumn>
@@ -177,18 +189,8 @@
                                         <TextBox Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="5" Text="{Binding Path=TypeMeasurements}"  IsReadOnly="True" />
                                     </Grid>
 
-                                    <Expander Grid.Column="0" Grid.Row="1" Header="Frequency">
-                                        <Expander.Style>
-                                            <Style TargetType="{x:Type Expander}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="MonitoringStations">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>                                          
-                                           </Style>
-                                        </Expander.Style>                                        
-                                        <Grid DataContext="{Binding CurrentMeasurementResults}">
+                                    <Expander Grid.Column="0" Grid.Row="1" Header="Frequency" Visibility="{Binding ResFreq1Visibility}">
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="110" />
                                                 <ColumnDefinition Width="*" />
@@ -198,23 +200,13 @@
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Low freq, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=LowFreq, StringFormat='{}{0:##0.000}'}"  IsReadOnly="True"/>
+                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding LowFreq, StringFormat='{}{0:##0.000}'}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Up freq, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=UpFreq, StringFormat='{}{0:##0.000}'}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding UpFreq, StringFormat='{}{0:##0.000}'}"  IsReadOnly="True" />
                                          </Grid>
                                     </Expander>                                 
-                                    <Expander Grid.Column="0" Grid.Row="2" Header="Identification Station">
-                                        <Expander.Style>
-                                            <Style TargetType="{x:Type Expander}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>                                          
-                                           </Style>
-                                        </Expander.Style>                                        
+                                    <Expander Grid.Column="0" Grid.Row="2" Header="Identification Station" Visibility="{Binding ResIdStationVisibility}">
                                         <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="110" />
@@ -239,17 +231,7 @@
                                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasGlobalSID}"  IsReadOnly="True"/>
                                          </Grid>
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="3" Header="Frequency">
-                                        <Expander.Style>
-                                            <Style TargetType="{x:Type Expander}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>                                          
-                                           </Style>
-                                        </Expander.Style>                                          
+                                    <Expander Grid.Column="0" Grid.Row="3" Header="Frequency" Visibility="{Binding ResFreq2Visibility}">
                                         <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
@@ -270,17 +252,7 @@
                                             <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GeneralResultOffsetFrequency}"  IsReadOnly="True" />
                                          </Grid>
                                     </Expander>                                  
-                                    <Expander Grid.Column="0" Grid.Row="4" Header="Spectrum">
-                                        <Expander.Style>
-                                            <Style TargetType="{x:Type Expander}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>                                          
-                                           </Style>
-                                        </Expander.Style>                                          
+                                    <Expander Grid.Column="0" Grid.Row="4" Header="Spectrum"  Visibility="{Binding ResSpecVisibility}">
                                         <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
@@ -310,16 +282,6 @@
                                          </Grid>
                                     </Expander>                                  
                                     <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
-                                        <Expander.Style>
-                                            <Style TargetType="{x:Type Expander}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>                                          
-                                           </Style>
-                                        </Expander.Style>                                          
                                         <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
@@ -337,17 +299,7 @@
                                     
                                          </Grid>
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="6" Header="LevelMeasurements">
-                                        <Expander.Style>
-                                            <Style TargetType="{x:Type Expander}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>                                          
-                                           </Style>
-                                        </Expander.Style>
+                                    <Expander Grid.Column="0" Grid.Row="6" Header="LevelMeasurements" Visibility="{Binding ResLevelMes1Visibility}">
                                         <Grid>
                                           <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -382,25 +334,15 @@
                                           </DataGrid>
                                         </Grid>                                      
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="7" Header="Station Sys Info">
-                                      <Expander.Style>
-                                        <Style TargetType="{x:Type Expander}">
-                                          <Setter Property="Visibility" Value="Visible" />
-                                          <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=aaa,Path=Text}" Value="SpectrumOccupation">
-                                              <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                          </Style.Triggers>
-                                        </Style>
-                                      </Expander.Style>
-                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStation}">
+                                    <Expander Grid.Column="0" Grid.Row="7" Header="Station Sys Info" Visibility="{Binding ResIdStationVisibility}">
+                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                         <Grid.ColumnDefinitions>
                                           <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                           <RowDefinition Height="*"></RowDefinition>
                                         </Grid.RowDefinitions>
-                                        <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Path=StationSysInfo}" Padding="5,0,0,0" Height="100" IsReadOnly="True"/>
+                                        <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Path=StationSysInfo}" Padding="5,0,0,0" Height="300" IsReadOnly="True"/>
                                       </Grid>
                                     </Expander>                                  
                                 </Grid>
