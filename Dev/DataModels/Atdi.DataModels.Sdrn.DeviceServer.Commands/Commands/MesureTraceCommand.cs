@@ -7,14 +7,14 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
 {
-    public class MesureTraceCommand: CommandBase<Parameters.MesureGpsLocationExampleParameter>
+    public class MesureTraceCommand: CommandBase<Parameters.MesureTraceParameter>
     {
         public MesureTraceCommand()
-            : base(CommandType.MesureTrace, new MesureGpsLocationExampleParameter())
+            : base(CommandType.MesureTrace, new MesureTraceParameter())
         {
         }
 
-        public MesureTraceCommand(MesureGpsLocationExampleParameter parameter) 
+        public MesureTraceCommand(MesureTraceParameter parameter) 
             : base(CommandType.MesureTrace, parameter)
         {
         }

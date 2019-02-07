@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
 {
-    public class MesureTraceResult
+    public class MesureTraceResult : CommandResultPartBase
     {
-        float[] Level;
-        double[] Freq_Hz;
-        long TimeStamp; //Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
+        public MesureTraceResult(ulong partIndex, CommandResultStatus status)
+               : base(partIndex, status)
+        {
+        }
+        public float[] Level;
+        public double[] Freq_Hz;
+        public long TimeStamp; //Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.EN
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums
 {
     public enum DownSampleFactor : int
     {
