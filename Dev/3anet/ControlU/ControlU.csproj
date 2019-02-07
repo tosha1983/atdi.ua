@@ -1,0 +1,663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AC02473D-87E7-4F55-81E7-43A953F7BCF5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ControlU</RootNamespace>
+    <AssemblyName>ControlU</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ControlUIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ControlU.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=13.0.40.190, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Npgsql, Version=4.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.4.0.3\lib\net451\Npgsql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RohdeSchwarz.Tools.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\RohdeSchwarz.Tools.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="RohdeSchwarz.ViCom.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\RohdeSchwarz.ViCom.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sharpgl-2.3.0.1\source\SharpGL\Core\SharpGL.WPF\bin\Debug\SharpGL.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpGL.SceneGraph, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sharpgl-2.3.0.1\source\SharpGL\Core\SharpGL.WPF\bin\Debug\SharpGL.SceneGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpGL.WPF, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sharpgl-2.3.0.1\source\SharpGL\Core\SharpGL.WPF\bin\Debug\SharpGL.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UserLowLevelErrorMessageHandler, Version=1.0.6516.18215, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\RuS\RS-ViCom-16.20.0.474\src\SampleApplications\SampleForVicom.Net\UserLowLevelErrorMessageHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="ATDI\AtdiDataConverter.cs" />
+    <Compile Include="ATDI\Handlers\SendCommandHandler.cs" />
+    <Compile Include="ATDI\Handlers\SendMeasTaskHandler.cs" />
+    <Compile Include="ATDI\Handlers\SendRegistrationResultHandler.cs" />
+    <Compile Include="ATDI\Handlers\SendSensorUpdatingResultHandler.cs" />
+    <Compile Include="ATDI\XmlReader.cs" />
+    <Compile Include="Controls\AddUser.xaml.cs">
+      <DependentUpon>AddUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AllLicenseAgreement.xaml.cs">
+      <DependentUpon>AllLicenseAgreement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AnPanel_v2.xaml.cs">
+      <DependentUpon>AnPanel_v2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AnUpPanel.xaml.cs">
+      <DependentUpon>AnUpPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChangeIP.xaml.cs">
+      <DependentUpon>ChangeIP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Classes.cs" />
+    <Compile Include="Controls\DBPanel.xaml.cs">
+      <DependentUpon>DBPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DeviceStatus.xaml.cs">
+      <DependentUpon>DeviceStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DFPanel.xaml.cs">
+      <DependentUpon>DFPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DialogWindow.xaml.cs">
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DrawSpectrum.xaml.cs">
+      <DependentUpon>DrawSpectrum.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FreqEmployment.xaml.cs">
+      <DependentUpon>FreqEmployment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GlobalOSMMap.xaml.cs">
+      <DependentUpon>GlobalOSMMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GNSSRating.xaml.cs">
+      <DependentUpon>GNSSRating.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Identification\ACD.xaml.cs">
+      <DependentUpon>ACD.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Identification\CDMA.xaml.cs">
+      <DependentUpon>CDMA.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Identification\GSM.xaml.cs">
+      <DependentUpon>GSM.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Identification\LTE.xaml.cs">
+      <DependentUpon>LTE.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Identification\MobileOperatorsDetection.xaml.cs">
+      <DependentUpon>MobileOperatorsDetection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Identification\UMTS.xaml.cs">
+      <DependentUpon>UMTS.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InputDialogControl.xaml.cs">
+      <DependentUpon>InputDialogControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\ATDI_TooltipSector.xaml.cs">
+      <DependentUpon>ATDI_TooltipSector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\ATDI_TooltipStation.xaml.cs">
+      <DependentUpon>ATDI_TooltipStation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\Cluster.xaml.cs">
+      <DependentUpon>Cluster.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\DF_Bearing.xaml.cs">
+      <DependentUpon>DF_Bearing.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\DrawCircle.xaml.cs">
+      <DependentUpon>DrawCircle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\MarkerStation.xaml.cs">
+      <DependentUpon>MarkerStation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Map\NavigationControls.xaml.cs">
+      <DependentUpon>NavigationControls.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Meas\AddElementToSomeMeas.xaml.cs">
+      <DependentUpon>AddElementToSomeMeas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Meas\AddElementToSomeMeasAN.xaml.cs">
+      <DependentUpon>AddElementToSomeMeasAN.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Meas\AddElementToSomeMeasSH.xaml.cs">
+      <DependentUpon>AddElementToSomeMeasSH.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Meas\MeasMonData.xaml.cs">
+      <DependentUpon>MeasMonData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Meas\SomeMeas.xaml.cs">
+      <DependentUpon>SomeMeas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Messages\Confirm.xaml.cs">
+      <DependentUpon>Confirm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Messages\Message.xaml.cs">
+      <DependentUpon>Message.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MobileMon.xaml.cs">
+      <DependentUpon>MobileMon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RsReceiverPanel.xaml.cs">
+      <DependentUpon>RsReceiverPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RsReceiverUpPanel.xaml.cs">
+      <DependentUpon>RsReceiverUpPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SatelliteView.xaml.cs">
+      <DependentUpon>SatelliteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SettingsControl.xaml.cs">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SHPanel.xaml.cs">
+      <DependentUpon>SHPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SHUpPanel.xaml.cs">
+      <DependentUpon>SHUpPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Atdi API v2\localatdi_elements_mask.cs" />
+    <Compile Include="DB\Atdi API v2\localatdi_meas_task.cs" />
+    <Compile Include="DB\Atdi API v2\localatdi_task_with_tech.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_bandwidth_meas_result.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_general_meas_result.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_geo_location.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_level_meas_result.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_meas_device.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_result_state_data.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_route_point.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_station_meas_result.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_station_sys_info.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_result_item.cs" />
+    <Compile Include="DB\Atdi API v2\result\localatdi_unknown_result.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_license_info.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_sector_frequency.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_standard_scan_parameter.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_station.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_station_owner.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_station_sector.cs" />
+    <Compile Include="DB\Atdi API v2\task\localatdi_station_site.cs" />
+    <Compile Include="DB\ClassTest.cs" />
+    <Compile Include="DB\ClassTest3.cs" />
+    <Compile Include="DB\ConvertData.cs" />
+    <Compile Include="Equipment\RBS6K.cs" />
+    <Compile Include="Equipment\RsReceiver_v2.cs" />
+    <Compile Include="Settings\XMLSettings.cs" />
+    <Compile Include="SingleInstance.cs" />
+    <Compile Include="SplashWindow.xaml.cs">
+      <DependentUpon>SplashWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Controls\AddUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AllLicenseAgreement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AnPanel_v2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AnUpPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ChangeIP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DBPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DeviceStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DFPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DrawSpectrum.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FreqEmployment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GlobalOSMMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GNSSRating.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Identification\ACD.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Identification\CDMA.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Identification\GSM.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Identification\LTE.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Identification\MobileOperatorsDetection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Identification\UMTS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\InputDialogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\ATDI_TooltipSector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\ATDI_TooltipStation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\Cluster.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\DF_Bearing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\DrawCircle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\MarkerStation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Map\NavigationControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Meas\AddElementToSomeMeas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Meas\AddElementToSomeMeasAN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Meas\AddElementToSomeMeasSH.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Meas\MeasMonData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Meas\SomeMeas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Messages\Confirm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Messages\Message.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MobileMon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RsReceiverPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RsReceiverUpPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SatelliteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SHPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SHUpPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Lang\lang.ru-RU.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lang\lang.uk-UA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lang\lang.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DB\Classes.cs" />
+    <Compile Include="DB\MyATDI.cs" />
+    <Compile Include="DB\NpgsqlDB_v2.cs" />
+    <Compile Include="Equipment\Analyzer.cs" />
+    <Compile Include="Equipment\bb_api.cs" />
+    <Compile Include="Equipment\Classes.cs" />
+    <Compile Include="Equipment\GNSSNMEA.cs" />
+    <Compile Include="Equipment\IdentificationData.cs" />
+    <Compile Include="Equipment\LocalMeasurement.cs" />
+    <Compile Include="Equipment\NetworkInterfaces.cs" />
+    <Compile Include="Equipment\PrintScreen.cs" />
+    <Compile Include="Equipment\RCRomes.cs" />
+    <Compile Include="Equipment\RsReceiver.cs" />
+    <Compile Include="Equipment\SignalHound.cs" />
+    <Compile Include="Equipment\SomeMeasData.cs" />
+    <Compile Include="Equipment\TSMxReciever.cs" />
+    <Compile Include="Helpers\AlgorithmClusterBundle.cs" />
+    <Compile Include="Helpers\CopyHelper.cs" />
+    <Compile Include="Helpers\ExeptionProcessing.cs" />
+    <Compile Include="Helpers\Helper.cs" />
+    <Compile Include="Helpers\MyAlgorithmClusterBundle.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="SplashWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theme\ColorsDark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Theme\ColorsLight.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Theme\GlobalStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Theme\IconsPath.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Theme\LightStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ControlUIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bb_api.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
+      <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
+      <Name>Atdi.Api.Sdrn.Device.BusController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
+      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
+      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
+      <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
+      <Name>Atdi.Modules.Licensing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.MessageBus\Atdi.Modules.Sdrn.MessageBus.csproj">
+      <Project>{b44eaf91-883a-4bb5-b9e8-fea420afcca3}</Project>
+      <Name>Atdi.Modules.Sdrn.MessageBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapControl\MapControl.csproj">
+      <Project>{53c9ea7e-d66a-4e17-b54d-e6e0b3947efa}</Project>
+      <Name>MapControl</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\KindOfMagic.1.3.1\build\KindOfMagic.targets" Condition="Exists('..\packages\KindOfMagic.1.3.1\build\KindOfMagic.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\KindOfMagic.1.3.1\build\KindOfMagic.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\KindOfMagic.1.3.1\build\KindOfMagic.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

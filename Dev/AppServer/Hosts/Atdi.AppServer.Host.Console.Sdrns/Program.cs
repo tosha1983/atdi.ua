@@ -15,7 +15,7 @@ namespace Atdi.AppServer.Host
         static void Main(string[] args)
         {
             var components = new List<IAppServerComponent>();
-            var sdrnsControllerAppServiceHost = new AppServiceHostServerComponent<SdrnsControllerAppService, GetMeasTaskAppOperationHandler>();
+            var sdrnsControllerAppServiceHost = new AppServiceHostServerComponent<SdrnsControllerAppService, GetMeasTaskHeaderAppOperationHandler>();
             var sdrnsControllerWcfServiceHost = new WcfServiceHostServerComponent<ISdrnsController, SdrnsControllerService>();
             var coreServicesComponent = new CoreServicesServerComponent();
             var sdrnsConfigurationController = new ConfigurationSdrnController.ConfigurationSdrnController();

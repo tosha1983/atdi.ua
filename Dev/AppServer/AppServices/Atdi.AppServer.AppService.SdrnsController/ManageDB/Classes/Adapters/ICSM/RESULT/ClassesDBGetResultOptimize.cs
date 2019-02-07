@@ -61,6 +61,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
                             ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
                             ICSM_T.SensorName = "";
+                            ICSM_T.SensorTechId = "";
+                            ICSM_T.CountRecognizeStation = 0;
+                            ICSM_T.CountNotRecognizeStation = 0;
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
@@ -74,35 +77,48 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
                             {
 
-                                YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
-                                XbsYXbsLinkResSensor_.Format("*");
-                                XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
-                                XbsYXbsLinkResSensor_.Order = "[ID] ASC";
-                                for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                if (string.IsNullOrEmpty(ICSM_T.SensorName))
                                 {
-                                    var m_fr_cv = new YXbsLinkResSensor();
-                                    m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
-                                    ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
-                                    m_fr_cv.Close();
-                                    m_fr_cv.Dispose();
-
-
-                                    YXbsSensor XbsSensor_ = new YXbsSensor();
-                                    XbsSensor_.Format("*");
-                                    XbsSensor_.Filter = string.Format("(ID={0})", XbsYXbsLinkResSensor_.m_id_xbs_sensor);
-                                    XbsSensor_.Order = "[ID] ASC";
-                                    for (XbsSensor_.OpenRs(); !XbsSensor_.IsEOF(); XbsSensor_.MoveNext())
+                                    YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                    XbsYXbsLinkResSensor_.Format("*");
+                                    XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                    XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                    for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
                                     {
-                                        ICSM_T.SensorName = XbsSensor_.m_name;
-                                    }
-                                    XbsSensor_.Close();
-                                    XbsSensor_.Dispose();
+                                        var m_fr_cv = new YXbsLinkResSensor();
+                                        m_fr_cv.CopyDataFrom(XbsYXbsLinkResSensor_);
+                                        ICSM_T.XbsLinkResSensor.Add(m_fr_cv);
+                                        m_fr_cv.Close();
+                                        m_fr_cv.Dispose();
 
-                                    break;
+
+                                        YXbsSensor XbsSensor_ = new YXbsSensor();
+                                        XbsSensor_.Format("*");
+                                        XbsSensor_.Filter = string.Format("(ID={0})", XbsYXbsLinkResSensor_.m_id_xbs_sensor);
+                                        XbsSensor_.Order = "[ID] ASC";
+                                        for (XbsSensor_.OpenRs(); !XbsSensor_.IsEOF(); XbsSensor_.MoveNext())
+                                        {
+                                            ICSM_T.SensorName = XbsSensor_.m_name;
+                                            ICSM_T.SensorTechId = XbsSensor_.m_techid;
+                                        }
+                                        XbsSensor_.Close();
+                                        XbsSensor_.Dispose();
+
+                                        break;
+                                    }
+                                    XbsYXbsLinkResSensor_.Close();
+                                    XbsYXbsLinkResSensor_.Dispose();
                                 }
-                                XbsYXbsLinkResSensor_.Close();
-                                XbsYXbsLinkResSensor_.Dispose();
-                                break;
+
+                                if (XbsYXbsResmeasstation_.m_status != "E")
+                                {
+                                    ICSM_T.CountRecognizeStation++;
+                                }
+                                else if (XbsYXbsResmeasstation_.m_status == "E")
+                                {
+                                    ICSM_T.CountNotRecognizeStation++;
+                                }
+
                             }
                             XbsYXbsResmeasstation_.Close();
                             XbsYXbsResmeasstation_.Dispose();
@@ -174,11 +190,61 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                             ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                             ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
                             ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
+                            ICSM_T.SensorName = "";
+                            ICSM_T.SensorTechId = "";
+                            ICSM_T.CountRecognizeStation = 0;
+                            ICSM_T.CountNotRecognizeStation = 0; 
 
                             var m_fr = new YXbsResMeas();
                             m_fr.CopyDataFrom(res_val);
                             ICSM_T.meas_res = m_fr;
-                           
+
+
+
+                            YXbsResmeasstation XbsYXbsResmeasstation_ = new YXbsResmeasstation();
+                            XbsYXbsResmeasstation_.Format("*");
+                            XbsYXbsResmeasstation_.Filter = string.Format("(XBSRESMEASID={0})", res_val.m_id);
+                            XbsYXbsResmeasstation_.Order = "[ID] ASC";
+                            for (XbsYXbsResmeasstation_.OpenRs(); !XbsYXbsResmeasstation_.IsEOF(); XbsYXbsResmeasstation_.MoveNext())
+                            {
+                                if (string.IsNullOrEmpty(ICSM_T.SensorName))
+                                {
+                                    YXbsLinkResSensor XbsYXbsLinkResSensor_ = new YXbsLinkResSensor();
+                                    XbsYXbsLinkResSensor_.Format("*");
+                                    XbsYXbsLinkResSensor_.Filter = string.Format("(IDXBSRESMEASSTA={0})", XbsYXbsResmeasstation_.m_id);
+                                    XbsYXbsLinkResSensor_.Order = "[ID] ASC";
+                                    for (XbsYXbsLinkResSensor_.OpenRs(); !XbsYXbsLinkResSensor_.IsEOF(); XbsYXbsLinkResSensor_.MoveNext())
+                                    {
+
+                                        YXbsSensor XbsSensor_ = new YXbsSensor();
+                                        XbsSensor_.Format("*");
+                                        XbsSensor_.Filter = string.Format("(ID={0})", XbsYXbsLinkResSensor_.m_id_xbs_sensor);
+                                        XbsSensor_.Order = "[ID] ASC";
+                                        for (XbsSensor_.OpenRs(); !XbsSensor_.IsEOF(); XbsSensor_.MoveNext())
+                                        {
+                                            ICSM_T.SensorName = XbsSensor_.m_name;
+                                            ICSM_T.SensorTechId = XbsSensor_.m_techid;
+                                        }
+                                        XbsSensor_.Close();
+                                        XbsSensor_.Dispose();
+                                        break;
+                                    }
+                                    XbsYXbsLinkResSensor_.Close();
+                                    XbsYXbsLinkResSensor_.Dispose();
+                                }
+                                if (XbsYXbsResmeasstation_.m_status!="E")
+                                {
+                                    ICSM_T.CountRecognizeStation++;
+                                }
+                                else if (XbsYXbsResmeasstation_.m_status == "E")
+                                {
+                                    ICSM_T.CountNotRecognizeStation++;
+                                }
+                                //break;
+                            }
+                            XbsYXbsResmeasstation_.Close();
+                            XbsYXbsResmeasstation_.Dispose();
+
 
                             YXbsResLocSensorMeas XbsYXbsLocationsensorm_ = new YXbsResLocSensorMeas();
                             XbsYXbsLocationsensorm_.Format("*");

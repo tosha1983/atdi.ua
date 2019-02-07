@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="ControlU.Controls.Messages.Confirm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls.Messages"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Border x:Name="MessageBorder" Padding="2" CornerRadius="2" BorderThickness="1" Margin="0,0,0,5"
+            Background="{DynamicResource Brush_Background_Light}" BorderBrush="{DynamicResource Brush_Blue_Normal}" >
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" Color="{DynamicResource Blue_LightColor}" />
+        </Border.Effect>
+        <StackPanel Margin="2">
+            <TextBlock Text="{Binding Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" VerticalAlignment="Stretch" />
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
+                    <TextBlock Text="{Binding MessageText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"                                 
+                               ScrollViewer.CanContentScroll="True" VirtualizingStackPanel.ScrollUnit="Pixel"
+                               Height="Auto" TextWrapping="Wrap" Background="{DynamicResource Brush_Background_Normal}"/>
+                </ScrollViewer>
+                <Button Content="{StaticResource Cancel}" Tag="{Binding}" Click="Cancel_btn" Grid.Row="1" Height="20" Margin="0,4,4,0" Grid.ColumnSpan="1"/>
+                <Button Content="{StaticResource Confirm}" Tag="{Binding}" Click="Confirm_btn" Grid.Row="1" Height="20" Margin="4,4,0,0" Grid.ColumnSpan="1" Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+    </Border>
+</UserControl>

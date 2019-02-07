@@ -38,7 +38,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             {
                 try
                 {
-                    //List<MeasurementResults> LST_MeasurementResults = GlobalInit.blockingCollectionMeasurementResults.ToList();
                     List<MeasurementResults> LST_MeasurementResults = conv.ConvertTo_SDRObjects(resDb.ReadlAllResultShortFromDB()).ToList();
                     foreach (MeasurementResults msrt in LST_MeasurementResults)
                     {

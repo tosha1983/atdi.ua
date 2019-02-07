@@ -22,8 +22,11 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public int? SaveResultToDB(MeasurementResults obj, Atdi.DataModels.Sdrns.Device.MeasResults api2Result, string taskId, out string Error)
         {
             Error = "";
+            string  ErrorValue = "";
             int? ID = Constants.NullI;
+            System.Threading.Thread tsk = new System.Threading.Thread(() =>
             {
+                {
                 logger.Trace("Start procedure SaveResultToDB.");
                 Yyy yyy = new Yyy();
                 yyy.New();
@@ -40,8 +43,6 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                             /// Create new record in YXbsMeastask
                             if (obj != null)
                             {
-
-                                //if ((taskId != null) && (obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                                 if ((obj.StationMeasurements != null) && (obj.Id.SubMeasTaskId != Constants.NullI) && (obj.Id.SubMeasTaskStationId != Constants.NullI))
                                 {
 
@@ -118,17 +119,20 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                             measResStation.m_status = station.Status;
                                             measResStation.m_measglobalsid = station.MeasGlobalSID;
                                             measResStation.m_xbsresmeasid = ID;
+                                            measResStation.m_standard = station.Standard;
+                                           
                                             if (api2Result.StationResults != null)
                                             {
                                                 if ((station.Idstation != null) && (station.IdSector != null))
                                                 {
                                                     rFinded = api2Result.StationResults.ToList().Find(t => t.StationId == station.Idstation.ToString() && t.SectorId == station.IdSector.ToString() && t.RealGlobalSid == station.MeasGlobalSID && t.TaskGlobalSid == station.GlobalSID);
-                                                    if (rFinded != null)
-                                                    {
-                                                        measResStation.m_standard = rFinded.Standard;
-                                                    }
+                                                    //if (rFinded != null)
+                                                    //{
+                                                        //measResStation.m_standard = rFinded.Standard;
+                                                    //}
                                                 }
                                             }
+                                           
 
                                             int? IDStation = measResStation.Save(dbConnect, transaction);
                                             if (IDStation > 0)
@@ -279,6 +283,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                     for (int i = 0; i < resmaskBw.getAllFields.Count; i++)
                                                                         resmaskBw.getAllFields[i].Value = resmaskBw.valc[i];
                                                                     BlockInsert_MaskElements.Add(resmaskBw);
+                                                                    System.Threading.Thread.Yield();
                                                                 }
                                                                 if (BlockInsert_MaskElements.Count > 0)
                                                                 {
@@ -309,6 +314,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                     for (int i = 0; i < reslevelSpecrum.getAllFields.Count; i++)
                                                                         reslevelSpecrum.getAllFields[i].Value = reslevelSpecrum.valc[i];
                                                                     BlockInsert_YXbsResStLevelsSpect.Add(reslevelSpecrum);
+
+                                                                    System.Threading.Thread.Yield();
                                                                 }
 
                                                                 if (BlockInsert_YXbsResStLevelsSpect.Count > 0)
@@ -363,10 +370,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                 for (int i = 0; i < yXbsResLevelMeas.getAllFields.Count; i++)
                                                                     yXbsResLevelMeas.getAllFields[i].Value = yXbsResLevelMeas.valc[i];
                                                                 BlockInsert_LevelMeasurementsCar.Add(yXbsResLevelMeas);
-                                                                yXbsResLevelMeas.Close();
-                                                                yXbsResLevelMeas.Dispose();
+                                                                System.Threading.Thread.Yield();
                                                             }
-
 
                                                             if (BlockInsert_LevelMeasurementsCar.Count > 0)
                                                             {
@@ -384,37 +389,38 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                     }
 
 
-                                    if (obj.LocationSensorMeasurement != null)
-                                    {
-                                        List<Yyy> BlockInsert_LocationSensorMeasurement = new List<Yyy>();
-                                        for (int l = 0; l < obj.LocationSensorMeasurement.Length; l++)
+                                        if (obj.LocationSensorMeasurement != null)
                                         {
-                                            LocationSensorMeasurement dt_param = obj.LocationSensorMeasurement[l];
-
-                                            if (dt_param != null)
+                                            List<Yyy> BlockInsert_LocationSensorMeasurement = new List<Yyy>();
+                                            for (int l = 0; l < obj.LocationSensorMeasurement.Length; l++)
                                             {
-                                                YXbsResLocSensorMeas dtr = new YXbsResLocSensorMeas();
-                                                dtr.rs = yyy.rs;
-                                                dtr.Format("*");
-                                                dtr.Filter = "ID=-1";
-                                                dtr.New();
-                                                if (dt_param.ASL != null) dtr.m_asl = dt_param.ASL.GetValueOrDefault();
-                                                if (dt_param.Lon != null) dtr.m_lon = dt_param.Lon.GetValueOrDefault();
-                                                if (dt_param.Lat != null) dtr.m_lat = dt_param.Lat.GetValueOrDefault();
-                                                dtr.m_xbsresmeasid = ID;
-                                                for (int i = 0; i < dtr.getAllFields.Count; i++)
-                                                    dtr.getAllFields[i].Value = dtr.valc[i];
-                                                BlockInsert_LocationSensorMeasurement.Add(dtr);
+                                                LocationSensorMeasurement dt_param = obj.LocationSensorMeasurement[l];
+                                                if (dt_param != null)
+                                                {
+                                                    YXbsResLocSensorMeas dtr = new YXbsResLocSensorMeas();
+                                                    dtr.rs = yyy.rs;
+                                                    dtr.Format("*");
+                                                    dtr.Filter = "ID=-1";
+                                                    dtr.New();
+                                                    if (dt_param.ASL != null) dtr.m_asl = dt_param.ASL.GetValueOrDefault();
+                                                    if (dt_param.Lon != null) dtr.m_lon = dt_param.Lon.GetValueOrDefault();
+                                                    if (dt_param.Lat != null) dtr.m_lat = dt_param.Lat.GetValueOrDefault();
+                                                    dtr.m_xbsresmeasid = ID;
+                                                    for (int i = 0; i < dtr.getAllFields.Count; i++)
+                                                        dtr.getAllFields[i].Value = dtr.valc[i];
+                                                    BlockInsert_LocationSensorMeasurement.Add(dtr);
+
+                                                    System.Threading.Thread.Yield();
+                                                }
                                             }
-                                        }
-                                        if (BlockInsert_LocationSensorMeasurement.Count > 0)
-                                        {
-                                            YXbsResLocSensorMeas YXbsLocationsensorm11 = new YXbsResLocSensorMeas();
-                                            YXbsLocationsensorm11.rs = yyy.rs;
-                                            YXbsLocationsensorm11.Format("*");
-                                            YXbsLocationsensorm11.New();
-                                            YXbsLocationsensorm11.SaveBath(BlockInsert_LocationSensorMeasurement, dbConnect, transaction);
-                                        }
+                                            if (BlockInsert_LocationSensorMeasurement.Count > 0)
+                                            {
+                                                YXbsResLocSensorMeas YXbsLocationsensorm11 = new YXbsResLocSensorMeas();
+                                                YXbsLocationsensorm11.rs = yyy.rs;
+                                                YXbsLocationsensorm11.Format("*");
+                                                YXbsLocationsensorm11.New();
+                                                YXbsLocationsensorm11.SaveBath(BlockInsert_LocationSensorMeasurement, dbConnect, transaction);
+                                            }
                                     }
 
                                     int AllIdx = 0;
@@ -445,6 +451,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 
                                                             if (obj.FrequenciesMeasurements != null)
                                                             {
+                                                               dtrR.m_freqmeas = obj.FrequenciesMeasurements[l].Freq;
+                                                               /*
                                                                 List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
                                                                 if (Fr_e != null)
                                                                 {
@@ -460,6 +468,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                         }
                                                                     }
                                                                 }
+                                                                */
                                                             }
                                                         }
                                                     }
@@ -475,6 +484,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
 
                                                             if (obj.FrequenciesMeasurements != null)
                                                             {
+                                                                dtrR.m_freqmeas = obj.FrequenciesMeasurements[l].Freq;
+                                                                /*
                                                                 List<FrequencyMeasurement> Fr_e = obj.FrequenciesMeasurements.ToList().FindAll(t => t.Id == dt_param.Id.Value);
                                                                 if (Fr_e != null)
                                                                 {
@@ -490,6 +501,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                                                         }
                                                                     }
                                                                 }
+                                                                */
                                                             }
                                                         }
                                                     }
@@ -519,8 +531,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                             }
 
                                             idx_cnt++;
-
-                                        }
+                                            System.Threading.Thread.Yield();
+                                         }
                                     }
                                     if (BlockInsert_YXbsLevelmeasres1.Count > 0)
                                     {
@@ -537,7 +549,7 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         }
                         catch (Exception ex)
                         {
-                            Error = ex.Message;
+                            ErrorValue = ex.Message;
                             ID = Constants.NullI;
                             try
                             {
@@ -553,14 +565,14 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     }
                     else
                     {
-                        Error = "Error connection  to Database";
+                        ErrorValue = "Error connection  to Database";
                         logger.Error("[SaveResultToDB] Error connection  to Database");
                         ID = Constants.NullI;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Error = ex.Message;
+                    ErrorValue = ex.Message;
                     ID = Constants.NullI;
                     logger.Error(ex.Message);
                 }
@@ -573,6 +585,10 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 yyy.Dispose();
                 logger.Trace("End procedure SaveResultToDB");
             }
+            });
+            tsk.Start();
+            tsk.Join();
+            Error = ErrorValue;
             return ID;
         }
 

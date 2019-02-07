@@ -45,8 +45,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             try
             {
                 #region Load Tasks from DB
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure ReadTask...");
                     try
                     {
@@ -210,9 +210,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ReadTask... " + ex.Message);
                     }
                     logger.Trace("End procedure ReadTask.");
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 #endregion
             }
             catch (Exception ex)

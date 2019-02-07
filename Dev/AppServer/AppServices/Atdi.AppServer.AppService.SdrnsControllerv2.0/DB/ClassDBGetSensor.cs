@@ -24,8 +24,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 try
                 {
                     logger.Trace("Start procedure LoadObjectAllSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         YXbsSensor s_l_sensor = new YXbsSensor();
                         s_l_sensor.Format("*");
                         // выбирать только сенсоры, для которых STATUS не NULL
@@ -168,9 +168,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         }
                         s_l_sensor.Close();
                         s_l_sensor.Dispose();
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
                     logger.Trace("End procedure LoadObjectAllSensor.");
                 }
                 catch (Exception ex)
@@ -190,8 +190,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 try
                 {
                     logger.Trace("Start procedure LoadObjectAllSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         try
                         {
                             YXbsSensor s_l_sensor = new YXbsSensor();
@@ -330,9 +330,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         {
                             logger.Trace("Error in procedure LoadObjectAllSensor... " + ex.Message);
                         }
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
                     logger.Trace("End procedure LoadObjectAllSensor.");
                 }
                 catch (Exception ex)
@@ -351,8 +351,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 try
                 {
                     logger.Trace("Start procedure LoadObjectAllSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         try
                         {
                             YXbsSensor s_l_sensor = new YXbsSensor();
@@ -491,9 +491,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         {
                             logger.Trace("Error in procedure LoadObjectAllSensor... " + ex.Message);
                         }
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
                     logger.Trace("End procedure LoadObjectAllSensor.");
                 }
                 catch (Exception ex)
@@ -513,8 +513,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             try
             {
                 logger.Trace("Start procedure IsFindSensorInDB...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         YXbsSensor s_l_sensor = new YXbsSensor();
@@ -543,9 +543,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     {
                         logger.Trace("Error in procedure IsFindSensorInDB... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure IsFindSensorInDB.");
             }
             catch (Exception ex)
@@ -561,8 +561,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             try
             {
                 logger.Trace("Start procedure IsFindSensorInDB...");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         YXbsSensor s_l_sensor = new YXbsSensor();
@@ -590,9 +590,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     {
                         logger.Trace("Error in procedure IsFindSensorInDB... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure IsFindSensorInDB.");
             }
             catch (Exception ex)
@@ -609,8 +609,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 try
                 {
                     logger.Trace("Start procedure LoadObjectSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         try
                         {
                             YXbsSensor s_l_sensor = new YXbsSensor();
@@ -747,9 +747,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         {
                             logger.Trace("Error in procedure LoadObjectSensor... " + ex.Message);
                         }
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
 
                     logger.Trace("End procedure LoadObjectSensor.");
                 }
@@ -769,8 +769,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 try
                 {
                     logger.Trace("Start procedure LoadObjectSensor...");
-                    System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                    {
+                    //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                    //{
                         try
                         {
                             YXbsSensor s_l_sensor = new YXbsSensor();
@@ -907,9 +907,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                         {
                             logger.Trace("Error in procedure LoadObjectSensor... " + ex.Message);
                         }
-                    });
-                    tsk.Start();
-                    tsk.Join();
+                    //});
+                    //tsk.Start();
+                    //tsk.Join();
 
                     logger.Trace("End procedure LoadObjectSensor.");
                 }
@@ -929,8 +929,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         {
             var val = new List<Sensor>();
             logger.Trace("Start procedure LoadObjectSensor...");
-            System.Threading.Thread tsk = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+            //{
                 try
                 {
                     YXbsSensor s_l_sensor = new YXbsSensor();
@@ -1084,9 +1084,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                 {
                     logger.Error("Error in procedure LoadObjectSensor." + ex.Message);
                 }
-            });
-            tsk.Start();
-            tsk.Join();
+            //});
+            //tsk.Start();
+            //tsk.Join();
 
             logger.Trace("End procedure LoadObjectSensor.");
             return val;
@@ -1101,8 +1101,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         /// <returns></returns>
         public bool CreateNewObjectSensor(DM.Sensor sens)
         {
-            System.Threading.Thread tsk = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+            //{
                 logger.Trace("Start procedure CreateNewObjectSensor...");
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = null;
@@ -1402,9 +1402,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     dbConnect.Close();
                     dbConnect.Dispose();
                 }
-            });
-            tsk.Start();
-            tsk.Join();
+            //});
+            //tsk.Start();
+            //tsk.Join();
             logger.Trace("End procedure CreateNewObjectSensor.");
             return true;
         }
@@ -1416,8 +1416,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         /// <returns></returns>
         public bool CreateNewObjectSensor(Sensor sens, string apiVersion)
         {
-            System.Threading.Thread tsk = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+            //{
                 logger.Trace("Start procedure CreateNewObjectSensor...");
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = null;
@@ -1659,9 +1659,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     dbConnect.Close();
                     dbConnect.Dispose();
                 }
-            });
-            tsk.Start();
-            tsk.Join();
+            //});
+            //tsk.Start();
+            //tsk.Join();
             logger.Trace("End procedure CreateNewObjectSensor.");
             return true;
         }
@@ -1669,8 +1669,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
         public bool UpdateObjectSensor(Sensor sens, string apiVersion)
         {
             bool isSuccess = false;
-            System.Threading.Thread tsk = new System.Threading.Thread(() =>
-            {
+            //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+            //{
                 logger.Trace("Start procedure CreateNewObjectSensor...");
                 Yyy yyy = new Yyy();
                 DbConnection dbConnect = null;
@@ -1908,9 +1908,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     dbConnect.Close();
                     dbConnect.Dispose();
                 }
-            });
-            tsk.Start();
-            tsk.Join();
+            //});
+            //tsk.Start();
+            //tsk.Join();
             logger.Trace("End procedure CreateNewObjectSensor.");
             return isSuccess;
         }
@@ -1926,8 +1926,8 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
             try
             {
                 logger.Trace("Start procedure UpdateStatusSensor.");
-                System.Threading.Thread tsk = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread tsk = new System.Threading.Thread(() =>
+                //{
                     try
                     {
                         if (sens != null)
@@ -1970,9 +1970,9 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                     {
                         logger.Trace("Error in procedure UpdateStatusSensor... " + ex.Message);
                     }
-                });
-                tsk.Start();
-                tsk.Join();
+                //});
+                //tsk.Start();
+                //tsk.Join();
                 logger.Trace("End procedure UpdateStatusSensor.");
             }
             catch (Exception ex)

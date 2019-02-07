@@ -1,0 +1,311 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:l="clr-namespace:System;assembly=mscorlib">
+    <!-- Glob -->
+    <l:String x:Key="Sent">Відправлено</l:String>
+    <l:String x:Key="NotSent">Не відправлено</l:String>
+    <l:String x:Key="Confirmed">Підтверджено</l:String>
+    <l:String x:Key="ReceivedWithError">Прийнято з помилкою</l:String>
+    <l:String x:Key="Results">Результати</l:String>
+    <l:String x:Key="Register">Зареєструвати</l:String>
+    <l:String x:Key="Settings">Налаштування</l:String>
+    <l:String x:Key="Latitude">Широта</l:String>
+    <l:String x:Key="Longitude">Довгота</l:String>
+    <l:String x:Key="LAST_NAME">Прізвище</l:String>
+    <l:String x:Key="FIRST_NAME">Ім'я</l:String>
+    <l:String x:Key="SECOND_NAME">По батькові</l:String>
+    <l:String x:Key="POSITION">Посада</l:String>
+    <l:String x:Key="Create">Cтворити</l:String>
+    <l:String x:Key="Apply">Застосувати</l:String>
+    <l:String x:Key="Change">Змінити</l:String>
+    <l:String x:Key="Confirm">Підтвердити</l:String>
+    <l:String x:Key="Close">Закрити</l:String>
+    <l:String x:Key="Yes">Так</l:String>
+    <l:String x:Key="No">Нi</l:String>
+    <l:String x:Key="Ok">OK</l:String>
+    <l:String x:Key="Cancel">Скасувати</l:String>
+    <l:String x:Key="Remove">Видалити</l:String>
+    <l:String x:Key="Send">Виправити</l:String>
+    <l:String x:Key="OnOff">Вкл/Выкл</l:String>
+    <l:String x:Key="From">з</l:String>
+    <l:String x:Key="All">ВСЕ</l:String>
+    <l:String x:Key="Mode">Режим</l:String>
+    <l:String x:Key="Warning">Попередження</l:String>
+    <l:String x:Key="Conclusions">Висновки</l:String>
+    <l:String x:Key="Transmissionfrequency">Частота передачі</l:String>
+    <l:String x:Key="Frequency">Частота</l:String>
+    <l:String x:Key="Frequency (MHz)">Частота (МГц)</l:String>
+    <l:String x:Key="FreqStart (MHz)">Початкова частота (МГц)</l:String>
+    <l:String x:Key="FreqStop (MHz)">Кінцева частота (МГц)</l:String>
+    <l:String x:Key="SignalBW (MHz)">Смуга сигналу (МГц)</l:String>
+    <l:String x:Key="MeasuredSignalBW">Виміряна ширина смуги сигналу</l:String>
+    <l:String x:Key="Standard">Стандарт</l:String>
+    <l:String x:Key="Band">Діапазон</l:String>
+    <l:String x:Key="SpectrumAnalyzer">Аналізатор Спектра</l:String>
+    <l:String x:Key="SpectrumReceiver">Моніторинговий приймач</l:String>
+    <l:String x:Key="DemodulationReceiver">Демодуляційний Приймач</l:String>
+    <l:String x:Key="WRLSReceiver">Бездротовий приймач</l:String>
+    <l:String x:Key="IPAdress">IP-адреса</l:String>
+    <l:String x:Key="Port">Порт</l:String>
+    <l:String x:Key="LanSettings">Налаштування мережі</l:String>
+    <l:String x:Key="ConnectWhenTheApplicationStarts">Підключати при запуску програми</l:String>
+    <l:String x:Key="ResetSettingsWhenConnected">Скидати налаштування при підключенні</l:String>
+    <l:String x:Key="UseInternalGPS">Використовувати вбудований GPS</l:String>
+    <l:String x:Key="Model">Модель</l:String>
+    <l:String x:Key="Description">Опис</l:String>
+    <l:String x:Key="Technology">Технологія</l:String>
+    <l:String x:Key="Formula">Формула</l:String>
+    <l:String x:Key="Azimuth">Азімут</l:String>
+    <l:String x:Key="Altitude[m]">Висота [м]</l:String>
+    <l:String x:Key="MAP">МАПА</l:String>
+    <l:String x:Key="ClassOfEmission">Клас випромінювання</l:String>
+    <l:String x:Key="DeleteAllFilters">Видалити всі фільтри</l:String>
+    <l:String x:Key="Start">Start</l:String>
+    <l:String x:Key="Stop">Stop</l:String>
+    <l:String x:Key="Update">Update</l:String>
+    <l:String x:Key="Done">Виконано</l:String>
+    <l:String x:Key="DateTime">Дата Час</l:String>
+    <l:String x:Key="DateTimeStart">Дата Час початку</l:String>
+    <l:String x:Key="Operator">Оператор</l:String>
+    <l:String x:Key="SpectrumMeasFalse">Не вибрано пристрій вимірювання</l:String>
+    <l:String x:Key="EnableMeas">Включити вимірювання</l:String>
+    <l:String x:Key="ScreenShotPathFail">Шлях збереження скріншотів не заданий!</l:String>
+    <l:String x:Key="EnterFileName">Введіть назву файлу</l:String>
+    <l:String x:Key="FileNameType">Вибір типу назви файлу</l:String>
+    <l:String x:Key="FileSaved">Файл *NAME* збережено</l:String>
+    <l:String x:Key="NotSetIPAddressEquipment">Не встановлено IP-адреса підключення для *Equipment*</l:String>
+    <l:String x:Key="NotSetPortEquipment">Не встановлений порт підключення для *Equipment*</l:String>
+    <l:String x:Key="EqSpectrumAnalyzer">аналізатора спектру</l:String>
+    <l:String x:Key="EqMonitoringReceiver">моніторингового приймача</l:String>
+    <l:String x:Key="EqNetworkAnalyzer">аналізатор мереж</l:String>
+    <l:String x:Key="Level">Рівень</l:String>
+    <l:String x:Key="LicenseFail">Відсутня ліцензія ICS Control</l:String>
+    <l:String x:Key="CountryCode">Код країни</l:String>
+    <l:String x:Key="OperatorCode">Код оператора</l:String>
+    <l:String x:Key="AreaCode">Код регіону</l:String>
+    <l:String x:Key="IDinDB">Ідентифікатор в БД</l:String>
+    <l:String x:Key="CellNumber">Номер сектора</l:String>
+    <l:String x:Key="Consider">Враховувати</l:String>
+    <l:String x:Key="Example">Приклад</l:String>
+    
+    <!-- Markers -->
+    <l:String x:Key="Marker_Markers">Маркери</l:String>
+    <l:String x:Key="Marker_Type">Тип</l:String>
+    <l:String x:Key="Marker_Ref">Відн</l:String>
+    <l:String x:Key="Marker_Trc">Trc</l:String>
+    <l:String x:Key="Marker_Frequency">Частота</l:String>
+    <l:String x:Key="Marker_Level">Рівень</l:String>
+    <l:String x:Key="Marker_Function">Функція</l:String>
+    <l:String x:Key="Marker_FunctionResult">Результат функції</l:String>
+    <!-- Markers -->
+
+    <!-- DB -->
+    <l:String x:Key="DB_Result">Результат</l:String>
+    <l:String x:Key="DB_Identified">Ідентифіковано</l:String>
+    <l:String x:Key="DB_Standard">Стандарт</l:String>
+    <l:String x:Key="DB_Callsign_DB">Позивний DB</l:String>
+    <l:String x:Key="DB_Callsign_Radio">Позивний Radio</l:String>
+    <l:String x:Key="DB_StationAddress">Станція адреса</l:String>
+    <l:String x:Key="DB_StationRegion">Станція регіон</l:String>
+    <l:String x:Key="DB_StationLatitude">Станція широта</l:String>
+    <l:String x:Key="DB_StationLongitude">Станція довгота</l:String>
+    <l:String x:Key="DB_Owner">Власник</l:String>
+    <l:String x:Key="DB_OwnerCode">Власник код</l:String>
+    <l:String x:Key="DB_OwnerOKPO">Власник ОКПО</l:String>
+    <l:String x:Key="DB_OwnerZIP">Власник індекс</l:String>
+    <l:String x:Key="DB_OwnerAddress">Власник адреса</l:String>
+    <l:String x:Key="DB_Status">Статус</l:String>
+    <l:String x:Key="DB_Permission">Дозвіл</l:String>
+    <l:String x:Key="DB_PermissionStart">Дозвіл Старт</l:String>
+    <l:String x:Key="DB_PermissionEnd">Дозвіл Кінець</l:String>
+    <l:String x:Key="DB_PermissionClose">Дозвіл Анульовано</l:String>
+    <l:String x:Key="DB_AGL">AGL</l:String>
+    <l:String x:Key="DB_AGL_ToolTip">Висота над рівнем землі</l:String>
+    <l:String x:Key="DB_EIRP[dBm]">EIRP [dBm]</l:String>
+    <l:String x:Key="DB_EIRP[dBm]_ToolTip">Еквівалентна изотропно випромінювана потужність</l:String>
+    <l:String x:Key="DB_TaskState_Warning">Працює процес вимірювання! Зміна стану завдання недоступно.</l:String>
+    <l:String x:Key="DB_Task_Delete">Видалити завдання №*TaskNumber*?</l:String>
+    <l:String x:Key="DB_Task_Deleted">Завдання №*TaskNumber* видалено</l:String>
+    <l:String x:Key="DB_ImpossibleToDdelete">Неможливо видалити №*TaskNumber*</l:String>
+    <l:String x:Key="DB_Results_Delete">Видалити результати завдання №*TaskNumber*?</l:String>
+    <l:String x:Key="DB_Results_Deleted">Результати завдання №*TaskNumber* видалені</l:String>
+    <l:String x:Key="DB_Delete">Видалити</l:String>
+    <l:String x:Key="DB_DeleteTask">Видалити завдання</l:String>
+    <l:String x:Key="DB_DeleteAllResult">Видалити всі результати</l:String>
+    <!-- DB -->
+
+    <!-- MAP -->
+    <l:String x:Key="MAP_Opacity">Прозорість</l:String>
+    <l:String x:Key="MAP_Opacity_All">Всього</l:String>
+    <l:String x:Key="MAP_Opacity_station_group">Станцій/Груп</l:String>
+    <l:String x:Key="MAP_ShowSearchRadius">Показати радіус пошуку</l:String>
+    <l:String x:Key="MAP_StationInfo">Інформація про станції</l:String>
+    <l:String x:Key="MAP_ShowMyLocation">Показати місцезнаходження по GNSS</l:String>
+    <l:String x:Key="MAP_FollowMyLocation">Стежити за GNSS</l:String>
+    <l:String x:Key="MAP_ShowSelectedCoordinates">Показати координати обраної точки на карті</l:String>
+    <l:String x:Key="MAP_GetImageFromMap">Зберегти скріншот видимої області карти</l:String>
+    <l:String x:Key="MAP_ShowOnMap">Показати на карті</l:String>
+    <l:String x:Key="MAP_ShowStation_ToolTip">Показати всі станції на мапі</l:String>
+    <l:String x:Key="MAP_HideCompleted_ToolTip">Приховати виконане</l:String>
+    <!-- MAP -->
+
+    <!-- MeasMonData -->
+    <l:String x:Key="MeasMonData_AdditionalIdentifier">Дод. ід.</l:String>
+    <l:String x:Key="MeasMonData_AdditionalIdentifier_ToolTip">Додатковий (скорочений) ідентифікатор</l:String>
+    <l:String x:Key="MeasMonData_MeasCount">К-ть вим.</l:String>
+    <l:String x:Key="MeasMonData_MeasCount_ToolTip">Кількість трас врахованих в накопиченому спектрі</l:String>
+    <l:String x:Key="MeasMonData_AllMeasCount">Общ. кол. изм.</l:String>
+    <l:String x:Key="MeasMonData_AllMeasCount_ToolTip">Загальна кількість вимірювань</l:String>
+    <l:String x:Key="MeasMonData_AllTimeMeas">Час вимірювання [с]</l:String>
+    <l:String x:Key="MeasMonData_AllTimeMeas_ToolTip">Загальний час вимірювання в секундах</l:String>
+    <l:String x:Key="MeasMonData_MeasuredChanelBW">Вим. см. сиг.</l:String>
+    <l:String x:Key="MeasMonData_LastMeasDateTime">Ост. вим.</l:String>
+    <l:String x:Key="MeasMonData_LastMeasDateTime_ToolTip">Час останнього внесення зміни в накопичений спектр</l:String>
+    <!-- MeasMonData -->
+
+    <!-- DBPanel -->
+    <l:String x:Key="DBPanel_ShowResults">Показати результати</l:String>
+    <l:String x:Key="DBPanel_DownloadTasks">Завантажити завдання з ICS Control</l:String>
+    <l:String x:Key="DBPanel_UploadTasksResults">Надіслати результати завдань в ICS Control</l:String>
+    <l:String x:Key="DBPanel_CenterFrequency">Центральна частота</l:String>
+    <l:String x:Key="DBPanel_Permission">Дозвіл</l:String>
+    <l:String x:Key="DBPanel_Measured">Measured</l:String>
+    <l:String x:Key="DBPanel_TaskState_Waiting">Очікування</l:String>
+    <l:String x:Key="DBPanel_TaskState_Disabled">Вимкнений</l:String>
+    <l:String x:Key="DBPanel_TaskState_Enabled">Включений</l:String>
+    <l:String x:Key="DBPanel_StationCount">Station Count</l:String>
+    <l:String x:Key="DBPanel_Sectors">Sectors</l:String>
+    <l:String x:Key="DBPanel_CenterFrequencyPermission">Центральна частота з дозволу</l:String>
+    <l:String x:Key="DBPanel_IdentifierFromRadio">Ідентифікатор з ефіру</l:String>
+    <l:String x:Key="DBPanel_IdentifierFromPermission">Ідентифікатор з дозволу</l:String>
+    <l:String x:Key="DBPanel_Strength">Напруженість</l:String>
+    <l:String x:Key="DBPanel_Duration[s]">Тривалість [с]</l:String>
+    <!-- DBPanel -->
+    
+    <!-- Meas -->
+    <l:String x:Key="Techonology">Технологія</l:String>
+    <l:String x:Key="DetectionLevel">Рівень виявлення [dBm]</l:String>
+    <l:String x:Key="OBWPercent">Відсоток OBW</l:String>
+    <l:String x:Key="NdBLevel">NdB рівень [dB]</l:String>
+    <l:String x:Key="RelativeFrequencyDeviation">Відносне відхилення частоти [ppm]</l:String>
+    <l:String x:Key="BandwidthOfTheSignalInMHz">Гранична смуга сигналу в МГц</l:String>
+    <l:String x:Key="SignalBandwidth">Смуга сигналу</l:String>
+    <!-- Meas -->
+    
+    <!-- Main window -->
+    <l:String x:Key="m_menu_File">Файл</l:String>
+    <l:String x:Key="m_menu_File_Exit">_Вихід</l:String>
+    <l:String x:Key="m_ExitMessege">Ви дійсно хочете закрити програму?</l:String>
+
+
+    <l:String x:Key="m_menu_Properties">Сервіс</l:String>
+    <l:String x:Key="m_menu_Properties_Settings">_Налаштування</l:String>
+    <l:String x:Key="m_menu_Properties_Language">_Мова (Language)</l:String>
+    <l:String x:Key="m_menu_Properties_SaveAppSettings">_Зберегти налаштування програми</l:String>
+    <l:String x:Key="m_menu_Properties_LoadAppSettings">_Завантажити налаштування програми</l:String>
+    <l:String x:Key="m_menu_Properties_LicenseAgreement">Ліцензійні угоди</l:String>
+    
+    <!-- settings -->
+    <l:String x:Key="SettingsControl_Title">Налаштування</l:String>
+    <l:String x:Key="SettingsControl_General">Загальні</l:String>
+    <!-- SettingsControl_General -->
+    <!-- ICS Control Connection -->
+    <l:String x:Key="ICSControlLicense">Ліцензія ICS Control</l:String>
+    <l:String x:Key="SettingsControl_SensorName">Назва сенсора</l:String>
+    <l:String x:Key="SettingsControl_SensorRegistered">Сенсор *SensorName* зареєстрований</l:String>
+    <l:String x:Key="SettingsControl_SensorNotRegistered">Сенсор *SensorName* не зареєстрований</l:String>
+    <!-- Users -->
+    <l:String x:Key="Users_Expander">Користувачі</l:String>
+    <l:String x:Key="AddUser">Створити користувача</l:String>
+    <l:String x:Key="RemoveUser">Видалити користувача</l:String>
+    <l:String x:Key="SelectedUserFalse">Не вибрано оператора</l:String>
+
+    <!-- DB -->
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy">Сортувати сектора по:</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUp">Азимут, за зростанням</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUpFromNorth">Азимут, по зростанню від північного</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_CellIdUp">За зростанням ID сектора</l:String>
+
+    <!-- Conclusions -->
+    <l:String x:Key="Confirms">Відповідає</l:String>
+    <l:String x:Key="IllegallyOperatingTransmitter">НДП</l:String>
+    <l:String x:Key="ViolationOfFrequencyOperationRules">ППЕ по частоті</l:String>
+    <l:String x:Key="ViolationOfBandWidthOperationRules">ППЕ по смузі</l:String>
+
+    <!-- SettingsControl_Equipment -->
+    <l:String x:Key="SettingsControl_Equipment">Обладнання</l:String>
+    <l:String x:Key="SettingsControl_SelectTypeEquipment">Виберіть тип обладнання</l:String>
+    <l:String x:Key="SettingsControl_SpectrumAnalyzer">Анналізатор спектра</l:String>
+    <l:String x:Key="SettingsControl_SpectrumAnalyzer_DisplayOfWorkOnTheDevice">Відображення роботи на приладі</l:String>
+    <l:String x:Key="SettingsControl_SpectrumAnalyzer_DisplayOfWorkOnTheDevice_ToolTip">Не рекомендується включати, тому що відображення на дисплеї приладу споживає значні ресурси приладу</l:String>
+    <l:String x:Key="SettingsControl_RuSReceiver">Rohde&amp;Schwarz Моніторинговий приймач</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx">Rohde&amp;Schwarz аналізатор мереж TSMx</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_ConnectingInputs">Підключення входів TSMW</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_AntennaInputTSMWRX1">Антенний вхід TSMW RX1</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_AntennaInputTSMWRX2">Антенний вхід TSMW RX2</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_AntennaInputTSMExRX">Антенний вхід TSMEx RX</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_UseRFPowerScan">Використовувати RF Power Scan</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_FrequencyOfIdentification">Частоти ідентифікації</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver">GNSS Приймач</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_ToolTip">Будь-який GNSS приймач з передачею даних за стандартом NMEA 0183</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_PortBaudRate">Біт в секунду</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_DataBits">Біти даних</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_Parity">Парність</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_StopBits">Стопові біти</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_Handshake">Управління потоком</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot">Скріншоти</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot_Path">Шлях збереження скріншотів</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot_Resolution">Роздільна здатність спектрограми</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot_FormatFile">Формат файлу спектрограми</l:String>
+    <l:String x:Key="SettingsControl_Measurements">Вимірювання</l:String>
+    <l:String x:Key="SettingsControl_Measurements_UseOfInstruments">Використання приладів</l:String>
+    <l:String x:Key="SettingsControl_Measurements_IdentificationDCC">Ідентифікація ЦСЗ</l:String>
+    <l:String x:Key="SettingsControl_Measurements_SpectrumMeasurements">Вимірювання спектра</l:String>
+    <l:String x:Key="SettingsControl_Detection">Виявлення</l:String>
+    <l:String x:Key="SettingsControl_MobileOperators">Мобільні оператори</l:String>
+    <l:String x:Key="SettingsControl_Maps">Карти</l:String>
+    <l:String x:Key="SettingsControl_Maps_Settings">Налаштування карт</l:String>
+    <l:String x:Key="SettingsControl_Maps_Path">Шлях до карт</l:String>
+    <l:String x:Key="SettingsControl_Maps_MemorizeLocation">Запам'ятати місце розташування</l:String>
+    <l:String x:Key="SettingsControl_Maps_ItemsTooltip">Елементи що відображаються в підказці при наведенні на станцію/групу</l:String>
+
+
+    <!-- ChangeIP -->
+    <l:String x:Key="ChangeIP_Title">Зміна IP-адреси</l:String>
+    <l:String x:Key="NetworkIPaddress">Адреса IPv4</l:String>
+    <l:String x:Key="NetworkMask">Маска підмережі IPv4</l:String>
+    <l:String x:Key="NetworkGateway">Шлюз IPv4</l:String>
+    
+    <!-- Antenna -->
+    <l:String x:Key="Antenna_Title">Антени</l:String>
+    <l:String x:Key="Antenna_EnterAntennaName">Введіть назву антени</l:String>
+    <l:String x:Key="Antenna">Антена</l:String>
+    <l:String x:Key="Antenna Factor (dBm)">Антенний коефіцієнт (dBm)</l:String>
+    <l:String x:Key="Field strength sensitivity (dBµV/m)">Чутливість до напруженості поля (dBµV/m)</l:String>
+    <!-- WRLS -->
+    <l:String x:Key="Board">Плата</l:String>
+    <l:String x:Key="BoardName">Назва плати</l:String>    
+    
+    <l:Double x:Key="m_Number">10.5</l:Double>
+    <!-- DVB-Tx -->
+    <l:String x:Key="Meas_DVB-Tx_NumberOfMeas">Кіл-ть вимірювань:</l:String>
+    <l:String x:Key="Meas_DVB-Tx_DotName">Назва точки:</l:String>
+    <l:String x:Key="Meas_DVB-Tx_CreateProtocol">Створити протокол</l:String>
+
+    <!-- MyATDI -->
+    <l:String x:Key="MyATDI_Registered">Зареєстровано</l:String>
+    <l:String x:Key="MyATDI_NotRegistered">Не зареєстровано</l:String>
+    <l:String x:Key="MyATDI_ResultSended">Результат №*ResultNumber* завдання №*TaskNumber* відправлений</l:String>
+    <l:String x:Key="MyATDI_ResultNotSent">Результат №*ResultNumber* завдання №*TaskNumber* не відправлено</l:String>
+    <l:String x:Key="MyATDI_ICSCConnected">Встановлено підключення до сервера ICS Control</l:String>
+    <l:String x:Key="MyATDI_ICSCNotConnected">З'єднання з сервером ICS Control не встановлено</l:String>
+    <l:String x:Key="MyATDI_ReceivedTaskSaved">Отримана задача *tasknumber* збережена</l:String>
+
+    <!-- MyATDI -->
+    <l:String x:Key="DeviceStatus_AllState">Підключити/Відключити всі пристрої</l:String>
+    <l:String x:Key="DeviceStatus_SA">Підключити/Відключити аналізатор спектру</l:String>
+    <l:String x:Key="DeviceStatus_RSR">Підключити/Відключити моніторинговий приймач R&amp;S</l:String>
+    <l:String x:Key="DeviceStatus_TSMx">Підключити/Відключити аналізатор мереж R&amp;S TSMx</l:String>
+    <l:String x:Key="DeviceStatus_SH">Підключити/Відключити Signal Hound</l:String>
+    <l:String x:Key="DeviceStatus_GNSS">Підключити/Відключити GNSS приймач</l:String>
+</ResourceDictionary>

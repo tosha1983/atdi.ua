@@ -36,8 +36,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             List<MeasTask> L_OUT = new List<MeasTask>();
             try
             {
-                System.Threading.Thread thread = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure ConvertToMeastTaskHeader...");
                     try
                     {
@@ -220,9 +220,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ConvertToMeastTaskHeader... " + ex.Message);
                     }
                     logger.Trace("End procedure ConvertToMeastTaskHeader...");
-                });
-                thread.Start();
-                thread.Join();
+                //});
+                //thread.Start();
+                //thread.Join();
                 #endregion
             }
             catch (Exception ex)
@@ -239,8 +239,8 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             StationDataForMeasurements[] L_OUT = null;
             try
             {
-                System.Threading.Thread thread = new System.Threading.Thread(() =>
-                {
+                //System.Threading.Thread thread = new System.Threading.Thread(() =>
+                //{
                     logger.Trace("Start procedure ConvertToStationDataForMeasurements...");
                     try
                     {
@@ -374,9 +374,9 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         logger.Trace("Error in procedure ConvertToStationDataForMeasurements... " + ex.Message);
                     }
                     logger.Trace("End procedure ConvertToStationDataForMeasurements...");
-                });
-                thread.Start();
-                thread.Join();
+                //});
+                //thread.Start();
+                //thread.Join();
 
             }
             catch (Exception ex)

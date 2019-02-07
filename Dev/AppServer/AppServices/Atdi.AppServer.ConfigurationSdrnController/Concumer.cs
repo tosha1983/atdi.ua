@@ -17,10 +17,14 @@ namespace Atdi.AppServer.ConfigurationSdrnController
         private ILogger _logger { get; set; }
         public void HandleMessage(RabbitMQ.Client.IModel channel, RabbitMQ.Client.Events.BasicDeliverEventArgs message, IWindsorContainer container, string StartName, string Exchangepoint, IConnection connection, string ExchangePointFromServer, string StartNameQueueDevice, ILogger logger)
         {
+            var result = false;
             this._logger = logger;
             var messageType = message.BasicProperties.Type;
             if (messageType == null)
             {
+                result = false;
+                channel.BasicAck(message.DeliveryTag, false);
+                this._logger.Error("Incorrect message (BasicProperties.Type==null)");
                 return;
             }
 
@@ -41,7 +45,6 @@ namespace Atdi.AppServer.ConfigurationSdrnController
             if (string.IsNullOrEmpty(messageType))   messageType = Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["MessageType"]);
 
             var realObjectFromBody = UTF8Encoding.UTF8.GetString(message.Body);
-            var result = false;
             try
             {
                 var routingKey = $"{StartName}.[{sensorName}].[{techId}]";
@@ -277,42 +280,9 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         }
                         result = true;
                         break;
-
-                    case "SendActivitySensor":
-                        SensorActivity sensorActivity = ConfigurationSdrnController.listSensorActivity.Find(t => t.Sensor_.Name == sensorName && t.Sensor_.Equipment.TechId == techId);
-                        if (sensorActivity != null)
-                        {
-                            if (sensorActivity.cntSeconds > 10)
-                            {
-                                MessageObject dataSendActivitySensor = UnPackObject(messageResponse);
-                                var dataSendActivitySensorRecognize = dataSendActivitySensor.Object as Atdi.AppServer.Contracts.Sdrns.Sensor;
-                                dataSendActivitySensorRecognize.Status = "A";
-                                ClassDBGetSensor.UpdateStatusSensor(dataSendActivitySensorRecognize);
-
-                                Atdi.DataModels.Sdrns.Device.DeviceCommand SendActivitySensorResultRes = new DeviceCommand();
-                                SendActivitySensorResultRes.Command = "SendActivitySensorResult";
-                                SendActivitySensorResultRes.CommandId = "SendCommand";
-                                SendActivitySensorResultRes.SensorName = sensorName;
-                                SendActivitySensorResultRes.EquipmentTechId = techId;
-                                SendActivitySensorResultRes.SdrnServer = sdrnServer;
-                                SendActivitySensorResultRes.CustTxt1 = "Success";
-                                PublishMessage<DeviceCommand>(sdrnServer, Exchangepoint, routingKey, sensorName, techId, "SendCommand", channel, SendActivitySensorResultRes, message.BasicProperties.CorrelationId);
-                                sensorActivity.cntSeconds = 0;
-                            }
-                        }
-                        result = true;
-                        break;
-                    case "SendMeasSdrResults":
-
-                        MessageObject dataS = UnPackObject(messageResponse);
-                        var dataS1 = dataS.Object as Atdi.AppServer.Contracts.Sdrns.MeasSdrResults;
-                        // здесь обработчик
-                        result = true;
-                        break;
                     case "SendEntityPart":
                         MessageObject datapartEntityP = UnPackObject(messageResponse);
                         var datapartEntityPart = datapartEntityP.Object as Atdi.DataModels.Sdrns.Device.EntityPart;
-                        //var datapartEntityPart = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.EntityPart)) as Atdi.DataModels.Sdrns.Device.EntityPart;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntityPart = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
                         int? ID1 = DbGetResEntityPart.SaveEntityPart(datapartEntityPart);
                         if (ID1 > 0)
@@ -341,10 +311,8 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                         result = true;
                         break;
                     case "SendEntity":
-
                         MessageObject datapartEntit = UnPackObject(messageResponse);
                         var datapartEntity = datapartEntit.Object as Atdi.DataModels.Sdrns.Device.Entity;
-                        //var datapartEntity = JsonConvert.DeserializeObject(UTF8Encoding.UTF8.GetString(message.Body), typeof(Atdi.DataModels.Sdrns.Device.Entity)) as Atdi.DataModels.Sdrns.Device.Entity;
                         Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity DbGetResEntity = container.Resolve<Atdi.AppServer.AppService.SdrnsControllerv2_0.ClassDBEntity>();
                         int? ID2 = DbGetResEntity.SaveEntity(datapartEntity);
                         if (ID2 > 0)

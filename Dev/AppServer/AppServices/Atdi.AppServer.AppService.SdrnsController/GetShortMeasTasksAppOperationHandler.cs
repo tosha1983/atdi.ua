@@ -33,10 +33,6 @@ namespace Atdi.AppServer.AppServices.SdrnsController
             ClassConvertTasks ts = new ClassConvertTasks(Logger);
 
             List<MeasTask> ResMeasTasks = new List<MeasTask>();
-            //List<KeyValuePair<int, MeasTask>> mtsk = GlobalInit.blockingCollectionMeasTask.ToList();
-            //foreach (KeyValuePair<int, MeasTask> v in mtsk)
-                //ResMeasTasks.Add(v.Value);
-
             ResMeasTasks = ts.ConvertToShortMeasTasks(cl.ReadlAllSTasksFromDB()).ToList();
             List<ShortMeasTask> Res = new List<ShortMeasTask>();
             System.Threading.Thread th = new System.Threading.Thread(() =>
