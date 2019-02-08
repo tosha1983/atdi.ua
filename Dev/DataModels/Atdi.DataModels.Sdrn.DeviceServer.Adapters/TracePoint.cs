@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters
+namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters
 {
     public class TracePoint
     {
+        public TracePoint()
+        {
+        }
         public decimal Freq { get; set; }
         public double Level { get; set; }
     }

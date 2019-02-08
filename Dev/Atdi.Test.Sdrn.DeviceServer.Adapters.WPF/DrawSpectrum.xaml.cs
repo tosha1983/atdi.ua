@@ -105,9 +105,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             #region Initialize
             FreqCentr = 100000000;
-            FreqSpan = 10000000;
-            FreqStart = 95000000;
-            FreqStop = 105000000;
+            FreqSpan = 20000000;
+            FreqStart = 90000000;
+            FreqStop = 110000000;
 
             RefLevel = -40;
             LowestLevel = -140;
@@ -179,32 +179,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 RefLevel = (double)Adapter.RefLevel;
                 LowestLevel = (double)Adapter.LowestLevel;
                 Range = (double)Adapter.Range;
-                //TracePoints = Trace1.Length;
 
-                //// tsmx.LevelUnitStr;
-
-                //LevelUnit = "dBm";
-                ////ChannelPowerState = sh.ChannelPowerState;
-                ////if (ChannelPowerState)
-                ////{
-                ////    ChannelPowerBW = sh.ChannelPowerBW;
-                ////    ChannelPowerResult = sh.ChannelPowerResult;
-                ////}
-
-                ////NdBState = sh.NdBState;
-                ////if (NdBState)
-                ////{
-                ////    NdBLevel = sh.NdBLevel;
-                ////    NdBResult = sh.NdBResult;
-                ////}
-                ////OBWState = sh.OBWState;
-                ////if (OBWState)
-                ////{
-                ////    OBWPercent = sh.OBWPercent;
-                ////    OBWChnlBW = sh.OBWChnlBW;
-                ////    OBWResult = sh.OBWResult;
-                ////}
-                ////RFOverload = (sh.RFOverload == true) ? 1 : 0;
                 #endregion
 
 
@@ -276,8 +251,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     gl.Color(Trace1RGB[0], Trace1RGB[1], Trace1RGB[2]);
                     for (int i = 0; i < Freq.Length; i++)
                     {
-                        gl.Vertex((double)Freq[i], (double)Level[i]);
-                        
+                        gl.Vertex(Freq[i], Level[i]);
+
                     }
                     gl.End();
                     //double[] data1 = new double[Trace1.Length * 2];

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.Enums
+namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums
 {
     public enum TraceType : int
     {

@@ -65,11 +65,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             command.Parameter.Att_dB = 0;
             command.Parameter.FreqStart_Hz = 90000000;
             command.Parameter.FreqStop_Hz = 110000000;
-            command.Parameter.PreAmp_dB = 0;
-            command.Parameter.RBW_Hz = 1000;
-            command.Parameter.VBW_Hz = 1000;
+            command.Parameter.PreAmp_dB = 20;
+            command.Parameter.RBW_Hz = 30000;
+            command.Parameter.VBW_Hz = 30000;
             command.Parameter.RefLevel_dBm = -40;
-            command.Parameter.SweepTime_s = 0.001;
+            command.Parameter.SweepTime_s = 0.00001;
             command.Parameter.TraceCount = 10;
             command.Parameter.TracePoint = 1000;
 

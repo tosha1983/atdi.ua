@@ -41,14 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeviceOption.cs" />
-    <Compile Include="Enums\LevelUnit.cs" />
-    <Compile Include="Enums\TraceType.cs" />
-    <Compile Include="ParamWithId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Specification.cs" />
-    <Compile Include="TracePoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
