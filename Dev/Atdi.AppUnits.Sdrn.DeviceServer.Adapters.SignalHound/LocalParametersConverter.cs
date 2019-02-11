@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
-    public class ConvertersInputToLocalParameters
+    public class LocalParametersConverter
     {
         public EN.Attenuator Attenuator(int ATTFromParameter)
         {
@@ -59,16 +55,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             decimal res = 0;
             if (FreqStartFromParameter < SH.FreqMin) res = SH.FreqMin;
-            if (FreqStartFromParameter > SH.FreqMax) res = SH.FreqMax - 1000000;
-
+            else if (FreqStartFromParameter > SH.FreqMax) res = SH.FreqMax - 1000000;
+            else res = FreqStartFromParameter;
             return res;
         }
         public decimal FreqStop(Adapter SH, decimal FreqStopFromParameter)
         {
             decimal res = 0;
             if (FreqStopFromParameter > SH.FreqMax) res = SH.FreqMax;
-            if (FreqStopFromParameter < SH.FreqMin) res = SH.FreqMin + 1000000;
-
+            else if(FreqStopFromParameter < SH.FreqMin) res = SH.FreqMin + 1000000;
+            else res = FreqStopFromParameter;
+            return res;
+        }
+        public decimal RBW(Adapter SH, decimal RBWFromParameter)
+        {
+            decimal res = 0;
+            if (RBWFromParameter > SH.RBWMax) res = SH.RBWMax;
+            else if (RBWFromParameter < 1) res = 1000;
+            else res = RBWFromParameter;
+            return res;
+        }
+        public decimal VBW(Adapter SH, decimal VBWFromParameter)
+        {
+            decimal res = 0;
+            if (VBWFromParameter > SH.VBWMax) res = SH.VBWMax;
+            else if (VBWFromParameter < 1) res = 1000;
+            else res = VBWFromParameter;
             return res;
         }
     }
