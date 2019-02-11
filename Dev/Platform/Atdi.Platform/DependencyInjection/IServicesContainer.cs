@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Atdi.Platform.DependencyInjection
 {
@@ -59,5 +60,13 @@ namespace Atdi.Platform.DependencyInjection
 
         TResolver GetResolver<TResolver>() where TResolver : IServicesResolver;
 
+    }
+    public static partial class ServicesContainerExtensions
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Register(this IServicesContainer container, Type serviceType, ServiceLifetime lifetime = ServiceLifetime.Transient)
+        {
+            container.Register(serviceType, serviceType, lifetime);
+        }
     }
 }

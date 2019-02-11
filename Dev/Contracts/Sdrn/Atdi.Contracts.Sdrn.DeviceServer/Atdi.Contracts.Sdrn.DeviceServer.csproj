@@ -42,8 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAdapter.cs" />
+    <Compile Include="IAdapterFactory.cs" />
     <Compile Include="IAdapterHost.cs" />
     <Compile Include="IController.cs" />
+    <Compile Include="IDevicesHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
