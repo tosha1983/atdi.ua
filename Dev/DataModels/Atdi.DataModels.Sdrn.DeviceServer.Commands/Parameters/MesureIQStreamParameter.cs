@@ -13,12 +13,12 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         public int Att_dB; //-1 = auto, 
         public int PreAmp_dB; //-1 = auto, 
         public int RefLevel_dBm; // -1 = auto
-        double BitRate_MBs; // скорость потока IQ;  -1 = максимальная
-        double IQBlockDuration_s; // длительность ожидаемого блока с IQ
-        double IQReceivTime_s; // общее временное окно отводимое для получения потока IQ
-        bool MandatoryPPS; // обязательная привязка к PPS 
-        bool MandatorySignal; //  Снятие потока только при наличии наличия сигнала
-        long TimeStart; // Время старта записи IQ stream
+        public double BitRate_MBs; // скорость потока IQ;  -1 = максимальная
+        public double IQBlockDuration_s; // длительность ожидаемого блока с IQ
+        public double IQReceivTime_s; // общее временное окно отводимое для получения потока IQ
+        public bool MandatoryPPS; // обязательная привязка к PPS 
+        public bool MandatorySignal; //  Снятие потока только при наличии наличия сигнала
+        public long TimeStart; // Время старта записи IQ stream
     }
 }
 

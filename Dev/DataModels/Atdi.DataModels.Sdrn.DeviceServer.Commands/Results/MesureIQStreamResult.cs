@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
 {
-    public class MesureStreamResult : CommandResultPartBase
+    public class MesureIQStreamResult : CommandResultPartBase
     {
-        public MesureStreamResult(ulong partIndex, CommandResultStatus status)
+        public MesureIQStreamResult(ulong partIndex, CommandResultStatus status)
                : base(partIndex, status)
         {
         }
