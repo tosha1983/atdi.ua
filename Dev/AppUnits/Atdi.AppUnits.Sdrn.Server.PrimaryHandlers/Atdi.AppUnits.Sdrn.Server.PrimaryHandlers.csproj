@@ -51,6 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnServerPrimaryHandlersComponent.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Subscribes\OnCreateMeasTaskProcess.cs" />
     <Compile Include="Subscribes\OnUpdatedSensor.cs" />
     <Compile Include="Subscribes\OnRegisteredNewSensor.cs" />
   </ItemGroup>
