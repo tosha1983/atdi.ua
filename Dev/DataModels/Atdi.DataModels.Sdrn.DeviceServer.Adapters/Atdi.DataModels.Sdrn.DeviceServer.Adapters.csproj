@@ -44,11 +44,8 @@
     <Compile Include="DeviceOption.cs" />
     <Compile Include="Enums\LevelUnit.cs" />
     <Compile Include="Enums\TraceType.cs" />
-    <Compile Include="InstrManufacrures.cs" />
-    <Compile Include="LocalSpectrumAnalyzerInfo.cs" />
     <Compile Include="MesureGpsLocationExampleAdapterResult.cs" />
     <Compile Include="ParamWithId.cs" />
-    <Compile Include="ParamWithUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TracePoint.cs" />
   </ItemGroup>

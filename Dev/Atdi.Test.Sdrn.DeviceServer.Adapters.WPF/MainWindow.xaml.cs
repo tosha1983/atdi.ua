@@ -16,8 +16,6 @@ using Atdi.Contracts.Sdrn.DeviceServer;
 using ADP = Atdi.AppUnits.Sdrn.DeviceServer.Adapters;
 using CMD = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using Atdi.UnitTest.Sdrn.DeviceServer;
-using System.Threading;
-using System.ComponentModel;
 
 namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 {
@@ -48,8 +46,6 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             };
             adapter = new ADP.SignalHound.Adapter(adapterConfig, logger);
             DS.Adapter = adapter;
-
-            
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
@@ -60,8 +56,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             adapter.Disconnect();
         }
-        
-        private void SetMeas1_Click(object sender, RoutedEventArgs e)
+
+        private void SetMeas_Click(object sender, RoutedEventArgs e)
         {
             // send command
             var context = new DummyExecutionContext(logger);
@@ -76,86 +72,13 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             command.Parameter.SweepTime_s = 0.00001;
             command.Parameter.TraceCount = 10;
             command.Parameter.TracePoint = 1000;
-            command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
-            command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
-            command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-            adapter.MesureTraceCommandHandler(command, context);
+            adapter.MesureTraceParameterHandler(command, context);
 
-
+            
+            
         }
-        private void SetMeas2_Click(object sender, RoutedEventArgs e)
-        {
-            // send command
-            var context = new DummyExecutionContext(logger);
-            var command = new CMD.MesureTraceCommand();
-            command.Parameter.Att_dB = 0;
-            command.Parameter.FreqStart_Hz = 1800000000;
-            command.Parameter.FreqStop_Hz = 1900000000;
-            command.Parameter.PreAmp_dB = 0;
-            command.Parameter.RBW_Hz = 30000;
-            command.Parameter.VBW_Hz = 30000;
-            command.Parameter.RefLevel_dBm = -40;
-            command.Parameter.SweepTime_s = 0.00001;
-            command.Parameter.TraceCount = 100;
-            command.Parameter.TracePoint = 1000;
-            command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
-            command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
-            command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBmkV;
 
-            adapter.MesureTraceCommandHandler(command, context);
-
-
-        }
-        private void SetMeas21_Click(object sender, RoutedEventArgs e)
-        {
-            // send command
-            var context = new DummyExecutionContext(logger);
-            var command = new CMD.MesureTraceCommand();
-            command.Parameter.Att_dB = 0;
-            command.Parameter.FreqStart_Hz = 90000000;
-            command.Parameter.FreqStop_Hz = 110000000;
-            //command.Parameter.FreqStart_Hz = 1800000000;
-            //command.Parameter.FreqStop_Hz = 1900000000;
-            command.Parameter.PreAmp_dB = 20;
-            command.Parameter.RBW_Hz = 30000;
-            command.Parameter.VBW_Hz = 30000;
-            command.Parameter.RefLevel_dBm = -40;
-            command.Parameter.SweepTime_s = 0.00001;
-            command.Parameter.TraceCount = 100;
-            command.Parameter.TracePoint = 1000;
-            command.Parameter.TraceType = CMD.Parameters.TraceType.MinHold;
-            command.Parameter.DetectorType = CMD.Parameters.DetectorType.Average;
-            command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBmkV;
-
-            adapter.MesureTraceCommandHandler(command, context);
-
-
-        }
-        private void SetMeas22_Click(object sender, RoutedEventArgs e)
-        {
-            // send command
-            var context = new DummyExecutionContext(logger);
-            var command = new CMD.MesureTraceCommand();
-            command.Parameter.Att_dB = 0;
-            command.Parameter.FreqStart_Hz = 90000000;
-            command.Parameter.FreqStop_Hz = 110000000;
-            //command.Parameter.FreqStart_Hz = 1800000000;
-            //command.Parameter.FreqStop_Hz = 1900000000;
-            command.Parameter.PreAmp_dB = 20;
-            command.Parameter.RBW_Hz = 30000;
-            command.Parameter.VBW_Hz = 30000;
-            command.Parameter.RefLevel_dBm = -40;
-            command.Parameter.SweepTime_s = 0.00001;
-            command.Parameter.TraceCount = 100;
-            command.Parameter.TracePoint = 1000;
-            command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
-            command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
-            command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
-
-            adapter.MesureTraceCommandHandler(command, context);
-
-
-        }
+        
     }
 }
