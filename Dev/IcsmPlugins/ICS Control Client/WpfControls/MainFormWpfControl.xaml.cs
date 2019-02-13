@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using XICSM.ICSControlClient.Environment.Wpf;
 using VM = XICSM.ICSControlClient.Models.Views;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;

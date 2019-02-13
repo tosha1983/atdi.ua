@@ -10,13 +10,13 @@ using System.Globalization;
 using ICSM;
 using System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Forms
 {
     public partial class ExportFieldStrengthForm : Form
     {
-        public SDR.ShortMeasurementResultsExtend[] _shortMeasResults;
+        public SDR.ShortMeasurementResults[] _shortMeasResults;
         public List<int> _measResultIds = new List<int>();
 
         public ExportFieldStrengthForm()
@@ -28,7 +28,7 @@ namespace XICSM.ICSControlClient.Forms
         {
             for (int i = 0; i < _shortMeasResults.Count(); i++)
             {
-                var ms = _shortMeasResults[i] as SDR.ShortMeasurementResultsExtend;
+                var ms = _shortMeasResults[i] as SDR.ShortMeasurementResults;
                 dataGrid.Rows.Add(ms.Id.MeasSdrResultsId, ms.TimeMeas, ms.DataRank, ms.Status, ms.TypeMeasurements, ms.SensorName);
             }
         }
