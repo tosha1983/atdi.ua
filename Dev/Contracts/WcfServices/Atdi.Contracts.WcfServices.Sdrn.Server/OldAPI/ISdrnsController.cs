@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ServiceModel;
 using Atdi.DataModels.Sdrns.Server;
 using Atdi.DataModels.CommonOperation;
-
+using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
@@ -32,7 +32,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        Sensor[] GetSensors();
+        Sensor[] GetSensors(ComplexCondition condition);
 
         /// <summary>
         /// 
