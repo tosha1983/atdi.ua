@@ -32,7 +32,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        Sensor[] GetSensors(ComplexCondition conditions);
+        Sensor[] GetSensors(ComplexCondition condition);
 
         /// <summary>
         /// 
