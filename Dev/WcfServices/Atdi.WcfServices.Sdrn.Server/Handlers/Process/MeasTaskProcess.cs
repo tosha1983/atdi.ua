@@ -44,7 +44,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 if (listMeastTask.Count == 0)
                 {
                     Data_.UpdateStatus(ActionType);
-                    NewIdMeasTask = saveMeasTask.SaveTaskToDB(Data_);
+                    NewIdMeasTask = saveMeasTask.SaveMeasTaskInDB(Data_);
                 }
                 else
                 {

@@ -66,20 +66,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 if (idSensor > -1)
                 {
                     var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensor>().Update();
-                    if (sensorData.Administration != null) builderUpdateSensor.SetValue(c => c.Administration, sensorData.Administration);
-                    if (sensorData.BiuseDate != null) builderUpdateSensor.SetValue(c => c.BiuseDate, sensorData.BiuseDate);
-                    if (sensorData.CreatedBy != null) builderUpdateSensor.SetValue(c => c.CreatedBy, sensorData.CreatedBy);
-                    if (sensorData.CustDate1 != null) builderUpdateSensor.SetValue(c => c.CustData1, sensorData.CustDate1);
-                    if (sensorData.CustNbr1 != null) builderUpdateSensor.SetValue(c => c.CustNbr1, sensorData.CustNbr1);
-                    if (sensorData.CustTxt1 != null) builderUpdateSensor.SetValue(c => c.CustTxt1, sensorData.CustTxt1);
-                    if (sensorData.Created != null) builderUpdateSensor.SetValue(c => c.DateCreated, sensorData.Created);
-                    if (sensorData.EouseDate != null) builderUpdateSensor.SetValue(c => c.EouseDate, sensorData.EouseDate);
-                    if (sensorData.NetworkId != null) builderUpdateSensor.SetValue(c => c.NetworkId, sensorData.NetworkId);
-                    if (sensorData.Remark != null) builderUpdateSensor.SetValue(c => c.Remark, sensorData.Remark);
-                    if (sensorData.RxLoss != null) builderUpdateSensor.SetValue(c => c.RxLoss, sensorData.RxLoss);
-                    if (sensorData.Status != null) builderUpdateSensor.SetValue(c => c.Status, sensorData.Status);
-                    if (sensorData.StepMeasTime != null) builderUpdateSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
-                    if (sensorData.Type != null) builderUpdateSensor.SetValue(c => c.TypeSensor, sensorData.Type);
+                    builderUpdateSensor.SetValue(c => c.Administration, sensorData.Administration);
+                    builderUpdateSensor.SetValue(c => c.BiuseDate, sensorData.BiuseDate);
+                    builderUpdateSensor.SetValue(c => c.CreatedBy, sensorData.CreatedBy);
+                    builderUpdateSensor.SetValue(c => c.CustData1, sensorData.CustDate1);
+                    builderUpdateSensor.SetValue(c => c.CustNbr1, sensorData.CustNbr1);
+                    builderUpdateSensor.SetValue(c => c.CustTxt1, sensorData.CustTxt1);
+                    builderUpdateSensor.SetValue(c => c.DateCreated, sensorData.Created);
+                    builderUpdateSensor.SetValue(c => c.EouseDate, sensorData.EouseDate);
+                    builderUpdateSensor.SetValue(c => c.NetworkId, sensorData.NetworkId);
+                    builderUpdateSensor.SetValue(c => c.Remark, sensorData.Remark);
+                    builderUpdateSensor.SetValue(c => c.RxLoss, sensorData.RxLoss);
+                    builderUpdateSensor.SetValue(c => c.Status, sensorData.Status);
+                    builderUpdateSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
+                    builderUpdateSensor.SetValue(c => c.TypeSensor, sensorData.Type);
                     builderUpdateSensor.Where(c => c.Id, ConditionOperator.Equal, idSensor);
                     if (queryExecuter
                     .Execute(builderUpdateSensor) > 0)
@@ -110,27 +110,27 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             {
                                 var builderInsertAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().Insert();
                                 builderInsertAntenna.SetValue(c => c.AddLoss, sensorData.Antenna.AddLoss);
-                                if (sensorData.Antenna.Class != null) builderInsertAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
+                                builderInsertAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
                                 builderInsertAntenna.SetValue(c => c.AntDir, sensorData.Antenna.Direction.ToString());
-                                if (sensorData.Antenna.Category != null) builderInsertAntenna.SetValue(c => c.Category, sensorData.Antenna.Category);
-                                if (sensorData.Antenna.Code != null) builderInsertAntenna.SetValue(c => c.Code, sensorData.Antenna.Code);
-                                if (sensorData.Antenna.CustDate1 != null) builderInsertAntenna.SetValue(c => c.CustData1, sensorData.Antenna.CustDate1);
+                                builderInsertAntenna.SetValue(c => c.Category, sensorData.Antenna.Category);
+                                builderInsertAntenna.SetValue(c => c.Code, sensorData.Antenna.Code);
+                                builderInsertAntenna.SetValue(c => c.CustData1, sensorData.Antenna.CustDate1);
                                 builderInsertAntenna.SetValue(c => c.CustNbr1, sensorData.Antenna.CustNbr1);
-                                if (sensorData.Antenna.CustTxt1 != null) builderInsertAntenna.SetValue(c => c.CustTxt1, sensorData.Antenna.CustTxt1);
+                                builderInsertAntenna.SetValue(c => c.CustTxt1, sensorData.Antenna.CustTxt1);
                                 builderInsertAntenna.SetValue(c => c.GainMax, sensorData.Antenna.GainMax);
-                                if (sensorData.Antenna.GainType != null) builderInsertAntenna.SetValue(c => c.GainType, sensorData.Antenna.GainType);
-                                if (sensorData.Antenna.HBeamwidth != null) builderInsertAntenna.SetValue(c => c.HbeamWidth, sensorData.Antenna.HBeamwidth);
-                                if (sensorData.Antenna.LowerFreq_MHz != null) builderInsertAntenna.SetValue(c => c.LowerFreq, sensorData.Antenna.LowerFreq_MHz);
-                                if (sensorData.Antenna.Manufacturer != null) builderInsertAntenna.SetValue(c => c.Manufacturer, sensorData.Antenna.Manufacturer);
-                                if (sensorData.Antenna.Name != null) builderInsertAntenna.SetValue(c => c.Name, sensorData.Antenna.Name);
+                                builderInsertAntenna.SetValue(c => c.GainType, sensorData.Antenna.GainType);
+                                builderInsertAntenna.SetValue(c => c.HbeamWidth, sensorData.Antenna.HBeamwidth);
+                                builderInsertAntenna.SetValue(c => c.LowerFreq, sensorData.Antenna.LowerFreq_MHz);
+                                builderInsertAntenna.SetValue(c => c.Manufacturer, sensorData.Antenna.Manufacturer);
+                                builderInsertAntenna.SetValue(c => c.Name, sensorData.Antenna.Name);
                                 builderInsertAntenna.SetValue(c => c.Polarization, sensorData.Antenna.Polarization.ToString());
-                                if (sensorData.Antenna.Remark != null) builderInsertAntenna.SetValue(c => c.Remark, sensorData.Antenna.Remark);
-                                if (sensorData.Antenna.SlewAng != null) builderInsertAntenna.SetValue(c => c.Slewang, sensorData.Antenna.SlewAng);
-                                if (sensorData.Antenna.TechId != null) builderInsertAntenna.SetValue(c => c.TechId, sensorData.Antenna.TechId);
-                                if (sensorData.Antenna.UpperFreq_MHz != null) builderInsertAntenna.SetValue(c => c.UpperFreq, sensorData.Antenna.UpperFreq_MHz);
-                                if (sensorData.Antenna.UseType != null) builderInsertAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
-                                if (sensorData.Antenna.VBeamwidth != null) builderInsertAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
-                                if (sensorData.Antenna.XPD != null) builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
+                                builderInsertAntenna.SetValue(c => c.Remark, sensorData.Antenna.Remark);
+                                builderInsertAntenna.SetValue(c => c.Slewang, sensorData.Antenna.SlewAng);
+                                builderInsertAntenna.SetValue(c => c.TechId, sensorData.Antenna.TechId);
+                                builderInsertAntenna.SetValue(c => c.UpperFreq, sensorData.Antenna.UpperFreq_MHz);
+                                builderInsertAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
+                                builderInsertAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
+                                builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
                                 builderInsertAntenna.SetValue(c => c.SensorId, idSensor);
                                 builderInsertAntenna.Select(c => c.Id);
                                 queryExecuter
@@ -149,32 +149,31 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             {
                                 var builderUpdateAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().Update();
                                 builderUpdateAntenna.SetValue(c => c.AddLoss, sensorData.Antenna.AddLoss);
-                                if (sensorData.Antenna.Class != null) builderUpdateAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
+                                builderUpdateAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
                                 builderUpdateAntenna.SetValue(c => c.AntDir, sensorData.Antenna.Direction.ToString());
-                                if (sensorData.Antenna.Category != null) builderUpdateAntenna.SetValue(c => c.Category, sensorData.Antenna.Category);
-                                if (sensorData.Antenna.Code != null) builderUpdateAntenna.SetValue(c => c.Code, sensorData.Antenna.Code);
-                                if (sensorData.Antenna.CustDate1 != null) builderUpdateAntenna.SetValue(c => c.CustData1, sensorData.Antenna.CustDate1);
+                                builderUpdateAntenna.SetValue(c => c.Category, sensorData.Antenna.Category);
+                                builderUpdateAntenna.SetValue(c => c.Code, sensorData.Antenna.Code);
+                                builderUpdateAntenna.SetValue(c => c.CustData1, sensorData.Antenna.CustDate1);
                                 builderUpdateAntenna.SetValue(c => c.CustNbr1, sensorData.Antenna.CustNbr1);
-                                if (sensorData.Antenna.CustTxt1 != null) builderUpdateAntenna.SetValue(c => c.CustTxt1, sensorData.Antenna.CustTxt1);
+                                builderUpdateAntenna.SetValue(c => c.CustTxt1, sensorData.Antenna.CustTxt1);
                                 builderUpdateAntenna.SetValue(c => c.GainMax, sensorData.Antenna.GainMax);
-                                if (sensorData.Antenna.GainType != null) builderUpdateAntenna.SetValue(c => c.GainType, sensorData.Antenna.GainType);
-                                if (sensorData.Antenna.HBeamwidth != null) builderUpdateAntenna.SetValue(c => c.HbeamWidth, sensorData.Antenna.HBeamwidth);
-                                if (sensorData.Antenna.LowerFreq_MHz != null) builderUpdateAntenna.SetValue(c => c.LowerFreq, sensorData.Antenna.LowerFreq_MHz);
-                                if (sensorData.Antenna.Manufacturer != null) builderUpdateAntenna.SetValue(c => c.Manufacturer, sensorData.Antenna.Manufacturer);
-                                if (sensorData.Antenna.Name != null) builderUpdateAntenna.SetValue(c => c.Name, sensorData.Antenna.Name);
+                                builderUpdateAntenna.SetValue(c => c.GainType, sensorData.Antenna.GainType);
+                                builderUpdateAntenna.SetValue(c => c.HbeamWidth, sensorData.Antenna.HBeamwidth);
+                                builderUpdateAntenna.SetValue(c => c.LowerFreq, sensorData.Antenna.LowerFreq_MHz);
+                                builderUpdateAntenna.SetValue(c => c.Manufacturer, sensorData.Antenna.Manufacturer);
+                                builderUpdateAntenna.SetValue(c => c.Name, sensorData.Antenna.Name);
                                 builderUpdateAntenna.SetValue(c => c.Polarization, sensorData.Antenna.Polarization.ToString());
-                                if (sensorData.Antenna.Remark != null) builderUpdateAntenna.SetValue(c => c.Remark, sensorData.Antenna.Remark);
-                                if (sensorData.Antenna.SlewAng != null) builderUpdateAntenna.SetValue(c => c.Slewang, sensorData.Antenna.SlewAng);
-                                if (sensorData.Antenna.TechId != null) builderUpdateAntenna.SetValue(c => c.TechId, sensorData.Antenna.TechId);
-                                if (sensorData.Antenna.UpperFreq_MHz != null) builderUpdateAntenna.SetValue(c => c.UpperFreq, sensorData.Antenna.UpperFreq_MHz);
-                                if (sensorData.Antenna.UseType != null) builderUpdateAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
-                                if (sensorData.Antenna.VBeamwidth != null) builderUpdateAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
-                                if (sensorData.Antenna.XPD != null) builderUpdateAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
+                                builderUpdateAntenna.SetValue(c => c.Remark, sensorData.Antenna.Remark);
+                                builderUpdateAntenna.SetValue(c => c.Slewang, sensorData.Antenna.SlewAng);
+                                builderUpdateAntenna.SetValue(c => c.TechId, sensorData.Antenna.TechId);
+                                builderUpdateAntenna.SetValue(c => c.UpperFreq, sensorData.Antenna.UpperFreq_MHz);
+                                builderUpdateAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
+                                builderUpdateAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
+                                builderUpdateAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
                                 builderUpdateAntenna.Where(c => c.Id, ConditionOperator.Equal, idSensorAntenna);
                                 if (queryExecuter
                                  .Execute(builderUpdateAntenna) > 0)
                                 {
-
                                     if (sensorData.Antenna.Patterns != null)
                                     {
                                         int idSensorAntennaPattern = -1;
@@ -203,9 +202,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             if (idSensorAntennaPattern > -1)
                                             {
                                                 var builderUpdateAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Update();
-                                                if (patt.DiagA != null) builderUpdateAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
-                                                if (patt.DiagH != null) builderUpdateAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
-                                                if (patt.DiagV != null) builderUpdateAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
+                                                builderUpdateAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
+                                                builderUpdateAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
+                                                builderUpdateAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
                                                 builderUpdateAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
                                                 builderUpdateAntennaPattern.SetValue(c => c.Gain, patt.Gain);
                                                 builderUpdateAntennaPattern.SetValue(c => c.SensorAntennaId, idSensorAntenna);
@@ -217,9 +216,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             else
                                             {
                                                 var builderInsertAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Insert();
-                                                if (patt.DiagA != null) builderInsertAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
-                                                if (patt.DiagH != null) builderInsertAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
-                                                if (patt.DiagV != null) builderInsertAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
+                                                builderInsertAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
+                                                builderInsertAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
+                                                builderInsertAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
                                                 builderInsertAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
                                                 builderInsertAntennaPattern.SetValue(c => c.Gain, patt.Gain);
                                                 builderInsertAntennaPattern.SetValue(c => c.SensorAntennaId, idSensorAntenna);
@@ -265,31 +264,31 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             if (idSensorEquipment == -1)
                             {
                                 var builderInsertEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>().Insert();
-                                if (sensorData.Equipment.Category != null) builderInsertEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
-                                if (sensorData.Equipment.Code != null) builderInsertEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
-                                if (sensorData.Equipment.CustDate1 != null) builderInsertEquipment.SetValue(c => c.CustData1, sensorData.Equipment.CustDate1);
-                                if (sensorData.Equipment.CustNbr1 != null) builderInsertEquipment.SetValue(c => c.CustNbr1, sensorData.Equipment.CustNbr1);
-                                if (sensorData.Equipment.CustTxt1 != null) builderInsertEquipment.SetValue(c => c.CustTxt1, sensorData.Equipment.CustTxt1);
-                                if (sensorData.Equipment.Class != null) builderInsertEquipment.SetValue(c => c.EquipClass, sensorData.Equipment.Class);
-                                if (sensorData.Equipment.Family != null) builderInsertEquipment.SetValue(c => c.Family, sensorData.Equipment.Family);
-                                if (sensorData.Equipment.FFTPointMax != null) builderInsertEquipment.SetValue(c => c.FftPointMax, sensorData.Equipment.FFTPointMax);
-                                if (sensorData.Equipment.LowerFreq_MHz != null) builderInsertEquipment.SetValue(c => c.LowerFreq, sensorData.Equipment.LowerFreq_MHz);
-                                if (sensorData.Equipment.Manufacturer != null) builderInsertEquipment.SetValue(c => c.Manufacturer, sensorData.Equipment.Manufacturer);
-                                if (sensorData.Equipment.Mobility != null) builderInsertEquipment.SetValue(c => c.Mobility, sensorData.Equipment.Mobility);
-                                if (sensorData.Equipment.Name != null) builderInsertEquipment.SetValue(c => c.Name, sensorData.Equipment.Name);
-                                if (sensorData.Equipment.OperationMode != null) builderInsertEquipment.SetValue(c => c.OperationMode, sensorData.Equipment.OperationMode);
-                                if (sensorData.Equipment.RBWMax_kHz != null) builderInsertEquipment.SetValue(c => c.RbwMax, sensorData.Equipment.RBWMax_kHz);
-                                if (sensorData.Equipment.RBWMin_kHz != null) builderInsertEquipment.SetValue(c => c.RbwMin, sensorData.Equipment.RBWMin_kHz);
-                                if (sensorData.Equipment.MaxRefLevel_dBm != null) builderInsertEquipment.SetValue(c => c.RefLevelDbm, sensorData.Equipment.MaxRefLevel_dBm);
-                                if (sensorData.Equipment.Remark != null) builderInsertEquipment.SetValue(c => c.Remark, sensorData.Equipment.Remark);
-                                if (sensorData.Equipment.TechId != null) builderInsertEquipment.SetValue(c => c.TechId, sensorData.Equipment.TechId);
-                                if (sensorData.Equipment.TuningStep_Hz != null) builderInsertEquipment.SetValue(c => c.TuningStep, sensorData.Equipment.TuningStep_Hz);
-                                if (sensorData.Equipment.Type != null) builderInsertEquipment.SetValue(c => c.Type, sensorData.Equipment.Type);
-                                if (sensorData.Equipment.UpperFreq_MHz != null) builderInsertEquipment.SetValue(c => c.UpperFreq, sensorData.Equipment.UpperFreq_MHz);
-                                if (sensorData.Equipment.UseType != null) builderInsertEquipment.SetValue(c => c.UserType, sensorData.Equipment.UseType);
-                                if (sensorData.Equipment.VBWMax_kHz != null) builderInsertEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
-                                if (sensorData.Equipment.VBWMin_kHz != null) builderInsertEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
-                                if (sensorData.Equipment.Version != null) builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
+                                builderInsertEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
+                                builderInsertEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
+                                builderInsertEquipment.SetValue(c => c.CustData1, sensorData.Equipment.CustDate1);
+                                builderInsertEquipment.SetValue(c => c.CustNbr1, sensorData.Equipment.CustNbr1);
+                                builderInsertEquipment.SetValue(c => c.CustTxt1, sensorData.Equipment.CustTxt1);
+                                builderInsertEquipment.SetValue(c => c.EquipClass, sensorData.Equipment.Class);
+                                builderInsertEquipment.SetValue(c => c.Family, sensorData.Equipment.Family);
+                                builderInsertEquipment.SetValue(c => c.FftPointMax, sensorData.Equipment.FFTPointMax);
+                                builderInsertEquipment.SetValue(c => c.LowerFreq, sensorData.Equipment.LowerFreq_MHz);
+                                builderInsertEquipment.SetValue(c => c.Manufacturer, sensorData.Equipment.Manufacturer);
+                                builderInsertEquipment.SetValue(c => c.Mobility, sensorData.Equipment.Mobility);
+                                builderInsertEquipment.SetValue(c => c.Name, sensorData.Equipment.Name);
+                                builderInsertEquipment.SetValue(c => c.OperationMode, sensorData.Equipment.OperationMode);
+                                builderInsertEquipment.SetValue(c => c.RbwMax, sensorData.Equipment.RBWMax_kHz);
+                                builderInsertEquipment.SetValue(c => c.RbwMin, sensorData.Equipment.RBWMin_kHz);
+                                builderInsertEquipment.SetValue(c => c.RefLevelDbm, sensorData.Equipment.MaxRefLevel_dBm);
+                                builderInsertEquipment.SetValue(c => c.Remark, sensorData.Equipment.Remark);
+                                builderInsertEquipment.SetValue(c => c.TechId, sensorData.Equipment.TechId);
+                                builderInsertEquipment.SetValue(c => c.TuningStep, sensorData.Equipment.TuningStep_Hz);
+                                builderInsertEquipment.SetValue(c => c.Type, sensorData.Equipment.Type);
+                                builderInsertEquipment.SetValue(c => c.UpperFreq, sensorData.Equipment.UpperFreq_MHz);
+                                builderInsertEquipment.SetValue(c => c.UserType, sensorData.Equipment.UseType);
+                                builderInsertEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
+                                builderInsertEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
+                                builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
                                 builderInsertEquipment.SetValue(c => c.SensorId, idSensor);
                                 builderInsertEquipment.Select(c => c.Id);
                                 queryExecuter
@@ -308,30 +307,30 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             {
 
                                 var builderUpdateEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>().Update();
-                                if (sensorData.Equipment.Category != null) builderUpdateEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
-                                if (sensorData.Equipment.Code != null) builderUpdateEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
-                                if (sensorData.Equipment.CustDate1 != null) builderUpdateEquipment.SetValue(c => c.CustData1, sensorData.Equipment.CustDate1);
-                                if (sensorData.Equipment.CustNbr1 != null) builderUpdateEquipment.SetValue(c => c.CustNbr1, sensorData.Equipment.CustNbr1);
-                                if (sensorData.Equipment.CustTxt1 != null) builderUpdateEquipment.SetValue(c => c.CustTxt1, sensorData.Equipment.CustTxt1);
-                                if (sensorData.Equipment.Class != null) builderUpdateEquipment.SetValue(c => c.EquipClass, sensorData.Equipment.Class);
-                                if (sensorData.Equipment.Family != null) builderUpdateEquipment.SetValue(c => c.Family, sensorData.Equipment.Family);
-                                if (sensorData.Equipment.FFTPointMax != null) builderUpdateEquipment.SetValue(c => c.FftPointMax, sensorData.Equipment.FFTPointMax);
-                                if (sensorData.Equipment.LowerFreq_MHz != null) builderUpdateEquipment.SetValue(c => c.LowerFreq, sensorData.Equipment.LowerFreq_MHz);
-                                if (sensorData.Equipment.Manufacturer != null) builderUpdateEquipment.SetValue(c => c.Manufacturer, sensorData.Equipment.Manufacturer);
-                                if (sensorData.Equipment.Mobility != null) builderUpdateEquipment.SetValue(c => c.Mobility, sensorData.Equipment.Mobility);
-                                if (sensorData.Equipment.Name != null) builderUpdateEquipment.SetValue(c => c.Name, sensorData.Equipment.Name);
-                                if (sensorData.Equipment.OperationMode != null) builderUpdateEquipment.SetValue(c => c.OperationMode, sensorData.Equipment.OperationMode);
-                                if (sensorData.Equipment.RBWMax_kHz != null) builderUpdateEquipment.SetValue(c => c.RbwMax, sensorData.Equipment.RBWMax_kHz);
-                                if (sensorData.Equipment.RBWMin_kHz != null) builderUpdateEquipment.SetValue(c => c.RbwMin, sensorData.Equipment.RBWMin_kHz);
-                                if (sensorData.Equipment.MaxRefLevel_dBm != null) builderUpdateEquipment.SetValue(c => c.RefLevelDbm, sensorData.Equipment.MaxRefLevel_dBm);
-                                if (sensorData.Equipment.Remark != null) builderUpdateEquipment.SetValue(c => c.Remark, sensorData.Equipment.Remark);
-                                if (sensorData.Equipment.TuningStep_Hz != null) builderUpdateEquipment.SetValue(c => c.TuningStep, sensorData.Equipment.TuningStep_Hz);
-                                if (sensorData.Equipment.Type != null) builderUpdateEquipment.SetValue(c => c.Type, sensorData.Equipment.Type);
-                                if (sensorData.Equipment.UpperFreq_MHz != null) builderUpdateEquipment.SetValue(c => c.UpperFreq, sensorData.Equipment.UpperFreq_MHz);
-                                if (sensorData.Equipment.UseType != null) builderUpdateEquipment.SetValue(c => c.UserType, sensorData.Equipment.UseType);
-                                if (sensorData.Equipment.VBWMax_kHz != null) builderUpdateEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
-                                if (sensorData.Equipment.VBWMin_kHz != null) builderUpdateEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
-                                if (sensorData.Equipment.Version != null) builderUpdateEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
+                                builderUpdateEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
+                                builderUpdateEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
+                                builderUpdateEquipment.SetValue(c => c.CustData1, sensorData.Equipment.CustDate1);
+                                builderUpdateEquipment.SetValue(c => c.CustNbr1, sensorData.Equipment.CustNbr1);
+                                builderUpdateEquipment.SetValue(c => c.CustTxt1, sensorData.Equipment.CustTxt1);
+                                builderUpdateEquipment.SetValue(c => c.EquipClass, sensorData.Equipment.Class);
+                                builderUpdateEquipment.SetValue(c => c.Family, sensorData.Equipment.Family);
+                                builderUpdateEquipment.SetValue(c => c.FftPointMax, sensorData.Equipment.FFTPointMax);
+                                builderUpdateEquipment.SetValue(c => c.LowerFreq, sensorData.Equipment.LowerFreq_MHz);
+                                builderUpdateEquipment.SetValue(c => c.Manufacturer, sensorData.Equipment.Manufacturer);
+                                builderUpdateEquipment.SetValue(c => c.Mobility, sensorData.Equipment.Mobility);
+                                builderUpdateEquipment.SetValue(c => c.Name, sensorData.Equipment.Name);
+                                builderUpdateEquipment.SetValue(c => c.OperationMode, sensorData.Equipment.OperationMode);
+                                builderUpdateEquipment.SetValue(c => c.RbwMax, sensorData.Equipment.RBWMax_kHz);
+                                builderUpdateEquipment.SetValue(c => c.RbwMin, sensorData.Equipment.RBWMin_kHz);
+                                builderUpdateEquipment.SetValue(c => c.RefLevelDbm, sensorData.Equipment.MaxRefLevel_dBm);
+                                builderUpdateEquipment.SetValue(c => c.Remark, sensorData.Equipment.Remark);
+                                builderUpdateEquipment.SetValue(c => c.TuningStep, sensorData.Equipment.TuningStep_Hz);
+                                builderUpdateEquipment.SetValue(c => c.Type, sensorData.Equipment.Type);
+                                builderUpdateEquipment.SetValue(c => c.UpperFreq, sensorData.Equipment.UpperFreq_MHz);
+                                builderUpdateEquipment.SetValue(c => c.UserType, sensorData.Equipment.UseType);
+                                builderUpdateEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
+                                builderUpdateEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
+                                builderUpdateEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
                                 builderUpdateEquipment.Where(c => c.Id, ConditionOperator.Equal, idSensorEquipment);
                                 if (queryExecuter
                                 .Execute(builderUpdateEquipment) > 0)
@@ -366,11 +365,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             if (idSensorEquipmentSensitivities > -1)
                                             {
                                                 var builderUpdateSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Update();
-                                                if (senseqps.AddLoss != null) builderUpdateSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
+                                                builderUpdateSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
                                                 builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Freq, senseqps.Freq_MHz);
-                                                if (senseqps.FreqStability != null) builderUpdateSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
-                                                if (senseqps.KTBF_dBm != null) builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
-                                                if (senseqps.NoiseF != null) builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
+                                                builderUpdateSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
+                                                builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
+                                                builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
                                                 builderUpdateSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, idSensorEquipment);
                                                 builderUpdateSensorEquipmentSensitivities.Where(c => c.Id, ConditionOperator.Equal, idSensorEquipmentSensitivities);
                                                 queryExecuter
@@ -379,11 +378,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             else
                                             {
                                                 var builderInsertSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Insert();
-                                                if (senseqps.AddLoss != null) builderInsertSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
+                                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
                                                 builderInsertSensorEquipmentSensitivities.SetValue(c => c.Freq, senseqps.Freq_MHz);
-                                                if (senseqps.FreqStability != null) builderInsertSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
-                                                if (senseqps.KTBF_dBm != null) builderInsertSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
-                                                if (senseqps.NoiseF != null) builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
+                                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
+                                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
+                                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
                                                 builderInsertSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, idSensorEquipment);
                                                 builderInsertSensorEquipmentSensitivities.Select(c => c.Id);
                                                 queryExecuter
@@ -430,8 +429,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         if (idSensorPolygon == -1)
                                         {
                                             var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
-                                            if (geo.Lat != null) builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
-                                            if (geo.Lon != null) builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
+                                            builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
+                                            builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
                                             builderInsertSensorPolygons.SetValue(c => c.SensorId, idSensor);
                                             builderInsertSensorPolygons.Select(c => c.Id);
                                             queryExecuter
@@ -449,8 +448,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         {
 
                                             var builderUpdateSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Update();
-                                            if (geo.Lat != null) builderUpdateSensorPolygons.SetValue(c => c.Lat, geo.Lat);
-                                            if (geo.Lon != null) builderUpdateSensorPolygons.SetValue(c => c.Lon, geo.Lon);
+                                            builderUpdateSensorPolygons.SetValue(c => c.Lat, geo.Lat);
+                                            builderUpdateSensorPolygons.SetValue(c => c.Lon, geo.Lon);
                                             builderUpdateSensorPolygons.SetValue(c => c.SensorId, idSensor);
                                             builderUpdateSensorPolygons.Where(c => c.Id, ConditionOperator.Equal, idSensorPolygon);
                                             queryExecuter
@@ -493,9 +492,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                         builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
                                         builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
-                                        if (location.ASL != null) builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
-                                        if (location.From != null) builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
-                                        if (location.To != null) builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
+                                        builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
+                                        builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
+                                        builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
                                         builderInsertSensLocations.SetValue(c => c.Status, "A");
                                         builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
                                         builderInsertSensLocations.Select(c => c.Id);

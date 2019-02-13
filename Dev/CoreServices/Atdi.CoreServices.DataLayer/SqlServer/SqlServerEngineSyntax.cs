@@ -335,15 +335,46 @@ namespace Atdi.CoreServices.DataLayer
 
         public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression, string selectedColumnsExpression = null, string whereExpression = null, string identyFieldName = null)
         {
+            var insertAllStatus = false;
+            var allSectionsValues = valuesExpression!=null ?  valuesExpression.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries) : null;
+            if ((allSectionsValues!=null) && (allSectionsValues.Length > 0) && (valuesExpression.Contains("|"))) insertAllStatus = true;
+
             var statement = new StringBuilder();
             if (identyFieldName != null)
             {
                 var nextValueScript = string.Format("SELECT @v_ID = IDENT_CURRENT('{0}')", sourceExpression);
                 if (identyFieldName != null)
                 {
-                    statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression})");
-                    statement.AppendLine($"SELECT {valuesExpression}");
-                    statement.AppendLine($"{nextValueScript}");
+                    statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression}) ");
+                    if (insertAllStatus)
+                    {
+                        statement.AppendLine($"VALUES ");
+                        var listSectionValues = new List<string>();
+                        foreach (var item in allSectionsValues)
+                        {
+                            var allSelectedValues = item.Split(new char[] { ',', '\"', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            listSectionValues.Add($"({item})");
+                        }
+                        statement.AppendLine(string.Join(", ", listSectionValues));
+                    }
+                    else
+                    {
+                        if ((valuesExpression != null) && (whereExpression == null))
+                        {
+                            statement.AppendLine($"VALUES ({valuesExpression})");
+                        }
+                        else
+                        {
+                            if (whereExpression != null)
+                            {
+                                statement.AppendLine($"{whereExpression}");
+                            }
+                        }
+                    }
+                    if (whereExpression == null)
+                    {
+                        statement.AppendLine($"{nextValueScript}");
+                    }
                 }
                 else
                 {

@@ -1503,12 +1503,17 @@ namespace Atdi.CoreServices.EntityOrm
         public static ColumnValue GetColumnValue(object value, string nameColumn)
         {
             ColumnValue result = null;
+            if (value==null)
+            {
+                value = System.DBNull.Value;
+            }
             switch (value.GetType().ToString())
             {
+                case "System.DBNull":
                 case "System.String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = (value.GetType() != typeof(System.DBNull))? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;

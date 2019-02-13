@@ -29,7 +29,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value!=null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -37,11 +37,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value!=null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value!=null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -57,7 +57,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value!=null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -183,7 +183,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -191,11 +191,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -211,7 +211,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value!=null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -336,7 +336,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -344,11 +344,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -364,7 +364,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -573,7 +573,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -581,11 +581,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -601,7 +601,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -757,7 +757,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -765,11 +765,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -785,7 +785,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -917,7 +917,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -925,11 +925,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -945,7 +945,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1075,7 +1075,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -1083,11 +1083,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -1103,7 +1103,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1233,7 +1233,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -1241,11 +1241,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -1261,7 +1261,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1392,7 +1392,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -1400,11 +1400,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -1420,7 +1420,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1529,7 +1529,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -1537,11 +1537,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -1557,7 +1557,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1665,7 +1665,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -1673,11 +1673,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -1693,7 +1693,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1801,7 +1801,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -1809,11 +1809,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -1829,7 +1829,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -1942,7 +1942,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -2078,7 +2078,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -2227,7 +2227,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -2376,7 +2376,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -2525,7 +2525,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -2711,7 +2711,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -2719,11 +2719,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -2739,7 +2739,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -2894,7 +2894,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -2902,11 +2902,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -2922,7 +2922,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value!=null ? ( value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -3077,7 +3077,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -3085,11 +3085,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -3105,7 +3105,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -3260,7 +3260,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -3268,11 +3268,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -3288,7 +3288,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -3445,7 +3445,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -3453,11 +3453,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -3473,7 +3473,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;
@@ -3628,7 +3628,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 case "Boolean":
                     bool valueBool = false; int valueInt = 0;
-                    if (bool.TryParse(value.ToString(), out valueBool))
+                    if (bool.TryParse(value != null ? value.ToString() : "false", out valueBool))
                     {
                         result = new BooleanColumnValue
                         {
@@ -3636,11 +3636,11 @@ namespace Atdi.CoreServices.EntityOrm
                             Name = nameColumn
                         };
                     }
-                    else if (int.TryParse(value.ToString(), out valueInt))
+                    else if (int.TryParse(value != null ? value.ToString() : "0", out valueInt))
                     {
                         result = new BooleanColumnValue
                         {
-                            Value = value.ToString() == "1" ? (bool?)true : (bool?)false,
+                            Value = value != null ? (value.ToString() == "1" ? (bool?)true : (bool?)false) : (bool?)false,
                             Name = nameColumn
                         };
                     }
@@ -3656,7 +3656,7 @@ namespace Atdi.CoreServices.EntityOrm
                 case "String":
                     result = new StringColumnValue
                     {
-                        Value = value.ToString() ?? null,
+                        Value = value != null ? (value.ToString() ?? null) : null,
                         Name = nameColumn
                     };
                     break;

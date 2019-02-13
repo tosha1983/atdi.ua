@@ -48,10 +48,6 @@ namespace Atdi.CoreServices.EntityOrm
         public IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value)
         {
             var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             this._statement.ColumnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             return this;
@@ -60,10 +56,6 @@ namespace Atdi.CoreServices.EntityOrm
         public IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value, DataTypeMetadata dataTypeMetadata)
         {
             var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName, dataTypeMetadata));
             this._statement.ColumnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName, dataTypeMetadata));
             return this;

@@ -48,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     queryExecuter.BeginTransaction();
                     var builderInsertIEntityPart = this._dataLayer.GetBuilder<MD.IEntityPart>().Insert();
-                    if (entityObject.Content != null) builderInsertIEntityPart.SetValue(c => c.Content, entityObject.Content);
+                    builderInsertIEntityPart.SetValue(c => c.Content, entityObject.Content);
                     builderInsertIEntityPart.SetValue(c => c.EntityId, entityObject.EntityId);
                     builderInsertIEntityPart.SetValue(c => c.Eof, entityObject.EOF);
                     builderInsertIEntityPart.SetValue(c => c.PartIndex, entityObject.PartIndex);
