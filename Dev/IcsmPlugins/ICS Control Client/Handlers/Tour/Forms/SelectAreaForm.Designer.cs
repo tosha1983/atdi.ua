@@ -70,6 +70,7 @@
             this.Controls.Add(this.icsDBList_Areas);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SelectAreaForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SelectArea";
             this.Load += new System.EventHandler(this.SelectAreaForm_Load);
             this.ResumeLayout(false);

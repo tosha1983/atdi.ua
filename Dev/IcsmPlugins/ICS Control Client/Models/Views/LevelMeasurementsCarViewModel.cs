@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Models.Views
 {

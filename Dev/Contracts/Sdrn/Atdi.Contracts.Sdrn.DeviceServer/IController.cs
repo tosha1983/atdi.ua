@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.DeviceServer
 {
-    public interface IController
+    public interface IController : IDisposable
     {
         void SendCommand<TResult>(IProcessingContext context, ICommand command, CancellationToken cancellationToken, Action<CommandFailureReason, Exception> onFailureAction);
     }

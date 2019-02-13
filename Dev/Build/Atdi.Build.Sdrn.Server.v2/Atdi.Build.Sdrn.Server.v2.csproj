@@ -91,6 +91,10 @@
       <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
       <Name>Atdi.Contracts.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
+      <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
       <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
       <Name>Atdi.CoreServices.DataLayer</Name>
@@ -110,6 +114,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
@@ -162,6 +170,14 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.Sdrn.Server\Atdi.WcfServices.Sdrn.Server.csproj">
+      <Project>{44e87394-dd26-4d41-bdc2-e0cd6ec5fbce}</Project>
+      <Name>Atdi.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices\Atdi.WcfServices.csproj">
+      <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
+      <Name>Atdi.WcfServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

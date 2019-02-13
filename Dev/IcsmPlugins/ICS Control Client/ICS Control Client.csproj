@@ -35,6 +35,18 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Atdi.Contracts.WcfServices.Sdrn.Server">
+      <HintPath>..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\bin\Debug\Atdi.Contracts.WcfServices.Sdrn.Server.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.DataModels">
+      <HintPath>..\..\DataModels\Atdi.DataModels\bin\Debug\Atdi.DataModels.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.DataModels.Sdrns">
+      <HintPath>..\..\DataModels\Atdi.DataModels.Sdrns\bin\Debug\Atdi.DataModels.Sdrns.dll</HintPath>
+    </Reference>
+    <Reference Include="Atdi.DataModels.Sdrns.Server">
+      <HintPath>..\..\DataModels\Atdi.DataModels.Sdrns.Server\bin\Debug\Atdi.DataModels.Sdrns.Server.dll</HintPath>
+    </Reference>
     <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ICSM 6.2.70\DatalayerCs.dll</HintPath>
@@ -182,7 +194,6 @@
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
-    <Compile Include="Models\Views\ResultsMeasurementsStationExtentedViewModel.cs" />
     <Compile Include="Models\Views\ResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\SensorViewModel.cs" />
     <Compile Include="Models\Views\ShortMeasTaskViewModel.cs" />
@@ -194,7 +205,6 @@
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasurementResultsDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
-    <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationExtentedDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasTaskDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasurementResultsDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ShortResultsMeasurementsStationDataAdapter.cs" />
@@ -274,16 +284,6 @@
   <ItemGroup>
     <None Include="ICSM 6.2.70\ICSM3.exe.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\AppServer\Contracts\Atdi.AppServer.Contracts.Sdrns\Atdi.AppServer.Contracts.Sdrns.csproj">
-      <Project>{6d87b586-9d0c-4b2f-9d8a-0d0ebd504421}</Project>
-      <Name>Atdi.AppServer.Contracts.Sdrns</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppServer\Core\Atdi.AppServer.Contracts\Atdi.AppServer.Contracts.csproj">
-      <Project>{500cf984-c300-40a9-929b-384fb7bdeeb6}</Project>
-      <Name>Atdi.AppServer.Contracts</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xaml\" />

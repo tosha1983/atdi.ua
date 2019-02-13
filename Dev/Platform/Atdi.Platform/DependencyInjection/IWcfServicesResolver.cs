@@ -12,7 +12,7 @@ namespace Atdi.Platform.DependencyInjection
             where TServiceHost : class;
     }
 
-    public static class ServicesContainerExtensions
+    public static partial class WcfServicesResolverExtensions
     {
         public static TServiceHost CreateWcfServiceHost<TServiceHost, TContract>(this IWcfServicesResolver container)
             where TServiceHost : class
