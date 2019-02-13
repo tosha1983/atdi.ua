@@ -111,6 +111,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.Sdrn.DeviceServer.Adapters.WPF", "Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF.csproj", "{D0AC41BD-9A08-493A-AB76-96C5738DCBFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer", "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.csproj", "{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -531,6 +533,18 @@ Global
 		{D0AC41BD-9A08-493A-AB76-96C5738DCBFF}.Release|x64.Build.0 = Release|Any CPU
 		{D0AC41BD-9A08-493A-AB76-96C5738DCBFF}.Release|x86.ActiveCfg = Release|Any CPU
 		{D0AC41BD-9A08-493A-AB76-96C5738DCBFF}.Release|x86.Build.0 = Release|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Debug|x64.Build.0 = Debug|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Debug|x86.Build.0 = Debug|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Release|x64.ActiveCfg = Release|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Release|x64.Build.0 = Release|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Release|x86.ActiveCfg = Release|Any CPU
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -587,6 +601,7 @@ Global
 		{26AF07CB-441A-469E-9823-2D2B37FCA414} = {4613EA7F-1451-43AC-85CF-2D569D780F25}
 		{93F2CA4C-2C15-481C-8CE3-30BAA661D1FF} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 		{D0AC41BD-9A08-493A-AB76-96C5738DCBFF} = {8489C394-6CB0-4100-A850-702CF94BAE52}
+		{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

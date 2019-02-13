@@ -16,7 +16,10 @@
         <StackPanel Grid.Column="1">
             <Button Click="Connect_Click" Content="Connect"/>
             <Button Click="Disconnect_Click" Content="Disconnect"/>
-            <RepeatButton Click="SetMeas_Click" Content="Set Meas" Delay="10"/>
+            <RepeatButton Click="SetMeas1_Click" Content="Set Meas 1" Delay="10"/>
+            <RepeatButton Click="SetMeas2_Click" Content="Set Meas 2" Delay="10"/>
+            <RepeatButton Click="SetMeas21_Click" Content="Set Meas 21" Delay="10"/>
+            <RepeatButton Click="SetMeas22_Click" Content="Set Meas 22" Delay="10"/>
         </StackPanel>
         
     </Grid>
