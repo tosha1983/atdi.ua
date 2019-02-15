@@ -65,6 +65,7 @@
     <Compile Include="Adapter.cs" />
     <Compile Include="AdapterDriver.cs" />
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="AveragedTrace.cs" />
     <Compile Include="LocalParametersConverter.cs" />
     <Compile Include="Enums\Attenuator.cs" />
     <Compile Include="Enums\DemodType.cs" />

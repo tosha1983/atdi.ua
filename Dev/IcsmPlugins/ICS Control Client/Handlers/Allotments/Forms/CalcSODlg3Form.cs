@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using FM = XICSM.ICSControlClient.Forms;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Forms
 {

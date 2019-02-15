@@ -9,7 +9,7 @@ using XICSM.ICSControlClient.Models.WcfDataApadters;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using CS = XICSM.ICSControlClient.WpfControls.Charts;
 using MP = XICSM.ICSControlClient.WpfControls.Maps;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using System.Windows;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
@@ -28,6 +28,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public FM.MeasTaskForm _measTaskForm;
         private ShortSensorDataAdatper _shortSensors;
+        private double? _FreqParam;
+        private string _FreqParams;
 
         #region Commands
         public WpfCommand CreateMeasTaskCommand { get; set; }
@@ -56,6 +58,17 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._currentShortSensor;
             set => this.Set(ref this._currentShortSensor, value, RedrawMap);
         }
+        public double? FreqParam
+        {
+            get => this._FreqParam;
+            set => this.Set(ref this._FreqParam, value);
+        }
+        public string FreqParams
+        {
+            get => this._FreqParams;
+            set => this.Set(ref this._FreqParams, value);
+        }
+
         #region Sources (Adapters)
         public ShortSensorDataAdatper ShortSensors => this._shortSensors;
         #endregion
@@ -71,8 +84,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MeasFreqParamRgU = 1000;
             this._currentMeasTask.MeasFreqParamStep = 100;
             this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
-            this._currentMeasTask.MeasDtParamRBW = 3;
-            this._currentMeasTask.MeasDtParamVBW = 3;
+            this._currentMeasTask.MeasDtParamRBW = 100;
+            this._currentMeasTask.MeasDtParamVBW = 100;
             this._currentMeasTask.MeasDtParamMeasTime = 0.001;
             this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.Avarage;
             this._currentMeasTask.MeasDtParamRfAttenuation = 0;
@@ -89,7 +102,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadShortSensors()
         {
-            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(new Atdi.AppServer.Contracts.DataConstraint());
+            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
         }
         private void OnCreateMeasTaskCommand(object parameter)
@@ -112,11 +125,11 @@ namespace XICSM.ICSControlClient.ViewModels
                     MessageBox.Show("Time Stop should be great of the Time Start!");
                     return;
                 }
-                if (this._currentMeasTask.MeasTimeParamListPerInterval <= 0 || this._currentMeasTask.MeasTimeParamListPerInterval >= 3600)
-                {
-                    MessageBox.Show("Incorrect value Duration!");
-                    return;
-                }
+                //if (this._currentMeasTask.MeasTimeParamListPerInterval <= 0 || this._currentMeasTask.MeasTimeParamListPerInterval >= 3600)
+                //{
+                //    MessageBox.Show("Incorrect value Duration!");
+                //    return;
+                //}
                 if (this._currentMeasTask.MeasFreqParamRgL > this._currentMeasTask.MeasFreqParamRgU)
                 {
                     MessageBox.Show("Stop freq should be great of the Start freq!");
@@ -178,18 +191,51 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
+
+                var measFreqParam = new SDR.MeasFreqParam() { Mode = this._currentMeasTask.MeasFreqParamMode, Step = this._currentMeasTask.MeasFreqParamStep };
+
+                switch (measFreqParam.Mode)
+                {
+                    case SDR.FrequencyMode.SingleFrequency:
+                        if (FreqParam.HasValue)
+                        {
+                            measFreqParam.MeasFreqs = new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = FreqParam.Value } };
+                        }
+                        break;
+                    case SDR.FrequencyMode.FrequencyList:
+                        if (!string.IsNullOrEmpty(FreqParams))
+                        {
+                            var freqArray = FreqParams.Replace(';', ',').Split(',');
+                            foreach (var freq in freqArray)
+                            {
+                                double freqD;
+                                if (double.TryParse(freq, out freqD))
+                                {
+                                    measFreqParam.MeasFreqs = measFreqParam.MeasFreqs.Concat(new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = freqD } }).ToArray();
+                                }
+                            }
+                        }
+                        break;
+                    case SDR.FrequencyMode.FrequencyRange:
+                        measFreqParam.RgL = this._currentMeasTask.MeasFreqParamRgL;
+                        measFreqParam.RgU = this._currentMeasTask.MeasFreqParamRgU;
+                        //measFreqParam.Step = this._currentMeasTask.MeasFreqParamStep;
+                        break;
+                }
+
                 var measTask = new SDR.MeasTask()
                 {
                     Name = this._currentMeasTask.Name,
                     MaxTimeBs = this._currentMeasTask.MaxTimeBs,
-                    MeasFreqParam = new SDR.MeasFreqParam()
-                    {
-                        Mode = this._currentMeasTask.MeasFreqParamMode,
-                        RgL = this._currentMeasTask.MeasFreqParamRgL,
-                        RgU = this._currentMeasTask.MeasFreqParamRgU,
-                        Step = this._currentMeasTask.MeasFreqParamStep
-                        //MeasFreqs = new SDR.MeasFreq()
-                    },
+                    MeasFreqParam = measFreqParam,
+                    //MeasFreqParam = new SDR.MeasFreqParam()
+                    //{
+                    //    Mode = this._currentMeasTask.MeasFreqParamMode,
+                    //    RgL = this._currentMeasTask.MeasFreqParamRgL,
+                    //    RgU = this._currentMeasTask.MeasFreqParamRgU,
+                    //    Step = this._currentMeasTask.MeasFreqParamStep
+                    //    //MeasFreqs = new SDR.MeasFreq()
+                    //},
                     //MeasLocParams = ,
                     MeasOther = new SDR.MeasOther()
                     {

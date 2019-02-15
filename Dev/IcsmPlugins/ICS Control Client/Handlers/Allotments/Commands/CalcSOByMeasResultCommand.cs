@@ -7,8 +7,6 @@ using XICSM.ICSControlClient.Environment;
 using MD = XICSM.ICSControlClient.Metadata;
 using DM = XICSM.ICSControlClient.Models.StartMeasurementsSO;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
-using AAC = Atdi.AppServer.Contracts;
 using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads

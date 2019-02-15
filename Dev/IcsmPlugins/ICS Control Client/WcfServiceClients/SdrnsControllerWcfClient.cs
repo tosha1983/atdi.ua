@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using ICSM;
 using XICSM.ICSControlClient.Environment;
-using Atdi.AppServer.Contracts;
-using Atdi.AppServer.Contracts.Sdrns;
-using MD = XICSM.ICSControlClient.Metadata;
+using Atdi.DataModels.DataConstraint;
+using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.WcfServiceClients
 {
@@ -15,9 +14,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         public SdrnsControllerWcfClient() : base("SdrnsController") { }
 
         #region Getters
-        public static ShortSensor[] GetShortSensors(DataConstraint constraint)
+        public static ShortSensor[] GetShortSensors()
         {
-            var result = Execute(contract => contract.GetShortSensors(constraint, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortSensors());
 
             if (result == null)
             {
@@ -25,9 +24,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static Sensor[] GetSensors(DataConstraint constraint)
+        public static Sensor[] GetSensors(ComplexCondition condition)
         {
-            var result = Execute(contract => contract.GetSensors(constraint, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetSensors(condition));
 
             if (result == null)
             {
@@ -36,9 +35,9 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
 
-        public static ShortMeasTask[] GetShortMeasTasks(DataConstraint constraint)
+        public static ShortMeasTask[] GetShortMeasTasks()
         {
-            var result = Execute(contract => contract.GetShortMeasTasks(constraint, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortMeasTasks());
 
             if (result == null)
             {
@@ -49,7 +48,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
         public static ShortMeasurementResults[] GetShortMeasResultsByTask(int taskId)
         {
-            var result = Execute(contract => contract.GetShortMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }));
 
             if (result == null)
             {
@@ -58,7 +57,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             return result;
         }
-        public static ShortMeasurementResultsExtend[] GetShortMeasResultsByDates(DateTime startDate, DateTime stopDate)
+        public static ShortMeasurementResults[] GetShortMeasResultsByDates(DateTime startDate, DateTime stopDate)
         {
             var dates = new GetShortMeasResultsByDateValue()
             {
@@ -66,17 +65,17 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 End = stopDate
             };
 
-            var result = Execute(contract => contract.GetShortMeasResultsByDate(dates, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortMeasResultsByDate(dates));
 
             if (result == null)
             {
-                return new ShortMeasurementResultsExtend[] { };
+                return new ShortMeasurementResults[] { };
             }
             return result;
         }
         public static MeasurementResults[] GetMeasResultsByTask(int taskId)
         {
-            var result = Execute(contract => contract.GetMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetMeasResultsByTaskId(new MeasTaskIdentifier { Value = taskId }));
 
             if (result == null)
             {
@@ -87,13 +86,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
       
         public static Sensor GetSensorById(int sensorId)
         {
-            var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }));
 
             return result;
         }
         public static ShortMeasurementResults[] GetShortMeasResultsSpecial(MeasurementType measurementType)
         {
-            var result = Execute(contract => contract.GetShortMeasResultsSpecial(measurementType, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortMeasResultsSpecial(measurementType));
 
             if (result == null)
             {
@@ -103,7 +102,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static MeasurementResults[] GetMeasResultsHeaderSpecial(MeasurementType measurementType)
         {
-            var result = Execute(contract => contract.GetMeasResultsHeaderSpecial(measurementType, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetMeasResultsHeaderSpecial(measurementType));
 
             if (result == null)
             {
@@ -113,7 +112,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId)
         {
-            var result = Execute(contract => contract.GetShortMeasResStation(MeasResultsId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortMeasResStation(MeasResultsId));
 
             if (result == null)
             {
@@ -123,7 +122,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static Route[] GetRoutes(int MeasResultsId)
         {
-            var result = Execute(contract => contract.GetRoutes(MeasResultsId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetRoutes(MeasResultsId));
 
             if (result == null)
             {
@@ -133,7 +132,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId)
         {
-            var result = Execute(contract => contract.GetSensorPoligonPoint(MeasResultsId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetSensorPoligonPoint(MeasResultsId));
 
             if (result == null)
             {
@@ -143,7 +142,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId)
         {
-            var result = Execute(contract => contract.GetResMeasStation(MeasResultsId, StationId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetResMeasStation(MeasResultsId, StationId));
 
             if (result == null)
             {
@@ -165,7 +164,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 MeasResultID = MeasResultID
             };
 
-            var result = Execute(contract => contract.GetSOformMeasResultStation(parameters, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetSOformMeasResultStation(parameters));
 
             if (result == null)
             {
@@ -175,7 +174,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static MeasurementResults[] GetMeasResultsHeaderByTaskId(int taskId)
         {
-            var result = Execute(contract => contract.GetMeasResultsHeaderByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetMeasResultsHeaderByTaskId(new MeasTaskIdentifier { Value = taskId }));
 
             if (result == null)
             {
@@ -185,35 +184,35 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static ResultsMeasurementsStation GetResMeasStationById(int stationId)
         {
-            var result = Execute(contract => contract.GetResMeasStationById(stationId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetResMeasStationById(stationId));
 
             return result;
         }
-        public static ResultsMeasurementsStationExtended[] GetResMeasStationHeaderByResId(int resId)
+        public static ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int resId)
         {
-            var result = Execute(contract => contract.GetResMeasStationHeaderByResId(resId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetResMeasStationHeaderByResId(resId));
 
             if (result == null)
             {
-                return new ResultsMeasurementsStationExtended[] { };
+                return new ResultsMeasurementsStation[] { };
             }
             return result;
         }
         public static MeasurementResults GetMeasurementResultByResId(int resId)
         {
-            var result = Execute(contract => contract.GetMeasurementResultByResId(resId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetMeasurementResultByResId(resId));
 
             return result;
         }
         public static MeasTask GetMeasTaskHeaderById(int taskId)
         {
-            var result = Execute(contract => contract.GetMeasTaskHeader(new MeasTaskIdentifier { Value = taskId }, new CommonOperationArguments() { UserId = MD.Employee.GetCurrentUserId() }));
+            var result = Execute(contract => contract.GetMeasTaskHeader(new MeasTaskIdentifier { Value = taskId }));
 
             return result;
         }
         public static StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(int taskId)
         {
-            var result = Execute(contract => contract.GetStationDataForMeasurementsByTaskId(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetStationDataForMeasurementsByTaskId(new MeasTaskIdentifier { Value = taskId }));
 
             if (result == null)
             {
@@ -229,7 +228,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 MeasTaskId = MeasTaskId,
                 SectorId = SectorId
             };
-            var result = Execute(contract => contract.GetStationLevelsByTask(parameters, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetStationLevelsByTask(parameters));
 
             if (result == null)
             {
@@ -237,13 +236,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static ShortMeasurementResultsExtend[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId)
+        public static ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId)
         {
-            var result = Execute(contract => contract.GetShortMeasResultsByTypeAndTaskId(measurementType, taskId, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.GetShortMeasResultsByTypeAndTaskId(measurementType, taskId));
 
             if (result == null)
             {
-                return new ShortMeasurementResultsExtend[] { };
+                return new ShortMeasurementResults[] { };
             }
             return result;
         }
@@ -253,7 +252,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         #region Actions
         public static int CreateMeasTask(MeasTask task)
         {
-            var result = Execute(contract => contract.CreateMeasTask(task, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.CreateMeasTask(task));
 
             if (result == null)
             {
@@ -263,7 +262,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static void DeleteMeasTaskById(int taskId)
         {
-            var result = Execute(contract => contract.DeleteMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.DeleteMeasTask(new MeasTaskIdentifier { Value = taskId }));
 
             if (result.State == CommonOperationState.Fault)
             {
@@ -272,7 +271,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static void RunMeasTask(int taskId)
         {
-            var result = Execute(contract => contract.RunMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.RunMeasTask(new MeasTaskIdentifier { Value = taskId }));
 
             if (result.State == CommonOperationState.Fault)
             {
@@ -281,7 +280,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static void StopMeasTask(int taskId)
         {
-            var result = Execute(contract => contract.StopMeasTask(new MeasTaskIdentifier { Value = taskId }, GetDefaultOtherArgs()));
+            var result = Execute(contract => contract.StopMeasTask(new MeasTaskIdentifier { Value = taskId }));
 
             if (result.State == CommonOperationState.Fault)
             {
@@ -289,9 +288,5 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
         }
         #endregion
-        private static CommonOperationArguments GetDefaultOtherArgs()
-        {
-            return (new CommonOperationArguments() { UserId = MD.Employee.GetCurrentUserId() });
-        }
     }
 }

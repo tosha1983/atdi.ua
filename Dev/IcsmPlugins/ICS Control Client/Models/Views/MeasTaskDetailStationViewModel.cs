@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XICSM.ICSControlClient.Environment.Wpf;
-using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Models.Views
 {

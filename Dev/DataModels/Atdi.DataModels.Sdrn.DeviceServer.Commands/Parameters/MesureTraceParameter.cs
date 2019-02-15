@@ -16,8 +16,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         public int Att_dB; //-1 = auto, 
         public int PreAmp_dB; //-1 = auto, 
         public int RefLevel_dBm; // -1 = auto
-        public DetectorType DetectorType1; //
-        public TraceType traceType1; // 
+        public DetectorType DetectorType; //
+        public TraceType TraceType; // 
         public int TraceCount; // количество трейсов  // mandatory 
         public int TracePoint; // -1 = auto; 
         public LevelUnit LevelUnit;

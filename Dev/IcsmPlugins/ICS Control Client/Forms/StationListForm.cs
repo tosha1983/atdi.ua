@@ -21,10 +21,14 @@ namespace XICSM.ICSControlClient.Forms
         {
             icsDBList_Station.Init();
             icsDBList_Station.AddColumn("MOB_STATION.ID", "ID", "Auto", 48);
-            icsDBList_Station.AddColumn("MOB_STATION.NAME", "Name", "Auto", 354);
-            icsDBList_Station.AddColumn("MOB_STATION.REMARK", "Remarks", "Auto", 354);
+            icsDBList_Station.AddColumn("MOB_STATION.NAME", "Name", "Auto", 80);
+            icsDBList_Station.AddColumn("MOB_STATION.REMARK", "Remarks", "Auto", 250);
             icsDBList_Station.AddColumn("MOB_STATION.Position.LONGITUDE", "LONGITUDE", "Auto", 100);
             icsDBList_Station.AddColumn("MOB_STATION.Position.LATITUDE", "LATITUDE", "Auto", 100);
+            icsDBList_Station.AddColumn("MOB_STATION.AZIMUTH", "AZIMUTH", "Auto", 100);
+            icsDBList_Station.AddColumn("MOB_STATION.POWER", "POWER", "Auto", 130);
+            icsDBList_Station.AddColumn("MOB_STATION.Owner.NAME", "Owner NAME", "Auto", 450);
+            icsDBList_Station.AddColumn("MOB_STATION.Position.NAME", "Position NAME", "Auto", 350);
             icsDBList_Station.Table = "MOB_STATION";
             icsDBList_Station.Requery();
         }

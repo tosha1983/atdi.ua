@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using FM = XICSM.ICSControlClient.Forms;
 

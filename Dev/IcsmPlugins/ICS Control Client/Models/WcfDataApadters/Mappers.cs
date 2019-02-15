@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using VM = XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
-
+using SVC = XICSM.ICSControlClient.WcfServiceClients;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
@@ -166,6 +166,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 return null;
             }
 
+            //var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(source.Id.MeasSdrResultsId);
+
             return new VM.MeasurementResultsViewModel
             {
                 AntVal = source.AntVal.ToNull(),
@@ -231,32 +233,14 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasGlobalSID = source.MeasGlobalSID,
                 SectorId = source.IdSector.ToNull(),
                 StationId = source.Idstation,
-                Status = source.Status
-            };
-        }
-        public static VM.ResultsMeasurementsStationExtentedViewModel Map(SDR.ResultsMeasurementsStationExtended source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new VM.ResultsMeasurementsStationExtentedViewModel
-            {
+                Status = source.Status,
+                StationSysInfo = source.StationSysInfo,
                 CentralFrequencyMeas_MHz = source.GeneralResult.CentralFrequencyMeas,
                 CentralFrequencyMHz = source.GeneralResult.CentralFrequency,
                 Id = source.Id,
-                SectorId = source.IdSector.ToNull(),
-                StationId = source.Idstation,
-                Standard = source.Standard,
-                StationSysInfo = source.StationSysInfo,
-                GlobalSID = source.GlobalSID,
-                MeasGlobalSID = source.MeasGlobalSID,
-                Status = source.Status
+                Standard = source.Standard
             };
         }
-
-
         public static VM.LevelMeasurementsCarViewModel Map(SDR.LevelMeasurementsCar source)
         {
             if (source == null)

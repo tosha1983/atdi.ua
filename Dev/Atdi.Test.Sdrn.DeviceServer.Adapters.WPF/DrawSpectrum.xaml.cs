@@ -176,9 +176,19 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 FreqSpan = (double)Adapter.FreqSpan;
                 FreqStop = (double)Adapter.FreqStop;
                 FreqStart = (double)Adapter.FreqStart;
-                RefLevel = (double)Adapter.RefLevel;
-                LowestLevel = (double)Adapter.LowestLevel;
-                Range = (double)Adapter.Range;
+                LevelUnit = Adapter.LevelUnit.ToString();
+                if (Adapter.LevelUnit == DataModels.Sdrn.DeviceServer.Adapters.Enums.LevelUnit.dBm)
+                {
+                    RefLevel = (double)Adapter.RefLevel;
+                    LowestLevel = (double)Adapter.LowestLevel;
+                    Range = (double)Adapter.Range;
+                }
+                else if (Adapter.LevelUnit == DataModels.Sdrn.DeviceServer.Adapters.Enums.LevelUnit.dBµV)
+                {
+                    RefLevel = (double)Adapter.RefLevel + 107;
+                    LowestLevel = (double)Adapter.LowestLevel + 107;
+                    Range = (double)Adapter.Range;
+                }
 
                 #endregion
 

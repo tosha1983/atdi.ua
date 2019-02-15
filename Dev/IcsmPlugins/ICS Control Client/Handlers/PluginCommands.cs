@@ -6,15 +6,7 @@ using ICSM;
 using System.Windows.Forms;
 using XICSM.ICSControlClient.Environment;
 using XICSM.ICSControlClient.WcfServiceClients;
-using Atdi.AppServer.Contracts;
-using Atdi.AppServer.Contracts.Sdrns;
-
-
 using MD = XICSM.ICSControlClient.Metadata;
-using DM = XICSM.ICSControlClient.Models.BuildInspections;
-using WCF = XICSM.ICSControlClient.WcfServiceClients;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
-using AAC = Atdi.AppServer.Contracts;
 using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient
