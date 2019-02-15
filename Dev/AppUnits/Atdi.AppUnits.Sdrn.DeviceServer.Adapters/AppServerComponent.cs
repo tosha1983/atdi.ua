@@ -37,6 +37,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters
                 devicesHost.Register(adapterType);
             }
 
+
+
         }
 
         protected override void OnDeactivateUnit()

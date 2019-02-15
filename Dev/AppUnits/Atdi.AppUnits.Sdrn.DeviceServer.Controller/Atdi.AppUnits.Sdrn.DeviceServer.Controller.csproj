@@ -41,8 +41,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterFactory.cs" />
+    <Compile Include="AdapterWorker.cs" />
+    <Compile Include="CommandDescriptor.cs" />
+    <Compile Include="CommandHandler.cs" />
+    <Compile Include="CommandLock.cs" />
+    <Compile Include="CommandsBuffer.cs" />
+    <Compile Include="CommandsHost.cs" />
+    <Compile Include="DevicesController.cs" />
+    <Compile Include="DeviceSelector.cs" />
+    <Compile Include="DevicesHost.cs" />
+    <Compile Include="ExecutionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="ResultBuffer.cs" />
+    <Compile Include="ResultConvertorFactory.cs" />
+    <Compile Include="ResultConvertorsHost.cs" />
+    <Compile Include="ResultConvertor.cs" />
+    <Compile Include="ResultHandler.cs" />
+    <Compile Include="ResultConvertorDecriptor.cs" />
+    <Compile Include="ResultHandlerDecriptor.cs" />
+    <Compile Include="ResultHandlerFactory.cs" />
+    <Compile Include="ResultHandlersHost.cs" />
+    <Compile Include="ResultsHost.cs" />
+    <Compile Include="ResultWorker.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>

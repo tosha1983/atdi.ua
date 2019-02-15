@@ -11,30 +11,30 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         /// <summary>
         /// Начальное состояние команды
         /// </summary>
-        Created,
+        Created = 0,
         /// <summary>
-        /// Команда принята контролером но еще не передана адаптеру на исполнение
+        /// Команда принята контролером но еще не передана адаптеру на исполнение, в ожидании обработки
         /// </summary>
-        InLine,
+        Pending = 1,
         /// <summary>
         /// Команда в процессе выполнения адаптером
         /// </summary>
-        Processing,
+        Processing = 2,
         /// <summary>
         /// Команда выполнена
         /// </summary>
-        Done,
+        Done = 3,
         /// <summary>
         /// Команда отменена
         /// </summary>
-        Cancelled,
+        Cancelled = 4,
         /// <summary>
         ///  Комманда отклонена контролером
         /// </summary>
-        Rejected,
+        Rejected = 5,
         /// <summary>
         ///  Комманда неожидано прекратила свое выполнение
         /// </summary>
-        Aborted
+        Aborted = 6
     }
 }

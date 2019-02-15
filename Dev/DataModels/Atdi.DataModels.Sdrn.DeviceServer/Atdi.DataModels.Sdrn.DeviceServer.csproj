@@ -46,7 +46,9 @@
     <Compile Include="Enums\CommandResultStatus.cs" />
     <Compile Include="Enums\CommandState.cs" />
     <Compile Include="Enums\CommandType.cs" />
+    <Compile Include="Enums\DeviceState.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandDescriptor.cs" />
     <Compile Include="ICommandResultPart.cs" />
     <Compile Include="IExecutionContext.cs" />
     <Compile Include="IProcessingContext.cs" />

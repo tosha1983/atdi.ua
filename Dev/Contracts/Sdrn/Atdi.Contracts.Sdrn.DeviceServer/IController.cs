@@ -10,7 +10,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IController : IDisposable
     {
-        void SendCommand<TResult>(IProcessingContext context, ICommand command, CancellationToken cancellationToken, Action<CommandFailureReason, Exception> onFailureAction);
+        void SendCommand<TResult>(IProcessingContext context, ICommand command, CancellationToken cancellationToken, Action<IProcessingContext, ICommand, CommandFailureReason, Exception> onFailureAction);
     }
 
     public static class ControllerExtentions
@@ -25,12 +25,12 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
             controller.SendCommand<TResult>(context, command, cancellationToken, onFailureDefaultAction);
         }
 
-        public static void SendCommand<TResult>(this IController controller, IProcessingContext context, ICommand command, Action<CommandFailureReason, Exception> onFailureAction)
+        public static void SendCommand<TResult>(this IController controller, IProcessingContext context, ICommand command, Action<IProcessingContext, ICommand, CommandFailureReason, Exception> onFailureAction)
         {
             controller.SendCommand<TResult>(context, command, CancellationToken.None, onFailureAction);
         }
 
-        private static void onFailureDefaultAction(CommandFailureReason failureReason, Exception exception)
+        private static void onFailureDefaultAction(IProcessingContext context, ICommand command, CommandFailureReason failureReason, Exception exception)
         {
             return;
         }

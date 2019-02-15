@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.DeviceServer
 {
-    public interface IDevicesHost : IDisposable
+    public interface IResultConvertorFactory
     {
-        void Register(Type adapterType);
-
-        IDevice[] GetDevices(); 
+        IResultConvertor Create(Type convertorType);
     }
 }

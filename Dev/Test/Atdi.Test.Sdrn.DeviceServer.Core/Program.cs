@@ -9,6 +9,7 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 
 using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.Common;
 
 namespace Atdi.Test.Sdrn.DeviceServer.Core
 {
@@ -21,6 +22,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Core
 
             var command = new MesureGpsLocationExampleCommand();
 
+            command.StartTimeStamp = TimeStamp.Milliseconds;
+            command.Options = CommandOption.StartDelayed | CommandOption.StartImmediately;
+
             var source = new CancellationTokenSource();
 
             controller.SendCommand<MesureGpsLocationExampleResult>(context, command);
@@ -31,7 +35,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Core
             source.Cancel();
         }
 
-        static void onFailureAction(CommandFailureReason failureReason, Exception exception)
+        static void onFailureAction(IProcessingContext context, ICommand command, CommandFailureReason failureReason, Exception exception)
         {
             return;
         }

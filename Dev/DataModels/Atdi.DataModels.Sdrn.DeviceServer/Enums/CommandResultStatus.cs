@@ -2,8 +2,8 @@
 {
     public enum CommandResultStatus
     {
-        Next,
-        Final,
-        Ragged
+        Next = 1,
+        Final = 2,
+        Ragged = 3
     }
 }
