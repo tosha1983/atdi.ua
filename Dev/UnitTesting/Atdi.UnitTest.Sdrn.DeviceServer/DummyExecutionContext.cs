@@ -53,6 +53,20 @@ namespace Atdi.UnitTest.Sdrn.DeviceServer
         public void PushResult(ICommandResultPart result)
         {
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"PushResult");
+
+            //Task.Run(() =>
+            //{
+            //    var myResult = result as MyResultObject
+
+            //    for (int i = 0; i < length; i++)
+            //    {
+            //        var data = myResult.myProperty[i];
+            //        if (data > 10000)
+            //        {
+            //            this._logger.Critical("Test", "Result", $"Не соотвествие данных");
+            //        }
+            //    }
+            //});
         }
 
         public void Unlock(params CommandType[] types)

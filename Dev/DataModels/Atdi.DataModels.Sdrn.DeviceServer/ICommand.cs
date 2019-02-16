@@ -17,9 +17,11 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
 
         CommandType Type { get; }
          
-        TimeSpan Delay { get; set; }
+        long Delay { get; set; }
 
-        DateTime SpecificTime { get; set; }
+        long Timeout { get; set; }
+
+        long StartTimeStamp { get; set; }
 
         Type ParameterType { get;  }
     }
@@ -31,25 +33,31 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
 
     public abstract class CommandBase : ICommand
     {
+        volatile private CommandState _state;
+
         public CommandBase(CommandType type)
         {
             this.Id = Guid.NewGuid();
-            this.State = CommandState.Created;
+            this._state = CommandState.Created;
             this.Type = type;
-            this.Options = CommandOption.StartImmediately;
+            this.Options = CommandOption.PutInQueue;
         }
 
-        public CommandState State { get; set; }
+        public CommandState State { get => _state; set => _state = value; }
 
         public CommandType Type { get; private set; }
-
 
         public Type ParameterType { get; set; }
 
         public Guid Id { get; private set; }
+
         public CommandOption Options { get; set; }
-        public TimeSpan Delay { get; set; }
-        public DateTime SpecificTime { get; set; }
+
+        public long Delay { get; set; }
+
+        public long Timeout { get; set; }
+
+        public long StartTimeStamp { get; set; }
     }
 
     public abstract class CommandBase<TParameter> : CommandBase, ICommand<TParameter>

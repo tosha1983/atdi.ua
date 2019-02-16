@@ -50,5 +50,27 @@ namespace Atdi.Platform
 
             return resultTypes;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEnumerable<Type> GetTypesByInterface(this ITypeResolver typeResolver, Type interfaceType)
+        {
+            var resultTypes = typeResolver.ForeachInAllAssemblies(
+                    (type) =>
+                    {
+                        if (!type.IsClass
+                        || type.IsNotPublic
+                        || type.IsAbstract
+                        || type.IsInterface
+                        || type.IsEnum)
+                        {
+                            return false;
+                        }
+
+                        return type.GetInterface(interfaceType.FullName) != null;
+                    }
+                );
+
+            return resultTypes;
+        }
     }
 }

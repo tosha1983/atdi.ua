@@ -11,6 +11,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         NotFoundDevice,
         NotFoundConvertor,
         DeviceIsBusy,
+        TimeoutExpired,
+        CanceledBeforeExecution,
+        CanceledExecution,
         Exception
     }
 }
