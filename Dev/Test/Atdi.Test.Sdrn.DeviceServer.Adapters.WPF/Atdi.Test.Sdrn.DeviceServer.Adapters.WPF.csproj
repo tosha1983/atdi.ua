@@ -118,31 +118,31 @@
       <Project>{93f2ca4c-2c15-481c-8ce3-30baa661d1ff}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
       <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Adapters\Atdi.DataModels.Sdrn.DeviceServer.Adapters.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Adapters\Atdi.DataModels.Sdrn.DeviceServer.Adapters.csproj">
       <Project>{c5092a25-4d63-48b4-94ee-0ad9fde0f6b4}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Adapters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
       <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
       <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UnitTesting\Atdi.UnitTest.Sdrn.DeviceServer\Atdi.UnitTest.Sdrn.DeviceServer.csproj">
+    <ProjectReference Include="..\..\UnitTesting\Atdi.UnitTest.Sdrn.DeviceServer\Atdi.UnitTest.Sdrn.DeviceServer.csproj">
       <Project>{26af07cb-441a-469e-9823-2d2b37fca414}</Project>
       <Name>Atdi.UnitTest.Sdrn.DeviceServer</Name>
     </ProjectReference>
