@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Atdi.Test.Sdrn.DeviceServer.Adapters.WPF.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpGL">
       <HintPath>..\3anet\ControlU\bin\x64\Debug\SharpGL.dll</HintPath>

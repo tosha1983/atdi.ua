@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 {
     static class Contexts
     {
-        public static readonly EventContext ThisComponent = "SDRN Device Server ExampleAdapter";
+        public static readonly EventContext ThisComponent = "SDRN Device Server SpectrumAnalyzer";
     }
 
     static class Categories

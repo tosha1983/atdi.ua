@@ -2,6 +2,7 @@
 using PEN = Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums;
 using MEN = Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums;
+using System.Diagnostics;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
@@ -236,6 +237,112 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 //res = MEN.LevelUnit.µV;
             }
             return res;
+        }
+
+
+        public (decimal FreqStart, decimal FreqStop) IQFreqStartStop(Adapter SH, decimal FreqStartFromParameter, decimal FreqStopFromParameter)
+        {
+            decimal fstart = 0, fstop = 0;
+            if (FreqStopFromParameter - FreqStartFromParameter <= 20000000)
+            {
+                if (FreqStartFromParameter < FreqStopFromParameter)
+                {
+                    if (FreqStartFromParameter >= SH.FreqMin)
+                    {
+                        fstart = FreqStartFromParameter;
+                    }
+                    else
+                    {
+                        throw new Exception("FreqStart < FreqMin");
+                    }
+
+                    if (FreqStopFromParameter <= SH.FreqMax)
+                    {
+                        fstop = FreqStopFromParameter;
+                    }
+                    else
+                    {
+                        throw new Exception("FreqStop > FreqMax");
+                    }
+                }
+                else
+                {
+                    throw new Exception("FreqStart > FreqStop");
+                }
+            }
+            else
+            {
+                throw new Exception("Span > 20 MHz");
+            }
+
+            return (fstart, fstop);
+        }
+        public int IQDownsampleFactor(double BitRate_MBsFromParameter, decimal Span)
+        {
+            int res = 1;
+            double BitRate = BitRate_MBsFromParameter * 1000000;
+            if (Span <= 20000000)
+            {
+                if (BitRate < 0)
+                {
+                    BitRate = 40000000;
+                }
+
+                if ((decimal)BitRate / Span >= 2)
+                {
+                    double df = 40000000 / BitRate;
+                    if (df < 2) res = 1;
+                    else if (df >= 2 && df < 4) res = 2;
+                    else if (df >= 4 && df < 8) res = 4;
+                    else if (df >= 8 && df < 16) res = 8;
+                    else if (df >= 16 && df < 32) res = 16;
+                    else if (df >= 32 && df < 64) res = 32;
+                    else if (df >= 64 && df < 128) res = 64;
+                    else if (df >= 128 && df < 256) res = 128;
+                    else if (df >= 256 && df < 512) res = 256;
+                    else if (df >= 512 && df < 1024) res = 512;
+                    else if (df >= 1024 && df < 2048) res = 1024;
+                    else if (df >= 2048 && df < 4096) res = 2048;
+                    else if (df >= 4096 && df < 8192) res = 4096;
+                    else if (df >= 8192) res = 8192;
+                }
+                else
+                {
+                    throw new Exception("BitRate / Span < 2");
+                }
+
+            }
+            else
+            {
+                throw new Exception("Span > 20 MHz");
+            }
+            return res;
+        }
+
+        public (double BlockDuration, double ReceiveTime) IQTimeParameters(double BlockDuration, double ReceiveTime)
+        {
+            double blockduration = 1, receivetime = 1;
+            if (BlockDuration > 0 && ReceiveTime > 0)
+            {
+                if (BlockDuration <= ReceiveTime)
+                {
+                    blockduration = BlockDuration;
+                    receivetime = ReceiveTime;
+                }
+                else
+                {
+                    throw new Exception("BlockDuration > ReceiveTime");
+                }
+            }
+            else
+            {
+                if (BlockDuration <= 0)
+                    throw new Exception("BlockDuration cannot be less than or equal to zero.");
+
+                if (ReceiveTime <= 0)
+                    throw new Exception("ReceiveTime cannot be less than or equal to zero.");
+            }
+            return (blockduration, receivetime);
         }
     }
 }
