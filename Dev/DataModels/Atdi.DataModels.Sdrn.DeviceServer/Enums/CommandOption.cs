@@ -8,8 +8,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
 {
     public enum CommandOption
     {
-        StartImmediately = 0,
+        PutInQueue = 0,
         StartDelayed = 1,
-        StartSpecificTime = 3
+        StartImmediately = 2,
     }
 }

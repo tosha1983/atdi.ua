@@ -7,8 +7,8 @@ using XICSM.ICSControlClient.Environment;
 using MD = XICSM.ICSControlClient.Metadata;
 using DM = XICSM.ICSControlClient.Models.CreateMeasTask;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
-using AAC = Atdi.AppServer.Contracts;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using AAC = Atdi.DataModels.DataConstraint;
 
 namespace XICSM.ICSControlClient.Handlers.TourCommnads
 {
@@ -104,25 +104,24 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
         {
             var stations = new List<SDR.MeasStation>();
 
-            var constraint = new AAC.DataConstraintGroup()
+            var constraint = new AAC.ComplexCondition()
             {
-                Type = AAC.DataConstraintType.Group,
-                Operation = AAC.DataConstraintGroupOperation.And,
-                Constraints = new AAC.DataConstraintExpression[]
+                Operator = AAC.LogicalOperator.And,
+                Conditions = new AAC.ConditionExpression[]
                 {
-                    new AAC.DataConstraintExpression
+                    new AAC.ConditionExpression
                     {
-                        Type = AAC.DataConstraintType.Expression,
-                        Operation = AAC.DataConstraintOperation.Eq,
-                        LeftOperand = new AAC.DataConstraintColumnOperand { Type = AAC.DataConstraintOperandType.Column, Alias="Sensor", ColumnName = "Name"},
-                        RightOperand = new AAC.DataConstraintValueOperand { Type = AAC.DataConstraintOperandType.Value, DataType = AAC.CommonDataType.String, StringValue = tour.SensorName}
+                        Type = AAC.ConditionType.Expression,
+                        Operator = AAC.ConditionOperator.Equal,
+                        LeftOperand = new AAC.ColumnOperand { Type = AAC.OperandType.Column, ColumnName = "Name", Source = "Sensor"},
+                        RightOperand = new AAC.StringValueOperand { Type = AAC.OperandType.Value, Value = tour.SensorName}
                     },
-                    new AAC.DataConstraintExpression
+                    new AAC.ConditionExpression
                     {
-                        Type = AAC.DataConstraintType.Expression,
-                        Operation = AAC.DataConstraintOperation.Eq,
-                        LeftOperand = new AAC.DataConstraintColumnOperand { Type = AAC.DataConstraintOperandType.Column, Alias="Sensor", ColumnName = "Equipment.TechId"},
-                        RightOperand = new AAC.DataConstraintValueOperand { Type = AAC.DataConstraintOperandType.Value, DataType = AAC.CommonDataType.String, StringValue = tour.SensorEquipTechId}
+                        Type = AAC.ConditionType.Expression,
+                        Operator = AAC.ConditionOperator.Equal,
+                        LeftOperand = new AAC.ColumnOperand { Type = AAC.OperandType.Column, ColumnName = "Equipment.TechId", Source = "Sensor"},
+                        RightOperand = new AAC.StringValueOperand { Type = AAC.OperandType.Value, Value = tour.SensorEquipTechId}
                     }
                 }
             };

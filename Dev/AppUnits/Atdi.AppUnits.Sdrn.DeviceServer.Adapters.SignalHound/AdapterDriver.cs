@@ -5,8 +5,7 @@ using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums;
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
     public static class AdapterDriver
-    {
-        
+    {        
         [DllImport("bb_api.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern EN.Status bbGetSerialNumberList(int[] devices, ref int deviceCount);
 

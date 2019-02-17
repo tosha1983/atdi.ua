@@ -7,8 +7,7 @@ using XICSM.ICSControlClient.Environment;
 using MD = XICSM.ICSControlClient.Metadata;
 using DM = XICSM.ICSControlClient.Models.SynchroInspections;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
-using SDR = Atdi.AppServer.Contracts.Sdrns;
-using AAC = Atdi.AppServer.Contracts;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Handlers.TourCommnads
 {

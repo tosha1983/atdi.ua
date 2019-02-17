@@ -9,5 +9,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
     public interface IDevicesHost : IDisposable
     {
         void Register(Type adapterType);
+
+        IDevice[] GetDevices(); 
     }
 }

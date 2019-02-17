@@ -9,7 +9,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
     static class Contexts
     {
-        public static readonly EventContext ThisComponent = "SDRN Device Server ExampleAdapter";
+        public static readonly EventContext ThisComponent = "SDRN Device Server SignalHoundAdapter";
     }
 
     static class Categories

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using XICSM.ICSControlClient.Environment.Wpf;
-using Atdi.AppServer.Contracts.Sdrns;
+using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Models.Views
 {
@@ -45,7 +45,8 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public IList<MeasurementType> MeasDtParamTypeMeasurementsValues
         {
-            get { return Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>().ToList<MeasurementType>(); }
+            //get { return Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>().ToList<MeasurementType>(); }
+            get { return new List<MeasurementType>() { MeasurementType.Level, MeasurementType.SpectrumOccupation}; }
         }
 
         public double? MeasDtParamRBW { get; set; }

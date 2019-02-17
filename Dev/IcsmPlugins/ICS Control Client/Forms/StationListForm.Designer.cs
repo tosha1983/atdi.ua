@@ -34,8 +34,9 @@
             // 
             // btnOk
             // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOk.Location = new System.Drawing.Point(1209, 557);
+            this.btnOk.Location = new System.Drawing.Point(1006, 539);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(220, 35);
             this.btnOk.TabIndex = 3;
@@ -56,7 +57,7 @@
             this.icsDBList_Station.Name = "icsDBList_Station";
             this.icsDBList_Station.Param1 = 0;
             this.icsDBList_Station.Param2 = 0;
-            this.icsDBList_Station.Size = new System.Drawing.Size(1451, 519);
+            this.icsDBList_Station.Size = new System.Drawing.Size(1248, 501);
             this.icsDBList_Station.TabIndex = 2;
             this.icsDBList_Station.Table = null;
             this.icsDBList_Station.OnQuery += new System.EventHandler(this.icsDBList_Station_OnRequery);
@@ -65,7 +66,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1473, 607);
+            this.ClientSize = new System.Drawing.Size(1270, 589);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.icsDBList_Station);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;

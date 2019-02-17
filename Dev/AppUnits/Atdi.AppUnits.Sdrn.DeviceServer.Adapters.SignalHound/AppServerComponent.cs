@@ -11,7 +11,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
     {
 
         public AppServerComponent() 
-            : base("SdrnDeviceServerExampleAdapterAppUnit")
+            : base("SdrnDeviceServerSignalHoundAdapterAppUnit")
         {
             
         }

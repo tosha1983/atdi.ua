@@ -77,10 +77,22 @@ namespace XICSM.ICSControlClient.Forms
             if (string.IsNullOrEmpty(inputPoints))
                 return outputPoints;
 
-            foreach (var a in inputPoints.Split(new[] { "\r\n" }, StringSplitOptions.None))
+            var inputCoordArray = inputPoints.Split(new[] { "\r\n" }, StringSplitOptions.None);
+
+            var koef = ((inputCoordArray.Length * 21) / 2000) + 1;
+            int koefCurr = 0;
+
+            foreach (var a in inputCoordArray)
             {
                 if (!string.IsNullOrEmpty(a))
                 {
+                    koefCurr += 1;
+
+                    if (koefCurr == koef)
+                        koefCurr = 0;
+                    else
+                        continue;
+
                     string[] b = a.Split(new[] { "\t" }, StringSplitOptions.None);
                     if (b.Length == 2)
                     {
@@ -92,8 +104,8 @@ namespace XICSM.ICSControlClient.Forms
                             double k2;
                             if (double.TryParse(b[0].Replace(".", sep), out k1) && double.TryParse(b[1].Replace(".", sep), out k2))
                             {
-                                coord1 = IMPosition.Dms2Dec(k1).ToString().Replace(sep, ".");
-                                coord2 = IMPosition.Dms2Dec(k2).ToString().Replace(sep, ".");
+                                coord1 = Math.Round(IMPosition.Dms2Dec(k1),6).ToString().Replace(sep, ".");
+                                coord2 = Math.Round(IMPosition.Dms2Dec(k2),6).ToString().Replace(sep, ".");
                             }
                         }
                         else

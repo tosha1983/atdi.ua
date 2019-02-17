@@ -42,10 +42,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAdapter.cs" />
+    <Compile Include="IResultConvertorFactory.cs" />
+    <Compile Include="IResultHandlerFactory.cs" />
     <Compile Include="IAdapterFactory.cs" />
     <Compile Include="IAdapterHost.cs" />
+    <Compile Include="ICommandsHost.cs" />
     <Compile Include="IController.cs" />
+    <Compile Include="IDevice.cs" />
+    <Compile Include="IDeviceSelector.cs" />
     <Compile Include="IDevicesHost.cs" />
+    <Compile Include="IResultBuffer.cs" />
+    <Compile Include="IResultConvertor.cs" />
+    <Compile Include="IResultConvertorsHost.cs" />
+    <Compile Include="IResultHandler.cs" />
+    <Compile Include="IResultHandlersHost.cs" />
+    <Compile Include="IResultsHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
