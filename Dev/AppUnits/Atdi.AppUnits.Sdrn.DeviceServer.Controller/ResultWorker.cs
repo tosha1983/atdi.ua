@@ -22,7 +22,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             this._descriptor = descriptor;
             this._convertorsHost = convertorsHost;
-            this._resultHandler = handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.ContextType);
+            this._resultHandler = handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.TaskType, descriptor.ProcessType);
             this._logger = logger;
             this._task = new Task(this.Process);
             this._resultBuffer = new ResultBuffer(descriptor);
@@ -55,7 +55,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     /// тип адаптера равен типу обработчика, нет смысла в конвертации
                     if (resultPartType == _descriptor.ResultType)
                     {
-                        this._resultHandler.Handle(_descriptor.Command, resultPart, this._descriptor.Context);
+                        this._resultHandler.Handle(_descriptor.Command, resultPart, this._descriptor.TaskContext);
                     }
                     else
                     {
@@ -67,8 +67,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         prevResultPartType = resultPartType;
 
                         /// конвеер обработки результатов
-                        var handlerResult = convertor.Convert(resultPart, _descriptor.Command, this._descriptor.Context);
-                        this._resultHandler.Handle(_descriptor.Command, handlerResult, this._descriptor.Context);
+                        var handlerResult = convertor.Convert(resultPart, _descriptor.Command);
+                        this._resultHandler.Handle(_descriptor.Command, handlerResult, this._descriptor.TaskContext);
                     }
                 }
                 catch (Exception e)

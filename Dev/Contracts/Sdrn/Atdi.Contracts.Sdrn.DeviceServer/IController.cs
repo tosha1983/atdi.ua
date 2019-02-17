@@ -8,29 +8,31 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.DeviceServer
 {
+    
+
     public interface IController : IDisposable
     {
-        void SendCommand<TResult>(IProcessingContext context, ICommand command, CancellationToken cancellationToken, Action<IProcessingContext, ICommand, CommandFailureReason, Exception> onFailureAction);
+        void SendCommand<TResult>(ITaskContext taskContext, ICommand command, CancellationToken cancellationToken, ControllerFailureAction onFailureAction);
     }
 
-    public static class ControllerExtentions
+    public static class ControllerExtensions
     {
-        public static void SendCommand<TResult>(this IController controller, IProcessingContext context, ICommand command)
+        public static void SendCommand<TResult>(this IController controller, ITaskContext taskContext, ICommand command)
         {
-            controller.SendCommand<TResult>(context, command, CancellationToken.None, onFailureDefaultAction);
+            controller.SendCommand<TResult>(taskContext, command, CancellationToken.None, FailureDefaultAction);
         }
 
-        public static void SendCommand<TResult>(this IController controller, IProcessingContext context, ICommand command, CancellationToken cancellationToken)
+        public static void SendCommand<TResult>(this IController controller, ITaskContext taskContext, ICommand command, CancellationToken cancellationToken)
         {
-            controller.SendCommand<TResult>(context, command, cancellationToken, onFailureDefaultAction);
+            controller.SendCommand<TResult>(taskContext, command, cancellationToken, FailureDefaultAction);
         }
 
-        public static void SendCommand<TResult>(this IController controller, IProcessingContext context, ICommand command, Action<IProcessingContext, ICommand, CommandFailureReason, Exception> onFailureAction)
+        public static void SendCommand<TResult>(this IController controller, ITaskContext taskContext, ICommand command, ControllerFailureAction onFailureAction)
         {
-            controller.SendCommand<TResult>(context, command, CancellationToken.None, onFailureAction);
+            controller.SendCommand<TResult>(taskContext, command, CancellationToken.None, onFailureAction);
         }
 
-        private static void onFailureDefaultAction(IProcessingContext context, ICommand command, CommandFailureReason failureReason, Exception exception)
+        private static void FailureDefaultAction(ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception exception)
         {
             return;
         }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     static class Contexts
     {

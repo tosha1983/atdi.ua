@@ -14,7 +14,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         void PushResult(ICommandResultPart result);
 
         /// <summary>
-        /// Подтвердить завершение выполнения комманды, все блокировки снимаются
+        /// Подтвердить завершение выполнения комманды
         /// </summary>
         void Finish();
 

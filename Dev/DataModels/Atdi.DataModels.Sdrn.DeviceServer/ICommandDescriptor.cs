@@ -7,16 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
 {
+    public delegate void ControllerFailureAction(ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception exception);
+
     public interface ICommandDescriptor
     {
         ICommand Command { get; }
 
         Type ResultType { get; }
 
-        IProcessingContext Context { get; }
+        ITaskContext TaskContext { get; }
 
         CancellationToken CancellationToken { get; }
 
-        Action<IProcessingContext, ICommand, CommandFailureReason, Exception> FailureAction { get; }
+        ControllerFailureAction FailureAction { get; }
     }
 }

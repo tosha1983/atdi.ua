@@ -8,8 +8,8 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IResultHandlersHost
     {
-        void Register(Type handlerType);
+        void Register(Type handlerInstanceType);
 
-        IResultHandler GetHandler(Type commandType, Type resultType, Type contextType);
+        IResultHandler GetHandler(Type commandType, Type resultType, Type taskType, Type processType);
     }
 }

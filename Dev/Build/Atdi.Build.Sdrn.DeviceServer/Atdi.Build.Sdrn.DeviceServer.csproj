@@ -58,13 +58,17 @@
       <Project>{a285896e-a91a-40f3-ba2e-556b2767f5aa}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.csproj">
-      <Project>{d6699055-032f-443e-a557-2e2e36d4f0f1}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Controller\Atdi.AppUnits.Sdrn.DeviceServer.Controller.csproj">
       <Project>{4332ba5b-3b35-4037-9344-a2222fe459ec}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Controller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Messaging\Atdi.AppUnits.Sdrn.DeviceServer.Messaging.csproj">
+      <Project>{e4157d42-8855-479c-9732-ac8fb891f7ff}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing\Atdi.AppUnits.Sdrn.DeviceServer.Processing.csproj">
+      <Project>{df8d6b14-e4a9-4786-9c81-ab6fdf2de152}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits\Atdi.AppUnits.csproj">
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
@@ -73,6 +77,10 @@
     <ProjectReference Include="..\..\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.csproj">
       <Project>{93f2ca4c-2c15-481c-8ce3-30baa661d1ff}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.csproj">
+      <Project>{72d0eaae-5ae0-41c6-b87e-dc01139e7f17}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
@@ -93,6 +101,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
       <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
+      <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
       <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
