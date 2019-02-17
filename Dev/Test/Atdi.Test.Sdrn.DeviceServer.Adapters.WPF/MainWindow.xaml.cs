@@ -18,6 +18,7 @@ using CMD = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using Atdi.UnitTest.Sdrn.DeviceServer;
 using System.Threading;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 {
@@ -156,6 +157,27 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             adapter.MesureTraceCommandHandler(command, context);
 
 
+        }
+
+        private void GetIQ1_Click(object sender, RoutedEventArgs e)
+        {
+            var context = new DummyExecutionContext(logger);
+            var command = new CMD.MesureIQStreamCommand();
+            
+            command.Parameter.FreqStart_Hz = 424.625m * 1000000;//424.650
+            command.Parameter.FreqStop_Hz = 424.675m * 1000000;
+            command.Parameter.Att_dB = 0;
+            command.Parameter.PreAmp_dB = 30;
+            command.Parameter.RefLevel_dBm = -40;
+            command.Parameter.BitRate_MBs = 0.8;
+            command.Parameter.IQBlockDuration_s = 0.5;
+            command.Parameter.IQReceivTime_s = 5;
+            command.Parameter.MandatoryPPS = false;
+            command.Parameter.MandatorySignal = true;
+            command.Parameter.TimeStart = (DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks);
+            command.Parameter.TimeStart += 2*10000000;
+            Debug.WriteLine("\r\n" + new TimeSpan(DateTime.Now.Ticks).ToString() + " Set Param");
+            adapter.MesureIQStreamCommandHandler(command, context);
         }
     }
 }
