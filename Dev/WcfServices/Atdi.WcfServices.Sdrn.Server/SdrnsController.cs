@@ -6,182 +6,210 @@ using Atdi.Contracts.Api.EventSystem;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
-
+using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.WcfServices.Sdrn.Server
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SdrnsController : WcfServiceBase<ISdrnsController>, ISdrnsController
     {
-        private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
-        private readonly ISdrnServerEnvironment _environment;
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
 
-        public SdrnsController(ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
-            this._environment = environment;
-            this._messagePublisher = messagePublisher;
             this._eventEmitter = eventEmitter;
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
 
+
         public MeasTaskIdentifier CreateMeasTask(MeasTask task)
         {
-            CreateMeasTaskHandler createMeasTaskHandler = new CreateMeasTaskHandler(_environment, _messagePublisher, _eventEmitter, _dataLayer, _logger);
+            var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer, _logger);
             return createMeasTaskHandler.Handle(task);
         }
 
         public CommonOperationDataResult<int> DeleteMeasResults(MeasurementResultsIdentifier MeasResultsId)
         {
-            throw new NotImplementedException();
+            var saveResDb = new SaveResults(_dataLayer, _logger);
+            return saveResDb.DeleteResultFromDB(MeasResultsId, Status.Z.ToString());
         }
 
         public CommonOperationResult DeleteMeasTask(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
+            return measTaskProcess.DeleteMeasTask(taskId);
         }
 
         public MeasurementResults[] GetMeasResultsByTaskId(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetMeasResultsByTaskId(taskId.Value);
         }
 
         public MeasurementResults[] GetMeasResultsHeaderByTaskId(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetMeasResultsHeaderByTaskId(taskId.Value);
         }
 
         public MeasurementResults[] GetMeasResultsHeaderSpecial(MeasurementType measurementType)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetMeasResultsHeaderSpecial(measurementType);
         }
 
         public MeasTask GetMeasTaskHeader(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+            return loadMeasTask.GetMeasTaskHeader(taskId);
         }
 
         public MeasurementResults GetMeasurementResultByResId(int ResId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetMeasurementResultByResId(ResId);
         }
 
-        public ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId)
+        public ResultsMeasurementsStation[] GetResMeasStation(int ResId, int StationId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetResMeasStation(ResId, StationId);
         }
 
         public ResultsMeasurementsStation GetResMeasStationById(int StationId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.ReadResultResMeasStation(StationId);
         }
 
         public ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int ResId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetResMeasStationHeaderByResId(ResId);
         }
 
         public Route[] GetRoutes(int MeasResultsId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetRoutes(MeasResultsId);
         }
 
         public Sensor GetSensor(SensorIdentifier sensorId)
         {
-            throw new NotImplementedException();
+            var loadSensor = new LoadSensor(_dataLayer, _logger);
+            return loadSensor.LoadObjectSensor(sensorId.Value);
         }
 
         public SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetSensorPoligonPoint(MeasResultsId);
         }
 
-        public Sensor[] GetSensors()
+
+        public Sensor[] GetSensors(ComplexCondition condition)
         {
-            throw new NotImplementedException();
+            var loadSensor = new LoadSensor(_dataLayer, _logger);
+            return loadSensor.LoadObjectSensor(condition);
         }
 
         public ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResStation(MeasResultsId);
         }
 
         public ShortMeasurementResults[] GetShortMeasResults()
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResults();
         }
 
         public ShortMeasurementResults[] GetShortMeasResultsByDate(GetShortMeasResultsByDateValue constraint)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResultsByDate(constraint);
         }
 
         public ShortMeasurementResults GetShortMeasResultsById(MeasurementResultsIdentifier measResultsId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResultsById(measResultsId);
         }
 
         public ShortMeasurementResults[] GetShortMeasResultsByTaskId(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResultsByTaskId(taskId.Value);
         }
 
         public ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResultsByTypeAndTaskId(measurementType, taskId);
         }
 
         public ShortMeasurementResults[] GetShortMeasResultsSpecial(MeasurementType measurementType)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetShortMeasResultsSpecial(measurementType);
         }
 
         public ShortMeasTask GetShortMeasTask(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+            return  loadMeasTask.GetShortMeasTask(taskId.Value);
         }
 
         public ShortMeasTask[] GetShortMeasTasks()
         {
-            throw new NotImplementedException();
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+            return loadMeasTask.GetShortMeasTasks();
         }
 
         public ShortSensor GetShortSensor(SensorIdentifier sensorId)
         {
-            throw new NotImplementedException();
+            var loadSensor = new LoadSensor(_dataLayer, _logger);
+            return loadSensor.LoadShortSensor(sensorId.Value);
         }
 
         public ShortSensor[] GetShortSensors()
         {
-            throw new NotImplementedException();
+            var loadSensor = new LoadSensor(_dataLayer, _logger);
+            return loadSensor.LoadListShortSensor();
         }
 
         public SOFrequency[] GetSOformMeasResultStation(GetSOformMeasResultStationValue options)
         {
-            throw new NotImplementedException();
+            var analitics = new AnaliticsUnit(_dataLayer, _logger);
+            return analitics.CalcAppUnit(options);
         }
 
         public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+            return loadMeasTask.GetStationDataForMeasurementsByTaskId(taskId.Value);
         }
 
         public StationLevelsByTask[] GetStationLevelsByTask(LevelsByTaskParams levelParams)
         {
-            throw new NotImplementedException();
+            var calcStationLevelsByTask = new CalcStationLevelsByTask(_dataLayer, _logger);
+            return calcStationLevelsByTask.GetStationLevelsByTask(levelParams);
         }
 
         public CommonOperationResult RunMeasTask(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
+            return measTaskProcess.RunMeasTask(taskId);
         }
 
         public CommonOperationResult StopMeasTask(MeasTaskIdentifier taskId)
         {
-            throw new NotImplementedException();
+            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
+            return measTaskProcess.StopMeasTask(taskId);
         }
     }
 

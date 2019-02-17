@@ -1565,7 +1565,7 @@ namespace Atdi.CoreServices.EntityOrm
                         AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
                         if (aliasField != null)
                         {
-                            if (selectColumns.ContainsKey(dbField.FieldName))
+                            if (selectColumns.ContainsKey(dbField.Alias))
                             {
                                 columnExpressions.Add(this._syntax.ColumnExpression(this._syntax.EncodeFieldName(aliasField.Alias) + "." + this._syntax.EncodeFieldName(dbField.DBFieldName), dbField.Alias));
                             }

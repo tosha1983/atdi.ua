@@ -14,7 +14,7 @@
     <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.250" SourceName="GLOBALSID" SourceType="Column" Required="false"/>
     <Field Desc="MeasGlobalSID" Title="MeasGlobalSID" Name="MeasGlobalSID" DataType="Text.250" SourceName="MEASGLOBALSID" SourceType="Column" Required="false"/>
     <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="IDSECTOR" SourceType="Column" Required="false"/>
-    <Field Desc="IdStation" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="IDSTATION" SourceType="Column" Required="false"/>
+    <Field Desc="IdStation" Title="IdStation" Name="IdStation" DataType="Integer.64" SourceName="IDSTATION" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.250" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
     <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>

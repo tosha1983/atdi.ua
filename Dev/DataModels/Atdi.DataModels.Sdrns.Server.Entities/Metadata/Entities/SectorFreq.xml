@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="PlanId" Title="SectorId" Name="SectorId" DataType="Integer.32" SourceName="IDPLAN" SourceType="Column" Required="true"/>
+    <Field Desc="PlanId" Title="PlanId" Name="PlanId" DataType="Integer.32" SourceName="IDPLAN" SourceType="Column" Required="true"/>
     <Field Desc="ChannelNumber" Title="ChannelNumber" Name="ChannelNumber" DataType="Integer.32" SourceName="CHANNALNUMBER" SourceType="Column" Required="true"/>
     <Field Desc="Frequency" Title="Frequency" Name="Frequency" DataType="Decimal.22.8" SourceName="FREQUENCY" SourceType="Column" Required="false"/>
   </Fields>

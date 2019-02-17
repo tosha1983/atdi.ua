@@ -86,18 +86,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     int SensorId; int SubMeasTaskId; int SubMeasTaskStationId;
                     GetMeasTaskSDRIdentifier(resObject, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId);
 
-                    var builde1 = this._dataLayer.GetBuilder<MD.IResMeasRaw>().From();
-                    builde1.Select(c=>c.MeasTaskId);
-                    builde1.Select(c => c.MeasSubTaskId);
-                    builde1.Select(c => c.MeasSubTaskStationId);
-                    builde1.Select(c => c.SensorId);
-                    builde1.Select(c => c.AntVal);
-                    builde1.Select(c => c.TimeMeas);
-                    builde1.Select(c => c.DataRank);
-                    builde1.Select(c => c.N);
-                    builde1.Where(c => c.Id, ConditionOperator.In, 22);
+                    //var builde1 = this._dataLayer.GetBuilder<MD.IResMeasRaw>().From();
+                    //builde1.Select(c=>c.MeasTaskId);
+                    //builde1.Select(c => c.MeasSubTaskId);
+                    //builde1.Select(c => c.MeasSubTaskStationId);
+                    //builde1.Select(c => c.SensorId);
+                    //builde1.Select(c => c.AntVal);
+                    //builde1.Select(c => c.TimeMeas);
+                    //builde1.Select(c => c.DataRank);
+                    //builde1.Select(c => c.N);
+                    //builde1.Where(c => c.Id, ConditionOperator.In, 22);
 
-                    var builde2 = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
+                    //var builde2 = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                     //builde2.SetValue(c => c.MeasTaskId,null);
                     //builde2.SetValue(c => c.MeasSubTaskId, null);
                     //builde2.SetValue(c => c.MeasSubTaskStationId, null);
@@ -106,7 +106,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     //builde2.SetValue(c => c.TimeMeas, null);
                     //builde2.SetValue(c => c.DataRank, null);
                     //builde2.SetValue(c => c.N, null);
-                   var affeted =  queryExecuter.InsertSelect(builde2, builde1);
+                   //var affeted =  queryExecuter.InsertSelect(builde2, builde1);
 
 
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Insert();

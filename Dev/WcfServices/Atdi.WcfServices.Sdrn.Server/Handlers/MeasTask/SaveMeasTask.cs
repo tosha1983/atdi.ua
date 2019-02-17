@@ -14,24 +14,18 @@ using System.Linq;
 
 namespace Atdi.WcfServices.Sdrn.Server
 {
-    public class SaveMeasTask
+    public class SaveMeasTask 
     {
-        private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
-        private readonly ISdrnServerEnvironment _environment;
-        private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
 
 
-
-        public SaveMeasTask(ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public SaveMeasTask(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
-            this._environment = environment;
-            this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
-            this._eventEmitter = eventEmitter;
             this._logger = logger;
         }
+
 
 
         /// <summary>
@@ -43,16 +37,16 @@ namespace Atdi.WcfServices.Sdrn.Server
         public bool SetStatusTasksInDB(MeasTask measTask, string status)
         {
             bool isSuccess = true;
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             try
             {
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                queryExecuter.BeginTransaction();
                 var builderSelectMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
                 builderSelectMeasTask.Select(c => c.Id);
                 builderSelectMeasTask.Where(c => c.Id, ConditionOperator.Equal, measTask.Id.Value);
                 builderSelectMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderSelectMeasTask, reader =>
                 {
-                    var result = false;
                     while (reader.Read())
                     {
                         var builderSelectMeasSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().From();
@@ -60,111 +54,100 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectMeasSubTask.Where(c => c.MeasTaskId, ConditionOperator.Equal, measTask.Id.Value);
                         queryExecuter.Fetch(builderSelectMeasSubTask, readereasSubTask =>
                         {
-                            var resultSubTask = false;
                             while (readereasSubTask.Read())
                             {
                                 var id = readereasSubTask.GetValue(c => c.Id);
-                                MeasSubTask msSubTask = measTask.MeasSubTasks.ToList().Find(t => t.Id.Value == id);
-                                if (msSubTask != null)
+                                if (measTask.MeasSubTasks != null)
                                 {
-                                    var builderSelectMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
-                                    builderSelectMeasSubTaskSta.Select(c => c.Id);
-                                    builderSelectMeasSubTaskSta.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
-                                    builderSelectMeasSubTaskSta.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
-                                    queryExecuter.Fetch(builderSelectMeasSubTaskSta, readereasSubTaskSta =>
+                                    var msSubTask = measTask.MeasSubTasks.ToList().Find(t => t.Id.Value == id);
+                                    if (msSubTask != null)
                                     {
-                                        var resultSubTaskSta = false;
-                                        while (readereasSubTaskSta.Read())
+                                        var builderSelectMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
+                                        builderSelectMeasSubTaskSta.Select(c => c.Id);
+                                        builderSelectMeasSubTaskSta.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
+                                        builderSelectMeasSubTaskSta.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                                        queryExecuter.Fetch(builderSelectMeasSubTaskSta, readereasSubTaskSta =>
                                         {
-                                            MeasSubTaskStation msSubTaskSta = msSubTask.MeasSubTaskStations.ToList().Find(t => t.Id == readereasSubTaskSta.GetValue(c => c.Id));
-                                            if (msSubTaskSta != null)
+                                            while (readereasSubTaskSta.Read())
                                             {
-                                                if (msSubTaskSta.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0)
+                                                var msSubTaskSta = msSubTask.MeasSubTaskStations.ToList().Find(t => t.Id == readereasSubTaskSta.GetValue(c => c.Id));
+                                                if (msSubTaskSta != null)
                                                 {
-                                                    var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Update();
-                                                    builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, readereasSubTaskSta.GetValue(c => c.Id));
-                                                    builderUpdateMeasSubTaskStaSave.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
-                                                    builderUpdateMeasSubTaskStaSave.SetValue(c => c.Status, status);
-                                                    if (queryExecuter.Execute(builderUpdateMeasSubTaskStaSave) >0)
+                                                    if (msSubTaskSta.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0)
                                                     {
-                                                        isSuccess = true;
-                                                    }
-                                                    else
-                                                    {
-                                                        isSuccess = false;
-                                                    }
+                                                        var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Update();
+                                                        builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, readereasSubTaskSta.GetValue(c => c.Id));
+                                                        builderUpdateMeasSubTaskStaSave.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                                                        builderUpdateMeasSubTaskStaSave.SetValue(c => c.Status, status);
+                                                        if (queryExecuter.Execute(builderUpdateMeasSubTaskStaSave) > 0)
+                                                        {
+                                                            isSuccess = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            isSuccess = false;
+                                                        }
 
-                                                    var builderUpdateSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Update();
-                                                    builderUpdateSubTask.Where(c => c.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
-                                                    builderUpdateSubTask.SetValue(c => c.Status, status);
-                                                    if (queryExecuter.Execute(builderUpdateSubTask) > 0)
-                                                    {
-                                                        isSuccess = true;
-                                                    }
-                                                    else
-                                                    {
-                                                        isSuccess = false;
-                                                    }
+                                                        var builderUpdateSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Update();
+                                                        builderUpdateSubTask.Where(c => c.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
+                                                        builderUpdateSubTask.SetValue(c => c.Status, status);
+                                                        if (queryExecuter.Execute(builderUpdateSubTask) > 0)
+                                                        {
+                                                            isSuccess = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            isSuccess = false;
+                                                        }
 
-                                                    var builderUpdateTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
-                                                    builderUpdateTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                                                    builderUpdateTask.SetValue(c => c.Status, status);
-                                                    if (queryExecuter.Execute(builderUpdateTask) > 0)
-                                                    {
-                                                        isSuccess = true;
-                                                    }
-                                                    else
-                                                    {
-                                                        isSuccess = false;
+                                                        var builderUpdateTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
+                                                        builderUpdateTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                                                        builderUpdateTask.SetValue(c => c.Status, status);
+                                                        if (queryExecuter.Execute(builderUpdateTask) > 0)
+                                                        {
+                                                            isSuccess = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            isSuccess = false;
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                        return resultSubTaskSta;
-                                    });
+                                            return true;
+                                        });
+                                    }
                                 }
 
                             }
-                            return resultSubTask;
+                            return true;
                         });
                        
                     }
-                    return result;
+                    return true;
                 });
+                queryExecuter.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
+                queryExecuter.RollbackTransaction();
+                this._logger.Exception(Contexts.ThisComponent, e);
                 isSuccess = false;
             }
             return isSuccess;
         }
 
 
+
         public int? SaveMeasTaskInDB(MeasTask value)
         {
             int? ID = null;
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             if (value.Id != null)
             {
-
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var builderSelectMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
-                builderSelectMeasTask.Select(c => c.Id);
-                builderSelectMeasTask.Where(c => c.Id, ConditionOperator.Equal, value.Id.Value);
-                queryExecuter.Fetch(builderSelectMeasTask, readerMeasTask =>
+                try
                 {
-                    var result = false;
-                    while (readerMeasTask.Read())
-                    {
-                        ID = readerMeasTask.GetValue(c => c.Id);
-                        value.Id.Value = ID.Value;
-                    }
-                    return result;
-
-                });
-
-                if (ID == null)
-                {
-
+                    queryExecuter.BeginTransaction();
                     var builderInsertMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Insert();
                     builderInsertMeasTask.SetValue(c => c.CreatedBy, value.CreatedBy);
                     builderInsertMeasTask.SetValue(c => c.DateCreated, value.DateCreated);
@@ -189,15 +172,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderInsertMeasTask.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertMeasTask, readerMeasTask =>
                     {
-                        var result = false;
                         while (readerMeasTask.Read())
                         {
                             ID = readerMeasTask.GetValue(c => c.Id);
                             value.Id.Value = ID.Value;
 
                         }
-                        return result;
-
+                        return true;
                     });
                     if (ID != null)
                     {
@@ -218,12 +199,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderInsertMeasDtParam.Select(c => c.Id);
                             queryExecuter.ExecuteAndFetch(builderInsertMeasDtParam, readerMeasDtParam =>
                             {
-                                var resultMeasDtParam = false;
                                 while (readerMeasDtParam.Read())
                                 {
                                     valueIdMeasDtParam = readerMeasDtParam.GetValue(c => c.Id);
                                 }
-                                return resultMeasDtParam;
+                                return true;
                             });
                         }
 
@@ -231,7 +211,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (value.MeasLocParams != null)
                         {
-                            foreach (MeasLocParam locParam in value.MeasLocParams)
+                            foreach (var locParam in value.MeasLocParams)
                             {
                                 if (locParam.Id != null)
                                 {
@@ -245,13 +225,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     builderInsertMeasLocationParam.Select(c => c.Id);
                                     queryExecuter.ExecuteAndFetch(builderInsertMeasLocationParam, readerMeasLocationParam =>
                                     {
-                                        var resultMeasLocationParam = false;
                                         while (readerMeasLocationParam.Read())
                                         {
                                             valueIdMeasLocationParam = readerMeasLocationParam.GetValue(c => c.Id);
                                             locParam.Id.Value = valueIdMeasLocationParam;
                                         }
-                                        return resultMeasLocationParam;
+                                        return true;
                                     });
                                 }
                             }
@@ -270,19 +249,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderInsertMeasOther.Select(c => c.Id);
                             queryExecuter.ExecuteAndFetch(builderInsertMeasOther, readerMeasOther =>
                             {
-                                var resultMeasOther = false;
                                 while (readerMeasOther.Read())
                                 {
                                     valueIdMeasOther = readerMeasOther.GetValue(c => c.Id);
                                 }
-                                return resultMeasOther;
+                                return true;
                             });
                         }
 
 
                         if (value.MeasSubTasks != null)
                         {
-                            foreach (MeasSubTask measSubTask in value.MeasSubTasks)
+                            foreach (var measSubTask in value.MeasSubTasks)
                             {
                                 if (measSubTask.Id != null)
                                 {
@@ -296,19 +274,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     builderInsertMeasSubTask.Select(c => c.Id);
                                     queryExecuter.ExecuteAndFetch(builderInsertMeasSubTask, readerMeasSubTask =>
                                     {
-                                        var resultMeasSubTask = false;
                                         while (readerMeasSubTask.Read())
                                         {
                                             valueIdmeasSubTask = readerMeasSubTask.GetValue(c => c.Id);
                                             measSubTask.Id.Value = valueIdmeasSubTask;
                                         }
-                                        return resultMeasSubTask;
+                                        return true;
                                     });
 
 
                                     if ((measSubTask.MeasSubTaskStations != null) && (valueIdmeasSubTask > -1))
                                     {
-                                        foreach (MeasSubTaskStation subTaskStation in measSubTask.MeasSubTaskStations)
+                                        foreach (var subTaskStation in measSubTask.MeasSubTaskStations)
                                         {
                                             int valueIdmeasSubTaskSta = -1;
                                             var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Insert();
@@ -323,13 +300,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             builderInsertMeasSubTaskSta.Select(c => c.Id);
                                             queryExecuter.ExecuteAndFetch(builderInsertMeasSubTaskSta, readerMeasSubTaskSta =>
                                             {
-                                                var resultMeasSubTaskSta = false;
                                                 while (readerMeasSubTaskSta.Read())
                                                 {
                                                     valueIdmeasSubTaskSta = readerMeasSubTaskSta.GetValue(c => c.Id);
                                                     subTaskStation.Id = valueIdmeasSubTaskSta;
                                                 }
-                                                return resultMeasSubTaskSta;
+                                                return true;
                                             });
                                         }
                                     }
@@ -338,319 +314,281 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
 
 
-
-                        /*
-
-
-
-                            if (obj.MeasFreqParam != null)
+                        if (value.MeasFreqParam != null)
+                        {
+                            var freq_param = value.MeasFreqParam;
                             {
-                                foreach (MeasFreqParam freq_param in new List<MeasFreqParam> { obj.MeasFreqParam })
+                                int? idMeasFreqParam = -1;
+                                if (freq_param != null)
                                 {
-                                    int? ID_MeasFreqParam = Constants.NullI;
-                                    if (freq_param != null)
+                                    var builderInsertMeasFreqParam = this._dataLayer.GetBuilder<MD.IMeasFreqParam>().Insert();
+                                    builderInsertMeasFreqParam.SetValue(c => c.Mode, freq_param.Mode.ToString());
+                                    builderInsertMeasFreqParam.SetValue(c => c.Rgl, freq_param.RgL);
+                                    builderInsertMeasFreqParam.SetValue(c => c.Rgu, freq_param.RgU);
+                                    builderInsertMeasFreqParam.SetValue(c => c.Step, freq_param.Step);
+                                    builderInsertMeasFreqParam.SetValue(c => c.MeasTaskId, ID.Value);
+                                    builderInsertMeasFreqParam.Select(c => c.Id);
+                                    queryExecuter.ExecuteAndFetch(builderInsertMeasFreqParam, readerMeasFreqParam =>
                                     {
-                                        YXbsMeasfreqparam prm_MeasFreqParam = new YXbsMeasfreqparam();
-                                        prm_MeasFreqParam.Format("*");
-                                        if (!prm_MeasFreqParam.Fetch(string.Format("ID_XBS_MEASTASK={0}", ID)))
+                                        while (readerMeasFreqParam.Read())
                                         {
-                                            prm_MeasFreqParam.New();
-                                            prm_MeasFreqParam.m_id_xbs_meastask = ID;
-                                            prm_MeasFreqParam.m_mode = freq_param.Mode.ToString();
-                                            if (freq_param.RgL != null) prm_MeasFreqParam.m_rgl = freq_param.RgL.GetValueOrDefault();
-                                            if (freq_param.RgU != null) prm_MeasFreqParam.m_rgu = freq_param.RgU.GetValueOrDefault();
-                                            if (freq_param.Step != null) prm_MeasFreqParam.m_step = freq_param.Step.GetValueOrDefault();
-                                            ID_MeasFreqParam = prm_MeasFreqParam.Save(dbConnect, transaction);
+                                            idMeasFreqParam = readerMeasFreqParam.GetValue(c => c.Id);
                                         }
-                                        else
-                                        {
-                                            ID_MeasFreqParam = prm_MeasFreqParam.m_id;
-                                        }
-                                        prm_MeasFreqParam.Close();
-                                        prm_MeasFreqParam.Dispose();
+                                        return true;
+                                    });
+                                }
+
+                                if ((freq_param.MeasFreqs != null) && (idMeasFreqParam > -1))
+                                {
+                                    var lstIns = new IQueryInsertStatement<MD.IMeasFreq>[freq_param.MeasFreqs.Length];
+                                    for (int i = 0; i < freq_param.MeasFreqs.Length; i++)
+                                    {
+                                        var builderInsertResMeasFreq = this._dataLayer.GetBuilder<MD.IMeasFreq>().Insert();
+                                        builderInsertResMeasFreq.SetValue(c => c.Freq, freq_param.MeasFreqs[i].Freq);
+                                        builderInsertResMeasFreq.SetValue(c => c.MeasFreqParamId, idMeasFreqParam);
+                                        builderInsertResMeasFreq.Select(c => c.Id);
+                                        lstIns[i] = builderInsertResMeasFreq;
+
                                     }
-
-                                    if (freq_param.MeasFreqs != null)
+                                    queryExecuter.ExecuteAndFetch(lstIns, reader =>
                                     {
-                                        List<Yyy> BlockInsert_MeasFreq = new List<Yyy>();
-                                        foreach (MeasFreq sub_freq_st in freq_param.MeasFreqs.ToArray())
+                                        return true;
+                                    });
+                                }
+                            }
+                        }
+
+
+                        if (value.Stations != null)
+                        {
+                            var lstIns = new IQueryInsertStatement<MD.IMeasStation>[value.Stations.Length];
+                            for (int i = 0; i < value.Stations.Length; i++)
+                            {
+                                if (value.Stations[i].StationId != null)
+                                {
+                                    var builderInsertMeasStation = this._dataLayer.GetBuilder<MD.IMeasStation>().Insert();
+                                    builderInsertMeasStation.SetValue(c => c.StationType, value.Stations[i].StationType);
+                                    builderInsertMeasStation.SetValue(c => c.StationId, value.Stations[i].StationId.Value);
+                                    builderInsertMeasStation.SetValue(c => c.MeasTaskId, ID.Value);
+                                    builderInsertMeasStation.Select(c => c.Id);
+                                    lstIns[i] = builderInsertMeasStation;
+                                }
+
+                            }
+                            queryExecuter.ExecuteAndFetch(lstIns, reader =>
+                            {
+                                return true;
+                            });
+                        }
+
+                        if (value.StationsForMeasurements != null)
+                        {
+                            foreach (var stationDataParam in value.StationsForMeasurements)
+                            {
+
+                                int? idstationDataParam = -1;
+                                int? idOwnerdata = -1;
+                                int? idSite = -1;
+
+                                if (stationDataParam.Owner != null)
+                                {
+                                    var builderInsertOwnerData = this._dataLayer.GetBuilder<MD.IOwnerData>().Insert();
+                                    builderInsertOwnerData.SetValue(c => c.Address, stationDataParam.Owner.Addres);
+                                    builderInsertOwnerData.SetValue(c => c.CODE, stationDataParam.Owner.Code);
+                                    builderInsertOwnerData.SetValue(c => c.OKPO, stationDataParam.Owner.OKPO);
+                                    builderInsertOwnerData.SetValue(c => c.OwnerName, stationDataParam.Owner.OwnerName);
+                                    builderInsertOwnerData.SetValue(c => c.ZIP, stationDataParam.Owner.Zip);
+                                    builderInsertOwnerData.Select(c => c.Id);
+                                    queryExecuter.ExecuteAndFetch(builderInsertOwnerData, readerOwnerData =>
+                                    {
+                                        while (readerOwnerData.Read())
                                         {
-                                            YXbsMeasfreq prm_sub_freq_st = new YXbsMeasfreq();
-                                            prm_sub_freq_st.Format("*");
-                                            if (sub_freq_st != null)
-                                            {
-                                                if (!prm_sub_freq_st.Fetch(string.Format("(ID_XBS_MEASFREQPARAM={0}) AND (FREQ={1})", ID_MeasFreqParam, sub_freq_st.Freq.ToString().Replace(",", "."))))
-                                                    prm_sub_freq_st.New();
-
-                                                prm_sub_freq_st.m_id_xbs_measfreqparam = ID_MeasFreqParam;
-                                                prm_sub_freq_st.m_freq = sub_freq_st.Freq;
-                                            }
-                                            else
-                                            {
-                                                prm_sub_freq_st.m_id_xbs_measfreqparam = ID_MeasFreqParam;
-                                            }
-
-                                            for (int i = 0; i < prm_sub_freq_st.getAllFields.Count; i++)
-                                                prm_sub_freq_st.getAllFields[i].Value = prm_sub_freq_st.valc[i];
-
-                                            BlockInsert_MeasFreq.Add(prm_sub_freq_st);
-                                            prm_sub_freq_st.Close();
-                                            prm_sub_freq_st.Dispose();
+                                            idOwnerdata = readerOwnerData.GetValue(c => c.Id);
                                         }
-                                        if (BlockInsert_MeasFreq.Count > 0)
+                                        return true;
+                                    });
+                                }
+
+                                if (stationDataParam.Site != null)
+                                {
+                                    var builderInsertStationSite = this._dataLayer.GetBuilder<MD.IStationSite>().Insert();
+                                    builderInsertStationSite.SetValue(c => c.Address, stationDataParam.Site.Adress);
+                                    builderInsertStationSite.SetValue(c => c.Lat, stationDataParam.Site.Lat);
+                                    builderInsertStationSite.SetValue(c => c.Lon, stationDataParam.Site.Lon);
+                                    builderInsertStationSite.SetValue(c => c.Region, stationDataParam.Site.Region);
+                                    builderInsertStationSite.Select(c => c.Id);
+                                    queryExecuter.ExecuteAndFetch(builderInsertStationSite, readerStationSite =>
+                                    {
+                                        while (readerStationSite.Read())
                                         {
-                                            YXbsMeasfreq YXbsMeasfreq11 = new YXbsMeasfreq();
-                                            YXbsMeasfreq11.Format("*");
-                                            YXbsMeasfreq11.New();
-                                            YXbsMeasfreq11.SaveBath(BlockInsert_MeasFreq, dbConnect, transaction);
-                                            YXbsMeasfreq11.Close();
-                                            YXbsMeasfreq11.Dispose();
+                                            idSite = readerStationSite.GetValue(c => c.Id);
                                         }
+                                        return true;
+                                    });
+                                }
+
+                                var builderInsertStation = this._dataLayer.GetBuilder<MD.IStation>().Insert();
+                                builderInsertStation.SetValue(c => c.GlobalSID, stationDataParam.GlobalSID);
+                                builderInsertStation.SetValue(c => c.Standart, stationDataParam.Standart);
+                                builderInsertStation.SetValue(c => c.Status, stationDataParam.Status);
+                                builderInsertStation.SetValue(c => c.StationId, stationDataParam.IdStation);
+                                builderInsertStation.SetValue(c => c.MeasTaskId, ID.Value);
+                                if (stationDataParam.LicenseParameter != null)
+                                {
+                                    builderInsertStation.SetValue(c => c.CloseDate, stationDataParam.LicenseParameter.CloseDate);
+                                    builderInsertStation.SetValue(c => c.DozvilName, stationDataParam.LicenseParameter.DozvilName);
+                                    builderInsertStation.SetValue(c => c.EndDate, stationDataParam.LicenseParameter.EndDate);
+                                    builderInsertStation.SetValue(c => c.StartDate, stationDataParam.LicenseParameter.StartDate);
+                                }
+                                if (idSite > -1)
+                                {
+                                    builderInsertStation.SetValue(c => c.StationSiteId, idSite);
+                                }
+                                if (idOwnerdata > -1)
+                                {
+                                    builderInsertStation.SetValue(c => c.OwnerDataId, idOwnerdata);
+                                }
+                                builderInsertStation.Select(c => c.Id);
+                                queryExecuter.ExecuteAndFetch(builderInsertStation, readerStation =>
+                                {
+                                    while (readerStation.Read())
+                                    {
+                                        idstationDataParam = readerStation.GetValue(c => c.Id);
+                                    }
+                                    return true;
+                                });
+
+                                if (idstationDataParam > -1)
+                                {
+                                    int? idLinkMeasStation = -1;
+                                    var builderInsertLinkMeasStation = this._dataLayer.GetBuilder<MD.ILinkMeasStation>().Insert();
+                                    builderInsertLinkMeasStation.SetValue(c => c.StationId, idstationDataParam);
+                                    builderInsertLinkMeasStation.SetValue(c => c.MeasTaskId, ID.Value);
+                                    builderInsertLinkMeasStation.Select(c => c.Id);
+                                    queryExecuter.ExecuteAndFetch(builderInsertLinkMeasStation, readerLinkMeasStation =>
+                                    {
+                                        while (readerLinkMeasStation.Read())
+                                        {
+                                            idLinkMeasStation = readerLinkMeasStation.GetValue(c => c.Id);
+                                        }
+                                        return true;
+                                    });
+
+                                }
+
+                                if (stationDataParam.Sectors != null)
+                                {
+                                    foreach (var sector in stationDataParam.Sectors)
+                                    {
+                                        int? idSecForMeas = -1;
+                                        var builderInsertSector = this._dataLayer.GetBuilder<MD.ISector>().Insert();
+                                        builderInsertSector.SetValue(c => c.Agl, sector.AGL);
+                                        builderInsertSector.SetValue(c => c.Azimut, sector.Azimut);
+                                        builderInsertSector.SetValue(c => c.Bw, sector.BW);
+                                        builderInsertSector.SetValue(c => c.ClassEmission, sector.ClassEmission);
+                                        builderInsertSector.SetValue(c => c.Eirp, sector.EIRP);
+                                        builderInsertSector.SetValue(c => c.SectorId, sector.IdSector);
+                                        builderInsertSector.SetValue(c => c.StationId, idstationDataParam);
+                                        builderInsertSector.Select(c => c.Id);
+                                        queryExecuter.ExecuteAndFetch(builderInsertSector, readerSector =>
+                                        {
+                                            while (readerSector.Read())
+                                            {
+                                                idSecForMeas = readerSector.GetValue(c => c.Id);
+                                            }
+                                            return true;
+                                        });
+
+
+                                        if (sector.Frequencies != null)
+                                        {
+                                            var lstInsLinkSectorFreq = new List<IQueryInsertStatement<MD.ILinkSectorFreq>>();
+                                            foreach (var freq in sector.Frequencies)
+                                            {
+                                                int? idSectorFreq = null;
+                                                var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
+                                                builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
+                                                builderInsertSectorFreq.SetValue(c => c.Frequency, (double?)freq.Frequency);
+                                                builderInsertSectorFreq.SetValue(c => c.PlanId, freq.IdPlan);
+                                                builderInsertSectorFreq.Select(c => c.Id);
+                                                queryExecuter.ExecuteAndFetch(builderInsertSectorFreq, readerSectorFreq =>
+                                                {
+                                                    while (readerSectorFreq.Read())
+                                                    {
+                                                        idSectorFreq = readerSectorFreq.GetValue(c => c.Id);
+                                                    }
+                                                    return true;
+                                                });
+
+
+                                                if ((idSectorFreq != null) && (idSecForMeas != null))
+                                                {
+                                                    var builderInsertLinkSectorFreq = this._dataLayer.GetBuilder<MD.ILinkSectorFreq>().Insert();
+                                                    builderInsertLinkSectorFreq.SetValue(c => c.SectorFreqId, idSectorFreq);
+                                                    builderInsertLinkSectorFreq.SetValue(c => c.SectorId, idSecForMeas);
+                                                    builderInsertLinkSectorFreq.Select(c => c.Id);
+                                                    lstInsLinkSectorFreq.Add(builderInsertLinkSectorFreq);
+                                                }
+
+                                            }
+                                            if (lstInsLinkSectorFreq.Count > 0)
+                                            {
+                                                queryExecuter.ExecuteAndFetch(lstInsLinkSectorFreq.ToArray(), reader =>
+                                                {
+                                                    return true;
+                                                });
+                                            }
+                                        }
+
+
+                                        if (sector.MaskBW != null)
+                                        {
+                                            var lstInsLinkSectorMaskElement = new List<IQueryInsertStatement<MD.ILinkSectorMaskElement>>();
+                                            foreach (var maskBw in sector.MaskBW)
+                                            {
+                                                int? sectorMaskElemId = -1;
+                                                var builderInsertSectorMaskElement = this._dataLayer.GetBuilder<MD.ISectorMaskElement>().Insert();
+                                                builderInsertSectorMaskElement.SetValue(c => c.Level, maskBw.level);
+                                                builderInsertSectorMaskElement.SetValue(c => c.Bw, maskBw.BW);
+                                                builderInsertSectorMaskElement.Select(c => c.Id);
+                                                queryExecuter.ExecuteAndFetch(builderInsertSectorMaskElement, readerSectorMaskElement =>
+                                                {
+                                                    while (readerSectorMaskElement.Read())
+                                                    {
+                                                        sectorMaskElemId = readerSectorMaskElement.GetValue(c => c.Id);
+                                                    }
+                                                    return true;
+                                                });
+
+                                                if ((sectorMaskElemId != null) && (idSecForMeas != null))
+                                                {
+                                                    var builderInsertLinkSectorMaskElement = this._dataLayer.GetBuilder<MD.ILinkSectorMaskElement>().Insert();
+                                                    builderInsertLinkSectorMaskElement.SetValue(c => c.SectorMaskElementId, sectorMaskElemId);
+                                                    builderInsertLinkSectorMaskElement.SetValue(c => c.SectorId, idSecForMeas);
+                                                    builderInsertLinkSectorMaskElement.Select(c => c.Id);
+                                                    lstInsLinkSectorMaskElement.Add(builderInsertLinkSectorMaskElement);
+                                                }
+                                            }
+                                            if (lstInsLinkSectorMaskElement.Count > 0)
+                                            {
+                                                queryExecuter.ExecuteAndFetch(lstInsLinkSectorMaskElement.ToArray(), reader =>
+                                                {
+                                                    return true;
+                                                });
+                                            }
+                                        }
+
                                     }
                                 }
                             }
-
-                            if (obj.Stations != null)
-                            {
-                                List<Yyy> BlockInsert_YXbsMeasstation = new List<Yyy>();
-                                foreach (MeasStation s_st in obj.Stations.ToArray())
-                                {
-                                    YXbsMeasstation prm_XbsMeasstation = new YXbsMeasstation();
-                                    prm_XbsMeasstation.Format("*");
-                                    if (prm_XbsMeasstation != null)
-                                    {
-                                        if (!prm_XbsMeasstation.Fetch(string.Format("(STATIONID={0}) AND (ID_XBS_MEASTASK={1})", s_st.StationId.Value, ID)))
-                                            prm_XbsMeasstation.New();
-                                        prm_XbsMeasstation.m_id_xbs_meastask = ID;
-                                        prm_XbsMeasstation.m_stationid = s_st.StationId.Value;
-                                        prm_XbsMeasstation.m_stationtype = s_st.StationType;
-                                    }
-                                    else
-                                    {
-                                        prm_XbsMeasstation.m_id_xbs_meastask = ID;
-                                    }
-
-                                    for (int i = 0; i < prm_XbsMeasstation.getAllFields.Count; i++)
-                                        prm_XbsMeasstation.getAllFields[i].Value = prm_XbsMeasstation.valc[i];
-
-                                    BlockInsert_YXbsMeasstation.Add(prm_XbsMeasstation);
-                                    prm_XbsMeasstation.Close();
-                                    prm_XbsMeasstation.Dispose();
-                                }
-                                if (BlockInsert_YXbsMeasstation.Count > 0)
-                                {
-                                    YXbsMeasstation YXbsMeasstation11 = new YXbsMeasstation();
-                                    YXbsMeasstation11.Format("*");
-                                    YXbsMeasstation11.New();
-                                    YXbsMeasstation11.SaveBath(BlockInsert_YXbsMeasstation, dbConnect, transaction);
-                                    YXbsMeasstation11.Close();
-                                    YXbsMeasstation11.Dispose();
-                                }
-                            }
-
-                            if (obj.StationsForMeasurements != null)
-                            {
-                                foreach (StationDataForMeasurements StationData_param in obj.StationsForMeasurements.ToArray())
-                                {
-                                    int? ID_loc_params = -1;
-                                    YXbsStation prm_loc = new YXbsStation();
-                                    prm_loc.Format("*");
-
-                                    prm_loc.New();
-                                    if (StationData_param.GlobalSID != null) prm_loc.m_globalsid = StationData_param.GlobalSID;
-                                    if (StationData_param.Standart != null) prm_loc.m_standart = StationData_param.Standart;
-                                    if (StationData_param.Status != null) prm_loc.m_status = StationData_param.Status;
-                                    if (StationData_param.IdStation != Constants.NullI) prm_loc.m_id_station = StationData_param.IdStation;
-                                    prm_loc.m_id_xbs_meastask = ID;
-                                    if (StationData_param.LicenseParameter != null)
-                                    {
-                                        if (StationData_param.LicenseParameter.CloseDate != null) prm_loc.m_closedate = StationData_param.LicenseParameter.CloseDate.GetValueOrDefault();
-                                        if (StationData_param.LicenseParameter.DozvilName != null) prm_loc.m_dozvilname = StationData_param.LicenseParameter.DozvilName;
-                                        if (StationData_param.LicenseParameter.EndDate != null) prm_loc.m_enddate = StationData_param.LicenseParameter.EndDate.GetValueOrDefault();
-                                        if (StationData_param.LicenseParameter.StartDate != null) prm_loc.m_startdate = StationData_param.LicenseParameter.StartDate.GetValueOrDefault();
-                                    }
-                                    int? ID_Ownerdata = null;
-                                    int? ID_site_formeas = null;
-                                    if (StationData_param.Owner != null)
-                                    {
-                                        YXbsOwnerdata owner_formeas = new YXbsOwnerdata();
-                                        owner_formeas.Format("*");
-                                        //if (!owner_formeas.Fetch(string.Format("(ADDRES='{0}') AND (CODE='{1}') AND (OKPO='{2}') AND (OWNERNAME='{3}' AND (ZIP='{4}'))", StationData_param.Owner.Addres, StationData_param.Owner.Code, StationData_param.Owner.OKPO, StationData_param.Owner.OwnerName, StationData_param.Owner.Zip)))
-                                        //{
-                                        owner_formeas.New();
-                                        if (StationData_param.Owner.Addres != null) owner_formeas.m_addres = StationData_param.Owner.Addres;
-                                        if (StationData_param.Owner.Code != null) owner_formeas.m_code = StationData_param.Owner.Code;
-                                        if (StationData_param.Owner.OKPO != null) owner_formeas.m_okpo = StationData_param.Owner.OKPO;
-                                        if (StationData_param.Owner.OwnerName != null) owner_formeas.m_ownername = StationData_param.Owner.OwnerName;
-                                        if (StationData_param.Owner.Zip != null) owner_formeas.m_zip = StationData_param.Owner.Zip;
-                                        ID_Ownerdata = owner_formeas.Save(dbConnect, transaction);
-                                        //}
-                                        owner_formeas.Close();
-                                        owner_formeas.Dispose();
-                                    }
-                                    if (StationData_param.Site != null)
-                                    {
-                                        YXbsStationSite site_formeas = new YXbsStationSite();
-                                        site_formeas.Format("*");
-                                        //if (!site_formeas.Fetch(string.Format("(REGION='{0}') AND (ADDRES='{1}') AND (LAT={2}) AND (LON={3})", StationData_param.Site.Region, StationData_param.Site.Adress, ID, StationData_param.Site.Lat.GetValueOrDefault().ToString().Replace(",", "."), StationData_param.Site.Lon.GetValueOrDefault().ToString().Replace(",", "."))))
-                                        //{
-                                        site_formeas.New();
-                                        if (StationData_param.Site.Lat != null) site_formeas.m_lat = StationData_param.Site.Lat.GetValueOrDefault();
-                                        if (StationData_param.Site.Lon != null) site_formeas.m_lon = StationData_param.Site.Lon.GetValueOrDefault();
-                                        if (StationData_param.Site.Region != null) site_formeas.m_region = StationData_param.Site.Region;
-                                        if (StationData_param.Site.Adress != null) site_formeas.m_addres = StationData_param.Site.Adress;
-
-                                        ID_site_formeas = site_formeas.Save(dbConnect, transaction);
-
-                                        site_formeas.Close();
-                                        site_formeas.Dispose();
-                                        //}
-                                    }
-                                    prm_loc.m_id_xbs_stationsite = ID_site_formeas;
-                                    prm_loc.m_id_xbs_ownerdata = ID_Ownerdata;
-
-                                    ID_loc_params = prm_loc.Save(dbConnect, transaction);
-                                    prm_loc.Close();
-                                    prm_loc.Dispose();
-
-                                    if (ID_loc_params > 0)
-                                    {
-                                        YXbsLinkMeasStation yXbsLinkMeasStation = new YXbsLinkMeasStation();
-                                        yXbsLinkMeasStation.Format("*");
-                                        yXbsLinkMeasStation.New();
-                                        yXbsLinkMeasStation.m_id_xbs_station = ID_loc_params;
-                                        yXbsLinkMeasStation.m_id_xbs_meastask = ID;
-                                        yXbsLinkMeasStation.Save(dbConnect, transaction);
-                                        yXbsLinkMeasStation.Close();
-                                        yXbsLinkMeasStation.Dispose();
-                                    }
-
-                                    if (StationData_param.Sectors != null)
-                                    {
-                                        foreach (SectorStationForMeas sec in StationData_param.Sectors.ToArray())
-                                        {
-                                            YXbsSector sect_formeas = new YXbsSector();
-                                            sect_formeas.Format("*");
-                                            sect_formeas.New();
-                                            if (sec.AGL != null) sect_formeas.m_agl = sec.AGL.GetValueOrDefault();
-                                            if (sec.Azimut != null) sect_formeas.m_azimut = sec.Azimut.GetValueOrDefault();
-                                            if (sec.BW != null) sect_formeas.m_bw = sec.BW.GetValueOrDefault();
-                                            if (sec.ClassEmission != null) sect_formeas.m_classemission = sec.ClassEmission;
-                                            if (sec.EIRP != null) sect_formeas.m_eirp = sec.EIRP.GetValueOrDefault();
-                                            sect_formeas.m_idsector = sec.IdSector;
-                                            sect_formeas.m_id_xbs_station = ID_loc_params;
-                                            int? ID_secformeas = sect_formeas.Save(dbConnect, transaction);
-                                            sect_formeas.Close();
-                                            sect_formeas.Dispose();
-
-                                            if (sec.Frequencies != null)
-                                            {
-                                                List<Yyy> BlockInsert = new List<Yyy>();
-                                                foreach (FrequencyForSectorFormICSM F in sec.Frequencies)
-                                                {
-                                                    int? ID_sectorfreq = null;
-                                                    List<string> valueKey = new List<string> { F.ChannalNumber.GetValueOrDefault().ToString(), F.IdPlan.GetValueOrDefault().ToString(), F.Frequency.ToString() };
-                                                    YXbsSectorFreq freq_formeas = new YXbsSectorFreq();
-                                                    freq_formeas.Format("*");
-
-                                                    //if (!freq_formeas.Fetch(string.Format("(CHANNALNUMBER={0}) AND (IDPLAN={1}) AND (FREQUENCY={2})", F.ChannalNumber.GetValueOrDefault(), F.IdPlan.GetValueOrDefault(), ((double?)F.Frequency).ToString().Replace(",", "."))))
-                                                    {
-                                                        freq_formeas.New();
-                                                        if (F.ChannalNumber != null) freq_formeas.m_channalnumber = F.ChannalNumber.GetValueOrDefault();
-                                                        if (F.Frequency != null) freq_formeas.m_frequency = (double?)F.Frequency;
-                                                        if (F.IdPlan != null) freq_formeas.m_idplan = F.IdPlan.GetValueOrDefault();
-                                                        ID_sectorfreq = freq_formeas.Save(dbConnect, transaction);
-                                                    }
-                                                    //else
-                                                    //{
-                                                    //ID_sectorfreq = freq_formeas.m_id;
-                                                    //}
-
-
-                                                    freq_formeas.Close();
-                                                    freq_formeas.Dispose();
-
-                                                    if ((ID_sectorfreq != null) && (ID_secformeas != null))
-                                                    {
-                                                        YXbsLinkSectorFreq yXbsLinkSectorFreq = new YXbsLinkSectorFreq();
-                                                        yXbsLinkSectorFreq.Format("*");
-                                                        yXbsLinkSectorFreq.New();
-                                                        yXbsLinkSectorFreq.m_id_xbs_sectorfreq = ID_sectorfreq;
-                                                        yXbsLinkSectorFreq.m_id_xbs_sector = ID_secformeas;
-
-                                                        for (int i = 0; i < yXbsLinkSectorFreq.getAllFields.Count; i++)
-                                                            yXbsLinkSectorFreq.getAllFields[i].Value = yXbsLinkSectorFreq.valc[i];
-                                                        BlockInsert.Add(yXbsLinkSectorFreq);
-                                                        yXbsLinkSectorFreq.Close();
-                                                        yXbsLinkSectorFreq.Dispose();
-                                                    }
-
-                                                }
-                                                if (BlockInsert.Count > 0)
-                                                {
-                                                    YXbsLinkSectorFreq freq_formeas11 = new YXbsLinkSectorFreq();
-                                                    freq_formeas11.Format("*");
-                                                    freq_formeas11.New();
-                                                    freq_formeas11.SaveBath(BlockInsert, dbConnect, transaction);
-                                                    freq_formeas11.Close();
-                                                    freq_formeas11.Dispose();
-                                                }
-                                            }
-
-                                            if (sec.MaskBW != null)
-                                            {
-                                                List<Yyy> BlockInsert = new List<Yyy>();
-                                                foreach (MaskElements F in sec.MaskBW)
-                                                {
-                                                    int? SectorMaskElemId = null;
-                                                    YXbsSectorMaskElem yXbsMaskelements = new YXbsSectorMaskElem();
-                                                    yXbsMaskelements.Format("*");
-                                                    //if (!yXbsMaskelements.Fetch(string.Format("(BW={0}) AND (LEVEL={1})", F.BW.GetValueOrDefault().ToString().Replace(",", "."), F.level.GetValueOrDefault().ToString().Replace(",", "."))))
-                                                    {
-                                                        yXbsMaskelements.New();
-                                                        if (F.BW != null) yXbsMaskelements.m_bw = F.BW.GetValueOrDefault();
-                                                        if (F.level != null) yXbsMaskelements.m_level = F.level.GetValueOrDefault();
-                                                        SectorMaskElemId = yXbsMaskelements.Save(dbConnect, transaction);
-                                                    }
-                                                    //else
-                                                    //{
-                                                    //SectorMaskElemId = yXbsMaskelements.m_id;
-                                                    //}
-
-                                                    yXbsMaskelements.Close();
-                                                    yXbsMaskelements.Dispose();
-
-                                                    if ((SectorMaskElemId != null) && (ID_secformeas != null))
-                                                    {
-                                                        YXbsLinkSectorMask yXbsLinkSectorMask = new YXbsLinkSectorMask();
-                                                        yXbsLinkSectorMask.Format("*");
-                                                        yXbsLinkSectorMask.New();
-                                                        yXbsLinkSectorMask.m_id_sectormaskelem = SectorMaskElemId;
-                                                        yXbsLinkSectorMask.m_id_xbs_sector = ID_secformeas;
-
-                                                        for (int i = 0; i < yXbsLinkSectorMask.getAllFields.Count; i++)
-                                                            yXbsLinkSectorMask.getAllFields[i].Value = yXbsLinkSectorMask.valc[i];
-                                                        BlockInsert.Add(yXbsLinkSectorMask);
-                                                        yXbsLinkSectorMask.Close();
-                                                        yXbsLinkSectorMask.Dispose();
-                                                    }
-                                                }
-                                                if (BlockInsert.Count > 0)
-                                                {
-                                                    YXbsLinkSectorMask freq_formeas11 = new YXbsLinkSectorMask();
-                                                    freq_formeas11.Format("*");
-                                                    freq_formeas11.New();
-                                                    freq_formeas11.SaveBath(BlockInsert, dbConnect, transaction);
-                                                    freq_formeas11.Close();
-                                                    freq_formeas11.Dispose();
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                   */
+                        }
                     }
+                    queryExecuter.CommitTransaction();
+                }
+                catch (Exception e)
+                {
+                    queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return ID;

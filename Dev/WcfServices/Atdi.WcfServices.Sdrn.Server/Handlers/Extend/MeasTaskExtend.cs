@@ -9,7 +9,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     {
         public static void CreateAllSubTasks(this MeasTask task)
         {
-            if (task.Status == "N")
+            if (task.Status == Status.N.ToString())
             {
                 List<MeasSubTask> ListMST = new List<MeasSubTask>();
                 if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); };
@@ -21,14 +21,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                     MST.Id.Value = 1;
                     MST.TimeStart = task.MeasTimeParamList.PerStart;
                     MST.TimeStop = task.MeasTimeParamList.PerStop;
-                    MST.Status = "A";
+                    MST.Status = Status.A.ToString();
                     List<MeasSubTaskStation> ListMSTS = new List<MeasSubTaskStation>();
                     int j = 0;
                     foreach (MeasStation St in task.Stations)
                     {
                         MeasSubTaskStation MSTS = new MeasSubTaskStation();
                         MSTS.Id = j; j++;
-                        MSTS.Status = "N";
+                        MSTS.Status = Status.N.ToString();
                         MSTS.StationId = new SensorIdentifier();
                         MSTS.StationId.Value = St.StationId.Value;
                         ListMSTS.Add(MSTS);
@@ -52,14 +52,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                         MST.Id.Value = i; i++;
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);
                         MST.TimeStop = new DateTime(day.Year, day.Month, day.Day, hour_stop, min_stop, sec_stop);
-                        MST.Status = "A";
+                        MST.Status = Status.A.ToString();
                         List<MeasSubTaskStation> ListMSTS = new List<MeasSubTaskStation>();
                         int j = 0;
                         foreach (MeasStation St in task.Stations)
                         {
                             MeasSubTaskStation MSTS = new MeasSubTaskStation();
                             MSTS.Id = j; j++;
-                            MSTS.Status = "N";
+                            MSTS.Status = Status.N.ToString();
                             MSTS.StationId = new SensorIdentifier();
                             MSTS.StationId.Value = St.StationId.Value;
                             ListMSTS.Add(MSTS);
@@ -72,33 +72,34 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
 
                 task.MeasSubTasks = ListMST.ToArray();
             }
-            task.Status = "A";
+            task.Status = Status.A.ToString();
         }
 
 
         public static void UpdateStatusSubTasks(this MeasTask task, int Id_Sensor, string Type, bool isOnline)
         {
             if (task.MeasSubTasks == null) return;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray()) {
-                if (SubTask.MeasSubTaskStations!=null)
+            foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
+            {
+                if (SubTask.MeasSubTaskStations != null)
                 {
                     foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations.ToArray())
                     {
                         if (SubTaskStation.StationId.Value == Id_Sensor)
                         {
-                            if (Type == "Run")
+                            if (Type == MeasTaskMode.Run.ToString())
                             {
-                                if (isOnline) SubTaskStation.Status = "O";
-                                else SubTaskStation.Status = "A";
+                                if (isOnline) SubTaskStation.Status = Status.O.ToString();
+                                else SubTaskStation.Status = Status.A.ToString();
                             }
-                            else if (Type == "Stop")
+                            else if (Type == MeasTaskMode.Stop.ToString())
                             {
-                                if (isOnline) SubTaskStation.Status = "P";
-                                else SubTaskStation.Status = "F";
+                                if (isOnline) SubTaskStation.Status = Status.P.ToString(); 
+                                else SubTaskStation.Status = Status.F.ToString(); 
                             }
-                            else if (Type == "Del")
+                            else if (Type == MeasTaskMode.Del.ToString())
                             {
-                                SubTaskStation.Status = "Z";
+                                SubTaskStation.Status = Status.Z.ToString();
                             }
                         }
                     }
@@ -117,45 +118,45 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         {
             //правила переходов из статуса в статусы при заданной операции
 
-                List<RuleStatusTransition> OperationTransitionRule = new List<RuleStatusTransition>();
-                OperationTransitionRule.Add(new RuleStatusTransition("Stop", "N", "F"));
-                OperationTransitionRule.Add(new RuleStatusTransition("Stop", "A", "F"));
-                OperationTransitionRule.Add(new RuleStatusTransition("Run", "F", "A"));
-                OperationTransitionRule.Add(new RuleStatusTransition("Stop", "E_L", "F"));
-                OperationTransitionRule.Add(new RuleStatusTransition("Run", "P", "O"));
-                OperationTransitionRule.Add(new RuleStatusTransition("Stop", "O", "P"));
+            List<RuleStatusTransition> OperationTransitionRule = new List<RuleStatusTransition>();
+            OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.N.ToString(), Status.F.ToString()));
+            OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.A.ToString(), Status.F.ToString()));
+            OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Run.ToString(), Status.F.ToString(), Status.A.ToString()));
+            OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.E_L.ToString(), Status.F.ToString()));
+            OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Run.ToString(), Status.P.ToString(), Status.O.ToString()));
+            OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.O.ToString(), Status.P.ToString()));
 
 
-                List<StatusDescription> Descr_MeasSubTaskStation = new List<StatusDescription>();
-                Descr_MeasSubTaskStation.Add(new StatusDescription("", 0, ModeStatus.cur));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("N", 2, ModeStatus.cur));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("A", 9, ModeStatus.cur));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("C", 4, ModeStatus.final));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("T", 3, ModeStatus.final));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("F", 8, ModeStatus.cur));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("Z", 1, ModeStatus.final));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("E_L", 5, ModeStatus.cur));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("E_T", 6, ModeStatus.final));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("E_E", 7, ModeStatus.final));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("P", 10, ModeStatus.cur));
-                Descr_MeasSubTaskStation.Add(new StatusDescription("O", 11, ModeStatus.cur));
+            List<StatusDescription> Descr_MeasSubTaskStation = new List<StatusDescription>();
+            Descr_MeasSubTaskStation.Add(new StatusDescription("", 0, ModeStatus.cur));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.N.ToString(), 2, ModeStatus.cur));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.A.ToString(), 9, ModeStatus.cur));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.C.ToString(), 4, ModeStatus.final));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.T.ToString(), 3, ModeStatus.final));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.F.ToString(), 8, ModeStatus.cur));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.Z.ToString(), 1, ModeStatus.final));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.E_L.ToString(), 5, ModeStatus.cur));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.E_T.ToString(), 6, ModeStatus.final));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.E_E.ToString(), 7, ModeStatus.final));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.P.ToString(), 10, ModeStatus.cur));
+            Descr_MeasSubTaskStation.Add(new StatusDescription(Status.O.ToString(), 11, ModeStatus.cur));
 
-                List<StatusDescription> Descr_MeasSubTask = new List<StatusDescription>();
-                Descr_MeasSubTask.Add(new StatusDescription("", 0, ModeStatus.cur));
-                Descr_MeasSubTask.Add(new StatusDescription("N", 2, ModeStatus.cur));
-                Descr_MeasSubTask.Add(new StatusDescription("A", 9, ModeStatus.cur));
-                Descr_MeasSubTask.Add(new StatusDescription("C", 4, ModeStatus.final));
-                Descr_MeasSubTask.Add(new StatusDescription("T", 3, ModeStatus.final));
-                Descr_MeasSubTask.Add(new StatusDescription("F", 8, ModeStatus.cur));
-                Descr_MeasSubTask.Add(new StatusDescription("Z", 1, ModeStatus.final));
-                Descr_MeasSubTask.Add(new StatusDescription("E_L", 5, ModeStatus.cur));
-                Descr_MeasSubTask.Add(new StatusDescription("E_T", 6, ModeStatus.final));
-                Descr_MeasSubTask.Add(new StatusDescription("E_E", 7, ModeStatus.final));
-                Descr_MeasSubTask.Add(new StatusDescription("P", 10, ModeStatus.cur));
-                Descr_MeasSubTask.Add(new StatusDescription("O", 11, ModeStatus.cur));
+            List<StatusDescription> Descr_MeasSubTask = new List<StatusDescription>();
+            Descr_MeasSubTask.Add(new StatusDescription("", 0, ModeStatus.cur));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.N.ToString(), 2, ModeStatus.cur));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.A.ToString(), 9, ModeStatus.cur));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.C.ToString(), 4, ModeStatus.final));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.T.ToString(), 3, ModeStatus.final));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.F.ToString(), 8, ModeStatus.cur));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.Z.ToString(), 1, ModeStatus.final));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.E_L.ToString(), 5, ModeStatus.cur));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.E_T.ToString(), 6, ModeStatus.final));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.E_E.ToString(), 7, ModeStatus.final));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.P.ToString(), 10, ModeStatus.cur));
+            Descr_MeasSubTask.Add(new StatusDescription(Status.O.ToString(), 11, ModeStatus.cur));
 
-                List<int> MaxWeightLst = new List<int>();
-                if (task.MeasSubTasks == null) return;
+            List<int> MaxWeightLst = new List<int>();
+            if (task.MeasSubTasks == null) return;
 
             foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
             {
@@ -165,49 +166,49 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                 {
                     foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations.ToArray())
                     {
-                        if (Type == "Run")
+                        if (Type == MeasTaskMode.Run.ToString())
                         {
-                            if (SubTaskStation.Status == "P")
+                            if (SubTaskStation.Status == Status.P.ToString())
                             {
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == "O")) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.O.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = "O";
-                                    SubTask.Status = "O";
-                                    task.Status = "O";
+                                    SubTaskStation.Status = Status.O.ToString();
+                                    SubTask.Status = Status.O.ToString();
+                                    task.Status = Status.O.ToString();
                                 }
                             }
-                            if (SubTaskStation.Status == "F")
+                            if (SubTaskStation.Status == Status.F.ToString())
                             {
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == "A")) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.A.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = "A";
-                                    SubTask.Status = "A";
-                                    task.Status = "A";
+                                    SubTaskStation.Status = Status.A.ToString();
+                                    SubTask.Status = Status.A.ToString();
+                                    task.Status = Status.A.ToString();
                                 }
                             }
                         }
-                        else if (Type == "Del")
+                        else if (Type == MeasTaskMode.Del.ToString())
                         {
-                            SubTaskStation.Status = "Z";
-                            SubTask.Status = "Z";
-                            task.Status = "Z";
+                            SubTaskStation.Status = Status.Z.ToString();
+                            SubTask.Status = Status.Z.ToString();
+                            task.Status = Status.Z.ToString();
                         }
-                        else if (Type == "Stop")
+                        else if (Type == MeasTaskMode.Stop.ToString())
                         {
                             StatusDescription DescrStat = Descr_MeasSubTaskStation.Find(t => t.Type != ModeStatus.final && t.NameStatus == SubTaskStation.Status);
                             if (DescrStat != null)
                             {
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == "P")) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.P.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = "P";
-                                    SubTask.Status = "P";
-                                    task.Status = "P";
+                                    SubTaskStation.Status = Status.P.ToString();
+                                    SubTask.Status = Status.P.ToString();
+                                    task.Status = Status.P.ToString();
                                 }
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == "F")) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.F.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = "F";
-                                    SubTask.Status = "F";
-                                    task.Status = "F";
+                                    SubTaskStation.Status = Status.F.ToString();
+                                    SubTask.Status = Status.F.ToString();
+                                    task.Status = Status.F.ToString();
                                 }
                             }
                         }
@@ -217,75 +218,42 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                             MaxWeightLst.Add(val_fnd_status.Weight);
                         }
                     }
-                    }
-                    if (MaxWeightLst.Count > 0)
-                    {
-                        int Max_ = MaxWeightLst.Max();
-                        StatusDescription val_fnd_status_ = Descr_MeasSubTaskStation.Find(t => t.Weight == Max_);
-                        if (val_fnd_status_ != null)
-                        {
-                            StatusWithMaxWeight = val_fnd_status_.NameStatus;
-                            SubTask.Status = StatusWithMaxWeight;
-                        }
-                    }
-                }
-                MaxWeightLst = new List<int>();
-                foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
-                {
-                    StatusDescription val_fnd_status = Descr_MeasSubTask.Find(t => t.NameStatus == SubTask.Status);
-                    if (val_fnd_status != null)
-                    {
-                        MaxWeightLst.Add(val_fnd_status.Weight);
-                    }
                 }
                 if (MaxWeightLst.Count > 0)
                 {
                     int Max_ = MaxWeightLst.Max();
-                    StatusDescription val_fnd_status_ = Descr_MeasSubTask.Find(t => t.Weight == Max_);
+                    StatusDescription val_fnd_status_ = Descr_MeasSubTaskStation.Find(t => t.Weight == Max_);
                     if (val_fnd_status_ != null)
                     {
-                        task.Status = val_fnd_status_.NameStatus;
+                        StatusWithMaxWeight = val_fnd_status_.NameStatus;
+                        SubTask.Status = StatusWithMaxWeight;
                     }
                 }
-                OperationTransitionRule.Clear();
-                Descr_MeasSubTaskStation.Clear();
-                Descr_MeasSubTask.Clear();
-                MaxWeightLst.Clear();
-            
+            }
+            MaxWeightLst = new List<int>();
+            foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
+            {
+                StatusDescription val_fnd_status = Descr_MeasSubTask.Find(t => t.NameStatus == SubTask.Status);
+                if (val_fnd_status != null)
+                {
+                    MaxWeightLst.Add(val_fnd_status.Weight);
+                }
+            }
+            if (MaxWeightLst.Count > 0)
+            {
+                int Max_ = MaxWeightLst.Max();
+                StatusDescription val_fnd_status_ = Descr_MeasSubTask.Find(t => t.Weight == Max_);
+                if (val_fnd_status_ != null)
+                {
+                    task.Status = val_fnd_status_.NameStatus;
+                }
+            }
+            OperationTransitionRule.Clear();
+            Descr_MeasSubTaskStation.Clear();
+            Descr_MeasSubTask.Clear();
+            MaxWeightLst.Clear();
+
         }
-}
-
-
-    public class RuleStatusTransition
-    {
-        public string NameOperation { get; set; }
-        public string StartStatus { get; set; }
-        public string ToStatuses { get; set; }
-        public RuleStatusTransition(string NameOperation_, string StartStatus_, string ToStatuses_)
-        {
-            NameOperation = NameOperation_;
-            StartStatus = StartStatus_;
-            ToStatuses = ToStatuses_;
-        }
-    }
-
-    public class StatusDescription
-    {
-        public string NameStatus { get; set; }
-        public int Weight { get; set; }
-        public ModeStatus Type { get; set; }
-        public StatusDescription(string NameStatus_, int Weight_, ModeStatus type_)
-        {
-            NameStatus = NameStatus_;
-            Weight = Weight_;
-            Type = type_;
-        }
-    }
-
-    public enum ModeStatus
-    {
-        final,
-        cur
     }
 
 }

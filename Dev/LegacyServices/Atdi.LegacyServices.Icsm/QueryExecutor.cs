@@ -725,6 +725,11 @@ namespace Atdi.LegacyServices.Icsm
         {
             throw new NotImplementedException();
         }
+
+        public int InsertSelect<TModelInsert, TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

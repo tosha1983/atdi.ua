@@ -89,6 +89,7 @@
     <Compile Include="Entities\ISector.cs" />
     <Compile Include="Entities\ISectorFreq.cs" />
     <Compile Include="Entities\ISectorMaskElement.cs" />
+    <Compile Include="Entities\IXVUnit2.cs" />
     <Compile Include="Entities\ISensor.cs" />
     <Compile Include="Entities\ISensorAntenna.cs" />
     <Compile Include="Entities\ISensorEquipment.cs" />
@@ -166,6 +167,7 @@
     <Content Include="Metadata\Entities\ResSysInfoBlocks.xml" />
     <Content Include="Metadata\Entities\ResSysInfoBlsRaw.xml" />
     <Content Include="Metadata\Entities\ResSysInfoRaw.xml" />
+    <Content Include="Metadata\Entities\XVUnit2.xml" />
     <Content Include="Metadata\Entities\SectorMaskElement.xml" />
     <Content Include="Metadata\Entities\MeasDtParam.xml" />
     <Content Include="Metadata\Entities\MeasFreq.xml" />

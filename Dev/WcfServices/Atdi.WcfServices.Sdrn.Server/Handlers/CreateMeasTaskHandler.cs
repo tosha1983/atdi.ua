@@ -14,56 +14,53 @@ namespace Atdi.WcfServices.Sdrn.Server
 {
     public class CreateMeasTaskHandler 
     {
-        private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
-        private readonly ISdrnServerEnvironment _environment;
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
 
-    
 
-        public CreateMeasTaskHandler(ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public CreateMeasTaskHandler(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
-            this._environment = environment;
-            this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._eventEmitter = eventEmitter;
             this._logger = logger;
         }
 
 
-
         public MeasTaskIdentifier Handle(MeasTask task)
         {
-            var loadSensor = new LoadSensor(_environment, _messagePublisher, _eventEmitter, _dataLayer, _logger);
-            var measTaskProcess = new MeasTaskProcess(_environment, _messagePublisher, _eventEmitter, _dataLayer, _logger);
+            var loadSensor = new LoadSensor(_dataLayer, _logger);
+            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
             var measTask = task;
             var measTaskIdentifier = new MeasTaskIdentifier();
-            using (this._logger.StartTrace(Contexts.ThisComponent, Categories.Processing, this))
+            try
             {
-                if (measTask.Id == null) measTask.Id = measTaskIdentifier;
-                if (measTask.Status == null) measTask.Status = "N";
-                var SensorIds = new List<int>();
-                if (measTask.Stations != null)
+                using (this._logger.StartTrace(Contexts.ThisComponent, Categories.Processing, this))
                 {
-                    foreach (var station in measTask.Stations)
+                    if (measTask.Id == null) measTask.Id = measTaskIdentifier;
+                    if (measTask.Status == null) measTask.Status = Status.N.ToString();
+                    var SensorIds = new List<int>();
+                    if (measTask.Stations != null)
                     {
-                        if (station.StationId != null)
+                        foreach (var station in measTask.Stations)
                         {
                             if (station.StationId != null)
                             {
-                                if (station.StationId.Value > 0)
+                                if (station.StationId != null)
                                 {
-                                    if (!SensorIds.Contains(station.StationId.Value))
+                                    if (station.StationId.Value > 0)
                                     {
-                                        var sens = loadSensor.LoadObjectSensor(station.StationId.Value);
-                                        if (sens != null)
+                                        if (!SensorIds.Contains(station.StationId.Value))
                                         {
-                                            if (sens.Id != null)
+                                            var sens = loadSensor.LoadObjectSensor(station.StationId.Value);
+                                            if (sens != null)
                                             {
-                                                if (sens.Id.Value > 0)
+                                                if (sens.Id != null)
                                                 {
-                                                    SensorIds.Add(station.StationId.Value);
+                                                    if (sens.Id.Value > 0)
+                                                    {
+                                                        SensorIds.Add(station.StationId.Value);
+                                                    }
                                                 }
                                             }
                                         }
@@ -72,14 +69,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                         }
                     }
+                    if (SensorIds.Count > 0)
+                    {
+                        measTaskProcess.Process(task, SensorIds, MeasTaskMode.New.ToString(), false, out bool isSuccessTemp, out int? ID);
+                        measTaskIdentifier.Value = ID.Value;
+                    }
                 }
-                if (SensorIds.Count > 0)
-                {
-                    bool isSuccessTemp = false;
-                    int? ID = null;
-                    measTaskProcess.Process(task, SensorIds, "New", false, out isSuccessTemp, out ID);
-                    measTaskIdentifier.Value = ID.Value;
-                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return measTaskIdentifier;
         }

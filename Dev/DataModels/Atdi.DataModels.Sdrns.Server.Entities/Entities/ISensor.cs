@@ -32,7 +32,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string CustTxt1 { get; set; }
         DateTime? CustData1 { get; set; }
         double? CustNbr1 { get; set; }
-        DateTime DateCreated { get; set; }
+        DateTime? DateCreated { get; set; }
         string CreatedBy { get; set; }
         string ApiVersion { get; set; }
         string TechId { get; set; }
