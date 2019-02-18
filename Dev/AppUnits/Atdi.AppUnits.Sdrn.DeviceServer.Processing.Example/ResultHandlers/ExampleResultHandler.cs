@@ -15,8 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<ExampleTask, ExampleProcess> taskContext)
         {
 
-            taskContext.Process.TaskId += result.Level;
-            taskContext.Task.ExampleValue1 +=
+           
 
         }
     }
