@@ -114,9 +114,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.csproj">
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.csproj">
       <Project>{93f2ca4c-2c15-481c-8ce3-30baa661d1ff}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.csproj">
+      <Project>{d6699055-032f-443e-a557-2e2e36d4f0f1}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
