@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_MEASFREQ</Name>
+    <Name>XBS_MEASDTPARAM</Name>
     <Schema>ICSM</Schema>
   </DataSource>
   <Fields>
@@ -19,8 +19,8 @@
     <Field Desc="Demod" Title="Demod" Name="Demod" DataType="Text.50" SourceName="DEMOD" SourceType="Column" Required="false"/>
     <Field Desc="Preamplification" Title="Preamplification" Name="Preamplification" DataType="Integer.32" SourceName="PREAMPLIFICATION" SourceType="Column" Required="true"/>
     <Field Desc="Mode" Title="Mode" Name="Mode" DataType="Text.50" SourceName="MODE" SourceType="Column" Required="false"/>
-    <Field Desc="RBW, kHz" Title="RBW, kHz" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
-    <Field Desc="VBW, kHz" Title="VBW, kHz" Name="Vbw" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Desc="RBW, kHz" Title="RBW, kHz" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false" Unit="Frequency.kHz.xml"/>
+    <Field Desc="VBW, kHz" Title="VBW, kHz" Name="Vbw" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false" Unit="Frequency.kHz.xml"/>
     <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasDtParam to MeasTask">
       <PrimaryKeyMapping>

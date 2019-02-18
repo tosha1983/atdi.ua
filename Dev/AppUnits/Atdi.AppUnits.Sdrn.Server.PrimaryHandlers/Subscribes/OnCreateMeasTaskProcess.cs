@@ -194,8 +194,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                         var timeParamList = new MeasTimeParamList();
                         timeParamList.PerInterval = readerMeasTask.GetValue(c => c.PerInterval);
-                        timeParamList.PerStart = readerMeasTask.GetValue(c => c.PerStart);
-                        timeParamList.PerStop = readerMeasTask.GetValue(c => c.PerStop);
+                        if (readerMeasTask.GetValue(c => c.PerStart) != null)
+                        {
+                            timeParamList.PerStart = readerMeasTask.GetValue(c => c.PerStart).Value;
+                        }
+                        if (readerMeasTask.GetValue(c => c.PerStop) != null)
+                        {
+                            timeParamList.PerStop = readerMeasTask.GetValue(c => c.PerStop).Value;
+                        }
                         timeParamList.TimeStart = readerMeasTask.GetValue(c => c.TimeStart);
                         timeParamList.TimeStop = readerMeasTask.GetValue(c => c.TimeStop);
                         measTask.MeasTimeParamList = timeParamList;

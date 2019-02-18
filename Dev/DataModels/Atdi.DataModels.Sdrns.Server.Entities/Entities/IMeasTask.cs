@@ -20,13 +20,13 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? Prio { get; set; }
         string ResultType { get; set; }
         int? MaxTimeBs { get; set; }
-        DateTime DateCreated { get; set; }
+        DateTime? DateCreated { get; set; }
         string CreatedBy { get; set; }
         string IdStart { get; set; }
-        DateTime PerStart { get; set; }
-        DateTime PerStop { get; set; }
-        DateTime TimeStart { get; set; }
-        DateTime TimeStop { get; set; }
+        DateTime? PerStart { get; set; }
+        DateTime? PerStop { get; set; }
+        DateTime? TimeStart { get; set; }
+        DateTime? TimeStop { get; set; }
         double? PerInterval { get; set; }
     }
 }
