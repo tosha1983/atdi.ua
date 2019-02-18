@@ -13,7 +13,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
     class ResultConvertorDecriptor
     {
-        public delegate ICommandResultPart HandlerInvoker(object instance, ICommandResultPart resultPart, ICommand command, IProcessingContext context);
+        public delegate ICommandResultPart HandlerInvoker(object instance, ICommandResultPart resultPart, ICommand command);
 
         public ResultConvertorDecriptor(Type instanceType)
         {
@@ -45,12 +45,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             var targetArg = Expression.Parameter(typeof(object));
             var resultPartParam = Expression.Parameter(typeof(ICommandResultPart));
             var commandParam = Expression.Parameter(typeof(ICommand));
-            var contextParam = Expression.Parameter(typeof(IProcessingContext));
+
 
             var instance = Expression.Convert(targetArg, method.DeclaringType);
 
             var methodParams = method.GetParameters();
-            if (methodParams.Length != 3)
+            if (methodParams.Length != 2)
             {
                 throw new InvalidOperationException("Invalid convertor definition");
             }
@@ -58,16 +58,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 throw new InvalidOperationException("Invalid convertor definition");
             }
-            if (methodParams[2].ParameterType != typeof(IProcessingContext))
-            {
-                throw new InvalidOperationException("Invalid convertor definition");
-            }
-            
+
+
             var resultPartArg = Expression.Convert(resultPartParam, methodParams[0].ParameterType);
             var commandArg = Expression.Convert(commandParam, methodParams[1].ParameterType);
-            var contextArg = Expression.Convert(contextParam, methodParams[2].ParameterType);
 
-            Expression body = Expression.Call(instance, method, resultPartArg, commandArg, contextArg);
+            Expression body = Expression.Call(instance, method, resultPartArg, commandArg);
 
             if (body.Type == typeof(void))
             {
@@ -78,7 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             var block = Expression.Convert(body, typeof(ICommandResultPart));
 
 
-            var lambda = Expression.Lambda<HandlerInvoker>(block, targetArg, resultPartParam, commandParam, contextParam);
+            var lambda = Expression.Lambda<HandlerInvoker>(block, targetArg, resultPartParam, commandParam);
 
             return lambda.Compile();
         }

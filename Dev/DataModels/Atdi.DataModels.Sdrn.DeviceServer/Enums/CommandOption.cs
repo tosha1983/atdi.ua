@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
 {
+    [Flags]
     public enum CommandOption
     {
         PutInQueue = 0,

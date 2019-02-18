@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Atdi.AppUnits.Sdrn.DeviceServer.Adapters")]
+[assembly: AssemblyTitle("Atdi.AppUnits.Sdrn.DeviceServer.Messaging")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Atdi.AppUnits.Sdrn.DeviceServer.Adapters")]
+[assembly: AssemblyProduct("Atdi.AppUnits.Sdrn.DeviceServer.Messaging")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d6699055-032f-443e-a557-2e2e36d4f0f1")]
+[assembly: Guid("e4157d42-8855-479c-9732-ac8fb891f7ff")]
 
 // Version information for an assembly consists of the following four values:
 //

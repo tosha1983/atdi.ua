@@ -18,7 +18,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Core
         static void Main(string[] args)
         {
             IController controller = null;
-            IProcessingContext context = null;
+            //IProcess context = null;
 
             var command = new MesureGpsLocationExampleCommand();
 
@@ -26,16 +26,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Core
             command.Options = CommandOption.StartDelayed | CommandOption.StartImmediately;
 
             var source = new CancellationTokenSource();
-
-            controller.SendCommand<MesureGpsLocationExampleResult>(context, command);
-            controller.SendCommand<MesureGpsLocationExampleResult>(context, command, source.Token);
-            controller.SendCommand<MesureGpsLocationExampleResult>(context, command, onFailureAction);
-            controller.SendCommand<MesureGpsLocationExampleResult>(context, command, source.Token, onFailureAction);
+            
+            controller.SendCommand<MesureGpsLocationExampleResult>(null, command);
+            controller.SendCommand<MesureGpsLocationExampleResult>(null, command, source.Token);
+            controller.SendCommand<MesureGpsLocationExampleResult>(null, command, onFailureAction);
+            controller.SendCommand<MesureGpsLocationExampleResult>(null, command, source.Token, onFailureAction);
 
             source.Cancel();
         }
 
-        static void onFailureAction(IProcessingContext context, ICommand command, CommandFailureReason failureReason, Exception exception)
+        static void onFailureAction(ITaskContext context, ICommand command, CommandFailureReason failureReason, Exception exception)
         {
             return;
         }

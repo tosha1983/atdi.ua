@@ -25,9 +25,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._descriptors = new Dictionary<string, ResultHandlerDecriptor>();
         }
 
-        public IResultHandler GetHandler(Type commandType, Type resultType, Type contextType)
+        public IResultHandler GetHandler(Type commandType, Type resultType, Type taskType, Type processType)
         {
-            var key = ResultHandlerDecriptor.BuildKey(commandType, resultType, contextType);
+            var key = ResultHandlerDecriptor.BuildKey(commandType, resultType, taskType, processType);
             
             if (this._handlers.TryGetValue(key, out IResultHandler handler))
             {
@@ -48,9 +48,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             }
         }
 
-        public void Register(Type handlerType)
+        public void Register(Type handlerInstanceType)
         {
-            var descriptor = new ResultHandlerDecriptor(handlerType);
+            var descriptor = new ResultHandlerDecriptor(handlerInstanceType);
             lock (this._loker)
             {
                 if (this._descriptors.ContainsKey(descriptor.Key))

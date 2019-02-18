@@ -22,13 +22,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._instance = instance;
         }
 
-        public ICommandResultPart Convert(ICommandResultPart result, ICommand command, IProcessingContext context)
+        public ICommandResultPart Convert(ICommandResultPart result, ICommand command)
         {
             try
             {
                 using (this._logger.StartTrace(Contexts.ResultConvertor, Categories.Converting, TraceScopeNames.ConvertingResult.With(command.Id, this._decriptor.FromType, this._decriptor.ResultType, result.PartIndex, result.Status)))
                 {
-                    return this._decriptor.Invoker(this._instance, result, command, context);
+                    return this._decriptor.Invoker(this._instance, result, command);
                 }
             }
             catch (Exception e)

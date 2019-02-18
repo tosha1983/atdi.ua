@@ -42,7 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAdapter.cs" />
+    <Compile Include="IAutoTaskActivator.cs" />
+    <Compile Include="IProcessingDispatcher.cs" />
     <Compile Include="IResultConvertorFactory.cs" />
+    <Compile Include="ITaskWorkerFactory.cs" />
     <Compile Include="IResultHandlerFactory.cs" />
     <Compile Include="IAdapterFactory.cs" />
     <Compile Include="IAdapterHost.cs" />
@@ -57,6 +60,9 @@
     <Compile Include="IResultHandler.cs" />
     <Compile Include="IResultHandlersHost.cs" />
     <Compile Include="IResultsHost.cs" />
+    <Compile Include="ITaskStarter.cs" />
+    <Compile Include="ITaskWorker.cs" />
+    <Compile Include="ITaskWorkersHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
