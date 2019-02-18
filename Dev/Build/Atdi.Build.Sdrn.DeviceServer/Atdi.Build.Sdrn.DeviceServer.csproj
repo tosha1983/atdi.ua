@@ -74,14 +74,6 @@
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.csproj">
-      <Project>{93f2ca4c-2c15-481c-8ce3-30baa661d1ff}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.csproj">
-      <Project>{72d0eaae-5ae0-41c6-b87e-dc01139e7f17}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>

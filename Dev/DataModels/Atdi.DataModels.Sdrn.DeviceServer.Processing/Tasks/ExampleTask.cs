@@ -11,4 +11,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public int ExampleValue1;
         public int ExampleValue2;
     }
+
+    public class ExampleTask2 : ExampleTask
+    {
+        public int ExampleValue3;
+    }
 }

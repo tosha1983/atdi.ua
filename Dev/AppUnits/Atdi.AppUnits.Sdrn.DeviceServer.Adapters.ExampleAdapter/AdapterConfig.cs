@@ -40,6 +40,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
             }
         }
 
+        []
         public int? Prop1 { get; set;}
 
         public int? Prop2 { get; set; }

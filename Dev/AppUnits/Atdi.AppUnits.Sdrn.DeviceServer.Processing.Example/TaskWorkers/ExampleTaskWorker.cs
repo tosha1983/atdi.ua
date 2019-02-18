@@ -19,7 +19,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
         private readonly IController _controller;
         private readonly ILogger _logger;
 
-        public ExampleTaskWorker(IController controller, ILogger logger)
+        public ExampleTaskWorker(ExampleConfig config, IController controller, ILogger logger)
         {
             this._controller = controller;
             this._logger = logger;

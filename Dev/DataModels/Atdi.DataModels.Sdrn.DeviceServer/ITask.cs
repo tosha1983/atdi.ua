@@ -43,7 +43,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         public TaskState State { get; private set; }
     }
 
-    public abstract class AutoTask : TaskBase
+    public class AutoTask : TaskBase
     {
     }
 }

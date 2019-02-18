@@ -24,10 +24,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
 
         public override void OnHandle(IReceivedMessage<DM.MeasTask> message)
         {
+
             var process = this._processingDispatcher.Start<ExampleProcess>();
             var exampleTask = new ExampleTask();
 
-            _taskStarter.Run(exampleTask, process);
+            _taskStarter.RunParallel(exampleTask, process);
 
 
             message.Result = MessageHandlingResult.Confirmed;
