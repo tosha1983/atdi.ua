@@ -6,39 +6,37 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
 {
-    public interface IProcessingContext
+    public interface IProcess
     {
         Guid Id { get; }
 
         string Name { get; }
 
-        string Description { get; }
-
-        long TimeStamp { get; }
+        long TimeStamp { get; set; }
 
         DateTimeOffset Date { get; }
+
+        IProcess Parent { get; }
     }
 
-    public abstract class ProcessingContextBase : IProcessingContext
+    public abstract class ProcessBase : IProcess
     {
-        public ProcessingContextBase(long timeStamp = 0,  string name = null, string description = null)
+        public ProcessBase(string name, IProcess parentProcess = null)
         {
-            this.TimeStamp = timeStamp;
             this.Name = name;
-            this.Description = description;
             this.Id = Guid.NewGuid();
             this.Date = DateTimeOffset.Now;
+            this.Parent = parentProcess;
         }
 
         public Guid Id { get; private set; }
 
         public string Name { get; private set; }
 
-        public string Description { get; private set; }
-
-        public long TimeStamp { get; private set; }
+        public long TimeStamp { get; set; }
 
         public DateTimeOffset Date { get; private set; }
 
+        public IProcess Parent { get; private set; }
     }
 }

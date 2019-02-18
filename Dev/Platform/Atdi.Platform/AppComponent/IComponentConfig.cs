@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Atdi.Platform.AppComponent
 {
@@ -17,8 +18,21 @@ namespace Atdi.Platform.AppComponent
         object this[string paramName] { get; }
     }
 
-    public static class ComponentConfigExtention
+    public static class ComponentConfigExtensions
     {
+        public static TConfig Extract<TConfig>(this IComponentConfig config)
+            where TConfig : class, new()
+        {
+            var result = new TConfig();
+            var type = typeof(TConfig);
+            var properies = type.GetProperties(BindingFlags.Public);
+            for (int i = 0; i < properies.Length; i++)
+            {
+                var propertyInfo = properies[i];
+                
+            }
+            return result;
+        }
         public static string GetParameterAsString(this IComponentConfig config, string paramName)
         {
             if (config == null)

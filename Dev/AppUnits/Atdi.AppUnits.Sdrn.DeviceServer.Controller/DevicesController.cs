@@ -28,12 +28,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             
         }
 
-        public void SendCommand<TResult>(IProcessingContext context, ICommand command, CancellationToken cancellationToken, Action<IProcessingContext, ICommand, CommandFailureReason, Exception> onFailureAction)
+        public void SendCommand<TResult>(ITaskContext taskContext, ICommand command, CancellationToken cancellationToken, ControllerFailureAction onFailureAction)
         {
             var descriptor = new CommandDescriptor
             {
                 Command = command,
-                Context = context,
+                TaskContext = taskContext,
                 CancellationToken = cancellationToken,
                 FailureAction = onFailureAction,
                 ResultType = typeof(TResult)

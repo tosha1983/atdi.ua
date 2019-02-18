@@ -52,11 +52,11 @@
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Atdi.AppUnits.Sdrn.DeviceServer.Adapters\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.csproj">
+    <ProjectReference Include="..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.csproj">
       <Project>{d6699055-032f-443e-a557-2e2e36d4f0f1}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
+    <ProjectReference Include="..\AppUnits\Atdi.AppUnits\Atdi.AppUnits.csproj">
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>

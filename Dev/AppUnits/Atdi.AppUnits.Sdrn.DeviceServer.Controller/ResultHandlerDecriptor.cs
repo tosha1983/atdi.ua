@@ -13,29 +13,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
     class ResultHandlerDecriptor
     {
-        public delegate void HandlerInvoker(object instance, ICommand command, ICommandResultPart resultPart, IProcessingContext context);
+        public delegate void HandlerInvoker(object instance, ICommand command, ICommandResultPart resultPart, ITaskContext taskContext);
 
         public ResultHandlerDecriptor(Type instanceType)
         {
-            var instanceInterface = instanceType.GetInterface(typeof(IResultHandler<,>).Name);
+            this.InstanceType = instanceType;
+            var instanceInterface = instanceType.GetInterface(typeof(IResultHandler<,,,>).Name);
 
-            if (instanceInterface == null)
-            {
-                instanceInterface = instanceType.GetInterface(typeof(IResultHandler<,,>).Name);
-            }
-
-            if (instanceInterface == null || (instanceInterface.GenericTypeArguments.Length != 2 && instanceInterface.GenericTypeArguments.Length != 3))
+            if (instanceInterface == null || (instanceInterface.GenericTypeArguments.Length != 4))
             {
                 throw new InvalidOperationException("Invalid result handler definition");
             }
-
             this.CommandType = instanceInterface.GenericTypeArguments[0];
             this.ResultType = instanceInterface.GenericTypeArguments[1];
-            if (instanceInterface.GenericTypeArguments.Length == 3)
-            {
-                this.ContextType = instanceInterface.GenericTypeArguments[2];
-            }
-            this.InstanceType = instanceType;
+            this.TaskType = instanceInterface.GenericTypeArguments[2];
+            this.ProcessType = instanceInterface.GenericTypeArguments[3];
             this.Invoker = CreateInvoker(instanceType.GetMethod("Handle"));
         }
 
@@ -43,12 +35,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public Type ResultType { get; private set; }
 
-        public Type ContextType { get; private set; }
+        public Type TaskType { get; private set; }
 
+        public Type ProcessType { get; private set; }
 
         public Type InstanceType { get; private set; }
 
-        public string Key { get => BuildKey(CommandType, ResultType, ContextType);  }
+        public string Key
+        {
+            get => BuildKey(CommandType, ResultType, TaskType, ProcessType);
+        }
 
         public HandlerInvoker Invoker { get; private set; }
 
@@ -57,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             var targetArg = Expression.Parameter(typeof(object));
             var commandParam = Expression.Parameter(typeof(ICommand));
             var resultPartParam = Expression.Parameter(typeof(ICommandResultPart));
-            var contextParam = Expression.Parameter(typeof(IProcessingContext));
+            var contextParam = Expression.Parameter(typeof(ITaskContext));
 
             var instance = Expression.Convert(targetArg, method.DeclaringType);
 
@@ -90,13 +86,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string BuildKey(Type commandType, Type resultType, Type contextType)
+        public static string BuildKey(Type commandType, Type resultType, Type taskType, Type processType)
         {
-            if (contextType == null)
-            {
-                return $"{commandType.FullName}.{resultType.FullName}.all";
-            }
-            return $"{commandType.FullName}.{resultType.FullName}.{contextType.FullName}";
+            return $"{commandType.FullName}.{resultType.FullName}.{taskType.FullName}.{processType.FullName}";
         }
     }
 }

@@ -37,19 +37,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 
             var handlersHost = this.Resolver.Resolve<IResultHandlersHost>();
-            var handlerTypes2 = typeResolver.GetTypesByInterface(typeof(IResultHandler<,>));
+            var handlerTypes = typeResolver.GetTypesByInterface(typeof(IResultHandler<,,,>));
 
-            foreach (var handlerType2 in handlerTypes2)
+            foreach (var handlerType in handlerTypes)
             {
-                this.Container.Register(handlerType2, handlerType2, ServiceLifetime.Singleton);
-                handlersHost.Register(handlerType2);
-            }
-            var handlerTypes3 = typeResolver.GetTypesByInterface(typeof(IResultHandler<,,>));
-
-            foreach (var handlerType3 in handlerTypes3)
-            {
-                this.Container.Register(handlerType3, handlerType3, ServiceLifetime.Singleton);
-                handlersHost.Register(handlerType3);
+                this.Container.Register(handlerType, handlerType, ServiceLifetime.PerThread);
+                handlersHost.Register(handlerType);
             }
 
             var convertorsHost = this.Resolver.Resolve<IResultConvertorsHost>();

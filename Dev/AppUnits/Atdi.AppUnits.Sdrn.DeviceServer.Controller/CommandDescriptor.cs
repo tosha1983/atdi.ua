@@ -13,22 +13,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
     class CommandDescriptor : ICommandDescriptor
     {
         private CommandBase _command;
-        private IProcessingContext _context;
+        private ITaskContext _taskContext;
 
-        public ICommand Command { get => this._command; set { this._command = value as CommandBase ; this.CommandType = value.GetType(); } }
+        public ICommand Command
+        {
+            get => this._command;
+            set
+            {
+                this._command = value as CommandBase;
+                this.CommandType = value.GetType();
+            }
+        }
 
         public Type CommandType { get; private set; }
 
 
         public Type ResultType { get; set; }
 
-        public IProcessingContext Context { get => this._context; set { this._context = value; this.ContextType = value.GetType(); } }
+        public ITaskContext TaskContext
+        {
+            get => this._taskContext;
+            set
+            {
+                this._taskContext = value;
+                this.ProcessType = value.Descriptor.ProcessType;
+                this.TaskType = value.Descriptor.TaskType;
+            }
+        }
 
-        public Type ContextType { get; private set; }
+        public Type TaskType { get; private set; }
+
+        public Type ProcessType { get; private set; }
 
         public CancellationToken CancellationToken { get; set; }
 
-        public Action<IProcessingContext, ICommand, CommandFailureReason, Exception> FailureAction { get; set; }
+        public ControllerFailureAction FailureAction { get; set; }
 
         public IDevice Device { get; set; }
 
@@ -37,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             Task.Run(() =>
             {
-                this.FailureAction(this.Context, this.Command, reason, exception);
+                this.FailureAction(this.TaskContext, this.Command, reason, exception);
             });
         }
 

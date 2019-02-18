@@ -9,13 +9,13 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IResultConvertor
     {
-        ICommandResultPart Convert(ICommandResultPart result, ICommand command, IProcessingContext context);
+        ICommandResultPart Convert(ICommandResultPart result, ICommand command);
     }
 
     public interface IResultConvertor<TFrom, TResult>
         where TFrom : ICommandResultPart
         where TResult : ICommandResultPart
     {
-        TResult Convert(TFrom result, ICommand command, IProcessingContext context);
+        TResult Convert(TFrom result, ICommand command);
     }
 }
