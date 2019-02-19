@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels.Sdrns.Device;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     {
         public int ExampleValue1;
         public int ExampleValue2;
+
+        public MeasTask ServerMeasTask;
     }
 
     public class ExampleTask2 : ExampleTask

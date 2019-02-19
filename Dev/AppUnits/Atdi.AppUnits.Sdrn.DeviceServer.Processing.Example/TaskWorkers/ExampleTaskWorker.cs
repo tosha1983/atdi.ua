@@ -39,6 +39,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
 
                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand);
 
+                //context.Process.ServerMeasTask.
+
+                    var task = new ExampleTask2();
+                task.ExampleValue3 = context.Task.ExampleValue2;
+
+
                 // ждем результатов - тут поток засыпает пока не поступит евент указанного типа
                 // послать евент можно через метод SetEvent() из потока обработки результатов когда они будут готовы 
                 var result = context.WaitEvent<object>();
