@@ -117,7 +117,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                 {
                     if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                         ((Type == "Del") && (SubTaskStation.Status == "Z")))
-
                     {
                         MeasSdrTask MTSDR = new MeasSdrTask();
                         MTSDR.MeasSubTaskId = SubTask.Id;
@@ -194,7 +193,6 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                     {
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
-
                         {
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
                             int? IdentValueTaskSDR = ClassesDBGetTasks.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value.ToString(), SubTaskStation.StationId.Value);

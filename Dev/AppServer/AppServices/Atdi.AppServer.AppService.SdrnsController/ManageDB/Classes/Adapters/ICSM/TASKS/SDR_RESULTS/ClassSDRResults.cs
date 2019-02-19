@@ -17,6 +17,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
         public List<YXbsResLevmeasonline> level_meas_onl_res { get; set; }
         public List<YXbsResmeasstation> XbsResmeasstation { get; set; }
         public List<YXbsLinkResSensor> XbsLinkResSensor { get; set; }
+        public List<YXbsResSysInfo> XbsResSysInfo { get; set; }
         public string SensorName { get; set; }
         public string SensorTechId { get; set; }
         public int CountRecognizeStation { get; set; }
@@ -54,6 +55,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
             XbsResmaskBw = new List<YXbsResStMaskElm>();
             XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
             XbsLinkResSensor = new List<YXbsLinkResSensor>();
+            XbsResSysInfo = new List<YXbsResSysInfo>();
             SensorName = "";
             SensorTechId = "";
         }

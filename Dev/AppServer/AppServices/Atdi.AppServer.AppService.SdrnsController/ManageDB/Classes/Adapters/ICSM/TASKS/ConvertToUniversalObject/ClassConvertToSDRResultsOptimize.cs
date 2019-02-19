@@ -557,6 +557,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         ResultsMeasStation[ii].GlobalSID = flevmeas.m_globalsid;
                                         ResultsMeasStation[ii].MeasGlobalSID = flevmeas.m_measglobalsid;
                                         ResultsMeasStation[ii].Status = flevmeas.m_status;
+                                        ResultsMeasStation[ii].Standard = flevmeas.m_standard;
                                         if (obj.XbsResGeneral != null)
                                         {
                                             ResultsMeasStation[ii].GeneralResult = new MeasurementsParameterGeneral();
@@ -633,6 +634,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         ResultsMeasStation.GlobalSID = flevmeas.m_globalsid;
                                         ResultsMeasStation.MeasGlobalSID = flevmeas.m_measglobalsid;
                                         ResultsMeasStation.Status = flevmeas.m_status;
+                                        ResultsMeasStation.Standard = flevmeas.m_standard;
                                         if (obj.XbsResLevelMeas != null)
                                         {
                                             List<YXbsResStLevelCar> resF = obj.XbsResLevelMeas.FindAll(t => t.m_xbs_resmeasstationid == flevmeas.m_id);
@@ -735,7 +737,58 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                                             }
                                                         }
                                                     }
+
+
+                                                {
+                                                    if (obj.XbsResSysInfo != null)
+                                                    {
+                                                        string valSysInfo = "";
+                                                        List<YXbsResSysInfo> resYXbsResSysInfo = obj.XbsResSysInfo.FindAll(t => t.m_xbsresstgeneralid == x.m_id);
+                                                        if (resYXbsResSysInfo.Count > 0)
+                                                        {
+                                                            foreach (YXbsResSysInfo xv in resYXbsResSysInfo)
+                                                            {
+                                                                valSysInfo += string.Format("AGL : {0}", xv.m_AGL)+Environment.NewLine;
+                                                                valSysInfo += string.Format("ASL : {0}", xv.m_ASL) + Environment.NewLine;
+                                                                valSysInfo += string.Format("BandWidth : {0}", xv.m_BandWidth) + Environment.NewLine;
+                                                                valSysInfo += string.Format("BaseID : {0}", xv.m_BaseID) + Environment.NewLine;
+                                                                valSysInfo += string.Format("BSIC : {0}", xv.m_BSIC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("ChannelNumber : {0}", xv.m_ChannelNumber) + Environment.NewLine;
+                                                                valSysInfo += string.Format("CID : {0}", xv.m_CID) + Environment.NewLine;
+                                                                valSysInfo += string.Format("Code : {0}", xv.m_Code) + Environment.NewLine;
+                                                                valSysInfo += string.Format("CtoI : {0}", xv.m_CtoI) + Environment.NewLine;
+                                                                valSysInfo += string.Format("ECI : {0}", xv.m_ECI) + Environment.NewLine;
+                                                                valSysInfo += string.Format("eNodeBId : {0}", xv.m_eNodeBId) + Environment.NewLine;
+                                                                valSysInfo += string.Format("Freq : {0}", xv.m_Freq) + Environment.NewLine;
+                                                                valSysInfo += string.Format("IcIo : {0}", xv.m_IcIo) + Environment.NewLine;
+                                                                valSysInfo += string.Format("INBAND_POWER : {0}", xv.m_INBAND_POWER) + Environment.NewLine;
+                                                                valSysInfo += string.Format("ISCP : {0}", xv.m_ISCP) + Environment.NewLine;
+                                                                valSysInfo += string.Format("LAC : {0}", xv.m_LAC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("Lat : {0}", xv.m_Lat) + Environment.NewLine;
+                                                                valSysInfo += string.Format("Lon : {0}", xv.m_Lon) + Environment.NewLine;
+                                                                valSysInfo += string.Format("MCC : {0}", xv.m_MCC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("MNC : {0}", xv.m_MNC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("NID : {0}", xv.m_NID) + Environment.NewLine;
+                                                                valSysInfo += string.Format("PCI : {0}", xv.m_PCI) + Environment.NewLine;
+                                                                valSysInfo += string.Format("PN : {0}", xv.m_PN) + Environment.NewLine;
+                                                                valSysInfo += string.Format("Power : {0}", xv.m_Power) + Environment.NewLine;
+                                                                valSysInfo += string.Format("Ptotal : {0}", xv.m_Ptotal) + Environment.NewLine;
+                                                                valSysInfo += string.Format("RNC : {0}", xv.m_RNC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("RSCP : {0}", xv.m_RSCP) + Environment.NewLine;
+                                                                valSysInfo += string.Format("RSRP : {0}", xv.m_RSRP) + Environment.NewLine;
+                                                                valSysInfo += string.Format("RSRQ : {0}", xv.m_RSRQ) + Environment.NewLine;
+                                                                valSysInfo += string.Format("SC : {0}", xv.m_SC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("SID : {0}", xv.m_SID) + Environment.NewLine;
+                                                                valSysInfo += string.Format("TAC : {0}", xv.m_TAC) + Environment.NewLine;
+                                                                valSysInfo += string.Format("TypeCDMAEVDO : {0}", xv.m_TypeCDMAEVDO) + Environment.NewLine;
+                                                                valSysInfo += string.Format("UCID : {0}", xv.m_UCID) + Environment.NewLine;
+                                                            }
+                                                        }
+                                                        ResultsMeasStation.StationSysInfo = valSysInfo;
+                                                    }
                                                 }
+
+                                            }
                                             }
                                         }
                                         ii++;
@@ -791,6 +844,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         ResultsMeasStation.GlobalSID = flevmeas.m_globalsid;
                                         ResultsMeasStation.MeasGlobalSID = flevmeas.m_measglobalsid;
                                         ResultsMeasStation.Status = flevmeas.m_status;
+                                        ResultsMeasStation.Standard = flevmeas.m_standard;
                                         if (obj.XbsResLevelMeas != null)
                                         {
                                             List<YXbsResStLevelCar> resF = obj.XbsResLevelMeas.FindAll(t => t.m_xbs_resmeasstationid == flevmeas.m_id);

@@ -823,6 +823,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                         ICSM_T.XbsResmeasstation = new List<YXbsResmeasstation>();
                         ICSM_T.XbsLevelSpecrum = new List<YXbsResStLevelsSpect>();
                         ICSM_T.XbsLinkResSensor = new List<YXbsLinkResSensor>();
+                        ICSM_T.XbsResSysInfo = new List<YXbsResSysInfo>();
 
 
                         int idx_YXbsResmeasstation = 0;
@@ -869,6 +870,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                 int idx_YXbsResStGeneral = 0;
                                 List<int> sql_YXbsResStGeneral_in = new List<int>();
                                 string sql_YXbsResStGeneral = "";
+                                string sql_XbsYXbsResSysInfo = "";
                                 YXbsResStGeneral XbsYXbsResGeneral_ = new YXbsResStGeneral();
                                 XbsYXbsResGeneral_.Format("*");
                                 XbsYXbsResGeneral_.Filter = sql_YXbsResStLevelCar;
@@ -886,6 +888,7 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                     }
                                     if ((sql_YXbsResStGeneral_in.Count > Cn) || ((idx_YXbsResStGeneral + 1) == XbsYXbsResGeneral_.GetCount()))
                                     {
+                                        sql_XbsYXbsResSysInfo = string.Format("(XBSRESSTGENERALID IN ({0}))", string.Join(",", sql_YXbsResStGeneral_in));
                                         sql_YXbsResStGeneral = string.Format("(XBS_RESSTGENERALID IN ({0}))", string.Join(",", sql_YXbsResStGeneral_in));
                                         sql_YXbsResmeasstation_in.Clear();
                                         YXbsResStMaskElm XbsYXbsResmaskBw_ = new YXbsResStMaskElm();
@@ -917,6 +920,22 @@ namespace Atdi.SDNRS.AppServer.ManageDB.Adapters
                                         }
                                         XbsYXbsLevelSpecrum_.Close();
                                         XbsYXbsLevelSpecrum_.Dispose();
+
+                                        YXbsResSysInfo XbsYXbsResSysInfo_ = new YXbsResSysInfo();
+                                        XbsYXbsResSysInfo_.Format("*");
+                                        XbsYXbsResSysInfo_.Filter = sql_XbsYXbsResSysInfo;
+                                        XbsYXbsResSysInfo_.Order = "[ID] ASC";
+                                        for (XbsYXbsResSysInfo_.OpenRs(); !XbsYXbsResSysInfo_.IsEOF(); XbsYXbsResSysInfo_.MoveNext())
+                                        {
+                                            var m_fr_7 = new YXbsResSysInfo();
+                                            m_fr_7.CopyDataFrom(XbsYXbsResSysInfo_);
+                                            ICSM_T.XbsResSysInfo.Add(m_fr_7);
+                                            m_fr_7.Close();
+                                            m_fr_7.Dispose();
+                                        }
+                                        XbsYXbsResSysInfo_.Close();
+                                        XbsYXbsResSysInfo_.Dispose();
+                                       
                                     }
 
                                     idx_YXbsResStGeneral++;
