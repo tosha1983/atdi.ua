@@ -72,31 +72,29 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Console.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Console.Sdrns.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Console.Sdrns.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server"
 copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Host.Svchost.Sdrns.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server"
 
 
 
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Services.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Services.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Model.SdrnsController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Model.SdrnsController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.Contracts.Sdrns.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\NLog.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\NLog.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Logger\NLog.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)\Logger"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\ServerSetting.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Castle.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Quartz.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Common.Logging.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\Common.Logging.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Console.Sdrns\bin\$(ConfigurationName)\ServerSetting.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.ConfigurationSdrnController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.ConfigurationSdrnController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsControllerv2_0.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsControllerv2_0.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsController.pdb" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Atdi.AppServer.AppService.SdrnsController.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-
-
-copy "..\..\..\..\AppServer\Hosts\Atdi.AppServer.Host.Svchost.Sdrns\bin\$(ConfigurationName)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
 
 
