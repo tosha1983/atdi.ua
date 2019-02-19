@@ -66,6 +66,10 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.DeviceServer\Atdi.Modules.Sdrn.DeviceServer.csproj">
+      <Project>{bf77f355-a07b-4547-9eb7-ed9b218c361b}</Project>
+      <Name>Atdi.Modules.Sdrn.DeviceServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
