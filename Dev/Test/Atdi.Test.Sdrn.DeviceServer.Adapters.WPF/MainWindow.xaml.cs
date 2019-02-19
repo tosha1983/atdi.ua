@@ -171,12 +171,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             command.Parameter.RefLevel_dBm = -40;
             command.Parameter.BitRate_MBs = 0.8;
             command.Parameter.IQBlockDuration_s = 0.5;
-            command.Parameter.IQReceivTime_s = 5;
+            command.Parameter.IQReceivTime_s = 0.6;
             command.Parameter.MandatoryPPS = false;
             command.Parameter.MandatorySignal = true;
             command.Parameter.TimeStart = (DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks);
             command.Parameter.TimeStart += 2*10000000;
-            Debug.WriteLine("\r\n" + new TimeSpan(DateTime.Now.Ticks).ToString() + " Set Param");
+            Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
             adapter.MesureIQStreamCommandHandler(command, context);
         }
     }

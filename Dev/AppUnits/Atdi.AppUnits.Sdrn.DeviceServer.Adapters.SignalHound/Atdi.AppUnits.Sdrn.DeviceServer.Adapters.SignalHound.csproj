@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93F2CA4C-2C15-481C-8CE3-30BAA661D1FF}</ProjectGuid>
+    <ProjectGuid>{04314075-29DD-4902-8396-7EBBD63A14F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</RootNamespace>

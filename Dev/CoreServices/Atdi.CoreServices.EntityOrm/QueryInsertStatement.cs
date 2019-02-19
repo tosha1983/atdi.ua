@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using System.Linq.Expressions;
+using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -48,10 +49,6 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IQueryInsertStatement<TModel> SetValue(ColumnValue columnValue)
         {
-            if (columnValue == null)
-            {
-                throw new ArgumentNullException(nameof(columnValue));
-            }
             this._columnsValues.Add(columnValue);
             this._statement.ColumnsValues.Add(columnValue);
             return this;
@@ -60,10 +57,6 @@ namespace Atdi.CoreServices.EntityOrm
         public IQueryInsertStatement<TModel> SetValue<TValue>(System.Linq.Expressions.Expression<Func<TModel, TValue>> columnsExpression, TValue value)
         {
             var memberName = QuerySelectStatement<TModel>.GetMemberName(columnsExpression);
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
             this._columnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             this._statement.ColumnsValues.Add(QuerySelectStatement<TModel>.GetColumnValue(value, memberName));
             return this;
@@ -73,10 +66,6 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
         {
-            if (columnsValues == null)
-            {
-                throw new ArgumentNullException(nameof(columnsValues));
-            }
             this._columnsValues.AddRange(columnsValues);
             this._statement.ColumnsValues.AddRange(columnsValues);
             return this;
@@ -99,6 +88,7 @@ namespace Atdi.CoreServices.EntityOrm
             _selectStatement.Select(_selectColumns.ToArray());
             return this;
         }
+
     }
     internal sealed class QueryInsertStatement : IQueryInsertStatement
     {

@@ -384,6 +384,9 @@ namespace Atdi.CoreServices.DataLayer
 
         public string InsertExpression(string sourceExpression, string columnsExpression, string valuesExpression, string selectedColumnsExpression = null, string whereExpression = null, string identyFieldName = null)
         {
+            var insertAllStatus = false;
+            var allSectionsValues = valuesExpression!=null ? valuesExpression.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries) : null;
+            if ((allSectionsValues!=null) && (allSectionsValues.Length > 0) && (valuesExpression.Contains("|"))) insertAllStatus = true;
             var statement = new StringBuilder();
             if (identyFieldName != null)
             {
@@ -396,28 +399,77 @@ namespace Atdi.CoreServices.DataLayer
                 if (!string.IsNullOrEmpty(tableName))
                 {
                     var nextValueScript = string.Format("GetID('{0}')", tableName);
-                    var allSelectedFields = columnsExpression.Split(new char[] { ',', '\"' }, StringSplitOptions.RemoveEmptyEntries);
-                    var allSelectedValues = valuesExpression.Split(new char[] { ',', '\"' }, StringSplitOptions.RemoveEmptyEntries);
-                    if ((!allSelectedFields.Contains(identyFieldName)) && (!allSelectedFields.Contains("\"" + identyFieldName + "\"")))
+                    if (insertAllStatus)
                     {
-                        statement.AppendLine($"INSERT INTO {tableName} ({identyFieldName},{columnsExpression})");
-                        statement.AppendLine($"VALUES ({nextValueScript},{valuesExpression})");
-                        statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
+                        statement.AppendLine($"INSERT ALL");
                     }
                     else
                     {
-                        for (int i = 0; i < allSelectedFields.Length; i++)
+                        allSectionsValues = new string[1] { valuesExpression };
+                    }
+
+                    var allSelectedFields = columnsExpression.Split(new char[] { ',', '\"' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if ((allSectionsValues != null) && (valuesExpression != null))
+                    {
+                        foreach (var item in allSectionsValues)
                         {
-                            if (allSelectedFields[i] == identyFieldName)
+                            var allSelectedValues = item.Split(new char[] { ',', '\"', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if ((!allSelectedFields.Contains(identyFieldName)) && (!allSelectedFields.Contains("\"" + identyFieldName + "\"")))
                             {
-                                allSelectedValues[i] = nextValueScript;
-                                var val = string.Join(", ", allSelectedValues);
-                                statement.AppendLine($"INSERT INTO {tableName} ({columnsExpression})");
-                                statement.AppendLine($"VALUES ({val})");
-                                statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
-                                break;
+                                if (insertAllStatus)
+                                {
+                                    statement.AppendLine($"INTO {tableName} ({identyFieldName},{columnsExpression})");
+                                    statement.AppendLine($"VALUES ({nextValueScript},{item})");
+                                }
+                                else
+                                {
+                                    if (whereExpression == null)
+                                    {
+                                        statement.AppendLine($"INSERT INTO {tableName} ({identyFieldName},{columnsExpression})");
+                                        statement.AppendLine($"VALUES ({nextValueScript},{valuesExpression})");
+                                        statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                for (int i = 0; i < allSelectedFields.Length; i++)
+                                {
+                                    if (allSelectedFields[i] == identyFieldName)
+                                    {
+                                        allSelectedValues[i] = nextValueScript;
+                                        var val = string.Join(", ", allSelectedValues);
+
+                                        if (insertAllStatus)
+                                        {
+                                            statement.AppendLine($"INTO {tableName} ({columnsExpression})");
+                                            statement.AppendLine($"VALUES ({val})");
+                                        }
+                                        else
+                                        {
+                                            if (whereExpression == null)
+                                            {
+                                                statement.AppendLine($"INSERT INTO {tableName} ({columnsExpression})");
+                                                statement.AppendLine($"VALUES ({val})");
+                                                statement.AppendLine($"RETURNING {identyFieldName} INTO :v_ID");
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
                             }
                         }
+                        if (insertAllStatus)
+                        {
+                            statement.AppendLine($"SELECT :v_ID FROM dual");
+                        }
+                    }
+                    else if ((valuesExpression == null) && (whereExpression != null))
+                    {
+                        statement.AppendLine($"INSERT INTO {tableName} ({identyFieldName},{columnsExpression})");
+                        statement.AppendLine($"{whereExpression}");
                     }
                 }
             }

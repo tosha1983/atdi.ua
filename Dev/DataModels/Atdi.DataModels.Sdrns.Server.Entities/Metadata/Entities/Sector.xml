@@ -15,7 +15,7 @@
     <Field Desc="Eirp" Title="Eirp" Name="Eirp" DataType="Decimal.22.8" SourceName="EIRP" SourceType="Column" Required="false"/>
     <Field Desc="Azimut" Title="Azimut" Name="Azimut" DataType="Decimal.22.8" SourceName="AZIMUT" SourceType="Column" Required="false"/>
     <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
-    <Field Desc="ClassEmission" Title="GlobalSID" Name="GlobalSID" DataType="Text.20" SourceName="CLASSEMISSION" SourceType="Column" Required="false"/>
+    <Field Desc="ClassEmission" Title="ClassEmission" Name="ClassEmission" DataType="Text.20" SourceName="CLASSEMISSION" SourceType="Column" Required="false"/>
     <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="ID_XBS_STATION" SourceType="Column" Required="true"/>
     <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="IDSECTOR" SourceType="Column" Required="true"/>
     <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation Sector to Station">

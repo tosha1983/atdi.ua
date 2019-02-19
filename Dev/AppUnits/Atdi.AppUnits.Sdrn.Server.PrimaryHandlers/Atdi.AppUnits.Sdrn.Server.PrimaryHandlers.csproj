@@ -51,6 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnServerPrimaryHandlersComponent.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Subscribes\OnCreateMeasTaskProcess.cs" />
     <Compile Include="Subscribes\OnUpdatedSensor.cs" />
     <Compile Include="Subscribes\OnRegisteredNewSensor.cs" />
   </ItemGroup>
@@ -75,6 +76,10 @@
       <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
       <Name>Atdi.Contracts.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
+      <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
@@ -86,6 +91,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>

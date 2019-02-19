@@ -47,13 +47,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     queryExecuter.BeginTransaction();
                     var builderInsertIEntity = this._dataLayer.GetBuilder<MD.IEntity>().Insert();
-                    if (entityObject.ContentType != null) builderInsertIEntity.SetValue(c => c.ContentType, entityObject.ContentType);
-                    if (entityObject.Description != null) builderInsertIEntity.SetValue(c => c.Description, entityObject.Description);
-                    if (entityObject.HashAlgorithm != null) builderInsertIEntity.SetValue(c => c.HashAlgoritm, entityObject.HashAlgorithm);
-                    if (entityObject.HashCode != null) builderInsertIEntity.SetValue(c => c.HashCode, entityObject.HashCode);
-                    if (entityObject.Name != null) builderInsertIEntity.SetValue(c => c.Name, entityObject.Name);
-                    if (entityObject.ParentId != null) builderInsertIEntity.SetValue(c => c.ParentId, entityObject.ParentId);
-                    if (entityObject.ParentType != null) builderInsertIEntity.SetValue(c => c.ParentType, entityObject.ParentType);
+                    builderInsertIEntity.SetValue(c => c.ContentType, entityObject.ContentType);
+                    builderInsertIEntity.SetValue(c => c.Description, entityObject.Description);
+                    builderInsertIEntity.SetValue(c => c.HashAlgoritm, entityObject.HashAlgorithm);
+                    builderInsertIEntity.SetValue(c => c.HashCode, entityObject.HashCode);
+                    builderInsertIEntity.SetValue(c => c.Name, entityObject.Name);
+                    builderInsertIEntity.SetValue(c => c.ParentId, entityObject.ParentId);
+                    builderInsertIEntity.SetValue(c => c.ParentType, entityObject.ParentType);
 
                     builderInsertIEntity.Select(c => c.Id);
                     queryExecuter

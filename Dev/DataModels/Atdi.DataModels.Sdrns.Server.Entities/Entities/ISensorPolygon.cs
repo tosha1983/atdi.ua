@@ -12,8 +12,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         int Id { get; set; }
         int? SensorId { get; set; }
-        int? Lon { get; set; }
-        int? Lat { get; set; }
+        double? Lon { get; set; }
+        double? Lat { get; set; }
         ISensor SENSOR { get; set; }
     }
 }

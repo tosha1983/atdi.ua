@@ -23,6 +23,12 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler);
 
+        TResult ExecuteAndFetch<TResult>(IQueryStatement[] statements, Func<IDataReader, TResult> handler);
+
+        TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel>[] statements, Func<IDataReader<TModel>, TResult> handler);
+
+        int InsertSelect<TModelInsert,TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement);
+
         void BeginTransaction();
 
         void CommitTransaction();

@@ -1170,7 +1170,12 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 AddedMissingPrimaryKeyExtension(entityMetadata);
                 if (!_cache.ContainsKey(entityName))
-                    _cache.Add(entityName, entityMetadata);
+                {
+                    lock (_cache)
+                    {
+                        _cache.Add(entityName, entityMetadata);
+                    }
+                }
                 else
                 {
                     AddMissingPropertyValues(typeof(EntityMetadata), entityMetadata, _cache[entityName]);

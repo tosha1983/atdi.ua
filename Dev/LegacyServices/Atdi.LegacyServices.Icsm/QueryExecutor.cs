@@ -716,6 +716,20 @@ namespace Atdi.LegacyServices.Icsm
             throw new NotImplementedException();
         }
 
+        public TResult ExecuteAndFetch<TResult>(IQueryStatement[] statements, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel>[] statements, Func<IDataReader<TModel>, TResult> handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int InsertSelect<TModelInsert, TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

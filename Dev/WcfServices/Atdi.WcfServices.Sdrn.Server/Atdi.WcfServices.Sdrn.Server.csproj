@@ -43,6 +43,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\Analitics\SOFrequencyTemp.cs" />
+    <Compile Include="Handlers\Analitics\Hit.cs" />
+    <Compile Include="Handlers\Analitics\LevelMeasurementsCarForSO.cs" />
+    <Compile Include="Handlers\Analitics\CalcStationLevelsByTask.cs" />
+    <Compile Include="Handlers\CreateMeasTaskHandler.cs" />
+    <Compile Include="Handlers\Extend\Enum\MeasTaskMode.cs" />
+    <Compile Include="Handlers\Extend\Enum\Status.cs" />
+    <Compile Include="Handlers\Extend\Enum\ModeStatus.cs" />
+    <Compile Include="Handlers\Extend\StatusDescription.cs" />
+    <Compile Include="Handlers\Extend\RuleStatusTransition.cs" />
+    <Compile Include="Handlers\Extend\MeasTaskExtend.cs" />
+    <Compile Include="Handlers\Analitics\AnaliticsUnit.cs" />
+    <Compile Include="Handlers\MeasTask\LoadMeasTask.cs" />
+    <Compile Include="Handlers\MeasTask\SaveMeasTask.cs" />
+    <Compile Include="Handlers\Process\MeasTaskProcess.cs" />
+    <Compile Include="Handlers\Results\LoadResults.cs" />
+    <Compile Include="Handlers\Results\SaveResults.cs" />
+    <Compile Include="Handlers\Sensor\LoadSensor.cs" />
+    <Compile Include="Handlers\Specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnsController.cs" />
     <Compile Include="SdrnServerComponent.cs" />
@@ -56,9 +75,25 @@
       <Project>{608fac29-91cb-43af-a45b-1a0f31870041}</Project>
       <Name>Atdi.Contracts.Api.EventSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.EntityOrm\Atdi.Contracts.CoreServices.EntityOrm.csproj">
+      <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
+      <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj">
+      <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
+      <Name>Atdi.Contracts.Sdrn.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
+      <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
@@ -81,5 +116,6 @@
       <Name>Atdi.WcfServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

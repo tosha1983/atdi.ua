@@ -1531,6 +1531,7 @@ namespace Atdi.CoreServices.EntityOrm
         {
             try
             {
+                var selectColumns = statement.Table.SelectColumns;
                 var selectedColumns = statement.Table.Columns.Values.ToArray();
                 var listAlias = new List<AliasField>();
                 var listFieldProperties = new List<FieldProperties>();
@@ -1564,7 +1565,122 @@ namespace Atdi.CoreServices.EntityOrm
                         AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
                         if (aliasField != null)
                         {
-                            columnExpressions.Add(this._syntax.ColumnExpression(this._syntax.EncodeFieldName(aliasField.Alias) + "." + this._syntax.EncodeFieldName(dbField.DBFieldName), dbField.Alias));
+                            if (selectColumns.ContainsKey(dbField.Alias))
+                            {
+                                columnExpressions.Add(this._syntax.ColumnExpression(this._syntax.EncodeFieldName(aliasField.Alias) + "." + this._syntax.EncodeFieldName(dbField.DBFieldName), dbField.Alias));
+                            }
+                        }
+                    }
+                }
+                // to build the where section
+                for (int i = 0; i < whereColumns.Length; i++)
+                {
+                    var column = whereColumns[i];
+                    var dbField = listFieldProperties.Find(z => z.Alias == whereColumns[i].ColumnName);
+                    if (dbField != null)
+                    {
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                        if (aliasField != null)
+                        {
+                            column.ColumnName = dbField.DBFieldName;
+                            if (this._dataEngine.Config.Type == DataEngineType.Oracle)
+                            {
+                                column.Source = this._syntax.EncodeFieldName(aliasField.Alias);
+                            }
+                            else
+                            {
+                                column.Source = aliasField.Alias;
+                            }
+                        }
+                    }
+                }
+
+                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                // to build the order by section
+                var orderByColumns = new string[sortColumns.Length];
+                for (int i = 0; i < sortColumns.Length; i++)
+                {
+                    var column = sortColumns[i];
+                    var dbField = listFieldProperties.Find(z => z.Alias == sortColumns[i].Column.Name);
+                    var encodeColumn = "";
+                    encodeColumn = this._syntax.EncodeFieldName(dbField.DBFieldName);
+                    AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                    if (aliasField != null)
+                    {
+                        //column.Column.Name = dbField.DBFieldName;
+                        encodeColumn = this._syntax.EncodeFieldName(aliasField.Alias) + "." + encodeColumn;
+                        orderByColumns[i] = _syntax.SortedColumn(encodeColumn, column.Direction);
+                    }
+                }
+                // add on top (n)
+                var limit = statement.Limit;
+
+                // add group by
+                var selectStatement = this._syntax.SelectExpression(columnExpressions.ToArray(), fromExpression, whereExpression, orderByColumns, limit);
+                return selectStatement;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string BuildSelectStatementWithAllocId(QuerySelectStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            try
+            {
+                var selectColumns = statement.Table.SelectColumns;
+                var selectedColumns = statement.Table.Columns.Values.ToArray();
+                var listAlias = new List<AliasField>();
+                var listFieldProperties = new List<FieldProperties>();
+                var tableName = "";
+                var fromExpression = BuildJoinStatement(statement.Table.Name, selectedColumns.Select(t => t.Name), parameters, out listAlias, ref listFieldProperties);
+                for (int i = 0; i < selectedColumns.Length; i++)
+                {
+                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
+                    if (dbField != null)
+                    {
+                        var column = selectedColumns[i];
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                        if (aliasField != null)
+                        {
+                            column.Alias = dbField.Alias;
+                            tableName = dbField.DBTableName;
+                        }
+                    }
+                }
+                var conditionsColumns = new List<ColumnOperand>();
+                AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
+                var whereColumns = conditionsColumns.ToArray();
+                var sortColumns = statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Orders.ToArray();
+                var fieldCount = whereColumns.Length + sortColumns.Length;
+                listFieldProperties.AddRange(BuildSelectStatement(statement.Table.Name, sortColumns.Select(t => t.Column.Name)));
+                listFieldProperties.AddRange(BuildSelectStatement(statement.Table.Name, selectedColumns.Select(t => t.Name)));
+                var columnExpressions = new List<string>();
+                if (this._dataEngine.Config.Type == DataEngineType.Oracle)
+                {
+                    columnExpressions.Add($"GetID('{tableName}')");
+                }
+                for (int i = 0; i < selectedColumns.Length; i++)
+                {
+                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
+                    if (dbField != null)
+                    {
+                        AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
+                        if (aliasField != null)
+                        {
+                            if (selectColumns.ContainsKey(dbField.FieldName))
+                            {
+                                columnExpressions.Add(this._syntax.ColumnExpression(this._syntax.EncodeFieldName(aliasField.Alias) + "." + this._syntax.EncodeFieldName(dbField.DBFieldName), dbField.Alias));
+                            }
                         }
                     }
                 }
@@ -1694,6 +1810,107 @@ namespace Atdi.CoreServices.EntityOrm
              }
          }
 
+
+        /// <summary>
+        /// Генератор пакетного SQL запроса Insert
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string BuildInsertStatementExecuteAndFetch(QueryInsertStatement[] statements, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            string insertStatement = null;
+            try
+            {
+                int cntPrimaryKey = 0;
+                string columnsExpression = null;
+                string valuesExpression = null;
+                string primaryKeyField = null;
+                string sourceExpression = null;
+                var listSelectedParameters = new List<string>();
+                IEntityMetadata entityMetadata = null;
+                for (int j = 0; j < statements.Length; j++)
+                {
+                    var statement = statements[j];
+                    var listAlias = new List<AliasField>();
+                    if (j == 0)
+                    {
+                        entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                    }
+                    var changedColumns = new string[statement.ColumnsValues.Count];
+                    var selectedParameters = new string[statement.ColumnsValues.Count];
+                    for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                    {
+                        KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
+                        if (fieldName.Value != null)
+                        {
+                            var column = statement.ColumnsValues[i];
+                            column.Name = fieldName.Value.SourceName;
+                            var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                            column = columnValueReplaced;
+                            var parameter = new EngineCommandParameter
+                            {
+                                DataType = column.DataType,
+                                Name = "v_" + column.Name + j.ToString(),
+                                Value = column.GetValue()
+                            };
+
+                            parameters.Add(parameter.Name, parameter);
+                            selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
+                            changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
+                        }
+                        else
+                        {
+                            throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + statement.ColumnsValues[i].Name));
+                        }
+                    }
+                    listSelectedParameters.Add(string.Join(", ", selectedParameters));
+
+                    if (j == 0)
+                    {
+                        sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
+                        columnsExpression = string.Join(", ", changedColumns);
+                        if (entityMetadata.PrimaryKey != null)
+                        {
+                            var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
+                            if (primaryKeys != null)
+                            {
+                                cntPrimaryKey = primaryKeys.Count;
+                                foreach (var item in primaryKeys)
+                                {
+                                    primaryKeyField = item.Key;
+                                    KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == primaryKeyField);
+                                    if (fieldName.Value != null)
+                                    {
+                                        primaryKeyField = fieldName.Value.SourceName;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+               
+                valuesExpression = string.Join("| ", listSelectedParameters);
+
+                if (listSelectedParameters.Count == 1) valuesExpression += "|";
+
+
+
+                if ((primaryKeyField != null) && (cntPrimaryKey == 1))
+                {
+                    insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression, null, null, primaryKeyField);
+                }
+                return insertStatement;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
+        }
+
         /// <summary>
         /// Генератор SQL запросов для Insert
         /// </summary>
@@ -1703,6 +1920,122 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
+            try
+            {
+                var listAlias = new List<AliasField>();
+                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
+                var changedColumns = new string[statement.ColumnsValues.Count];
+                var selectedParameters = new string[statement.ColumnsValues.Count];
+                for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                {
+                    KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
+                    if (fieldName.Value != null)
+                    {
+                        var column = statement.ColumnsValues[i];
+                        column.Name = fieldName.Value.SourceName;
+                        var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                        column = columnValueReplaced;
+                        var parameter = new EngineCommandParameter
+                        {
+                            DataType = column.DataType,
+                            Name = "v_" + column.Name,
+                            Value = column.GetValue()
+                        };
+
+                        parameters.Add(parameter.Name, parameter);
+                        selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
+                        changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
+                    }
+                    else
+                    {
+                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + statement.ColumnsValues[i].Name));
+                    }
+                }
+              
+
+                var columnsExpression = string.Join(", ", changedColumns);
+                var valuesExpression = string.Join(", ", selectedParameters);
+                var insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression);
+                return insertStatement;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
+         }
+
+        /// <summary>
+        /// Генератор SQL запросов для Insert
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string BuildInsertSelectStatement(QueryInsertStatement statementInsert, QuerySelectStatement statementSelect, IDictionary<string, EngineCommandParameter> parameters)
+        {
+            try
+            {
+               var selectCommandText = BuildSelectStatementWithAllocId(statementSelect, parameters);
+               var entityMetadata = _entityMetadata.GetEntityMetadata(statementInsert.TableName);
+               var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
+               var selectedParameters = statementSelect.Table.SelectColumns;
+               var changedColumns = new List<string>();
+               foreach (var item in selectedParameters)
+               {
+                   KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == item.Value.Name);
+                   if (fieldName.Value != null)
+                   {
+                        changedColumns.Add(fieldName.Value.SourceName);
+                   }
+               }
+               int cntPrimaryKey = 0;
+               string primaryKeyField = null;
+               if (entityMetadata.PrimaryKey != null)
+               {
+                   var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
+                   if (primaryKeys != null)
+                   {
+                       cntPrimaryKey = primaryKeys.Count;
+                       foreach (var item in primaryKeys)
+                       {
+                           primaryKeyField = item.Key;
+                           KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == primaryKeyField);
+                           if (fieldName.Value != null)
+                           {
+                               primaryKeyField = fieldName.Value.SourceName;
+                           }
+                           break;
+                       }
+                   }
+               }
+
+               var columnsExpression = string.Join(", ", changedColumns);
+               string insertStatement = null;
+               if (cntPrimaryKey == 1)
+               {
+                   insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, null, null, selectCommandText, primaryKeyField);
+               }
+               return insertStatement;
+               
+            }
+            catch (Exception e)
+            {
+                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+            }
+        }
+
+        /// <summary>
+        /// Генератор SQL запросов для Insert
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="statement"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string BuildInsertStatementExecuteAndFetch(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
+        {
             try
             {
                 var listAlias = new List<AliasField>();
@@ -1765,7 +2098,7 @@ namespace Atdi.CoreServices.EntityOrm
                 }
                 else
                 {
-                    if (cntPrimaryKey==1)
+                    if (cntPrimaryKey == 1)
                     {
                         insertStatement = this._syntax.InsertExpression(sourceExpression, columnsExpression, valuesExpression, null, null, primaryKeyField);
                     }
@@ -1781,7 +2114,7 @@ namespace Atdi.CoreServices.EntityOrm
                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
             }
-         }
+        }
         public KeyValuePair<string, DataType> GetIdentFieldFromTable(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
             try

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResStMaskElementRaw"
+  Title       = "ResStMaskElementRaw"
+  Desc        = "The ResStMaskElementRaw"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_RESSTMASKELMRAW</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="ResStGeneralId" Title="ResStGeneralId" Name="ResStGeneralId" DataType="Integer.64" SourceName="XBS_RESSTGENERALID" SourceType="Column" Required="false"/>
+    <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="Level" Title="Level" Name="Level" DataType="Decimal.22.8" SourceName="LEVEL" SourceType="Column" Required="false"/>
+    <Field Name="RESSTGENERAL" SourceType="Reference" SourceName="ResStGeneralRaw" Title="Relation ResStMaskElementRaw to ResStGeneralRaw">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResStGeneralId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

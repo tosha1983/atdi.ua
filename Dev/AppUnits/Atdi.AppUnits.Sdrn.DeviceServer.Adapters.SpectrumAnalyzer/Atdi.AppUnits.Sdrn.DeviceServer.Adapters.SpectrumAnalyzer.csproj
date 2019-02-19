@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{72D0EAAE-5AE0-41C6-B87E-DC01139E7F17}</ProjectGuid>
+    <ProjectGuid>{E9112886-A82E-449D-BC85-DA5831C8DE5B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</RootNamespace>
