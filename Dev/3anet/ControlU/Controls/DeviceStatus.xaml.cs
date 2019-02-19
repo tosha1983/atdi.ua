@@ -44,7 +44,7 @@ namespace ControlU.Controls
 
         private void AllState_Click(object sender, RoutedEventArgs e)
         {
-            if (App.Sett.Equipments_Settings.GNSS.UseEquipment) { MainWindow.gps.ConnectToGPS(); }
+            if (App.Sett.Equipments_Settings.GNSS.UseEquipment) { MainWindow.gps.ConnectToGNSS(); }
             if (App.Sett.Equipments_Settings.SpectrumAnalyzer.UseEquipment) { MainWindow.An.Run = !MainWindow.An.Run; }
             if (App.Sett.Equipments_Settings.RuSReceiver.UseEquipment) { MainWindow.Rcvr.Run = !MainWindow.Rcvr.Run; }
             if (App.Sett.Equipments_Settings.RuSRomesRC.UseEquipment) { MainWindow.RCR.Run = !MainWindow.RCR.Run; }

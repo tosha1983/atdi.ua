@@ -80,7 +80,14 @@
     <l:String x:Key="EqNetworkAnalyzer">аналізатор мереж</l:String>
     <l:String x:Key="Level">Рівень</l:String>
     <l:String x:Key="LicenseFail">Відсутня ліцензія ICS Control</l:String>
-
+    <l:String x:Key="CountryCode">Код країни</l:String>
+    <l:String x:Key="OperatorCode">Код оператора</l:String>
+    <l:String x:Key="AreaCode">Код регіону</l:String>
+    <l:String x:Key="IDinDB">Ідентифікатор в БД</l:String>
+    <l:String x:Key="CellNumber">Номер сектора</l:String>
+    <l:String x:Key="Consider">Враховувати</l:String>
+    <l:String x:Key="Example">Приклад</l:String>
+    
     <!-- Markers -->
     <l:String x:Key="Marker_Markers">Маркери</l:String>
     <l:String x:Key="Marker_Type">Тип</l:String>
@@ -212,6 +219,12 @@
     <l:String x:Key="AddUser">Створити користувача</l:String>
     <l:String x:Key="RemoveUser">Видалити користувача</l:String>
     <l:String x:Key="SelectedUserFalse">Не вибрано оператора</l:String>
+
+    <!-- DB -->
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy">Сортувати сектора по:</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUp">Азимут, за зростанням</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUpFromNorth">Азимут, по зростанню від північного</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_CellIdUp">За зростанням ID сектора</l:String>
 
     <!-- Conclusions -->
     <l:String x:Key="Confirms">Відповідає</l:String>

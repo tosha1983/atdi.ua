@@ -1456,7 +1456,6 @@ namespace ControlU.DB
             for (int i = 0; i < AtdiTasks.Count; i++)
             {
                 localatdi_meas_task latdi = AtdiTasks[i];
-
                 #region routes
                 NpgsqlConnection.GlobalTypeMapper.Reset();
                 NpgsqlConnection.GlobalTypeMapper.MapComposite<localatdi_geo_location>("localatdi_geo_location");
@@ -1521,7 +1520,6 @@ namespace ControlU.DB
                     {
                         NpgsqlCommand command;
                         NpgsqlDataReader dr;
-                        //cdb.Open();
                         #region task Data
                         #region узнаем количевство строк
                         //using (command = new NpgsqlCommand("SELECT COUNT(*) FROM " + latdi.TaskDataFromTech[j].tasktablename.ToLower() + ";", cdb))
@@ -1538,13 +1536,12 @@ namespace ControlU.DB
                         //    }
                         //}
                         #endregion
-                        //cdb.Close();
                         cdb.Open();
                         try
                         {
                             using (command = new NpgsqlCommand("SELECT * FROM " + latdi.data_from_tech[j].task_table_name.ToLower() + ";", cdb))
-                            #region
                             {
+                                #region
                                 dr = command.ExecuteReader();
                                 //try
                                 //{
@@ -1553,7 +1550,7 @@ namespace ControlU.DB
                                 //catch { }
                                 while (dr.Read())
                                 {
-                                    #region
+                                    #region GCIDs
                                     int db_s0 = 0, ra_s0 = 0;
                                     int db_s1 = 0, ra_s1 = 0;
                                     int db_s2 = 0, ra_s2 = 0;
@@ -1578,36 +1575,63 @@ namespace ControlU.DB
                                         }
                                     }
                                     #endregion
-                                    localatdi_station ddd = new localatdi_station()
+                                    localatdi_station ddd = new localatdi_station() { };
+
+                                    ddd.id = (string)dr["id"];
+                                    ddd.callsign_db = (string)dr["callsign_db"];
+                                    ddd.Callsign_db_S0 = db_s0;
+                                    ddd.Callsign_db_S1 = db_s1;
+                                    ddd.Callsign_db_S2 = db_s2;
+                                    ddd.Callsign_db_S3 = db_s3;
+                                    ddd.callsign_radio = (string)dr["callsign_radio"];
+                                    ddd.Callsign_radio_S0 = ra_s0;
+                                    ddd.Callsign_radio_S1 = ra_s1;
+                                    ddd.Callsign_radio_S2 = ra_s2;
+                                    ddd.Callsign_radio_S3 = ra_s3;
+                                    ddd.standard = (string)dr["standard"];
+                                    ddd.status = (string)dr["status"];
+                                    ddd.license = (localatdi_license_info)dr["license"];
+                                    ddd.owner = (localatdi_station_owner)dr["owner"];
+                                    ddd.site = (localatdi_station_site)dr["site"];
+                                    #region sectors и сортировка
+                                    if (App.Sett.DB_Settings.SectorsSortBy == 0)
+                                        ddd.sectors = new ObservableCollection<localatdi_station_sector>(((localatdi_station_sector[])dr["sectors"]));
+                                    if (App.Sett.DB_Settings.SectorsSortBy == 1)
+                                        ddd.sectors = new ObservableCollection<localatdi_station_sector>(((localatdi_station_sector[])dr["sectors"]).ToList().OrderBy(order => order.azimuth));
+                                    if (App.Sett.DB_Settings.SectorsSortBy == 2)
                                     {
-                                        id = (string)dr["id"],
-                                        callsign_db = (string)dr["callsign_db"],
-                                        Callsign_db_S0 = db_s0,
-                                        Callsign_db_S1 = db_s1,
-                                        Callsign_db_S2 = db_s2,
-                                        Callsign_db_S3 = db_s3,
-                                        callsign_radio = (string)dr["callsign_radio"],
-                                        Callsign_radio_S0 = ra_s0,
-                                        Callsign_radio_S1 = ra_s1,
-                                        Callsign_radio_S2 = ra_s2,
-                                        Callsign_radio_S3 = ra_s3,
-                                        standard = (string)dr["standard"],
-                                        status = (string)dr["status"],
-                                        license = (localatdi_license_info)dr["license"],
-                                        owner = (localatdi_station_owner)dr["owner"],
-                                        site = (localatdi_station_site)dr["site"],
-                                        sectors = new ObservableCollection<localatdi_station_sector>((localatdi_station_sector[])dr["sectors"]),
-                                        meas_data_exist = (bool)dr["meas_data_exist"],
-                                        IsIdentified = false,
-                                    };
+                                        ObservableCollection<localatdi_station_sector> sec = new ObservableCollection<localatdi_station_sector>(((localatdi_station_sector[])dr["sectors"]));
+                                        ObservableCollection<localatdi_station_sector> t = new ObservableCollection<localatdi_station_sector>();
+                                        //ближайший к северу 
+                                        decimal maxd = sec.Max(it => it.azimuth);
+                                        localatdi_station_sector max = sec.First(x => x.azimuth == maxd);
+                                        decimal mind = sec.Min(it => it.azimuth);
+                                        localatdi_station_sector min = sec.First(x => x.azimuth == mind);
+                                        localatdi_station_sector north = new localatdi_station_sector();
+                                        if (min.azimuth > Math.Abs(360 - max.azimuth)) north = max;
+                                        else if (min.azimuth < Math.Abs(360 - max.azimuth)) north = min;
+                                        else if (min.azimuth == Math.Abs(360 - max.azimuth)) north = min;
+                                        t.Add(north);
+                                        //добавляем остальные отсортированные
+                                        List<localatdi_station_sector> other = sec.Where(s => s != north).ToList();
+                                        foreach (localatdi_station_sector d in other.OrderBy(order => order.azimuth).ToList())
+                                            t.Add(d);
+                                        ddd.sectors = t;
+                                    }
+                                    if (App.Sett.DB_Settings.SectorsSortBy == 3)
+                                        ddd.sectors = new ObservableCollection<localatdi_station_sector>(((localatdi_station_sector[])dr["sectors"]).ToList().OrderBy(order => order.sector_id));
+                                    #endregion
+                                    ddd.meas_data_exist = (bool)dr["meas_data_exist"];
+                                    ddd.IsIdentified = false;
+
                                     App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                                     {
                                         latdi.data_from_tech[j].SectorsCount += ddd.sectors.Count;
                                         latdi.data_from_tech[j].TaskItems.Add(ddd);
                                     });
                                 }
-                            }
-                            #endregion
+                                #endregion
+                            }                            
                         }
                         catch (Exception exp)
                         {
@@ -1748,12 +1772,7 @@ namespace ControlU.DB
                         }
                         finally { cdb.Close(); }
                         #endregion
-
-                    }
-                    //for (int s = 0; s < latdi.task_data_from_tech[j].TaskItems.Count; s++)
-                    //{
-                    //    latdi.task_data_from_tech[j].SectorsCount += latdi.task_data_from_tech[j].TaskItems[s].sectors.Count;
-                    //}
+                    }                   
                 }
                 #endregion
             }

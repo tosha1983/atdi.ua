@@ -21,7 +21,7 @@ namespace ControlU.Controls
     public partial class SettingsControl : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
         string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        Equipment.GPSNMEA gps = MainWindow.gps;
+        Equipment.GNSSNMEA gps = MainWindow.gps;
 
         Settings.XMLSettings Sett;//= App.Sett;
 

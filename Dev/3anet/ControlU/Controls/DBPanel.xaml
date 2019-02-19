@@ -562,6 +562,7 @@
                                                                                                   VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VirtualizingStackPanel.ScrollUnit="Pixel"
                                                                                                   HeadersVisibility="Column">
                                                                                                 <DataGrid.Columns>
+                                                                                                    <DataGridTextColumn Header="sector id" Binding="{Binding sector_id,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                                                                                                     <DataGridTextColumn Header="{DynamicResource DB_AGL}" ToolTipService.ToolTip="{DynamicResource DB_AGL_ToolTip}" Binding="{Binding agl,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                                                                                                     <DataGridTextColumn Header="{DynamicResource Azimuth}" Binding="{Binding azimuth,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                                                                                                     <DataGridTextColumn Header="BW" Binding="{Binding bw,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource FreqConverter}}" IsReadOnly="True"/>

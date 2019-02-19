@@ -80,7 +80,13 @@
     <l:String x:Key="EqNetworkAnalyzer">network analyzer</l:String>
     <l:String x:Key="Level">Level</l:String>
     <l:String x:Key="LicenseFail">Missing ICS Control license</l:String>
-
+    <l:String x:Key="CountryCode">Country code</l:String>
+    <l:String x:Key="OperatorCode">Operator code</l:String>
+    <l:String x:Key="AreaCode">Area code</l:String>
+    <l:String x:Key="IDinDB">ID in the database</l:String>
+    <l:String x:Key="CellNumber">Cell number</l:String>
+    <l:String x:Key="Consider">Consider</l:String>
+    <l:String x:Key="Example">Example</l:String>
     <!-- Markers -->
     <l:String x:Key="Marker_Markers">Markers</l:String>
     <l:String x:Key="Marker_Type">Type</l:String>
@@ -207,11 +213,18 @@
     <l:String x:Key="SettingsControl_SensorName">Sensor Name</l:String>
     <l:String x:Key="SettingsControl_SensorRegistered">Sensor *SensorName* registered</l:String>
     <l:String x:Key="SettingsControl_SensorNotRegistered">Sensor *SensorName* not registered</l:String>
+    
     <!-- Users -->
     <l:String x:Key="Users_Expander">Users</l:String>
     <l:String x:Key="AddUser">Create User</l:String>
     <l:String x:Key="RemoveUser">Remove User?</l:String>
     <l:String x:Key="SelectedUserFalse">No operator selected</l:String>
+    
+    <!-- DB -->
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy">Sort cells by:</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUp">Azimuth, ascending</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUpFromNorth">Azimuth, ascending from north</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_CellIdUp">Ascending sector ID</l:String>
     <!-- Conclusions -->
     <l:String x:Key="Confirms">Confirms</l:String>
     <l:String x:Key="IllegallyOperatingTransmitter">Illegal transmitter</l:String>

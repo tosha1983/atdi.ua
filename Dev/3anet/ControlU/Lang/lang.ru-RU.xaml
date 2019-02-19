@@ -80,6 +80,14 @@
     <l:String x:Key="EqNetworkAnalyzer">анализатор сетей</l:String>
     <l:String x:Key="Level">Уровень</l:String>
     <l:String x:Key="LicenseFail">Отсутствует лицензия ICS Control</l:String>
+    <l:String x:Key="CountryCode">Код страны</l:String>
+    <l:String x:Key="OperatorCode">Код оператора</l:String>
+    <l:String x:Key="AreaCode">Код региона</l:String>
+    <l:String x:Key="IDinDB">Идентификатор в БД</l:String>
+    <l:String x:Key="CellNumber">Номер сектора</l:String>
+    <l:String x:Key="Consider">Учитывать</l:String>
+    <l:String x:Key="Example">Пример</l:String>
+    
     <!-- Markers -->
     <l:String x:Key="Marker_Markers">Маркеры</l:String>
     <l:String x:Key="Marker_Type">Тип</l:String>
@@ -206,12 +214,19 @@
     <l:String x:Key="SettingsControl_SensorName">Название сенсора</l:String>
     <l:String x:Key="SettingsControl_SensorRegistered">Сенсор *SensorName* зарегистрирован</l:String>
     <l:String x:Key="SettingsControl_SensorNotRegistered">Сенсор *SensorName* не зарегистрирован</l:String>
+        
     <!-- Users -->
     <l:String x:Key="Users_Expander">Пользователи</l:String>
     <l:String x:Key="AddUser">Создать пользователя</l:String>
     <l:String x:Key="RemoveUser">Удалить пользователя</l:String>
     <l:String x:Key="SelectedUserFalse">Не выбран оператор</l:String>
-    
+
+    <!-- DB -->
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy">Сортировать сектора по:</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUp">Азимут, по возрастанию</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_AzimuthUpFromNorth">Азимут, по возрастанию от северного</l:String>
+    <l:String x:Key="SettingsControl_DB_SectorsSortBy_CellIdUp">По возрастанию ID сектора</l:String>
+
     <!-- Conclusions -->
     <l:String x:Key="Confirms">Соответствует</l:String>
     <l:String x:Key="IllegallyOperatingTransmitter">НДП</l:String>

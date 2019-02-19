@@ -3262,8 +3262,30 @@ namespace ControlU.Settings
     }
 
     [Serializable]
-    public class DB_Set : INotifyPropertyChanged
+    public class DB_Set : PropertyChangedBase
     {
+        /// <summary>
+        /// 0 = not selected (Как есть)
+        /// 1 = azimuth up,
+        /// 2 = azimuth up from north
+        /// 3 = sector id up
+        /// </summary>
+        [XmlElement]
+        public int SectorsSortBy
+        {
+            get { return _SectorsSortBy; }
+            set
+            {
+                if (value < 0) _SectorsSortBy = 0;
+                else if (value > 3) _SectorsSortBy = 3;
+                else _SectorsSortBy = value;
+                OnPropertyChanged("SectorsSortBy");
+            }
+        }
+        [XmlIgnore]
+        private int _SectorsSortBy = 0;
+
+        #region OLD нодо разбираться что где юзается
         private double _RadiusFind = 0;
         [XmlElement]
         public double RadiusFind
@@ -3372,15 +3394,7 @@ namespace ControlU.Settings
             get { return _CheckStatusFilter; }
             set { _CheckStatusFilter = value; OnPropertyChanged("CheckStatusFilter"); }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged; // Событие, которое нужно вызывать при изменении
-        // Для удобства обернем событие в метод с единственным параметром - имя изменяемого свойства
-        public void OnPropertyChanged(string propertyName)
-        {
-            // Если кто-то на него подписан, то вызывем его
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
+        #endregion OLD
 
         public string GetString()
         {
@@ -3395,7 +3409,6 @@ namespace ControlU.Settings
                 return textWriter.ToString();
             }
         }
-
     }
     [Serializable]
     public class CheckTechnologies_Set : INotifyPropertyChanged
@@ -4767,6 +4780,7 @@ namespace ControlU.Settings
         }
         [XmlIgnore]
         private uint _MCC = 255;
+
         [XmlElement]
         public bool MCCUse
         {
@@ -4775,6 +4789,15 @@ namespace ControlU.Settings
         }
         [XmlIgnore]
         private bool _MCCUse = false;
+
+        [XmlElement]
+        public bool MCCUseFixed
+        {
+            get { return _MCCUseFixed; }
+            set { _MCCUseFixed = value; OnPropertyChanged("MCCUseFixed"); }
+        }
+        [XmlIgnore]
+        private bool _MCCUseFixed = false;
 
         [XmlElement]
         public string MCCFrom
@@ -4813,6 +4836,15 @@ namespace ControlU.Settings
         }
         [XmlIgnore]
         private bool _MNCUse = false;
+
+        [XmlElement]
+        public bool MNCUseFixed
+        {
+            get { return _MNCUseFixed; }
+            set { _MNCUseFixed = value; OnPropertyChanged("MNCUseFixed"); }
+        }
+        [XmlIgnore]
+        private bool _MNCUseFixed = false;
 
         [XmlElement]
         public string MNCFrom
@@ -4890,6 +4922,15 @@ namespace ControlU.Settings
         private bool _IDUse = false;
 
         [XmlElement]
+        public bool IDUseFixed
+        {
+            get { return _IDUseFixed; }
+            set { _IDUseFixed = value; OnPropertyChanged("IDUseFixed"); }
+        }
+        [XmlIgnore]
+        private bool _IDUseFixed = false;
+
+        [XmlElement]
         public string IDFrom
         {
             get { return _IDFrom; }
@@ -4959,7 +5000,7 @@ namespace ControlU.Settings
         public class SectorComparison : PropertyChangedBase
         {
             [XmlElement]
-            public int Radio 
+            public int Radio
             {
                 get { return _Radio; }
                 set { _Radio = value; OnPropertyChanged("Radio"); }
@@ -5005,13 +5046,13 @@ namespace ControlU.Settings
         [XmlIgnore]
         private string _Formula = "";
 
-        
+
 
         //[XmlIgnore]
-        
-        
 
-        
+
+
+
 
         [XmlIgnore]
         //[XmlArray(IsNullable = true)]

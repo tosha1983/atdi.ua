@@ -14,7 +14,7 @@ namespace ControlU.Equipment
     {
         Helpers.Helper help = new Helpers.Helper();
         LocalMeasurement LM = new LocalMeasurement();
-        static GPSNMEA gp = MainWindow.gps;
+        static GNSSNMEA gp = MainWindow.gps;
         public TelnetConnection tc;
         static UdpStreaming uc;
 
@@ -3375,8 +3375,8 @@ namespace ControlU.Equipment
                     else if (streammode == 1801)//GPS Data
                     {
                         #region
-                        MainWindow.gps.GPSIsValid = Convert.ToBoolean(BitConverter.ToUInt16(t, 40));
-                        if (MainWindow.gps.GPSIsValid)
+                        MainWindow.gps.GNSSIsValid = Convert.ToBoolean(BitConverter.ToUInt16(t, 40));
+                        if (MainWindow.gps.GNSSIsValid)
                         {
                             try
                             {
@@ -3384,11 +3384,11 @@ namespace ControlU.Equipment
                                 MainWindow.gps._LastLongitude = MainWindow.gps.LongitudeDecimal;
                                 MainWindow.gps.LatitudeDecimal = (decimal)Math.Round(BitConverter.ToUInt16(t, 46) + BitConverter.ToSingle(t, 48) / 60, 6);
                                 MainWindow.gps.LongitudeDecimal = (decimal)Math.Round(BitConverter.ToUInt16(t, 54) + BitConverter.ToSingle(t, 56) / 60, 6); // + " " + tok[5];
-                                MainWindow.gps.LatitudeStr = BitConverter.ToUInt16(t, 46).ToString() + "° " + (int)BitConverter.ToSingle(t, 48) + "' " +
-                                    Math.Round((BitConverter.ToSingle(t, 48) - (int)BitConverter.ToSingle(t, 48)) * 60, 1) + "\" " + Convert.ToChar(BitConverter.ToUInt16(t, 44));
+                                //MainWindow.gps.LatitudeStr = BitConverter.ToUInt16(t, 46).ToString() + "° " + (int)BitConverter.ToSingle(t, 48) + "' " +
+                                //    Math.Round((BitConverter.ToSingle(t, 48) - (int)BitConverter.ToSingle(t, 48)) * 60, 1) + "\" " + Convert.ToChar(BitConverter.ToUInt16(t, 44));
 
-                                MainWindow.gps.LongitudeStr = BitConverter.ToUInt16(t, 54).ToString() + "° " + (int)BitConverter.ToSingle(t, 56) + "' " +
-                                    Math.Round((BitConverter.ToSingle(t, 56) - (int)BitConverter.ToSingle(t, 56)) * 60, 1) + "\" " + Convert.ToChar(BitConverter.ToUInt16(t, 52));
+                                //MainWindow.gps.LongitudeStr = BitConverter.ToUInt16(t, 54).ToString() + "° " + (int)BitConverter.ToSingle(t, 56) + "' " +
+                                //    Math.Round((BitConverter.ToSingle(t, 56) - (int)BitConverter.ToSingle(t, 56)) * 60, 1) + "\" " + Convert.ToChar(BitConverter.ToUInt16(t, 52));
                                 MainWindow.gps.NumbSat = BitConverter.ToUInt16(t, 42);
                                 MainWindow.gps.Sats = MainWindow.gps.NumbSat.ToString();
                                 double dist = 0, ang = 0;

@@ -4,56 +4,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ControlU.Controls.Identification"
+             xmlns:controls="clr-namespace:ControlU.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="450">
     <Grid>
+        <Grid.Resources>
+            <controls:LocalBooleanInvertedConverter x:Key="BooleanInverted"/>
+        </Grid.Resources>
         <GroupBox>
             <GroupBox.Header>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding Data.Techonology,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                VerticalAlignment="Center" Margin="0"/>
-                    <TextBlock Text="{DynamicResource Description}" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                    <TextBox Text="{Binding Data.OpsosName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0" Height="22" Width="130"/>
-                    <Button Click="Button_Click" Width="26" Margin="5,0,0,0" />
+                    <TextBlock Text="{DynamicResource Description}" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox Text="{Binding Data.OpsosName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0" Height="22" Width="150"/>
+                    <!--<Button Click="Button_Click" Width="26" Margin="5,0,0,0" />-->
                 </StackPanel>
             </GroupBox.Header>
             <StackPanel Grid.Row="1">
-                <GroupBox Header="Код страны">
+                <GroupBox Header="{DynamicResource CountryCode}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <ComboBox Margin="0,0,5,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"
                                   ItemsSource="{Binding MCCParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                   SelectedIndex="{Binding Path=Data.MCCFromIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                         </ComboBox>
-                        <TextBlock Text="Учитывать"/>
+                        <TextBlock Text="{DynamicResource Consider}"/>
                         <CheckBox IsChecked="{Binding Path=Data.MCCUse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                                      VerticalAlignment="Center" Height="23" Margin="5,0,0,0"/>
+                                  IsEnabled="{Binding Path=Data.MCCUseFixed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BooleanInverted}}" 
+                                  VerticalAlignment="Center" Height="23" Margin="5,0,0,0"/>
                         <TextBox Text="{Binding Data.MCC,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Row="1" Width="80" Margin="5,0,0,0"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Код оператора">
+                <GroupBox Header="{DynamicResource OperatorCode}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <ComboBox Margin="0,0,5,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"
                                   ItemsSource="{Binding MNCParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                   SelectedIndex="{Binding Path=Data.MNCFromIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                         </ComboBox>
-                        <TextBlock Text="Учитывать"/>
+                        <TextBlock Text="{DynamicResource Consider}"/>
                         <CheckBox IsChecked="{Binding Path=Data.MNCUse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                      VerticalAlignment="Top" Height="23" Margin="5,0,0,0"/>
+                                  IsEnabled="{Binding Path=Data.MNCUseFixed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BooleanInverted}}" 
+                                  VerticalAlignment="Top" Height="23" Margin="5,0,0,0"/>
                         <TextBox Text="{Binding Data.MNC,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Row="1" Width="80" Margin="5,0,0,0"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Код региона">
+                <GroupBox Header="{DynamicResource AreaCode}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <ComboBox Margin="0,0,5,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"
                                   ItemsSource="{Binding AreaParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                   SelectedIndex="{Binding Path=Data.AreaFromIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                         </ComboBox>
-                        <TextBlock Text="Учитывать"/>
+                        <TextBlock Text="{DynamicResource Consider}"/>
                         <CheckBox IsChecked="{Binding Path=Data.AreaUse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                       VerticalAlignment="Center" Height="23" Margin="5,0,0,0"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Идентификатор в БД">
+                <GroupBox Header="{DynamicResource IDinDB}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -65,8 +71,9 @@
                                       SelectionChanged="IDType_SelectionChanged"
                                       SelectedIndex="{Binding Path=Data.IDFromIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             </ComboBox>
-                            <TextBlock Text="Учитывать"/>
+                            <TextBlock Text="{DynamicResource Consider}"/>
                             <CheckBox IsChecked="{Binding Path=Data.IDUse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding Path=Data.IDUseFixed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BooleanInverted}}" 
                                       VerticalAlignment="Center" Height="23" Margin="5,0,0,0"/>
                         </StackPanel>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Grid.Row="1" >
@@ -104,7 +111,7 @@
                         </ScrollViewer>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Номер сектора">
+                <GroupBox Header="{DynamicResource CellNumber}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -117,7 +124,7 @@
                                       SelectionChanged="SectorType_SelectionChanged"
                                       SelectedIndex="{Binding Path=Data.SectorFromIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             </ComboBox>
-                            <TextBlock Text="Учитывать"/>
+                            <TextBlock Text="{DynamicResource Consider}"/>
                             <CheckBox IsChecked="{Binding Path=Data.SectorUse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                       VerticalAlignment="Center" Height="23" Margin="5,0,0,0"/>
                         </StackPanel>
@@ -164,7 +171,7 @@
                         </DataGrid>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Пример">
+                <GroupBox Header="{DynamicResource Example}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>

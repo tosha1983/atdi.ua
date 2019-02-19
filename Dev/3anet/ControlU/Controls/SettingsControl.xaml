@@ -101,6 +101,25 @@
                                     </Button>-->
                                 </Grid>
                             </Expander>
+                            <Expander Header="DB" BorderBrush="#FF99B4D1" BorderThickness="1" Margin="0,0,0,4" >
+                                <StackPanel Margin="4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{DynamicResource SettingsControl_DB_SectorsSortBy}"/>
+                                        <ComboBox Grid.Column="2" SelectedIndex="{Binding DB_Settings.SectorsSortBy,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBoxItem Content="Not selected"/>
+                                            <ComboBoxItem Content="{DynamicResource SettingsControl_DB_SectorsSortBy_AzimuthUp}"/>
+                                            <ComboBoxItem Content="{DynamicResource SettingsControl_DB_SectorsSortBy_AzimuthUpFromNorth}"/>
+                                            <ComboBoxItem Content="По возрастанию ID сектора"/>
+                                        </ComboBox>
+                                    </Grid>
+                                    
+                                </StackPanel>
+                            </Expander>
                             <Expander Header="{DynamicResource Conclusions}" BorderBrush="#FF99B4D1" BorderThickness="1" Margin="0,0,0,4" >
                                 <Grid VerticalAlignment="Center" Margin="0,4">
                                     <Grid.ColumnDefinitions>

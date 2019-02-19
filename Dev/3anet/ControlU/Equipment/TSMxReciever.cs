@@ -828,8 +828,8 @@ namespace ControlU.Equipment
 
 
 
-            FreqCentr = 923000000;
-            FreqSpan = 4000000;
+            FreqCentr = 2150000000;
+            FreqSpan = 100000000;
 
             CDMAFPichfromDev = new ObservableCollection<CDMAFPichData>() { };
             //App.Sett.TSMxReceiver_Settings.PropertyChanged += DeviceType_PropertyChanged;
@@ -1859,7 +1859,7 @@ namespace ControlU.Equipment
                                                 {
                                                     if (sec == IdentificationData.GSM.BTS[i].SectorIDFromIdent - 1)
                                                     {
-                                                        IdentificationData.GSM.BTS[i].SectorID = sec;
+                                                        IdentificationData.GSM.BTS[i].SectorID = sec + 1;
                                                         IdentificationData.GSM.BTS[i].ATDI_id_sector = StationsTemp[index].sectors[sec].sector_id;
                                                         foreach (DB.localatdi_sector_frequency freq in StationsTemp[index].sectors[sec].frequencies)
                                                         {
@@ -1870,11 +1870,11 @@ namespace ControlU.Equipment
                                                                 IdentificationData.GSM.BTS[i].ATDI_FrequencyPermission = freq.frequency;
                                                             }
                                                         }
-                                                        
+
                                                     }
                                                 }
                                             }
-                                            else if(StationsTemp[index].sectors.Count() <= IdentificationData.GSM.BTS[i].SectorIDFromIdent - 1)
+                                            else if (StationsTemp[index].sectors.Count() <= IdentificationData.GSM.BTS[i].SectorIDFromIdent - 1)
                                             {
 
                                             }
@@ -4193,7 +4193,6 @@ namespace ControlU.Equipment
                             MeasurementRequests.pDemodRequests[iR].ePDU = siblist[idx];
                             MeasurementRequests.pDemodRequests[iR].eDemodulationMode = RohdeSchwarz.ViCom.Net.GSM.DemodMode.Type.ONCE;
                             //MeasurementRequests.pDemodRequests[iR].wRepetitionDelayIn100ms = 0;//1000;
-
                         }
                     }
                     demod.sStartMeasurementRequests = MeasurementRequests;
@@ -6074,7 +6073,7 @@ namespace ControlU.Equipment
         private void SetMeasMonChannel()
         {
             #region
-            if (Run && IsRuning == true && MainWindow.gps.GPSIsValid && MainWindow.db_v2.MeasMon.Data.Count > 0)//)//
+            if (Run && IsRuning == true && MainWindow.gps.GNSSIsValid && MainWindow.db_v2.MeasMon.Data.Count > 0)//)//
             {
                 //((MainWindow)App.Current.MainWindow).Message = DateTime.Now.ToString() + "";
                 try
@@ -6443,7 +6442,7 @@ namespace ControlU.Equipment
         private void SetMeasMonBand()
         {
             #region
-            if (Run && IsRuning == true && MainWindow.gps.GPSIsValid && MainWindow.db_v2.MeasMon.Data.Count > 0)//)//
+            if (Run && IsRuning == true && MainWindow.gps.GNSSIsValid && MainWindow.db_v2.MeasMon.Data.Count > 0)//)//
             {
 
                 try
@@ -6832,7 +6831,7 @@ namespace ControlU.Equipment
                         if (sgpsm.enMessageFormat == GPSMessageFormat.Type.VICOM_GPS_FORMAT_NMEA)
                         {
                             MainWindow.gps.ReadNMEAData(System.Text.UnicodeEncoding.UTF8.GetString(sgpsm.pbMessageText));
-                            MainWindow.gps.GPSAntennaState = pData.sReceiverInfo.enAntennaState.ToString();
+                            MainWindow.gps.GNSSAntennaState = pData.sReceiverInfo.enAntennaState.ToString();
                         }
                     }
                     //MainWindow.gps.GPSIsValid 
@@ -8373,7 +8372,6 @@ namespace ControlU.Equipment
                                     IdentificationData.ACD.ACDData.Add(d);
                                 }));
                             }
-
                             //Debug.WriteLine("\tChannel: {0} Hz, State: {1}, Technology: {2}", channel.u64FrequencyInHz, channel.enState, channel.penTechnology);
                         }
                     }
