@@ -72,7 +72,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (SensorIds.Count > 0)
                     {
                         measTaskProcess.Process(task, SensorIds, MeasTaskMode.New.ToString(), false, out bool isSuccessTemp, out int? ID);
-                        measTaskIdentifier.Value = ID.Value;
+                        if (ID != null)
+                        {
+                            measTaskIdentifier.Value = ID.Value;
+                        }
                     }
                 }
             }
