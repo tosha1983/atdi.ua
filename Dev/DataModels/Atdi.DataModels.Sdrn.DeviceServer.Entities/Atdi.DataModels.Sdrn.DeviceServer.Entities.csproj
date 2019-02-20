@@ -41,6 +41,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IAntennaPattern.cs" />
+    <Compile Include="Entities\IFSemples.cs" />
+    <Compile Include="Entities\IMeasResultsLevel.cs" />
+    <Compile Include="Entities\IMeasResultsFreq.cs" />
+    <Compile Include="Entities\IMeasSDRResults.cs" />
+    <Compile Include="Entities\IMeasStation.cs" />
+    <Compile Include="Entities\IMeasTask.cs" />
+    <Compile Include="Entities\IOwnerData.cs" />
+    <Compile Include="Entities\ISector.cs" />
+    <Compile Include="Entities\ISectorFreq.cs" />
+    <Compile Include="Entities\ISectorMaskElement.cs" />
+    <Compile Include="Entities\ISensor.cs" />
+    <Compile Include="Entities\ISensorAntenna.cs" />
+    <Compile Include="Entities\ISensorEquipment.cs" />
+    <Compile Include="Entities\IResultsLocation.cs" />
+    <Compile Include="Entities\ISensorLocation.cs" />
+    <Compile Include="Entities\ISensorPolygon.cs" />
+    <Compile Include="Entities\ISensorSensitivites.cs" />
+    <Compile Include="Entities\IStandardScanParameter.cs" />
+    <Compile Include="Entities\IStationLicenseInfo.cs" />
+    <Compile Include="Entities\IStationSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +98,27 @@
     <Content Include="Metadata\Database\Text.450.xml" />
     <Content Include="Metadata\Database\Text.50.xml" />
     <Content Include="Metadata\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\AntennaPattern.xml" />
+    <Content Include="Metadata\Entities\MeasResultsLevel.xml" />
+    <Content Include="Metadata\Entities\MeasResultsFreq.xml" />
+    <Content Include="Metadata\Entities\MeasStation.xml" />
+    <Content Include="Metadata\Entities\MeasTask.xml" />
+    <Content Include="Metadata\Entities\OwnerData.xml" />
+    <Content Include="Metadata\Entities\ResultsLocation.xml" />
+    <Content Include="Metadata\Entities\FSemples.xml" />
+    <Content Include="Metadata\Entities\MeasSDRResults.xml" />
+    <Content Include="Metadata\Entities\Sector.xml" />
+    <Content Include="Metadata\Entities\SectorFreq.xml" />
+    <Content Include="Metadata\Entities\SectorMaskElement.xml" />
+    <Content Include="Metadata\Entities\Sensor.xml" />
+    <Content Include="Metadata\Entities\SensorAntenna.xml" />
+    <Content Include="Metadata\Entities\SensorEquipment.xml" />
+    <Content Include="Metadata\Entities\SensorLocation.xml" />
+    <Content Include="Metadata\Entities\SensorPolygon.xml" />
+    <Content Include="Metadata\Entities\SensorSensitivites.xml" />
+    <Content Include="Metadata\Entities\StandardScanParameter.xml" />
+    <Content Include="Metadata\Entities\StationLicenseInfo.xml" />
+    <Content Include="Metadata\Entities\StationSite.xml" />
     <Content Include="Metadata\Environment.xml" />
     <Content Include="Metadata\Units\Angle.Degree.xml" />
     <Content Include="Metadata\Units\Frequency.Hz.xml" />
@@ -88,9 +130,6 @@
     <Content Include="Metadata\Units\Longitude.DEC.xml" />
     <Content Include="Metadata\Units\Power.dB.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Metadata\Entities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
