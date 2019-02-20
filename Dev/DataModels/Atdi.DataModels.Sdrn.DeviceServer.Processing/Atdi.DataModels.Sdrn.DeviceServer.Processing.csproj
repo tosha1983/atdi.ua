@@ -41,11 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Processes\ExampleContext.cs" />
+    <Compile Include="Processes\MeasProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\ExampleTask.cs" />
+    <Compile Include="Tasks\HandlingMeasurementsTask.cs" />
+    <Compile Include="Tasks\AnalyzeSignalTask.cs" />
+    <Compile Include="Tasks\LocalizationTDOATask.cs" />
+    <Compile Include="Tasks\SignalizationTask.cs" />
+    <Compile Include="Tasks\LevelTask.cs" />
+    <Compile Include="Tasks\BandwidthTask.cs" />
+    <Compile Include="Tasks\SysInfoTask.cs" />
+    <Compile Include="Tasks\SOTask.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
+      <Project>{FEDC8A6E-CB01-412F-A474-8D5EBDD96A08}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
       <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
