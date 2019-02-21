@@ -164,12 +164,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             var context = new DummyExecutionContext(logger);
             var command = new CMD.MesureIQStreamCommand();
             
-            command.Parameter.FreqStart_Hz = 424.625m * 1000000;//424.650
-            command.Parameter.FreqStop_Hz = 424.675m * 1000000;
+            command.Parameter.FreqStart_Hz = 910 * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+            command.Parameter.FreqStop_Hz = 930 * 1000000;//930*1000000;//424.675m * 1000000;
             command.Parameter.Att_dB = 0;
-            command.Parameter.PreAmp_dB = 30;
+            command.Parameter.PreAmp_dB = 10;
             command.Parameter.RefLevel_dBm = -40;
-            command.Parameter.BitRate_MBs = 0.8;
+            command.Parameter.BitRate_MBs = 40;
             command.Parameter.IQBlockDuration_s = 0.5;
             command.Parameter.IQReceivTime_s = 0.6;
             command.Parameter.MandatoryPPS = false;
