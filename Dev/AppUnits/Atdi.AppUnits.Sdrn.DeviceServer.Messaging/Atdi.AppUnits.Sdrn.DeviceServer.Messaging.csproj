@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="Database\SaveMeasTask.cs" />
     <Compile Include="MessageHandlerBase.cs" />
     <Compile Include="Handlers\SendMeasTaskHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -112,5 +113,6 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

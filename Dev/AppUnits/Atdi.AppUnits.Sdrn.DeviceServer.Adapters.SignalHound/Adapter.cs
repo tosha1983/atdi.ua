@@ -70,8 +70,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     SetRefATT();
                     SetGain();
                     SetRbwVbwSweepTimeRbwType();
+                    SetPortType();
                     Status = AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, 0);
                     IsRuning = true;
+                    IdleState = true;
                     /// включем устройство
                     /// иницируем его параметрами сконфигурации
                     /// проверяем к чем оно готово
@@ -130,7 +132,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     // сценарйи в данном случаи за разарбочиком адаптера
 
                     // что то меряем
-
+                    if (IdleState)
+                    {
+                        Status = AdapterDriver.bbAbort(_Device_ID);
+                        if (Status != EN.Status.NoError)
+                        {
+                            _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                        IdleState = false;
+                    }
                     if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
                     {
                         FreqStart = LPC.FreqStart(this, command.Parameter.FreqStart_Hz);
@@ -208,7 +218,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     {
                         _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                     }
-
+                    IdleState = true;
                     //Меряем
                     //Если TraceType ClearWrite то пушаем каждый результат
                     if (TraceType == EN.TraceType.ClearWrite)
@@ -310,7 +320,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             context.PushResult(result);
                         }
                     }
-
+                    
+                    if (IdleState)
+                    {
+                        Status = AdapterDriver.bbAbort(_Device_ID);
+                        if (Status != EN.Status.NoError)
+                        {
+                            _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                        IdleState = false;
+                    }
                     // снимаем блокировку с текущей команды
                     context.Unlock();
 
@@ -329,6 +348,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             catch (Exception e)
             {
+                try//знаю что плохо но нужно освободить железо если че
+                {
+                    if (IdleState)
+                    {
+                        Status = AdapterDriver.bbAbort(_Device_ID);
+                        if (Status != EN.Status.NoError)
+                        {
+                            _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                        IdleState = false;
+                    }
+                }
+                catch { }
                 // желательно записать влог
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
@@ -337,7 +369,47 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
 
         }
-
+        /// <summary>
+        /// Получает IQ Данные
+        /// 
+        ///
+        /// Пример
+        /// var command = new CMD.MesureIQStreamCommand();
+        /// command.Parameter.FreqStart_Hz = 424.625m * 1000000;//424.650
+        /// command.Parameter.FreqStop_Hz = 424.675m * 1000000;
+        /// command.Parameter.Att_dB = 0; //установили аттенюатор
+        /// command.Parameter.PreAmp_dB = 30;
+        /// command.Parameter.RefLevel_dBm = -40;
+        /// command.Parameter.BitRate_MBs = 0.8;
+        /// command.Parameter.IQBlockDuration_s = 0.5;
+        /// command.Parameter.IQReceivTime_s = 0.6;
+        /// command.Parameter.MandatoryPPS = false; принимать ли сигналы PPS
+        /// Если false то работает не воспринимае данных PPS
+        /// Если true то суммарное время отсрочки и время прослушки должно быть больше 1 сек, для принятия сигнала PPS
+        /// Если сигнал PPS небыл "услышан" за все время получения данных, то будит сгенерированна ошибка 
+        /// В результате PPSTimeDifference_ns определяет разницу во времени приема PPS и первым семплом в IQ данных
+        /// В результате PPSTimeDifference_ns положительный означает что сигнал PPS был принят во время приема сигнала
+        /// PPSTimeDifference_ns отрицательный если сигнал PPS был принят до приема сигнала.
+        /// 
+        /// command.Parameter.MandatorySignal = true; ожидать ли сигнал, т.е. в первом блоке присутствует начало сигнала
+        /// Если false то IQ данные сохраняются первые полученные за IQBlockDuration_s,
+        /// Если true то IQ данные сохраняются при наличии сигнала с установленным порогом(пока забита фиксированный порог)
+        /// Если сигнал за время прослушки не детектирован, то будит сгенерированна ошибка.
+        /// Если Сигнал принят под конец интевала IQReceivTime_s, то время сбора сигнала будит продлено для полного сбора данных за время IQBlockDuration_s
+        /// 
+        /// command.Parameter.TimeStart = (DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks);
+        /// command.Parameter.TimeStart += 2*10000000; установили время отсрочки старта, 
+        /// по факту как только начнет выполняться команда, то начнется прослушка блоков IQ, 
+        /// для того чтобы увеличить время срабатывания PPS сигнала, Но данные не будут сохранятся!
+        /// Данные начнут сохраняться если текущее системное время попало в однин из принятых блоков
+        /// Если по каким либо причинам запуск будит после этого времени и не попадет в блок IQ то будит сгенерированна ошибка
+        /// 
+        /// 
+        /// adapter.MesureIQStreamCommandHandler(command, context);
+        ///
+        ///  </summary>
+        /// <param name="command"></param>
+        /// <param name="context"></param>
         public void MesureIQStreamCommandHandler(COM.MesureIQStreamCommand command, IExecutionContext context)
         {
             try
@@ -347,11 +419,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     //context.Lock(CommandType.MesureIQStream);
                     context.Lock();
 
-
-                    Status = AdapterDriver.bbAbort(_Device_ID);
-                    if (Status != EN.Status.NoError)
+                    if (IdleState)
                     {
-                        _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        Status = AdapterDriver.bbAbort(_Device_ID);                        
+                        if (Status != EN.Status.NoError)
+                        {
+                            _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                        IdleState = false;
                     }
                     if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
                     {
@@ -385,18 +460,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                         }
-                    }
-
+                    }                    
 
                     DownsampleFactor = LPC.IQDownsampleFactor(command.Parameter.BitRate_MBs, FreqSpan);
                     Status = AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan);
-                    if (Status != EN.Status.NoError)
-                    {
-                        _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
-                    }
-                    Debug.WriteLine(Status);
-
-                    Status = AdapterDriver.bbConfigureIO(_Device_ID, 0, (uint)EN.Port2.InTriggerRisingEdge);
                     if (Status != EN.Status.NoError)
                     {
                         _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
@@ -415,55 +482,36 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     (double BlockDuration, double ReceiveTime) = LPC.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
 
+                    
                     return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
-
                     Status = AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec);
                     if (Status != EN.Status.NoError)
                     {
                         _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                     }
-
+                    IdleState = true;
 
                     //инициализация перед пуском, подготавливаемся к приему данных 
                     COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final); //ReceivedIQStream riq = new ReceivedIQStream();
-                    TempIQData tiq = new TempIQData();
-                    long timestart = command.Parameter.TimeStart;
-                    InitialReceivedIQStream(ref result, ref tiq, BlockDuration, ReceiveTime, timestart);
+                    TempIQData tiq = new TempIQData();                    
+                    InitialReceivedIQStream(ref result, ref tiq, BlockDuration, ReceiveTime, command.Parameter.TimeStart * 100);
                     //закончили подготовку
-
-                    DateTime dt = DateTime.Now;//удалить
-                    long ttt = dt.Ticks;//удалить
-                    Debug.WriteLine(dt.ToString() + " Start");//удалить
-
-                    //готовимся к нужному времени
-                    long tickto = command.Parameter.TimeStart + new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks - DateTime.UtcNow.Ticks;
-                    while (tickto > 10000)
-                    {
-                        tickto = command.Parameter.TimeStart + new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks - DateTime.UtcNow.Ticks;
-                        if (tickto > 2000000)
-                        {
-                            Thread.Sleep(200);
-                        }
-                        else if (tickto <= 2000000 && tickto > 100000)
-                        {
-                            Thread.Sleep(10);
-                        }
-                        else if (tickto < 100000 && tickto > 10000)
-                        {
-                            Thread.Sleep(1);
-                        }
-                    }
-                    Debug.WriteLine(new TimeSpan(DateTime.Now.Ticks - ttt).ToString() + " StartMeasIQ");//удалить
-                    Debug.WriteLine((DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Ticks");//удалить
-                    Debug.WriteLine(new TimeSpan(DateTime.Now.Ticks).ToString() + " StartMeasIQ");//удалить
 
 
                     //психуем и принимаем все
-                    if (GetIQStream2(ref result, tiq, command.Parameter.MandatoryPPS, command.Parameter.MandatorySignal))
-                    {
-                        Status = AdapterDriver.bbAbort(_Device_ID);
+                    if (GetIQStream(ref result, tiq, context, command.Parameter.MandatoryPPS, command.Parameter.MandatorySignal))
+                    {                       
                         //пушаем
                         context.PushResult(result);
+                    }
+                    if (IdleState)
+                    {
+                        Status = AdapterDriver.bbAbort(_Device_ID);
+                        if (Status != EN.Status.NoError)
+                        {
+                            _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                        IdleState = false;
                     }
                     context.Unlock();
                     context.Finish();
@@ -475,10 +523,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             catch (Exception e)
             {
+                try//знаю что плохо но нужно освободить железо если че
+                {
+                    if (IdleState)
+                    {
+                        Status = AdapterDriver.bbAbort(_Device_ID);
+                        if (Status != EN.Status.NoError)
+                        {
+                            _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                        IdleState = false;
+                    }
+                }
+                catch { }
                 // желательно записать влог
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
+               
                 // дальше кода быть не должно, освобождаем поток
             }
 
@@ -605,7 +667,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #endregion
 
         #region Trace Data
-        private bool NewTrace = false;
+        private bool NewTrace;
 
         private decimal FreqStep = 10000;
 
@@ -646,33 +708,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         public decimal FreqMin = 9000;
         public decimal FreqMax = 6400000000;
 
+
+        bool IdleState = false;
         /// <summary>
         /// температура приемника от нее пляшем с калибровкой
         /// </summary>
-        public double Device_BoardTemp
-        {
-            get { return _Device_BoardTemp; }
-            set { _Device_BoardTemp = value; }
-        }
-        private double _Device_BoardTemp = 10000;
+        public double Device_BoardTemp;
         /// <summary>
         /// последняя температура калибровки
         /// </summary>
-        private double Device_LastCalcBoardTemp = 10000;
+        private double Device_LastCalcBoardTemp;
 
-        public double Device_USBVoltage
-        {
-            get { return _Device_USBVoltage; }
-            set { _Device_USBVoltage = value; }
-        }
-        private double _Device_USBVoltage = 10000;
+        public double Device_USBVoltage;
 
-        public double Device_USBCurrent
-        {
-            get { return _Device_USBCurrent; }
-            set { _Device_USBCurrent = value; }
-        }
-        private double _Device_USBCurrent = 10000;
+        public double Device_USBCurrent;
 
         public int Device_ID
         {
@@ -716,10 +765,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         private int DownsampleFactor;
         private int return_len;
         private int samples_per_sec;
-        private double bandwidth;
-
-        private int LastPPSTime_sec;
-        private int LastPPSTime_nano = -1;
+        private double bandwidth;        
         #endregion IQStream
 
         #endregion Param
@@ -796,7 +842,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             try
             {
                 Status = AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection);
-
+            }
+            #region Exception
+            catch (Exception exp)
+            {
+                _logger.Exception(Contexts.ThisComponent, exp);
+            }
+            #endregion
+        }
+        private void SetPortType()
+        {
+            try
+            {
+                Status = AdapterDriver.bbConfigureIO(_Device_ID, 0, (uint)EN.Port2.InTriggerRisingEdge);
+                if (Status != EN.Status.NoError)
+                {
+                    _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                }
             }
             #region Exception
             catch (Exception exp)
@@ -1151,154 +1213,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
         }
 
-        private bool GetIQStream(ref ReceivedIQStream receivedIQStream, double BlockDuration, double ReceivTime, bool AfterPPS = false, bool JustWithSignal = false)
-        {
-            bool done = false;
-            try
-            {
-                // константа
-                int max_count = 500000;
-                // конец констант
-
-                int NumberPass = 0;
-                // расчет количества шагов которое мы должны записать. NumberPass
-                if (BlockDuration < 0) { NumberPass = 1; } else { NumberPass = (int)Math.Ceiling(BlockDuration * samples_per_sec / return_len); }
-
-                // Формирование пустого места для записи данных
-                receivedIQStream = new ReceivedIQStream();
-                receivedIQStream.TimeMeasStart = DateTime.Now;
-                receivedIQStream.iq_samples = new List<float[]>();
-                receivedIQStream.triggers = new List<int[]>();
-                receivedIQStream.dataRemainings = new List<int>();
-                receivedIQStream.sampleLosses = new List<int>();
-                receivedIQStream.iqSeces = new List<int>();
-                receivedIQStream.iqNanos = new List<int>();
-                List<float[]> IQData = new List<float[]>();
-                List<int[]> TrData = new List<int[]>();//данные тригеров, PPS
-                List<int> dataRemainings = new List<int>();
-                List<int> sampleLosses = new List<int>();
-                List<int> iqSeces = new List<int>();
-                List<int> iqNanos = new List<int>();
-                for (int i = 0; i < NumberPass; i++)
-                {
-                    float[] iqSamplesX = new float[return_len * 2];
-                    int[] triggersX = new int[71];
-                    IQData.Add(iqSamplesX);
-                    TrData.Add(triggersX);
-                    dataRemainings.Add(-1);
-                    sampleLosses.Add(-1);
-                    iqSeces.Add(-1);
-                    iqNanos.Add(-1);
-                }
-                // сформировано пустое место
-
-                int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
-                int count = 0; int number_bloks = 0;
-
-                for (int i = 0; i < NumberPass; i++)
-                {
-                    // снятие данных
-                    AdapterDriver.bbGetIQUnpacked(_Device_ID, IQData[i], return_len, TrData[i], 71, 1,
-                            ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
-                    // конец снятия данных
-                    dataRemainings[i] = dataRemaining;
-                    sampleLosses[i] = sampleLoss;
-                    iqSeces[i] = iqSec;
-                    iqNanos[i] = iqNano;
-
-
-                    if (TrData[i][0] != 0)
-                    {
-                        AfterPPS = false;
-                        LastPPSTime_sec = iqSec;
-                        LastPPSTime_nano = iqNano + TrData[i][0] * (DownsampleFactor * 25);
-                        //if (JustWithSignal)
-                        //{max_count = NumberPass; count = 0;}
-                    }
-                    else
-                    {
-                        if (LastPPSTime_nano != -1)
-                        {// В данном случае у нас был PPS ранее
-                            if (iqSec - LastPPSTime_sec < 10)
-                            {// еще не успело сильно растроиться время
-                                TrData[i][0] = -(int)((iqNano - LastPPSTime_nano) / (DownsampleFactor * 25));
-                                if (TrData[i][0] > 0) { TrData[i][0] = (-1000000000 / (DownsampleFactor * 25)) + TrData[i][0]; }
-                            }
-                        }
-                    }
-                    if (AfterPPS)
-                    {
-                        i--;
-                    }
-                    if ((JustWithSignal) && (!AfterPPS))
-                    {
-                        // Константы
-                        double noise = 0.00001; // уровень шума в mW^2
-                        double SN = 10; // превышение шума в разах 
-                        // Конец констант 
-                        bool signal = false;
-                        int step = (int)(IQData[i].Length / 1000);
-                        if (step < 1) { step = 1; }
-                        double TrigerLevel = noise * SN;
-                        for (int j = 0; IQData[i].Length - 6 > j; j = j + step)
-                        {
-                            if ((IQData[i][j] >= TrigerLevel) || (IQData[i][j + 1] >= TrigerLevel))
-                            {
-                                if ((IQData[i][j + 2] >= TrigerLevel) || (IQData[i][j + 3] >= TrigerLevel))
-                                {
-                                    if ((IQData[i][j + 4] >= TrigerLevel) || (IQData[i][j + 5] >= TrigerLevel))
-                                    {
-                                        signal = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if (!signal)
-                        {
-                            i--;
-                            TrData[i][0] = 0;
-                        }
-                    }
-                    count++;
-                    number_bloks = i + 1;
-                    if (count >= max_count) { break; }
-                }
-
-                // перегрупировка данных в нужный формат
-                for (int i = 0; i < number_bloks; i++)
-                {
-                    float[] iq_sample = new float[return_len * 2];
-                    int[] trigger = new int[80];
-                    for (int j = 0; j < return_len * 2; j++)
-                    {
-                        iq_sample[j] = IQData[i][j];
-                    }
-                    for (int j = 0; j < 10; j++)
-                    {
-                        trigger[j] = TrData[i][j];
-                        if (trigger[j] == 0) { break; }
-                    }
-                    receivedIQStream.iq_samples.Add(iq_sample);
-                    receivedIQStream.triggers.Add(trigger);
-                    receivedIQStream.dataRemainings.Add(dataRemainings[i]);
-                    receivedIQStream.sampleLosses.Add(sampleLosses[i]);
-                    receivedIQStream.iqSeces.Add(iqSeces[i]);
-                    receivedIQStream.iqNanos.Add(iqNanos[i]);
-                }
-                receivedIQStream.durationReceiving_sec = BlockDuration;
-                done = true;
-            }
-            catch
-            {
-                receivedIQStream = null;
-            }
-
-            return done;
-        }
-
-
-
         private void InitialReceivedIQStream(ref COMR.MesureIQStreamResult IQStreamResult, ref TempIQData tempIQStream, double blockDuration, double receivTime, long timeStart)
         {
             // Формирование пустого места для записи данных
@@ -1327,68 +1241,98 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             // сформировано пустое место
         }
-        private bool GetIQStream2(ref COMR.MesureIQStreamResult IQStreamResult, TempIQData tempIQStream, bool WithPPS, bool JustWithSignal)
+        private bool GetIQStream(ref COMR.MesureIQStreamResult IQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool WithPPS, bool JustWithSignal)
         {
             bool done = false;
-            try
+            bool IsCancellationRequested = false;
+            // расчет количества шагов которое мы должны записать. 
+
+            int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
+            int count = 0; //количевство прослушанных блоков за время приема
+
+            // Константы
+            float noise = 0.000001f; // уровень шума в mW^2
+            float SN = 10; // превышение шума в разах 
+            float TrigerLevel = noise * SN;
+            // Конец констант 
+
+            bool SignalFound = false; //был ли сигнал
+            int step = tempIQStream.IQData[0].Length / 1000;//шаг проверки уровней на предмет детектирования сигнала
+            if (step < 1)
             {
-                Debug.WriteLine(new TimeSpan(DateTime.Now.Ticks).ToString() + " Start MeasIQ");//удалить
+                step = 1;
+            }
 
+            bool GetBlockOnTime = false;//тру то принимаем блоки до конца, фолс если недостигли времени приема то пока принимаем PPS
+            long BlockTime = return_len * tempIQStream.OneSempleDuration; //Длительность одного блока в нс
 
-                // расчет количества шагов которое мы должны записать. 
-
-                int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
-                int count = 0; int number_bloks = 0;
-
-                // Константы
-                float noise = 0.000005f; // уровень шума в mW^2
-                float SN = 10; // превышение шума в разах 
-                float TrigerLevel = noise * SN;
-                // Конец констант 
-
-                bool SignalFound = false;
-                int step = tempIQStream.IQData[0].Length / 1000;
-                if (step < 1)
+            bool PPSDetected = false;//Детектирован ли PPS
+            long TimeToStartBlockWithPPS = 0;//Разница времени старта блока и PPS в нс, всегда положителен   
+            int PPSBlock = 0; //блоков после ппс (в принятом блоке равно 1)
+            for (int i = 0; i < tempIQStream.BlocksCount; i++)
+            {
+                // иногда нужно проверять токен окончания работы комманды
+                if (context.Token.IsCancellationRequested)
                 {
-                    step = 1;
+                    // все нужно остановиться
+                    // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
+                    IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged);
+
+                    context.PushResult(IQStreamResult);
+                    // подтверждаем факт обработки отмены
+                    context.Cancel();
+                    IsCancellationRequested = true;
+                    // освобождаем поток 
+                    break;
                 }
-                for (int i = 0; i < tempIQStream.BlocksCount; i++)
-                {
-                    // снятие данных
-                    AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQData[i], return_len, tempIQStream.TrData[i], 71, 1,
-                            ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
-                    // конец снятия данных
-                    tempIQStream.dataRemainings[i] = dataRemaining;
-                    tempIQStream.sampleLosses[i] = sampleLoss;
-                    tempIQStream.iqTime[i] = ((long)iqSec) * 1000000000 + iqNano;
-                    if (i > 0) tempIQStream.iqdelta.Add(tempIQStream.iqTime[i] - tempIQStream.iqTime[i - 1]);
 
-                    #region
-                    //if (TrData[i][0] != 0)
-                    //{
-                    //    AfterPPS = false;
-                    //    LastPPSTime_sec = iqSec;
-                    //    LastPPSTime_nano = iqNano + TrData[i][0] * (DownsampleFactor * 25);
-                    //    //if (JustWithSignal)
-                    //    //{max_count = NumberPass; count = 0;}
-                    //}
-                    //else
-                    //{
-                    //    if (LastPPSTime_nano != -1)
-                    //    {// В данном случае у нас был PPS ранее
-                    //        if (iqSec - LastPPSTime_sec < 10)
-                    //        {// еще не успело сильно растроиться время
-                    //            TrData[i][0] = -(int)((iqNano - LastPPSTime_nano) / (DownsampleFactor * 25));
-                    //            if (TrData[i][0] > 0) { TrData[i][0] = (-1000000000 / (DownsampleFactor * 25)) + TrData[i][0]; }
-                    //        }
-                    //    }
-                    //}
-                    //if (AfterPPS)
-                    //{
-                    //    i--;
-                    //}
-                    #endregion
-                    if (JustWithSignal && !SignalFound) //проверяем наличие сигнала пока его не обнаружили//|| !AfterPPS)
+                // снятие данных
+                Status = AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQData[i], return_len, tempIQStream.TrData[i], 71, 1,
+                    ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano);
+                // конец снятия данных
+
+                //Если вдруг принимаем данные с ошибками то генерируем ошибки, т.к. данные некоректны
+                if (Status != EN.Status.NoError)
+                {
+                    throw new Exception(AdapterDriver.bbGetStatusString(Status));                    
+                }
+
+                //tempIQStream.dataRemainings[i] = dataRemaining;//пока ненадо
+                //tempIQStream.sampleLosses[i] = sampleLoss;//пока ненадо
+                tempIQStream.iqTime[i] = ((long)iqSec) * 1000000000 + iqNano;
+                if (i > 0) tempIQStream.iqdelta.Add(tempIQStream.iqTime[i] - tempIQStream.iqTime[i - 1]);
+
+                //определяем когда нужно начинать пытаться принять данные, попал ли этот блок на время начала приема
+                if (!GetBlockOnTime && tempIQStream.iqTime[i] <= tempIQStream.TimeStart && tempIQStream.TimeStart <= tempIQStream.iqTime[i] + return_len * tempIQStream.OneSempleDuration)
+                {
+                    GetBlockOnTime = true;
+                }
+                //провтыкали время старта
+                if (!GetBlockOnTime && tempIQStream.iqTime[i] + return_len * tempIQStream.OneSempleDuration > tempIQStream.TimeStart)
+                {
+                    throw new Exception("The task was started after the required start time of the task.");//Задача была запущена после необходимого времени старта задачи
+                }
+
+                //Хотим PPS
+                if (WithPPS)
+                {
+                    if (tempIQStream.TrData[i][0] > 0)//заново задетектили PPS то все сбросим и начнем считать занов
+                    {
+                        PPSDetected = true;
+                        PPSBlock = 1;
+                        TimeToStartBlockWithPPS = tempIQStream.TrData[i][0] * tempIQStream.OneSempleDuration;
+                    }
+                    else
+                    {
+                        PPSBlock++;
+                    }
+                }
+
+                //начинаем обробатывать блоки т.к. началось время приема
+                if (GetBlockOnTime)
+                {
+                    //проверяем наличие сигнала пока его не обнаружили
+                    if (JustWithSignal && !SignalFound) 
                     {
                         for (int j = 0; tempIQStream.IQData[i].Length - 6 > j; j += step)
                         {
@@ -1404,157 +1348,88 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 }
                             }
                         }
-                        if (!SignalFound)//небыло сигнала то уменьшим индекс и перезапишем
+                        if (!SignalFound)//небыло сигнала то уменьшим индекс и перезапишем этот блок
                         {
-                            DateTime dt2 = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);//удалить
-                            Debug.WriteLine(count + " " + "Нет сигнала " + tempIQStream.iqTime[i] + "  " + new TimeSpan(dt2.Ticks + tempIQStream.iqTime[i] / 100).ToString());//удалить
                             i--;
-                        }
-                        else
-                        {
-                            //Thread.Sleep(2000);
-                            DateTime dt2 = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);//удалить
-                            Debug.WriteLine(count + " " + "Есть сигнал " + tempIQStream.iqTime[i] + "  " + new TimeSpan(dt2.Ticks + tempIQStream.iqTime[i] / 100).ToString());//удалить
                         }
                     }
                     count++;
 
-                    if (count >= tempIQStream.BlocksAll)//Вышли за отведенное время прослушки
+                    //Вышли за отведенное время прослушки
+                    if (count >= tempIQStream.BlocksAll)
                     {
-                        Debug.WriteLine(count + " " + new TimeSpan(DateTime.Now.Ticks).ToString() + " Вышли за время");//удалить
-                        if (SignalFound)//Есть сигнал
+                        //хотели c сигналом 
+                        if (JustWithSignal)
                         {
-                            if (i == tempIQStream.BlocksCount - 1)//дослушаем необходимое время прослушки и выйдем
+                            if (SignalFound)//сигнал есть
                             {
-                                Debug.WriteLine(count + " " + new TimeSpan(DateTime.Now.Ticks).ToString() + " Закончили прием сигнала по максимальному времени приема");//удалить
+                                if (i == tempIQStream.BlocksCount - 1)//дослушаем необходимое время прослушки и выйдем
+                                {
+                                    break;
+                                }
+                            }
+                            else//нету сигнала то выходим И потом пилим екзепшен
+                            {
                                 break;
                             }
                         }
-                        else//нету сигнала то выходим
+                        else //Не хотели с сигналом и выйдем
                         {
-                            Debug.WriteLine(count + " " + new TimeSpan(DateTime.Now.Ticks).ToString() + " Закончили недождались");//удалить
                             break;
                         }
                     }
                     if (tempIQStream.iqdelta.Count > 1 && tempIQStream.OneSempleDuration != tempIQStream.iqdelta[tempIQStream.iqdelta.Count - 1] / return_len)
                     {
-                        Debug.WriteLine(count + " " + new TimeSpan(DateTime.Now.Ticks).ToString() + " Жопа, провал во времени между блоками");//удалить
+                        //Временной интервал между блоками превышает время длительности блока, т.е. данные с пропусками и являются некоректными
+                        throw new Exception("The time interval between the blocks exceeds the duration of the block");//
                     }
                 }
+                else //т.к. не началось время прослушки данных то уменьшим индексм и на то же место запишем болок заново
+                {
+                    i--;
+                }
+            }
+            //если не попросили завершить раньше времени то пилим результат
+            if (!IsCancellationRequested)
+            {
                 #region обработка полученных данных
-                if (JustWithSignal && !SignalFound)
+                if (JustWithSignal && !SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
                 {
                     throw new Exception("Signal not detected");
                 }
+                //хотим с PPS
                 if (WithPPS)
                 {
-                    //ищем PPS 
-                    bool DetectPPS = false;
-                    int block = 0, trigerindex = 0;
-                    for (int i = 0; i < tempIQStream.BlocksCount; i++)
+                    // PPS был за все время прослушки блоков
+                    if (PPSDetected)
                     {
-                        for (int k = 0; k < tempIQStream.TrData[i].Length; k++)
-                        {
-                            if (!DetectPPS && tempIQStream.TrData[i][k] > 0)
-                            {
-                                block = i;
-                                trigerindex = k;
-                                DetectPPS = false;
-                                break;
-                            }
-                        }
-                        if (DetectPPS)
-                        {
-                            break;
-                        }
+                        IQStreamResult.PPSTimeDifference_ns = (0 - PPSBlock + tempIQStream.BlocksCount) * BlockTime + TimeToStartBlockWithPPS;
                     }
-                    if (DetectPPS)
-                    {
-                        long starttimeblock = ((block - 1) * (tempIQStream.IQData.Count / 2) + trigerindex) * tempIQStream.OneSempleDuration;
-                        Debug.WriteLine("PPS detected: Block " + block + " trigerindex " + trigerindex);//удалить
-                    }
+                    //Сигнал PPS не был детектирован за время приема, согласно договоренности генерируем екзепшен
                     else
                     {
-                        throw new Exception("PPS not detected");
+                        throw new Exception("No PPS signal was detected during reception.");
                     }
                 }
-                IQStreamResult.TimeStamp = tempIQStream.iqTime[0] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                IQStreamResult.TimeStamp = tempIQStream.iqTime[0] / 100;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.iq_samples = tempIQStream.IQData.ToArray();
-                #endregion обработка полученных данных                
-                Debug.WriteLine(new TimeSpan(DateTime.Now.Ticks).ToString() + " Stop MeasIQ");//удалить
+                #endregion обработка полученных данных  
+
                 done = true;
             }
-            catch (Exception e)
-            {
-                IQStreamResult = null;
-            }
-
             return done;
         }
 
         #endregion Private Method
 
 
-        private class ReceivedIQStream
-        {
-            #region parameters
-            public List<float[]> iq_samples;
-            public List<int[]> triggers;
-            public List<float[]> Ampl;
-            public List<int> dataRemainings;
-            public List<int> sampleLosses;
-            public List<int> iqSeces;
-            public List<int> iqNanos;
-            public double MinLevel;
-            public double MaxLevel;
-            public DateTime TimeMeasStart; // время начала измерения потока IQ
-            public double durationReceiving_sec;
-            #endregion
-            public void CalcAmpl(bool BB60C)
-            {
-                Ampl = new List<float[]>();
-                MinLevel = 1000;
-                MaxLevel = 0;
-                if (BB60C)
-                {
-                    for (int i = 0; i < iq_samples.Count; i++)
-                    {
-                        float[] arrAmpl = new float[iq_samples[i].Length / 2];
-                        for (int j = 0; j < iq_samples[i].Length; j = j + 2)
-                        {
-                            float _arrAmpl = (float)(iq_samples[i][j] * iq_samples[i][j] + iq_samples[i][j + 1] * iq_samples[i][j + 1]);
-                            if (MinLevel > _arrAmpl) { MinLevel = _arrAmpl; }
-                            if (MaxLevel < _arrAmpl) { MaxLevel = _arrAmpl; }
-                            arrAmpl[j / 2] = _arrAmpl;
-                        }
-                        Ampl.Add(arrAmpl);
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < iq_samples.Count; i++)
-                    {
-                        float[] arrAmpl = new float[iq_samples[i].Length / 2];
-                        for (int j = 0; j < iq_samples[i].Length; j = j + 2)
-                        {
-                            float _arrAmpl = (float)Math.Sqrt(iq_samples[i][j] * iq_samples[i][j] + iq_samples[i][j + 1] * iq_samples[i][j + 1]);
-                            if (MinLevel > _arrAmpl) { MinLevel = _arrAmpl; }
-                            if (MaxLevel < _arrAmpl) { MaxLevel = _arrAmpl; }
-                            arrAmpl[j / 2] = _arrAmpl;
-                        }
-                        Ampl.Add(arrAmpl);
-                    }
-                }
-            }
-        }
-
         private class TempIQData
         {
             #region parameters
             public int BlocksCount;//Количевство первых блоков, с уговнем или вообще
             public int BlocksAll; // Всего блоков
-            public long TimeStart;//Время начала приема в Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
+            public long TimeStart;//Время начала приема в нс относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
             public long OneSempleDuration; //Дительность одного семпла
             public List<float[]> IQData;
             public List<int[]> TrData;//данные тригеров, PPS
