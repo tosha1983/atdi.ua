@@ -99,7 +99,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 return;
             }
 
-            if (device.CheckAbilityToExecute(descriptor))
+            if (!device.CheckAbilityToExecute(descriptor))
             {
                 descriptor.Reject(CommandFailureReason.DeviceIsBusy);
                 return;

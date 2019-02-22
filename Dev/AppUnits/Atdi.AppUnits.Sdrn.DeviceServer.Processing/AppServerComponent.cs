@@ -20,11 +20,33 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
         protected override void OnInstallUnit()
         {
+            this.Container.Register<IProcessingDispatcher, ProcessingDispatcher>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkerFactory, TaskWorkerFactory>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkersHost, TaskWorkersHost>(ServiceLifetime.Singleton);
-            this.Container.Register<IProcessingDispatcher, ProcessingDispatcher>(ServiceLifetime.Singleton);
+            this.Container.Register<IWorkScheduler, WorkScheduler>(ServiceLifetime.Singleton);
+            this.Container.Register<ITaskStarter, TaskStarter>(ServiceLifetime.Singleton);
             this.Container.Register<IAutoTaskActivator, AutoTaskActivator>(ServiceLifetime.Singleton);
             
+        }
+
+        private static ServiceLifetime GetTaskWorkerServiceLifetime(Type workerInstanceType)
+        {
+            var interfaceType = workerInstanceType.GetInterface(typeof(ITaskWorker<,,>).Name);
+            var lifetimeType = interfaceType.GenericTypeArguments[2];
+            if (lifetimeType == typeof(SingletonTaskWorkerLifetime))
+            {
+                return ServiceLifetime.Singleton;
+            }
+            if (lifetimeType == typeof(PerThreadTaskWorkerLifetime))
+            {
+                return ServiceLifetime.PerThread;
+            }
+            if (lifetimeType == typeof(TransientTaskWorkerLifetime))
+            {
+                return ServiceLifetime.Transient;
+            }
+
+            throw new InvalidOperationException($"Unsupported the type of life time: {lifetimeType}");
         }
 
         protected override void OnActivateUnit()
@@ -35,8 +57,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             var workerTypes = typeResolver.GetTypesByInterface(typeof(ITaskWorker<,,>));
             foreach (var workerType in workerTypes)
             {
-
-                this.Container.Register(workerType, workerType, ServiceLifetime.Transient);
+                var lifetime = AppServerComponent.GetTaskWorkerServiceLifetime(workerType);
+                this.Container.Register(workerType, workerType, lifetime);
                 workersHost.Register(workerType);
             }
 

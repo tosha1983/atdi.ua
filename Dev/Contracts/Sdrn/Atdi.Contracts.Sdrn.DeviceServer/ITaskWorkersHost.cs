@@ -12,6 +12,6 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 
         ITaskWorker GetTaskWorker(Type taskType, Type processType);
 
-        ITaskWorker[] GetAutoTaskWorkers();
+        (Type taskType, Type processType)[] GetAutoTasks();
     }
 }

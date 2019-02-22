@@ -42,9 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapter1.cs" />
     <Compile Include="AdapterConfig.cs" />
     <Compile Include="AdapterObject.cs" />
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="ResultConvertor1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>

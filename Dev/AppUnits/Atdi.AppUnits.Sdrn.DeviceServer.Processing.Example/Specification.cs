@@ -5,17 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
 {
     static class Contexts
     {
-        public static readonly EventContext ThisComponent = "SDRN Device Server ExampleAdapter";
-        public static readonly EventContext Adapter1 = "SDRN.Adapter1";
-        public static readonly EventContext Adapter2 = "SDRN.Adapter2";
-        public static readonly EventContext Adapter3 = "SDRN.Adapter3";
-        public static readonly EventContext ResultConvertor1 = "SDRN.ResultConvertor1";
-        public static readonly EventContext ResultConvertor2 = "SDRN.ResultConvertor2";
-        public static readonly EventContext ResultConvertor3 = "SDRN.ResultConvertor3";
+        public static readonly EventContext Test1TaskWorker = "SDRN.Test1TaskWorker";
+        public static readonly EventContext Test1CommandResultHandler = "SDRN.Test1ResultHandler";
     }
 
     static class Categories
@@ -26,14 +21,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
         public static readonly EventCategory Disconnect = "disconnect";
         public static readonly EventCategory Handle = "Handle";
         public static readonly EventCategory Converting = "Converting";
+        public static readonly EventCategory Run = "Run";
 
     }
 
     static class Events
     {
         public static readonly EventText Call = "Call";
-        public static readonly EventText HandleCommand = "Handling commnad: {0}";
-        public static readonly EventText ConvertFromTo = "Convert from type '{0}' to type '{1}'";
+        public static readonly EventText RunTask = "Run task: Id {0}";
+        public static readonly EventText HandlingResult = "Handling result: Index = #{0}, Status = '{1}'";
 
     }
     static class TraceScopeNames

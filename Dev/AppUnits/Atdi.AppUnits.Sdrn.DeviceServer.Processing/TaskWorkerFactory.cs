@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     class TaskWorkerFactory : ITaskWorkerFactory
     {
-        public ITaskWorker Create(Type workerInstanceType)
+        private readonly IServicesResolver _resolver;
+
+        public TaskWorkerFactory(IServicesContainer servicesContainer)
         {
-            throw new NotImplementedException();
+            this._resolver = servicesContainer.GetResolver<IServicesResolver>();
+        }
+
+        public object Create(Type workerInstanceType)
+        {
+            return this._resolver.Resolve(workerInstanceType);
         }
     }
 }

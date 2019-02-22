@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.DeviceServer
 {
-    public interface IResultConvertorFactory
+    public interface IWorkScheduler
     {
-        object Create(Type convertorType);
+        Task Run(string workContext, Action action, int delay = 0);
     }
 }

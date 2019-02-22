@@ -63,6 +63,8 @@
     <Compile Include="ITaskStarter.cs" />
     <Compile Include="ITaskWorker.cs" />
     <Compile Include="ITaskWorkersHost.cs" />
+    <Compile Include="ITimeService.cs" />
+    <Compile Include="IWorkScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

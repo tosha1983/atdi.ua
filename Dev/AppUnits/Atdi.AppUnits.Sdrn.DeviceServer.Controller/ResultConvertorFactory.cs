@@ -17,9 +17,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._resolver = servicesContainer.GetResolver<IServicesResolver>();
         }
 
-        public IResultConvertor Create(Type convertorType)
+        public object Create(Type convertorType)
         {
-            return this._resolver.Resolve(convertorType) as IResultConvertor;
+            return this._resolver.Resolve(convertorType);
         }
     }
 }

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Contracts.Sdrn.DeviceServer
+namespace Atdi.DataModels.Sdrn.DeviceServer.Processing.Test
 {
-    public interface IResultConvertorFactory
+    public class Test1Task : TaskBase
     {
-        object Create(Type convertorType);
     }
 }

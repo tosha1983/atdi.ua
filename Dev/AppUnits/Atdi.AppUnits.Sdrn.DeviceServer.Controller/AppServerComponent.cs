@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.Modules.Sdrn.DeviceServer;
 using Atdi.Platform;
 using Atdi.Platform.DependencyInjection;
 using System;
@@ -20,6 +21,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         protected override void OnInstallUnit()
         {
+            this.Container.Register<ITimeService, TimeService>(ServiceLifetime.Singleton);
+
             this.Container.Register<IAdapterFactory, AdapterFactory>(ServiceLifetime.Singleton);
             this.Container.Register<IResultHandlerFactory, ResultHandlerFactory>(ServiceLifetime.Singleton);
             this.Container.Register<IResultConvertorFactory, ResultConvertorFactory>(ServiceLifetime.Singleton);

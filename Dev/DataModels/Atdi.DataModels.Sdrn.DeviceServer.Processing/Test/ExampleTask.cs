@@ -13,10 +13,16 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public int ExampleValue2;
 
         public MeasTask ServerMeasTask;
+
+        public System.Diagnostics.Stopwatch Timer;
     }
 
     public class ExampleTask2 : ExampleTask
     {
         public int ExampleValue3;
     }
+    public class ExampleAutoTask1 : AutoTask
+    {
+    }
+
 }

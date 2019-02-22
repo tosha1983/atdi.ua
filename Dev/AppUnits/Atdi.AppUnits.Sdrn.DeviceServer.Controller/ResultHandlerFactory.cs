@@ -17,9 +17,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._resolver = servicesContainer.GetResolver<IServicesResolver>();
         }
 
-        public IResultHandler Create(Type handlerType)
+        public object Create(Type handlerType)
         {
-            return this._resolver.Resolve(handlerType) as IResultHandler;
+            return this._resolver.Resolve(handlerType);
         }
     }
 }

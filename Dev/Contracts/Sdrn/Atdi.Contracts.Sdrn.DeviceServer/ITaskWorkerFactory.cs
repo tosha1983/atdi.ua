@@ -8,6 +8,6 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface ITaskWorkerFactory
     {
-        ITaskWorker Create(Type workerInstanceType);
+        object Create(Type workerInstanceType);
     }
 }

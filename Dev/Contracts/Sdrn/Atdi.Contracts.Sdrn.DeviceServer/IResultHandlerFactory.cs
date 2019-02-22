@@ -8,6 +8,6 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IResultHandlerFactory
     {
-        IResultHandler Create(Type handlerType);
+        object Create(Type handlerType);
     }
 }

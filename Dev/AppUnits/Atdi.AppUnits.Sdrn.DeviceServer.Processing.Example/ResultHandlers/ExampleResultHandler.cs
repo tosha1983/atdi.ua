@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
 {
-    class ExampleResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, ExampleTask, ExampleProcess>
+    public class ExampleResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, ExampleTask, ExampleProcess>
     {
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<ExampleTask, ExampleProcess> taskContext)
         {

@@ -1,6 +1,7 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Processing;
+using Atdi.DataModels.Sdrn.DeviceServer.Processing.Test;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,20 +12,77 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
 {
-    class ExampleAutoTaskWorker : IAutoTaskWorker<ExampleProcess, SingletonTaskWorkerLifetime>
+    public class ExampleAutoTaskWorker : ITaskWorker<ExampleAutoTask1, DeviceServerBackgroundProcess, SingletonTaskWorkerLifetime>
     {
+        private readonly IProcessingDispatcher _processingDispatcher;
+        private readonly ITimeService _timeService;
+        private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
 
-        public ExampleAutoTaskWorker(ILogger logger)
+        public ExampleAutoTaskWorker(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger)
         {
+            this._processingDispatcher = processingDispatcher;
+            this._timeService = timeService;
+            this._taskStarter = taskStarter;
             this._logger = logger;
         }
 
-        public void Run(ITaskContext<AutoTask, ExampleProcess> context)
+        public void Run(ITaskContext<ExampleAutoTask1, DeviceServerBackgroundProcess> context)
         {
             try
             {
+                var process = _processingDispatcher.Start<Test1Process>(context.Process);
+
+                var test1Task = new Test1Task
+                {
+                    TimeStamp = _timeService.TimeStamp.Milliseconds
+                };
+
+                var cancelSource = new CancellationTokenSource();
+                var t = _taskStarter.RunParallel(test1Task, process, context, cancelSource.Token);
+
+                //for (int i = 0; i < 100; i++)
+                //{
+                //    var cancelSource = new CancellationTokenSource();
+                //    var timer = System.Diagnostics.Stopwatch.StartNew();
+
+                //    var exampleTask1 = new ExampleTask
+                //    {
+                //        TimeStamp = _timeService.TimeStamp.Milliseconds,
+                //        Timer  = System.Diagnostics.Stopwatch.StartNew()
+                //    };
+
+                //    var t = _taskStarter.RunParallel(exampleTask1, process, context, cancelSource.Token);
+                //    timer.Stop();
+                //    t.Wait();
+                //    _logger.Verbouse("RunParallel", $"Cost {timer.Elapsed.TotalMilliseconds}ms");
+
+                //}
+
+                //for (int i = 0; i < 100; i++)
+                //{
+                //    var cancelSource = new CancellationTokenSource();
+                //    var timer = System.Diagnostics.Stopwatch.StartNew();
+
+                //    var exampleTask1 = new ExampleTask
+                //    {
+                //        TimeStamp = _timeService.TimeStamp.Milliseconds,
+                //        Timer = System.Diagnostics.Stopwatch.StartNew()
+                //    };
+
+                //    _taskStarter.Run(exampleTask1, process, context, cancelSource.Token);
+                //    timer.Stop();
+                //    _logger.Verbouse("RunSync", $"Cost {timer.Elapsed.TotalMilliseconds}ms");
+
+                //}
+
+
+                Thread.Sleep(1000 * 60);
+
+                //cancelSource.Cancel();
+
                 context.Finish();
+
             }
             catch (Exception e)
             {

@@ -44,9 +44,12 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="ExampleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultHandlers\Test1CommandResultHandler.cs" />
     <Compile Include="ResultHandlers\ExampleResultHandler.cs" />
+    <Compile Include="Specification.cs" />
     <Compile Include="TaskWorkers\ExampleAutoTaskWorker.cs" />
     <Compile Include="TaskWorkers\ExampleTaskWorker.cs" />
+    <Compile Include="TaskWorkers\Test1TaskWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
