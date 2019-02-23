@@ -20,6 +20,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly IAdapterFactory _adapterFactory;
         private readonly ICommandsHost _commandsHost;
         private readonly IResultsHost _resultsHost;
+        private readonly ITimeService _timeService;
         private readonly ILogger _logger;
         private readonly int _abortingTimeout = 1000;
         private Thread _adapterThread;
@@ -39,12 +40,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public Type AdapterType => this._adapterType;
 
-        public AdapterWorker(Type adapterType, IAdapterFactory adapterFactory, ICommandsHost commandsHost, IResultsHost resultsHost, ILogger logger)
+        public AdapterWorker(Type adapterType, IAdapterFactory adapterFactory, ICommandsHost commandsHost, IResultsHost resultsHost, ITimeService timeService, ILogger logger)
         {
             this._adapterType = adapterType ?? throw new ArgumentNullException(nameof(adapterType));
             this._adapterFactory = adapterFactory ?? throw new ArgumentNullException(nameof(adapterFactory));
             this._commandsHost = commandsHost;
             this._resultsHost = resultsHost;
+            this._timeService = timeService;
             this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
             this._buffer = new CommandsBuffer();
@@ -88,7 +90,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
                     if (command.StartTimeStamp > 0 && command.Timeout > 0)
                     {
-                        if (!TimeStamp.HitTimeout(command.StartTimeStamp, command.Timeout))
+                        if (!_timeService.TimeStamp.HitMilliseconds(command.StartTimeStamp, command.Timeout))
                         {
                             commandDescriptor.Reject(CommandFailureReason.TimeoutExpired);
                             _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.TimeoutExpired));

@@ -12,19 +12,20 @@ using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
 {
-    class SendMeasTaskHandler : MessageHandlerBase<DM.MeasTask, SendMeasTaskMessage>
+    class SendRegistrationResultHandler : MessageHandlerBase<DM.SensorRegistrationResult, SendRegistrationResultMessage>
     {
         private readonly ILogger _logger;
 
-        public SendMeasTaskHandler(ILogger logger)
+        public SendRegistrationResultHandler(ILogger logger)
         {
             this._logger = logger;
         }
 
-        public override void OnHandle(IReceivedMessage<DM.MeasTask> message)
+        public override void OnHandle(IReceivedMessage<DM.SensorRegistrationResult> message)
         {
             _logger.Verbouse(Contexts.ThisComponent, Categories.Handling, Events.MessageIsBeingHandled.With(message.Token.Type));
             message.Result = MessageHandlingResult.Confirmed;
         }
     }
 }
+

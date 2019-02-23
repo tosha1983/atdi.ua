@@ -13,14 +13,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly IAdapterFactory _adapterFactory;
         private readonly ICommandsHost _commandsHost;
         private readonly IResultsHost _resultsHost;
+        private readonly ITimeService _timeService;
         private readonly ILogger _logger;
         private readonly Dictionary<Type, AdapterWorker> _workers;
 
-        public DevicesHost(IAdapterFactory adapterFactory, ICommandsHost commandsHost, IResultsHost resultsHost, ILogger logger)
+        public DevicesHost(IAdapterFactory adapterFactory, ICommandsHost commandsHost, IResultsHost resultsHost, ITimeService timeService, ILogger logger)
         {
             this._adapterFactory = adapterFactory;
             this._commandsHost = commandsHost;
             this._resultsHost = resultsHost;
+            this._timeService = timeService;
             this._logger = logger;
             this._workers = new Dictionary<Type, AdapterWorker>();
         }
@@ -56,7 +58,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 return;
             }
-            var worker = new AdapterWorker(adapterType, this._adapterFactory, this._commandsHost, this._resultsHost, this._logger);
+            var worker = new AdapterWorker(adapterType, this._adapterFactory, this._commandsHost, this._resultsHost, this._timeService, this._logger);
             this._workers.Add(adapterType, worker);
 
             _logger.Verbouse(Contexts.DevicesHost, Categories.Registering, Events.RegisteredAdapter.With(adapterType));

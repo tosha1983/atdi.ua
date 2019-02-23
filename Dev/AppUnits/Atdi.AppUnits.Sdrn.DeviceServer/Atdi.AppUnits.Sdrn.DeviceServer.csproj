@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4332BA5B-3B35-4037-9344-A2222FE459EC}</ProjectGuid>
+    <ProjectGuid>{729E3FF4-3732-40D8-AA60-F5AA0BF8AD2E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.Controller</RootNamespace>
-    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer.Controller</AssemblyName>
+    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer</RootNamespace>
+    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,36 +41,58 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdapterFactory.cs" />
-    <Compile Include="AdapterWorker.cs" />
-    <Compile Include="CommandDescriptor.cs" />
-    <Compile Include="CommandHandler.cs" />
-    <Compile Include="CommandLock.cs" />
-    <Compile Include="CommandsBuffer.cs" />
-    <Compile Include="CommandsHost.cs" />
-    <Compile Include="DevicesController.cs" />
-    <Compile Include="DeviceSelector.cs" />
-    <Compile Include="DevicesHost.cs" />
-    <Compile Include="ExecutionContext.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="ResultBuffer.cs" />
-    <Compile Include="ResultConvertorFactory.cs" />
-    <Compile Include="ResultConvertorsHost.cs" />
-    <Compile Include="ResultConvertor.cs" />
-    <Compile Include="ResultHandler.cs" />
-    <Compile Include="ResultConvertorDecriptor.cs" />
-    <Compile Include="ResultHandlerDecriptor.cs" />
-    <Compile Include="ResultHandlerFactory.cs" />
-    <Compile Include="ResultHandlersHost.cs" />
-    <Compile Include="ResultsHost.cs" />
-    <Compile Include="ResultWorker.cs" />
+    <Compile Include="BusEventObserver.cs" />
+    <Compile Include="Controller\AdapterFactory.cs" />
+    <Compile Include="Controller\AdapterWorker.cs" />
+    <Compile Include="Controller\CommandDescriptor.cs" />
+    <Compile Include="Controller\CommandHandler.cs" />
+    <Compile Include="Controller\CommandLock.cs" />
+    <Compile Include="Controller\CommandsBuffer.cs" />
+    <Compile Include="Controller\CommandsHost.cs" />
+    <Compile Include="Controller\DevicesController.cs" />
+    <Compile Include="Controller\DeviceSelector.cs" />
+    <Compile Include="Controller\DevicesHost.cs" />
+    <Compile Include="Controller\ExecutionContext.cs" />
+    <Compile Include="Controller\ResultBuffer.cs" />
+    <Compile Include="Controller\ResultConvertor.cs" />
+    <Compile Include="Controller\ResultConvertorDecriptor.cs" />
+    <Compile Include="Controller\ResultConvertorFactory.cs" />
+    <Compile Include="Controller\ResultConvertorsHost.cs" />
+    <Compile Include="Controller\ResultHandler.cs" />
+    <Compile Include="Controller\ResultHandlerDecriptor.cs" />
+    <Compile Include="Controller\ResultHandlerFactory.cs" />
+    <Compile Include="Controller\ResultHandlersHost.cs" />
+    <Compile Include="Controller\ResultsHost.cs" />
+    <Compile Include="Controller\ResultWorker.cs" />
+    <Compile Include="DeviceServerConfig.cs" />
+    <Compile Include="Processing\AutoTaskActivator.cs" />
+    <Compile Include="Processing\ProcessingDispatcher.cs" />
+    <Compile Include="Processing\TaskContext.cs" />
+    <Compile Include="Processing\TaskDescriptor.cs" />
+    <Compile Include="Processing\TaskStarter.cs" />
+    <Compile Include="Processing\TaskWorker.cs" />
+    <Compile Include="Processing\TaskWorkerDescriptor.cs" />
+    <Compile Include="Processing\TaskWorkerFactory.cs" />
+    <Compile Include="Processing\TaskWorkersHost.cs" />
+    <Compile Include="Processing\WorkScheduler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="TimeService.cs" />
+    <Compile Include="TimeStamp.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
+      <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
+      <Name>Atdi.Api.Sdrn.Device.BusController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
+      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
+      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
@@ -96,6 +118,10 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
+      <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
+      <Name>Atdi.Modules.Licensing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.DeviceServer\Atdi.Modules.Sdrn.DeviceServer.csproj">
       <Project>{bf77f355-a07b-4547-9eb7-ed9b218c361b}</Project>
       <Name>Atdi.Modules.Sdrn.DeviceServer</Name>
@@ -109,5 +135,6 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

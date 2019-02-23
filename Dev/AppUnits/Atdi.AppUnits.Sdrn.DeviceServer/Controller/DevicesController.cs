@@ -15,11 +15,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
     public class DevicesController : IController
     {
         private readonly IDeviceSelector _deviceSelector;
+        private readonly ITimeService _timeService;
         private readonly ILogger _logger;
 
-        public DevicesController(IDeviceSelector deviceSelector, ILogger logger)
+        public DevicesController(IDeviceSelector deviceSelector, ITimeService timeService, ILogger logger)
         {
             this._deviceSelector = deviceSelector;
+            this._timeService = timeService;
             this._logger = logger;
         }
 
@@ -66,7 +68,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     throw new InvalidOperationException("Start time stamp value not defined");
                 }
                 // 100, 1000 1050
-                var restTimeout = command.Delay - (TimeStamp.Milliseconds - command.StartTimeStamp);
+                var restTimeout = command.Delay - (_timeService.TimeStamp.Milliseconds - command.StartTimeStamp);
 
                 if (restTimeout <= 0)
                 {

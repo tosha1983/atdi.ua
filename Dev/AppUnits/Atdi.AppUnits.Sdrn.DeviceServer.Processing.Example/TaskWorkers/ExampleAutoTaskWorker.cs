@@ -35,7 +35,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
 
                 var test1Task = new Test1Task
                 {
-                    TimeStamp = _timeService.TimeStamp.Milliseconds
+                    TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
+                    Delay = 5, // необходимо запустить через 5 мс, с указанного момента
+                    Options = TaskExecutionOption.RunDelayed
                 };
 
                 var cancelSource = new CancellationTokenSource();

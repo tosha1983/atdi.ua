@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.Sdrn.DeviceServer
+namespace Atdi.AppUnits.Sdrn.DeviceServer
 {
-    public class TimeService : ITimeService
+    class TimeService : ITimeService
     {
         private readonly ITimeStamp _timeStamp;
 

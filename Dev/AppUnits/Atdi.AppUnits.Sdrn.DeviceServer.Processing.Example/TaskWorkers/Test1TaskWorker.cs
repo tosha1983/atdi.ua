@@ -57,7 +57,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
                         isDone = true;
                     }
                 }
-                
+                if (context.Token.IsCancellationRequested)
+                {
+                    context.Cancel();
+                    return;
+                }
             }
 
             context.Finish();

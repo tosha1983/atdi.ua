@@ -1,27 +1,25 @@
-﻿using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Contracts.Sdrn.DeviceServer;
-using Atdi.DataModels.Sdrn.DeviceServer.Processing;
-using Atdi.DataModels.Sdrns.BusMessages.Server;
-using Atdi.Platform.Logging;
+﻿using Atdi.DataModels.Sdrns.BusMessages.Server;
+using DM = Atdi.DataModels.Sdrns.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DM = Atdi.DataModels.Sdrns.Device;
+using Atdi.Platform.Logging;
+using Atdi.Contracts.Api.Sdrn.MessageBus;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
 {
-    class SendMeasTaskHandler : MessageHandlerBase<DM.MeasTask, SendMeasTaskMessage>
+    class SendCommandHandler : MessageHandlerBase<DM.DeviceCommand, SendCommandMessage>
     {
         private readonly ILogger _logger;
 
-        public SendMeasTaskHandler(ILogger logger)
+        public SendCommandHandler(ILogger logger)
         {
             this._logger = logger;
         }
 
-        public override void OnHandle(IReceivedMessage<DM.MeasTask> message)
+        public override void OnHandle(IReceivedMessage<DM.DeviceCommand> message)
         {
             _logger.Verbouse(Contexts.ThisComponent, Categories.Handling, Events.MessageIsBeingHandled.With(message.Token.Type));
             message.Result = MessageHandlingResult.Confirmed;

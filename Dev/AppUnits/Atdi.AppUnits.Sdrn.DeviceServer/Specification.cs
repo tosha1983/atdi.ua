@@ -1,11 +1,12 @@
-﻿using Atdi.Platform.Logging;
+﻿using Atdi.Platform;
+using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
+namespace Atdi.AppUnits.Sdrn.DeviceServer
 {
     static class Contexts
     {
@@ -15,6 +16,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         public static readonly EventContext ResultWorker = "SDRN.ResultWorker";
         public static readonly EventContext ResultHandler = "SDRN.ResultHandler";
         public static readonly EventContext ResultConvertor = "SDRN.ResultConvertor";
+
+        public static readonly EventContext TaskActivator = "SDRN.TaskActivator";
+        public static readonly EventContext ProcessingDispatcher = "SDRN.ProcessingDispatcher";
+        public static readonly EventContext WorkScheduler = "SDRN.WorkScheduler";
+        public static readonly EventContext TaskStarter = "SDRN.TaskStarter";
     }
 
     static class Categories
@@ -30,7 +36,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         public static readonly EventCategory UpdateSensorStatus = "Update sensor";
         public static readonly EventCategory LoadSensor = "Load sensor";
         public static readonly EventCategory CreateNewObjectSensor = "Create sensor";
-        
+
+        public static readonly EventCategory Creating = "Creating";
+        public static readonly EventCategory Finishing = "Finishing";
+
+        public static readonly EventCategory Initilazing = "Initilazing";
+
 
     }
 
@@ -57,6 +68,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public static readonly EventText HandlingResultError = "Error occurred while processing the results: CommandType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
         public static readonly EventText ConvertingResultError = "Error occurred while converting the results: FromType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
+
+
+        public static readonly EventText AutomaticTaskActivationWasStarted = "Automatic task activation was started";
+        public static readonly EventText AutomaticTaskActivationWasFinished = "Automatic task activation was finished";
+
+        public static readonly EventText AutomaticTaskWorkerCodeHasCompleted = "Automatic task worker code has completed its execution: TaskType = '{0}', ProcessType = '{1}'";
+
+        public static readonly EventText ProcessContextWasCreated = "Process context was created: Name = '{0}', Type = {1}";
+
+        public static readonly EventText WorkTaskHasBeenCreated = "Work task has been created: WorkContext = '{0}', Key = '{1}'";
+        public static readonly EventText WorkTaskHasFinished = "Work task has finished: WorkContext = '{0}', Key = '{1}'";
+
+        public static readonly EventText TaskIsBeingRunSync = "Task is being run synchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly EventText TaskHasBeenRunSync = "Task has been run synchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly EventText TaskIsBeingRunAsync = "Task is being run asynchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly EventText TaskHasBeenRunAsync = "Task has been run asynchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly EventText TaskIsBeingRunParallel = "Task is being run parallel: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly EventText TaskHasBeenRunParallel = "Task has been run parallel: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+
+        public static readonly EventText GateFactoryWasCreated = "The Gate Factory was created";
+        public static readonly EventText GateConfigWasLoaded = "The Gate Configuration was loaded: API = '{0}', SDRN Server Instance = '{1}', Rabbit Host = '{2}'";
+        public static readonly EventText GateWasCreated = "The Gate was created: ContextName = '{0}'";
+
+        public static readonly EventText ProcessingObjectsWereRegistered = "The Processing Objects were registered";
+        public static readonly EventText ControllerObjectsWereRegistered = "The Controller Objects were registered";
     }
     static class TraceScopeNames
     {
@@ -66,6 +102,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
     static class Exceptions
     {
-       // public static readonly string ServiceHostWasNotInitialized = "Failed to finish processing part of results: CommandType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
+        public static readonly ExceptionText ErrorCccurredWhileStartingTask = "Error occurred while starting the task: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
     }
 }
