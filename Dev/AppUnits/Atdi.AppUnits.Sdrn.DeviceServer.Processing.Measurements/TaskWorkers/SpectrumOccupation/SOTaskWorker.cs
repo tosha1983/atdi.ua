@@ -85,7 +85,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
                     //
                     //////////////////////////////////////////////
-                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand);
+                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand, 
+                        (ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            taskContext.SetEvent<SamthingErrorEvent>(new SamthingErrorEvent(failureReason, ex));
+                        });
                     //////////////////////////////////////////////
                     // 
                     // Получение очередного  результат от Result Handler
@@ -93,7 +98,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     SpectrumOcupation outSpectrumOcupation = null;
-                    var result = context.WaitEvent<SpectrumOcupation>(out outSpectrumOcupation);
+
+                    while (isDown == false)
+                    {
+
+                        isDown = context.WaitEvent<SpectrumOcupation>(out outSpectrumOcupation, 1);
+
+                        if (isDown == false) // таймут - результатов нет
+                        {
+                            // проверка - не отменили ли задачу
+                            if (context.Token.IsCancellationRequested)
+                            {
+                                // явно нужна логика отмены
+                                context.Cancel();
+                                return;
+                            }
+
+                            if (context.WaitEvent<SamthingErrorEvent>(out outSpectrumOcupation, 1) == true)
+                            {
+                                /// реакция на ошибку выполнения команды
+                            }
+                        }
+                        else
+                        {
+                            //реакция на принятые результаты измерения
+                        }
+                    }
                     // проверка - не отменили ли задачу
                     if (context.Token.IsCancellationRequested)
                     {
