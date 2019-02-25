@@ -177,7 +177,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 CorrelationId = message.Id,
                 ContentType = message.ContentType,
                 ContentEncoding = message.ContentEncoding,
-                Body = message.Body
+                Body = message.Body,
+                AppId = "Atdi.AppUnits.Sdrn.BusController.dll"
             };
 
             redirectedMessage.Headers = new Dictionary<string, object>
