@@ -661,6 +661,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             MTSDR.EquipmentTechId = EquipmentTechId;
                             if (Type == "New")
                             {
+                                //MTSDR.DeviceParam
+                                //MTSDR.Interval_sec
+                                //MTSDR.Measurement
+                                //MTSDR.SOParam
+
                                 MTSDR.ScanParameters = new DataModels.Sdrns.Device.StandardScanParameter[] { };
                                 MTSDR.StartTime = SubTask.TimeStart;
                                 MTSDR.StopTime = SubTask.TimeStop;

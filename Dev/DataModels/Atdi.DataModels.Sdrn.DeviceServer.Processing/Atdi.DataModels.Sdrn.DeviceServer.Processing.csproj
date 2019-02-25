@@ -41,12 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\ExampleContext.cs" />
+    <Compile Include="ModelParameters\enum\MeasType.cs" />
+    <Compile Include="ModelParameters\enum\SOType.cs" />
+    <Compile Include="ModelParameters\enum\TypeTechnology.cs" />
+    <Compile Include="ModelParameters\LastResultParameters.cs" />
+    <Compile Include="ModelParameters\SemplFreq.cs" />
+    <Compile Include="ModelParameters\SensorParameters.cs" />
+    <Compile Include="ModelParameters\SpectrumOcupation.cs" />
+    <Compile Include="ModelParameters\TaskParameters.cs" />
+    <Compile Include="Processes\ExampleContext.cs" />
     <Compile Include="Processes\MeasProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test\ExampleTask.cs" />
-    <Compile Include="Test\Test1Process.cs" />
-    <Compile Include="Test\Test1Task.cs" />
     <Compile Include="Tasks\HandlingMeasurementsTask.cs" />
     <Compile Include="Tasks\AnalyzeSignalTask.cs" />
     <Compile Include="Tasks\LocalizationTDOATask.cs" />
@@ -55,6 +60,9 @@
     <Compile Include="Tasks\BandwidthTask.cs" />
     <Compile Include="Tasks\SysInfoTask.cs" />
     <Compile Include="Tasks\SOTask.cs" />
+    <Compile Include="Test\ExampleTask.cs" />
+    <Compile Include="Test\Test1Process.cs" />
+    <Compile Include="Test\Test1Task.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
@@ -78,9 +86,6 @@
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Processes\" />
-    <Folder Include="Tasks\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

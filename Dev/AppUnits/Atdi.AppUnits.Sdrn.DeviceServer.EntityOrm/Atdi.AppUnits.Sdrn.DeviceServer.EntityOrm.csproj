@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E4157D42-8855-479C-9732-AC8FB891F7FF}</ProjectGuid>
+    <ProjectGuid>{53367A1D-485E-4D43-81E3-D4008A03773B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.Messaging</RootNamespace>
-    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer.Messaging</AssemblyName>
+    <RootNamespace>Atdi.CoreServices.Device.EntityOrm</RootNamespace>
+    <AssemblyName>Atdi.CoreServices.Device.EntityOrm</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,32 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppServerComponent.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertMeasTaskToTaskParameters.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameter.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
-    <Compile Include="Handlers\SendCommandHandler.cs" />
-    <Compile Include="Handlers\SendRegistrationResultHandler.cs" />
-    <Compile Include="Handlers\SendSensorUpdatingResultHandler.cs" />
-    <Compile Include="MessageHandlerBase.cs" />
-    <Compile Include="Handlers\SendMeasTaskHandler.cs" />
+    <Compile Include="ExampleConfig.cs" />
+    <Compile Include="RepositorySensors.cs" />
+    <Compile Include="RepositoryComponent.cs" />
+    <Compile Include="RepositoryMeasTask.cs" />
+    <Compile Include="RepositoryTaskParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
-      <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
-      <Name>Atdi.Api.Sdrn.Device.BusController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
-      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
-      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
       <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
@@ -75,17 +56,9 @@
       <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
       <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
-      <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
-      <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
-      <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
-      <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrn.DeviceServer.Entities.csproj">
       <Project>{a803197e-12f5-4800-b157-b2ec677bda33}</Project>
@@ -94,10 +67,6 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
       <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Processing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
-      <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
-      <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
@@ -115,15 +84,14 @@
       <Project>{bf77f355-a07b-4547-9eb7-ed9b218c361b}</Project>
       <Name>Atdi.Modules.Sdrn.DeviceServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
-      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
-      <Name>Atdi.AppUnits</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

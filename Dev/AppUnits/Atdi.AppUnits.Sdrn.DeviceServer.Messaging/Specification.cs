@@ -22,12 +22,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly EventCategory Handling = "Handling";
         public static readonly EventCategory Converting = "Converting";
         public static readonly EventCategory Initilazing = "Initilazing";
+        public static readonly EventCategory ConfigLoading = "Config loading";
+        public static readonly EventCategory GetMeasTaskFromBus = "Get MeasTask from bus";
+        public static readonly EventCategory SendMeasTaskHandlerStart = "Get MeasTask from bus";
+
 
     }
 
     static class Events
     {
         public static readonly EventText MessageIsBeingHandled = "The message is being handled: Type = '{0}'";
+        public static readonly EventText IncorrectMessage = "Incorrect message";
+        public static readonly EventText StartProcessSendMeasTask = "Start process SendMeasTaskHandler";
+
     }
     static class TraceScopeNames
     {
@@ -37,6 +44,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
 
     static class Exceptions
     {
-       // public static readonly string ServiceHostWasNotInitialized = "Failed to finish processing part of results: CommandType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
+        public static readonly string ConfigWasNotLoaded = "The config was not loaded";
+        public static readonly string IncorrectMessageParams = "Incorrect message parameters";
+        public static readonly string ErrorSaveSensorParametersInDB = "Error in method 'SaveSensorParametersInDB'";
+
     }
 }

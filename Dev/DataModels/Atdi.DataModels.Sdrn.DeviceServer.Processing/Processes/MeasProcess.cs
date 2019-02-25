@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     public class MeasProcess : ProcessBase
     {
         public MeasTask MeasTask; // задача на измерение и ее параметры
-        public MeasResults MeasResults; // результаты измерений
         public MeasProcess() : base("Meas process")
         {
+            
         }
     }
 }
