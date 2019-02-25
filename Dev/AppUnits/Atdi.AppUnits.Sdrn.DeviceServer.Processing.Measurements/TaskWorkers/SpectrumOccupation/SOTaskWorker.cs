@@ -29,30 +29,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._logger = logger;
             this._busGateFactory = BusGateFactory.Create();
             this._busGateConfig = _busGateFactory.CreateConfig();
-            SetConfig(config);
             this._busGate = _busGateFactory.CreateGate("ITaskWorker", this._busGateConfig);
             this._messagePublisher = this._busGate.CreatePublisher("TaskWorker");
         }
 
-        public void SetConfig(ExampleConfig config)
-        {
-            this._busGateConfig["License.FileName"] = "";
-            this._busGateConfig["License.OwnerId"] = "";
-            this._busGateConfig["License.ProductKey"] = "";
-            this._busGateConfig["RabbitMQ.Host"] = "";
-            this._busGateConfig["RabbitMQ.User"] = "";
-            this._busGateConfig["RabbitMQ.Password"] = "";
-            this._busGateConfig["SDRN.ApiVersion"] = "";
-            this._busGateConfig["SDRN.Server.Instance"] = "";
-            this._busGateConfig["SDRN.Server.QueueNamePart"] = "";
-            this._busGateConfig["SDRN.Device.SensorTechId"] = "";
-            this._busGateConfig["SDRN.Device.Exchange"] = "";
-            this._busGateConfig["SDRN.Device.QueueNamePart"] = "";
-            this._busGateConfig["SDRN.Device.MessagesBindings"] = "";
-            this._busGateConfig["SDRN.MessageConvertor.UseEncryption"] = "";
-            this._busGateConfig["SDRN.MessageConvertor.UseCompression"] = "";
-        }
-
+    
         public void Run(ITaskContext<SOTask, MeasProcess> context)
         {
             try
@@ -74,10 +55,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
                     var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter)
                     {
-                        Options = CommandOption.StartDelayed,
-                        Delay = 1000,
-                        StartTimeStamp = TimeStamp.Milliseconds,
-                        Timeout = (long)TimeSpan.FromSeconds(2).TotalMilliseconds
+                        Options = CommandOption.PutInQueue
                     };
 
                     //////////////////////////////////////////////
@@ -85,7 +63,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
                     //
                     //////////////////////////////////////////////
-                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand);
+                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                    (ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                    ) =>  {
+                        taskContext.SetEvent<ExceptionProcessSO>(new ExceptionProcessSO(failureReason, ex));
+                    });
                     //////////////////////////////////////////////
                     // 
                     // Получение очередного  результат от Result Handler
@@ -93,7 +75,38 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
-                    var result = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation);
+                    DM.MeasResults measResult = null;
+                    bool isDown = false;
+                    while (isDown == false)
+                    {
+                        isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, 10);
+                        if (isDown == false) // таймут - результатов нет
+                        {
+                            // проверка - не отменили ли задачу
+                            if (context.Token.IsCancellationRequested)
+                            {
+                                // явно нужна логика отмены
+                                context.Cancel();
+                                return;
+                            }
+
+                            if (context.WaitEvent<ExceptionProcessSO>(10) == true)
+                            {
+                                /// реакция на ошибку выполнения команды
+                                isDown = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            //реакция на принятые результаты измерения
+                            measResult = new DM.MeasResults();
+                            measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
+                            measResult.ScansNumber = outSpectrumOcupation.NN;
+                            isDown = true;
+                            break;
+                        }
+                    }
                     // проверка - не отменили ли задачу
                     if (context.Token.IsCancellationRequested)
                     {
@@ -107,8 +120,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //  
                     //////////////////////////////////////////////
                     bool isSendResultToBus = false;
-                    DM.MeasResults measResult = null;
-                    if (context.Task.LastTimeSend!=null)
+                    if ((context.Task.LastTimeSend!=null) && (measResult!=null))
                     {
                         var sub = DateTime.Now.Subtract(context.Task.LastTimeSend.Value);
                         if (sub.TotalHours>1)
@@ -120,9 +132,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 if (outSpectrumOcupation.fSemplesResult != null)
                                 {
-                                    measResult = new DM.MeasResults();
-                                    measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
-                                    measResult.ScansNumber = outSpectrumOcupation.NN;
                                     //Отправка результатов в шину 
                                     this._messagePublisher.Send<DM.MeasResults>("SendMeasResults", measResult);
                                     isSendResultToBus = true;

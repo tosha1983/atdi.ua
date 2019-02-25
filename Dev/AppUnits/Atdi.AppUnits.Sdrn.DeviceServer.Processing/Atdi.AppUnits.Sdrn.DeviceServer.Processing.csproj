@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="AutoTaskWorkerSO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
@@ -53,6 +54,10 @@
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
       <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
+      <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
       <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>

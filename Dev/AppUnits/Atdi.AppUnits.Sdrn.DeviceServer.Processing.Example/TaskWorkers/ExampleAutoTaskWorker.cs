@@ -32,7 +32,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
             try
             {
                 var process = _processingDispatcher.Start<Test1Process>(context.Process);
-
                 var test1Task = new Test1Task
                 {
                     TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый

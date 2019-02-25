@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
     <Compile Include="ModelParameters\enum\TypeTechnology.cs" />
