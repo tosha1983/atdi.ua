@@ -92,8 +92,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //
                     //////////////////////////////////////////////
-                    SpectrumOcupation outSpectrumOcupation = null;
-                    var result = context.WaitEvent<SpectrumOcupation>(out outSpectrumOcupation);
+                    SpectrumOcupationResult outSpectrumOcupation = null;
+                    var result = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation);
                     // проверка - не отменили ли задачу
                     if (context.Token.IsCancellationRequested)
                     {
@@ -163,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Приостановка потока на рассчитаное время CalculateSleepParameter(context.Task.taskParameters)
                     //
                     //////////////////////////////////////////////
-                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.taskParameters.NCount.Value);
+                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone.Value);
                     Thread.Sleep(sleepTime);
                 }
 
@@ -182,14 +182,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
 
         /// <summary>
-        ///Вычисление задержки выполнения потока
+        ///Вычисление задержки выполнения потока результатом является количество vмилисекунд на которое необходимо приостановить поток
         /// </summary>
-        /// <param name="taskParameters"></param>
+        /// <param name="taskParameters">Параметры таска</param> 
+        /// <param name="doneCount">Количество измерений которое было проведено</param>
         /// <returns></returns>
-        private int CalculateTimeSleep(TaskParameters taskParameters, int NCount)
+        private int CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
         {
-            // заглушка
-            return 100000;
+            DateTime dateTimeNow = DateTime.Now;
+            if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
+            TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
+            int interval_ms = interval.Milliseconds;
+            if (taskParameters.NCount.Value <= DoneCount) { return -1; }
+            int duration = (int)(interval_ms / (taskParameters.NCount.Value - DoneCount));
+            return duration;
         }
     }
 }

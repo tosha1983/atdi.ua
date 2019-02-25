@@ -47,7 +47,7 @@
     <Compile Include="ModelParameters\LastResultParameters.cs" />
     <Compile Include="ModelParameters\SemplFreq.cs" />
     <Compile Include="ModelParameters\SensorParameters.cs" />
-    <Compile Include="ModelParameters\SpectrumOcupation.cs" />
+    <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
     <Compile Include="Processes\ExampleContext.cs" />
     <Compile Include="Processes\MeasProcess.cs" />
