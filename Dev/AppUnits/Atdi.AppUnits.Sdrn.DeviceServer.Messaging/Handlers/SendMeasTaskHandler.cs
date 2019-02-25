@@ -22,17 +22,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ILogger _logger;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITaskStarter _taskStarter;
-        private readonly IRepository<DM.MeasTask> _repositoryMeasTask;
-        private readonly IRepository<TaskParameters> _repositoryTaskParameters;
-        private readonly IRepository<DM.Sensor> _repositorySensor;
+        private readonly IRepository<DM.MeasTask,int?> _repositoryMeasTask;
+        private readonly IRepository<TaskParameters, int?> _repositoryTaskParameters;
+        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
 
 
 
         public SendMeasTaskHandler(
            IProcessingDispatcher processingDispatcher,
-           IRepository<DM.MeasTask> repositoryMeasTask,
-           IRepository<TaskParameters> repositoryTaskParameters,
-           IRepository<DM.Sensor> repositorySensor,
+           IRepository<DM.MeasTask, int?> repositoryMeasTask,
+           IRepository<TaskParameters, int?> repositoryTaskParameters,
+           IRepository<DM.Sensor, int?> repositorySensor,
            ITaskStarter taskStarter,
            ILogger logger)
         {

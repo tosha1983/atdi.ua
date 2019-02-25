@@ -11,11 +11,11 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Frequency, MHz" Title="Frequency, MHz" Name="Freq_MHz" DataType="Decimal.30.10" SourceName="FREQMHZ" SourceType="Column" Required="false" Unit="Frequency.MHz.xml"/>
-    <Field Desc="Level, dBm" Title="Level, dBm" Name="Level_dBm" DataType="Decimal.30.10" SourceName="LEVELDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
+    <Field Desc="Frequency, MHz" Title="Frequency, MHz" Name="Freq_MHz" DataType="Decimal.30.10" SourceName="FREQMHZ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="Level, dBm" Title="Level, dBm" Name="Level_dBm" DataType="Decimal.30.10" SourceName="LEVELDBM" SourceType="Column" Required="false" Unit="Level.dBm"/>
     <Field Desc="Level, dBmkVm" Title="Level, dBmkVm" Name="Level_dBmkVm" DataType="Decimal.30.10" SourceName="LEVELDBMKVM" SourceType="Column" Required="false"/>
-    <Field Desc="Level min dBm" Title="Level min dBm" Name="LevelMin_dBm" DataType="Decimal.30.10" SourceName="LEVELMINDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
-    <Field Desc="Level max dBm" Title="Level max dBm" Name="LevelMax_dBm" DataType="Decimal.30.10" SourceName="LEVELMAXDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
+    <Field Desc="Level min dBm" Title="Level min dBm" Name="LevelMin_dBm" DataType="Decimal.30.10" SourceName="LEVELMINDBM" SourceType="Column" Required="false" Unit="Level.dBm"/>
+    <Field Desc="Level max dBm" Title="Level max dBm" Name="LevelMax_dBm" DataType="Decimal.30.10" SourceName="LEVELMAXDBM" SourceType="Column" Required="false" Unit="Level.dBm"/>
     <Field Desc="OccupationPt" Title="OccupationPt" Name="OccupationPt" DataType="Decimal.30.10" SourceName="OCCUPATIONPT" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation FreqSampleRaw to ResMeas">

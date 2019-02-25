@@ -137,7 +137,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.csproj", "{66FB8F09-A0CF-4CDC-A3F0-2FAD21BF8BEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.EntityOrm", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.EntityOrm\Atdi.AppUnits.Sdrn.DeviceServer.EntityOrm.csproj", "{53367A1D-485E-4D43-81E3-D4008A03773B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Repositories", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.EntityOrm\Atdi.AppUnits.Sdrn.DeviceServer.Repositories.csproj", "{53367A1D-485E-4D43-81E3-D4008A03773B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

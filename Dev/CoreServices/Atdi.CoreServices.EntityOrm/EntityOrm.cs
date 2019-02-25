@@ -184,7 +184,7 @@ namespace Atdi.CoreServices.EntityOrm
             var unitMetadata = new UnitMetadata();
             {
                 var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.UnitDef));
-                var reader = new StreamReader(GetFullPathFile(unitName, _config.UnitsPath));
+                var reader = new StreamReader(GetFullPathFile(unitName, _config.UnitsPath, "xml"));
                 object resEntity = serializer.Deserialize(reader);
                 if (resEntity is Atdi.CoreServices.EntityOrm.Metadata.UnitDef)
                 {
@@ -253,6 +253,7 @@ namespace Atdi.CoreServices.EntityOrm
             return fullPath;
         }
 
+        /*
         /// <summary>
         /// Определение пути разещения xml - файла
         /// </summary>
@@ -276,6 +277,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return fullPath;
         }
+        */
         /// <summary>
         /// Добавление в структуру сущности типа Extension сведений о первичных ключах из расширяемой сущности
         /// </summary>

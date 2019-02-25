@@ -41,10 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExampleConfig.cs" />
-    <Compile Include="RepositorySensors.cs" />
+    <Compile Include="SensorsRepository.cs" />
     <Compile Include="RepositoryComponent.cs" />
-    <Compile Include="RepositoryMeasTask.cs" />
-    <Compile Include="RepositoryTaskParameters.cs" />
+    <Compile Include="MeasTaskRepository.cs" />
+    <Compile Include="TaskParametersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
