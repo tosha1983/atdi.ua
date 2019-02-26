@@ -7,6 +7,7 @@ using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
+    [Serializable]
     public class RelationFieldMetadata : IRelationFieldMetadata
     {
         public IEntityMetadata RelatedEntity { get; set; }

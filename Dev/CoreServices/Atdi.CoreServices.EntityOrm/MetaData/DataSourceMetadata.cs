@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
+    [Serializable]
     public class DataSourceMetadata : IDataSourceMetadata
     {
         public string Name { get; set; }
