@@ -111,6 +111,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 
             class FakeQueryInsertStatement : IQueryInsertStatement
             {
+                public IQueryInsertStatement Select(params string[] columns)
+                {
+                    throw new NotImplementedException();
+                }
+
                 public IQueryInsertStatement SetValue(ColumnValue columnValue)
                 {
                     return this;
@@ -168,12 +173,42 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 
         class FakeQueryExecutor : IQueryExecutor
         {
+            public void BeginTransaction()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void CommitTransaction()
+            {
+                throw new NotImplementedException();
+            }
+
             public int Execute(IQueryStatement statement)
             {
                 return 0;
             }
 
             public int Execute<TModel>(IQueryStatement statement)
+            {
+                throw new NotImplementedException();
+            }
+
+            public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<IDataReader, TResult> handler)
+            {
+                throw new NotImplementedException();
+            }
+
+            public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
+            {
+                throw new NotImplementedException();
+            }
+
+            public TResult ExecuteAndFetch<TResult>(IQueryStatement[] statements, Func<IDataReader, TResult> handler)
+            {
+                throw new NotImplementedException();
+            }
+
+            public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel>[] statements, Func<IDataReader<TModel>, TResult> handler)
             {
                 throw new NotImplementedException();
             }
@@ -191,6 +226,16 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
             public DataSet Fetch(IQuerySelectStatement statement, DataSetColumn[] columns, DataSetStructure structure)
             {
                 return new DataSet();
+            }
+
+            public int InsertSelect<TModelInsert, TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void RollbackTransaction()
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -264,6 +309,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 
             class FakeQueryInsertStatement<TModelIn> : IQueryInsertStatement<TModelIn>
             {
+                public IQueryInsertStatement<TModelIn> Select(params Expression<Func<TModelIn, object>>[] columnsExpressions)
+                {
+                    throw new NotImplementedException();
+                }
+
                 public IQueryInsertStatement<TModelIn> SetValue<TValue>(Expression<Func<TModelIn, TValue>> columnsExpression, TValue value)
                 {
                     return this;
@@ -320,6 +370,16 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 
             public IEngineSyntax Syntax => throw new  NotImplementedException();
 
+            public void BeginTransaction()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void CommitTransaction()
+            {
+                throw new NotImplementedException();
+            }
+
             public void Execute(EngineCommand command, Action<System.Data.IDataReader> handler)
             {
                 
@@ -333,6 +393,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
             public object ExecuteScalar(EngineCommand command)
             {
                 return null;
+            }
+
+            public void RollbackTransaction()
+            {
+                throw new NotImplementedException();
             }
         }
 

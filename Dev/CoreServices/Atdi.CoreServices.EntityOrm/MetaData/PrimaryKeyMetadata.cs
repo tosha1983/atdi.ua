@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
+    [Serializable]
     public class PrimaryKeyMetadata : IPrimaryKeyMetadata
     {
         public bool? Clustered { get; set; }
