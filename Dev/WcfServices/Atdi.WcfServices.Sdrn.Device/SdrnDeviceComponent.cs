@@ -11,6 +11,7 @@ using Atdi.Platform.Logging;
 using RabbitMQ.Client;
 using MMB = Atdi.Modules.Sdrn.MessageBus;
 using DM = Atdi.DataModels.Sdrns.Device;
+using Atdi.Platform.DependencyInjection;
 
 namespace Atdi.WcfServices.Sdrn.Device
 {
@@ -73,68 +74,72 @@ namespace Atdi.WcfServices.Sdrn.Device
             };
             var typeResolver = MMB.MessageObjectTypeResolver.CreateForApi20();
             var messageConvertor = new MMB.MessageConverter(convertorSettings, typeResolver);
-            this.Container.RegisterInstance(messageConvertor, Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.RegisterInstance(messageConvertor, ServiceLifetime.Singleton);
 
-            this.Container.RegisterInstance(this._serverDescriptor, Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<MessagesBus>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.RegisterInstance(this._serverDescriptor, ServiceLifetime.Singleton);
+           
+            this.Container.Register<BusPublisher>(ServiceLifetime.Singleton);
+            this.Container.Register<BusConsumers>(ServiceLifetime.Singleton);
+            this.Container.Register<MessagesBus>(ServiceLifetime.PerThread);
         }
 
         protected override void OnActivate()
         {
             base.OnActivate();
-            try
-            {
-                var factory = new ConnectionFactory()
-                {
-                    HostName = this._serverDescriptor.RabbitMqHost,
-                    UserName = this._serverDescriptor.RabbitMqUser,
-                    Password = this._serverDescriptor.RabbitMqPassword
-                };
+            //try
+            //{
+            //    var factory = new ConnectionFactory()
+            //    {
+            //        HostName = this._serverDescriptor.RabbitMqHost,
+            //        UserName = this._serverDescriptor.RabbitMqUser,
+            //        Password = this._serverDescriptor.RabbitMqPassword
+            //    };
+            //    if (!string.IsNullOrEmpty(this._serverDescriptor.RabbitMqVirtualHost))
+            //    {
+            //        factory.VirtualHost = this._serverDescriptor.RabbitMqVirtualHost;
+            //    }
 
-                if (!string.IsNullOrEmpty(this._serverDescriptor.RabbitMqVirtualHost))
-                {
-                    factory.VirtualHost = this._serverDescriptor.RabbitMqVirtualHost;
-                }
+            //    using (var connection = factory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (Declaring) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
+            //    using (var channel = connection.CreateModel())
+            //    {
+            //        this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfully: Host = '{this._serverDescriptor.RabbitMqHost}'");
 
-                using (var connection = factory.CreateConnection($"SDRN Device [{this._serverDescriptor.Instance}] (Declaring) #{System.Threading.Thread.CurrentThread.ManagedThreadId}"))
-                using (var channel = connection.CreateModel())
-                {
-                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The connection to Rabbit MQ Server was checked successfully: Host = '{this._serverDescriptor.RabbitMqHost}', VirtualHost: '{factory.VirtualHost}'");
+            //        var deviceExchange = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
 
-                    var deviceExchange = $"{this._serverDescriptor.MessagesExchange}.[v{this._serverDescriptor.ApiVersion}]";
+            //        channel.ExchangeDeclare(
+            //            exchange: deviceExchange,
+            //            type: "direct",
+            //            durable: true
+            //        );
 
-                    channel.ExchangeDeclare(
-                        exchange: deviceExchange,
-                        type: "direct",
-                        durable: true
-                    );
+            //        this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The Exchange was declared successfully: Name = '{deviceExchange}'");
 
-                    this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The Exchange was declared successfully: Name = '{deviceExchange}'");
+            //        var bindings = this._serverDescriptor.QueueBindings.Values;
+            //        foreach (var binding in bindings)
+            //        {
+            //            var routingKey = $"[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}]";
+            //            var queueName = $"{this._serverDescriptor.ServerQueueNamePart}.[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}].[v{this._serverDescriptor.ApiVersion}]";
 
-                    var bindings = this._serverDescriptor.QueueBindings.Values;
-                    foreach (var binding in bindings)
-                    {
-                        var routingKey = $"[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}]";
-                        var queueName = $"{this._serverDescriptor.ServerQueueNamePart}.[{this._serverDescriptor.ServerInstance}].[{binding.RoutingKey}].[v{this._serverDescriptor.ApiVersion}]";
+            //            channel.QueueDeclare(
+            //               queue: queueName,
+            //               durable: true,
+            //               exclusive: false,
+            //               autoDelete: false,
+            //               arguments: null);
 
-                        channel.QueueDeclare(
-                           queue: queueName,
-                           durable: true,
-                           exclusive: false,
-                           autoDelete: false,
-                           arguments: null);
+            //            channel.QueueBind(queueName, deviceExchange, routingKey);
 
-                        channel.QueueBind(queueName, deviceExchange, routingKey);
+            //            this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The queue was declared successfully: Name = '{queueName}', RoutingKey = '{routingKey}'");
+            //        }
+            //    }
+            //}
+            //catch(Exception e)
+            //{
+            //    this.Logger.Exception("SdrnDeviceServices", (EventCategory)"Activation",  e);
+            //}
 
-                        this.Logger.Verbouse("SdrnDeviceServices", (EventCategory)"Rabbit MQ", $"The queue was declared successfully: Name = '{queueName}', RoutingKey = '{routingKey}'");
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                this.Logger.Exception("SdrnDeviceServices", (EventCategory)"Activation",  e);
-            }
-            
+            var publisher = this.Container.GetResolver<IServicesResolver>().Resolve<BusPublisher>();
+            var consumer = this.Container.GetResolver<IServicesResolver>().Resolve<BusConsumers>();
         }
 
         protected override void OnUninstall()

@@ -60,6 +60,7 @@ namespace Atdi.WcfServices.Sdrn.Device
         {
             this.Instance = instance; // config.GetParameterAsString("Instance");
             this.RabbitMqHost = config.GetParameterAsString("RabbitMQ.Host");
+            this.RabbitMqPort = config.GetParameterAsString("RabbitMQ.Port");
             this.RabbitMqVirtualHost = config.GetParameterAsString("RabbitMQ.VirtualHost");
             this.RabbitMqUser = config.GetParameterAsString("RabbitMQ.User");
             this.RabbitMqPassword = config.GetParameterAsDecodeString("RabbitMQ.Password", "Atdi.WcfServices.Sdrn.Device");
@@ -68,6 +69,9 @@ namespace Atdi.WcfServices.Sdrn.Device
             this.MessagesExchange = config.GetParameterAsString("SDRN.MessagesExchange");
             this.ServerQueueNamePart = config.GetParameterAsString("SDRN.ServerQueueNamePart");
             this.DeviceQueueNamePart = config.GetParameterAsString("SDRN.DeviceQueueNamePart");
+
+            this.MessagesOutboxFolder = config.GetParameterAsString("Messages.OutboxFolder");
+            this.MessagesInboxFolder = config.GetParameterAsString("Messages.InboxFolder");
 
             this.AllowedSensors = new Dictionary<string, string>();
             this.AllowedSensors[instance] = instance;
@@ -90,8 +94,9 @@ namespace Atdi.WcfServices.Sdrn.Device
 
         public string RabbitMqHost { get; set; }
 
-        public string RabbitMqVirtualHost { get; set; }
+        public string RabbitMqPort { get; set; }
 
+        public string RabbitMqVirtualHost { get; set; }
 
         public string RabbitMqUser { get; set; }
 
@@ -106,6 +111,9 @@ namespace Atdi.WcfServices.Sdrn.Device
         public string ServerQueueNamePart { get; set; }
 
         public string DeviceQueueNamePart { get; set; }
+
+        public string MessagesOutboxFolder { get; set; }
+        public string MessagesInboxFolder { get; set; }
 
         public IDictionary<string, QueueBindingDecriptor> QueueBindings { get; set; }
 

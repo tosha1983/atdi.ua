@@ -74,8 +74,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 {
                     this.SendCommandToDevice(descriptor);
                 }
-
-                var timer = new Timer(args => this.SendCommandToDevice(descriptor), null, (int)restTimeout, Timeout.Infinite);
+                else
+                {
+                    var timer = new Timer(args => this.SendCommandToDevice(descriptor), null, (int)restTimeout, Timeout.Infinite);
+                }
+                
             }
             catch (Exception e)
             {

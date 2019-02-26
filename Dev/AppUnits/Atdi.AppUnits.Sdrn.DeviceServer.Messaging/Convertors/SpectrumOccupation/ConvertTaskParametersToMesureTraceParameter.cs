@@ -11,12 +11,12 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 {
-    public static class ConvertTaskParametersToMesureTraceParameter
+    public static class ConvertTaskParametersToMesureTraceParameterForSO
     {
         public static MesureTraceParameter Convert(this TaskParameters taskParameters)
         {
+            
             MesureTraceParameter mesureTraceParameter = new MesureTraceParameter();
-
 
             return mesureTraceParameter;
         }

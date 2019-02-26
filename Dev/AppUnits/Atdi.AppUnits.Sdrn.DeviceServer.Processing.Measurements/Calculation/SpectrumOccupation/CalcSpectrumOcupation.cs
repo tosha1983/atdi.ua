@@ -14,9 +14,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSpectrumOcupation
     { 
-        public static SpectrumOcupation Calc(MesureTraceResult result, TaskParameters taskParameters, SensorParameters sensorParameters = null, LastResultParameters lastResultParameters = null)
+        public static SpectrumOcupationResult Calc(MesureTraceResult result, TaskParameters taskParameters, SensorParameters sensorParameters = null, LastResultParameters lastResultParameters = null)
         {
-            var spectrumOcupationResult = new SpectrumOcupation();
+            var spectrumOcupationResult = new SpectrumOcupationResult();
             if ((taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) || (taskParameters.Type_of_SO == SOType.FreqChannelOccupation))
             {
                 // вот собственно само измерение
