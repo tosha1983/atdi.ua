@@ -7,8 +7,8 @@
     <ProjectGuid>{53367A1D-485E-4D43-81E3-D4008A03773B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.CoreServices.Device.EntityOrm</RootNamespace>
-    <AssemblyName>Atdi.CoreServices.Device.EntityOrm</AssemblyName>
+    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.Repositories</RootNamespace>
+    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer.Repositories</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

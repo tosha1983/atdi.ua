@@ -14,23 +14,25 @@ using Atdi.Api.Sdrn.Device.BusController;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    class SOTaskWorker : ITaskWorker<SOTask, MeasProcess, PerThreadTaskWorkerLifetime>
+    public class SOTaskWorker : ITaskWorker<SOTask, MeasProcess, SingletonTaskWorkerLifetime>
     {
         private readonly IController _controller;
-        private readonly ILogger _logger;
-        private readonly IBusGateFactory _busGateFactory;
-        private readonly IBusGateConfig _busGateConfig;
         private readonly IBusGate _busGate;
-        private readonly IMessagePublisher _messagePublisher;
+        private readonly IProcessingDispatcher _processingDispatcher;
+        private readonly ITimeService _timeService;
+        private readonly ITaskStarter _taskStarter;
+        private readonly ILogger _logger;
 
-        public SOTaskWorker(ExampleConfig config, IController controller, ILogger logger)
+
+
+        public SOTaskWorker(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger, IBusGate busGate, IController controller)
         {
-            this._controller = controller;
+            this._processingDispatcher = processingDispatcher;
+            this._timeService = timeService;
+            this._taskStarter = taskStarter;
             this._logger = logger;
-            this._busGateFactory = BusGateFactory.Create();
-            this._busGateConfig = _busGateFactory.CreateConfig();
-            this._busGate = _busGateFactory.CreateGate("ITaskWorker", this._busGateConfig);
-            this._messagePublisher = this._busGate.CreatePublisher("TaskWorker");
+            this._busGate = busGate;
+            this._controller = controller;
         }
 
     
@@ -101,8 +103,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             //реакция на принятые результаты измерения
                             measResult = new DM.MeasResults();
-                            measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
-                            measResult.ScansNumber = outSpectrumOcupation.NN;
+                            if (outSpectrumOcupation.fSemplesResult != null)
+                            {
+                                measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
+                                measResult.ScansNumber = outSpectrumOcupation.NN;
+                            }
                             isDown = true;
                             break;
                         }
@@ -133,7 +138,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 if (outSpectrumOcupation.fSemplesResult != null)
                                 {
                                     //Отправка результатов в шину 
-                                    this._messagePublisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                                    var publisher = this._busGate.CreatePublisher("main");
+                                    publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                                    publisher.Dispose();
                                     isSendResultToBus = true;
                                 }
                             }
@@ -160,7 +167,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         //(С проверкой - чтобы не отправляллся дубликат)
                         if ((isSendResultToBus==false) && (measResult!=null))
                         {
-                            this._messagePublisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                            var publisher = this._busGate.CreatePublisher("main");
+                            publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                            publisher.Dispose();
                         }
                         context.Finish();
                         break;

@@ -53,6 +53,7 @@
     <Compile Include="Processes\ExampleContext.cs" />
     <Compile Include="Processes\MeasProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\AutoTasks\AutoTaskSensorRegister.cs" />
     <Compile Include="Tasks\HandlingMeasurementsTask.cs" />
     <Compile Include="Tasks\AnalyzeSignalTask.cs" />
     <Compile Include="Tasks\LocalizationTDOATask.cs" />

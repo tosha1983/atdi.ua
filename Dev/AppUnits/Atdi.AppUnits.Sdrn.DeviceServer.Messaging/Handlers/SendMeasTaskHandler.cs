@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.EntityOrm;
 using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
-
+using Atdi.DataModels.Sdrn.DeviceServer;
 
 
 
@@ -25,10 +25,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly IRepository<DM.MeasTask,int?> _repositoryMeasTask;
         private readonly IRepository<TaskParameters, int?> _repositoryTaskParameters;
         private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly ITimeService _timeService;
 
 
 
         public SendMeasTaskHandler(
+           ITimeService timeService,
            IProcessingDispatcher processingDispatcher,
            IRepository<DM.MeasTask, int?> repositoryMeasTask,
            IRepository<TaskParameters, int?> repositoryTaskParameters,
@@ -42,6 +44,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             this._repositoryMeasTask = repositoryMeasTask;
             this._repositoryTaskParameters = repositoryTaskParameters;
             this._repositorySensor = repositorySensor;
+            this._timeService = timeService;
         }
 
 
@@ -56,11 +59,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                     if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                     {
                         this._logger.Error(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
-                        // Старт процесса MeasProcess
+                        // Старт процесса MeasProcess-
+                        //var process = this._processingDispatcher.Start<DeviceServerBackgroundProcess>();
                         var measProcess = this._processingDispatcher.Start<MeasProcess>();
                         // пишем ссылку на входящее сообщение в свойство MeasTask процесса MeasProcess
                         measProcess.MeasTask = message.Data;
-                        var soTask = new SOTask();
+                        var soTask = new SOTask()
+                        {
+                            TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
+                            Delay = 5,
+                            Options = TaskExecutionOption.RunDelayed,
+                        };
                         var allSensor = this._repositorySensor.LoadAllObjects();
                         if ((allSensor != null) && (allSensor.Length > 0))
                         {
@@ -80,7 +89,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         var idTaskParameters = this._repositoryTaskParameters.Create(soTask.taskParameters);
                         // запуск таска SOTask на выполнение
                         _taskStarter.RunParallel(soTask, measProcess);
-                        message.Result = MessageHandlingResult.Confirmed;
+
+                        //message.Result = MessageHandlingResult.Confirmed;
                     }
                     else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
                     {
