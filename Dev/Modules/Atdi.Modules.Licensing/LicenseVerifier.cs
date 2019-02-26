@@ -13,6 +13,18 @@ namespace Atdi.Modules.Licensing
 {
     public class LicenseVerifier
     {
+        class DeserializationBinder : SerializationBinder
+        {
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+
+                var resultType = Type.GetType(String.Format("{0}, {1}",
+                    typeName, assemblyName));
+
+                return resultType;
+            }
+        }
+
         static public VerificationResult Verify(VerificationData data, byte[] licenseBody)
         {
             //formatter.Serialize(stream, licenses);
@@ -33,7 +45,7 @@ namespace Atdi.Modules.Licensing
             using (var memoryStream = new MemoryStream(licData))
             {
                 IFormatter formatter = new BinaryFormatter();
-
+                formatter.Binder = new DeserializationBinder();
                 var lics = (LicenseData[])formatter.Deserialize(memoryStream);
 
                 if (lics != null && lics.Length > 0)
@@ -85,7 +97,7 @@ namespace Atdi.Modules.Licensing
             using (var memoryStream = new MemoryStream(licData))
             {
                 IFormatter formatter = new BinaryFormatter();
-
+                formatter.Binder = new DeserializationBinder();
                 var lics = (LicenseData[])formatter.Deserialize(memoryStream);
 
                 if (lics != null && lics.Length > 0)

@@ -10,7 +10,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
     public enum TaskExecutionOption
     {
         Default = 0,
-        Synchronously = 1,
-        RunDelayed = 2
+        RunDelayed = 1
     }
 }

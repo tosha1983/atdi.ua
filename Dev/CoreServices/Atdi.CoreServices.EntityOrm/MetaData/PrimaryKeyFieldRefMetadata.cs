@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
+    [Serializable]
     public class PrimaryKeyFieldRefMetadata : IPrimaryKeyFieldRefMetadata
     {
         public IPrimaryKeyFieldRefMetadata Field { get; set; }

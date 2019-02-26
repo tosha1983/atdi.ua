@@ -1,4 +1,5 @@
-﻿using Atdi.Platform.Logging;
+﻿using Atdi.Platform;
+using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     static class Contexts
     {
-        public static readonly EventContext ThisComponent = "SDRN Device Server Adapters";
+        
     }
 
     static class Categories
     {
-        //public static readonly EventCategory MessageCheckLocation = "Check location";
-
-
+        
     }
 
     static class Events
     {
-        //public static readonly EventText CheckLocation = "Check location coordinates";
+        
 
     }
     static class TraceScopeNames
@@ -31,6 +30,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
     static class Exceptions
     {
-        //public static readonly string ServiceHostWasNotInitialized = "The service host was not initialized";
+        
     }
 }

@@ -1,6 +1,9 @@
-﻿using Atdi.Contracts.Sdrn.DeviceServer;
+﻿using Atdi.Api.Sdrn.Device.BusController;
+using Atdi.Contracts.Api.Sdrn.MessageBus;
+using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.Platform;
 using Atdi.Platform.DependencyInjection;
+using Atdi.Platform.AppComponent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +23,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
 
         protected override void OnInstallUnit()
         {
-            
+            this.Container.Register<Handlers.SendCommandHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<Handlers.SendMeasTaskHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<Handlers.SendRegistrationResultHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<Handlers.SendSensorUpdatingResultHandler>(ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()
         {
-            var typeResolver = this.Resolver.Resolve<ITypeResolver>();
+            var gate = this.Resolver.Resolve<IBusGate>();
+            var busEventObserver = this.Resolver.Resolve<IBusEventObserver>();
+            var dispatcher = gate.CreateDispatcher("SDRN.DeviceServer", busEventObserver);
 
-            
-            
+            var sendCommandHandler = this.Resolver.Resolve<Handlers.SendCommandHandler>();
+            var sendMeasTaskHandler = this.Resolver.Resolve<Handlers.SendMeasTaskHandler>();
+            var sendRegistrationResultHandler = this.Resolver.Resolve<Handlers.SendRegistrationResultHandler>();
+            var sendSensorUpdatingResultHandler = this.Resolver.Resolve<Handlers.SendSensorUpdatingResultHandler>();
+
+            dispatcher.RegistryHandler(sendCommandHandler);
+            dispatcher.RegistryHandler(sendMeasTaskHandler);
+            dispatcher.RegistryHandler(sendRegistrationResultHandler);
+            dispatcher.RegistryHandler(sendSensorUpdatingResultHandler);
+
+            dispatcher.Activate();
         }
 
         protected override void OnDeactivateUnit()

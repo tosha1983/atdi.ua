@@ -42,10 +42,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="Database\SaveMeasTask.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertMeasTaskToTaskParameters.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameter.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
+    <Compile Include="Handlers\SendCommandHandler.cs" />
+    <Compile Include="Handlers\SendRegistrationResultHandler.cs" />
+    <Compile Include="Handlers\SendSensorUpdatingResultHandler.cs" />
     <Compile Include="MessageHandlerBase.cs" />
     <Compile Include="Handlers\SendMeasTaskHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
@@ -75,6 +82,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
+      <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrn.DeviceServer.Entities.csproj">
       <Project>{a803197e-12f5-4800-b157-b2ec677bda33}</Project>

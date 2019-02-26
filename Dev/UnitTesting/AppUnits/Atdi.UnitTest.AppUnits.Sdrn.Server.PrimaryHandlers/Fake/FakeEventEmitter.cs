@@ -9,6 +9,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 {
     class FakeEventEmitter : IEventEmitter
     {
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
         public Guid Emit(IEvent @event, EventEmittingOptions options)
         {
             if (@event == null)
@@ -27,6 +32,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
             }
 
             return @event.Id;
+        }
+
+        void IEventEmitter.Emit(IEvent @event, EventEmittingOptions options)
+        {
+            throw new NotImplementedException();
         }
     }
 }

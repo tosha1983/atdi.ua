@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.Contracts.Api.Sdrn.MessageBus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public static readonly string LicenseProductKey = "License.ProductKey";
 
         public static readonly string RabbitMQHost = "RabbitMQ.Host";
+        public static readonly string RabbitMQPort = "RabbitMQ.Port";
         public static readonly string RabbitMQVirtualHost = "RabbitMQ.VirtualHost";
         public static readonly string RabbitMQUser = "RabbitMQ.User";
         public static readonly string RabbitMQPassword = "RabbitMQ.Password";
@@ -41,5 +43,25 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public static readonly string SdrnMessageConvertorUseEncryption = "SDRN.MessageConvertor.UseEncryption";
         public static readonly string SdrnMessageConvertorUseCompression = "SDRN.MessageConvertor.UseCompression";
+    }
+
+    public static class BusGateConfigExtensions
+    {
+        public static string GetApi(this IBusGateConfig config)
+        {
+            return config.GetValue<string>(ConfigParams.SdrnApiVersion);
+        }
+        public static string GetSdrnServerInstance(this IBusGateConfig config)
+        {
+            return config.GetValue<string>(ConfigParams.SdrnServerInstance);
+        }
+        public static string GetRabbitMQHost(this IBusGateConfig config)
+        {
+            return config.GetValue<string>(ConfigParams.RabbitMQHost);
+        }
+        public static string GetRabbitMQPort(this IBusGateConfig config)
+        {
+            return config.GetValue<string>(ConfigParams.RabbitMQPort);
+        }
     }
 }

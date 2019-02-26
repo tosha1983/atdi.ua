@@ -84,7 +84,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             var message = this._messageConverter.Pack<TDeliveryObject>(envelope.MessageType.Name, envelope.DeliveryObject);
             message.CorrelationId = envelope.CorrelationToken;
-
+            message.AppId = "Atdi.AppUnits.Sdrn.BusController.dll";
             message.Headers = new Dictionary<string, object>
             {
                 ["SdrnServer"] = _environment.ServerInstance,

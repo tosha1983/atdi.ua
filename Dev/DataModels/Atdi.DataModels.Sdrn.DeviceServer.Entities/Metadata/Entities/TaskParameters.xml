@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "TaskParameters" 
+  Title       = "TaskParameters" 
+  Desc        = "The TaskParameters"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_TASKPARAMETERS</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="SDRTaskId" Title="SDRTaskId" Name="SDRTaskId" DataType="Text.20" SourceName="SDRTASKID" SourceType="Column" Required="true"/>
+    <Field Desc="MeasurementType" Title="MeasurementType" Name="MeasurementType" DataType="Text.100" SourceName="MEASTYPE" SourceType="Column" Required="true"/>
+    <Field Desc="MinFreq_MHz" Title="MinFreq_MHz" Name="MinFreq_MHz" DataType="Decimal.22.8" SourceName="MINFREQ" SourceType="Column" Required="true"/>
+    <Field Desc="MaxFreq_MHz" Title="MaxFreq_MHz" Name="MaxFreq_MHz" DataType="Decimal.22.8" SourceName="MAXFREQ" SourceType="Column" Required="true"/>
+    <Field Desc="RBW_Hz" Title="RBW_Hz" Name="RBW_Hz" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="true"/>
+    <Field Desc="VBW_Hz" Title="VBW_Hz" Name="VBW_Hz" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="true"/>
+    <Field Desc="StepSO_kHz" Title="StepSO_kHz" Name="StepSO_kHz" DataType="Decimal.22.8" SourceName="STEPSO" SourceType="Column" Required="true"/>
+    <Field Desc="NChenal" Title="NChenal" Name="NChenal" DataType="Integer.32" SourceName="NCHENAL" SourceType="Column" Required="true"/>
+    <Field Desc="LevelMinOccup_dBm" Title="LevelMinOccup_dBm" Name="LevelMinOccup_dBm" DataType="Decimal.22.8" SourceName="LEVELMINOCCUP" SourceType="Column" Required="true"/>
+    <Field Desc="Type_of_SO" Title="Type_of_SO" Name="Type_of_SO" DataType="Text.100" SourceName="TYPESO" SourceType="Column" Required="true"/>
+    <Field Desc="Status" Title="Status" Name="Status" DataType="Text.20" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Desc="ReceivedIQStreemDuration_sec" Title="ReceivedIQStreemDuration_sec" Name="ReceivedIQStreemDuration_sec" DataType="Decimal.22.8" SourceName="RECEIVEIQSTREAM" SourceType="Column" Required="true"/>
+    <Field Desc="TypeTechnology" Title="TypeTechnology" Name="TypeTechnology" DataType="Text.100" SourceName="TYPETECHNOLOGY" SourceType="Column" Required="true"/>
+    <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="STARTTIME" SourceType="Column" Required="true"/>
+    <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOPTTIME" SourceType="Column" Required="true"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

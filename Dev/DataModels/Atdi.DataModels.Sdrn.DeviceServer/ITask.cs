@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
@@ -21,13 +22,21 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         TaskState State { get; }
     }
 
+    public interface IAutoTask : ITask
+    {
+
+    }
     public abstract class TaskBase : ITask
     {
+        private object _stateLocker = new object();
+
+        private volatile TaskState _state;
+
         public TaskBase()
         {
             this.Date = DateTimeOffset.Now;
             this.Id = Guid.NewGuid();
-            this.State = TaskState.Created;
+            this._state = TaskState.Created;
         }
 
         public Guid Id { get; private set; }
@@ -40,10 +49,18 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
 
         public long Delay { get; set; }
 
-        public TaskState State { get; private set; }
+        public TaskState State { get => _state; }
+
+        public void ChangeState(TaskState state)
+        {
+            lock(this._stateLocker)
+            {
+                this._state = state;
+            }
+        }
     }
 
-    public class AutoTask : TaskBase
+    public abstract class AutoTask : TaskBase, IAutoTask
     {
     }
 }

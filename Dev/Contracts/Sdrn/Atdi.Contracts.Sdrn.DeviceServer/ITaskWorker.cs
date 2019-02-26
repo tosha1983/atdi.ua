@@ -10,7 +10,11 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface ITaskWorker
     {
+        bool IsAsync { get; }
+
         void Run(ITaskDescriptor descriptor);
+
+        Task RunAsync(ITaskDescriptor descriptor);
     }
 
     public interface ITaskWorkerLifetime
@@ -30,10 +34,6 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
         void Run(ITaskContext<TTask, TProcess> context);
     }
 
-    public interface IAutoTaskWorker<TProcess, TLifetime> : ITaskWorker<AutoTask, TProcess, TLifetime>
-        where TProcess : IProcess
-    {
-    }
 
     public interface ITaskWorkerAsync<TTask, TProcess, TLifetime>
         where TTask : ITask

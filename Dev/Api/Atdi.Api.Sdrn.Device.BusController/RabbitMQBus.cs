@@ -32,10 +32,19 @@ namespace Atdi.Api.Sdrn.Device.BusController
             this._connectionFactory = new ConnectionFactory()
             {
                 HostName = this._environmentDescriptor.RabbitMQHost,
-                VirtualHost = this._environmentDescriptor.RabbitMQVirtualHost,
                 UserName = this._environmentDescriptor.RabbitMQUser,
                 Password = this._environmentDescriptor.RabbitMQPassword,
             };
+
+            if (!string.IsNullOrEmpty(this._environmentDescriptor.RabbitMQPort))
+            {
+                this._connectionFactory.Port = int.Parse(this._environmentDescriptor.RabbitMQPort);
+            }
+
+            if (!string.IsNullOrEmpty(this._environmentDescriptor.RabbitMQVirtualHost))
+            {
+                this._connectionFactory.VirtualHost = this._environmentDescriptor.RabbitMQVirtualHost;
+            }
 
             this.EstablishConnection();
         }
@@ -263,6 +272,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 this.EstablishConnection();
 
                 var channel = this._connection.CreateModel();
+                channel.BasicQos(0, 1, false);
                 this._channels.Add(channel);
 
                 var consumer = new QueueConsumer(consumerName, queueName, _environmentDescriptor, messageDispatcher, this, channel, this._logger);

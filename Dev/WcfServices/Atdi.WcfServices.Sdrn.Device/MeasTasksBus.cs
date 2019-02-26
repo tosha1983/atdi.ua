@@ -17,11 +17,13 @@ namespace Atdi.WcfServices.Sdrn.Device
     public class MeasTasksBus : WcfServiceBase<IMeasTasksBus>, IMeasTasksBus
     {
         private readonly MessagesBus _bus;
+        private readonly BusConsumers _busConsumers;
         private readonly ILogger _logger;
-
-        public MeasTasksBus(MessagesBus bus, ILogger logger)
+        
+        public MeasTasksBus(MessagesBus bus, BusConsumers busConsumers, ILogger logger)
         {
             this._bus = bus;
+            this._busConsumers = busConsumers;
             this._logger = logger;
         }
 
@@ -48,6 +50,9 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
 
             this._bus.CheckSensorName(sensorDescriptor.SensorName);
+
+            this._busConsumers.DeclareSensor(sensorDescriptor.SensorName, sensorDescriptor.EquipmentTechId);
+
         }
         public Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token)
         {
@@ -55,7 +60,8 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.AckMessage(sensorDescriptor, token);
+                //this._bus.AckMessage(sensorDescriptor, token);
+                this._busConsumers.TryAckMessage("SendCommand", token);
 
                 var result = new Result
                 {
@@ -80,7 +86,8 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.AckMessage(sensorDescriptor, token);
+                //this._bus.AckMessage(sensorDescriptor, token);
+                this._busConsumers.TryAckMessage("SendEntity", token);
 
                 var result = new Result
                 {
@@ -105,7 +112,8 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.AckMessage(sensorDescriptor, token);
+                //this._bus.AckMessage(sensorDescriptor, token);
+                this._busConsumers.TryAckMessage("SendEntityPart", token);
 
                 var result = new Result
                 {
@@ -130,7 +138,8 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.AckMessage(sensorDescriptor, token);
+                //this._bus.AckMessage(sensorDescriptor, token);
+                this._busConsumers.TryAckMessage("SendMeasTask", token);
 
                 var result = new Result
                 {
@@ -156,7 +165,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 var token = string.Empty;
-                var data = this._bus.TryGetObject<DeviceCommand>(sensorDescriptor, "SendCommand", out token);
+                var data = this._busConsumers.TryGetObject<DeviceCommand>(sensorDescriptor, "SendCommand", out token);
 
                 var result = new BusResult<DeviceCommand>
                 {
@@ -184,7 +193,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 var token = string.Empty;
-                var data = this._bus.TryGetObject<Entity>(sensorDescriptor, "SendEntity", out token);
+                var data = this._busConsumers.TryGetObject<Entity>(sensorDescriptor, "SendEntity", out token);
 
                 var result = new BusResult<Entity>
                 {
@@ -212,7 +221,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 var token = string.Empty;
-                var data = this._bus.TryGetObject<EntityPart>(sensorDescriptor, "SendEntityPart", out token);
+                var data = this._busConsumers.TryGetObject<EntityPart>(sensorDescriptor, "SendEntityPart", out token);
 
                 var result = new BusResult<EntityPart>
                 {
@@ -240,7 +249,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 var token = string.Empty;
-                var data = this._bus.TryGetObject<MeasTask>(sensorDescriptor, "SendMeasTask", out token);
+                var data = this._busConsumers.TryGetObject<MeasTask>(sensorDescriptor, "SendMeasTask", out token);
 
                 var result = new BusResult<MeasTask>
                 {
@@ -275,9 +284,9 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(descriptor);
 
                 var correlationId = Guid.NewGuid().ToString();
-                var messageId = this._bus.SendObject(descriptor, "RegisterSensor", sensor, correlationId);
+                var messageId = this._bus.SaveObject(descriptor, "RegisterSensor", sensor, correlationId);
 
-                var data = this._bus.WaitObject<SensorRegistrationResult>(descriptor, "SendRegistrationResult", correlationId);
+                var data = this._busConsumers.WaitObject<SensorRegistrationResult>(descriptor, "SendRegistrationResult");
 
                 var result = new Result<SensorRegistrationResult>
                 {
@@ -303,7 +312,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SendObject(sensorDescriptor, "SendCommandResult", commandResult);
+                this._bus.SaveObject(sensorDescriptor, "SendCommandResult", commandResult);
 
                 var result = new Result
                 {
@@ -328,7 +337,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SendObject(sensorDescriptor, "SendEntity", entity);
+                this._bus.SaveObject(sensorDescriptor, "SendEntity", entity);
 
                 var result = new Result
                 {
@@ -353,7 +362,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SendObject(sensorDescriptor, "SendEntityPart", entityPart);
+                this._bus.SaveObject(sensorDescriptor, "SendEntityPart", entityPart);
 
                 var result = new Result
                 {
@@ -378,7 +387,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SendObject(sensorDescriptor, "SendMeasResults", results);
+                this._bus.SaveObject(sensorDescriptor, "SendMeasResults", results);
 
                 var result = new Result
                 {
@@ -411,9 +420,9 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 var correlationId = Guid.NewGuid().ToString();
-                var messageId = this._bus.SendObject(sensorDescriptor, "UpdateSensor", sensor, correlationId);
+                var messageId = this._bus.SaveObject(sensorDescriptor, "UpdateSensor", sensor, correlationId);
 
-                var data = this._bus.WaitObject<SensorUpdatingResult>(sensorDescriptor, "SendSensorUpdatingResult", correlationId);
+                var data = this._busConsumers.WaitObject<SensorUpdatingResult>(sensorDescriptor, "SendSensorUpdatingResult");
 
                 var result = new Result<SensorUpdatingResult>
                 {
@@ -426,6 +435,176 @@ namespace Atdi.WcfServices.Sdrn.Device
             catch (Exception e)
             {
                 return new Result<SensorUpdatingResult>
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
+        }
+
+        public Result SendSensorRegistration(Sensor sensor, string sdrnServer)
+        {
+            try
+            {
+                var descriptor = new SensorDescriptor
+                {
+                    SdrnServer = sdrnServer,
+                    SensorName = sensor.Name,
+                    EquipmentTechId = sensor.Equipment.TechId
+                };
+
+                this.Verify(descriptor);
+
+                this._bus.SaveObject(descriptor, "RegisterSensor", sensor);
+
+                var result = new Result
+                {
+                    State = OperationState.Success
+                };
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new Result
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
+        }
+
+        public Result<SensorRegistrationResult> GetSensorRegistrationResult(SensorDescriptor sensorDescriptor)
+        {
+            try
+            {
+                this.Verify(sensorDescriptor);
+
+                var token = string.Empty;
+                var data = this._busConsumers.TryGetObject<SensorRegistrationResult>(sensorDescriptor, "SendRegistrationResult", out token);
+
+                var result = new BusResult<SensorRegistrationResult>
+                {
+                    State = OperationState.Success,
+                    Data = data,
+                    Token = Encoding.UTF8.GetBytes(token)
+                };
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new BusResult<SensorRegistrationResult>
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
+        }
+
+        public Result AckSensorRegistrationResult(SensorDescriptor sensorDescriptor, byte[] token)
+        {
+            try
+            {
+                this.Verify(sensorDescriptor);
+
+                this._busConsumers.TryAckMessage("SendRegistrationResult", token);
+
+                var result = new Result
+                {
+                    State = OperationState.Success
+                };
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new Result
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
+        }
+
+        public Result SendSensorUpdating(Sensor sensor, string sdrnServer)
+        {
+            try
+            {
+                var sensorDescriptor = new SensorDescriptor
+                {
+                    SdrnServer = sdrnServer,
+                    SensorName = sensor.Name,
+                    EquipmentTechId = sensor.Equipment.TechId
+                };
+
+                this.Verify(sensorDescriptor);
+
+                var messageId = this._bus.SaveObject(sensorDescriptor, "UpdateSensor", sensor);
+
+                var result = new Result
+                {
+                    State = OperationState.Success
+                };
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new Result
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
+        }
+
+        public Result<SensorUpdatingResult> GetSensorUpdatingResult(SensorDescriptor sensorDescriptor)
+        {
+            try
+            {
+                this.Verify(sensorDescriptor);
+
+                var token = string.Empty;
+                var data = this._busConsumers.TryGetObject<SensorUpdatingResult>(sensorDescriptor, "SendSensorUpdatingResult", out token);
+
+                var result = new BusResult<SensorUpdatingResult>
+                {
+                    State = OperationState.Success,
+                    Data = data,
+                    Token = Encoding.UTF8.GetBytes(token)
+                };
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new BusResult<SensorUpdatingResult>
+                {
+                    FaultCause = e.Message,
+                    State = OperationState.Fault
+                };
+            }
+        }
+
+        public Result AckSensorUpdatingResult(SensorDescriptor sensorDescriptor, byte[] token)
+        {
+            try
+            {
+                this.Verify(sensorDescriptor);
+
+                this._busConsumers.TryAckMessage("SendSensorUpdatingResult", token);
+
+                var result = new Result
+                {
+                    State = OperationState.Success
+                };
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new Result
                 {
                     FaultCause = e.Message,
                     State = OperationState.Fault

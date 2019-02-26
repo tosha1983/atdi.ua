@@ -37,6 +37,14 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
 
         public DateTimeOffset Date { get; private set; }
 
-        public IProcess Parent { get; private set; }
+        public IProcess Parent { get; set; }
+    }
+
+    public class DeviceServerBackgroundProcess : ProcessBase
+    {
+        public DeviceServerBackgroundProcess() 
+            : base("SDRN Device Server background process")
+        {
+        }
     }
 }

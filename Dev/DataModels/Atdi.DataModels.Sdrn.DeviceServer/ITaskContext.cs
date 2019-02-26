@@ -29,9 +29,16 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         void Cancel();
 
 
-        TEvent WaitEvent<TEvent>();
+        bool WaitEvent<TEvent>(out TEvent @event, int millisecondsTimeout = System.Threading.Timeout.Infinite);
+        bool WaitEvent<TEvent>(int millisecondsTimeout = System.Threading.Timeout.Infinite);
 
         void SetEvent<TEvent>(TEvent @event);
+        void SetEvent<TEvent>();
+
+        /// <summary>
+        /// Исключение котрое привело к обрыву таска
+        /// </summary>
+        Exception Exception { get; }
     }
 
     public interface ITaskContext<TTask, TProcess> : ITaskContext

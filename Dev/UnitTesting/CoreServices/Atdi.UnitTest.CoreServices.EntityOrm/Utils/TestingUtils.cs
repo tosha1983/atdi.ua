@@ -10,7 +10,7 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
     {
         public static bool JsonCompare(object obj, object another)
         {
-            if (ReferenceEquals(obj, another)) return true;
+            //if (ReferenceEquals(obj, another)) return true;
             if ((obj == null) || (another == null)) return false;
             if (obj.GetType() != another.GetType()) return false;
 

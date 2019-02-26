@@ -20,9 +20,9 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
     public static class TaskExecuterExtensions
     {
 
-        public static void Run(this ITaskStarter executer, ITask task, IProcess context)
+        public static void Run(this ITaskStarter executer, ITask task, IProcess process)
         {
-            executer.Run(task, context, null, CancellationToken.None);
+            executer.Run(task, process, null, CancellationToken.None);
         }
 
         public static void Run(this ITaskStarter executer, ITask task, CancellationToken cancellationToken)
@@ -35,9 +35,9 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
             executer.Run(task, null, parentTaskContext, CancellationToken.None);
         }
 
-        public static void Run(this ITaskStarter executer, ITask task, IProcess context, ITaskContext parentTaskContext)
+        public static void Run(this ITaskStarter executer, ITask task, IProcess process, ITaskContext parentTaskContext)
         {
-            executer.Run(task, context, parentTaskContext, CancellationToken.None);
+            executer.Run(task, process, parentTaskContext, CancellationToken.None);
         }
 
         public static void Run(this ITaskStarter executer, ITask task, ITaskContext parentTaskContext, CancellationToken cancellationToken)
@@ -47,9 +47,9 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 
 
 
-        public static Task RunParallel(this ITaskStarter executer, ITask task, IProcess context)
+        public static Task RunParallel(this ITaskStarter executer, ITask task, IProcess process)
         {
-            return executer.RunParallel(task, context, null, CancellationToken.None);
+            return executer.RunParallel(task, process, null, CancellationToken.None);
         }
 
         public static Task RunParallel(this ITaskStarter executer, ITask task, CancellationToken cancellationToken)
@@ -57,14 +57,19 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
             return executer.RunParallel(task, null, null, cancellationToken);
         }
 
+        public static Task RunParallel(this ITaskStarter executer, ITask task, IProcess process, CancellationToken cancellationToken)
+        {
+            return executer.RunParallel(task, process, null, cancellationToken);
+        }
+
         public static Task RunParallel(this ITaskStarter executer, ITask task, ITaskContext parentTaskContext)
         {
             return executer.RunParallel(task, null, parentTaskContext, CancellationToken.None);
         }
 
-        public static Task RunParallel(this ITaskStarter executer, ITask task, IProcess context, ITaskContext parentTaskContext)
+        public static Task RunParallel(this ITaskStarter executer, ITask task, IProcess process, ITaskContext parentTaskContext)
         {
-            return executer.RunParallel(task, context, parentTaskContext, CancellationToken.None);
+            return executer.RunParallel(task, process, parentTaskContext, CancellationToken.None);
         }
 
         public static Task RunParallelRun(this ITaskStarter executer, ITask task, ITaskContext parentTaskContext, CancellationToken cancellationToken)

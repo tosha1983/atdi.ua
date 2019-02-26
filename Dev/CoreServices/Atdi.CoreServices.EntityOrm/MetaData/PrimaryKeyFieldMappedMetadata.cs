@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
+    [Serializable]
     public class PrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata
     {
         public IFieldMetadata KeyField { get; set; }
@@ -15,6 +16,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
     }
 
+    [Serializable]
     public class ValuePrimaryKeyFieldMappedMetadata : IValuePrimaryKeyFieldMappedMetadata
     {
         public object Value { get; set; }
@@ -24,6 +26,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         public PrimaryKeyMappedMatchWith MatchWith { get; set; }
     }
 
+    [Serializable]
     public class FieldPrimaryKeyFieldMappedMetadata : IFieldPrimaryKeyFieldMappedMetadata
     {
         public IFieldMetadata EntityField { get; set; }
@@ -33,6 +36,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         public PrimaryKeyMappedMatchWith MatchWith { get; set; }
     }
 
+    [Serializable]
     public class SourceNamePrimaryKeyFieldMappedMetadata : ISourceNamePrimaryKeyFieldMappedMetadata
     {
         public string SourceName { get; set; }

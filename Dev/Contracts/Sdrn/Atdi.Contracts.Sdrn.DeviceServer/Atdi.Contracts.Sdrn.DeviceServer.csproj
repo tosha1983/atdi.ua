@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="IAdapter.cs" />
     <Compile Include="IAutoTaskActivator.cs" />
+    <Compile Include="IDeviceServerConfig.cs" />
     <Compile Include="IProcessingDispatcher.cs" />
     <Compile Include="IResultConvertorFactory.cs" />
     <Compile Include="ITaskWorkerFactory.cs" />
@@ -63,6 +64,8 @@
     <Compile Include="ITaskStarter.cs" />
     <Compile Include="ITaskWorker.cs" />
     <Compile Include="ITaskWorkersHost.cs" />
+    <Compile Include="ITimeService.cs" />
+    <Compile Include="IWorkScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

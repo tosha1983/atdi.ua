@@ -40,8 +40,8 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// <summary>
         ///// Measurement type
         ///// </summary>
-        //[DataMember]
-        //public MeasurementType Measurement { get; set; }
+        [DataMember]
+        public MeasurementType Measurement { get; set; }
 
         ///// <summary>
         ///// Type of spectrum scan
@@ -52,8 +52,8 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// <summary>
         ///// Number of scans at a time
         ///// </summary>
-        //[DataMember]
-        //public int SwNumber { get; set; }
+        [DataMember]
+        public int SwNumber { get; set; }
 
         /// <summary>
         /// Scanning start time
@@ -64,8 +64,8 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// <summary>
         ///// Measurements duration, sec
         ///// </summary>
-        //[DataMember]
-        //public double Interval_sec { get; set; }
+        [DataMember]
+        public double Interval_sec { get; set; }
 
         /// <summary>
         /// Scanning stop time
@@ -88,20 +88,20 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// <summary>
         ///// Frequencies for scanning
         ///// </summary>
-        //[DataMember]
-        //public MeasuredFrequencies Frequencies { get; set; }
+        [DataMember]
+        public MeasuredFrequencies Frequencies { get; set; }
 
         ///// <summary>
         ///// Measurement equipment parameters
         ///// </summary>
-        //[DataMember]
-        //public DeviceMeasParam DeviceParam { get; set; }
+        [DataMember]
+        public DeviceMeasParam DeviceParam { get; set; }
 
         ///// <summary>
         ///// Spectrum occupancy measurement parameters
         ///// </summary>
-        //[DataMember]
-        //public SpectrumOccupationMeasParam SOParam { get; set; }
+        [DataMember]
+        public SpectrumOccupationMeasParam SOParam { get; set; }
 
         ///// <summary>
         ///// Parameters of location areas for measurement
