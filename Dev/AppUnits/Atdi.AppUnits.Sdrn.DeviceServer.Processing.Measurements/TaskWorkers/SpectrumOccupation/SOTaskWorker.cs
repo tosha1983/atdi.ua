@@ -14,7 +14,7 @@ using Atdi.Api.Sdrn.Device.BusController;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public class SOTaskWorker : ITaskWorker<SOTask, MeasProcess, SingletonTaskWorkerLifetime>
+    public class SOTaskWorker : ITaskWorker<SOTask, SpectrumOccupationProcess, SingletonTaskWorkerLifetime>
     {
         private readonly IController _controller;
         private readonly IBusGate _busGate;
@@ -36,7 +36,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
 
     
-        public void Run(ITaskContext<SOTask, MeasProcess> context)
+        public void Run(ITaskContext<SOTask, SpectrumOccupationProcess> context)
         {
             try
             {
@@ -55,9 +55,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
+
+                    var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    var timeStamp = this._timeService.TimeStamp.Milliseconds;
                     var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter)
                     {
-                        Options = CommandOption.PutInQueue
+                        Options = CommandOption.PutInQueue,
+                        StartTimeStamp = timeStamp,
+                        Timeout = timeStamp + maximumDurationMeas
                     };
 
                     //////////////////////////////////////////////
@@ -67,7 +72,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //////////////////////////////////////////////
                     this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                     (ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) =>  {
+                    ) => {
                         taskContext.SetEvent<ExceptionProcessSO>(new ExceptionProcessSO(failureReason, ex));
                     });
                     //////////////////////////////////////////////
@@ -78,40 +83,71 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
                     DM.MeasResults measResult = null;
-                    bool isDown = false;
-                    while (isDown == false)
+                    //bool isDown = false;
+                    //while (isDown == false)
+
+                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, (int)maximumDurationMeas);
+                    if (isDown == false) // таймут - результатов нет
                     {
-                        isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, 10);
-                        if (isDown == false) // таймут - результатов нет
+                        // проверка - не отменили ли задачу
+                        if (context.Token.IsCancellationRequested)
                         {
-                            // проверка - не отменили ли задачу
-                            if (context.Token.IsCancellationRequested)
+                            // явно нужна логика отмены
+                            context.Cancel();
+                            return;
+                        }
+                        var error = new ExceptionProcessSO();
+                        if (context.WaitEvent<ExceptionProcessSO>(out error, 1) == true)
+                        {
+                            /// реакция на ошибку выполнения команды
+
+                            switch (error._failureReason)
                             {
-                                // явно нужна логика отмены
-                                context.Cancel();
-                                return;
+                                case CommandFailureReason.DeviceIsBusy:
+                                case CommandFailureReason.CanceledExecution:
+                                case CommandFailureReason.CanceledBeforeExecution:
+                                    Thread.Sleep((int)maximumDurationMeas);
+                                    break;
+
+                                case CommandFailureReason.NotFoundConvertor:
+                                case CommandFailureReason.Exception:
+                                case CommandFailureReason.NotFoundDevice:
+                                    var durationToRepietMeas = (int)maximumDurationMeas * 1000;
+                                    TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
+
+                                    if (durationToRepietMeas < durationToFinishTask.Milliseconds)
+                                    {
+                                        // здесь необходимо отправить уведомление об ошибке
+                                        context.Finish();
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(durationToRepietMeas);
+                                    }
+                                    break;
+                                case CommandFailureReason.TimeoutExpired:
+
+                                    break;
+
+                                default:
+                                    throw new NotImplementedException($"Type {error._failureReason} not supported");
                             }
 
-                            if (context.WaitEvent<ExceptionProcessSO>(10) == true)
-                            {
-                                /// реакция на ошибку выполнения команды
-                                isDown = true;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            //реакция на принятые результаты измерения
-                            measResult = new DM.MeasResults();
-                            if (outSpectrumOcupation.fSemplesResult != null)
-                            {
-                                measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
-                                measResult.ScansNumber = outSpectrumOcupation.NN;
-                            }
-                            isDown = true;
-                            break;
                         }
                     }
+                    else
+                    {
+                        //реакция на принятые результаты измерения
+                        measResult = new DM.MeasResults();
+                        if (outSpectrumOcupation.fSemplesResult != null)
+                        {
+                            measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
+                            measResult.ScansNumber = outSpectrumOcupation.NN;
+                        }
+                        isDown = true;
+
+                    }
+                    
                     // проверка - не отменили ли задачу
                     if (context.Token.IsCancellationRequested)
                     {
@@ -181,17 +217,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Приостановка потока на рассчитаное время CalculateSleepParameter(context.Task.taskParameters)
                     //
                     //////////////////////////////////////////////
-                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone.Value);
-                    Thread.Sleep(sleepTime);
+                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    if (sleepTime > 0)
+                    {
+                        Thread.Sleep((int)sleepTime);
+                    }
+                    else
+                    {
+                        context.Finish();
+                    }
                 }
-
-                //this._controller.SendCommand<MesureTraceResult>(context, deviceCommand);
-                /// теперь шлем задаче родителю евент
-                //context.Descriptor.Parent.SetEvent(result);
-
-               
                 context.Task.CountMeasurementDone++;
-
             }
             catch (Exception e)
             {
@@ -205,15 +241,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="taskParameters">Параметры таска</param> 
         /// <param name="doneCount">Количество измерений которое было проведено</param>
         /// <returns></returns>
-        private int CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
+        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
         {
             DateTime dateTimeNow = DateTime.Now;
             if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
             TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            int interval_ms = interval.Milliseconds;
-            if (taskParameters.NCount.Value <= DoneCount) { return -1; }
-            int duration = (int)(interval_ms / (taskParameters.NCount.Value - DoneCount));
+            long interval_ms = interval.Milliseconds;
+            if (taskParameters.NCount <= DoneCount) { return -1; }
+            long duration = (interval_ms / (taskParameters.NCount - DoneCount));
             return duration;
         }
+
     }
 }

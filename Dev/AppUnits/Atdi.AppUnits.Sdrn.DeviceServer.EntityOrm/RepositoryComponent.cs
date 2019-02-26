@@ -12,7 +12,7 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
     public sealed class RepositoryComponent : ComponentBase
     {

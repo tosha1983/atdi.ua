@@ -11,7 +11,7 @@ using System.Linq;
 using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
     public sealed class TaskParametersRepository : IRepository<TaskParameters,int?>
     {

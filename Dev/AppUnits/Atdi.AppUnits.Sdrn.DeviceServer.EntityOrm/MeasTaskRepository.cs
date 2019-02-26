@@ -13,7 +13,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
     public sealed class MeasTaskRepository : IRepository<MeasTask, int?>
     {

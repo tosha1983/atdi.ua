@@ -25,7 +25,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public TypeTechnology TypeTechnology { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? StopTime { get; set; }
-        public int? NCount { get; set; } //количество сканированиия за измерение (он вичисляется в проессе трансформации из MeasTask)
+        public int NCount = 0; //количество сканированиия за измерение (он вичисляется в проессе трансформации из MeasTask)
 
     }
 }

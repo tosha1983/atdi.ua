@@ -13,6 +13,10 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public readonly CommandFailureReason _failureReason;
         public readonly Exception _ex;
 
+        public ExceptionProcessSO()
+        {
+
+        }
         public ExceptionProcessSO(CommandFailureReason failureReason, Exception e)
         {
             this._failureReason = failureReason;

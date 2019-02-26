@@ -58,17 +58,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                 {
                     if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                     {
-                        this._logger.Error(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
+                        this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
                         // Старт процесса MeasProcess-
                         //var process = this._processingDispatcher.Start<DeviceServerBackgroundProcess>();
-                        var measProcess = this._processingDispatcher.Start<MeasProcess>();
+                        var measProcess = this._processingDispatcher.Start<SpectrumOccupationProcess>();
                         // пишем ссылку на входящее сообщение в свойство MeasTask процесса MeasProcess
-                        measProcess.MeasTask = message.Data;
+                        //measProcess.MeasTask = message.Data;
                         var soTask = new SOTask()
                         {
                             TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
-                            Delay = 5,
-                            Options = TaskExecutionOption.RunDelayed,
+                            //Delay = 5,
+                            Options = TaskExecutionOption.Default,
                         };
                         var allSensor = this._repositorySensor.LoadAllObjects();
                         if ((allSensor != null) && (allSensor.Length > 0))
@@ -80,11 +80,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                             }
                         }
 
-                        soTask.taskParameters = measProcess.MeasTask.Convert();
+                        soTask.taskParameters = message.Data.Convert();
                         // форммрование набора параметров для передачи в контроллер и затем в адаптер
                         soTask.mesureTraceParameter = soTask.taskParameters.Convert();
                         // Сохранение объекта MeasTask в БД
-                        var saveMeasTask = this._repositoryMeasTask.Create(message.Data);
+                        //var saveMeasTask = this._repositoryMeasTask.Create(message.Data);
                         // Сохранение объекта SensorParameters в БД
                         var idTaskParameters = this._repositoryTaskParameters.Create(soTask.taskParameters);
                         // запуск таска SOTask на выполнение

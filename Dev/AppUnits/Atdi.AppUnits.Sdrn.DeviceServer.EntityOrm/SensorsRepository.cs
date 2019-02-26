@@ -14,7 +14,7 @@ using Atdi.DataModels;
 using Atdi.DataModels.DataConstraint;
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 { 
     public sealed class SensorsRepository : IRepository<Sensor,int?>
     {

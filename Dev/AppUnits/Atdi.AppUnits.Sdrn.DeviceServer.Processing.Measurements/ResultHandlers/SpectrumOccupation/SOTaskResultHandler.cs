@@ -13,9 +13,9 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public class SOTaskResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, SOTask, MeasProcess>
+    public class SOTaskResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, SOTask, SpectrumOccupationProcess>
     {
-        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SOTask, MeasProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SOTask, SpectrumOccupationProcess> taskContext)
         {
             if (result != null)
             {
@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 SpectrumOcupationResult measResults = null;
                 try
                 {
-                    CalcSpectrumOcupation.Calc(result, taskContext.Task.taskParameters, taskContext.Task.sensorParameters, prevMEasurementResult);
+                    measResults = CalcSpectrumOcupation.Calc(result, taskContext.Task.taskParameters, taskContext.Task.sensorParameters, prevMEasurementResult);
                 }
                 catch (Exception ex)
                 {
