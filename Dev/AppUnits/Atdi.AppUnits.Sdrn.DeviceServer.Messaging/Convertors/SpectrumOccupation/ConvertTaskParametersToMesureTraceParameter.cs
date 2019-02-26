@@ -18,6 +18,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             
             MesureTraceParameter mesureTraceParameter = new MesureTraceParameter();
 
+            mesureTraceParameter.FreqStart_Hz = (decimal)(taskParameters.MinFreq_MHz*1000000 - taskParameters.StepSO_kHz*500);
+            mesureTraceParameter.FreqStop_Hz = (decimal)(taskParameters.MaxFreq_MHz*1000000 + taskParameters.StepSO_kHz * 500);
+            mesureTraceParameter.SweepTime_s = taskParameters.SweepTime_s;
+            mesureTraceParameter.TracePoint = (int)Math.Ceiling((double)(mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz) / (taskParameters.StepSO_kHz * taskParameters.NChenal));
+
+            mesureTraceParameter.TraceType = TraceType.ClearWhrite; // константа для SO
+            mesureTraceParameter.TraceCount = 1; // константа для SO
+            mesureTraceParameter.Att_dB = -1;    // константа для SO
+            mesureTraceParameter.PreAmp_dB = -1; // константа для SO
+            mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для SO
+            mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для SO
+            mesureTraceParameter.VBW_Hz = -1; // константа для SO
+            mesureTraceParameter.RBW_Hz = -1; // константа для SO
             return mesureTraceParameter;
         }
     }
