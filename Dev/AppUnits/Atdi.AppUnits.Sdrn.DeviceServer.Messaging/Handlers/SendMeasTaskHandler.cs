@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.EntityOrm;
 using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
-
+using Atdi.DataModels.Sdrn.DeviceServer;
 
 
 
@@ -22,17 +22,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ILogger _logger;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITaskStarter _taskStarter;
-        private readonly IRepository<DM.MeasTask> _repositoryMeasTask;
-        private readonly IRepository<TaskParameters> _repositoryTaskParameters;
-        private readonly IRepository<DM.Sensor> _repositorySensor;
+        private readonly IRepository<DM.MeasTask,int?> _repositoryMeasTask;
+        private readonly IRepository<TaskParameters, int?> _repositoryTaskParameters;
+        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly ITimeService _timeService;
 
 
 
         public SendMeasTaskHandler(
+           ITimeService timeService,
            IProcessingDispatcher processingDispatcher,
-           IRepository<DM.MeasTask> repositoryMeasTask,
-           IRepository<TaskParameters> repositoryTaskParameters,
-           IRepository<DM.Sensor> repositorySensor,
+           IRepository<DM.MeasTask, int?> repositoryMeasTask,
+           IRepository<TaskParameters, int?> repositoryTaskParameters,
+           IRepository<DM.Sensor, int?> repositorySensor,
            ITaskStarter taskStarter,
            ILogger logger)
         {
@@ -42,6 +44,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             this._repositoryMeasTask = repositoryMeasTask;
             this._repositoryTaskParameters = repositoryTaskParameters;
             this._repositorySensor = repositorySensor;
+            this._timeService = timeService;
         }
 
 
@@ -55,12 +58,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                 {
                     if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                     {
-                        this._logger.Error(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
-                        // Старт процесса MeasProcess
-                        var measProcess = this._processingDispatcher.Start<MeasProcess>();
+                        this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
+                        // Старт процесса MeasProcess-
+                        //var process = this._processingDispatcher.Start<DeviceServerBackgroundProcess>();
+                        var measProcess = this._processingDispatcher.Start<SpectrumOccupationProcess>();
                         // пишем ссылку на входящее сообщение в свойство MeasTask процесса MeasProcess
-                        measProcess.MeasTask = message.Data;
-                        var soTask = new SOTask();
+                        //measProcess.MeasTask = message.Data;
+                        var soTask = new SOTask()
+                        {
+                            TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
+                            //Delay = 5,
+                            Options = TaskExecutionOption.Default,
+                        };
                         var allSensor = this._repositorySensor.LoadAllObjects();
                         if ((allSensor != null) && (allSensor.Length > 0))
                         {
@@ -71,16 +80,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                             }
                         }
 
-                        soTask.taskParameters = measProcess.MeasTask.Convert();
+                        soTask.taskParameters = message.Data.Convert();
                         // форммрование набора параметров для передачи в контроллер и затем в адаптер
                         soTask.mesureTraceParameter = soTask.taskParameters.Convert();
                         // Сохранение объекта MeasTask в БД
-                        var saveMeasTask = this._repositoryMeasTask.Create(message.Data);
+                        //var saveMeasTask = this._repositoryMeasTask.Create(message.Data);
                         // Сохранение объекта SensorParameters в БД
                         var idTaskParameters = this._repositoryTaskParameters.Create(soTask.taskParameters);
                         // запуск таска SOTask на выполнение
                         _taskStarter.RunParallel(soTask, measProcess);
-                        message.Result = MessageHandlingResult.Confirmed;
+
+                        //message.Result = MessageHandlingResult.Confirmed;
                     }
                     else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
                     {

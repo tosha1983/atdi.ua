@@ -14,46 +14,29 @@ using Atdi.Api.Sdrn.Device.BusController;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    class SOTaskWorker : ITaskWorker<SOTask, MeasProcess, PerThreadTaskWorkerLifetime>
+    public class SOTaskWorker : ITaskWorker<SOTask, SpectrumOccupationProcess, SingletonTaskWorkerLifetime>
     {
         private readonly IController _controller;
-        private readonly ILogger _logger;
-        private readonly IBusGateFactory _busGateFactory;
-        private readonly IBusGateConfig _busGateConfig;
         private readonly IBusGate _busGate;
-        private readonly IMessagePublisher _messagePublisher;
+        private readonly IProcessingDispatcher _processingDispatcher;
+        private readonly ITimeService _timeService;
+        private readonly ITaskStarter _taskStarter;
+        private readonly ILogger _logger;
 
-        public SOTaskWorker(ExampleConfig config, IController controller, ILogger logger)
+
+
+        public SOTaskWorker(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger, IBusGate busGate, IController controller)
         {
-            this._controller = controller;
+            this._processingDispatcher = processingDispatcher;
+            this._timeService = timeService;
+            this._taskStarter = taskStarter;
             this._logger = logger;
-            this._busGateFactory = BusGateFactory.Create();
-            this._busGateConfig = _busGateFactory.CreateConfig();
-            SetConfig(config);
-            this._busGate = _busGateFactory.CreateGate("ITaskWorker", this._busGateConfig);
-            this._messagePublisher = this._busGate.CreatePublisher("TaskWorker");
+            this._busGate = busGate;
+            this._controller = controller;
         }
 
-        public void SetConfig(ExampleConfig config)
-        {
-            this._busGateConfig["License.FileName"] = "";
-            this._busGateConfig["License.OwnerId"] = "";
-            this._busGateConfig["License.ProductKey"] = "";
-            this._busGateConfig["RabbitMQ.Host"] = "";
-            this._busGateConfig["RabbitMQ.User"] = "";
-            this._busGateConfig["RabbitMQ.Password"] = "";
-            this._busGateConfig["SDRN.ApiVersion"] = "";
-            this._busGateConfig["SDRN.Server.Instance"] = "";
-            this._busGateConfig["SDRN.Server.QueueNamePart"] = "";
-            this._busGateConfig["SDRN.Device.SensorTechId"] = "";
-            this._busGateConfig["SDRN.Device.Exchange"] = "";
-            this._busGateConfig["SDRN.Device.QueueNamePart"] = "";
-            this._busGateConfig["SDRN.Device.MessagesBindings"] = "";
-            this._busGateConfig["SDRN.MessageConvertor.UseEncryption"] = "";
-            this._busGateConfig["SDRN.MessageConvertor.UseCompression"] = "";
-        }
-
-        public void Run(ITaskContext<SOTask, MeasProcess> context)
+    
+        public void Run(ITaskContext<SOTask, SpectrumOccupationProcess> context)
         {
             try
             {
@@ -72,12 +55,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
+
+                    var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    var timeStamp = this._timeService.TimeStamp.Milliseconds;
                     var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter)
                     {
-                        Options = CommandOption.StartDelayed,
-                        Delay = 1000,
-                        StartTimeStamp = TimeStamp.Milliseconds,
-                        Timeout = (long)TimeSpan.FromSeconds(2).TotalMilliseconds
+                        Options = CommandOption.PutInQueue,
+                        StartTimeStamp = timeStamp,
+                        Timeout = timeStamp + maximumDurationMeas
                     };
 
                     //////////////////////////////////////////////
@@ -85,7 +70,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
                     //
                     //////////////////////////////////////////////
-                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand);
+                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                    (ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                    ) => {
+                        taskContext.SetEvent<ExceptionProcessSO>(new ExceptionProcessSO(failureReason, ex));
+                    });
                     //////////////////////////////////////////////
                     // 
                     // Получение очередного  результат от Result Handler
@@ -93,7 +82,72 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
-                    var result = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation);
+                    DM.MeasResults measResult = null;
+                    //bool isDown = false;
+                    //while (isDown == false)
+
+                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, (int)maximumDurationMeas);
+                    if (isDown == false) // таймут - результатов нет
+                    {
+                        // проверка - не отменили ли задачу
+                        if (context.Token.IsCancellationRequested)
+                        {
+                            // явно нужна логика отмены
+                            context.Cancel();
+                            return;
+                        }
+                        var error = new ExceptionProcessSO();
+                        if (context.WaitEvent<ExceptionProcessSO>(out error, 1) == true)
+                        {
+                            /// реакция на ошибку выполнения команды
+
+                            switch (error._failureReason)
+                            {
+                                case CommandFailureReason.DeviceIsBusy:
+                                case CommandFailureReason.CanceledExecution:
+                                case CommandFailureReason.CanceledBeforeExecution:
+                                    Thread.Sleep((int)maximumDurationMeas);
+                                    break;
+
+                                case CommandFailureReason.NotFoundConvertor:
+                                case CommandFailureReason.Exception:
+                                case CommandFailureReason.NotFoundDevice:
+                                    var durationToRepietMeas = (int)maximumDurationMeas * 1000;
+                                    TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
+
+                                    if (durationToRepietMeas < durationToFinishTask.Milliseconds)
+                                    {
+                                        // здесь необходимо отправить уведомление об ошибке
+                                        context.Finish();
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(durationToRepietMeas);
+                                    }
+                                    break;
+                                case CommandFailureReason.TimeoutExpired:
+
+                                    break;
+
+                                default:
+                                    throw new NotImplementedException($"Type {error._failureReason} not supported");
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        //реакция на принятые результаты измерения
+                        measResult = new DM.MeasResults();
+                        if (outSpectrumOcupation.fSemplesResult != null)
+                        {
+                            measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
+                            measResult.ScansNumber = outSpectrumOcupation.NN;
+                        }
+                        isDown = true;
+
+                    }
+                    
                     // проверка - не отменили ли задачу
                     if (context.Token.IsCancellationRequested)
                     {
@@ -107,8 +161,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //  
                     //////////////////////////////////////////////
                     bool isSendResultToBus = false;
-                    DM.MeasResults measResult = null;
-                    if (context.Task.LastTimeSend!=null)
+                    if ((context.Task.LastTimeSend!=null) && (measResult!=null))
                     {
                         var sub = DateTime.Now.Subtract(context.Task.LastTimeSend.Value);
                         if (sub.TotalHours>1)
@@ -120,11 +173,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 if (outSpectrumOcupation.fSemplesResult != null)
                                 {
-                                    measResult = new DM.MeasResults();
-                                    measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
-                                    measResult.ScansNumber = outSpectrumOcupation.NN;
                                     //Отправка результатов в шину 
-                                    this._messagePublisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                                    var publisher = this._busGate.CreatePublisher("main");
+                                    publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                                    publisher.Dispose();
                                     isSendResultToBus = true;
                                 }
                             }
@@ -151,7 +203,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         //(С проверкой - чтобы не отправляллся дубликат)
                         if ((isSendResultToBus==false) && (measResult!=null))
                         {
-                            this._messagePublisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                            var publisher = this._busGate.CreatePublisher("main");
+                            publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                            publisher.Dispose();
                         }
                         context.Finish();
                         break;
@@ -163,17 +217,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Приостановка потока на рассчитаное время CalculateSleepParameter(context.Task.taskParameters)
                     //
                     //////////////////////////////////////////////
-                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone.Value);
-                    Thread.Sleep(sleepTime);
+                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    if (sleepTime > 0)
+                    {
+                        Thread.Sleep((int)sleepTime);
+                    }
+                    else
+                    {
+                        context.Finish();
+                    }
                 }
-
-                //this._controller.SendCommand<MesureTraceResult>(context, deviceCommand);
-                /// теперь шлем задаче родителю евент
-                //context.Descriptor.Parent.SetEvent(result);
-
-               
                 context.Task.CountMeasurementDone++;
-
             }
             catch (Exception e)
             {
@@ -187,15 +241,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="taskParameters">Параметры таска</param> 
         /// <param name="doneCount">Количество измерений которое было проведено</param>
         /// <returns></returns>
-        private int CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
+        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
         {
             DateTime dateTimeNow = DateTime.Now;
             if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
             TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            int interval_ms = interval.Milliseconds;
-            if (taskParameters.NCount.Value <= DoneCount) { return -1; }
-            int duration = (int)(interval_ms / (taskParameters.NCount.Value - DoneCount));
+            long interval_ms = interval.Milliseconds;
+            if (taskParameters.NCount <= DoneCount) { return -1; }
+            long duration = (interval_ms / (taskParameters.NCount - DoneCount));
             return duration;
         }
+
     }
 }
