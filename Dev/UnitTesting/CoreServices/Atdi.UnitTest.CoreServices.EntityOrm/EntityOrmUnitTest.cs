@@ -211,7 +211,8 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             autonumMetadataCount.Start = 1;
             autonumMetadataCount.Step = 1;
 
-            typeCounter64.Autonum = autonumMetadata;
+
+            typeCounter64.Autonum = autonumMetadataCount;
             typeCounter64.CodeVarClrType = null;
             typeCounter64.CodeVarType = DataType.Long;
             typeCounter64.DataSourceType = DataSourceType.Database;
@@ -246,7 +247,8 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             Dictionary<string, IPrimaryKeyFieldRefMetadata> primaryKeyFieldsRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
             PrimaryKeyFieldRefMetadata primaryKeyFieldRefMetadata = new PrimaryKeyFieldRefMetadata();
             primaryKeyFieldRefMetadata.SortOrder = 0;
-            primaryKeyFieldRefMetadata.Field;
+            primaryKeyFieldRefMetadata.Field = primaryKeyFieldRefMetadata;
+            primaryKeyFieldsRefMetadata.Add("Id", primaryKeyFieldRefMetadata);
             primaryKey.FieldRefs = primaryKeyFieldsRefMetadata;
 
             //expectedEntityMetadata.Fields;

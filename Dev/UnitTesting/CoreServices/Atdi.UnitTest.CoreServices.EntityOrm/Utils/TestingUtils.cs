@@ -18,7 +18,10 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
-            var anotherJson = JsonConvert.SerializeObject(another);
+            var anotherJson = JsonConvert.SerializeObject(another, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
 
             return objJson == anotherJson;
         }
