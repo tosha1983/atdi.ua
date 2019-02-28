@@ -11,15 +11,15 @@ using System.Linq;
 using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
-    public sealed class RepositoryTaskParameters : IRepository<TaskParameters>
+    public sealed class TaskParametersRepository : IRepository<TaskParameters,int?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
 
-        public RepositoryTaskParameters(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public TaskParametersRepository(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
@@ -27,7 +27,7 @@ namespace Atdi.CoreServices.Device.EntityOrm
 
 
 
-        public TaskParameters LoadObject(int id)
+        public TaskParameters LoadObject(int? id)
         {
             throw new NotImplementedException();
         }
@@ -101,7 +101,7 @@ namespace Atdi.CoreServices.Device.EntityOrm
             throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public bool Delete(int? id)
         {
             throw new NotImplementedException();
         }
@@ -111,7 +111,7 @@ namespace Atdi.CoreServices.Device.EntityOrm
             throw new NotImplementedException();
         }
 
-        TaskParameters[] IRepository<TaskParameters>.LoadAllObjects()
+        TaskParameters[] IRepository<TaskParameters, int?>.LoadAllObjects()
         {
             throw new NotImplementedException();
         }
