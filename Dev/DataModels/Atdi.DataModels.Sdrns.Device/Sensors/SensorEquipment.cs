@@ -169,5 +169,24 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public EquipmentSensitivity[] Sensitivities { get; set; }
+
+        /// <summary>
+        /// List with Command that device 
+        /// </summary>
+        [DataMember]
+        public CommandType[] AvailableDeviceCommand;
+
+    }
+    public enum CommandType
+    {
+        MesureGpsLocation,
+        MesureTrace,
+        MesureSysInfo,
+        MesureIQStream,
+        MesureDF,
+        MesureRealTime,
+        MesureSignalParameters,
+        MesureAudio,
+        MesureZeroSpan
     }
 }
