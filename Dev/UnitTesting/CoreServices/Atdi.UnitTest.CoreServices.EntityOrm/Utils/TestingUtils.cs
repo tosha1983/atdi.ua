@@ -14,8 +14,14 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             if ((obj == null) || (another == null)) return false;
             if (obj.GetType() != another.GetType()) return false;
 
-            var objJson = JsonConvert.SerializeObject(obj);
-            var anotherJson = JsonConvert.SerializeObject(another);
+            var objJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            var anotherJson = JsonConvert.SerializeObject(another, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
 
             return objJson == anotherJson;
         }
