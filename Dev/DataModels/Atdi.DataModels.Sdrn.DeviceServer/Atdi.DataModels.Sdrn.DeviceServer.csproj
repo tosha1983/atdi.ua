@@ -41,6 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceProperties\DevicePropertiesBase.cs" />
+    <Compile Include="DeviceProperties\MesureGpsLocationDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureRealTimeDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureZeroSpanDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureAudioDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureSysInfoDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureSignalParametersDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureIQStreamDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\MesureDFDeviceProperties.cs" />
     <Compile Include="DeviceProperties\MesureTraceDeviceProperties.cs" />
     <Compile Include="Enums\CommandFailureReason.cs" />
     <Compile Include="Enums\CommandOption.cs" />
