@@ -10,6 +10,8 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IDevice
     {
+        Guid DeviceId { get; }
+
         DeviceState State { get;  }
 
         bool TryPushCommand(ICommandDescriptor descriptor);
@@ -17,5 +19,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
         bool CheckAbilityToExecute(ICommandDescriptor descriptor);
 
         Type AdapterType { get;  }
+
+        IDeviceProperties EnsureProperties(CommandType commandType);
     }
 }

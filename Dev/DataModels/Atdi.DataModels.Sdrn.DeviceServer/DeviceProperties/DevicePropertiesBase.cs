@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
 {
-    public class DevicePropertiesBase
+    public interface IDeviceProperties
+    {
+        Guid DeviceId { get; set; }
+    }
+
+    public class DevicePropertiesBase : IDeviceProperties
     {
         public decimal FreqMin_Hz;
         public decimal FreqMax_Hz;
@@ -19,6 +24,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         public RadioPathParameters[] RadioPathParameters; // в зависимости от частоты
         public EquipmentInfo EquipmentInfo;
 
+        public Guid DeviceId { get; set; }
     }
     public class RadioPathParameters
     {

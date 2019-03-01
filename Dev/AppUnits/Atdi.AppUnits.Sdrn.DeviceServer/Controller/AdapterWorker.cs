@@ -36,6 +36,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly Dictionary<CommandType, CommandLock> _enumLocks;
         private readonly Dictionary<Type, CommandLock> _typeLocks;
 
+        private readonly Dictionary<CommandType, IDeviceProperties> _properties;
+
         public DeviceState State => _state;
 
         public Type AdapterType => this._adapterType;
@@ -48,13 +50,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._resultsHost = resultsHost;
             this._timeService = timeService;
             this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.DeviceId = Guid.NewGuid();
             this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
             this._buffer = new CommandsBuffer();
             this._commandHandlers = new Dictionary<Type, CommandHandler>();
             this._enumLocks = new Dictionary<CommandType, CommandLock>();
             this._typeLocks = new Dictionary<Type, CommandLock>();
+            this._properties = new Dictionary<CommandType, IDeviceProperties>();
             this._state = DeviceState.Created;
         }
+
+        public Guid DeviceId { get; private set; }
 
         public void Run()
         {
@@ -166,7 +172,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             
         }
 
-        public void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler) where TCommand : new()
+        public void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler, IDeviceProperties deviceProperties = null) 
+            where TCommand : new()
         {
             var commandType = typeof(TCommand);
             if (this._commandHandlers.ContainsKey(commandType))
@@ -188,6 +195,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             }
 
             _commandsHost.Register(this, dummyCommand.Type, commandType);
+
+            if (deviceProperties != null)
+            {
+                if (_properties.ContainsKey(dummyCommand.Type))
+                {
+                    throw new InvalidOperationException("The command handler was previously registered");
+                }
+                deviceProperties.DeviceId = this.DeviceId;
+                _properties.Add(dummyCommand.Type, deviceProperties);
+            }
         }
 
 
@@ -287,6 +304,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._resultsHost.ReleaseBuffer(resultBuffer);
             this._executingCommands.TryRemove(command.Id, out ExecutionContext context);
             _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.FinalizedCommand.With(_adapterType, command.Type, command.ParameterType));
+        }
+
+        public IDeviceProperties EnsureProperties(CommandType commandType)
+        {
+            this._properties.TryGetValue(commandType, out IDeviceProperties deviceProperties);
+            return deviceProperties;
         }
     }
 }
