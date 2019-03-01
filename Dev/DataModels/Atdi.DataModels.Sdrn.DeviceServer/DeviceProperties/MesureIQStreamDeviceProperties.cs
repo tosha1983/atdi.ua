@@ -9,6 +9,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
     public class MesureIQStreamDeviceProperties:DevicePropertiesBase
     {
         public double BitRateMax_MBs; 
-        public bool AvailabilityPPS; 
+        public bool AvailabilityPPS;
+        public StandardDeviceProperties standartDeviceProperties;
     }
 }

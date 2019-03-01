@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
 {
-    public class MesureSignalParametersDeviceProperties
+    public class MesureSignalParametersDeviceProperties: DevicePropertiesBase
     {
     }
 }

@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         public double RBWMin_Hz; 
         public double RBWMax_Hz; 
         public double SweepTimeMin_s; 
-        public double SweepTimeMax_s; 
+        public double SweepTimeMax_s;
+        public StandardDeviceProperties StandardDeviceProperties;
     }
 }
