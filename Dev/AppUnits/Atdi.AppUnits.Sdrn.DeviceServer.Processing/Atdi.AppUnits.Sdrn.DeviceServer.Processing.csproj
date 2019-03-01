@@ -42,7 +42,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="AutoTaskWorkerSensorRegister.cs" />
+    <Compile Include="DispatcherWorker.cs" />
+    <Compile Include="EventProcessing\DeferredTaskWorker.cs" />
+    <Compile Include="EventProcessing\DeviceCommandTaskWorker.cs" />
+    <Compile Include="ConfigProcessing.cs" />
+    <Compile Include="GPS\GPSWorker.cs" />
+    <Compile Include="ProcessingTasksFromDB\ProcessingTaskFromDBWorker.cs" />
+    <Compile Include="EventProcessing\EventTaskWorker.cs" />
+    <Compile Include="EventProcessing\QueueEventTaskWorker.cs" />
+    <Compile Include="RegistrationSensor\SendRegistrationResultTaskWorker.cs" />
+    <Compile Include="RegistrationSensor\RegisterSensorTaskWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
@@ -51,9 +60,21 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
+      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
+      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer.GPS\Atdi.Contracts.Sdrn.DeviceServer.GPS.csproj">
+      <Project>{ce03f53a-3f61-4cf8-b329-d00ee4a8fc2b}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeviceServer.GPS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
       <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
+      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
+      <Name>Atdi.DataModels.EntityOrm</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
       <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
@@ -70,6 +91,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>

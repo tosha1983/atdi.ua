@@ -586,7 +586,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        updateSensor.Status = "ERROR";
+                        updateSensor.Status = "Error";
                         updateSensor.Message = "Something went wrong on the server";
                     }
                     else if (sensorUpdate)
@@ -596,7 +596,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        updateSensor.Status = "ERROR";
+                        updateSensor.Status = "Error";
                         updateSensor.Message = "Something went wrong on the server during the updating of a new sensor";
                     }
 

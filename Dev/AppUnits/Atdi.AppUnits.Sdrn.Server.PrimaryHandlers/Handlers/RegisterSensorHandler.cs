@@ -339,12 +339,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        registrationResult.Status = "ERROR";
+                        registrationResult.Status = "Error";
                         registrationResult.Message = "Something went wrong on the server";
                     }
                     else if (sensorExistsInDb)
                     {
-                        registrationResult.Status = "REJECT";
+                        registrationResult.Status = "Reject";
                         registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}", incomingEnvelope.DeliveryObject.Name, incomingEnvelope.DeliveryObject.Equipment.TechId);
                     }
                     else if (sensorRegistration)
@@ -354,7 +354,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        registrationResult.Status = "ERROR";
+                        registrationResult.Status = "Error";
                         registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
                     }
 

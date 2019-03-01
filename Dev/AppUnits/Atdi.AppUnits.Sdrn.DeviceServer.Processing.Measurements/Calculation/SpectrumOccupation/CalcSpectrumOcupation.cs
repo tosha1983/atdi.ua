@@ -14,7 +14,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSpectrumOcupation
     { 
-        public static SpectrumOcupationResult Calc(MesureTraceResult result, TaskParameters taskParameters, SensorParameters sensorParameters = null, LastResultParameters lastResultParameters = null)
+        public static SpectrumOcupationResult Calc(MesureTraceResult result, TaskParameters taskParameters, SensorParameters sensorParameters = null, SpectrumOcupationResult lastResultParameters = null)
         {
             var spectrumOcupationResult = new SpectrumOcupationResult();
             if ((taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) || (taskParameters.Type_of_SO == SOType.FreqChannelOccupation))
@@ -76,21 +76,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else
                     {
-                        for (int i = 0; i < lastResultParameters.FSemples.Length; i++)
+                        for (int i = 0; i < lastResultParameters.fSemplesResult.Length; i++)
                         {
                             SemplFreq Semple = new SemplFreq();
-                            Semple.Freq = lastResultParameters.FSemples[i].Freq;
-                            Semple.LeveldBm = (float)(10 * Math.Log10(((lastResultParameters.NN * Math.Pow(10, lastResultParameters.FSemples[i].LeveldBm / 10) + Math.Pow(10, F_ch_res_temp[i].LeveldBm / 10)) / (lastResultParameters.NN + 1)))); // изменение 19.01.2018 Максим
-                            Semple.OcupationPt = ((lastResultParameters.NN * lastResultParameters.FSemples[i].OcupationPt + F_ch_res_temp[i].OcupationPt) / ((lastResultParameters.NN + 1)));
-                            if (lastResultParameters.FSemples[i].LevelMaxdBm < F_ch_res_temp[i].LevelMaxdBm) { Semple.LevelMaxdBm = F_ch_res_temp[i].LevelMaxdBm; } else { Semple.LevelMaxdBm = lastResultParameters.FSemples[i].LevelMaxdBm; }
-                            if (lastResultParameters.FSemples[i].LevelMindBm > F_ch_res_temp[i].LevelMindBm) { Semple.LevelMindBm = F_ch_res_temp[i].LevelMindBm; } else { Semple.LevelMindBm = lastResultParameters.FSemples[i].LevelMindBm; }
+                            Semple.Freq = lastResultParameters.fSemplesResult[i].Freq;
+                            Semple.LeveldBm = (float)(10 * Math.Log10(((lastResultParameters.NN * Math.Pow(10, lastResultParameters.fSemplesResult[i].LeveldBm / 10) + Math.Pow(10, F_ch_res_temp[i].LeveldBm / 10)) / (lastResultParameters.NN + 1)))); // изменение 19.01.2018 Максим
+                            Semple.OcupationPt = ((lastResultParameters.NN * lastResultParameters.fSemplesResult[i].OcupationPt + F_ch_res_temp[i].OcupationPt) / ((lastResultParameters.NN + 1)));
+                            if (lastResultParameters.fSemplesResult[i].LevelMaxdBm < F_ch_res_temp[i].LevelMaxdBm) { Semple.LevelMaxdBm = F_ch_res_temp[i].LevelMaxdBm; } else { Semple.LevelMaxdBm = lastResultParameters.fSemplesResult[i].LevelMaxdBm; }
+                            if (lastResultParameters.fSemplesResult[i].LevelMindBm > F_ch_res_temp[i].LevelMindBm) { Semple.LevelMindBm = F_ch_res_temp[i].LevelMindBm; } else { Semple.LevelMindBm = lastResultParameters.fSemplesResult[i].LevelMindBm; }
                             F_ch_res_[i] = Semple;
                         }
                     }
                 }
                 else
                 {
-                    lastResultParameters = new LastResultParameters();
+                    lastResultParameters = new SpectrumOcupationResult();
                     lastResultParameters.NN = 0;
                 }
                 // в данной точке результат находится в переменой F_ch_res и в count мы его должны показать/запомнить.  

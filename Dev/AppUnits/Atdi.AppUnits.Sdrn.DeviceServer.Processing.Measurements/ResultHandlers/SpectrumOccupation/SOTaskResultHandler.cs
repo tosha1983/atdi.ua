@@ -19,23 +19,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (result != null)
             {
-                // Получение предыдущего результата вычисления SO по даному task
-                var prevMEasurementResult = taskContext.Task.lastResultParameters;
-                // Вычисление Spectrum Occupation
                 SpectrumOcupationResult measResults = null;
                 try
                 {
-                    measResults = CalcSpectrumOcupation.Calc(result, taskContext.Task.taskParameters, taskContext.Task.sensorParameters, prevMEasurementResult);
+                    measResults = CalcSpectrumOcupation.Calc(result, taskContext.Task.taskParameters, taskContext.Task.sensorParameters, taskContext.Task.lastResultParameters);
+                    // Обновление последнего результата в буфере (кеше)
+                    taskContext.Task.lastResultParameters = measResults;  //new  SpectrumOcupationResult() { fSemplesResult = measResults.fSemplesResult, NN = measResults.NN };
+                    // Отправка результата в Task Handler
+                    taskContext.SetEvent(measResults);
                 }
                 catch (Exception ex)
                 {
                     taskContext.SetEvent<ExceptionProcessSO>(new ExceptionProcessSO(CommandFailureReason.Exception, ex));
                 }
-                // Обновление последнего результата в буфере (кеше)
-                taskContext.Task.lastResultParameters = new LastResultParameters() { APIversion = 2, FSemples = measResults.fSemplesResult, NN = measResults.NN };
-
-                // Отправка результата в Task Handler
-                taskContext.SetEvent(measResults);
             }
         }
     }

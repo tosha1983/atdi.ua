@@ -40,11 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExampleConfig.cs" />
     <Compile Include="SensorsRepository.cs" />
     <Compile Include="RepositoryComponent.cs" />
     <Compile Include="MeasTaskRepository.cs" />
-    <Compile Include="TaskParametersRepository.cs" />
+    <Compile Include="TaskParametersByStringRepository.cs" />
+    <Compile Include="TaskParametersByIntRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

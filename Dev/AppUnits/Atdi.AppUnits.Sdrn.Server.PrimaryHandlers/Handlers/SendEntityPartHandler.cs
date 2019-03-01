@@ -87,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     else if (valIns>0)
                     {
@@ -95,7 +95,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
                     envelop.SensorName = incomingEnvelope.SensorName;

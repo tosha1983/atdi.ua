@@ -62,6 +62,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             
             if (taskSDR.SOParam != null)
             {
+                if ((taskSDR.DeviceParam.MeasTime_sec == null) || (taskSDR.Interval_sec == 0) || ((taskSDR.DeviceParam.MeasTime_sec != null) && (taskSDR.DeviceParam.MeasTime_sec == 0)))
+                {
+                    taskParameters.NCount = 10000;
+                }
+                else
+                {
+                    taskParameters.NCount = (int)((double)taskSDR.Interval_sec / (double)taskSDR.DeviceParam.MeasTime_sec);
+                }
                 var sOtype = GetSOTypeFromSpectrumOccupationType(taskSDR.SOParam.Type);
                 if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                 {

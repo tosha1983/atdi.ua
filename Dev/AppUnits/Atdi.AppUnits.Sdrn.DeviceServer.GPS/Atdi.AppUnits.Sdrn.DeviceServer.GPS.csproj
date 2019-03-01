@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{02B46618-04E2-4BC7-B8AD-533338854228}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.GPS</RootNamespace>
+    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer.GPS</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppServerComponent.cs" />
+    <Compile Include="RunGPS.cs" />
+    <Compile Include="ConfigGPS.cs" />
+    <Compile Include="GNSSReceiverWrapper.cs" />
+    <Compile Include="NMEAParser.cs" />
+    <Compile Include="NMEAParserTest.cs" />
+    <Compile Include="NMEAPort.cs" />
+    <Compile Include="NMEAProprietarySentence.cs" />
+    <Compile Include="NMEAProprietarySentese.cs" />
+    <Compile Include="NMEASentence.cs" />
+    <Compile Include="NMEASentense.cs" />
+    <Compile Include="NMEASerialPort.cs" />
+    <Compile Include="NMEAStandartSentence.cs" />
+    <Compile Include="NMEAStandartSentese.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerialPortSettings.cs" />
+    <Compile Include="SettingsContainer.cs" />
+    <Compile Include="SettingsProvider.cs" />
+    <Compile Include="SettingsProviderXML.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="StrUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer.GPS\Atdi.Contracts.Sdrn.DeviceServer.GPS.csproj">
+      <Project>{ce03f53a-3f61-4cf8-b329-d00ee4a8fc2b}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeviceServer.GPS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
+      <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
+      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
+      <Name>Atdi.AppUnits</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

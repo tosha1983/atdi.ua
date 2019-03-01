@@ -47,13 +47,10 @@
     <Compile Include="ExampleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultHandlers\SpectrumOccupation\SOTaskResultHandler.cs" />
+    <Compile Include="Specification.cs" />
     <Compile Include="TaskWorkers\SpectrumOccupation\SOTaskWorker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
-      <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
-      <Name>Atdi.Api.Sdrn.Device.BusController</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>

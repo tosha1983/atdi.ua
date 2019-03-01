@@ -19,118 +19,18 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
-    [SubscriptionEvent(EventName = "OnNewMeasTaskEvent", SubscriberName = "SubscriberMeasTaskProcess")]
-    [SubscriptionEvent(EventName = "OnDelMeasTaskEvent", SubscriberName = "SubscriberMeasTaskProcess")]
-    [SubscriptionEvent(EventName = "OnStopMeasTaskEvent", SubscriberName = "SubscriberMeasTaskProcess")]
-    [SubscriptionEvent(EventName = "OnRunMeasTaskEvent", SubscriberName = "SubscriberMeasTaskProcess")]
-    public class OnCreateMeasTaskProcess : IEventSubscriber<Event>
+
+    public class LoadMeasTask
     {
         private readonly ILogger _logger;
-        private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
-        private readonly ISdrnServerEnvironment _environment;
 
-        public OnCreateMeasTaskProcess(ISdrnMessagePublisher messagePublisher, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger)
+        public LoadMeasTask(IDataLayer<EntityDataOrm> dataLayer,  ILogger logger)
         {
             this._logger = logger;
-            this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
-            this._environment = environment;
         }
 
-        public void Notify(Event @event)
-        {
-            using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))
-            {
-                if (@event.Name == "OnNewMeasTaskEvent")
-                {
-                    int? idTask = null;
-                    string sensorName = null;
-                    string sensorTechId = null;
-                    if (@event.Source!=null)
-                    {
-                        string[] words =  @event.Source.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                        if ((words != null) && (words.Length == 3))
-                        {
-                            idTask = int.Parse(words[0]);
-                            sensorName = words[1];
-                            sensorTechId = words[2];
-                            if ((idTask != null) && (sensorName != null) && (sensorTechId != null))
-                            {
-                                var loadTask = ReadTask(idTask.Value);
-                                var listMeasTask = CreateeasTaskSDRsApi(loadTask, this._environment.ServerInstance, sensorName, sensorTechId, idTask.Value, "New");
-                                foreach (var item in listMeasTask)
-                                {
-                                    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
-                                    envelop.SensorName = sensorName;
-                                    envelop.SensorTechId = sensorTechId;
-                                    envelop.DeliveryObject = item;
-                                    _messagePublisher.Send(envelop);
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (@event.Name == "OnStopMeasTaskEvent")
-                {
-                    int? idTask = null;
-                    string sensorName = null;
-                    string sensorTechId = null;
-                    if (@event.Source != null)
-                    {
-                        string[] words = @event.Source.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                        if ((words != null) && (words.Length == 3))
-                        {
-                            idTask = int.Parse(words[0]);
-                            sensorName = words[1];
-                            sensorTechId = words[2];
-                            if ((idTask != null) && (sensorName != null) && (sensorTechId != null))
-                            {
-                                var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DEV.DeviceCommand>();
-                                envelop.SensorName = sensorName;
-                                envelop.SensorTechId = sensorTechId;
-                                envelop.DeliveryObject = new DEV.DeviceCommand();
-                                envelop.DeliveryObject.Command = "StopMeasTask";
-                                envelop.DeliveryObject.SensorName = sensorName;
-                                envelop.DeliveryObject.SdrnServer = this._environment.ServerInstance;
-                                envelop.DeliveryObject.EquipmentTechId = sensorTechId;
-                                envelop.DeliveryObject.CustNbr1 = idTask; 
-                                _messagePublisher.Send(envelop);
-                            }
-                        }
-                    }
-                }
-                else if (@event.Name == "OnRunMeasTaskEvent")
-                {
-                    int? idTask = null;
-                    string sensorName = null;
-                    string sensorTechId = null;
-                    if (@event.Source != null)
-                    {
-                        string[] words = @event.Source.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                        if ((words != null) && (words.Length == 3))
-                        {
-                            idTask = int.Parse(words[0]);
-                            sensorName = words[1];
-                            sensorTechId = words[2];
-                            if ((idTask != null) && (sensorName != null) && (sensorTechId != null))
-                            {
-                                var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DEV.DeviceCommand>();
-                                envelop.SensorName = sensorName;
-                                envelop.SensorTechId = sensorTechId;
-                                envelop.DeliveryObject = new DEV.DeviceCommand();
-                                envelop.DeliveryObject.Command = "RunMeasTask";
-                                envelop.DeliveryObject.SensorName = sensorName;
-                                envelop.DeliveryObject.SdrnServer = this._environment.ServerInstance;
-                                envelop.DeliveryObject.EquipmentTechId = sensorTechId;
-                                envelop.DeliveryObject.CustNbr1 = idTask; 
-                                _messagePublisher.Send(envelop);
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         public MeasTask ReadTask(int id)
         {
@@ -963,3 +863,4 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         }
     }
 }
+
