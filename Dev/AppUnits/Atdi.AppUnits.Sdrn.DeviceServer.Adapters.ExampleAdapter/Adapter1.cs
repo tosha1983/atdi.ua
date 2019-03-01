@@ -28,6 +28,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
         {
             this._logger.Debug(Contexts.Adapter1, Categories.Connect, Events.Call);
 
+            var propertiers = new MesureDFDeviceProperties
+            {
+                
+            };
+
             host.RegisterHandler<Test1Command, Adapter1Result>(this.TestCommand1Handler);
         }
 
