@@ -10,8 +10,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 {
     public class AdapterConfig
     {
-        private readonly static string Prop1Name = "Prop1";
-        private readonly static string Prop2Name = "Prop2";
+        private readonly static string IPAddressName = "IPAddress";
+        private readonly static string DisplayUpdateName = "DisplayUpdate";
         private readonly static string Prop3Name = "Prop3";
         private readonly static string Prop4Name = "Prop4";
         private readonly static string Prop5Name = "Prop5";
@@ -27,8 +27,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         {
             try
             {
-                this.Prop1 = config.GetParameterAsInteger(AdapterConfig.Prop1Name);
-                this.Prop2 = config.GetParameterAsInteger(AdapterConfig.Prop2Name);
+                this.IPAddress = config.GetParameterAsString(AdapterConfig.IPAddressName);
+                this.DisplayUpdate = config.GetParameterAsBoolean(AdapterConfig.DisplayUpdateName);
                 this.Prop3 = config.GetParameterAsInteger(AdapterConfig.Prop3Name);
                 this.Prop4 = config.GetParameterAsInteger(AdapterConfig.Prop4Name);
                 this.Prop5 = config.GetParameterAsInteger(AdapterConfig.Prop5Name);
@@ -40,9 +40,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             }
         }
 
-        public int? Prop1 { get; set;}
+        public string IPAddress { get; set;}
 
-        public int? Prop2 { get; set; }
+        public bool DisplayUpdate { get; set; }
 
         public int? Prop3 { get; set; }
 

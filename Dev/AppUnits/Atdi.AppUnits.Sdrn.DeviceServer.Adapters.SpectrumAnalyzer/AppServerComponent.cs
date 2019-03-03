@@ -11,7 +11,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
     {
 
         public AppServerComponent() 
-            : base("SdrnDeviceServerExampleAdapterAppUnit")
+            : base("SdrnDeviceServerSpectrumAnalyzerAdapterAppUnit")
         {
             
         }
