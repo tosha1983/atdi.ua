@@ -322,11 +322,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         builderInsertResStGeneral.SetValue(c => c.DurationMeas, generalResult.MeasDuration_sec);
                                         if (generalResult.BandwidthResult != null)
                                         {
-                                            builderInsertResStGeneral.SetValue(c => c.MarkerIndex, generalResult.BandwidthResult.MarkerIndex);
-                                            builderInsertResStGeneral.SetValue(c => c.T1, generalResult.BandwidthResult.T1);
-                                            builderInsertResStGeneral.SetValue(c => c.T2, generalResult.BandwidthResult.T2);
-                                            builderInsertResStGeneral.SetValue(c => c.TraceCount, generalResult.BandwidthResult.TraceCount);
-                                            builderInsertResStGeneral.SetValue(c => c.Correctnessestim, generalResult.BandwidthResult.СorrectnessEstimations);
+                                            var bandwidthResult = generalResult.BandwidthResult;
+                                            builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
+                                            builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
+                                            builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
+                                            builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
+                                            builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations);
                                         }
                                         builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
                                         builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
@@ -502,12 +503,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                                         if (station.GeneralResult != null)
                                                         {
-                                                            builderInsertResStLevelCar.SetValue(c => c.Rbw, station.GeneralResult.RBW_kHz);
-                                                            builderInsertResStLevelCar.SetValue(c => c.Vbw, station.GeneralResult.VBW_kHz);
-                                                            builderInsertResStLevelCar.SetValue(c => c.CentralFrequency, station.GeneralResult.CentralFrequency_MHz);
-                                                            if (station.GeneralResult.BandwidthResult != null)
+                                                            var generalResults = station.GeneralResult;
+
+                                                            builderInsertResStLevelCar.SetValue(c => c.Rbw, generalResults.RBW_kHz);
+                                                            builderInsertResStLevelCar.SetValue(c => c.Vbw, generalResults.VBW_kHz);
+                                                            builderInsertResStLevelCar.SetValue(c => c.CentralFrequency, generalResults.CentralFrequency_MHz);
+                                                            if (generalResults.BandwidthResult != null)
                                                             {
-                                                                 builderInsertResStLevelCar.SetValue(c => c.Bw, station.GeneralResult.BandwidthResult.Bandwidth_kHz);
+                                                                 builderInsertResStLevelCar.SetValue(c => c.Bw, generalResults.BandwidthResult.Bandwidth_kHz);
                                                             }
                                                         }
                                                         builderInsertResStLevelCar.SetValue(c => c.ResStationId, valInsResMeasStation);

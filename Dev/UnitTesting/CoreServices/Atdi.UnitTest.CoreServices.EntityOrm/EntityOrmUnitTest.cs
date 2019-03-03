@@ -192,7 +192,8 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
         {
             //Used data types
             DataTypeMetadata typeDecimal_22_8 = new DataTypeMetadata();
-            typeDecimal_22_8.Autonum = null;
+            var autonumMetadata = new AutonumMetadata();
+            typeDecimal_22_8.Autonum = autonumMetadata;
             typeDecimal_22_8.CodeVarClrType = null;
             typeDecimal_22_8.CodeVarType = DataType.Decimal;
             typeDecimal_22_8.DataSourceType = DataSourceType.Database;
@@ -206,13 +207,14 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             typeDecimal_22_8.SourceVarType = DataSourceVarType.DECIMAL;
             //
             DataTypeMetadata typeCounter64 = new DataTypeMetadata();
-            var autonumMetadata = new AutonumMetadata();
-            autonumMetadata.Start = 1;
-            autonumMetadata.Step = 1;
+            var autonumMetadataCount = new AutonumMetadata();
+            autonumMetadataCount.Start = 1;
+            autonumMetadataCount.Step = 1;
 
-            typeCounter64.Autonum = autonumMetadata;
+
+            typeCounter64.Autonum = autonumMetadataCount;
             typeCounter64.CodeVarClrType = null;
-            typeCounter64.CodeVarType = DataType.Integer;
+            typeCounter64.CodeVarType = DataType.Long;
             typeCounter64.DataSourceType = DataSourceType.Database;
 
             typeCounter64.Length = null;
@@ -223,9 +225,10 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             typeCounter64.Scale = null;
             typeCounter64.SourceVarType = DataSourceVarType.INT64;
             
-            //
+            //expected entity metadata initialization
             EntityMetadata expectedEntityMetadata = new EntityMetadata();
 
+            expectedEntityMetadata.Inheritance = 0;
             expectedEntityMetadata.Name = "SectorMaskElement";
             expectedEntityMetadata.Title = "SectorMaskElement";
             expectedEntityMetadata.Desc = "The SectorMaskElement";
@@ -236,6 +239,17 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             entityMetadataDataSource.Object = DataSourceObject.Table;
             entityMetadataDataSource.Name = "XBS_SECTORMASKELEM";
             entityMetadataDataSource.Schema = "ICSM";
+
+
+            PrimaryKeyMetadata primaryKey = new PrimaryKeyMetadata();
+            primaryKey.Clustered = true;
+
+            Dictionary<string, IPrimaryKeyFieldRefMetadata> primaryKeyFieldsRefMetadata = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+            PrimaryKeyFieldRefMetadata primaryKeyFieldRefMetadata = new PrimaryKeyFieldRefMetadata();
+            primaryKeyFieldRefMetadata.SortOrder = 0;
+            primaryKeyFieldRefMetadata.Field = primaryKeyFieldRefMetadata;
+            primaryKeyFieldsRefMetadata.Add("Id", primaryKeyFieldRefMetadata);
+            primaryKey.FieldRefs = primaryKeyFieldsRefMetadata;
 
             //expectedEntityMetadata.Fields;
             Dictionary<String, IFieldMetadata> entityMetadataFields = new Dictionary<string, IFieldMetadata>();
@@ -268,11 +282,12 @@ namespace Atdi.UnitTest.CoreServices.EntityOrm
             fieldLevelMetadata.Required = false;
 
             entityMetadataFields.Add("Id", fieldIdMetadata);
-            entityMetadataFields.Add("Bw", fieldBwMetadata);
             entityMetadataFields.Add("Level", fieldLevelMetadata);
+            entityMetadataFields.Add("Bw", fieldBwMetadata);
             //initialize all objects
             expectedEntityMetadata.Fields = entityMetadataFields;
-
+            expectedEntityMetadata.DataSource = entityMetadataDataSource;
+            expectedEntityMetadata.PrimaryKey = primaryKey;
 
             IEntityMetadata actualEntityMetadata = orm.GetEntityMetadata("SectorMaskElement");
             bool testAssert = TestingUtils.JsonCompare(actualEntityMetadata, expectedEntityMetadata);

@@ -14,12 +14,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
     public class DevicesController : IController
     {
+        private readonly IDevicesHost _devicesHost;
         private readonly IDeviceSelector _deviceSelector;
         private readonly ITimeService _timeService;
         private readonly ILogger _logger;
 
-        public DevicesController(IDeviceSelector deviceSelector, ITimeService timeService, ILogger logger)
+        public DevicesController(IDevicesHost devicesHost, IDeviceSelector deviceSelector, ITimeService timeService, ILogger logger)
         {
+            this._devicesHost = devicesHost;
             this._deviceSelector = deviceSelector;
             this._timeService = timeService;
             this._logger = logger;
@@ -28,6 +30,54 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         public void Dispose()
         {
             
+        }
+
+        public TProperties[] EnsureDevicesProperties<TProperties>(CommandType commandType) where TProperties : IDeviceProperties, new()
+        {
+            var result = new List<TProperties>();
+            var devices = this._devicesHost.GetDevices();
+
+            for (int i = 0; i < devices.Length; i++)
+            {
+                var device = devices[i];
+                var deviceProperties = device.EnsureProperties(commandType);
+                if (deviceProperties != null)
+                {
+                    result.Add((TProperties)deviceProperties);
+                }
+            }
+            return result.ToArray();
+        }
+
+        public IReadOnlyDictionary<CommandType, IDeviceProperties[]> GetDevicesProperties()
+        {
+            var data = new Dictionary<CommandType, List<IDeviceProperties>>();
+            var devices = this._devicesHost.GetDevices();
+
+            for (int i = 0; i < devices.Length; i++)
+            {
+                var device = devices[i];
+                var commandTypeEnums = Enum.GetValues(typeof(CommandType));
+
+                for (int j = 0; j < commandTypeEnums.Length; j++)
+                {
+                    var commandType = (CommandType)commandTypeEnums.GetValue(j);
+
+                    if (!data.TryGetValue(commandType, out List<IDeviceProperties> list))
+                    {
+                        list = new List<IDeviceProperties>();
+                        data.Add(commandType, list);
+                    }
+
+                    var deviceProperties = device.EnsureProperties(commandType);
+                    if (deviceProperties != null)
+                    {
+                        list.Add(deviceProperties);
+                    }
+                }
+            }
+
+            return data.ToDictionary(k => k.Key, v => v.Value.ToArray());
         }
 
         public void SendCommand<TResult>(ITaskContext taskContext, ICommand command, CancellationToken cancellationToken, ControllerFailureAction onFailureAction)

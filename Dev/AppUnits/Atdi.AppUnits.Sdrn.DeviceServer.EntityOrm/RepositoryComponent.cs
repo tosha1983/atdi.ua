@@ -12,7 +12,7 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
     public sealed class RepositoryComponent : ComponentBase
     {
@@ -26,9 +26,9 @@ namespace Atdi.CoreServices.Device.EntityOrm
 
         protected override void OnInstall()
         {
-            this.Container.Register<IRepository<Sensor>, RepositorySensors>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IRepository<MeasTask>, RepositoryMeasTask>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IRepository<TaskParameters>, RepositoryTaskParameters> (Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<Sensor, int?>, SensorsRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<MeasTask, int?>, MeasTaskRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<TaskParameters, int?>, TaskParametersRepository> (Platform.DependencyInjection.ServiceLifetime.Singleton);
         }
     }
 }

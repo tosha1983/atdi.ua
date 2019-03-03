@@ -13,15 +13,15 @@ using Atdi.DataModels.Sdrns.Device;
 
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
-    public sealed class RepositoryMeasTask : IRepository<MeasTask>
+    public sealed class MeasTaskRepository : IRepository<MeasTask, int?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
 
-        public RepositoryMeasTask(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public MeasTaskRepository(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
@@ -275,13 +275,13 @@ namespace Atdi.CoreServices.Device.EntityOrm
             throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public bool Delete(int? id)
         {
             throw new NotImplementedException();
         }
   
 
-        MeasTask IRepository<MeasTask>.LoadObject(int id)
+        MeasTask IRepository<MeasTask,int?>.LoadObject(int? id)
         {
             throw new NotImplementedException();
         }

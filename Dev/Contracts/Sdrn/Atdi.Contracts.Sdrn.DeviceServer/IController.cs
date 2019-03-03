@@ -13,6 +13,12 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
     public interface IController : IDisposable
     {
         void SendCommand<TResult>(ITaskContext taskContext, ICommand command, CancellationToken cancellationToken, ControllerFailureAction onFailureAction);
+
+        TProperties[] EnsureDevicesProperties<TProperties>(CommandType commandType)
+            where TProperties : IDeviceProperties, new();
+
+        IReadOnlyDictionary<CommandType, IDeviceProperties[]> GetDevicesProperties();
+            
     }
 
     public static class ControllerExtensions

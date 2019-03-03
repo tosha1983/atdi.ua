@@ -14,15 +14,15 @@ using Atdi.DataModels;
 using Atdi.DataModels.DataConstraint;
 
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 { 
-    public sealed class RepositorySensors : IRepository<Sensor>
+    public sealed class SensorsRepository : IRepository<Sensor,int?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
 
-        public RepositorySensors(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public SensorsRepository(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
@@ -33,7 +33,7 @@ namespace Atdi.CoreServices.Device.EntityOrm
             throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public bool Delete(int? id)
         {
             throw new NotImplementedException();
         }
@@ -45,7 +45,7 @@ namespace Atdi.CoreServices.Device.EntityOrm
 
 
      
-        public Sensor LoadObject(int id)
+        public Sensor LoadObject(int? id)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace Atdi.CoreServices.Device.EntityOrm
             throw new NotImplementedException();
         }
 
-        Sensor[] IRepository<Sensor>.LoadAllObjects()
+        Sensor[] IRepository<Sensor,int?>.LoadAllObjects()
         {
             var listSensors = new List<Sensor>();
             var val = new Sensor();

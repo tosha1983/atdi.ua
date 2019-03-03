@@ -16,8 +16,8 @@
     <Field Desc="Altitude" Title="Altitude" Name="Altitude" DataType="Decimal.22.8" SourceName="ALTITUDE" SourceType="Column" Required="false"/>
     <Field Desc="CentralFrequency" Title="CentralFrequency" Name="CentralFrequency" DataType="Decimal.22.8" SourceName="CENTRALFREQUENCY" SourceType="Column" Required="false"/>
     <Field Desc="DifferenceTimeStamp" Title="DifferenceTimeStamp" Name="DifferenceTimeStamp" DataType="Decimal.22.8" SourceName="DIFFERENCETIMESTAMP" SourceType="Column" Required="false"/>
-    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC.xml"/>
-    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC.xml"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
     <Field Desc="LevelDbm" Title="LevelDbm" Name="LevelDbm" DataType="Decimal.22.8" SourceName="LEVELDBM" SourceType="Column" Required="false"/>
     <Field Desc="LevelDbmkvm" Title="LevelDbmkvm" Name="LevelDbmkvm" DataType="Decimal.22.8" SourceName="LEVELDBMKVM" SourceType="Column" Required="false"/>
     <Field Desc="Rbw" Title="Rbw" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false"/>

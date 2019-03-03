@@ -17,15 +17,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             FrequencySample[] fSemples = new FrequencySample[semplFreqs.Length];
             for (int i = 0; i < semplFreqs.Length; i++)
             {
-                fSemples[i] = new FrequencySample
+                if (semplFreqs[i] != null)
                 {
-                    Freq_MHz = semplFreqs[i].Freq,
-                    Level_dBm = semplFreqs[i].LeveldBm,
-                    Level_dBmkVm = semplFreqs[i].LeveldBmkVm,
-                    LevelMax_dBm = semplFreqs[i].LevelMaxdBm,
-                    LevelMin_dBm = semplFreqs[i].LevelMindBm,
-                    Occupation_Pt = semplFreqs[i].OcupationPt
-                };
+                    fSemples[i] = new FrequencySample
+                    {
+                        Freq_MHz = semplFreqs[i].Freq,
+                        Level_dBm = semplFreqs[i].LeveldBm,
+                        Level_dBmkVm = semplFreqs[i].LeveldBmkVm,
+                        LevelMax_dBm = semplFreqs[i].LevelMaxdBm,
+                        LevelMin_dBm = semplFreqs[i].LevelMindBm,
+                        Occupation_Pt = semplFreqs[i].OcupationPt
+                    };
+                }
             }
             return fSemples;
         }
