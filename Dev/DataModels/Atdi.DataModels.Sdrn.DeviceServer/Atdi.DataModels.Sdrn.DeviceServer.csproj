@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceProperties\StandardDeviceProperties.cs" />
     <Compile Include="DeviceProperties\DevicePropertiesBase.cs" />
     <Compile Include="DeviceProperties\MesureGpsLocationDeviceProperties.cs" />
     <Compile Include="DeviceProperties\MesureRealTimeDeviceProperties.cs" />
