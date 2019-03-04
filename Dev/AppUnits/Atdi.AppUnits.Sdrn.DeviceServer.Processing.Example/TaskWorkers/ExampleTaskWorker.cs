@@ -35,12 +35,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
                 return;
 
 
-                while(!context.Token.IsCancellationRequested)
-                {
-                    Thread.Sleep(100);
-                }
+                //while(!context.Token.IsCancellationRequested)
+                //{
+                //    Thread.Sleep(100);
+                //}
 
-                var t = 2;
+                //var t = 2;
                 //var deviceCommand = new MesureTraceCommand()
                 //{
                 //    Options = CommandOption.StartDelayed,
@@ -72,7 +72,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
 
                 ///// теперь шлем задаче родителю евент
                 //context.Descriptor.Parent.SetEvent(result);
-                context.Finish();
+                //context.Finish();
             }
             catch (Exception e)
             {

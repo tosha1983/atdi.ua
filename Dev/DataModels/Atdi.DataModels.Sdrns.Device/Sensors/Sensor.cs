@@ -149,13 +149,15 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public SensorEquipment Equipment { get; set; }
-
+        [DataMember]
+        public SensorEquipment[] OtherEquipments { get; set; }
         /// <summary>
         /// Defines the Sensor antenna
         /// </summary>
         [DataMember]
         public SensorAntenna Antenna { get; set; }
-
+        [DataMember]
+        public SensorAntenna[] OtherAntennas { get; set; }
         ///// <summary>
         ///// Sensor locations
         ///// </summary>

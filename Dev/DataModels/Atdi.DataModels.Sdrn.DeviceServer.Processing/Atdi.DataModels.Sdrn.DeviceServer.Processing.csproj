@@ -41,17 +41,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
     <Compile Include="ModelParameters\enum\TypeTechnology.cs" />
     <Compile Include="ModelParameters\LastResultParameters.cs" />
     <Compile Include="ModelParameters\SemplFreq.cs" />
     <Compile Include="ModelParameters\SensorParameters.cs" />
+    <Compile Include="ModelParameters\Signaling\EmittingParameters.cs" />
+    <Compile Include="ModelParameters\Signaling\LevelsDistribution.cs" />
+    <Compile Include="ModelParameters\Signaling\Spectrum.cs" />
+    <Compile Include="ModelParameters\Signaling\WokrTime .cs" />
+    <Compile Include="ModelParameters\Signaling\Emitting.cs" />
+    <Compile Include="ModelParameters\Signaling\GroupEmmiting.cs" />
+    <Compile Include="ModelParameters\Signaling\ReferenceLevels.cs" />
+    <Compile Include="ModelParameters\Signaling\SignalMask.cs" />
+    <Compile Include="ModelParameters\Signaling\ReferenceSignal.cs" />
     <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
     <Compile Include="Processes\ExampleContext.cs" />
-    <Compile Include="Processes\MeasProcess.cs" />
+    <Compile Include="Processes\SignalingProcess.cs" />
+    <Compile Include="Processes\SpectrumOccupationProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\AutoTasks\AutoTaskSensorRegister.cs" />
     <Compile Include="Tasks\HandlingMeasurementsTask.cs" />
     <Compile Include="Tasks\AnalyzeSignalTask.cs" />
     <Compile Include="Tasks\LocalizationTDOATask.cs" />

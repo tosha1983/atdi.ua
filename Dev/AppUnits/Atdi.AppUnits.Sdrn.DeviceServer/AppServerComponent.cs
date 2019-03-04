@@ -7,6 +7,7 @@ using Atdi.Modules.Licensing;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.DependencyInjection;
+using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,11 +45,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             var busEventObserver = new BusEventObserver(this.Logger);
             this.Container.RegisterInstance<IBusEventObserver>(busEventObserver, ServiceLifetime.Singleton);
 
+            // фаза регистрации в шине, можем не проходит и важно из-за этого весь процес не остановить, т.е. жить без шины могём
             var gateTag = $"Gate [{deviceServerDevice.SensorName}]";
-            var gate = gateFactory.CreateGate(gateTag, gateConfig, busEventObserver);
-            this.Container.RegisterInstance<IBusGate>(gate, ServiceLifetime.Singleton);
+            try
+            {
+                var gate = gateFactory.CreateGate(gateTag, gateConfig, busEventObserver);
+                this.Container.RegisterInstance<IBusGate>(gate, ServiceLifetime.Singleton);
 
-            Logger.Verbouse(Contexts.ThisComponent, Categories.Initilazing, Events.GateFactoryWasCreated.With(gateTag));
+                Logger.Verbouse(Contexts.ThisComponent, Categories.Initilazing, Events.GateFactoryWasCreated.With(gateTag));
+            }
+            catch(Exception e)
+            {
+               this.Logger.Exception(Contexts.ThisComponent, Categories.Initilazing, e);
+            }
+            
 
             this.Container.Register<IProcessingDispatcher, ProcessingDispatcher>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkerFactory, TaskWorkerFactory>(ServiceLifetime.Singleton);

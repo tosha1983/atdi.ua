@@ -661,19 +661,121 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             MTSDR.EquipmentTechId = EquipmentTechId;
                             if (Type == "New")
                             {
-                                //MTSDR.DeviceParam
-                                //MTSDR.Interval_sec
-                                //MTSDR.Measurement
-                                //MTSDR.SOParam
+                                MTSDR.SOParam = new DEV.SpectrumOccupationMeasParam();
+                                if (task.MeasOther.LevelMinOccup != null) { MTSDR.SOParam.LevelMinOccup_dBm = task.MeasOther.LevelMinOccup.GetValueOrDefault(); } else { MTSDR.SOParam.LevelMinOccup_dBm = -70; }
+                                if (task.MeasOther.NChenal != null) { MTSDR.SOParam.MeasurmentNumber = task.MeasOther.NChenal.GetValueOrDefault(); } else { MTSDR.SOParam.MeasurmentNumber = 10; }
+                                switch (task.MeasOther.TypeSpectrumOccupation)
+                                {
+                                    case SpectrumOccupationType.FreqBandwidthOccupation:
+                                        MTSDR.SOParam.Type = DataModels.Sdrns.SpectrumOccupationType.FreqBandOccupancy;
+                                        break;
+                                    case SpectrumOccupationType.FreqChannelOccupation:
+                                        MTSDR.SOParam.Type = DataModels.Sdrns.SpectrumOccupationType.FreqChannelOccupancy;
+                                        break;
+                                    default:
+                                        throw new NotImplementedException($"Type '{task.MeasOther.TypeSpectrumOccupation}' not supported");
+                                }
+                                switch (task.MeasDtParam.TypeMeasurements)
+                                {
+                                    case MeasurementType.MonitoringStations:
+                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.MonitoringStations;
+                                        break;
+                                    case MeasurementType.Level:
+                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.Level;
+                                        break;
+                                    case MeasurementType.SpectrumOccupation:
+                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
+                                        break;
+                                    case MeasurementType.BandwidthMeas:
+                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
+                                        break;
+                                    default:
+                                        throw new NotImplementedException($"Type '{task.MeasDtParam.TypeMeasurements}' not supported");
+                                }
+                                if (SubTask.Interval != null) { MTSDR.Interval_sec = SubTask.Interval.GetValueOrDefault(); }
+                                MTSDR.DeviceParam = new DEV.DeviceMeasParam();
+                                if (task.MeasDtParam.MeasTime != null) { MTSDR.DeviceParam.MeasTime_sec = task.MeasDtParam.MeasTime.GetValueOrDefault(); } else { MTSDR.DeviceParam.MeasTime_sec = 0.001; }
+
+
+                                switch (task.MeasDtParam.DetectType)
+                                {
+                                    case DetectingType.Avarage:
+                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Average;
+                                        break;
+                                    case DetectingType.MaxPeak:
+                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.MaxPeak;
+                                        break;
+                                    case DetectingType.MinPeak:
+                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.MinPeak;
+                                        break;
+                                    case DetectingType.Peak:
+                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Peak;
+                                        break;
+                                    default:
+                                        throw new NotImplementedException($"Type '{task.MeasDtParam.DetectType}' not supported");
+                                }
+
+                                MTSDR.DeviceParam.Preamplification_dB = task.MeasDtParam.Preamplification;
+                                if (task.MeasDtParam.RBW != null) { MTSDR.DeviceParam.RBW_kHz = task.MeasDtParam.RBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.RBW_kHz= 10; }
+                                MTSDR.DeviceParam.RfAttenuation_dB = (int)task.MeasDtParam.RfAttenuation;
+                                if (task.MeasDtParam.VBW != null) { MTSDR.DeviceParam.VBW_kHz = task.MeasDtParam.VBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.VBW_kHz = 10; }
+                                MTSDR.DeviceParam.RefLevel_dBm = -30;
+
+                                MTSDR.Frequencies = new DEV.MeasuredFrequencies();
+                                if (task.MeasFreqParam != null)
+                                {
+                                    var freqs = task.MeasFreqParam.MeasFreqs;
+                                    if (freqs != null)
+                                    {
+                                        Double[] listFreqs = new double[freqs.Length];
+                                        for (int j = 0; j < freqs.Length; j++)
+                                        {
+                                            listFreqs[j] = freqs[j].Freq;
+                                        }
+                                        MTSDR.Frequencies.Values_MHz = listFreqs;
+                                    }
+
+                                    if (task.MeasFreqParam.Mode == FrequencyMode.FrequencyList)
+                                    {
+                                        MTSDR.Frequencies.Mode = DataModels.Sdrns.FrequencyMode.FrequencyList;
+                                    }
+                                    else if (task.MeasFreqParam.Mode == FrequencyMode.FrequencyRange)
+                                    {
+                                        MTSDR.Frequencies.Mode = DataModels.Sdrns.FrequencyMode.FrequencyRange;
+                                    }
+                                    else if (task.MeasFreqParam.Mode == FrequencyMode.SingleFrequency)
+                                    {
+                                        MTSDR.Frequencies.Mode = DataModels.Sdrns.FrequencyMode.SingleFrequency;
+                                    }
+                                    else
+                                    {
+                                        throw new NotImplementedException($"Type '{MTSDR.Frequencies.Mode}' not supported");
+                                    }
+                                    MTSDR.Frequencies.RgL_MHz = task.MeasFreqParam.RgL;
+                                    MTSDR.Frequencies.RgU_MHz = task.MeasFreqParam.RgU;
+                                    MTSDR.Frequencies.Step_kHz = task.MeasFreqParam.Step;
+                                }
+
+                                double subFreqMaxMin = 0;
+                                if ((MTSDR.Frequencies != null) && (MTSDR.Frequencies.Values_MHz != null) && (MTSDR.Frequencies.Values_MHz.Length > 0))
+                                {
+                                    var minFreq = MTSDR.Frequencies.Values_MHz.Min();
+                                    var maxFreq = MTSDR.Frequencies.Values_MHz.Max();
+                                    subFreqMaxMin = maxFreq - minFreq;
+                                }
+                                if ((subFreqMaxMin >= 0) && (MTSDR.Frequencies.Step_kHz>0))
+                                {
+                                    MTSDR.DeviceParam.ScanBW_kHz = subFreqMaxMin * 1000 + MTSDR.Frequencies.Step_kHz;
+                                }
 
                                 MTSDR.ScanParameters = new DataModels.Sdrns.Device.StandardScanParameter[] { };
                                 MTSDR.StartTime = SubTask.TimeStart;
                                 MTSDR.StopTime = SubTask.TimeStop;
                                 MTSDR.Status = SubTask.Status;
-                                MTSDR.MobEqipmentMeasurements = new DataModels.Sdrns.MeasurementType[5];
+                                MTSDR.MobEqipmentMeasurements = new DataModels.Sdrns.MeasurementType[3];
                                 MTSDR.MobEqipmentMeasurements[0] = DataModels.Sdrns.MeasurementType.MonitoringStations;
                                 MTSDR.MobEqipmentMeasurements[1] = DataModels.Sdrns.MeasurementType.BandwidthMeas;
-                                MTSDR.MobEqipmentMeasurements[4] = DataModels.Sdrns.MeasurementType.Level;
+                                MTSDR.MobEqipmentMeasurements[2] = DataModels.Sdrns.MeasurementType.Level;
                                 if (task.MeasOther.SwNumber != null) { MTSDR.ScanPerTaskNumber = task.MeasOther.SwNumber.GetValueOrDefault(); }
                                 if (task.StationsForMeasurements != null)
                                 {
@@ -687,87 +789,92 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             for (int i = 0; i < task.StationsForMeasurements.Count(); i++)
                                             {
                                                 MTSDR.Stations[i] = new DataModels.Sdrns.Device.MeasuredStation();
+                                                var stationI = MTSDR.Stations[i];
                                                 string CodeOwener = "0";
-                                                MTSDR.Stations[i].Owner = new DataModels.Sdrns.Device.StationOwner();
-                                                if (task.StationsForMeasurements[i].Owner != null)
+                                                stationI.Owner = new DataModels.Sdrns.Device.StationOwner();
+                                                var station = task.StationsForMeasurements[i];
+                                                if (station.Owner != null)
                                                 {
-                                                    MTSDR.Stations[i].Owner.Address = task.StationsForMeasurements[i].Owner.Addres;
-                                                    MTSDR.Stations[i].Owner.Code = task.StationsForMeasurements[i].Owner.Code;
-                                                    MTSDR.Stations[i].Owner.Id = task.StationsForMeasurements[i].Owner.Id;
-                                                    MTSDR.Stations[i].Owner.OKPO = task.StationsForMeasurements[i].Owner.OKPO;
-                                                    MTSDR.Stations[i].Owner.OwnerName = task.StationsForMeasurements[i].Owner.OwnerName;
-                                                    MTSDR.Stations[i].Owner.Zip = task.StationsForMeasurements[i].Owner.Zip;
+                                                    var owner = stationI.Owner;
+                                                    owner.Address = station.Owner.Addres;
+                                                    owner.Code = station.Owner.Code;
+                                                    owner.Id = station.Owner.Id;
+                                                    owner.OKPO = station.Owner.OKPO;
+                                                    owner.OwnerName = station.Owner.OwnerName;
+                                                    owner.Zip = station.Owner.Zip;
 
 
-                                                    if (MTSDR.Stations[i].Owner.OKPO == "14333937") { CodeOwener = "1"; };
-                                                    if (MTSDR.Stations[i].Owner.OKPO == "22859846") { CodeOwener = "6"; };
-                                                    if (MTSDR.Stations[i].Owner.OKPO == "21673832") { CodeOwener = "3"; };
-                                                    if (MTSDR.Stations[i].Owner.OKPO == "37815221") { CodeOwener = "7"; };
+                                                    if (owner.OKPO == "14333937") { CodeOwener = "1"; };
+                                                    if (owner.OKPO == "22859846") { CodeOwener = "6"; };
+                                                    if (owner.OKPO == "21673832") { CodeOwener = "3"; };
+                                                    if (owner.OKPO == "37815221") { CodeOwener = "7"; };
                                                 }
-                                                MTSDR.Stations[i].GlobalSid = "255 " + CodeOwener + " 00000 " + string.Format("{0:00000}", task.StationsForMeasurements[i].IdStation);
-                                                task.StationsForMeasurements[i].GlobalSID = MTSDR.Stations[i].GlobalSid;
+                                                stationI.GlobalSid = "255 " + CodeOwener + " 00000 " + string.Format("{0:00000}", station.IdStation);
+                                                station.GlobalSID = stationI.GlobalSid;
 
-                                                MTSDR.Stations[i].OwnerGlobalSid = task.StationsForMeasurements[i].GlobalSID;//работать с таблицей (доп. создасть в БД по GlobalSID и Standard)
-                                                                                                                             //
-                                                MTSDR.Stations[i].License = new DataModels.Sdrns.Device.StationLicenseInfo();
-                                                if (task.StationsForMeasurements[i].LicenseParameter != null)
+                                                stationI.OwnerGlobalSid = task.StationsForMeasurements[i].GlobalSID;//работать с таблицей (доп. создасть в БД по GlobalSID и Standard)
+                                                                                                                    //
+                                                stationI.License = new DataModels.Sdrns.Device.StationLicenseInfo();
+                                                if (station.LicenseParameter != null)
                                                 {
-                                                    MTSDR.Stations[i].License.CloseDate = task.StationsForMeasurements[i].LicenseParameter.CloseDate;
-                                                    MTSDR.Stations[i].License.EndDate = task.StationsForMeasurements[i].LicenseParameter.EndDate;
-                                                    MTSDR.Stations[i].License.IcsmId = task.StationsForMeasurements[i].LicenseParameter.Id;
-                                                    MTSDR.Stations[i].License.Name = task.StationsForMeasurements[i].LicenseParameter.DozvilName;
-                                                    MTSDR.Stations[i].License.StartDate = task.StationsForMeasurements[i].LicenseParameter.StartDate;
+                                                    stationI.License.CloseDate = station.LicenseParameter.CloseDate;
+                                                    stationI.License.EndDate = station.LicenseParameter.EndDate;
+                                                    stationI.License.IcsmId = station.LicenseParameter.Id;
+                                                    stationI.License.Name = station.LicenseParameter.DozvilName;
+                                                    stationI.License.StartDate = station.LicenseParameter.StartDate;
                                                 }
 
-                                                MTSDR.Stations[i].Site = new DataModels.Sdrns.Device.StationSite();
-                                                if (task.StationsForMeasurements[i].Site != null)
+                                                stationI.Site = new DataModels.Sdrns.Device.StationSite();
+                                                if (station.Site != null)
                                                 {
-                                                    MTSDR.Stations[i].Site.Adress = task.StationsForMeasurements[i].Site.Adress;
-                                                    MTSDR.Stations[i].Site.Lat = task.StationsForMeasurements[i].Site.Lat;
-                                                    MTSDR.Stations[i].Site.Lon = task.StationsForMeasurements[i].Site.Lon;
-                                                    MTSDR.Stations[i].Site.Region = task.StationsForMeasurements[i].Site.Region;
+                                                    stationI.Site.Adress = station.Site.Adress;
+                                                    stationI.Site.Lat = station.Site.Lat;
+                                                    stationI.Site.Lon = station.Site.Lon;
+                                                    stationI.Site.Region = station.Site.Region;
                                                 }
-                                                MTSDR.Stations[i].Standard = task.StationsForMeasurements[i].Standart;
-                                                MTSDR.Stations[i].StationId = task.StationsForMeasurements[i].IdStation.ToString();
-                                                MTSDR.Stations[i].Status = task.StationsForMeasurements[i].Status;
+                                                stationI.Standard = station.Standart;
+                                                stationI.StationId = station.IdStation.ToString();
+                                                stationI.Status = station.Status;
 
 
-                                                if (task.StationsForMeasurements[i].Sectors != null)
+                                                if (station.Sectors != null)
                                                 {
-                                                    MTSDR.Stations[i].Sectors = new DataModels.Sdrns.Device.StationSector[task.StationsForMeasurements[i].Sectors.Length];
-                                                    for (int j = 0; j < task.StationsForMeasurements[i].Sectors.Length; j++)
+                                                    stationI.Sectors = new DataModels.Sdrns.Device.StationSector[station.Sectors.Length];
+                                                    for (int j = 0; j < station.Sectors.Length; j++)
                                                     {
-                                                        MTSDR.Stations[i].Sectors[j] = new DataModels.Sdrns.Device.StationSector();
-                                                        MTSDR.Stations[i].Sectors[j].AGL = task.StationsForMeasurements[i].Sectors[j].AGL;
-                                                        MTSDR.Stations[i].Sectors[j].Azimuth = task.StationsForMeasurements[i].Sectors[j].Azimut;
+                                                        var sector = station.Sectors[j];
+                                                        stationI.Sectors[j] = new DataModels.Sdrns.Device.StationSector();
+                                                        var statSector = stationI.Sectors[j];
+                                                        statSector.AGL = sector.AGL;
+                                                        statSector.Azimuth = sector.Azimut;
 
-                                                        if (task.StationsForMeasurements[i].Sectors[j].MaskBW != null)
+                                                        if (sector.MaskBW != null)
                                                         {
-                                                            MTSDR.Stations[i].Sectors[j].BWMask = new DataModels.Sdrns.Device.ElementsMask[task.StationsForMeasurements[i].Sectors[j].MaskBW.Length];
-                                                            for (int k = 0; k < task.StationsForMeasurements[i].Sectors[j].MaskBW.Length; k++)
+                                                            statSector.BWMask = new DataModels.Sdrns.Device.ElementsMask[sector.MaskBW.Length];
+                                                            for (int k = 0; k < sector.MaskBW.Length; k++)
                                                             {
-                                                                MTSDR.Stations[i].Sectors[j].BWMask[k] = new DataModels.Sdrns.Device.ElementsMask();
-                                                                MTSDR.Stations[i].Sectors[j].BWMask[k].BW_kHz = task.StationsForMeasurements[i].Sectors[j].MaskBW[k].BW;
-                                                                MTSDR.Stations[i].Sectors[j].BWMask[k].Level_dB = task.StationsForMeasurements[i].Sectors[j].MaskBW[k].level;
+                                                                statSector.BWMask[k] = new DataModels.Sdrns.Device.ElementsMask();
+                                                                statSector.BWMask[k].BW_kHz = sector.MaskBW[k].BW;
+                                                                statSector.BWMask[k].Level_dB = sector.MaskBW[k].level;
                                                             }
                                                         }
-                                                        MTSDR.Stations[i].Sectors[j].BW_kHz = task.StationsForMeasurements[i].Sectors[j].BW;
-                                                        MTSDR.Stations[i].Sectors[j].ClassEmission = task.StationsForMeasurements[i].Sectors[j].ClassEmission;
-                                                        MTSDR.Stations[i].Sectors[j].EIRP_dBm = task.StationsForMeasurements[i].Sectors[j].EIRP;
+                                                        statSector.BW_kHz = sector.BW;
+                                                        statSector.ClassEmission = sector.ClassEmission;
+                                                        statSector.EIRP_dBm = sector.EIRP;
 
-                                                        if (task.StationsForMeasurements[i].Sectors[j].Frequencies != null)
+                                                        if (sector.Frequencies != null)
                                                         {
-                                                            MTSDR.Stations[i].Sectors[j].Frequencies = new DataModels.Sdrns.Device.SectorFrequency[task.StationsForMeasurements[i].Sectors[j].Frequencies.Length];
-                                                            for (int k = 0; k < task.StationsForMeasurements[i].Sectors[j].Frequencies.Length; k++)
+                                                            statSector.Frequencies = new DataModels.Sdrns.Device.SectorFrequency[sector.Frequencies.Length];
+                                                            for (int k = 0; k < sector.Frequencies.Length; k++)
                                                             {
-                                                                MTSDR.Stations[i].Sectors[j].Frequencies[k] = new DataModels.Sdrns.Device.SectorFrequency();
-                                                                MTSDR.Stations[i].Sectors[j].Frequencies[k].ChannelNumber = task.StationsForMeasurements[i].Sectors[j].Frequencies[k].ChannalNumber;
-                                                                MTSDR.Stations[i].Sectors[j].Frequencies[k].Frequency_MHz = task.StationsForMeasurements[i].Sectors[j].Frequencies[k].Frequency;
-                                                                MTSDR.Stations[i].Sectors[j].Frequencies[k].Id = task.StationsForMeasurements[i].Sectors[j].Frequencies[k].Id;
-                                                                MTSDR.Stations[i].Sectors[j].Frequencies[k].PlanId = task.StationsForMeasurements[i].Sectors[j].Frequencies[k].IdPlan;
+                                                                statSector.Frequencies[k] = new DataModels.Sdrns.Device.SectorFrequency();
+                                                                statSector.Frequencies[k].ChannelNumber = sector.Frequencies[k].ChannalNumber;
+                                                                statSector.Frequencies[k].Frequency_MHz = sector.Frequencies[k].Frequency;
+                                                                statSector.Frequencies[k].Id = sector.Frequencies[k].Id;
+                                                                statSector.Frequencies[k].PlanId = sector.Frequencies[k].IdPlan;
                                                             }
                                                         }
-                                                        MTSDR.Stations[i].Sectors[j].SectorId = task.StationsForMeasurements[i].Sectors[j].IdSector.ToString();
+                                                        statSector.SectorId = sector.IdSector.ToString();
                                                     }
                                                 }
                                             }

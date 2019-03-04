@@ -25,6 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             {
                 if (taskSDR.Frequencies.Values_MHz != null)
                 {
+                    taskParameters.List_freq_CH = new List<double>();
                     taskParameters.List_freq_CH.Clear();
                     for (int i = 0; i < taskSDR.Frequencies.Values_MHz.Length; i++)
                     {
@@ -57,6 +58,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 if (taskSDR.DeviceParam.RBW_kHz != 0) { taskParameters.RBW_Hz = taskSDR.DeviceParam.RBW_kHz * 1000; } else { taskParameters.RBW_Hz = 10000; }
                 if (taskSDR.DeviceParam.VBW_kHz != 0) { taskParameters.VBW_Hz = taskSDR.DeviceParam.VBW_kHz.Value * 1000; } else { taskParameters.VBW_Hz = 10000; }
             }
+            if (taskSDR.DeviceParam.MeasTime_sec != null) { taskParameters.SweepTime_s = taskSDR.DeviceParam.MeasTime_sec.Value; } else { taskParameters.SweepTime_s = 0.0001; }
+            
             if (taskSDR.SOParam != null)
             {
                 var sOtype = GetSOTypeFromSpectrumOccupationType(taskSDR.SOParam.Type);
@@ -64,13 +67,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 {
                     if ((taskSDR.SOParam.Type == DataModels.Sdrns.SpectrumOccupationType.FreqBandOccupancy) || (taskSDR.SOParam.Type == DataModels.Sdrns.SpectrumOccupationType.FreqChannelOccupancy))
                     {
-                        if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = 10; }
+                        if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else {taskParameters.NChenal = 10;}
                         if (taskSDR.SOParam.LevelMinOccup_dBm <= 0) { taskParameters.LevelMinOccup_dBm = taskSDR.SOParam.LevelMinOccup_dBm; } else { taskParameters.LevelMinOccup_dBm = -80; }
                         taskParameters.Type_of_SO = sOtype;
-                        // формируем начало и конец для измерений 
-                        taskParameters.List_freq_CH.Sort();
-                        taskParameters.MinFreq_MHz = taskParameters.List_freq_CH[0] - taskParameters.StepSO_kHz / 2000;
-                        taskParameters.MaxFreq_MHz = taskParameters.List_freq_CH[taskParameters.List_freq_CH.Count - 1] + taskParameters.StepSO_kHz / 2000;
+                        if (taskParameters.List_freq_CH != null)
+                        {
+                            // формируем начало и конец для измерений 
+                            taskParameters.List_freq_CH.Sort();
+                            taskParameters.MinFreq_MHz = taskParameters.List_freq_CH[0] - taskParameters.StepSO_kHz / 2000;
+                            taskParameters.MaxFreq_MHz = taskParameters.List_freq_CH[taskParameters.List_freq_CH.Count - 1] + taskParameters.StepSO_kHz / 2000;
+                        }
                         // расчитываем желаемое RBW и VBW
                         taskParameters.VBW_Hz = taskParameters.StepSO_kHz * 1000 / taskParameters.NChenal;
                         taskParameters.RBW_Hz = taskParameters.StepSO_kHz * 1000 / taskParameters.NChenal;

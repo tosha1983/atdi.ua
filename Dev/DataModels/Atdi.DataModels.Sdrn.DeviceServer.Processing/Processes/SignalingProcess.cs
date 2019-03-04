@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
-    public class MeasProcess : ProcessBase
+    public class SignalingProcess : ProcessBase
     {
-        public MeasTask MeasTask; // задача на измерение и ее параметры
-        public MeasProcess() : base("Meas process")
+        public Emitting[] Emittings;
+        public SensorParameters sensorParameters;
+        public SignalingProcess() : base("Signaling process")
         {
             
         }

@@ -45,6 +45,7 @@
     <Compile Include="DummyAdapterHost.cs" />
     <Compile Include="DummyExecutionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestWorkScheduler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">

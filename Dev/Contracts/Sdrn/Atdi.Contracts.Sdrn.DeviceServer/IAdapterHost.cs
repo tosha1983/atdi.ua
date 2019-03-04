@@ -9,7 +9,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IAdapterHost
     {
-        void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler)
+        void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler, IDeviceProperties deviceProperties = null)
             where TCommand : new();
     }
 }
