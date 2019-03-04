@@ -14,7 +14,7 @@
     <Field Desc="Frequency, MHz" Title="Frequency, MHz" Name="Freq_MHz" DataType="Decimal.30.10" SourceName="FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
     <Field Desc="Level, dBm" Title="Level, dBm" Name="Level_dBm" DataType="Decimal.30.10" SourceName="LVLDBM" SourceType="Column" Required="false" Unit="Level.dBm"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResFreqLevelsRaw to ResMeas">
+    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeasRaw" Title="Relation ResFreqLevelsRaw to ResMeasRaw">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
       </PrimaryKeyMapping>

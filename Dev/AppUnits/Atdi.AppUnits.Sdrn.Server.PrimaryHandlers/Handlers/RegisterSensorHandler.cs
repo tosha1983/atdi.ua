@@ -70,7 +70,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                      return result;
                  });
 
-                if (idSensor > -1)
+                if (idSensor > 0)
                 {
                     var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensor>().Update();
                     builderUpdateSensor.SetValue(t => t.SensorIdentifierId, idSensor);
@@ -119,7 +119,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         });
 
 
-                        if (idSensorAntenna > -1)
+                        if (idSensorAntenna > 0)
                         {
                             if (sensorData.Antenna.Patterns != null)
                             {
