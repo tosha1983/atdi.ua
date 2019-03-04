@@ -46,6 +46,7 @@
     <Compile Include="Entities\IEntityPart.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IBWMeasResultRaw.cs" />
+    <Compile Include="Entities\IFreqSample.cs" />
     <Compile Include="Entities\ILinkResSensorRaw.cs" />
     <Compile Include="Entities\IResFreqLevelsRaw.cs" />
     <Compile Include="Entities\ILinkMeasStation.cs" />
@@ -138,6 +139,7 @@
     <Content Include="Metadata\Entities\Entity.xml" />
     <Content Include="Metadata\Entities\EntityPart.xml" />
     <Content Include="Metadata\Entities\BWMeasResultRaw.xml" />
+    <Content Include="Metadata\Entities\FreqSample.xml" />
     <Content Include="Metadata\Entities\LinkResSensorRaw.xml" />
     <Content Include="Metadata\Entities\ResFreqLevelsRaw.xml" />
     <Content Include="Metadata\Entities\LinkMeasStation.xml" />
