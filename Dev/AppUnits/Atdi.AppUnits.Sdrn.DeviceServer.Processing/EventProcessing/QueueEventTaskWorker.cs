@@ -13,6 +13,9 @@ using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Воркер, выполняющий прием уведомлений типа DM.DeviceCommand и TaskParameters и их обработку
+    /// </summary>
     public class QueueEventTaskWorker : ITaskWorker<QueueEventTask, BaseContext, SingletonTaskWorkerLifetime>
     {
         private readonly ILogger _logger;
@@ -104,8 +107,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                                     _taskStarter.Run(soTask, measProcess);
 
-                                    baseContext.spectrumUccupationTasks.Add(soTask);
-
                                     _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
                                 }
                             }
@@ -128,10 +129,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                 while (true)
                 {
-                    //удаление всех задач, которые имеют статус Done, Cancelled, Aborted, Rejected
-                    baseContext.spectrumUccupationTasks.RemoveAll(z => z.taskParameters.SDRTaskId == taskParameters.SDRTaskId && ((z.State== TaskState.Done) || (z.State == TaskState.Cancelled) || (z.State == TaskState.Aborted) || (z.State == TaskState.Rejected)));
-
-                    // ожидаем сообщения DeviceCommand  - Run, Del, Stop
+                    // ожидаем сообщения DeviceCommand  - "Run, Del, Stop task"
                     isDatadeviceCommand = context.WaitEvent<DM.DeviceCommand>(out deviceCommand, 10);
                     if (isDatadeviceCommand)
                     {
@@ -150,16 +148,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                             taskParams.status = "A";
                                             if (taskParams.MeasurementType == MeasType.SpectrumOccupation)
                                             {
-                                                var findSOTask = baseContext.spectrumUccupationTasks.Find(z => z.taskParameters.SDRTaskId == taskParameters.SDRTaskId);
+                                                var findSOTask = baseContext.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == taskParams.SDRTaskId);
                                                 if (findSOTask != null)
                                                 {
-                                                    findSOTask.ChangeState(TaskState.Executing);
+                                                    findSOTask.Task.ChangeState(TaskState.Executing);
+                                                }
+                                                else
+                                                {
+                                                    action.Invoke();
                                                 }
                                             }
                                             else
                                             {
-                                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
-                                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
+                                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
+                                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
                                             }
                                         }
                                         else if (deviceCommand.Command == "DelMeasTask")
@@ -167,16 +169,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                             taskParams.status = "Z";
                                             if (taskParams.MeasurementType == MeasType.SpectrumOccupation)
                                             {
-                                                var findSOTask = baseContext.spectrumUccupationTasks.Find(z => z.taskParameters.SDRTaskId == taskParameters.SDRTaskId);
+                                                var findSOTask = baseContext.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == taskParams.SDRTaskId);
                                                 if (findSOTask != null)
                                                 {
-                                                    findSOTask.ChangeState(TaskState.Done);
+                                                    findSOTask.Task.ChangeState(TaskState.Done);
+                                                    findSOTask.Finish();
                                                 }
                                             }
                                             else
                                             {
-                                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
-                                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
+                                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
+                                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
                                             }
                                         }
                                         else if (deviceCommand.Command == "StopMeasTask")
@@ -184,34 +187,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                             taskParams.status = "F";
                                             if (taskParams.MeasurementType == MeasType.SpectrumOccupation)
                                             {
-                                                var findSOTask = baseContext.spectrumUccupationTasks.Find(z => z.taskParameters.SDRTaskId == taskParameters.SDRTaskId);
+                                                var findSOTask = baseContext.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == taskParams.SDRTaskId);
                                                 if (findSOTask!=null)
                                                 {
-                                                    findSOTask.ChangeState(TaskState.Pending);
+                                                    findSOTask.Task.ChangeState(TaskState.Pending);
                                                 }
                                             }
                                             else
                                             {
-                                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
-                                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
+                                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
+                                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
                                             }
                                         }
+                                        // обновление TaskParameters в БД
                                         this._repositoryTaskParametersByInt.Update(taskParams);
                                     }
                                 }
                             }
                         }
                     }
-                    // ожидаем сообщения - Create 
+                    // ожидаем сообщения - "новый таск"
                     isDatataskParameters = context.WaitEvent<TaskParameters>(out taskParameters, 10);
                     if (isDatataskParameters)
                     {
                         action.Invoke();
-                        taskParameters.status = "C";
-                        this._repositoryTaskParametersByInt.Update(taskParameters);
                     }
+                    //удаление всех контекстов задач, которые имеют статус Done, Cancelled, Aborted, Rejected
+                    baseContext.contextSOTasks.RemoveAll(z => ((z.Task.State == TaskState.Done) || (z.Task.State == TaskState.Cancelled) || (z.Task.State == TaskState.Aborted) || (z.Task.State == TaskState.Rejected)));
                 }
-                // контекст никогда не выгружается т.к. в этом воркере нам необходимо ожидать сообщения TaskParameters из обработчика входящих сообщений шины Rebbit'a
+                // контекст никогда не выгружается т.к. в этом воркере происходит процесс постоянного ожидания для обработки сообщений типа DeviceCommand и TaskParameters
                 //context.Finish();
             }
             catch (Exception e)

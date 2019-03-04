@@ -53,7 +53,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 while (true)
                 {
-                    //long durationWaitingEventWithTask = _config.DurationWaitingEventWithTask;
                     // ожидаем заданный в конфигурации промежуток времени
                     Thread.Sleep(this._config.DurationWaitingEventWithTask);
                     int i= 0;

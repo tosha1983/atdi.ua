@@ -7,6 +7,9 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Воркер для передачи уведомлений типа TaskParameters в контекст ITaskContext<QueueEventTask, BaseContext> 
+    /// </summary>
     public class EventTaskWorker : ITaskWorker<EventTask, BaseContext, SingletonTaskWorkerLifetime>
     {
         private readonly ILogger _logger;

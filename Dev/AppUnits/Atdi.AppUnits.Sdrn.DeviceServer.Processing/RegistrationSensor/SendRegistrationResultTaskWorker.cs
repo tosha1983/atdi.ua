@@ -9,6 +9,9 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    ///  Воркер для передачи уведомлений типа DM.SensorRegistrationResult в конекст ITaskContext<RegisterSensorTask, BaseContext>
+    /// </summary>
     public class SendRegistrationResultTaskWorker : ITaskWorker<SendRegistrationResultTask, BaseContext, SingletonTaskWorkerLifetime>
     {
         private readonly ILogger _logger;

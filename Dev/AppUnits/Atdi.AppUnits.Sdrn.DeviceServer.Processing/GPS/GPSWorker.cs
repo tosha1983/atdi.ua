@@ -9,32 +9,19 @@ using Atdi.Contracts.Sdrn.DeviceServer.GPS;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Воркер, выполняющий запуск GPS девайса
+    /// </summary>
     public class GPSWorker : ITaskWorker<GPSTask, BaseContext, SingletonTaskWorkerLifetime>
     {
-        private readonly IProcessingDispatcher _processingDispatcher;
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParameters;
-        private readonly IController _controller;
         private readonly ILogger _logger;
-        private readonly ITimeService _timeService;
-        private readonly ITaskStarter _taskStarter;
         private readonly IGpsDevice _gpsDevice;
 
-        public GPSWorker(IProcessingDispatcher processingDispatcher,
-            IRepository<DM.Sensor, int?> repositorySensor,
-            IRepository<TaskParameters, int?> repositoryTaskParameters,
-            IController controller,
-            ITaskStarter taskStarter,
+        public GPSWorker(
             IGpsDevice gpsDevice,
             ITimeService timeService, ILogger logger)
         {
-            this._controller = controller;
             this._logger = logger;
-            this._repositorySensor = repositorySensor;
-            this._timeService = timeService;
-            this._processingDispatcher = processingDispatcher;
-            this._repositoryTaskParameters = repositoryTaskParameters;
-            this._taskStarter = taskStarter;
             this._gpsDevice = gpsDevice;
         }
 

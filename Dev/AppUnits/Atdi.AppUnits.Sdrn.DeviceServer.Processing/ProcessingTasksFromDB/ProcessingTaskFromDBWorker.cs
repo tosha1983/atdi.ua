@@ -13,12 +13,13 @@ using Atdi.Platform.DependencyInjection;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Воркер по обработке тасков из БД
+    /// </summary>
     public class ProcessingTaskFromDBWorker : ITaskWorker<ProcessingFromDBTask, BaseContext, SingletonTaskWorkerLifetime>
     {
         private readonly IProcessingDispatcher _processingDispatcher;
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
         private readonly IRepository<TaskParameters, int?> _repositoryTaskParameters;
-        private readonly IController _controller;
         private readonly ILogger _logger;
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
@@ -27,18 +28,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ConfigProcessing _config;
 
         public ProcessingTaskFromDBWorker(IProcessingDispatcher processingDispatcher,
-            IRepository<DM.Sensor, int?> repositorySensor,
             IRepository<TaskParameters, int?> repositoryTaskParameters,
-            IController controller,
             ITaskStarter taskStarter,
             IServicesResolver resolver,
             IServicesContainer servicesContainer,
             ConfigProcessing config,
             ITimeService timeService, ILogger logger)
         {
-            this._controller = controller;
             this._logger = logger;
-            this._repositorySensor = repositorySensor;
             this._timeService = timeService;
             this._processingDispatcher = processingDispatcher;
             this._repositoryTaskParameters = repositoryTaskParameters;

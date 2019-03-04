@@ -70,6 +70,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static readonly string UnknownErrorQueueEventTaskWorker = "Unknown error in QueueEventTaskWorker";
         public static readonly string MeasurementTypeNotsupported = $"MeasurementType {0} not supported";
         public static readonly string DeviceServerCanNotBeStarted = "The DeviceServer can not be started, because there is no information about the registered object in the database";
+        public static readonly string NotFoundInformationWithGetDevicesProperties = "Not found information about sensor by 'GetDevicesProperties'";
+        public static readonly string NotFoundInformationAboutSensor = "Not found information about sensor";
 
     }
 }

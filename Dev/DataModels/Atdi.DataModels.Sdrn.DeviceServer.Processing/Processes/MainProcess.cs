@@ -19,7 +19,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private object _syncContextRegisterSensorTask = new object();
         private object _syncContextQueueEventTask = new object();
         private object _syncListDeferredTasks = new object();
-        private object _syncSpectrumUccupationTasks = new object();
+        private object _syncContextSOTask = new object();
+
+
         private float _lat;
         private float _lon;
         private float _asl;
@@ -28,9 +30,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private DM.SensorRegistrationResult _sensorRegistrationResult;
         private ITaskContext<RegisterSensorTask, BaseContext> _contextRegisterSensorTask;
         private ITaskContext<QueueEventTask, BaseContext> _contextQueueEventTask;
+        private List<ITaskContext<SOTask, SpectrumOccupationProcess>> _contextSOTasks;
         private List<TaskParameters> _listDeferredTasks;
-        private List<SOTask> _spectrumUccupationTasks;
-
+        
          
         public float Lat
         {
@@ -161,24 +163,28 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-        public List<SOTask> spectrumUccupationTasks
+
+
+        public List<ITaskContext<SOTask, SpectrumOccupationProcess>> contextSOTasks
         {
             get
             {
-                lock (_syncSpectrumUccupationTasks)
-                    return _spectrumUccupationTasks;
+                lock (_syncContextSOTask)
+                    return _contextSOTasks;
             }
             set
             {
-                lock (_syncSpectrumUccupationTasks)
-                    _spectrumUccupationTasks = value;
+                lock (_syncContextSOTask)
+                    _contextSOTasks = value;
             }
         }
+        
+
 
         public MainProcess() : base("Main process")
         {
             listDeferredTasks = new List<TaskParameters>();
-            spectrumUccupationTasks = new List<SOTask>();
+            contextSOTasks = new List<ITaskContext<SOTask, SpectrumOccupationProcess>>();
         }
     }
 }

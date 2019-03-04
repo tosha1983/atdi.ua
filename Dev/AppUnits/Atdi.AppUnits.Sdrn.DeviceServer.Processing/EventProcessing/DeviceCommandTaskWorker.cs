@@ -8,6 +8,9 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Воркер для передачи уведомлений типа DM.DeviceCommand в контекст ITaskContext<QueueEventTask, BaseContext> 
+    /// </summary>
     public class DeviceCommandTaskWorker : ITaskWorker<DeviceCommandTask, BaseContext, SingletonTaskWorkerLifetime>
     {
         private readonly ILogger _logger;

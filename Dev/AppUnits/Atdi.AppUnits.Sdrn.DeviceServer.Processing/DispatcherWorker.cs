@@ -11,6 +11,12 @@ using Atdi.Platform.DependencyInjection;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Основной воркер (автозапуск)
+    /// Выполняет последовательный запуск тасков по регистрации, проверка и старт незавершенных задач с БД, старт GPS, 
+    /// таск по приему и обработке уведомлений о поступленни новых тасков из входящих сообщений (шины),
+    /// таск по обработке отложенных задач (задач, время до выполнения которых > 20 мин)
+    /// </summary>
     public class DispatcherWorker : ITaskWorker<AutoTaskBase , DeviceServerBackgroundProcess, SingletonTaskWorkerLifetime>
     {
         private readonly IProcessingDispatcher _processingDispatcher;
@@ -19,14 +25,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ILogger _logger;
         private IServicesResolver _resolver;
         private IServicesContainer _servicesContainer;
-        private readonly ConfigProcessing _config;
 
         public DispatcherWorker(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
             ILogger logger,
             IServicesResolver resolver,
-            ConfigProcessing config,
             IServicesContainer servicesContainer)
         {
             this._processingDispatcher = processingDispatcher;
@@ -35,7 +39,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._logger = logger;
             this._resolver = resolver;
             this._servicesContainer = servicesContainer;
-            this._config = config;
         }
 
         public void Run(ITaskContext<AutoTaskBase, DeviceServerBackgroundProcess> context)
@@ -43,7 +46,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             try
             {
                 _logger.Verbouse(Contexts.DispatcherWorker, Categories.Processing, Events.StartDispatcherWorker.With(context.Task.Id));
-
                 ////////////////////////////////////////////////////////////////////////
                 // 
                 //
@@ -68,66 +70,74 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 };
                 _taskStarter.Run(regSensorTask, baseProcessRegisterSensor);
 
-
-                ////////////////////////////////////////////////////////////////////////
-                // 
-                //
-                // запуск задачи включения GPS
-                //
-                ////////////////////////////////////////////////////////////////////////
-                var baseGPS = this._processingDispatcher.Start<BaseContext>(baseContext);
-                var gpsTask = new GPSTask()
+                if (baseContext.activeSensor != null)
                 {
-                    TimeStamp = _timeService.TimeStamp.Milliseconds,
-                    Options = TaskExecutionOption.Default
-                };
-                _taskStarter.RunParallel(gpsTask, baseGPS);
 
-                ////////////////////////////////////////////////////////////////////////
-                // 
-                //
-                // запуск задач c БД
-                //
-                ////////////////////////////////////////////////////////////////////////
-                var baseProcessingFromDBTask = this._processingDispatcher.Start<BaseContext>(baseContext);
-                var processingFromDBTask = new ProcessingFromDBTask()
-                 {
-                   TimeStamp = _timeService.TimeStamp.Milliseconds,
-                   Options = TaskExecutionOption.Default
-                };
-                _taskStarter.RunParallel(processingFromDBTask, baseProcessingFromDBTask);
-                
-                ////////////////////////////////////////////////////////////////////////
-                // 
-                //
-                // запуск задач по событиям, которые приходят с шины, время до выполнения, которых меньше 20 мин
-                //
-                ////////////////////////////////////////////////////////////////////////
-                var baseQueueEventTask = this._processingDispatcher.Start<BaseContext>(baseContext);
-                var queueEventTask = new QueueEventTask()
+                    ////////////////////////////////////////////////////////////////////////
+                    // 
+                    //
+                    // запуск задач по событиям, которые приходят с шины, время до выполнения, которых меньше 20 мин
+                    //
+                    ////////////////////////////////////////////////////////////////////////
+                    var baseQueueEventTask = this._processingDispatcher.Start<BaseContext>(baseContext);
+                    var queueEventTask = new QueueEventTask()
+                    {
+                        TimeStamp = _timeService.TimeStamp.Milliseconds,
+                        Options = TaskExecutionOption.Default
+                    };
+                    _taskStarter.RunParallel(queueEventTask, baseQueueEventTask);
+
+                    ////////////////////////////////////////////////////////////////////////
+                    // 
+                    //
+                    // запуск отложенных задач, которые были получены с шины но время до выполнения, которых превышает 20 мин
+                    //
+                    ////////////////////////////////////////////////////////////////////////
+                    var baseDeferredTasks = this._processingDispatcher.Start<BaseContext>(baseContext);
+                    var deferredTasks = new DeferredTasks()
+                    {
+                        TimeStamp = _timeService.TimeStamp.Milliseconds,
+                        Options = TaskExecutionOption.Default
+                    };
+                    _taskStarter.RunParallel(deferredTasks, baseDeferredTasks);
+
+
+                    ////////////////////////////////////////////////////////////////////////
+                    // 
+                    //
+                    // запуск задачи включения GPS
+                    //
+                    ////////////////////////////////////////////////////////////////////////
+                    var baseGPS = this._processingDispatcher.Start<BaseContext>(baseContext);
+                    var gpsTask = new GPSTask()
+                    {
+                        TimeStamp = _timeService.TimeStamp.Milliseconds,
+                        Options = TaskExecutionOption.Default
+                    };
+                    _taskStarter.RunParallel(gpsTask, baseGPS);
+
+
+                    ////////////////////////////////////////////////////////////////////////
+                    // 
+                    //
+                    // запуск задач c БД
+                    //
+                    ////////////////////////////////////////////////////////////////////////
+                    var baseProcessingFromDBTask = this._processingDispatcher.Start<BaseContext>(baseContext);
+                    var processingFromDBTask = new ProcessingFromDBTask()
+                    {
+                        TimeStamp = _timeService.TimeStamp.Milliseconds,
+                        Options = TaskExecutionOption.Default
+                    };
+                    _taskStarter.Run(processingFromDBTask, baseProcessingFromDBTask);
+
+                 
+                }
+                else
                 {
-                    TimeStamp = _timeService.TimeStamp.Milliseconds,
-                    Options = TaskExecutionOption.Default
-                };
-                _taskStarter.RunParallel(queueEventTask, baseQueueEventTask);
-
-
-                ////////////////////////////////////////////////////////////////////////
-                // 
-                //
-                // запуск отложенных задач, которые были получены с шины но время до выполнения, которых превышает 20 мин
-                //
-                ////////////////////////////////////////////////////////////////////////
-                var baseDeferredTasks = this._processingDispatcher.Start<BaseContext>(baseContext);
-                var deferredTasks = new DeferredTasks()
-                {
-                    TimeStamp = _timeService.TimeStamp.Milliseconds,
-                    Options = TaskExecutionOption.Default
-                };
-                _taskStarter.RunParallel(deferredTasks, baseDeferredTasks);
-             
-                
-                //context.Finish();
+                    _logger.Error(Contexts.DispatcherWorker, Categories.Processing, Exceptions.NotFoundInformationAboutSensor);
+                    context.Finish();
+                }
             }
             catch (Exception e)
             {

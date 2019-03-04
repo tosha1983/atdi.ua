@@ -9,6 +9,9 @@ using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
+    /// <summary>
+    /// Таск для обработки входящих сообщений типа DM.DeviceCommand
+    /// </summary>
     public class DeviceCommandTask : TaskBase
     {
        public DM.DeviceCommand  deviceCommand { get; set; }

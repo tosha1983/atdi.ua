@@ -11,6 +11,8 @@ using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
+using Atdi.DataModels.EntityOrm;
+
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
@@ -25,6 +27,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ILogger _logger;
         private IServicesResolver _resolver;
         private IServicesContainer _servicesContainer;
+        private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
 
 
         public SOTaskWorker(ITimeService timeService,
@@ -34,6 +37,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             IBusGate busGate,
             IServicesResolver resolver,
             IServicesContainer servicesContainer,
+            IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
             IController controller)
         {
             this._processingDispatcher = processingDispatcher;
@@ -44,6 +48,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._controller = controller;
             this._resolver = resolver;
             this._servicesContainer = servicesContainer;
+            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
         }
 
     
@@ -60,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 ////////////////////////////////////////////////////////////////////////
                 this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
                 var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
-
+                baseContext.contextSOTasks.Add(context);
                 while (true)
                 {
                     // проверка - не отменили ли задачу
@@ -68,7 +73,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         context.Cancel();
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                        return;
+                        break;
                     }
                     //////////////////////////////////////////////
                     // 
@@ -83,7 +88,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         context.Cancel();
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
-                        return;
+                        break;
                     }
 
                     var timeStamp = this._timeService.TimeStamp.Milliseconds;
@@ -115,7 +120,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
-                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, 1000 /*(int)maximumDurationMeas*/);
+                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, 10000 /*(int)maximumDurationMeas*/);
                     if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
@@ -124,7 +129,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             // явно нужна логика отмены
                             _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                             context.Cancel();
-                            return;
+                            break;
                         }
                         var error = new ExceptionProcessSO();
                         if (context.WaitEvent<ExceptionProcessSO>(out error, 1) == true)
@@ -152,7 +157,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         // запись в лог
                                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                         context.Cancel();
-                                        return;
+                                        break;
                                     }
                                     else
                                     {
@@ -172,13 +177,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                          CustTxt1 = $"Error get result 'SpectrumOcupationResult' for TaskId = {context.Task.taskParameters.SDRTaskId}",
                                          Status = "Failure"
                                     };
-                                    publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
-                                    publisher.Dispose();
-                                    // отправка уведомления в шину (что ошибка)
-                                    // запись в лог
-                                    _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                                    context.Cancel();
-                                    return;
+                                    var token = publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
+                                    if (token != null)
+                                    {
+                                        // отправка уведомления в шину (что ошибка)
+                                        // запись в лог
+                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                        context.Cancel();
+                                        publisher.Dispose();
+                                        break;
+                                    }
                                 break;
                                 default:
                                     throw new NotImplementedException($"Type {error._failureReason} not supported");
@@ -215,6 +223,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             publisher.Dispose();
                             context.Task.lastResultParameters = null;
                             context.Task.LastTimeSend = currTime;
+                            // обновление TaskParameters в БД
+                            context.Task.taskParameters.status = "C";
+                            this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
                         }
                     });
 
@@ -256,7 +267,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             }
                         }
                         context.Finish();
-                        return;
+                        break;
                     }
                     //////////////////////////////////////////////
                     // 
@@ -272,7 +283,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     else
                     {
                         context.Finish();
-                        return;
+                        break;
                     }
                     context.Task.CountMeasurementDone++;
                 }

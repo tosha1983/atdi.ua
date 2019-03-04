@@ -50,6 +50,15 @@
     <Compile Include="ProcessingTasksFromDB\ProcessingTaskFromDBWorker.cs" />
     <Compile Include="EventProcessing\EventTaskWorker.cs" />
     <Compile Include="EventProcessing\QueueEventTaskWorker.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureDFDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureAudioDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureGpsLocationPropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureSignalParametersDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureRealTimeDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureIQStreamDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureSysInfoDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureZeroSpanDevicePropertiesToSensor.cs" />
+    <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureTraceDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\SendRegistrationResultTaskWorker.cs" />
     <Compile Include="RegistrationSensor\RegisterSensorTaskWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -117,5 +126,6 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
