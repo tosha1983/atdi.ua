@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [Entity]
-    public interface IFreqSampleRaw
+    public interface IFreqSample
     {
         int Id { get; set; }
         double? Freq_MHz { get; set; }
@@ -18,6 +18,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? LevelMax_dBm { get; set; }
         double? OccupationPt { get; set; }
         int? ResMeasId { get; set; }
-        IResMeasRaw RESMEAS { get; set; }
+        IResMeas RESMEAS { get; set; }
     }
 }

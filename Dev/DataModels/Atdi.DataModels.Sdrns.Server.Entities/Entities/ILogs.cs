@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [Entity]
-    public interface IResFreqLevelsRaw
+    public interface ILogs
     {
         int Id { get; set; }
-        double? Freq_MHz { get; set; }
-        double? Level_dBm { get; set; }
-        int? ResMeasId { get; set; }
-        IResMeasRaw RESMEAS { get; set; }
+        string Event { get; set; }
+        string TableName { get; set; }
+        int? Lcount { get; set; }
+        string Info { get; set; }
+        string Who { get; set; }
+        DateTime When { get; set; }
     }
 }
