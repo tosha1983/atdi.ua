@@ -253,6 +253,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                     }
                 }
+                gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString());
+                gl.Flush();
                 //gl.DrawText(10, (int)13, 1.0f, 0.0f, 0.0f, "Segoe UI Mono", 10.0f, string.Format(String.Concat((int)(RefLevel / 10) * 10 - (Range / 10) *1, LevelUnit), 10, 8));
                 //gl.Flush();
                 if (Freq != null && Freq.Length > 0)
@@ -297,6 +299,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //    else if (RFOverload == 1) gl.DrawText((int)w - 110, (int)h - 13, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, "IF Overload");
                 //    gl.Flush();
                 //}
+                
                 gl.Flush();
             }
             catch { }

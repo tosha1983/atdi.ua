@@ -1,4 +1,5 @@
 ﻿using Atdi.Platform.DependencyInjection;
+using Atdi.Platform.AppComponent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
 
         protected override void OnInstallUnit()
         {
-            var adapterConfig = new AdapterConfig(this.Config, this.Logger);
+            var adapterConfig = this.Config.Extract<AdapterConfig>();
             this.Container.RegisterInstance(adapterConfig, ServiceLifetime.Singleton);
 
         }
