@@ -67,7 +67,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 baseContext.contextSOTasks.Add(context);
                 while (true)
-                {
+                {       
                     // проверка - не отменили ли задачу
                     if (context.Token.IsCancellationRequested)
                     {

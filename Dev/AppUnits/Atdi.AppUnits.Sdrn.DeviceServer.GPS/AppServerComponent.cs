@@ -26,6 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
             exampleConfig.PortHandshake = this.Config.GetParameterAsString("PortHandshake");
             exampleConfig.PortName = this.Config.GetParameterAsString("PortName");
             exampleConfig.PortStopBits = this.Config.GetParameterAsString("PortStopBits");
+            exampleConfig.PortParity = this.Config.GetParameterAsString("PortParity");
             this.Container.Register<IGpsDevice, RunGPS>(ServiceLifetime.Singleton);
         }
 

@@ -115,7 +115,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
         {
             try
             {
-                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 var data = e.LogString;
                 var result = NMEAParser.Parse(data);
                 if (result is NMEAStandartSentence)
@@ -123,16 +122,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
                     var sentence = (result as NMEAStandartSentence);
                     if (sentence.SentenceID == SentenceIdentifiers.GGA)
                     {
-                        baseContext.Lat = (float)sentence.parameters[1];
+                        var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
+                        baseContext.Lat = (float)(double)sentence.parameters[1];
                         if ((string)sentence.parameters[2] == "S")
                             baseContext.Lat = baseContext.Lat * (-1);
-                        baseContext.Lat = (float)Math.Round(baseContext.Lat, 6);
+                        baseContext.Lat = (float)(double)Math.Round(baseContext.Lat, 6);
 
-                        baseContext.Lon = (float)sentence.parameters[3];
+                        baseContext.Lon = (float)(double)sentence.parameters[3];
                         if ((string)sentence.parameters[4] == "W")
                             baseContext.Lon = baseContext.Lon * (-1);
-                        baseContext.Lon = (float)Math.Round(baseContext.Lon, 6);
-                        baseContext.Asl = (float)Math.Round((float)sentence.parameters[8], 2);
+                        baseContext.Lon = (float)(double)Math.Round(baseContext.Lon, 6);
+                        baseContext.Asl = (float)(double)Math.Round((float)(double)sentence.parameters[8], 2);
+
+                        this._logger.Info(Contexts.ThisComponent, Categories.Processing, $"Current coordinates, Lon : {baseContext.Lon}, Lat : {baseContext.Lat}, Asl : {baseContext.Asl}");
                     }
                 }
             }
