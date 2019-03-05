@@ -31,6 +31,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         ConsoleLogger logger;
         DummyAdapterHost adapterHost;
         ADP.SignalHound.Adapter adapter;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +48,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 Prop4 = 4,
                 Prop5 = 5
             };
+            
             adapter = new ADP.SignalHound.Adapter(adapterConfig, logger);
             DS.Adapter = adapter;
 
