@@ -8,7 +8,7 @@ using COM = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using COMR = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.Enums;
 using MEN = Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums;
-using NationalInstruments.VisaNS;
+//using NationalInstruments.VisaNS;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 {
