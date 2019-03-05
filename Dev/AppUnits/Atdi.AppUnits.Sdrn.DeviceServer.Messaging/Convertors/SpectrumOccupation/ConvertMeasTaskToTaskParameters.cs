@@ -62,6 +62,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             
             if (taskSDR.SOParam != null)
             {
+                if ((taskSDR.DeviceParam.MeasTime_sec == null) || (taskSDR.Interval_sec == 0) || ((taskSDR.DeviceParam.MeasTime_sec != null) && (taskSDR.DeviceParam.MeasTime_sec == 0)))
+                {
+                    taskParameters.NCount = 10000;
+                }
+                else
+                {
+                    taskParameters.NCount = (int)((double)taskSDR.Interval_sec / (double)taskSDR.DeviceParam.MeasTime_sec);
+                }
                 var sOtype = GetSOTypeFromSpectrumOccupationType(taskSDR.SOParam.Type);
                 if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                 {
@@ -70,7 +78,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else {taskParameters.NChenal = 10;}
                         if (taskSDR.SOParam.LevelMinOccup_dBm <= 0) { taskParameters.LevelMinOccup_dBm = taskSDR.SOParam.LevelMinOccup_dBm; } else { taskParameters.LevelMinOccup_dBm = -80; }
                         taskParameters.Type_of_SO = sOtype;
-                        if (taskParameters.List_freq_CH != null)
+                        if ((taskParameters.List_freq_CH != null) && (taskParameters.List_freq_CH.Count>0))
                         {
                             // формируем начало и конец для измерений 
                             taskParameters.List_freq_CH.Sort();

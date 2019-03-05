@@ -99,12 +99,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     builderInsertIResMeas.SetValue(c => c.StartTime, resObject.StartTime);
                     builderInsertIResMeas.SetValue(c => c.StopTime, resObject.StopTime);
                     builderInsertIResMeas.SetValue(c => c.ScansNumber, resObject.ScansNumber);
-
                     builderInsertIResMeas.Select(c => c.Id);
                     queryExecuter
-                   .ExecuteAndFetch(builderInsertIResMeas, reader =>
-                   {
-                       var res = reader.Read();
+                    .ExecuteAndFetch(builderInsertIResMeas, reader =>
+                    {
+                        var res = reader.Read();
                        if (res)
                        {
                            valInsResMeas = reader.GetValue(c => c.Id);
@@ -112,7 +111,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                        return res;
                    });
 
-                    if (valInsResMeas > -1)
+                    if (valInsResMeas > 0)
                     {
 
                         if (resObject.BandwidthResult != null)
@@ -348,7 +347,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         });
 
 
-                                        if (IDResGeneral > -1)
+                                        if (IDResGeneral > 0)
                                         {
                                             if (station.GeneralResult.StationSysInfo != null)
                                             {
@@ -408,7 +407,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 });
 
 
-                                                if (IDResSysInfoGeneral > -1)
+                                                if (IDResSysInfoGeneral > 0)
                                                 {
                                                     if (stationSysInfo.InfoBlocks != null)
                                                     {
@@ -561,7 +560,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     else if (valInsResMeas > 0)
                     {
@@ -569,7 +568,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
                     envelop.SensorName = incomingEnvelope.SensorName;

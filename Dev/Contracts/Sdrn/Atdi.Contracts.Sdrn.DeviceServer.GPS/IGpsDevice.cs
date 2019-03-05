@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.CoreServices.Device.EntityOrm
+namespace Atdi.Contracts.Sdrn.DeviceServer.GPS
 {
-    public class ExampleConfig
+    public interface IGpsDevice
     {
+        void Run();
+        void Stop();
     }
 }

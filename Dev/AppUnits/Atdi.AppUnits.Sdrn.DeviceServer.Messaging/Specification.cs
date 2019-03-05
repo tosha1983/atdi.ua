@@ -25,8 +25,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly EventCategory ConfigLoading = "Config loading";
         public static readonly EventCategory GetMeasTaskFromBus = "Get MeasTask from bus";
         public static readonly EventCategory SendMeasTaskHandlerStart = "Get MeasTask from bus";
-
-
     }
 
     static class Events
@@ -34,7 +32,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly EventText MessageIsBeingHandled = "The message is being handled: Type = '{0}'";
         public static readonly EventText IncorrectMessage = "Incorrect message";
         public static readonly EventText StartProcessSendMeasTask = "Start process SendMeasTaskHandler";
-
+        public static readonly EventText StartedEventTask = "Started EventTask Task.Id = {0}";
+        public static readonly EventText StartedSendRegistrationResultTask = "Started SendRegistrationResultTask Task.Id = {0}";
     }
     static class TraceScopeNames
     {

@@ -14,6 +14,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Freq_MHz { get; set; }
         double? Level_dBm { get; set; }
         int? ResMeasId { get; set; }
-        IResMeas RESMEAS { get; set; }
+        IResMeasRaw RESMEAS { get; set; }
     }
 }

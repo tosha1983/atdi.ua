@@ -63,7 +63,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     return result;
                 });
 
-                if (idSensor > -1)
+                if (idSensor > 0)
                 {
                     var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensor>().Update();
                     builderUpdateSensor.SetValue(c => c.Administration, sensorData.Administration);
@@ -145,7 +145,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 });
                             }
 
-                            if (idSensorAntenna > -1)
+                            if (idSensorAntenna > 0)
                             {
                                 var builderUpdateAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().Update();
                                 builderUpdateAntenna.SetValue(c => c.AddLoss, sensorData.Antenna.AddLoss);
@@ -199,7 +199,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 return result;
                                             });
 
-                                            if (idSensorAntennaPattern > -1)
+                                            if (idSensorAntennaPattern > 0)
                                             {
                                                 var builderUpdateAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Update();
                                                 builderUpdateAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
@@ -303,7 +303,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                        });
                             }
 
-                            if (idSensorEquipment > -1)
+                            if (idSensorEquipment > 0)
                             {
 
                                 var builderUpdateEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>().Update();
@@ -362,7 +362,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 return result;
                                             });
 
-                                            if (idSensorEquipmentSensitivities > -1)
+                                            if (idSensorEquipmentSensitivities > 0)
                                             {
                                                 var builderUpdateSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Update();
                                                 builderUpdateSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
@@ -586,7 +586,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        updateSensor.Status = "ERROR";
+                        updateSensor.Status = "Error";
                         updateSensor.Message = "Something went wrong on the server";
                     }
                     else if (sensorUpdate)
@@ -596,7 +596,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        updateSensor.Status = "ERROR";
+                        updateSensor.Status = "Error";
                         updateSensor.Message = "Something went wrong on the server during the updating of a new sensor";
                     }
 
