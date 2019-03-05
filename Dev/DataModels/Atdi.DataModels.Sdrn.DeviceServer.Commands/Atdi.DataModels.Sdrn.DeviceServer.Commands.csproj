@@ -42,7 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\MesureIQStreamCommand.cs" />
+    <Compile Include="Commands\GpsCommand.cs" />
     <Compile Include="Commands\MesureTraceCommand.cs" />
+    <Compile Include="Parameters\GpsParameter.cs" />
+    <Compile Include="Parameters\Gps\Enums\GpsMode.cs" />
+    <Compile Include="Results\GpsResult.cs" />
     <Compile Include="Test\MesureGpsLocationExampleCommand.cs" />
     <Compile Include="Parameters\MesureIQStreamParameter.cs" />
     <Compile Include="Parameters\MesureTraceParameter.cs" />

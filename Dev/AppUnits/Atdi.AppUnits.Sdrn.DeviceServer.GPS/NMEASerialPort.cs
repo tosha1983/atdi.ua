@@ -3,7 +3,7 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
 // Code by Aleksandr Dikarev, dikarev-aleksandr@yandex.ru
 {

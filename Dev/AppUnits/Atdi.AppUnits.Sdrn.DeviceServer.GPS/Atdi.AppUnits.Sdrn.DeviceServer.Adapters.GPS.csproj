@@ -7,8 +7,8 @@
     <ProjectGuid>{02B46618-04E2-4BC7-B8AD-533338854228}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.GPS</RootNamespace>
-    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer.GPS</AssemblyName>
+    <RootNamespace>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS</RootNamespace>
+    <AssemblyName>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,8 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapter.cs" />
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="RunGPS.cs" />
     <Compile Include="ConfigGPS.cs" />
     <Compile Include="GNSSReceiverWrapper.cs" />
     <Compile Include="NMEAParser.cs" />
@@ -63,13 +63,21 @@
     <Compile Include="StrUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer.GPS\Atdi.Contracts.Sdrn.DeviceServer.GPS.csproj">
-      <Project>{ce03f53a-3f61-4cf8-b329-d00ee4a8fc2b}</Project>
-      <Name>Atdi.Contracts.Sdrn.DeviceServer.GPS</Name>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
+      <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
+      <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
       <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
+      <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     public class ConfigGPS
     {
