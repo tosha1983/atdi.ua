@@ -1265,9 +1265,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             tempIQStream.BlocksCount = (int)Math.Ceiling(blockDuration * samples_per_sec / return_len);
             tempIQStream.BlocksAll = (int)Math.Ceiling(receivTime * samples_per_sec / return_len);
             tempIQStream.TimeStart = timeStart;
-            //tempIQStream.TimeLength = (long)(blockDuration * 10000000);
             tempIQStream.IQData = new float[tempIQStream.BlocksCount][];
-            //tempIQStream.TrData = new int[tempIQStream.BlocksCount][];//данные тригеров, PPS
             tempIQStream.dataRemainings = new int[tempIQStream.BlocksCount];
             tempIQStream.sampleLosses = new int[tempIQStream.BlocksCount];
             tempIQStream.OneSempleDuration = 1000000000 / samples_per_sec;
@@ -1277,12 +1275,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             tempIQStream.TrDataTemp = new int[71];
             for (int i = 0; i < tempIQStream.BlocksCount; i++)
             {
-                float[] iqSamplesX = new float[return_len * 2];
-                //tempIQStream.IQData.Add(iqSamplesX);
-                tempIQStream.IQData[i] = iqSamplesX;
-                //int[] triggersX = new int[71];
-                //tempIQStream.TrData[i] = triggersX;
-                long[] time = new long[4];
+                float[] iqSamplesX = new float[return_len * 2];               
+                tempIQStream.IQData[i] = iqSamplesX;                
             }
             // сформировано пустое место
         }
