@@ -71,6 +71,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 // данные единичного замера приведенного к каналам находятся здесь F_ch_res_temp    
                 // Собираем статистику  в F_ch_res
+                int NN = 0; 
                 if (lastResultParameters != null)
                 {
                     if (lastResultParameters.NN == 0)
@@ -89,20 +90,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (lastResultParameters.fSemplesResult[i].LevelMindBm > F_ch_res_temp[i].LevelMindBm) { Semple.LevelMindBm = F_ch_res_temp[i].LevelMindBm; } else { Semple.LevelMindBm = lastResultParameters.fSemplesResult[i].LevelMindBm; }
                             F_ch_res_[i] = Semple;
                         }
+                        NN = lastResultParameters.NN;
                     }
                 }
                 else
                 {
-                    lastResultParameters = new SpectrumOcupationResult();
-                    CalcFSFromLevel Calc1 = new CalcFSFromLevel(F_ch_res_temp, sensorParameters);
-                    lastResultParameters.fSemplesResult = F_ch_res_temp;
-                    lastResultParameters.NN = 1;
+                    F_ch_res_ = F_ch_res_temp;
                 }
                 // в данной точке результат находится в переменой F_ch_res и в count мы его должны показать/запомнить.  
                 // кстати это происходит у нас циклически
-                CalcFSFromLevel Calc = new CalcFSFromLevel(F_ch_res_, sensorParameters);
+                lastResultParameters = new SpectrumOcupationResult();
+                CalcFSFromLevel Calc1 = new CalcFSFromLevel(F_ch_res_temp, sensorParameters);
                 lastResultParameters.fSemplesResult = F_ch_res_;
-                lastResultParameters.NN = lastResultParameters.NN + 1; // костыль пока признак 0 
+                lastResultParameters.NN = NN+1;
+
             }
             return lastResultParameters;
         }

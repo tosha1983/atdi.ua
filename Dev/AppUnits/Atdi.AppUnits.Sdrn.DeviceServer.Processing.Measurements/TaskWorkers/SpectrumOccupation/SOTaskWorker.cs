@@ -276,12 +276,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
-                    if (sleepTime > 0)
+                    if (sleepTime >= 0)
                     {
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
                         Thread.Sleep((int)sleepTime);
                     }
-                    else
+                    else if (sleepTime < 0)
                     {
                         context.Finish();
                         break;
