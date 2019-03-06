@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     static class Contexts
     {

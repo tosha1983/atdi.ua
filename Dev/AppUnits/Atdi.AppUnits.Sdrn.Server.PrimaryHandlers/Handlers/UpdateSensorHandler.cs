@@ -579,8 +579,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     // формируем объект подтвержденяи о обновлении данных о сенсоре
                     var updateSensor= new SensorUpdatingResult
                     {
-                        EquipmentTechId = incomingEnvelope.SensorTechId,
-                        SensorName = incomingEnvelope.SensorName,
+                        EquipmentTechId = incomingEnvelope.DeliveryObject.Equipment.TechId,
+                        SensorName = incomingEnvelope.DeliveryObject.Name,
                         SdrnServer = this._environment.ServerInstance
                     };
 

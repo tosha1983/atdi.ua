@@ -27,6 +27,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // Вычисляем занятость для данного замера по каналам 
                 SemplFreq[] F_ch_res_temp = new SemplFreq[taskParameters.List_freq_CH.Count]; // здест будут храниться замеры приведенные к каналу
                 int start = 0;
+
+                double realRBW_Hz = result.Freq_Hz[1] - result.Freq_Hz[0]; //Вставить проверку на наличие result.Freq_Hz[1] - result.Freq_Hz[0] если отсутвует выходить тиз функции с ошибкой что принятый результат не верен
+
                 for (int i = 0; i < taskParameters.List_freq_CH.Count; i++) // Цикл по каналам
                 {
                     SemplFreq F_SO = new SemplFreq(); // здесь будет храниться один замер приведенный к каналу
@@ -43,7 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 F_SO.LeveldBm = result.Level[j];
                                 if (taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) // частотная занятость
                                 {
-                                    if (result.Level[j] > taskParameters.LevelMinOccup_dBm + 10 * Math.Log10(taskParameters.RBW_Hz / (taskParameters.StepSO_kHz * 1000)))
+                                    if (result.Level[j] > taskParameters.LevelMinOccup_dBm + 10 * Math.Log10(realRBW_Hz / (taskParameters.StepSO_kHz * 1000)))
                                     { F_SO.OcupationPt = 100; }
                                 }
                             }
@@ -53,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 F_SO.LeveldBm = (float)(10 * Math.Log10(F_SO.LeveldBm));
                                 if (taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) // частотная занятость //накапливаем
                                 {
-                                    if (result.Level[j] > taskParameters.LevelMinOccup_dBm + 10 * Math.Log10(taskParameters.RBW_Hz / (taskParameters.StepSO_kHz * 1000)))
+                                    if (result.Level[j] > taskParameters.LevelMinOccup_dBm + 10 * Math.Log10(realRBW_Hz / (taskParameters.StepSO_kHz * 1000)))
                                     { F_SO.OcupationPt = F_SO.OcupationPt + 100; }
                                 }
                             }

@@ -12,11 +12,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     public static class ConvertMesureTraceDevicePropertiesToSensor
     {
-        public static Sensor Convert(this MesureTraceDeviceProperties mesure, string sensorName)
+        public static Sensor Convert(this MesureTraceDeviceProperties mesure, string sensorName, string sensorTechId)
         {
             var equipmentValue = mesure.StandardDeviceProperties.EquipmentInfo;
             var sensor = new Sensor()
             {
+                Status = "A",
                 Name = sensorName,
                 Equipment = new SensorEquipment()
                 {
@@ -24,6 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     Name = equipmentValue.EquipmentName,
                     Manufacturer = equipmentValue.EquipmentManufacturer,
                     Family = equipmentValue.EquipmentFamily,
+                    TechId = sensorTechId
                 },
                 Antenna = new SensorAntenna()
                 {

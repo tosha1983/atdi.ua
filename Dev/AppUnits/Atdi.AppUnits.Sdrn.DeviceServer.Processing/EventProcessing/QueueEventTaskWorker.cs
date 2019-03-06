@@ -155,6 +155,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 }
                                                 else
                                                 {
+                                                    taskParameters = taskParams;
                                                     action.Invoke();
                                                 }
                                             }

@@ -20,11 +20,12 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private object _syncContextQueueEventTask = new object();
         private object _syncListDeferredTasks = new object();
         private object _syncContextSOTask = new object();
+        private object _syncExecutionContextGps = new object();
 
 
-        private float _lat;
-        private float _lon;
-        private float _asl;
+        private double _lat;
+        private double _lon;
+        private double _asl;
         private DM.Sensor _activeSensor;
         private DM.DeviceCommand _deviceCommand;
         private DM.SensorRegistrationResult _sensorRegistrationResult;
@@ -32,9 +33,10 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private ITaskContext<QueueEventTask, BaseContext> _contextQueueEventTask;
         private List<ITaskContext<SOTask, SpectrumOccupationProcess>> _contextSOTasks;
         private List<TaskParameters> _listDeferredTasks;
-        
+        private IExecutionContext _executionContextGps;
+
          
-        public float Lat
+        public double Lat
         {
             get
             {
@@ -48,7 +50,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-        public float Lon
+        public double Lon
         {
             get
             {
@@ -62,7 +64,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-        public float Asl
+        public double Asl
         {
             get
             {
@@ -178,9 +180,23 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
                     _contextSOTasks = value;
             }
         }
+
+        public IExecutionContext executionContextGps
+        {
+            get
+            {
+                lock (_syncExecutionContextGps)
+                    return _executionContextGps;
+            }
+            set
+            {
+                lock (_syncExecutionContextGps)
+                    _executionContextGps = value;
+            }
+        }
+
+
         
-
-
         public MainProcess() : base("Main process")
         {
             listDeferredTasks = new List<TaskParameters>();

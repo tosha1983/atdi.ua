@@ -44,7 +44,7 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertMeasTaskToTaskParameters.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameter.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
     <Compile Include="Handlers\SendCommandHandler.cs" />
     <Compile Include="Handlers\SendRegistrationResultHandler.cs" />
