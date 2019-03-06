@@ -10,6 +10,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
     public class AdapterConfig
     {
+        //[ComponentConfigProperty("AntennaCodeTest.string")]
+        //public string AntennaCodeTest { get; set; }
+
         private readonly static string Prop1Name = "Prop1";
         private readonly static string Prop2Name = "Prop2";
         private readonly static string Prop3Name = "Prop3";

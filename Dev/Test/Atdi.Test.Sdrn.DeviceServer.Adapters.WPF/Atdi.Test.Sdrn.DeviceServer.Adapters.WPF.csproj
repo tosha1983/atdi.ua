@@ -38,14 +38,17 @@
     <StartupObject>Atdi.Test.Sdrn.DeviceServer.Adapters.WPF.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpGL">
-      <HintPath>..\3anet\ControlU\bin\x64\Debug\SharpGL.dll</HintPath>
+    <Reference Include="SharpGL, Version=2.3.0.1, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\SharpGL.dll</HintPath>
     </Reference>
-    <Reference Include="SharpGL.SceneGraph">
-      <HintPath>..\3anet\ControlU\bin\x64\Debug\SharpGL.SceneGraph.dll</HintPath>
+    <Reference Include="SharpGL.SceneGraph, Version=2.3.0.1, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\SharpGL.SceneGraph.dll</HintPath>
     </Reference>
-    <Reference Include="SharpGL.WPF">
-      <HintPath>..\3anet\ControlU\bin\x64\Debug\SharpGL.WPF.dll</HintPath>
+    <Reference Include="SharpGL.WPF, Version=2.3.0.1, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\SharpGL.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -150,6 +153,12 @@
       <Project>{26af07cb-441a-469e-9823-2d2b37fca414}</Project>
       <Name>Atdi.UnitTest.Sdrn.DeviceServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="dll\SharpGL.dll" />
+    <Content Include="dll\SharpGL.SceneGraph.dll" />
+    <Content Include="dll\SharpGL.WPF.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
