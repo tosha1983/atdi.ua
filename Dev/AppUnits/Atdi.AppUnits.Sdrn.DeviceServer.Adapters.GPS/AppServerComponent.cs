@@ -1,27 +1,28 @@
 ﻿using Atdi.Platform.DependencyInjection;
-using Atdi.DataModels.Sdrn.DeviceServer.Processing;
+using System;
+using System.Collections.Generic;
 using Atdi.Platform.AppComponent;
 
-
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     public class AppServerComponent : AppUnitComponent
     {
 
         public AppServerComponent() 
-            : base("SdrnDeviceServerProcessingAppUnit")
+            : base("SdrnDeviceServerGPSAdapterAppUnit")
         {
+            
+
         }
 
         protected override void OnInstallUnit()
         {
-            var exampleConfig = this.Config.Extract<ConfigProcessing>();
+            var exampleConfig = this.Config.Extract<ConfigGPS>();
             this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
-            this.Container.RegisterInstance<MainProcess>(new MainProcess(), ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()
-        {  
+        {
         }
 
         protected override void OnDeactivateUnit()

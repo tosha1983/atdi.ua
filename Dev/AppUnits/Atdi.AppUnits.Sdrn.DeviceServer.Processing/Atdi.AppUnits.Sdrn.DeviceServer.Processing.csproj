@@ -47,6 +47,7 @@
     <Compile Include="EventProcessing\DeviceCommandTaskWorker.cs" />
     <Compile Include="ConfigProcessing.cs" />
     <Compile Include="GPS\GPSWorker.cs" />
+    <Compile Include="GPS\GPSTaskResultHandler.cs" />
     <Compile Include="ProcessingTasksFromDB\ProcessingTaskFromDBWorker.cs" />
     <Compile Include="EventProcessing\EventTaskWorker.cs" />
     <Compile Include="EventProcessing\QueueEventTaskWorker.cs" />
@@ -72,10 +73,6 @@
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
       <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
       <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer.GPS\Atdi.Contracts.Sdrn.DeviceServer.GPS.csproj">
-      <Project>{ce03f53a-3f61-4cf8-b329-d00ee4a8fc2b}</Project>
-      <Name>Atdi.Contracts.Sdrn.DeviceServer.GPS</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>

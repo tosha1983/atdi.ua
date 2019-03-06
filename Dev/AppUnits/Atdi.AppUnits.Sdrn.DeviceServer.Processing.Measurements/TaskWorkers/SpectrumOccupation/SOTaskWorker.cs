@@ -66,6 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
                 var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 baseContext.contextSOTasks.Add(context);
+               
                 while (true)
                 {       
                     // проверка - не отменили ли задачу

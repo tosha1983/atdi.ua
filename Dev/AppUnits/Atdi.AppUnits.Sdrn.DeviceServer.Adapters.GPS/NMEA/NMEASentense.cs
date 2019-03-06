@@ -1,5 +1,5 @@
 ﻿
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     public abstract class NMEASentense
     {

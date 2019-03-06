@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     public class ConfigGPS
     {
@@ -11,6 +11,5 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
         public string PortStopBits { get; set; }
         public string PortHandshake { get; set; }
         public string PortParity { get; set; }
-
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     /// Known talkers:
     /// AG, AP, CD, CR, CS, CT, CV, CX, DE, DF, EC, EP, ER, GL, GP, HC, HE, 

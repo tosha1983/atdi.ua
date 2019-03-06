@@ -26,7 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private IServicesContainer _servicesContainer;
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
-        private readonly IDeviceServerConfig  _deviceServerConfig;
+        private readonly IDeviceServerConfig _deviceServerConfig;
         private readonly ConfigProcessing _config;
         private readonly IController _controller;
 
@@ -85,16 +85,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     var equipmentInfo = standardDeviceProperties.EquipmentInfo;
                                     if (equipmentInfo != null)
                                     {
-                                        //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
-                                        //если сведения найдены, тогда:
-                                        if (equipmentInfo.EquipmentManufacturer == this._deviceServerConfig.SensorTechId)
-                                        {
-                                            //преобразование в DM.Sensor
-                                            //передаем наименование сенсора из лицензии this._deviceServerConfig.SensorName
-                                            sensor = mesureTraceDeviceProperties.Convert(this._deviceServerConfig.SensorName);
-                                            isFindDeviceProps = true;
-                                            break;
-                                        }
+                                        //преобразование в DM.Sensor
+                                        //передаем наименование сенсора из лицензии this._deviceServerConfig.SensorName
+                                        sensor = mesureTraceDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                        isFindDeviceProps = true;
+                                        break;
                                     }
                                 }
                             }
