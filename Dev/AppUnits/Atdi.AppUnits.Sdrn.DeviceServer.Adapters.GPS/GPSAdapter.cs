@@ -3,39 +3,36 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using COM = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using COMR = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 using Atdi.Platform.DependencyInjection;
-using Atdi.DataModels.Sdrn.DeviceServer.Processing;
-
-
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     /// <summary>
-    /// Реализация объекта адаптера
+    /// Реализация объекта GPS адаптера
     /// </summary>
-    public class Adapter : IAdapter
+    public class GPSAdapter : IAdapter
     {
         private readonly ILogger _logger;
         private readonly ConfigGPS _config;
         private GNSSReceiverWrapper gnssWrapper;
-        private IServicesResolver _resolver;
-        private IServicesContainer _servicesContainer;
+        private readonly IServicesResolver _resolver;
+        private readonly IServicesContainer _servicesContainer;
         private IExecutionContext _executionContextGps;
-        private ulong _counter = 0;
+        private readonly IWorkScheduler _workScheduler;
+        private ulong part = 0;
         /// <summary>
         /// Все объекты адаптера создаются через DI-контейнер 
         /// Запрашиваем через конструктор необходимые сервисы
         /// </summary>
         /// <param name="adapterConfig"></param>
         /// <param name="logger"></param>
-        public Adapter(ConfigGPS config,
+        public GPSAdapter(ConfigGPS config,
             IServicesResolver resolver,
             IServicesContainer servicesContainer,
+            IWorkScheduler workScheduler,
             ILogger logger)
         {
             this._logger = logger;
@@ -43,6 +40,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             this._logger = logger;
             this._resolver = resolver;
             this._servicesContainer = servicesContainer;
+            this._workScheduler = workScheduler;
         }
 
         /// <summary>
@@ -54,8 +52,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             try
             {
-                Start();
-                host.RegisterHandler<COM.GpsCommand, COMR.GpsResult>(MesureTraceCommandHandler);
+                _workScheduler.Run($"Start GPS scheduler", () => { OpenGPSDevice(); } );
+                host.RegisterHandler<COM.GpsCommand, COMR.GpsResult>(GPSCommandHandler);
             }
             catch (Exception exp)
             {
@@ -68,24 +66,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         /// </summary>
         public void Disconnect()
         {
-            try
-            {
-                Stop();
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
+            CloseGPSDevice();
         }
 
 
-        public void MesureTraceCommandHandler(COM.GpsCommand command, IExecutionContext context)
+        public void GPSCommandHandler(COM.GpsCommand command, IExecutionContext context)
         {
             try
             {
-                if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Run)
+                if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Start)
                 {
                     _executionContextGps = context;
+                }
+                else if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Stop)
+                {
+                    CloseGPSDevice();
                 }
             }
             catch (Exception e)
@@ -98,9 +93,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
         }
 
-        private void Start()
+        private void OpenGPSDevice()
         {
-            SerialPortSettings portSettings = new SerialPortSettings();
+            this._logger.Verbouse(Contexts.ThisComponent, Categories.Processing, "Open GPS device...");
+
+            var portSettings = new SerialPortSettings();
 
             BaudRate baudRate;
             if (Enum.TryParse<BaudRate>(this._config.PortBaudRate, out baudRate))
@@ -168,7 +165,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             {
                 if (_executionContextGps != null)
                 {
-                    var resultMember = new COMR.GpsResult(this._counter++, CommandResultStatus.Next);
+                    var resultMember = new COMR.GpsResult(part++, CommandResultStatus.Final);
                     var data = e.LogString;
                     var result = NMEAParser.Parse(data);
                     if (result is NMEAStandartSentence)
@@ -176,26 +173,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                         var sentence = (result as NMEAStandartSentence);
                         if (sentence.SentenceID == SentenceIdentifiers.GGA)
                         {
+
                             if (_executionContextGps.Token.IsCancellationRequested)
                             {
                                 _executionContextGps.Cancel();
+                                CloseGPSDevice();
                                 return;
                             }
 
-                            resultMember.Lat = (float)sentence.parameters[1];
+                            resultMember.Lat = (double)sentence.parameters[1];
                             if ((string)sentence.parameters[2] == "S")
                                 resultMember.Lat = resultMember.Lat * (-1);
-                            resultMember.Lat = (float)Math.Round(resultMember.Lat.Value, 6);
+                            resultMember.Lat = (double)Math.Round(resultMember.Lat.Value, 6);
 
-                            resultMember.Lon = (float)sentence.parameters[3];
+                            resultMember.Lon = (double)sentence.parameters[3];
                             if ((string)sentence.parameters[4] == "W")
                                 resultMember.Lon = resultMember.Lon * (-1);
-                            resultMember.Lon = (float)Math.Round(resultMember.Lon.Value, 6);
-                            resultMember.Asl = (float)Math.Round((float)sentence.parameters[8], 2);
+                            resultMember.Lon = (double)Math.Round(resultMember.Lon.Value, 6);
+                            resultMember.Asl = (double)Math.Round((double)sentence.parameters[8], 2);
 
                             _executionContextGps.PushResult(resultMember);
 
-                            _executionContextGps.Finish();
+                            // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
+                            //_executionContextGps.Finish();
                         }
                     }
                 }
@@ -206,8 +206,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
         }
 
-        void Stop()
+        void CloseGPSDevice()
         {
+            if (_executionContextGps != null)
+            {
+                _executionContextGps.Finish();
+            }
+
             if (gnssWrapper.IsOpen)
             {
                 try

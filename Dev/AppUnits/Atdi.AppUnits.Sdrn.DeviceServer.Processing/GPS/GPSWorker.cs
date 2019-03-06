@@ -43,6 +43,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 _logger.Verbouse(Contexts.GPSWorker, Categories.Processing, Events.StartGPSWorker.With(context.Task.Id));
                 this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
                 var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
+
+                //////////////////////////////////////////////
+                // 
+                // Отправка команды в контроллер GPS
+                //
+                //////////////////////////////////////////////
+                var gpsParameter = new GpsParameter();
+                gpsParameter.GpsMode = GpsMode.Start;
+                var gpsDevice = new GpsCommand(gpsParameter)
+                {
+                    Options = CommandOption.PutInQueue
+                };
+
+                this._controller.SendCommand<GpsResult>(context, gpsDevice,
+                (
+                      ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                ) =>
+                {
+                      taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
+                });
+
                 while (true)
                 {
                     if (context.Token.IsCancellationRequested)
@@ -53,47 +74,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                     //////////////////////////////////////////////
                     // 
-                    // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
-                    //
-                    //////////////////////////////////////////////
-                    var gpsParameter = new GpsParameter();
-                    gpsParameter.GpsMode = GpsMode.Run;
-                    var gpsDevice = new GpsCommand(gpsParameter)
-                    {
-                        Options = CommandOption.PutInQueue
-                    };
-
-
-                    this._controller.SendCommand<GpsResult>(context, gpsDevice,
-                    (
-                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) =>
-                    {
-                        taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
-                    });
-                    //////////////////////////////////////////////
-                    // 
                     // Получение очередного  результат 
                     //
                     //
                     //////////////////////////////////////////////
                     GpsResult gpsResult = null;
-                    bool isDown = context.WaitEvent<GpsResult>(out gpsResult, 2000);
-                    if (isDown == false) // таймут - результатов нет
-                    {
-                        var error = new ExceptionProcessGPS();
-                        if (context.WaitEvent<ExceptionProcessGPS>(out error, 1) == true)
-                        {
-                            // 
-                            context.Cancel();
-                            break;
-                        }
-                    }
-                    else
+                    bool isWait = context.WaitEvent<GpsResult>(out gpsResult, 1000);
+                    if (isWait)
                     {
                         baseContext.Asl = gpsResult.Asl.Value;
                         baseContext.Lon = gpsResult.Lon.Value;
                         baseContext.Lon = gpsResult.Lat.Value;
+                        _logger.Info(Contexts.GPSWorker, Categories.Processing, $" New coordinates Lon: {baseContext.Lon}, Lat: {baseContext.Lat}, Asl : {baseContext.Asl}");
                     }
                 }
             }

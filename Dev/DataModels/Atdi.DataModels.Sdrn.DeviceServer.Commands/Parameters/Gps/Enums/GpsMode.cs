@@ -8,6 +8,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
 {
     public enum GpsMode
     {
-        Run  
+        Start,
+        Stop
     }
 }

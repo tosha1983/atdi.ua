@@ -26,8 +26,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 catch (Exception ex)
                 {
-                    taskContext.Abort(ex);
                     taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(CommandFailureReason.Exception, ex));
+                    taskContext.Abort(ex);
                 }
             }
         }

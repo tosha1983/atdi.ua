@@ -11,6 +11,5 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         public string PortStopBits { get; set; }
         public string PortHandshake { get; set; }
         public string PortParity { get; set; }
-
     }
 }

@@ -141,7 +141,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test.csproj", "{3D3C1F36-7C53-43D4-ADF9-6EC801F6A94E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.GPS\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS.csproj", "{02B46618-04E2-4BC7-B8AD-533338854228}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS.csproj", "{02B46618-04E2-4BC7-B8AD-533338854228}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

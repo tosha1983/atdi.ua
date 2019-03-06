@@ -40,27 +40,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapter.cs" />
+    <Compile Include="GPSAdapter.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="ConfigGPS.cs" />
-    <Compile Include="GNSSReceiverWrapper.cs" />
-    <Compile Include="NMEAParser.cs" />
-    <Compile Include="NMEAParserTest.cs" />
-    <Compile Include="NMEAPort.cs" />
-    <Compile Include="NMEAProprietarySentence.cs" />
-    <Compile Include="NMEAProprietarySentese.cs" />
-    <Compile Include="NMEASentence.cs" />
-    <Compile Include="NMEASentense.cs" />
-    <Compile Include="NMEASerialPort.cs" />
-    <Compile Include="NMEAStandartSentence.cs" />
-    <Compile Include="NMEAStandartSentese.cs" />
+    <Compile Include="NMEA\GNSSReceiverWrapper.cs" />
+    <Compile Include="NMEA\NMEAParser.cs" />
+    <Compile Include="NMEA\NMEAParserTest.cs" />
+    <Compile Include="NMEA\NMEAPort.cs" />
+    <Compile Include="NMEA\NMEAProprietarySentence.cs" />
+    <Compile Include="NMEA\NMEAProprietarySentese.cs" />
+    <Compile Include="NMEA\NMEASentence.cs" />
+    <Compile Include="NMEA\NMEASentense.cs" />
+    <Compile Include="NMEA\NMEASerialPort.cs" />
+    <Compile Include="NMEA\NMEAStandartSentence.cs" />
+    <Compile Include="NMEA\NMEAStandartSentese.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerialPortSettings.cs" />
-    <Compile Include="SettingsContainer.cs" />
-    <Compile Include="SettingsProvider.cs" />
-    <Compile Include="SettingsProviderXML.cs" />
+    <Compile Include="NMEA\SerialPortSettings.cs" />
+    <Compile Include="NMEA\SettingsContainer.cs" />
+    <Compile Include="NMEA\SettingsProvider.cs" />
+    <Compile Include="NMEA\SettingsProviderXML.cs" />
     <Compile Include="Specification.cs" />
-    <Compile Include="StrUtils.cs" />
+    <Compile Include="NMEA\StrUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
