@@ -1028,6 +1028,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
             }
+
             FreqStep = (decimal)bin_size;
 
             if (Status != EN.Status.DeviceConnectionErr ||
