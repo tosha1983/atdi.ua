@@ -17,6 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             var equipmentValue = mesure.StandardDeviceProperties.EquipmentInfo;
             var sensor = new Sensor()
             {
+                Status = "A",
                 Name = sensorName,
                 Equipment = new SensorEquipment()
                 {
@@ -24,6 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     Name = equipmentValue.EquipmentName,
                     Manufacturer = equipmentValue.EquipmentManufacturer,
                     Family = equipmentValue.EquipmentFamily,
+                    TechId = Guid.NewGuid().ToString()
                 },
                 Antenna = new SensorAntenna()
                 {
