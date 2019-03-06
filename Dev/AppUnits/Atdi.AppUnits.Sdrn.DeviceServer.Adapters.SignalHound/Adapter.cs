@@ -17,6 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
     /// </summary>
     public class Adapter : IAdapter
     {
+        private readonly ITimeService _timeService;
         private readonly ILogger _logger;
         private readonly AdapterConfig _adapterConfig;
         private LocalParametersConverter LPC;
@@ -29,19 +30,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         public Adapter(AdapterConfig adapterConfig, ILogger logger)
         {
             this._logger = logger;
-            this._adapterConfig = adapterConfig;
+            this._adapterConfig = adapterConfig;            
             LPC = new LocalParametersConverter();
             FreqArr = new double[TracePoints];
             LevelArr = new float[TracePoints];
             for (int i = 0; i < TracePoints; i++)
             {
-
                 FreqArr[i] = (double)(FreqStart + FreqStep * i);
                 LevelArr[i] = -100;
-
             }
         }
-
+        public Adapter(AdapterConfig adapterConfig, ILogger logger, ITimeService timeService)
+        {
+            this._logger = logger;
+            this._adapterConfig = adapterConfig;
+            this._timeService = timeService;
+            LPC = new LocalParametersConverter();
+            FreqArr = new double[TracePoints];
+            LevelArr = new float[TracePoints];
+            for (int i = 0; i < TracePoints; i++)
+            {
+                FreqArr[i] = (double)(FreqStart + FreqStep * i);
+                LevelArr[i] = -100;
+            }
+        }
         /// <summary>
         /// Метод будет вызван при инициализации потока воркера адаптера
         /// Адаптеру необходимо зарегестрировать свои обработчики комманд 
@@ -219,10 +231,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                     }
 
-                    decimal rbw = LPC.RBW(this, (decimal)command.Parameter.RBW_Hz);
-                    decimal vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
-                    if (RBW != rbw || VBW != vbw || SweepTime != (decimal)command.Parameter.SweepTime_s)
+                    if (command.Parameter.RBW_Hz < 0)
                     {
+                        decimal rbw = (FreqSpan / command.Parameter.TracePoint) * 4;
+                        decimal vbw = 0;
+                        if (command.Parameter.RBW_Hz < 0)
+                        {
+                            vbw = rbw;
+                        }
+                        else
+                        {
+                            vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
+                        }
                         RBW = rbw;
                         VBW = vbw;
                         SweepTime = (decimal)command.Parameter.SweepTime_s;
@@ -230,6 +250,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         if (Status != EN.Status.NoError)
                         {
                             _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                    }
+                    else
+                    {
+                        decimal rbw = LPC.RBW(this, (decimal)command.Parameter.RBW_Hz);
+                        decimal vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
+                        if (RBW != rbw || VBW != vbw || SweepTime != (decimal)command.Parameter.SweepTime_s)
+                        {
+                            RBW = rbw;
+                            VBW = vbw;
+                            SweepTime = (decimal)command.Parameter.SweepTime_s;
+                            Status = AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection);
+                            if (Status != EN.Status.NoError)
+                            {
+                                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                            }
                         }
                     }
 
@@ -1450,7 +1486,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     //В этом блоке есть пропук во времени, установим индекс конца блоков и продолжим слушать, может еще PPS нежен
                     if (tempIQStream.BlockTimeDelta.Length > 1 && tempIQStream.OneSempleDuration != tempIQStream.BlockTimeDelta[AllBlockIndex] / return_len)
                     {
-                        if (!ReceivedBlockWithErrors)
+                        if (!ReceivedBlockWithErrors && IQStopIndex == 0)
                         {
                             IQStopIndex = AllBlockIndex - 1;
                         }
