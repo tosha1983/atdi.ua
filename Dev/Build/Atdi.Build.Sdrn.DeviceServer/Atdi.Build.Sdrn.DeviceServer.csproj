@@ -70,7 +70,7 @@
       <Project>{72d0eaae-5ae0-41c6-b87e-dc01139e7f17}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.EntityOrm\Atdi.AppUnits.Sdrn.DeviceServer.Repositories.csproj">
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Repositories\Atdi.AppUnits.Sdrn.DeviceServer.Repositories.csproj">
       <Project>{53367a1d-485e-4d43-81e3-d4008a03773b}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Repositories</Name>
     </ProjectReference>
