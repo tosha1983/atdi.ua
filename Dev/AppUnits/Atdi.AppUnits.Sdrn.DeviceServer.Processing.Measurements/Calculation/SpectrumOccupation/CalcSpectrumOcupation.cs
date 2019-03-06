@@ -16,7 +16,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     { 
         public static SpectrumOcupationResult Calc(MesureTraceResult result, TaskParameters taskParameters, SensorParameters sensorParameters = null, SpectrumOcupationResult lastResultParameters = null)
         {
-            var spectrumOcupationResult = new SpectrumOcupationResult();
+            //var spectrumOcupationResult = new SpectrumOcupationResult();
             if ((taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) || (taskParameters.Type_of_SO == SOType.FreqChannelOccupation))
             {
                 // вот собственно само измерение
@@ -94,15 +94,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else
                 {
                     lastResultParameters = new SpectrumOcupationResult();
-                    lastResultParameters.NN = 0;
+                    CalcFSFromLevel Calc1 = new CalcFSFromLevel(F_ch_res_temp, sensorParameters);
+                    lastResultParameters.fSemplesResult = F_ch_res_temp;
+                    lastResultParameters.NN = 1;
                 }
                 // в данной точке результат находится в переменой F_ch_res и в count мы его должны показать/запомнить.  
                 // кстати это происходит у нас циклически
-                //CalcFSFromLevel Calc = new CalcFSFromLevel(F_ch_res_, sensorParameters);
-                spectrumOcupationResult.fSemplesResult = F_ch_res_;
-                spectrumOcupationResult.NN = lastResultParameters.NN + 1; // костыль пока признак 0 
+                CalcFSFromLevel Calc = new CalcFSFromLevel(F_ch_res_, sensorParameters);
+                lastResultParameters.fSemplesResult = F_ch_res_;
+                lastResultParameters.NN = lastResultParameters.NN + 1; // костыль пока признак 0 
             }
-            return spectrumOcupationResult;
+            return lastResultParameters;
         }
 
       

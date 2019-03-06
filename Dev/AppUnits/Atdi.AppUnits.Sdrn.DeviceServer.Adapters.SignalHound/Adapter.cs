@@ -975,7 +975,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             double start_freq = 0.0;
             Status = AdapterDriver.bbQueryTraceInfo(_Device_ID, ref trace_len, ref bin_size, ref start_freq);
             SetOverLoad(Status);
-
+            if (Status != EN.Status.NoError)
+            {
+                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+            }
             FreqStep = (decimal)bin_size;
 
             if (Status != EN.Status.DeviceConnectionErr ||
@@ -991,6 +994,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             sweep_min = new float[trace_len];
 
             Status = AdapterDriver.bbFetchTrace_32f(_Device_ID, unchecked((int)trace_len), sweep_min, sweep_max);
+            if (Status != EN.Status.NoError)
+            {
+                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+            }
             if (Status == EN.Status.DeviceConnectionErr)
             {
                 res = false;
