@@ -87,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     {
                                         //преобразование в DM.Sensor
                                         //передаем наименование сенсора из лицензии this._deviceServerConfig.SensorName
-                                        sensor = mesureTraceDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                        sensor = mesureTraceDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                         isFindDeviceProps = true;
                                         break;
                                     }
@@ -99,7 +99,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureZeroSpanDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureZeroSpanDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureSignalParametersDeviceProperties)
@@ -108,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureSignalParametersDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureSignalParametersDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureSysInfoDeviceProperties)
@@ -117,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureSysInfoDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureSysInfoDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureRealTimeDeviceProperties)
@@ -126,7 +126,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureRealTimeDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureRealTimeDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureIQStreamDeviceProperties)
@@ -135,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureIQStreamDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureIQStreamDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureGpsLocationProperties)
@@ -144,7 +144,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureGpsLocationProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureGpsLocationProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureAudioDeviceProperties)
@@ -153,7 +153,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureAudioDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureAudioDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else if (trace is MesureDFDeviceProperties)
@@ -162,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 //поиск сведений о девайсе по значению this._deviceServerConfig.SensorTechId
                                 //если сведения найдены, тогда:
                                 //преобразование в DM.Sensor
-                                sensor = mesureDFDeviceProperties.Convert(this._deviceServerConfig.SensorName);
+                                sensor = mesureDFDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                                 isFindDeviceProps = true;
                             }
                             else
