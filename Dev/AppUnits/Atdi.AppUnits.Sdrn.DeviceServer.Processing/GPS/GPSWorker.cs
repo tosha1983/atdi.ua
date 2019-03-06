@@ -22,8 +22,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly IController _controller;
         private IServicesResolver _resolver;
         private IServicesContainer _servicesContainer;
+        private ConfigProcessing  _configProcessing;
+        
 
         public GPSWorker(
+            ConfigProcessing configProcessing,
             IController controller,
             IServicesResolver resolver,
             IServicesContainer servicesContainer,
@@ -34,6 +37,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._controller = controller;
             this._resolver = resolver;
             this._servicesContainer = servicesContainer;
+            this._configProcessing = configProcessing;
         }
 
         public void Run(ITaskContext<GPSTask, BaseContext> context)
@@ -79,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     //
                     //////////////////////////////////////////////
                     GpsResult gpsResult = null;
-                    bool isWait = context.WaitEvent<GpsResult>(out gpsResult, 1000);
+                    bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.TimeUpdateGPSCoordinates);
                     if (isWait)
                     {
                         baseContext.Asl = gpsResult.Asl.Value;
