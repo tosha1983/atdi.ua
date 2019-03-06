@@ -88,7 +88,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     {
                         baseContext.Asl = gpsResult.Asl.Value;
                         baseContext.Lon = gpsResult.Lon.Value;
-                        baseContext.Lon = gpsResult.Lat.Value;
+                        baseContext.Lat = gpsResult.Lat.Value;
                         _logger.Info(Contexts.GPSWorker, Categories.Processing, $" New coordinates Lon: {baseContext.Lon}, Lat: {baseContext.Lat}, Asl : {baseContext.Asl}");
                     }
                 }
