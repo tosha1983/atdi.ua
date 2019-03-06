@@ -9,6 +9,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public int MaxDurationBeforeStartTimeTask { get; set; }
         public int DurationForSendResult { get; set; }
         public int MaxTimeOutReceiveSensorRegistrationResult { get; set; }
-        public int TimeUpdateGPSCoordinates { get; set; }
+        public int DurationWaitingRceivingGPSCoord { get; set; }
     }
 }

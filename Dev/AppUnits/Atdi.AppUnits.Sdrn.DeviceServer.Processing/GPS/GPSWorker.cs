@@ -83,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     //
                     //////////////////////////////////////////////
                     GpsResult gpsResult = null;
-                    bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.TimeUpdateGPSCoordinates);
+                    bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
                     if (isWait)
                     {
                         baseContext.Asl = gpsResult.Asl.Value;
