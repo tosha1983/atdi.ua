@@ -97,7 +97,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         Options = CommandOption.PutInQueue,
                         StartTimeStamp = timeStamp,
-                        Timeout = timeStamp + maximumDurationMeas
+                        Timeout = (long)(timeStamp + maximumDurationMeas)
                     };
 
                     //////////////////////////////////////////////
@@ -302,14 +302,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="taskParameters">Параметры таска</param> 
         /// <param name="doneCount">Количество измерений которое было проведено</param>
         /// <returns></returns>
-        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
+        private double CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
         {
             DateTime dateTimeNow = DateTime.Now;
             if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
             TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            long interval_ms = interval.Milliseconds;
+            double interval_ms = interval.TotalMilliseconds;
             if (taskParameters.NCount <= DoneCount) { return -1; }
-            long duration = (interval_ms / (taskParameters.NCount - DoneCount));
+            double duration = (interval_ms / (taskParameters.NCount - DoneCount));
             return duration;
         }
 
