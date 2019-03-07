@@ -90,6 +90,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     //
                     //
                     //////////////////////////////////////////////
+                    System.Threading.Thread.Sleep(this._configProcessing.PeriodSendCoordinatesToSDRNS);
                     GpsResult gpsResult = null;
                     bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
                     if (isWait)
@@ -104,19 +105,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             var sensorCurr = sensors[0];
                             var listSensorLocations = sensorCurr.Locations.ToList();
                             var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - baseContext.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - baseContext.Lat) <= this._configProcessing.LatDelta && t.Status != "Z");
-                            if (lSensorLocations.Count > 0)
+                            if (lSensorLocations.Count == 0)
                             {
                                 lSensorLocations.OrderByDescending(x => x.Created);
                                 var sensorLocation = new DM.SensorLocation[lSensorLocations.Count + 1];
-                                if (lSensorLocations.Count > 1)
+                                if (lSensorLocations.Count >= 1)
                                 {
                                     for (int i = 0; i < lSensorLocations.Count; i++)
                                     {
                                         sensorLocation[i] = sensorCurr.Locations[i];
-                                        if (lSensorLocations.FindAll(t => Math.Abs(t.Lon - lSensorLocations[i].Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - lSensorLocations[i].Lat) <= this._configProcessing.LatDelta && t.Status != "Z") != null)
-                                        {
-                                            sensorLocation[i].Status = "Z";
-                                        }
+                                        sensorLocation[i].Status = "Z";
                                     }
                                 }
 
@@ -126,19 +124,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     Lon = baseContext.Lon,
                                     Lat = baseContext.Lat,
                                     Status = "A",
-                                    Created = DateTime.Now
+                                    Created = DateTime.Now,
+                                    From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
+                                    To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
                                 };
 
                                 sensorLocation[lSensorLocations.Count] = location;
+                                sensorCurr.Locations = sensorLocation;
                                 this._repositorySensor.Update(sensorCurr);
 
                                 DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                                 deviceCommandResult.CommandId = "UpdateSensorLocation";
                                 deviceCommandResult.CustDate1 = DateTime.Now;
                                 deviceCommandResult.CustTxt1 = $"{location.Lon}|{location.Lat}|{location.ASL}";
+                                deviceCommandResult.Status = "A";
+                                deviceCommandResult.CustNbr1 = 0;
 
                                 var publisher = this._busGate.CreatePublisher("main");
-                                publisher.Send<DM.DeviceCommandResult>("UpdateSensorLocation", deviceCommandResult);
+                                publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
                                 publisher.Dispose();
                             }
                         }

@@ -233,6 +233,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.Location.ASL = baseContext.Asl;
                             measResult.Location.Lon = baseContext.Lon;
                             measResult.Location.Lat = baseContext.Lat;
+
+                            measResult.TaskId = context.Task.taskParameters.SDRTaskId;
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
                             publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
@@ -278,7 +280,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 action.Invoke();
                                 // обновление TaskParameters в БД
-                                context.Task.taskParameters.status = "C";
+                                context.Task.status = StatusTask.C;
+                                context.Task.taskParameters.status = StatusTask.C.ToString();
                                 this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
                             }
                         }

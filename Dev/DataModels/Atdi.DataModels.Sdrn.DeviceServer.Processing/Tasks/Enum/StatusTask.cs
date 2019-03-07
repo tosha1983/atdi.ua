@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     {
         A,
         Z,
-        F
+        F,
+        C
     }
 }

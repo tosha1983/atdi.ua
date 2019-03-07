@@ -300,9 +300,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             try
             {
                 var sensorData = item;
-                var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().From();
-                builderSelectSensLocations.Where(c => c.SENSOR.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
-                builderSelectSensLocations.Where(c => c.SENSOR.Name, ConditionOperator.Equal, sensorData.Name);
+                var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensor>().From();
+                builderSelectSensLocations.Where(c => c.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
+                builderSelectSensLocations.Where(c => c.Name, ConditionOperator.Equal, sensorData.Name);
                 builderSelectSensLocations.Select(c => c.Id);
                 queryExecuter
                        .Fetch(builderSelectSensLocations, reader =>
@@ -318,23 +318,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 if (idSensor > 0)
                 {
                     queryExecuter.BeginTransaction();
+
+                    if (sensorData.Locations.Length > 0)
+                    {
+                        var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                        builderUpdateSensLocations.SetValue(c => c.Status, "Z");
+                        builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
+                        if (queryExecuter.Execute(builderUpdateSensLocations) > 0)
+                        {
+                            isSuccess = true;
+                        }
+                    }
+
+
                     if (sensorData.Locations != null)
                     {
                         foreach (var location in sensorData.Locations)
                         {
-                            var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
-                            builderUpdateSensLocations.SetValue(c => c.Asl, location.ASL);
-                            builderUpdateSensLocations.SetValue(c => c.DateFrom, location.From);
-                            builderUpdateSensLocations.SetValue(c => c.DateTo, location.To);
-                            builderUpdateSensLocations.SetValue(c => c.Status, location.Status);
-                            builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
-                            builderUpdateSensLocations.Where(c => c.Lon, ConditionOperator.Equal, location.Lon);
-                            builderUpdateSensLocations.Where(c => c.Lat, ConditionOperator.Equal, location.Lat);
-                            if (queryExecuter.Execute(builderUpdateSensLocations) > 0)
-                            {
-                                isSuccess = true;
-                            }
-                            else
+                            if (location.Status == "A")
                             {
                                 var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                 builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
@@ -351,6 +352,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     isSuccess = true;
                                     return true;
                                 });
+
                             }
                         }
                     }
