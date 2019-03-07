@@ -95,7 +95,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
         private void OpenGPSDevice()
         {
-            this._logger.Verbouse(Contexts.ThisComponent, Categories.Processing, "Open GPS device...");
+            this._logger.Verbouse(Contexts.ThisComponent, Categories.Processing, "Try open GPS device...");
 
             var portSettings = new SerialPortSettings();
 
@@ -143,6 +143,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 catch (Exception ex)
                 {
                     this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message));
+                    OpenGPSDevice();
                 }
             }
             else
@@ -155,6 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 catch (Exception ex)
                 {
                     this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message));
+                    OpenGPSDevice();
                 }
             }
         }
