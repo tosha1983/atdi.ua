@@ -51,7 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
         }
 
-    
+
         public void Run(ITaskContext<SOTask, SpectrumOccupationProcess> context)
         {
             try
@@ -66,16 +66,40 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
                 var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 baseContext.contextSOTasks.Add(context);
-               
+
+
+                DateTime dateTimeNow = DateTime.Now;
+                TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
+                if (waitStartTask.TotalMilliseconds > 0)
+                {
+                    //Засыпаем до начала выполнения задачи
+                    Thread.Sleep((int)waitStartTask.TotalMilliseconds);
+                }
+
                 while (true)
-                {       
+                {
+
                     // проверка - не отменили ли задачу
-                    if (context.Token.IsCancellationRequested)
+                    if (context.Task.status == StatusTask.Z)
                     {
                         context.Cancel();
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                         break;
                     }
+                    else if (context.Task.status == StatusTask.F)
+                    {
+                        Thread.Sleep(1000);
+                        continue;
+                    }
+
+                    // проверка - не отменили ли задачу
+                    //if (context.Token.IsCancellationRequested)
+                    //{
+                        //context.Cancel();
+                        //_logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                        //break;
+                    //}
+
                     //////////////////////////////////////////////
                     // 
                     //  Послать команду DeviceControler MeaseTrace
@@ -85,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
 
                     var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
-                    if (maximumDurationMeas==-1)
+                    if (maximumDurationMeas < 0)
                     {
                         context.Cancel();
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
@@ -97,7 +121,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         Options = CommandOption.PutInQueue,
                         StartTimeStamp = timeStamp,
-                        Timeout = (long)(timeStamp + maximumDurationMeas)
+                        Timeout = timeStamp + maximumDurationMeas
                     };
 
                     //////////////////////////////////////////////
@@ -110,7 +134,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                     (
                         ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) => 
+                    ) =>
                     {
                         taskContext.SetEvent<ExceptionProcessSO>(new ExceptionProcessSO(failureReason, ex));
                     });
@@ -121,41 +145,51 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
-                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, 10000 /*(int)maximumDurationMeas*/);
+                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, (int)context.Task.maximumTimeForWaitingResultSO);
                     if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
-                        if (context.Token.IsCancellationRequested)
+                        //if (context.Token.IsCancellationRequested)
+                        //{
+                        // явно нужна логика отмены
+                        //_logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                        //context.Cancel();
+                        //break;
+                        //}
+
+                        // проверка - не отменили ли задачу
+                        if (context.Task.status == StatusTask.Z)
                         {
-                            // явно нужна логика отмены
-                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                             context.Cancel();
+                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                             break;
                         }
+                        else if (context.Task.status == StatusTask.F)
+                        {
+                            Thread.Sleep(1000);
+                            continue;
+                        }
+
                         var error = new ExceptionProcessSO();
                         if (context.WaitEvent<ExceptionProcessSO>(out error, 1) == true)
                         {
                             /// реакция на ошибку выполнения команды
-                             _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
-
+                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
                             switch (error._failureReason)
                             {
                                 case CommandFailureReason.DeviceIsBusy:
                                 case CommandFailureReason.CanceledExecution:
+                                case CommandFailureReason.TimeoutExpired:
                                 case CommandFailureReason.CanceledBeforeExecution:
                                     _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
                                     Thread.Sleep((int)maximumDurationMeas);
-                               break;
-
+                                    break;
                                 case CommandFailureReason.NotFoundConvertor:
                                 case CommandFailureReason.NotFoundDevice:
-                                    var durationToRepietMeas = (int)maximumDurationMeas * 1000;
+                                    var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.SOKoeffWaitingDevice;
                                     TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
-                                    if (durationToRepietMeas < durationToFinishTask.Milliseconds)
+                                    if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                     {
-                                        // здесь необходимо отправить уведомление об ошибке
-                                        // отправка уведомления в шину (что ошибка)
-                                        // запись в лог
                                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                         context.Cancel();
                                         break;
@@ -165,30 +199,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
                                         Thread.Sleep(durationToRepietMeas);
                                     }
-                                break;
-                                case CommandFailureReason.TimeoutExpired:
-
-                                break;
-
+                                    break;
                                 case CommandFailureReason.Exception:
-                                    var publisher = this._busGate.CreatePublisher("main");
-                                    DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult()
-                                    {
-                                         CommandId = "SendCommandResult",
-                                         CustTxt1 = $"Error get result 'SpectrumOcupationResult' for TaskId = {context.Task.taskParameters.SDRTaskId}",
-                                         Status = "Failure"
-                                    };
-                                    var token = publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
-                                    if (token != null)
-                                    {
-                                        // отправка уведомления в шину (что ошибка)
-                                        // запись в лог
-                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                                        context.Cancel();
-                                        publisher.Dispose();
-                                        break;
-                                    }
-                                break;
+                                    _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                    context.Cancel();
+                                    break;
                                 default:
                                     throw new NotImplementedException($"Type {error._failureReason} not supported");
                             }
@@ -196,7 +211,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else
                     {
-                       // здесь пока не определена логика
+                        // здесь пока не определена логика
                     }
 
                     var action = new Action(() =>
@@ -224,9 +239,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             publisher.Dispose();
                             context.Task.lastResultParameters = null;
                             context.Task.LastTimeSend = currTime;
-                            // обновление TaskParameters в БД
-                            context.Task.taskParameters.status = "C";
-                            this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
                         }
                     });
 
@@ -239,7 +251,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outSpectrumOcupation != null)
                     {
                         TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                        if (timeSpan.Milliseconds > context.Task.durationForSendResult)
+                        if (timeSpan.TotalMilliseconds > context.Task.durationForSendResult)
                         {
                             //реакция на принятые результаты измерения
                             if (outSpectrumOcupation.fSemplesResult != null)
@@ -262,9 +274,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outSpectrumOcupation != null)
                         {
                             TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                            if (timeSpan.Milliseconds > (int)(context.Task.durationForSendResult/2.0))
+                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResult / 2.0))
                             {
                                 action.Invoke();
+                                // обновление TaskParameters в БД
+                                context.Task.taskParameters.status = "C";
+                                this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
                             }
                         }
                         context.Finish();
@@ -302,14 +317,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="taskParameters">Параметры таска</param> 
         /// <param name="doneCount">Количество измерений которое было проведено</param>
         /// <returns></returns>
-        private double CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
+        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
         {
             DateTime dateTimeNow = DateTime.Now;
             if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
             TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
             double interval_ms = interval.TotalMilliseconds;
             if (taskParameters.NCount <= DoneCount) { return -1; }
-            double duration = (interval_ms / (taskParameters.NCount - DoneCount));
+            long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
             return duration;
         }
 

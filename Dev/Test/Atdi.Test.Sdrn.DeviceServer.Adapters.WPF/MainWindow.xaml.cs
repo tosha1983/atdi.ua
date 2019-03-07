@@ -44,6 +44,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             // конфигурация
             var adapterConfig = new ADP.SignalHound.AdapterConfig()
             {
+                //AntennaCodeTest = "123",
                 Prop1 = 1,
                 Prop2 = 2,
                 Prop3 = 3,

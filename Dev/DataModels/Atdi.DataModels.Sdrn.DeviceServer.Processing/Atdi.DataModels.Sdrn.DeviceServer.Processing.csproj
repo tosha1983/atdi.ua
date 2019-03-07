@@ -70,6 +70,8 @@
     <Compile Include="Tasks\DispatcherTasks\QueueEventTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\EventTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\DeviceCommandTask.cs" />
+    <Compile Include="Tasks\Enum\TypeMeasTask.cs" />
+    <Compile Include="Tasks\Enum\StatusTask.cs" />
     <Compile Include="Tasks\HandlingMeasurementsTask.cs" />
     <Compile Include="Tasks\AnalyzeSignalTask.cs" />
     <Compile Include="Tasks\LocalizationTDOATask.cs" />

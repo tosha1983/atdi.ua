@@ -2212,8 +2212,10 @@ namespace Atdi.CoreServices.EntityOrm
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                     var column = columnsArray[i];
-                    var dbField = entityMetadata.Fields.Values.ToList().Find(z=>z.Name== column.ColumnName);
-                    column.ColumnName = dbField.SourceName;
+                    //var dbField = entityMetadata.Fields.Values.ToList().Find(z=>z.Name== column.ColumnName);
+                    //column.ColumnName = dbField.SourceName;
+                    var dbField = listFieldProperties.Find(z=>z.Alias== column.ColumnName);
+                    column.ColumnName = dbField.DBFieldName;
                 }
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
                 var updateStatement = this._syntax.UpdateExpression(sourceExpression, valuesExpression, fromStatement, whereExpression);

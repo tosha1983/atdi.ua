@@ -25,11 +25,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ConfigProcessing _config;
+        private readonly IWorkScheduler _workScheduler;
         private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
         private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
 
         public QueueEventTaskWorker(
             ILogger logger,
+            IWorkScheduler workScheduler,
             IServicesResolver resolver,
             IServicesContainer servicesContainer,
             ITimeService timeService,
@@ -49,6 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._config = config;
             this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
             this._repositoryTaskParametersByString = repositoryTaskParametersBystring;
+            this._workScheduler = workScheduler;
         }
 
         public void Run(ITaskContext<QueueEventTask, BaseContext> context)
@@ -65,98 +68,36 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 bool isDatataskParameters = false;
                 bool isDatadeviceCommand = false;
                 DM.Sensor activeSensor = baseContext.activeSensor;
-                Action action = new Action(() =>
-                {
-                    if (taskParameters.StartTime.Value > DateTime.Now)
-                    {
-                        TimeSpan timeSpan = taskParameters.StartTime.Value - DateTime.Now;
-                        //запускаем задачу в случае, если время 
-                        if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
-                        {
-                            /////////////////////////////////////////////////////////////////
-                            //
-                            //
-                            // Запуск задач для типа измерения 'SpectrumOccupation'
-                            //
-                            //
-                            /////////////////////////////////////////////////////////////////
-                            if (taskParameters.MeasurementType == MeasType.SpectrumOccupation)
-                            {
-                                if (activeSensor != null)
-                                {
-                                    // Старт процесса SpectrumOccupationProcess
-                                    var measProcess = this._processingDispatcher.Start<SpectrumOccupationProcess>();
-
-                                    var soTask = new SOTask()
-                                    {
-                                        TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
-                                        Options = TaskExecutionOption.Default,
-                                    };
-
-                                    soTask.sensorParameters = activeSensor.Convert();
-
-                                    soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
-
-                                    soTask.LastTimeSend = DateTime.Now;
-
-                                    soTask.taskParameters = taskParameters;
-
-                                    soTask.mesureTraceParameter = soTask.taskParameters.Convert();
-
-                                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(soTask.Id));
-
-                                    _taskStarter.Run(soTask, measProcess);
-
-                                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
-                                }
-                            }
-                            else
-                            {
-                                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
-                                throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
-                            }
-                        }
-                        else
-                        {
-                            // здесь необходимо добавлять в список отложенных задач
-                            if (!baseContext.listDeferredTasks.Contains(taskParameters))
-                            {
-                                baseContext.listDeferredTasks.Add(taskParameters);
-                            }
-                        }
-                    }
-                });
-
+               
                 while (true)
                 {
                     // ожидаем сообщения DeviceCommand  - "Run, Del, Stop task"
-                    isDatadeviceCommand = context.WaitEvent<DM.DeviceCommand>(out deviceCommand, 10);
+                    isDatadeviceCommand = context.WaitEvent<DM.DeviceCommand>(out deviceCommand, 10); //миллисекунд
                     if (isDatadeviceCommand)
                     {
-                        if (deviceCommand!=null)
+                        if (deviceCommand != null)
                         {
-                            if (deviceCommand.CustNbr1!=null)
+                            if (deviceCommand.CustNbr1 != null)
                             {
                                 int idTask = (int)deviceCommand.CustNbr1;
                                 if (idTask > 0)
                                 {
                                     var taskParams = this._repositoryTaskParametersByString.LoadObject(idTask.ToString());
-                                    if (taskParams!=null)
+                                    if (taskParams != null)
                                     {
-                                        if (deviceCommand.Command == "RunMeasTask")
+                                        if (deviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
                                         {
-                                            taskParams.status = "A";
+                                            taskParams.status = StatusTask.A.ToString();
                                             if (taskParams.MeasurementType == MeasType.SpectrumOccupation)
                                             {
                                                 var findSOTask = baseContext.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == taskParams.SDRTaskId);
                                                 if (findSOTask != null)
                                                 {
-                                                    findSOTask.Task.ChangeState(TaskState.Executing);
+                                                    findSOTask.Task.status = StatusTask.A;
                                                 }
                                                 else
                                                 {
-                                                    taskParameters = taskParams;
-                                                    action.Invoke();
+                                                    _workScheduler.Run($"Run scheduler measTask", () => { RunTask(taskParams, baseContext); });
                                                 }
                                             }
                                             else
@@ -165,16 +106,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
                                             }
                                         }
-                                        else if (deviceCommand.Command == "DelMeasTask")
+                                        else if (deviceCommand.Command == TypeMeasTask.DelMeasTask.ToString())
                                         {
-                                            taskParams.status = "Z";
+                                            taskParams.status = StatusTask.Z.ToString();
                                             if (taskParams.MeasurementType == MeasType.SpectrumOccupation)
                                             {
                                                 var findSOTask = baseContext.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == taskParams.SDRTaskId);
                                                 if (findSOTask != null)
                                                 {
-                                                    findSOTask.Task.ChangeState(TaskState.Done);
-                                                    findSOTask.Finish();
+                                                    findSOTask.Task.status = StatusTask.Z;
                                                 }
                                             }
                                             else
@@ -183,15 +123,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParams.MeasurementType));
                                             }
                                         }
-                                        else if (deviceCommand.Command == "StopMeasTask")
+                                        else if (deviceCommand.Command == TypeMeasTask.StopMeasTask.ToString())
                                         {
-                                            taskParams.status = "F";
+                                            taskParams.status = StatusTask.F.ToString();
                                             if (taskParams.MeasurementType == MeasType.SpectrumOccupation)
                                             {
                                                 var findSOTask = baseContext.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == taskParams.SDRTaskId);
-                                                if (findSOTask!=null)
+                                                if (findSOTask != null)
                                                 {
-                                                    findSOTask.Task.ChangeState(TaskState.Pending);
+                                                    findSOTask.Task.status = StatusTask.F;
                                                 }
                                             }
                                             else
@@ -208,13 +148,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         }
                     }
                     // ожидаем сообщения - "новый таск"
-                    isDatataskParameters = context.WaitEvent<TaskParameters>(out taskParameters, 10);
+                    isDatataskParameters = context.WaitEvent<TaskParameters>(out taskParameters, 10); //миллисекунд
                     if (isDatataskParameters)
                     {
-                        action.Invoke();
+                        _workScheduler.Run($"Run scheduler measTask", () => { RunTask(taskParameters, baseContext); });
                     }
                     //удаление всех контекстов задач, которые имеют статус Done, Cancelled, Aborted, Rejected
-                    baseContext.contextSOTasks.RemoveAll(z => ((z.Task.State == TaskState.Done) || (z.Task.State == TaskState.Cancelled) || (z.Task.State == TaskState.Aborted) || (z.Task.State == TaskState.Rejected)));
+                    //baseContext.contextSOTasks.RemoveAll(z => ((z.Task.State == TaskState.Done) || (z.Task.State == TaskState.Cancelled) || (z.Task.State == TaskState.Aborted) || (z.Task.State == TaskState.Rejected)));
                 }
                 // контекст никогда не выгружается т.к. в этом воркере происходит процесс постоянного ожидания для обработки сообщений типа DeviceCommand и TaskParameters
                 //context.Finish();
@@ -225,5 +165,73 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 context.Abort(e);
             }
         }
+
+        private void RunTask(TaskParameters taskParameters, MainProcess baseContext)
+        {
+            DM.Sensor activeSensor = baseContext.activeSensor;
+            if (taskParameters.StartTime.Value > DateTime.Now)
+            {
+                TimeSpan timeSpan = taskParameters.StartTime.Value - DateTime.Now;
+                //запускаем задачу в случае, если время 
+                if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
+                {
+                    /////////////////////////////////////////////////////////////////
+                    //
+                    //
+                    // Запуск задач для типа измерения 'SpectrumOccupation'
+                    //
+                    //
+                    /////////////////////////////////////////////////////////////////
+                    if (taskParameters.MeasurementType == MeasType.SpectrumOccupation)
+                    {
+                        if (activeSensor != null)
+                        {
+                            // Старт процесса SpectrumOccupationProcess
+                            var measProcess = this._processingDispatcher.Start<SpectrumOccupationProcess>();
+
+                            var soTask = new SOTask()
+                            {
+                                TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
+                                Options = TaskExecutionOption.Default,
+                            };
+
+                            soTask.sensorParameters = activeSensor.Convert();
+
+                            soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+
+                            soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
+
+                            soTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
+
+                            soTask.LastTimeSend = DateTime.Now;
+
+                            soTask.taskParameters = taskParameters;
+
+                            soTask.mesureTraceParameter = soTask.taskParameters.Convert();
+
+                            _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(soTask.Id));
+
+                            _taskStarter.Run(soTask, measProcess);
+
+                            _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
+                        }
+                    }
+                    else
+                    {
+                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
+                        throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));
+                    }
+                }
+                else
+                {
+                    // здесь необходимо добавлять в список отложенных задач
+                    if (!baseContext.listDeferredTasks.Contains(taskParameters))
+                    {
+                        baseContext.listDeferredTasks.Add(taskParameters);
+                    }
+                }
+            }
+        }
     }
+    
 }
