@@ -16,5 +16,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public SignalMask SignalMask;
         public Spectrum Spectrum;
         public LevelsDistribution LevelsDistribution;
+        public EmittingParameters EmittingParameters;
     }
 }
