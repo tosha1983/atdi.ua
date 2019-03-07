@@ -88,11 +88,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else if (context.Task.status == StatusTask.F)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(1000); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                         continue;
                     }
-
                     // проверка - не отменили ли задачу
+
                     //if (context.Token.IsCancellationRequested)
                     //{
                         //context.Cancel();
@@ -104,7 +104,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // 
                     //  Послать команду DeviceControler MeaseTrace
                     // 
-                    //
                     //////////////////////////////////////////////
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
 
@@ -142,7 +141,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // 
                     // Получение очередного  результат от Result Handler
                     //
-                    //
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
                     bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, (int)context.Task.maximumTimeForWaitingResultSO);
@@ -166,7 +164,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                         else if (context.Task.status == StatusTask.F)
                         {
-                            Thread.Sleep(1000);
+                            Thread.Sleep(1000); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                             continue;
                         }
 
@@ -211,7 +209,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else
                     {
-                        // здесь пока не определена логика
+                        // здесь пока не определена логика 
+
                     }
 
                     var action = new Action(() =>
@@ -243,7 +242,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             context.Task.LastTimeSend = currTime;
                         }
                     });
-
 
                     //////////////////////////////////////////////
                     // 
@@ -293,18 +291,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Приостановка потока на рассчитаное время 
                     //
                     //////////////////////////////////////////////
-                    var sleepTime = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    var sleepTime = maximumDurationMeas - (DateTime.Now - currTime).TotalMilliseconds ;
                     if (sleepTime >= 0)
                     {
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
                         Thread.Sleep((int)sleepTime);
                     }
-                    else if (sleepTime < 0)
-                    {
-                        context.Finish();
-                        break;
-                    }
-                    context.Task.CountMeasurementDone++;
+                    if (isDown) context.Task.CountMeasurementDone++;
                 }
             }
             catch (Exception e)
