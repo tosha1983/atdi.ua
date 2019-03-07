@@ -18,6 +18,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? LevelMax_dBm { get; set; }
         double? OccupationPt { get; set; }
         int? ResMeasId { get; set; }
-        IResMeas RESMEAS { get; set; }
+        IResMeasRaw RESMEAS { get; set; }
     }
 }

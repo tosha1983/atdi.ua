@@ -672,6 +672,8 @@ namespace Atdi.CoreServices.EntityOrm
 
         public int Execute(IQueryStatement statement)
         {
+            var dicIdentField = new KeyValuePair<string, DataType>();
+
             if (statement == null)
             {
                 throw new ArgumentNullException(nameof(statement));
@@ -699,11 +701,8 @@ namespace Atdi.CoreServices.EntityOrm
 
             var command = new EngineCommand();
 
-            if (statement is QueryInsertStatement queryInsertStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
-            }
-            else if (statement is QueryUpdateStatement queryUpdateStatement)
+            
+            if (statement is QueryUpdateStatement queryUpdateStatement)
             {
                 command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
             }
@@ -714,6 +713,29 @@ namespace Atdi.CoreServices.EntityOrm
             else if (statement is QuerySelectStatement querySelectStatement)
             {
                 command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
+            }
+            else if (statement is QueryInsertStatement queryInsertStatement)
+            {
+                dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
+                if (!string.IsNullOrEmpty(dicIdentField.Key))
+                {
+                    if ((dicIdentField.Value != DataType.String) && (dicIdentField.Value != DataType.Guid))
+                    {
+                        command.Text = this._icsmOrmQueryBuilder.BuildInsertStatementExecuteAndFetch(queryInsertStatement, command.Parameters);
+                        EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
+                        engineCommandParameter.Name = _nameIdentFieldParameter;
+                        engineCommandParameter.DataType = DataType.Integer;
+                        command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(_nameIdentFieldParameter, engineCommandParameter));
+                    }
+                    else
+                    {
+                        command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Not found primary key description");
+                }
             }
 
             if (command == null)
@@ -734,7 +756,18 @@ namespace Atdi.CoreServices.EntityOrm
             }
             else
             {
-                recordsAffected = this._dataEngine.Execute(command);
+                if (statement is QueryInsertStatement)
+                {
+                    recordsAffected = this._dataEngine.Execute(command);
+                }
+                else if (statement is QueryUpdateStatement)
+                {
+                    recordsAffected = this._dataEngine.Execute(command);
+                }
+                else if (statement is QueryDeleteStatement)
+                {
+                    recordsAffected = this._dataEngine.Execute(command);
+                }
             }
             return recordsAffected;
         }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AC = Atdi.Common;
 using Atdi.Contracts.Sdrn.DeviceServer;
 using ADP = Atdi.AppUnits.Sdrn.DeviceServer.Adapters;
 using CMD = Atdi.DataModels.Sdrn.DeviceServer.Commands;
@@ -28,29 +29,34 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
     public partial class MainWindow : Window
     {
         // подготовка тестового окружения
+        DummyTimeService TimeService;
         ConsoleLogger logger;
         DummyAdapterHost adapterHost;
         ADP.SignalHound.Adapter adapter;
+
         public MainWindow()
         {
             InitializeComponent();
             logger = new ConsoleLogger();
             adapterHost = new DummyAdapterHost(logger);
+            TimeService = new DummyTimeService();
 
-            
             // конфигурация
             var adapterConfig = new ADP.SignalHound.AdapterConfig()
             {
+                //AntennaCodeTest = "123",
                 Prop1 = 1,
                 Prop2 = 2,
                 Prop3 = 3,
                 Prop4 = 4,
                 Prop5 = 5
             };
+
             adapter = new ADP.SignalHound.Adapter(adapterConfig, logger);
+            //adapter = new ADP.SignalHound.Adapter(adapterConfig, logger, TimeService);
             DS.Adapter = adapter;
 
-            
+
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
@@ -61,22 +67,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             adapter.Disconnect();
         }
-        
+
         private void SetMeas1_Click(object sender, RoutedEventArgs e)
         {
             // send command
             var context = new DummyExecutionContext(logger);
             var command = new CMD.MesureTraceCommand();
-            command.Parameter.Att_dB = 0;
-            command.Parameter.FreqStart_Hz = 90000000;
-            command.Parameter.FreqStop_Hz = 110000000;
-            command.Parameter.PreAmp_dB = 20;
-            command.Parameter.RBW_Hz = 30000;
-            command.Parameter.VBW_Hz = 30000;
-            command.Parameter.RefLevel_dBm = -40;
-            command.Parameter.SweepTime_s = 0.00001;
-            command.Parameter.TraceCount = 10;
-            command.Parameter.TracePoint = 1000;
+            command.Parameter.Att_dB = -1;
+            command.Parameter.FreqStart_Hz = 930 * 1000000;
+            command.Parameter.FreqStop_Hz = 950 * 1000000;
+            command.Parameter.PreAmp_dB = -1;
+            command.Parameter.RBW_Hz = -1;
+            command.Parameter.VBW_Hz = -1;
+            command.Parameter.RefLevel_dBm = -1;
+            command.Parameter.SweepTime_s = 0.001;
+            command.Parameter.TraceCount = 1;
+            command.Parameter.TracePoint = int.Parse(points.Text);
             command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
             command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
             command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
@@ -163,7 +169,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             var context = new DummyExecutionContext(logger);
             var command = new CMD.MesureIQStreamCommand();
-            
+
             command.Parameter.FreqStart_Hz = 910 * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
             command.Parameter.FreqStop_Hz = 930 * 1000000;//930*1000000;//424.675m * 1000000;
             command.Parameter.Att_dB = 0;
@@ -175,9 +181,36 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             command.Parameter.MandatoryPPS = false;
             command.Parameter.MandatorySignal = true;
             command.Parameter.TimeStart = (DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks);
-            command.Parameter.TimeStart += 2*10000000;
+            command.Parameter.TimeStart += 2 * 10000000;
             Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
             adapter.MesureIQStreamCommandHandler(command, context);
+        }
+
+
+
+    }
+    public class DummyTimeService : ITimeService
+    {
+        private readonly ITimeStamp _timeStamp;
+
+        public DummyTimeService()
+        {
+            this._timeStamp = new TimeStamp();
+        }
+
+        public ITimeStamp TimeStamp => this._timeStamp;
+    }
+    class TimeStamp : ITimeStamp
+    {
+        public long Milliseconds => AC.TimeStamp.Milliseconds;
+
+        public long Value => AC.TimeStamp.Value;
+
+        public long Ticks => AC.TimeStamp.Ticks;
+
+        public bool HitMilliseconds(long startStampMilliseconds, long timeoutMilliseconds)
+        {
+            return AC.TimeStamp.HitTimeout(startStampMilliseconds, timeoutMilliseconds);
         }
     }
 }

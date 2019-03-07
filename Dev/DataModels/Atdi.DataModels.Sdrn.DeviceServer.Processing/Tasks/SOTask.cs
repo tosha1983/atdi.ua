@@ -10,12 +10,16 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
     public class SOTask : TaskBase
     {
+        public StatusTask status;
         public MeasResults MeasResults; //  результат измерения
-        public LastResultParameters lastResultParameters;
+        public SpectrumOcupationResult lastResultParameters;
         public DateTime? LastTimeSend = null;
         public int CountMeasurementDone = 0;
         public MesureTraceParameter mesureTraceParameter;
         public TaskParameters taskParameters;
         public SensorParameters sensorParameters;
+        public long durationForSendResult; // в миллисекундах
+        public long maximumTimeForWaitingResultSO; // в миллисекундах
+        public long SOKoeffWaitingDevice; // в миллисекундах
     }
 }

@@ -12,7 +12,7 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
     <Field Desc="FreqCH" Title="FreqCH" Name="FreqCH" DataType="Decimal.22.8" SourceName="FREQCH" SourceType="Column" Required="false"/>
-    <Field Desc="IdTaskParameters" Title="IdMeasSdrResults" Name="IdMeasSdrResults" DataType="Integer.64" SourceName="IDTASKPARAMS" SourceType="Column" Required="true"/>
+    <Field Desc="IdTaskParameters" Title="IdTaskParameters" Name="IdTaskParameters" DataType="Integer.64" SourceName="IDTASKPARAMS" SourceType="Column" Required="true"/>
     <Field Name="TASKPARAMETERS" SourceType="Reference" SourceName="TaskParameters" Title="Relation TaskParametersFreq to TaskParameters">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">IdTaskParameters</Mapped>

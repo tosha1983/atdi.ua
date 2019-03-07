@@ -61,16 +61,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 builderInsertSensor.Select(c => c.Name);
 
                 queryExecuter.ExecuteAndFetch(builderInsertSensor, reader =>
-                 {
-                     var result = reader.Read();
-                     if (result)
-                     {
-                         idSensor = reader.GetValue(c => c.Id);
-                     }
-                     return result;
-                 });
+                {
+                    var result = reader.Read();
+                    if (result)
+                    {
+                        idSensor = reader.GetValue(c => c.Id);
+                    }
+                    return result;
+                });
 
-                if (idSensor > -1)
+                if (idSensor > 0)
                 {
                     var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensor>().Update();
                     builderUpdateSensor.SetValue(t => t.SensorIdentifierId, idSensor);
@@ -119,7 +119,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         });
 
 
-                        if (idSensorAntenna > -1)
+                        if (idSensorAntenna > 0)
                         {
                             if (sensorData.Antenna.Patterns != null)
                             {
@@ -206,14 +206,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 builderInsertSensorEquipmentSensitivities.Select(c => c.Id);
                                 queryExecuter
                                 .ExecuteAndFetch(builderInsertSensorEquipmentSensitivities, reader =>
-                                   {
-                                       var result = reader.Read();
-                                       if (result)
-                                       {
-                                           idSensorEquipmentSensitivities = reader.GetValue(c => c.Id);
-                                       }
-                                       return result;
-                                   });
+                                {
+                                    var result = reader.Read();
+                                    if (result)
+                                    {
+                                        idSensorEquipmentSensitivities = reader.GetValue(c => c.Id);
+                                    }
+                                    return result;
+                                });
                             }
                         }
                         if (sensorData.Polygon != null)
@@ -279,7 +279,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             }
             return resultValue;
         }
-       
+
 
         public void Handle(ISdrnIncomingEnvelope<Sensor> incomingEnvelope, ISdrnMessageHandlingResult result)
         {
@@ -299,7 +299,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.DeliveryObject.Equipment.TechId)
                     .OrderByAsc(c => c.Id)
                     ;
-                    
+
                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
                     .Execute(query) == 1;
 
@@ -332,19 +332,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     // формируем объект подтверждения регистрации
                     var registrationResult = new SensorRegistrationResult
                     {
-                        EquipmentTechId = incomingEnvelope.SensorTechId,
-                        SensorName = incomingEnvelope.SensorName,
+                        EquipmentTechId = incomingEnvelope.DeliveryObject.Equipment.TechId,
+                        SensorName = incomingEnvelope.DeliveryObject.Name,
                         SdrnServer = this._environment.ServerInstance,
                     };
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        registrationResult.Status = "ERROR";
+                        registrationResult.Status = "Error";
                         registrationResult.Message = "Something went wrong on the server";
                     }
                     else if (sensorExistsInDb)
                     {
-                        registrationResult.Status = "REJECT";
+                        registrationResult.Status = "Reject";
                         registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}", incomingEnvelope.DeliveryObject.Name, incomingEnvelope.DeliveryObject.Equipment.TechId);
                     }
                     else if (sensorRegistration)
@@ -354,7 +354,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        registrationResult.Status = "ERROR";
+                        registrationResult.Status = "Error";
                         registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
                     }
 
