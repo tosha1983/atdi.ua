@@ -46,6 +46,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly string ConfigWasNotLoaded = "The config was not loaded";
         public static readonly string IncorrectMessageParams = "Incorrect message parameters";
         public static readonly string ErrorSaveSensorParametersInDB = "Error in method 'SaveSensorParametersInDB'";
+        public static readonly string UnknownErrorsInSendMeasTaskHandler = "Unknown errors in 'SendMeasTaskHandler'";
+        public static readonly string UnknownErrorsInSendCommandHandler = "Unknown errors in 'SendCommandHandler'";
+        public static readonly string UnknownErrorsInSendRegistrationResultHandler = "Unknown errors in 'SendRegistrationResultHandler'";
+
+        
 
     }
 }

@@ -39,30 +39,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         public override void OnHandle(IReceivedMessage<DM.DeviceCommand> message)
         {
             _logger.Verbouse(Contexts.ThisComponent, Categories.Handling, Events.MessageIsBeingHandled.With(message.Token.Type));
-            this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
-            var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
-            baseContext.deviceCommand = message.Data;
-            if (baseContext.contextQueueEventTask == null)
+            try
             {
-                while (true)
+                this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
+                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
+                baseContext.deviceCommand = message.Data;
+                var process = this._processingDispatcher.Start<BaseContext>();
+                var deviceCommandTask = new DeviceCommandTask()
                 {
-                    if (baseContext.contextQueueEventTask != null)
-                    {
-                        break;
-                    }
-                }
+                    TimeStamp = _timeService.TimeStamp.Milliseconds,
+                    Options = TaskExecutionOption.Default,
+                };
+                deviceCommandTask.deviceCommand = baseContext.deviceCommand;
+                _taskStarter.RunParallel(deviceCommandTask, process, baseContext.contextQueueEventTask);
+
+                message.Result = MessageHandlingResult.Confirmed;
             }
-
-            var process = this._processingDispatcher.Start<BaseContext>();
-            var deviceCommandTask = new DeviceCommandTask()
+            catch (Exception e)
             {
-                TimeStamp = _timeService.TimeStamp.Milliseconds,
-                Options = TaskExecutionOption.Default,
-            };
-            deviceCommandTask.deviceCommand = baseContext.deviceCommand;
-            _taskStarter.RunParallel(deviceCommandTask, process, baseContext.contextQueueEventTask);
-
-            message.Result = MessageHandlingResult.Confirmed;
+                message.Result = MessageHandlingResult.Ignore;
+                this._logger.Error(Contexts.ThisComponent, Exceptions.UnknownErrorsInSendCommandHandler, e.Message);
+            }
         }
     }
 }

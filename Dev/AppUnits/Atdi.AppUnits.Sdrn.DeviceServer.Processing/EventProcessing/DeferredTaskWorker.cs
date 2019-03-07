@@ -89,6 +89,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                                         soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
 
+                                        soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
+
+                                        soTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
+
                                         soTask.LastTimeSend = DateTime.Now;
 
                                         soTask.taskParameters = taskParameters;

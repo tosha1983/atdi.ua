@@ -758,7 +758,15 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 if (statement is QueryInsertStatement)
                 {
-                     recordsAffected = this._dataEngine.Execute(command);
+                    recordsAffected = this._dataEngine.Execute(command);
+                }
+                else if (statement is QueryUpdateStatement)
+                {
+                    recordsAffected = this._dataEngine.Execute(command);
+                }
+                else if (statement is QueryDeleteStatement)
+                {
+                    recordsAffected = this._dataEngine.Execute(command);
                 }
             }
             return recordsAffected;

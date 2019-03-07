@@ -58,76 +58,73 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         public override void OnHandle(IReceivedMessage<DM.MeasTask> message)
         {
             _logger.Verbouse(Contexts.ThisComponent, Categories.Handling, Events.MessageIsBeingHandled.With(message.Token.Type));
-            if ((message.Data != null) && (message.Data.SdrnServer != null) && (message.Data.SensorName != null) && (message.Data.EquipmentTechId != null))
+            try
             {
-                this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
-                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
-                //здесь ожидаем, пока не пройдет этап регистрации сенсора и не запустится таск QueuEventTask
-                if ((baseContext.activeSensor == null) && (baseContext.contextQueueEventTask == null))
+                if ((message.Data != null) && (message.Data.SdrnServer != null) && (message.Data.SensorName != null) && (message.Data.EquipmentTechId != null))
                 {
-                    while (true)
+                    this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
+                    var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
+                    // здесь предварительная проверка(валидация) таска на возможность физической обработки
+                    if (Validation(message.Data, baseContext.activeSensor)) // пока заглушка
                     {
-                        if ((baseContext.activeSensor != null) && (baseContext.contextQueueEventTask != null))
+                        if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                         {
-                            break;
+                            this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
+                            var taskParameters = message.Data.Convert();
+                            var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
+
+                            var process = this._processingDispatcher.Start<BaseContext>();
+                            var eventTask = new EventTask()
+                            {
+                                TimeStamp = _timeService.TimeStamp.Milliseconds,
+                                Options = TaskExecutionOption.Default,
+                            };
+
+                            eventTask.taskParameters = taskParameters;
+
+                            _taskStarter.Run(eventTask, process, baseContext.contextQueueEventTask);
+
+                            this._logger.Info(Contexts.ThisComponent, Events.StartedEventTask.With(eventTask.Id));
+
+                            message.Result = MessageHandlingResult.Confirmed;
+                        }
+                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
+                        {
+                            message.Result = MessageHandlingResult.Trash;
+                            throw new NotImplementedException("Not supported MeasurementType  'Level'");
+                        }
+                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.MonitoringStations)
+                        {
+                            message.Result = MessageHandlingResult.Trash;
+                            throw new NotImplementedException("Not supported MeasurementType 'MonitoringStations'");
+                        }
+                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
+                        {
+                            message.Result = MessageHandlingResult.Trash;
+                            throw new NotImplementedException("Not supported MeasurementType 'Signaling'");
+                        }
+                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
+                        {
+                            message.Result = MessageHandlingResult.Trash;
+                            throw new NotImplementedException("Not supported MeasurementType 'BandwidthMeas'");
+                        }
+                        else
+                        {
+                            message.Result = MessageHandlingResult.Trash;
+                            throw new NotImplementedException("Not supported MeasurementType");
                         }
                     }
                 }
-                // здесь предварительная проверка(валидация) таска на возможность физической обработки
-                if (Validation(message.Data, baseContext.activeSensor)) // пока заглушка
+                else
                 {
-                    if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
-                    {
-                        this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.StartProcessSendMeasTask);
-                        var taskParameters = message.Data.Convert();
-                        var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
-
-                        var process = this._processingDispatcher.Start<BaseContext>();
-                        var eventTask = new EventTask()
-                        {
-                            TimeStamp = _timeService.TimeStamp.Milliseconds,
-                            Options = TaskExecutionOption.Default,
-                        };
-
-                        eventTask.taskParameters = taskParameters;
-
-                        _taskStarter.Run(eventTask, process, baseContext.contextQueueEventTask);
-
-                        this._logger.Info(Contexts.ThisComponent, Events.StartedEventTask.With(eventTask.Id));
-
-                        message.Result = MessageHandlingResult.Confirmed;
-                    }
-                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
-                    {
-                        message.Result = MessageHandlingResult.Trash;
-                        throw new NotImplementedException("Not supported MeasurementType  'Level'");
-                    }
-                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.MonitoringStations)
-                    {
-                        message.Result = MessageHandlingResult.Trash;
-                        throw new NotImplementedException("Not supported MeasurementType 'MonitoringStations'");
-                    }
-                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
-                    {
-                        message.Result = MessageHandlingResult.Trash;
-                        throw new NotImplementedException("Not supported MeasurementType 'Signaling'");
-                    }
-                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
-                    {
-                        message.Result = MessageHandlingResult.Trash;
-                        throw new NotImplementedException("Not supported MeasurementType 'BandwidthMeas'");
-                    }
-                    else
-                    {
-                        message.Result = MessageHandlingResult.Trash;
-                        throw new NotImplementedException("Not supported MeasurementType");
-                    }
+                    message.Result = MessageHandlingResult.Trash;
+                    this._logger.Error(Contexts.ThisComponent, Exceptions.IncorrectMessageParams);
                 }
             }
-            else
+            catch (Exception e)
             {
-                message.Result = MessageHandlingResult.Trash;
-                this._logger.Error(Contexts.ThisComponent, Exceptions.IncorrectMessageParams);
+                message.Result = MessageHandlingResult.Ignore;
+                this._logger.Error(Contexts.ThisComponent, Exceptions.UnknownErrorsInSendMeasTaskHandler, e.Message);
             }
         }
 

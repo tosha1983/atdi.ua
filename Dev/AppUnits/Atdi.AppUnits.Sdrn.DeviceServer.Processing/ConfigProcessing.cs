@@ -10,5 +10,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public int DurationForSendResult { get; set; }
         public int MaxTimeOutReceiveSensorRegistrationResult { get; set; }
         public int DurationWaitingRceivingGPSCoord { get; set; }
+        public int maximumTimeForWaitingResultSO { get; set; }
+        public int SOKoeffWaitingDevice { get; set; }
+        public int LonDelta { get; set; }
+        public int LatDelta { get; set; }
     }
 }
