@@ -16,6 +16,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         MesureRealTime,
         MesureSignalParameters,
         MesureAudio,
-        MesureZeroSpan
+        MesureZeroSpan,
+        Gps
     }
 }

@@ -18,10 +18,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             var exampleConfig = this.Config.Extract<ConfigProcessing>();
             this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
             this.Container.RegisterInstance<MainProcess>(new MainProcess(), ServiceLifetime.Singleton);
-            exampleConfig.DurationWaitingEventWithTask = this.Config.GetParameterAsInteger("DurationWaitingEventWithTask").Value;
-            exampleConfig.MaxDurationBeforeStartTimeTask = this.Config.GetParameterAsInteger("MaxDurationBeforeStartTimeTask").Value;
-            exampleConfig.DurationForSendResult = this.Config.GetParameterAsInteger("DurationForSendResult").Value;
-            exampleConfig.MaxTimeOutReceiveSensorRegistrationResult = this.Config.GetParameterAsInteger("MaxTimeOutReceiveSensorRegistrationResult").Value;
         }
 
         protected override void OnActivateUnit()

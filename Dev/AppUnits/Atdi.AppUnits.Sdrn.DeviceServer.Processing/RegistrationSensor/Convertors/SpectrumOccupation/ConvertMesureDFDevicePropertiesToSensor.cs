@@ -12,7 +12,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     public static class ConvertMesureDFDevicePropertiesToSensor
     {
-        public static Sensor Convert(this MesureDFDeviceProperties mesure, string sensorName)
+        public static Sensor Convert(this MesureDFDeviceProperties mesure, string sensorName, string sensorTechId)
         {
             var sensor = new Sensor();
             sensor.Name = sensorName;

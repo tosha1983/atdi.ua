@@ -294,7 +294,77 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         public bool Update(Sensor item)
         {
-            throw new NotImplementedException();
+            bool isSuccess = false;
+            int? idSensor = -1;
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+            try
+            {
+                var sensorData = item;
+                var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensor>().From();
+                builderSelectSensLocations.Where(c => c.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
+                builderSelectSensLocations.Where(c => c.Name, ConditionOperator.Equal, sensorData.Name);
+                builderSelectSensLocations.Select(c => c.Id);
+                queryExecuter
+                       .Fetch(builderSelectSensLocations, reader =>
+                       {
+                           var result = reader.Read();
+                           if (result)
+                           {
+                               idSensor = reader.GetValue(c => c.Id);
+                           }
+                           return result;
+                       });
+
+                if (idSensor > 0)
+                {
+                    queryExecuter.BeginTransaction();
+
+                    if (sensorData.Locations.Length > 0)
+                    {
+                        var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                        builderUpdateSensLocations.SetValue(c => c.Status, "Z");
+                        builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
+                        if (queryExecuter.Execute(builderUpdateSensLocations) > 0)
+                        {
+                            isSuccess = true;
+                        }
+                    }
+
+
+                    if (sensorData.Locations != null)
+                    {
+                        foreach (var location in sensorData.Locations)
+                        {
+                            if (location.Status == "A")
+                            {
+                                var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
+                                builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
+                                builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
+                                builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
+                                builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
+                                builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
+                                builderInsertSensLocations.SetValue(c => c.Status, location.Status);
+                                builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
+                                builderInsertSensLocations.Select(c => c.Id);
+                                queryExecuter
+                                .ExecuteAndFetch(builderInsertSensLocations, reader =>
+                                {
+                                    isSuccess = true;
+                                    return true;
+                                });
+
+                            }
+                        }
+                    }
+                    queryExecuter.CommitTransaction();
+                }
+            }
+            catch (Exception)
+            {
+                isSuccess = false;
+                queryExecuter.RollbackTransaction();
+            }
+            return isSuccess;
         }
 
         Sensor[] IRepository<Sensor,int?>.LoadAllObjects()

@@ -46,6 +46,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             try
             {
                 _logger.Verbouse(Contexts.DispatcherWorker, Categories.Processing, Events.StartDispatcherWorker.With(context.Task.Id));
+                //перед запуском- приостановка потока на 3 сек, для инициализации всех объектов,
+                //которые не успели инициализироваться к этому моменту
+                //System.Threading.Thread.Sleep(3000);
+
                 ////////////////////////////////////////////////////////////////////////
                 // 
                 //
@@ -72,6 +76,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                 if (baseContext.activeSensor != null)
                 {
+
 
                     ////////////////////////////////////////////////////////////////////////
                     // 
@@ -115,6 +120,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         Options = TaskExecutionOption.Default
                     };
                     _taskStarter.RunParallel(gpsTask, baseGPS);
+
+
 
 
                     ////////////////////////////////////////////////////////////////////////

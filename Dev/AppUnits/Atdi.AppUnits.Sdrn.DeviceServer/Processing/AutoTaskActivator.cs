@@ -24,6 +24,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ConcurrentDictionary<string, Task> _runningTasks;
 
         private int _disposingTimeout = 2000;
+        //private int _autoTaskStartDelay = 250;
         private int _autoTaskStartDelay = 5000;
 
         public AutoTaskActivator(

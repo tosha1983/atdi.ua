@@ -17,6 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
     /// </summary>
     public class Adapter : IAdapter
     {
+        private readonly ITimeService _timeService;
         private readonly ILogger _logger;
         private readonly AdapterConfig _adapterConfig;
         private LocalParametersConverter LPC;
@@ -35,13 +36,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             LevelArr = new float[TracePoints];
             for (int i = 0; i < TracePoints; i++)
             {
-
                 FreqArr[i] = (double)(FreqStart + FreqStep * i);
                 LevelArr[i] = -100;
-
             }
         }
-
+        public Adapter(AdapterConfig adapterConfig, ILogger logger, ITimeService timeService)
+        {
+            this._logger = logger;
+            this._adapterConfig = adapterConfig;
+            this._timeService = timeService;
+            LPC = new LocalParametersConverter();
+            FreqArr = new double[TracePoints];
+            LevelArr = new float[TracePoints];
+            for (int i = 0; i < TracePoints; i++)
+            {
+                FreqArr[i] = (double)(FreqStart + FreqStep * i);
+                LevelArr[i] = -100;
+            }
+        }
         /// <summary>
         /// Метод будет вызван при инициализации потока воркера адаптера
         /// Адаптеру необходимо зарегестрировать свои обработчики комманд 
@@ -92,19 +104,36 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         RefLevelMin_dBm = -130,
                         EquipmentInfo = new EquipmentInfo()
                         {
-                            AntennaCode = "Omni",
-                            AntennaManufacturer = "3anet",
-                            AntennaName = "BC600",
+                            AntennaCode = "Omni",//S/N  В конфиг
+                            AntennaManufacturer = "3anet",//В конфиг
+                            AntennaName = "BC600",//В конфиг
                             EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI,
                             EquipmentName = Device_Type,
-                            EquipmentFamily = "SDR",
-                            EquipmentCode = Device_SerialNumber
+                            EquipmentFamily = "SDR",//SDR/SpecAn/MonRec
+                            EquipmentCode = Device_SerialNumber,//S/N
+
                         },
                         RadioPathParameters = new RadioPathParameters[]
                         {
                             new RadioPathParameters()
                             {
-                                
+                                Freq_Hz = 1*1000000,
+                                KTBF_dBm = -147,//уровень своих шумов на Гц
+                                FeederLoss_dB = 2,//потери фидера
+                                Gain= 10, //коэф усиления
+                                DiagA = "HV",
+                                DiagH = "POINT 0 0 90 3 180 6 270 3",//от нуля В конфиг
+                                DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
+                            },
+                            new RadioPathParameters()
+                            {
+                                Freq_Hz = 1000*1000000,
+                                KTBF_dBm = -147,//уровень своих шумов на Гц
+                                FeederLoss_dB = 2,//потери фидера
+                                Gain= 10, //коэф усиления
+                                DiagA = "HV",
+                                DiagH = "POINT 0 0 90 3 180 6 270 3",//от нуля В конфиг
+                                DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
                             }
                         }
                     };
@@ -115,17 +144,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         SweepTimeMin_s = (double)SweepTimeMin,
                         SweepTimeMax_s = (double)SweepTimeMax,
                         StandardDeviceProperties = sdp,
-                        // DeviceId = //хз где взять
+                        //DeviceId ничего не писать, ID этого экземпляра адаптера
                     };
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, mtdp);
 
                     MesureIQStreamDeviceProperties miqdp = new MesureIQStreamDeviceProperties()
                     {
-                        AvailabilityPPS = true,
+                        AvailabilityPPS = true, // В конфиг
                         BitRateMax_MBs = 40,
-                        // DeviceId = //хз где взять
+                        //DeviceId ничего не писать, ID этого экземпляра адаптера
                         standartDeviceProperties = sdp,
-                    };                    
+                    };
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
                 }
             }
@@ -200,7 +229,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if (Attenuator != att || RefLevel != command.Parameter.RefLevel_dBm)
                     {
                         Attenuator = att;
-                        RefLevel = command.Parameter.RefLevel_dBm;
+                        if (command.Parameter.RefLevel_dBm == -1)
+                        {
+                            RefLevel = -40;
+                        }
+                        else
+                        {
+                            RefLevel = command.Parameter.RefLevel_dBm;
+                        }
+                        
                         Status = AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator);
                         if (Status != EN.Status.NoError)
                         {
@@ -219,10 +256,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                     }
 
-                    decimal rbw = LPC.RBW(this, (decimal)command.Parameter.RBW_Hz);
-                    decimal vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
-                    if (RBW != rbw || VBW != vbw || SweepTime != (decimal)command.Parameter.SweepTime_s)
+                    if (command.Parameter.RBW_Hz < 0)
                     {
+                        int[] ar = new int[] { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
+                        decimal magic = 38.146966101334357m;
+                        decimal m1 = FreqSpan / command.Parameter.TracePoint;//хотим
+                        int m2 = (int)(m1 / magic);
+                        int delta = int.MaxValue, index = 0;
+                        for (int i = 0; i < ar.Length; i++)
+                        {
+                            if (Math.Abs(ar[i] - m2) < delta)
+                            {
+                                delta = Math.Abs(ar[i] - m2);
+                                index = i;
+                            }
+                        }
+                        m2 = ar[index];
+                        decimal d = FreqSpan / magic / m2;
+                        if (((int)d) < command.Parameter.TracePoint)
+                        {
+                            m2 = ar[index - 1];
+                        }                        
+                        decimal rbw = magic * m2 * 4;// (FreqSpan / command.Parameter.TracePoint) * 4.0m;
+                        if (rbw > RBWMax)
+                        {
+                            rbw = RBWMax;
+                        }
+                        decimal vbw = 0;
+                        if (command.Parameter.RBW_Hz < 0)
+                        {
+                            vbw = rbw;
+                        }
+                        else
+                        {
+                            vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
+                        }
                         RBW = rbw;
                         VBW = vbw;
                         SweepTime = (decimal)command.Parameter.SweepTime_s;
@@ -230,6 +298,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         if (Status != EN.Status.NoError)
                         {
                             _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                        }
+                    }
+                    else
+                    {
+                        decimal rbw = LPC.RBW(this, (decimal)command.Parameter.RBW_Hz);
+                        decimal vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
+                        if (RBW != rbw || VBW != vbw || SweepTime != (decimal)command.Parameter.SweepTime_s)
+                        {
+                            RBW = rbw;
+                            VBW = vbw;
+                            SweepTime = (decimal)command.Parameter.SweepTime_s;
+                            Status = AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection);
+                            if (Status != EN.Status.NoError)
+                            {
+                                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                            }
                         }
                     }
 
@@ -364,7 +448,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             context.PushResult(result);
                         }
                     }
-                    
+
                     if (IdleState)
                     {
                         Status = AdapterDriver.bbAbort(_Device_ID);
@@ -465,7 +549,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (IdleState)
                     {
-                        Status = AdapterDriver.bbAbort(_Device_ID);                        
+                        Status = AdapterDriver.bbAbort(_Device_ID);
                         if (Status != EN.Status.NoError)
                         {
                             _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
@@ -504,7 +588,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                         }
-                    }                    
+                    }
 
                     DownsampleFactor = LPC.IQDownsampleFactor(command.Parameter.BitRate_MBs, FreqSpan);
                     Status = AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan);
@@ -526,7 +610,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     (double BlockDuration, double ReceiveTime) = LPC.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
 
-                    
+
                     return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
                     Status = AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec);
                     if (Status != EN.Status.NoError)
@@ -537,14 +621,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     //инициализация перед пуском, подготавливаемся к приему данных 
                     COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final); //ReceivedIQStream riq = new ReceivedIQStream();
-                    TempIQData tiq = new TempIQData();                    
+                    TempIQData tiq = new TempIQData();
                     InitialReceivedIQStream(ref result, ref tiq, BlockDuration, ReceiveTime, command.Parameter.TimeStart * 100);
                     //закончили подготовку
 
 
                     //психуем и принимаем все
                     if (GetIQStream(ref result, tiq, context, command.Parameter.MandatoryPPS, command.Parameter.MandatorySignal))
-                    {                       
+                    {
                         //пушаем
                         context.PushResult(result);
                     }
@@ -584,7 +668,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
-               
+
                 // дальше кода быть не должно, освобождаем поток
             }
 
@@ -645,10 +729,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #endregion Freqs
 
         #region RBW / VBW
-        private EN.Rejection Rejection = EN.Rejection.SpurReject;
+        private EN.Rejection Rejection = EN.Rejection.NoSpurReject;
         private EN.RBWShape RBWShape = EN.RBWShape.Shape_FlatTop;
         public decimal RBWMax = 10000000;
         public decimal RBW = 10000;
+        public decimal[] RBWArr = new decimal[] { 1, 3, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000, 10000000 };
 
         public decimal VBWMax = 10000000;
         public decimal VBW = 10000;
@@ -656,7 +741,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         #region Sweep
         public decimal SweepTimeMin = 0.00001m;
-        public decimal SweepTimeMax = 1;
+        public decimal SweepTimeMax = 0.1m;
 
         public decimal SweepTime
         {
@@ -809,7 +894,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         private int DownsampleFactor;
         private int return_len;
         private int samples_per_sec;
-        private double bandwidth;        
+        private double bandwidth;
         #endregion IQStream
 
         #endregion Param
@@ -939,6 +1024,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             double start_freq = 0.0;
             Status = AdapterDriver.bbQueryTraceInfo(_Device_ID, ref trace_len, ref bin_size, ref start_freq);
             SetOverLoad(Status);
+            if (Status != EN.Status.NoError)
+            {
+                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+            }
 
             FreqStep = (decimal)bin_size;
 
@@ -955,6 +1044,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             sweep_min = new float[trace_len];
 
             Status = AdapterDriver.bbFetchTrace_32f(_Device_ID, unchecked((int)trace_len), sweep_min, sweep_max);
+            if (Status != EN.Status.NoError)
+            {
+                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+            }
             if (Status == EN.Status.DeviceConnectionErr)
             {
                 res = false;
@@ -972,7 +1065,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             if (maxtrace.Length > 0 && newLength > 0 && step > 0)
             {
-                if (TracePoints != newLength || (Math.Abs(TraceFreqStart - (decimal)freqStart) >= (decimal)step))
+                if (FreqArr.Length != newLength || (Math.Abs(TraceFreqStart - (decimal)freqStart) >= (decimal)step))
                 {
                     TraceFreqStart = freqStart;
                     TracePoints = newLength;
@@ -1275,8 +1368,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             tempIQStream.TrDataTemp = new int[71];
             for (int i = 0; i < tempIQStream.BlocksCount; i++)
             {
-                float[] iqSamplesX = new float[return_len * 2];               
-                tempIQStream.IQData[i] = iqSamplesX;                
+                float[] iqSamplesX = new float[return_len * 2];
+                tempIQStream.IQData[i] = iqSamplesX;
             }
             // сформировано пустое место
         }
@@ -1286,7 +1379,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             bool IsCancellationRequested = false;
             // расчет количества шагов которое мы должны записать. 
 
-            int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;           
+            int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
 
             // Константы
             float noise = 0.000001f; // уровень шума в mW^2
@@ -1317,7 +1410,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
             int AllBlockIndex = -1; //текущий принятый 
             int NecessaryBlockIndex = -1;//Индекс нужного блока, т.е. того который в результаты
-                        
+
             bool ReceivedBlockWithErrors = false; //Есть ли ошибки в нужных блоках
 
             for (int i = 0; i <= tempIQStream.BlocksAll; i++)
@@ -1450,7 +1543,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     //В этом блоке есть пропук во времени, установим индекс конца блоков и продолжим слушать, может еще PPS нежен
                     if (tempIQStream.BlockTimeDelta.Length > 1 && tempIQStream.OneSempleDuration != tempIQStream.BlockTimeDelta[AllBlockIndex] / return_len)
                     {
-                        if (!ReceivedBlockWithErrors)
+                        if (!ReceivedBlockWithErrors && IQStopIndex == 0)
                         {
                             IQStopIndex = AllBlockIndex - 1;
                         }
@@ -1475,7 +1568,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
-                
+
                 if (JustWithSignal && !SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
                 {
                     throw new Exception("Signal not detected");
@@ -1507,7 +1600,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion обработка полученных данных  
                 done = true;
-            }           
+            }
             return done;
         }
         #endregion Private Method

@@ -88,7 +88,80 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             }
                             break;
                         case "UpdateSensorLocation":
-                            throw new NotImplementedException($"Handle for CommandId {incomingEnvelope.DeliveryObject.CommandId} not implemented");
+                            int? Id = -1;
+                            var queryUpdateSensorLocation = this._dataLayer.GetBuilder<MD.ISensor>()
+                            .From()
+                            .Select(c => c.Name)
+                            .Select(c => c.Id)
+                            .Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.SensorName)
+                            .Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.SensorTechId)
+                            .OrderByAsc(c => c.Id);
+                             queryExecuter
+                            .Fetch(queryUpdateSensorLocation, reader =>
+                            {
+                                var res = reader.Read();
+                                if (res)
+                                {
+                                    Id = reader.GetValue(c => c.Id);
+                                }
+                                return res;
+                            });
+
+
+                            if (Id > 0)
+                            {
+                                var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                                builderUpdateSensor.Where(c => c.SensorId, ConditionOperator.Equal, Id);
+                                builderUpdateSensor.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
+                                builderUpdateSensor.SetValue(c => c.Status, "Z");
+                                queryExecuter
+                                 .Execute(builderUpdateSensor);
+                                
+
+                                var values = incomingEnvelope.DeliveryObject.CustTxt1.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                                if ((values!=null) && (values.Length>0))
+                                {
+                                    if (values.Length==3)
+                                    {
+                                        double Lon=-1;
+                                        double Lat=-1;
+                                        double Asl=-1;
+                                        double.TryParse(values[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Lon);
+                                        double.TryParse(values[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Lat);
+                                        double.TryParse(values[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Asl);
+
+                                        if ((Lon != -1) && (Lat != -1) && (Asl != -1))
+                                        {
+                                            var queryCheck = this._dataLayer.GetBuilder<MD.ISensorLocation>()
+                                           .From()
+                                           .Select(c => c.Id)
+                                           .Where(c => c.Lon, ConditionOperator.Equal, Lon)
+                                           .Where(c => c.Lat, ConditionOperator.Equal, Lat);
+                                            var cnt = queryExecuter.Execute(queryCheck);
+                                            if (cnt == 0)
+                                            {
+                                                var builderInsertSensor = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
+                                                builderInsertSensor.SetValue(c => c.SensorId, Id);
+                                                builderInsertSensor.SetValue(c => c.Lon, Lon);
+                                                builderInsertSensor.SetValue(c => c.Lat, Lat);
+                                                builderInsertSensor.SetValue(c => c.Asl, Asl);
+                                                builderInsertSensor.SetValue(c => c.DateCreated, DateTime.Now);
+                                                builderInsertSensor.SetValue(c => c.DateFrom, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0 ,1));
+                                                builderInsertSensor.SetValue(c => c.DateTo, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59));
+                                                builderInsertSensor.SetValue(c => c.Status, "A");
+                                                builderInsertSensor.Select(c => c.Id);
+                                                queryExecuter
+                                                .Execute(builderInsertSensor);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                result.Status = SdrnMessageHandlingStatus.Confirmed;
+
+                                queryExecuter.CommitTransaction();
+                            }
+                            break;
                         default:
                             throw new NotImplementedException($"Handle for CommandId {incomingEnvelope.DeliveryObject.CommandId} not implemented");
                     }

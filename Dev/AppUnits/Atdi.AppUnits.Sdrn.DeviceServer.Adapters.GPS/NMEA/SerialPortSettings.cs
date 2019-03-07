@@ -2,7 +2,7 @@
 using System.IO.Ports;
 using System.Text;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.GPS
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
     /// code by Aleksandr Dikarev, dikarev-aleksandr@yandex.ru
 

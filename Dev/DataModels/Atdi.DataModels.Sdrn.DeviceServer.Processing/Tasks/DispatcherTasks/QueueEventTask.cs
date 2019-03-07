@@ -11,6 +11,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
     public class QueueEventTask : TaskBase
     {
-
+        public TaskParameters taskParameters;
     }
 }

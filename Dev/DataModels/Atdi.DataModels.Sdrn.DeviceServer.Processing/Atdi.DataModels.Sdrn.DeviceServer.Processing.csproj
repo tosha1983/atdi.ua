@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessGPS.cs" />
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
@@ -69,6 +70,8 @@
     <Compile Include="Tasks\DispatcherTasks\QueueEventTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\EventTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\DeviceCommandTask.cs" />
+    <Compile Include="Tasks\Enum\TypeMeasTask.cs" />
+    <Compile Include="Tasks\Enum\StatusTask.cs" />
     <Compile Include="Tasks\HandlingMeasurementsTask.cs" />
     <Compile Include="Tasks\AnalyzeSignalTask.cs" />
     <Compile Include="Tasks\LocalizationTDOATask.cs" />
