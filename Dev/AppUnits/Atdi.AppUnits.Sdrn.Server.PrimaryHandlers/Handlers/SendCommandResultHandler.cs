@@ -37,7 +37,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent2", "SendCommandResultProcess");
                 result.Status = SdrnMessageHandlingStatus.Trash;
                 var sensorExistsInDb = false;
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();

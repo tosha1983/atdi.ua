@@ -25,8 +25,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private IServicesResolver _resolver;
-        private IServicesContainer _servicesContainer;
         private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
 
 
@@ -35,8 +33,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ITaskStarter taskStarter,
             ILogger logger,
             IBusGate busGate,
-            IServicesResolver resolver,
-            IServicesContainer servicesContainer,
             IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
             IController controller)
         {
@@ -46,8 +42,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._logger = logger;
             this._busGate = busGate;
             this._controller = controller;
-            this._resolver = resolver;
-            this._servicesContainer = servicesContainer;
             this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
         }
 
@@ -57,16 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 _logger.Verbouse(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskWorker.With(context.Task.Id));
-                ////////////////////////////////////////////////////////////////////////
-                // 
-                //
-                // получение с DI - контейнера экземпляра глобального процесса MainProcess
-                //
-                ////////////////////////////////////////////////////////////////////////
-                this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
-                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
-                baseContext.contextSOTasks.Add(context);
-
+                (context.Process.Parent as DispatchProcess).contextSOTasks.Add(context);
 
                 DateTime dateTimeNow = DateTime.Now;
                 TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
@@ -78,27 +63,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                 while (true)
                 {
-
                     // проверка - не отменили ли задачу
-                    if (context.Task.status == StatusTask.Z)
+                    if (context.Task.taskParameters.status == StatusTask.Z.ToString())
                     {
                         context.Cancel();
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                         break;
                     }
-                    else if (context.Task.status == StatusTask.F)
+                    else if (context.Task.taskParameters.status == StatusTask.F.ToString())
                     {
-                        Thread.Sleep(1000); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
+                        Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                         continue;
                     }
-                    // проверка - не отменили ли задачу
-
-                    //if (context.Token.IsCancellationRequested)
-                    //{
-                        //context.Cancel();
-                        //_logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                        //break;
-                    //}
 
                     //////////////////////////////////////////////
                     // 
@@ -110,8 +86,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
                     if (maximumDurationMeas < 0)
                     {
-                        context.Cancel();
+                        // обновление TaskParameters в БД
+                        context.Task.taskParameters.status = StatusTask.C.ToString();
+                        this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
+                        
+
+                        DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                        deviceCommandResult.CommandId = "UpdateStatusMeasTask";
+                        deviceCommandResult.CustDate1 = DateTime.Now;
+                        deviceCommandResult.CustTxt1 = "";
+                        deviceCommandResult.Status = StatusTask.C.ToString();
+                        deviceCommandResult.CustNbr1 = int.Parse(context.Task.taskParameters.SDRTaskId);
+
+                        var publisher = this._busGate.CreatePublisher("main");
+                        publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
+                        publisher.Dispose();
+
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
+                        context.Cancel();
+                        
                         break;
                     }
 
@@ -147,63 +140,57 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
-                        //if (context.Token.IsCancellationRequested)
-                        //{
-                        // явно нужна логика отмены
-                        //_logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                        //context.Cancel();
-                        //break;
-                        //}
-
-                        // проверка - не отменили ли задачу
-                        if (context.Task.status == StatusTask.Z)
+                        if (context.Task.taskParameters.status == StatusTask.Z.ToString())
                         {
                             context.Cancel();
                             _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                             break;
                         }
-                        else if (context.Task.status == StatusTask.F)
+                        else if (context.Task.taskParameters.status == StatusTask.F.ToString())
                         {
-                            Thread.Sleep(1000); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
+                            Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                             continue;
                         }
 
                         var error = new ExceptionProcessSO();
                         if (context.WaitEvent<ExceptionProcessSO>(out error, 1) == true)
                         {
-                            /// реакция на ошибку выполнения команды
-                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
-                            switch (error._failureReason)
+                            if (error._ex != null)
                             {
-                                case CommandFailureReason.DeviceIsBusy:
-                                case CommandFailureReason.CanceledExecution:
-                                case CommandFailureReason.TimeoutExpired:
-                                case CommandFailureReason.CanceledBeforeExecution:
-                                    _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
-                                    Thread.Sleep((int)maximumDurationMeas);
-                                    break;
-                                case CommandFailureReason.NotFoundConvertor:
-                                case CommandFailureReason.NotFoundDevice:
-                                    var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.SOKoeffWaitingDevice;
-                                    TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
-                                    if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
-                                    {
+                                /// реакция на ошибку выполнения команды
+                                _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
+                                switch (error._failureReason)
+                                {
+                                    case CommandFailureReason.DeviceIsBusy:
+                                    case CommandFailureReason.CanceledExecution:
+                                    case CommandFailureReason.TimeoutExpired:
+                                    case CommandFailureReason.CanceledBeforeExecution:
+                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
+                                        Thread.Sleep((int)maximumDurationMeas);
+                                        return;
+                                    case CommandFailureReason.NotFoundConvertor:
+                                    case CommandFailureReason.NotFoundDevice:
+                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.SOKoeffWaitingDevice;
+                                        TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
+                                        if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
+                                        {
+                                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                            context.Cancel();
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
+                                            Thread.Sleep(durationToRepietMeas);
+                                        }
+                                        break;
+                                    case CommandFailureReason.Exception:
                                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                         context.Cancel();
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
-                                        Thread.Sleep(durationToRepietMeas);
-                                    }
-                                    break;
-                                case CommandFailureReason.Exception:
-                                    _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                                    context.Cancel();
-                                    break;
-                                default:
-                                    throw new NotImplementedException($"Type {error._failureReason} not supported");
+                                        return;
+                                    default:
+                                        throw new NotImplementedException($"Type {error._failureReason} not supported");
+                                }
                             }
                         }
                     }
@@ -229,9 +216,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
-                            measResult.Location.ASL = baseContext.Asl;
-                            measResult.Location.Lon = baseContext.Lon;
-                            measResult.Location.Lat = baseContext.Lat;
+                            measResult.Location.ASL = (context.Process.Parent as DispatchProcess).Asl;
+                            measResult.Location.Lon = (context.Process.Parent as DispatchProcess).Lon;
+                            measResult.Location.Lat = (context.Process.Parent as DispatchProcess).Lat;
 
                             measResult.TaskId = context.Task.taskParameters.SDRTaskId;
                             //Отправка результатов в шину 
@@ -277,13 +264,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResult / 2.0))
                             {
                                 action.Invoke();
-                                // обновление TaskParameters в БД
-                                context.Task.status = StatusTask.C;
-                                context.Task.taskParameters.status = StatusTask.C.ToString();
-                                this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
                             }
                         }
+
+                        // обновление TaskParameters в БД
+                        context.Task.taskParameters.status = StatusTask.C.ToString();
+                        this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
+
+                        DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                        deviceCommandResult.CommandId = "UpdateStatusMeasTask";
+                        deviceCommandResult.CustDate1 = DateTime.Now;
+                        deviceCommandResult.CustTxt1 = "";
+                        deviceCommandResult.Status = StatusTask.C.ToString();
+                        deviceCommandResult.CustNbr1 = int.Parse(context.Task.taskParameters.SDRTaskId);
+
+                        var publisher = this._busGate.CreatePublisher("main");
+                        publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
+                        publisher.Dispose();
+
                         context.Finish();
+                        
                         break;
                     }
                     //////////////////////////////////////////////

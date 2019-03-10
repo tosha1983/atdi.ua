@@ -59,9 +59,9 @@
     <Compile Include="ModelParameters\Signaling\SignalMask.cs" />
     <Compile Include="ModelParameters\Signaling\ReferenceSignal.cs" />
     <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
+    <Compile Include="ModelParameters\LastUpdate.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
-    <Compile Include="Processes\BaseContext.cs" />
-    <Compile Include="Processes\MainProcess.cs" />
+    <Compile Include="Processes\DispatchProcess.cs" />
     <Compile Include="Processes\ExampleContext.cs" />
     <Compile Include="Processes\SpectrumOccupationProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

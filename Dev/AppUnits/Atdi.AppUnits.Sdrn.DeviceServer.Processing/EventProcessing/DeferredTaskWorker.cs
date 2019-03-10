@@ -6,62 +6,55 @@ using Atdi.Platform.Logging;
 using System;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Platform.DependencyInjection;
 using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
-    public class DeferredTaskWorker : ITaskWorker<DeferredTasks, BaseContext, SingletonTaskWorkerLifetime>
+    public class DeferredTaskWorker : ITaskWorker<DeferredTasks, DispatchProcess, SingletonTaskWorkerLifetime>
     {
         private readonly ILogger _logger;
-        private IServicesResolver _resolver;
-        private IServicesContainer _servicesContainer;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITaskStarter _taskStarter;
         private readonly ITimeService _timeService;
         private readonly ConfigProcessing _config;
-
+        private readonly IWorkScheduler _workScheduler;
 
 
         public DeferredTaskWorker(ILogger logger,
-            IServicesResolver resolver,
-            IServicesContainer servicesContainer,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
+            IWorkScheduler workScheduler,
             ConfigProcessing config,
             ITimeService timeService)
         {
             this._logger = logger;
-            this._resolver = resolver;
-            this._servicesContainer = servicesContainer;
             this._processingDispatcher = processingDispatcher;
             this._taskStarter = taskStarter;
             this._timeService = timeService;
             this._config = config;
+            this._workScheduler = workScheduler;
         }
         /// <summary>
         /// Обработка отложенных задач
         /// </summary>
         /// <param name="context"></param>
-        public void Run(ITaskContext<DeferredTasks, BaseContext> context)
+        public void Run(ITaskContext<DeferredTasks, DispatchProcess> context)
         {
             try
             {
                 _logger.Verbouse(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTaskWorker.With(context.Task.Id));
-                this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
-                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 while (true)
                 {
                     // ожидаем заданный в конфигурации промежуток времени
                     Thread.Sleep(this._config.DurationWaitingEventWithTask);
                     int i= 0;
-                    if (baseContext.listDeferredTasks != null)
+                    if (context.Process.listDeferredTasks != null)
                     {
                         //если в списке появилась отложенная задача
-                        while (i< baseContext.listDeferredTasks.Count)
+                        while (i< context.Process.listDeferredTasks.Count)
                         {
-                            var taskParameters = baseContext.listDeferredTasks[i];
+                            var taskParameters = context.Process.listDeferredTasks[i];
 
                             TimeSpan timeSpan = taskParameters.StartTime.Value - DateTime.Now;
                             //запускаем задачу в случае, если время 
@@ -76,20 +69,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 /////////////////////////////////////////////////////////////////
                                 if (taskParameters.MeasurementType == MeasType.SpectrumOccupation)
                                 {
-                                    if (baseContext.activeSensor != null)
+                                    if (context.Process.activeSensor != null)
                                     {
-                                        var measProcess = this._processingDispatcher.Start<SpectrumOccupationProcess>();
+
+                                        var process = _processingDispatcher.Start<SpectrumOccupationProcess>(context.Process);
+
                                         var soTask = new SOTask()
                                         {
                                             TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
                                             Options = TaskExecutionOption.Default,
                                         };
 
-                                        soTask.sensorParameters = baseContext.activeSensor.Convert();
+                                        soTask.sensorParameters = context.Process.activeSensor.Convert();
 
                                         soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
 
                                         soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
+
+                                        soTask.SleepTimePeriodForWaitingStartingMeas = this._config.maximumTimeForWaitingResultSO;
 
                                         soTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
 
@@ -101,13 +98,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
 
-                                        _taskStarter.Run(soTask, measProcess);
+                                        _taskStarter.RunParallel(soTask, process, context);
 
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(soTask.Id));
 
-                                        if (baseContext.listDeferredTasks.Contains(taskParameters))
+                                        if (context.Process.listDeferredTasks.Contains(taskParameters))
                                         {
-                                            baseContext.listDeferredTasks.Remove(taskParameters);
+                                            context.Process.listDeferredTasks.Remove(taskParameters);
                                         }
                                     }
                                 }

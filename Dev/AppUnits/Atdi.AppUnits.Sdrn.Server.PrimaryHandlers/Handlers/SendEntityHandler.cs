@@ -41,7 +41,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 try
                 {
-                    this._eventEmitter.Emit("OnEvent3", "SendEntityProcess");
                     result.Status = SdrnMessageHandlingStatus.Trash;
                     var entityObject = incomingEnvelope.DeliveryObject;
 

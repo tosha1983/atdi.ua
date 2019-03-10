@@ -531,7 +531,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent6", "UpdateSensorProcess");
                 result.Status = SdrnMessageHandlingStatus.Confirmed;
 
                 var sensorUpdate = false;

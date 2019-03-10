@@ -7,7 +7,6 @@ using System;
 using Atdi.DataModels.EntityOrm;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Platform.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,27 +16,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     /// <summary>
     /// Воркер по обработке процедуры регистрации сенсора
     /// </summary>
-    public class RegisterSensorTaskWorker : ITaskWorker<RegisterSensorTask, BaseContext, SingletonTaskWorkerLifetime>
+    public class RegisterSensorTaskWorker : ITaskWorker<RegisterSensorTask, DispatchProcess, SingletonTaskWorkerLifetime>
     {
         private readonly IRepository<DM.Sensor, int?> _repositorySensor;
         private readonly ILogger _logger;
         private readonly IBusGate _busGate;
-        private IServicesResolver _resolver;
-        private IServicesContainer _servicesContainer;
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly IDeviceServerConfig _deviceServerConfig;
         private readonly ConfigProcessing _config;
         private readonly IController _controller;
+        private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
+
 
         public RegisterSensorTaskWorker(IRepository<DM.Sensor, int?> repositorySensor,
             ILogger logger,
             IBusGate busGate,
-            IServicesResolver resolver,
-            IServicesContainer servicesContainer,
             ITimeService timeService,
             ITaskStarter taskStarter,
             ConfigProcessing config,
+            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
             IController controller,
             IDeviceServerConfig deviceServerConfig
             )
@@ -45,23 +43,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._logger = logger;
             this._repositorySensor = repositorySensor;
             this._busGate = busGate;
-            this._resolver = resolver;
-            this._servicesContainer = servicesContainer;
             this._timeService = timeService;
             this._taskStarter = taskStarter;
             this._deviceServerConfig = deviceServerConfig;
             this._config = config;
             this._controller = controller;
+            this._repositoryLastUpdateByInt = repositoryLastUpdateByInt;
         }
 
-        public void Run(ITaskContext<RegisterSensorTask, BaseContext> context)
+        public void Run(ITaskContext<RegisterSensorTask, DispatchProcess> context)
         {
             try
             {
                 _logger.Verbouse(Contexts.RegisterSensorTaskWorker, Categories.Processing, Events.StartRegisterSensorTaskWorker.With(context.Task.Id));
-                // получаем объект глобального процесса с контейнера
-                this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
-                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
                 var allSensor = this._repositorySensor.LoadAllObjects();
                 //если в БД не обнаружено сведений о сенсоре, тогда:
                 if (((allSensor == null) || ((allSensor != null) && (allSensor.Length == 0))))
@@ -177,47 +171,72 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     }
                     if (sensor != null)
                     {
-                        var publisher = this._busGate.CreatePublisher("main");
-                        publisher.Send<DM.Sensor>("RegisterSensor", sensor);
-                        publisher.Dispose();
-
-                        // присваиваем текущий контекст ITaskContext<RegisterSensorTask, BaseContext> для дальнейшей передачи через него SensorRegistrationResult 
-                        baseContext.contextRegisterSensorTask = context;
-                        // ожидаем получение сообщения с подтверждением от SDRN сервера об успешной регистрации сенсора
-                        var sensorRegResult = new DM.SensorRegistrationResult();
-                        while (true)
+                        //сохранение сведений о сенсоре в БД
+                        var idSensor = this._repositorySensor.Create(sensor);
+                        if (idSensor > 0)
                         {
-                            // ожидаем сообщения 5 мин, так пока не получим подтверждение о регистрации
-                            var isData = context.WaitEvent<DM.SensorRegistrationResult>(out sensorRegResult, this._config.MaxTimeOutReceiveSensorRegistrationResult);
-                            //успешная регистрация
-                            if (isData == true)
+                            context.Process.activeSensor = sensor;
+
+                            var lastUpdate = new LastUpdate()
                             {
-                                this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.ReceivedSensorRegistrationConfirmation);
-                                if ((sensorRegResult.Status == "Success") && (sensorRegResult.EquipmentTechId == sensor.Equipment.TechId) && (sensorRegResult.SensorName == sensor.Name))
+                                TableName = "XBS_SENSOR",
+                                LastDateTimeUpdate = DateTime.Now,
+                                Status = "N"
+                            };
+
+                            var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
+                            if ((allTablesLastUpdated != null) && (allTablesLastUpdated.Length > 0))
+                            {
+                                var listAlTables = allTablesLastUpdated.ToList();
+                                var findTableProperties = listAlTables.Find(z => z.TableName == "XBS_SENSOR");
+                                if (findTableProperties != null)
                                 {
-                                    //сохранение сведений о сенсоре в БД
-                                    var idSensor = this._repositorySensor.Create(sensor);
-                                    if (idSensor > 0)
-                                    {
-                                        baseContext.activeSensor = sensor;
-                                        this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorInformationRecordedDB);
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorInformationNotRecordedDB);
-                                        throw new Exception(Events.SensorInformationNotRecordedDB.Text);
-                                    }
+                                    this._repositoryLastUpdateByInt.Update(lastUpdate);
                                 }
-                                else if ((sensorRegResult.Status == "Reject") && (sensorRegResult.EquipmentTechId == sensor.Equipment.TechId) && (sensorRegResult.SensorName == sensor.Name))
+                                else
                                 {
-                                    this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorAlreadyExists.With(sensorRegResult.SensorName, sensorRegResult.EquipmentTechId));
-                                    this._logger.Error(Contexts.RegisterSensorTaskWorker, Categories.Processing, Exceptions.DeviceServerCanNotBeStarted);
+                                    this._repositoryLastUpdateByInt.Create(lastUpdate);
                                 }
                             }
                             else
                             {
-                                this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.MessageTimedOut);
+                                this._repositoryLastUpdateByInt.Create(lastUpdate);
+                            }
+
+
+                            this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorInformationRecordedDB);
+
+                            var publisher = this._busGate.CreatePublisher("main");
+                            publisher.Send<DM.Sensor>("RegisterSensor", sensor);
+                            publisher.Dispose();
+
+                        }
+                        else
+                        {
+                            this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorInformationNotRecordedDB);
+                            throw new Exception(Events.SensorInformationNotRecordedDB.Text);
+                        }
+                      
+                       
+                        // ожидаем получение сообщения с подтверждением от SDRN сервера об успешной регистрации сенсора
+                        while (true)
+                        {
+
+                            var loadSensors = this._repositorySensor.LoadAllObjects();
+                            //если в БД не обнаружено сведений о сенсоре, тогда:
+                            if ((loadSensors != null) && (loadSensors.Length >= 0))
+                            {
+                                var sensorCheckConfirmed = loadSensors[0];
+                                if (sensorCheckConfirmed.Status=="A")
+                                {
+                                    this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.ReceivedSensorRegistrationConfirmation);
+                                    context.Process.activeSensor = sensorCheckConfirmed;
+                                    break;
+                                }
+                                else
+                                {
+                                    System.Threading.Thread.Sleep(this._config.MaxTimeOutReceiveSensorRegistrationResult);
+                                }
                             }
                         }
                     }
@@ -229,7 +248,33 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else if ((allSensor != null) && (allSensor.Length > 0))
                 {
-                    baseContext.activeSensor = allSensor[0];
+                    var sensor = allSensor[0];
+                    if (sensor.Status == "A")
+                    {
+                        context.Process.activeSensor = allSensor[0];
+                    }
+                    if (sensor.Status == "NOT_CONFIRMED")
+                    {
+                        while (true)
+                        {
+                            var loadSensors = this._repositorySensor.LoadAllObjects();
+                            //если в БД не обнаружено сведений о сенсоре, тогда:
+                            if ((loadSensors != null) && (loadSensors.Length >= 0))
+                            {
+                                var sensorCheckConfirmed = loadSensors[0];
+                                if (sensorCheckConfirmed.Status == "A")
+                                {
+                                    this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.ReceivedSensorRegistrationConfirmation);
+                                    context.Process.activeSensor = sensorCheckConfirmed;
+                                    break;
+                                }
+                                else
+                                {
+                                    System.Threading.Thread.Sleep(this._config.MaxTimeOutReceiveSensorRegistrationResult);
+                                }
+                            }
+                        }
+                    }
                 }
                 context.Finish();
             }

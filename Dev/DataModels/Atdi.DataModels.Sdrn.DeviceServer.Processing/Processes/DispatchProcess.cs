@@ -8,32 +8,22 @@ using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
-    public class MainProcess : ProcessBase
+    public class DispatchProcess : ProcessBase
     {
         private object _syncLat = new object();
         private object _syncLon = new object();
         private object _syncAsl = new object();
         private object _syncActiveSensor = new object();
-        private object _syncDeviceCommand = new object();
-        private object _syncSensorRegistrationResult = new object();
-        private object _syncContextRegisterSensorTask = new object();
-        private object _syncContextQueueEventTask = new object();
         private object _syncListDeferredTasks = new object();
         private object _syncContextSOTask = new object();
-        private object _syncExecutionContextGps = new object();
 
 
         private double _lat;
         private double _lon;
         private double _asl;
         private DM.Sensor _activeSensor;
-        private DM.DeviceCommand _deviceCommand;
-        private DM.SensorRegistrationResult _sensorRegistrationResult;
-        private ITaskContext<RegisterSensorTask, BaseContext> _contextRegisterSensorTask;
-        private ITaskContext<QueueEventTask, BaseContext> _contextQueueEventTask;
         private List<ITaskContext<SOTask, SpectrumOccupationProcess>> _contextSOTasks;
         private List<TaskParameters> _listDeferredTasks;
-        private IExecutionContext _executionContextGps;
 
          
         public double Lat
@@ -92,62 +82,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-        public DM.DeviceCommand deviceCommand
-        {
-            get
-            {
-                lock (_syncDeviceCommand)
-                    return _deviceCommand;
-            }
-            set
-            {
-                lock (_syncDeviceCommand)
-                    _deviceCommand = value;
-            }
-        }
-
-        public DM.SensorRegistrationResult sensorRegistrationResult
-        {
-            get
-            {
-                lock (_syncSensorRegistrationResult)
-                    return _sensorRegistrationResult;
-            }
-            set
-            {
-                lock (_syncSensorRegistrationResult)
-                    _sensorRegistrationResult = value;
-            }
-        }
-
-
-        public ITaskContext<RegisterSensorTask, BaseContext> contextRegisterSensorTask
-        {
-            get
-            {
-                lock (_syncContextRegisterSensorTask)
-                    return _contextRegisterSensorTask;
-            }
-            set
-            {
-                lock (_syncContextRegisterSensorTask)
-                    _contextRegisterSensorTask = value;
-            }
-        }
-
-        public ITaskContext<QueueEventTask, BaseContext> contextQueueEventTask
-        {
-            get
-            {
-                lock (_syncContextQueueEventTask)
-                    return _contextQueueEventTask;
-            }
-            set
-            {
-                lock (_syncContextQueueEventTask)
-                    _contextQueueEventTask = value;
-            }
-        }
+       
 
 
 
@@ -181,23 +116,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-        public IExecutionContext executionContextGps
-        {
-            get
-            {
-                lock (_syncExecutionContextGps)
-                    return _executionContextGps;
-            }
-            set
-            {
-                lock (_syncExecutionContextGps)
-                    _executionContextGps = value;
-            }
-        }
-
-
         
-        public MainProcess() : base("Main process")
+        public DispatchProcess() : base("Dispatch process")
         {
             listDeferredTasks = new List<TaskParameters>();
             contextSOTasks = new List<ITaskContext<SOTask, SpectrumOccupationProcess>>();
