@@ -59,11 +59,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 var activeSensor = context.Process.activeSensor;
 
                 var cntActiveTaskParameters = 0;
-                var taskParams = this._repositoryTaskParametersByInt.LoadAllObjects();
+                var taskParams = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict();
                 if ((taskParams != null) && (taskParams.Length > 0))
                 {
                     var listTaskParameters = taskParams.ToList();
-                    var allTaksWithStatusActive = listTaskParameters.FindAll(z => z.status == "N" || z.status == "A");
+                    var allTaksWithStatusActive = listTaskParameters.FindAll(z => z.status == StatusTask.N.ToString() || z.status == StatusTask.A.ToString());
                     if (allTaksWithStatusActive != null)
                     {
                         cntActiveTaskParameters = allTaksWithStatusActive.Count;
@@ -140,9 +140,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                         if (((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == "N")) || (lastUpdateTaskParameter == null) || (cntActiveTaskParameters > 0))
                         {
-                            taskParams = this._repositoryTaskParametersByInt.LoadAllObjects();
-                            //_workScheduler.Run($"Run scheduler measTask", () =>
-                            //{
+                            taskParams = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict();
+
                             for (int i = 0; i < taskParams.Length; i++)
                             {
                                 var tskParam = taskParams[i];
@@ -177,11 +176,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                     context.Process.listDeferredTasks.Add(context.Task.taskParameters);
                                                 }
                                             }
-                                        } else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                        }
+                                        else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
                                         {
                                             action.Invoke();
                                         }
-                                       
+                                        else
+                                        {
+                                            tskParam.status = StatusTask.C.ToString();
+                                            this._repositoryTaskParametersByInt.Update(tskParam);
+                                        }
                                     }
                                     else
                                     {
@@ -227,7 +231,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                             {
                                                 action.Invoke();
                                             }
-
+                                            else
+                                            {
+                                                tskParam.status = StatusTask.C.ToString();
+                                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                            }
                                         }
                                     }
                                     else
@@ -272,7 +280,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             context.Process.contextSOTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
                             if (lastUpdateTaskParameter != null)
                             {
-                                lastUpdateTaskParameter.Status = "C";
+                                lastUpdateTaskParameter.Status = StatusTask.C.ToString();
                                 this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
                             }
                             else
@@ -281,7 +289,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 {
                                     TableName = "XBS_TASKPARAMETERS",
                                     LastDateTimeUpdate = DateTime.Now,
-                                    Status = "C"
+                                    Status = StatusTask.C.ToString()
                                 };
                                 this._repositoryLastUpdateByInt.Create(lastUpdate);
                             }
