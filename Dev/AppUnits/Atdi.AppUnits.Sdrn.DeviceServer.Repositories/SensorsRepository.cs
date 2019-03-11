@@ -319,8 +319,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     queryExecuter.BeginTransaction();
 
+                    var builderUpdateSens = this._dataLayer.GetBuilder<MD.ISensor>().Update();
+                    builderUpdateSens.SetValue(c => c.Status, item.Status);
+                    builderUpdateSens.Where(c => c.Id, ConditionOperator.Equal, idSensor);
+                    if (queryExecuter.Execute(builderUpdateSens) > 0)
+                    {
+                        isSuccess = true;
+                    }
+
+
                     if (sensorData.Locations.Length > 0)
                     {
+
                         var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
                         builderUpdateSensLocations.SetValue(c => c.Status, "Z");
                         builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);

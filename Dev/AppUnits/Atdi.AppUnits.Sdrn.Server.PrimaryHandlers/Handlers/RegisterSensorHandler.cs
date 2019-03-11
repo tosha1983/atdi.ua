@@ -52,7 +52,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 builderInsertSensor.SetValue(c => c.NetworkId, sensorData.NetworkId);
                 builderInsertSensor.SetValue(c => c.Remark, sensorData.Remark);
                 builderInsertSensor.SetValue(c => c.RxLoss, sensorData.RxLoss);
-                builderInsertSensor.SetValue(c => c.Status, sensorData.Status);
+                builderInsertSensor.SetValue(c => c.Status, "A");
                 builderInsertSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
                 builderInsertSensor.SetValue(c => c.TypeSensor, sensorData.Type);
                 builderInsertSensor.SetValue(c => c.ApiVersion, "2.0");
@@ -285,7 +285,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent1", "RegisterSensorProcess");
                 result.Status = SdrnMessageHandlingStatus.Rejected;
                 var sensorRegistration = false;
                 var sensorExistsInDb = false;

@@ -18,8 +18,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         private readonly ILogger _logger;
         private readonly ConfigGPS _config;
         private GNSSReceiverWrapper gnssWrapper;
-        private readonly IServicesResolver _resolver;
-        private readonly IServicesContainer _servicesContainer;
         private IExecutionContext _executionContextGps;
         private readonly IWorkScheduler _workScheduler;
         private ulong part = 0;
@@ -30,16 +28,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         /// <param name="adapterConfig"></param>
         /// <param name="logger"></param>
         public GPSAdapter(ConfigGPS config,
-            IServicesResolver resolver,
-            IServicesContainer servicesContainer,
             IWorkScheduler workScheduler,
             ILogger logger)
         {
             this._logger = logger;
             this._config = config;
             this._logger = logger;
-            this._resolver = resolver;
-            this._servicesContainer = servicesContainer;
             this._workScheduler = workScheduler;
         }
 
@@ -52,7 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             try
             {
-                _workScheduler.Run($"Start GPS scheduler", () => { OpenGPSDevice(); } );
+                OpenGPSDevice();
                 host.RegisterHandler<COM.GpsCommand, COMR.GpsResult>(GPSCommandHandler);
             }
             catch (Exception exp)

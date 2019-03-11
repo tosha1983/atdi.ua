@@ -4,7 +4,7 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 using Atdi.Platform.Logging;
 using System;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Platform.DependencyInjection;
+
 
 
 
@@ -23,22 +23,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private IServicesResolver _resolver;
-        private IServicesContainer _servicesContainer;
+        
 
         public DispatcherWorker(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
-            ILogger logger,
-            IServicesResolver resolver,
-            IServicesContainer servicesContainer)
+            ILogger logger)
         {
             this._processingDispatcher = processingDispatcher;
             this._timeService = timeService;
             this._taskStarter = taskStarter;
             this._logger = logger;
-            this._resolver = resolver;
-            this._servicesContainer = servicesContainer;
         }
 
         public void Run(ITaskContext<AutoTaskBase, DeviceServerBackgroundProcess> context)
@@ -46,19 +41,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             try
             {
                 _logger.Verbouse(Contexts.DispatcherWorker, Categories.Processing, Events.StartDispatcherWorker.With(context.Task.Id));
-                //перед запуском- приостановка потока на 3 сек, для инициализации всех объектов,
-                //которые не успели инициализироваться к этому моменту
-                //System.Threading.Thread.Sleep(3000);
-
-                ////////////////////////////////////////////////////////////////////////
-                // 
-                //
-                // получение с DI - контейнера экземпляра глобального процесса MainProcess
-                //
-                ////////////////////////////////////////////////////////////////////////
-                this._resolver = this._servicesContainer.GetResolver<IServicesResolver>();
-                var baseContext = this._resolver.Resolve(typeof(MainProcess)) as MainProcess;
-
 
                 ////////////////////////////////////////////////////////////////////////
                 // 
@@ -66,31 +48,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 // запуск задачи регистрации сенсора
                 //
                 ////////////////////////////////////////////////////////////////////////
-                var baseProcessRegisterSensor = this._processingDispatcher.Start<BaseContext>(baseContext);
-                var regSensorTask = new RegisterSensorTask()
+
+                var dispatchProcess = this._processingDispatcher.Start<DispatchProcess>(context.Process);
+
+                _taskStarter.Run(new RegisterSensorTask(), dispatchProcess);
+
+                if (dispatchProcess.activeSensor != null)
                 {
-                    TimeStamp = _timeService.TimeStamp.Milliseconds,
-                    Options = TaskExecutionOption.Default
-                };
-                _taskStarter.Run(regSensorTask, baseProcessRegisterSensor);
-
-                if (baseContext.activeSensor != null)
-                {
-
-
                     ////////////////////////////////////////////////////////////////////////
                     // 
                     //
                     // запуск задач по событиям, которые приходят с шины, время до выполнения, которых меньше 20 мин
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    var baseQueueEventTask = this._processingDispatcher.Start<BaseContext>(baseContext);
-                    var queueEventTask = new QueueEventTask()
-                    {
-                        TimeStamp = _timeService.TimeStamp.Milliseconds,
-                        Options = TaskExecutionOption.Default
-                    };
-                    _taskStarter.RunParallel(queueEventTask, baseQueueEventTask);
+                    _taskStarter.RunParallel(new QueueEventTask(), dispatchProcess);
 
                     ////////////////////////////////////////////////////////////////////////
                     // 
@@ -98,13 +69,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск отложенных задач, которые были получены с шины но время до выполнения, которых превышает 20 мин
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    var baseDeferredTasks = this._processingDispatcher.Start<BaseContext>(baseContext);
-                    var deferredTasks = new DeferredTasks()
-                    {
-                        TimeStamp = _timeService.TimeStamp.Milliseconds,
-                        Options = TaskExecutionOption.Default
-                    };
-                    _taskStarter.RunParallel(deferredTasks, baseDeferredTasks);
+                    _taskStarter.RunParallel(new DeferredTasks(), dispatchProcess);
 
 
                     ////////////////////////////////////////////////////////////////////////
@@ -113,38 +78,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск задачи включения GPS
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    var baseGPS = this._processingDispatcher.Start<BaseContext>(baseContext);
-                    var gpsTask = new GPSTask()
-                    {
-                        TimeStamp = _timeService.TimeStamp.Milliseconds,
-                        Options = TaskExecutionOption.Default
-                    };
-                    _taskStarter.RunParallel(gpsTask, baseGPS);
+                    _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
 
 
-
-
-                    ////////////////////////////////////////////////////////////////////////
-                    // 
-                    //
-                    // запуск задач c БД
-                    //
-                    ////////////////////////////////////////////////////////////////////////
-                    var baseProcessingFromDBTask = this._processingDispatcher.Start<BaseContext>(baseContext);
-                    var processingFromDBTask = new ProcessingFromDBTask()
-                    {
-                        TimeStamp = _timeService.TimeStamp.Milliseconds,
-                        Options = TaskExecutionOption.Default
-                    };
-                    _taskStarter.Run(processingFromDBTask, baseProcessingFromDBTask);
-
-                 
                 }
                 else
                 {
                     _logger.Error(Contexts.DispatcherWorker, Categories.Processing, Exceptions.NotFoundInformationAboutSensor);
                     context.Finish();
                 }
+
             }
             catch (Exception e)
             {

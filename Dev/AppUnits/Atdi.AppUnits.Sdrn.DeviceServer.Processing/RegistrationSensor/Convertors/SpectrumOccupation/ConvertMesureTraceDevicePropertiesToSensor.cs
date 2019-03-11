@@ -17,7 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             var equipmentValue = mesure.StandardDeviceProperties.EquipmentInfo;
             var sensor = new Sensor()
             {
-                Status = "A",
+                Status = "NOT_CONFIRMED",
                 Name = sensorName,
                 Equipment = new SensorEquipment()
                 {

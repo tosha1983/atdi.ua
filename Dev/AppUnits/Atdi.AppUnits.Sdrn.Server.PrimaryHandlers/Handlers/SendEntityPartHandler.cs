@@ -37,7 +37,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent4", "SendEntityPartProcess");
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 int valIns = 0;

@@ -50,17 +50,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// <summary>
         /// Погрешность для долготы
         /// </summary>
-        [ComponentConfigProperty("LonDelta.float")]
+        [ComponentConfigProperty("LonDelta.double")]
         public double LonDelta { get; set; }
 
         /// <summary>
         /// Погрешность для широты
         /// </summary>
-        [ComponentConfigProperty("LatDelta.float")]
+        [ComponentConfigProperty("LatDelta.double")]
         public double LatDelta { get; set; }
         /// <summary>
         /// Периодичность в миллисекундах  отправки сообщений о координатах сенсора в SDRNS
         /// </summary>
-        public int PeriodSendCoordinatesToSDRNS { get; set; } 
+        public int PeriodSendCoordinatesToSDRNS { get; set; }
+
+        /// <summary>
+        /// Период в миллисекундах проверки наличия в БД новых тасков
+        /// </summary>
+        public int DurationWaitingCheckNewTasks { get; set; }
+
+        /// <summary>
+        /// период в миллисекундах временной приостановки потока выполнения задачи (для статуса MEAStASK.STATUS='F')
+        /// </summary>
+        public int SleepTimePeriodForWaitingStartingMeas_ms { get; set; }
+
+
+        
     }
 }

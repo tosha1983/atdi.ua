@@ -17,7 +17,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         {
             var exampleConfig = this.Config.Extract<ConfigProcessing>();
             this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
-            this.Container.RegisterInstance<MainProcess>(new MainProcess(), ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()

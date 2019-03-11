@@ -78,6 +78,77 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
                     /// иницируем его параметрами сконфигурации
                     /// проверяем к чем оно готово
 
+                    /// включем устройство
+                    /// иницируем его параметрами сконфигурации
+                    /// проверяем к чем оно готово
+
+                    /// сообщаем инфраструктуре что мы готовы обрабатывать комманду MesureGpsLocationExampleCommand
+                    /// и при этом возвращать оезультат в типе MesureGpsLocationExampleAdapterResult                   
+                    StandardDeviceProperties sdp = new StandardDeviceProperties()
+                    {
+                        AttMax_dB = 30,
+                        AttMin_dB = 0,
+                        FreqMax_Hz = FreqMax,
+                        FreqMin_Hz = FreqMin,
+                        PreAmpMax_dB = 30,
+                        PreAmpMin_dB = 0,
+                        RefLevelMax_dBm = 20,
+                        RefLevelMin_dBm = -130,
+                        EquipmentInfo = new EquipmentInfo()
+                        {
+                            AntennaCode = "Omni",//S/N  В конфиг
+                            AntennaManufacturer = "3anet",//В конфиг
+                            AntennaName = "BC600",//В конфиг
+                            EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI,
+                            EquipmentName = Device_Type,
+                            EquipmentFamily = "SDR",//SDR/SpecAn/MonRec
+                            EquipmentCode = Device_SerialNumber,//S/N
+
+                        },
+                        RadioPathParameters = new RadioPathParameters[]
+                        {
+                            new RadioPathParameters()
+                            {
+                                Freq_Hz = 1*1000000,
+                                KTBF_dBm = -147,//уровень своих шумов на Гц
+                                FeederLoss_dB = 2,//потери фидера
+                                Gain= 10, //коэф усиления
+                                DiagA = "HV",
+                                DiagH = "POINT 0 0 90 3 180 6 270 3",//от нуля В конфиг
+                                DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
+                            },
+                            new RadioPathParameters()
+                            {
+                                Freq_Hz = 1000*1000000,
+                                KTBF_dBm = -147,//уровень своих шумов на Гц
+                                FeederLoss_dB = 2,//потери фидера
+                                Gain= 10, //коэф усиления
+                                DiagA = "HV",
+                                DiagH = "POINT 0 0 90 3 180 6 270 3",//от нуля В конфиг
+                                DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
+                            }
+                        }
+                    };
+                    MesureTraceDeviceProperties mtdp = new MesureTraceDeviceProperties()
+                    {
+                        RBWMax_Hz = (double)RBWMax,
+                        RBWMin_Hz = 3,
+                        SweepTimeMin_s = (double)SweepTimeMin,
+                        SweepTimeMax_s = (double)SweepTimeMax,
+                        StandardDeviceProperties = sdp,
+                        //DeviceId ничего не писать, ID этого экземпляра адаптера
+                    };
+                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, mtdp);
+
+                    MesureIQStreamDeviceProperties miqdp = new MesureIQStreamDeviceProperties()
+                    {
+                        AvailabilityPPS = true, // В конфиг
+                        BitRateMax_MBs = 40,
+                        //DeviceId ничего не писать, ID этого экземпляра адаптера
+                        standartDeviceProperties = sdp,
+                    };
+
+
                     /// сообщаем инфраструктуре что мы готовы обрабатывать комманду MesureGpsLocationExampleCommand
                     /// и при этом возвращать оезультат в типе MesureGpsLocationExampleAdapterResult
                     //host.RegisterHandler<COM.MesureGpsLocationExampleCommand, MesureGpsLocationExampleAdapterResult>(MesureGpsLocationExampleCommandHandler);
