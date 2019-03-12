@@ -257,30 +257,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         {
                                             if (cntActiveTaskParameters > 0)
                                             {
-                                                if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
+                                                if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
                                                 {
-
                                                     tskParam.status = StatusTask.A.ToString();
                                                     this._repositoryTaskParametersByInt.Update(tskParam);
-
-                                                    TimeSpan timeSpan = context.Task.taskParameters.StartTime.Value - DateTime.Now;
-                                                    //запускаем задачу в случае, если время 
-                                                    if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
-                                                    {
-                                                        action.Invoke();
-                                                    }
-                                                    else
-                                                    {
-                                                        // здесь необходимо добавлять в список отложенных задач
-                                                        if (!context.Process.listDeferredTasks.Contains(context.Task.taskParameters))
-                                                        {
-                                                            context.Process.listDeferredTasks.Add(context.Task.taskParameters);
-                                                        }
-                                                    }
-                                                }
-                                                else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
-                                                {
                                                     action.Invoke();
+                                                    System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
+                                                    findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                                    if (findSOTask != null)
+                                                    {
+                                                        findSOTask.Task.taskParameters.status = StatusTask.F.ToString();
+                                                    }
                                                 }
                                                 else
                                                 {
