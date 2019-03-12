@@ -63,7 +63,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 if ((taskParams != null) && (taskParams.Length > 0))
                 {
                     var listTaskParameters = taskParams.ToList();
-                    var allTaksWithStatusActive = listTaskParameters.FindAll(z => z.status == StatusTask.N.ToString() || z.status == StatusTask.A.ToString());
+                    var allTaksWithStatusActive = listTaskParameters.FindAll(z => z.status == StatusTask.N.ToString() || z.status == StatusTask.A.ToString() || z.status == StatusTask.F.ToString());
                     if (allTaksWithStatusActive != null)
                     {
                         cntActiveTaskParameters = allTaksWithStatusActive.Count;
@@ -252,6 +252,42 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         if (findSOTask != null)
                                         {
                                             findSOTask.Task.taskParameters.status = StatusTask.F.ToString();
+                                        }
+                                        else
+                                        {
+                                            if (cntActiveTaskParameters > 0)
+                                            {
+                                                if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
+                                                {
+
+                                                    tskParam.status = StatusTask.A.ToString();
+                                                    this._repositoryTaskParametersByInt.Update(tskParam);
+
+                                                    TimeSpan timeSpan = context.Task.taskParameters.StartTime.Value - DateTime.Now;
+                                                    //запускаем задачу в случае, если время 
+                                                    if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
+                                                    {
+                                                        action.Invoke();
+                                                    }
+                                                    else
+                                                    {
+                                                        // здесь необходимо добавлять в список отложенных задач
+                                                        if (!context.Process.listDeferredTasks.Contains(context.Task.taskParameters))
+                                                        {
+                                                            context.Process.listDeferredTasks.Add(context.Task.taskParameters);
+                                                        }
+                                                    }
+                                                }
+                                                else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                                {
+                                                    action.Invoke();
+                                                }
+                                                else
+                                                {
+                                                    tskParam.status = StatusTask.C.ToString();
+                                                    this._repositoryTaskParametersByInt.Update(tskParam);
+                                                }
+                                            }
                                         }
                                     }
                                     else
