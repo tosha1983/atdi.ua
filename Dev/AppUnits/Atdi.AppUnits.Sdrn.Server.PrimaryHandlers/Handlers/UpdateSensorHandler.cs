@@ -558,10 +558,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     result.Status = SdrnMessageHandlingStatus.Confirmed;
 
                     // отправка события если новый сенсор создан в БД
-                    if (sensorUpdate)
-                    {
-                        this._eventEmitter.Emit("OnSensorUpdate", "UpdateSensorProccesing");
-                    }
+                    //if (sensorUpdate)
+                    //{
+                    //    this._eventEmitter.Emit("OnSensorUpdate", "UpdateSensorProccesing");
+                    //}
                 }
                 catch (Exception e)
                 {

@@ -81,6 +81,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
 
 
+                    ////////////////////////////////////////////////////////////////////////
+                    // 
+                    //
+                    // запуск задачи по отправке уведомлений об активности сенсора
+                    //
+                    ////////////////////////////////////////////////////////////////////////
+                    _taskStarter.RunParallel(new ActiveSensorTask(), dispatchProcess);
+
+
                 }
                 else
                 {

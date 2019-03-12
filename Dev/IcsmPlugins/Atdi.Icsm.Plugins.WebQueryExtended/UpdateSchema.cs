@@ -155,6 +155,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("TX_FREQ", "VARCHAR(86)", null, null, null);
             }
 
+
         }
 
 

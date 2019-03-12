@@ -36,5 +36,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string CreatedBy { get; set; }
         string ApiVersion { get; set; }
         string TechId { get; set; }
+        DateTime? LastActivity { get; set; }
     }
 }

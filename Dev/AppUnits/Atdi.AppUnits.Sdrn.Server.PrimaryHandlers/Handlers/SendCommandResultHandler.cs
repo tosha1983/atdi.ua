@@ -9,6 +9,9 @@ using Atdi.Platform.Logging;
 using System;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes;
+using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 {
@@ -62,15 +65,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 builderUpdateSensor.Where(c => c.TechId, ConditionOperator.Equal, incomingEnvelope.SensorTechId);
                                 builderUpdateSensor.Where(c => c.Name, ConditionOperator.Equal, incomingEnvelope.SensorName);
                                 builderUpdateSensor.SetValue(c => c.Status, "A");
+                                builderUpdateSensor.SetValue(c => c.LastActivity, DateTime.Now);
                                 var cnt = queryExecuter
                                  .Execute(builderUpdateSensor);
                                 if (cnt == 1)
                                 {
                                     queryExecuter.CommitTransaction();
-                                    result.Status = SdrnMessageHandlingStatus.Confirmed;
-                                    this._eventEmitter.Emit("OnSensorActivity", "ActivitySensorProccesing");
                                 }
                             }
+                            result.Status = SdrnMessageHandlingStatus.Confirmed;
                             break;
                         case "UpdateStatusMeasTask":
                             var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
@@ -82,9 +85,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             if (updated == true)
                             {
                                 queryExecuter.CommitTransaction();
-                                result.Status = SdrnMessageHandlingStatus.Confirmed;
-                                this._eventEmitter.Emit("OnUpdateStatusMeasTask", "UpdateStatusMeasTaskProccesing");
+                                //this._eventEmitter.Emit("OnUpdateStatusMeasTask", "UpdateStatusMeasTaskProccesing");
                             }
+                            result.Status = SdrnMessageHandlingStatus.Confirmed;
                             break;
                         case "UpdateSensorLocation":
                             int? Id = -1;
@@ -156,10 +159,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                     }
                                 }
 
-                                result.Status = SdrnMessageHandlingStatus.Confirmed;
-
                                 queryExecuter.CommitTransaction();
                             }
+                            result.Status = SdrnMessageHandlingStatus.Confirmed;
                             break;
                         default:
                             throw new NotImplementedException($"Handle for CommandId {incomingEnvelope.DeliveryObject.CommandId} not implemented");
@@ -178,7 +180,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
             }
         }
-
     }
 }
 

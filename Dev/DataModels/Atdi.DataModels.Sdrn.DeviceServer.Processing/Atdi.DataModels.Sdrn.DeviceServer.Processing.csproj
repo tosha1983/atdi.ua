@@ -67,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\AutoTasks\BaseAutoTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\DeferredTasks.cs" />
+    <Compile Include="Tasks\DispatcherTasks\ActiveSensorTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\QueueEventTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\EventTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\DeviceCommandTask.cs" />
