@@ -445,7 +445,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
                                     queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
                                     {
-                                        while (readerStationSysInfo.Read())
+                                        while (readerStationSysInfoBls.Read())
                                         {
                                             var stationSysInfoBls = new DEV.StationSysInfoBlock();
                                             stationSysInfoBls.Data = readerStationSysInfoBls.GetValue(c => c.Data);
@@ -480,15 +480,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     #endregion
 
                     listStationMeasResult.Add(measStation);
+
+                    var builderDelLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Delete();
+                    builderDelLinkResSensor.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderDelLinkResSensor);
+
+                    var builderDelResGeneral = this._dataLayer.GetBuilder<MD.IResStGeneralRaw>().Delete();
+                    builderDelResGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderDelResGeneral);
                 }
 
-                var builderDelLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Delete();
-                builderDelLinkResSensor.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                queryExecuter.Execute(builderDelLinkResSensor);
-
-                var builderDelResGeneral = this._dataLayer.GetBuilder<MD.IResStGeneralRaw>().Delete();
-                builderDelResGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                queryExecuter.Execute(builderDelResGeneral);
 
                 return true;
             });
@@ -518,7 +519,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 double? diffDates = null;
 
                 var builderResMeasSearch = this._dataLayer.GetBuilder<MD.IResMeas>().From();
-                builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas);
+                builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas, c => c.DataRank);
                 builderResMeasSearch.OrderByAsc(c => c.Id);
                 builderResMeasSearch.Where(c => c.MeasTaskId, ConditionOperator.Equal, measResult.TaskId);
                 builderResMeasSearch.Where(c => c.Status, ConditionOperator.IsNull);
@@ -639,21 +640,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     itemCount++;
                                                 return true;
                                             });
-                                        }
 
-                                        if ((readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && station.GeneralResult.CentralFrequency_MHz.HasValue && readerGeneralResult.GetValue(c => c.CentralFrequency).Value == station.GeneralResult.CentralFrequency_MHz.Value)
-                                            || (readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && station.GeneralResult.CentralFrequencyMeas_MHz.HasValue && Math.Abs(readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).Value - station.GeneralResult.CentralFrequencyMeas_MHz.Value) <= 0.005)
-                                            || (!readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && !station.GeneralResult.CentralFrequency_MHz.HasValue && !readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && !station.GeneralResult.CentralFrequencyMeas_MHz.HasValue))
-                                        {
-                                            if (!measStartTime.HasValue || measStartTime.Value > readerGeneralResult.GetValue(c => c.TimeStartMeas) || idMeasResultStation == 0)
+
+                                            if ((readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && station.GeneralResult.CentralFrequency_MHz.HasValue && readerGeneralResult.GetValue(c => c.CentralFrequency).Value == station.GeneralResult.CentralFrequency_MHz.Value)
+                                                || (readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && station.GeneralResult.CentralFrequencyMeas_MHz.HasValue && Math.Abs(readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).Value - station.GeneralResult.CentralFrequencyMeas_MHz.Value) <= 0.005)
+                                                || (!readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && !station.GeneralResult.CentralFrequency_MHz.HasValue && !readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && !station.GeneralResult.CentralFrequencyMeas_MHz.HasValue))
                                             {
-                                                if (itemCount == 0 || station.GeneralResult == null)
+                                                if (!measStartTime.HasValue || measStartTime.Value > readerGeneralResult.GetValue(c => c.TimeStartMeas) || idMeasResultStation == 0)
                                                 {
-                                                    idMeasResultStation = readerResMeasStation.GetValue(c => c.Id);
-                                                    startTime = readerGeneralResult.GetValue(c => c.TimeStartMeas);
-                                                    finishTime = readerGeneralResult.GetValue(c => c.TimeFinishMeas);
-                                                    idMeasResultGeneral = readerGeneralResult.GetValue(c => c.Id);
-                                                    isMergeStation = true;
+                                                    if (itemCount == 0 || station.GeneralResult == null)
+                                                    {
+                                                        idMeasResultStation = readerResMeasStation.GetValue(c => c.Id);
+                                                        startTime = readerGeneralResult.GetValue(c => c.TimeStartMeas);
+                                                        finishTime = readerGeneralResult.GetValue(c => c.TimeFinishMeas);
+                                                        idMeasResultGeneral = readerGeneralResult.GetValue(c => c.Id);
+                                                        isMergeStation = true;
+                                                    }
                                                 }
                                             }
                                         }
