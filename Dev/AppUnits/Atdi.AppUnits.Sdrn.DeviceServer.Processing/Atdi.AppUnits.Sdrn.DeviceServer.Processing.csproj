@@ -59,6 +59,7 @@
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureTraceDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\RegisterSensorTaskWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SensorActivity\SensorActivityWorker.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -295,6 +295,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public MeasTask[] LoadObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

@@ -158,14 +158,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (error._ex != null)
                             {
                                 /// реакция на ошибку выполнения команды
-                                _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
+                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
                                 switch (error._failureReason)
                                 {
                                     case CommandFailureReason.DeviceIsBusy:
                                     case CommandFailureReason.CanceledExecution:
                                     case CommandFailureReason.TimeoutExpired:
                                     case CommandFailureReason.CanceledBeforeExecution:
-                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
                                         Thread.Sleep((int)maximumDurationMeas);
                                         return;
                                     case CommandFailureReason.NotFoundConvertor:
@@ -174,18 +174,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
-                                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                             context.Cancel();
                                             return;
                                         }
                                         else
                                         {
-                                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
                                             Thread.Sleep(durationToRepietMeas);
                                         }
                                         break;
                                     case CommandFailureReason.Exception:
-                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                         context.Cancel();
                                         return;
                                     default:

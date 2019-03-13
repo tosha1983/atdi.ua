@@ -139,6 +139,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return val;
         }
 
+        public LastUpdate[] LoadObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Update(LastUpdate item)
         {
             bool isSuccessUpdate = false;

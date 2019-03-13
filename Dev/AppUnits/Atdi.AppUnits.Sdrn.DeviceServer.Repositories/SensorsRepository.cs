@@ -292,6 +292,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             throw new NotImplementedException();
         }
 
+        public Sensor[] LoadObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Update(Sensor item)
         {
             bool isSuccess = false;

@@ -58,7 +58,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     queryExecuter.CommitTransaction();
                     // с этого момента нужно считать что сообщение удачно обработано
                     result.Status = SdrnMessageHandlingStatus.Confirmed;
-                    this._eventEmitter.Emit("OnSendEntityPart", "SendEntityPartProccesing");
+                    //this._eventEmitter.Emit("OnSendEntityPart", "SendEntityPartProccesing");
                 }
                 catch (Exception e)
                 {

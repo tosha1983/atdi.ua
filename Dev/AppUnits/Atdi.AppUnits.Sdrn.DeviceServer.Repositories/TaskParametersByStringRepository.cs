@@ -183,6 +183,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return taskParameters;
         }
 
+        public TaskParameters[] LoadObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Update(TaskParameters item)
         {
             throw new NotImplementedException();

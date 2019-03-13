@@ -73,7 +73,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         public int SleepTimePeriodForWaitingStartingMeas_ms { get; set; }
 
+        /// <summary>
+        /// период в миллисекундах временной приостановки потока выполнения задачи отправки уведомления об активности сенсора
+        /// </summary>
+        public int SleepTimePeriodSendActivitySensor_ms { get; set; }
 
-        
+        /// <summary>
+        /// период в миллисекундах временной приостановки потока выполняющего "перевод" таска со статуса F в А 
+        /// </summary>
+        public int SleepTimeForUpdateContextSOTask_ms { get; set; }
+
     }
 }

@@ -36,6 +36,7 @@
     <Field Desc="CreatedBy" Title="CreatedBy" Name="CreatedBy" DataType="Text.50" SourceName="CREATEDBY" SourceType="Column" Required="false"/>
     <Field Desc="ApiVersion" Title="ApiVersion" Name="ApiVersion" DataType="Text.10" SourceName="APIVERSION" SourceType="Column" Required="false"/>
     <Field Desc="TechId" Title="TechId" Name="TechId" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
+    <Field Desc="LastActivity" Title="LastActivity" Name="LastActivity" DataType="DateTime" SourceName="LASTACTIVITY" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
