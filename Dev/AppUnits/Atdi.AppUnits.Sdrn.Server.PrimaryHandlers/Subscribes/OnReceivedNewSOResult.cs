@@ -14,6 +14,7 @@ using Atdi.DataModels.DataConstraint;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.Contracts.WcfServices.Sdrn.Server;
 using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.Common;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
@@ -107,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 result = false;
             }
             else if (measResult.ResultId.Length > 50)
-                measResult.ResultId.Substring(0, 50);
+                measResult.ResultId.SubString(50);
 
             if (string.IsNullOrEmpty(measResult.TaskId))
             {
@@ -115,7 +116,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 result = false;
             }
             else if (measResult.TaskId.Length > 200)
-                measResult.TaskId.Substring(0, 200);
+                measResult.TaskId.SubString(200);
 
             if (!(measResult.ScansNumber >= 1 && measResult.ScansNumber <= 10000000))
                 WriteLog("Incorrect value SwNumber", "IResMeasRaw");
@@ -191,13 +192,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 {
                     var measStation = new DEV.StationMeasResult();
                     if (reader.GetValue(c => c.StationId).HasValue)
-                        measStation.StationId = reader.GetValue(c => c.StationId).Value.ToString().Substring(0, 50);
-                    measStation.TaskGlobalSid = reader.GetValue(c => c.GlobalSID).Substring(0, 50);
-                    measStation.RealGlobalSid = reader.GetValue(c => c.MeasGlobalSID).Substring(0, 50);
+                        measStation.StationId = reader.GetValue(c => c.StationId).Value.ToString().SubString(50);
+                    measStation.TaskGlobalSid = reader.GetValue(c => c.GlobalSID).SubString(50);
+                    measStation.RealGlobalSid = reader.GetValue(c => c.MeasGlobalSID).SubString(50);
                     if (reader.GetValue(c => c.SectorId).HasValue)
-                        measStation.SectorId = reader.GetValue(c => c.SectorId).Value.ToString().Substring(0, 50);
-                    measStation.Status = reader.GetValue(c => c.Status).Substring(0, 5);
-                    measStation.Standard = reader.GetValue(c => c.Standard).Substring(0, 50);
+                        measStation.SectorId = reader.GetValue(c => c.SectorId).Value.ToString().SubString(50);
+                    measStation.Status = reader.GetValue(c => c.Status).SubString(5);
+                    measStation.Standard = reader.GetValue(c => c.Standard).SubString(50);
 
                     #region LevelMeasResult
                     var listLevelMeasResult = new List<DEV.LevelMeasResult>();
@@ -1175,7 +1176,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 result = false;
             }
             else if (measResult.ResultId.Length > 50)
-                measResult.ResultId.Substring(0, 50);
+                measResult.ResultId.SubString(50);
 
             if (string.IsNullOrEmpty(measResult.TaskId))
             {
@@ -1183,7 +1184,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 result = false;
             }
             else if (measResult.TaskId.Length > 200)
-                measResult.TaskId.Substring(0, 200);
+                measResult.TaskId.SubString(200);
 
             if (measResult.Status.Length > 5)
                 measResult.Status = "";
@@ -1384,5 +1385,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             builderInsertLog.Select(c => c.Id);
             queryExecuter.Execute(builderInsertLog);
         }
+
     }
 }
