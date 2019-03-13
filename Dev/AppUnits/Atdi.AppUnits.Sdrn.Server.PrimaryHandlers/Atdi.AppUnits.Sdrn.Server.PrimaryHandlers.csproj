@@ -51,8 +51,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnServerPrimaryHandlersComponent.cs" />
     <Compile Include="Specification.cs" />
-    <Compile Include="Subscribes\OnCreateMeasTaskProcess.cs" />
+    <Compile Include="Subscribes\Handlers\MeasTaskProcess\SaveMeasTask.cs" />
+    <Compile Include="Subscribes\Handlers\MeasTaskProcess\LoadMeasTask.cs" />
+    <Compile Include="Subscribes\Handlers\Sensor\SaveSensor.cs" />
+    <Compile Include="Subscribes\Handlers\Sensor\LoadSensor.cs" />
+    <Compile Include="Subscribes\OnReceivedRunMeasTaskEvent.cs" />
+    <Compile Include="Subscribes\OnReceivedDelMeasTaskEvent.cs" />
+    <Compile Include="Subscribes\OnReceivedStopMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedNewSOResult.cs" />
+    <Compile Include="Subscribes\OnReceivedNewMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnUpdatedSensor.cs" />
     <Compile Include="Subscribes\OnRegisteredNewSensor.cs" />
   </ItemGroup>

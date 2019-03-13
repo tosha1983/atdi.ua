@@ -10,46 +10,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
 {
     public class AdapterConfig
     {
-        private readonly static string Prop1Name = "Prop1";
-        private readonly static string Prop2Name = "Prop2";
-        private readonly static string Prop3Name = "Prop3";
-        private readonly static string Prop4Name = "Prop4";
-        private readonly static string Prop5Name = "Prop5";
+        [ComponentConfigProperty("Property.string")]
+        public string Prop1 { get; set;}
 
-        /// <summary>
-        /// Для тестирования нужен коснтруктор по умолчанию
-        /// </summary>
-        public AdapterConfig()
-        {
-        }
+        [ComponentConfigProperty("Property.SharedSecret", SharedSecret = "SomeSecret")]
+        public string Prop2 { get; set; }
 
-        public AdapterConfig(IComponentConfig config, ILogger logger)
-        {
-            try
-            {
-                this.Prop1 = config.GetParameterAsInteger(AdapterConfig.Prop1Name);
-                this.Prop2 = config.GetParameterAsInteger(AdapterConfig.Prop2Name);
-                this.Prop3 = config.GetParameterAsInteger(AdapterConfig.Prop3Name);
-                this.Prop4 = config.GetParameterAsInteger(AdapterConfig.Prop4Name);
-                this.Prop5 = config.GetParameterAsInteger(AdapterConfig.Prop5Name);
-            }
-            catch (Exception e)
-            {
-                logger.Exception(Contexts.ThisComponent, Categories.ConfigLoading, e);
-                throw new InvalidOperationException(Exceptions.ConfigWasNotLoaded, e);
-            }
-        }
 
-        
-        public int? Prop1 { get; set;}
+        public int? PropertyAsInt { get; set; }
 
-        public int? Prop2 { get; set; }
+        [ComponentConfigProperty("Property.float")]
+        public float? Prop4 { get; set; }
 
-        public int? Prop3 { get; set; }
+        public double? PropertyAsDouble { get; set; }
 
-        public int? Prop4 { get; set; }
-
-        public int? Prop5 { get; set; }
+        [ComponentConfigProperty("Property.decimal")]
+        public decimal? PropAsDecimal { get; set; }
 
     }
 }

@@ -26,6 +26,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         string TypeTechnology { get; set; }
         DateTime? StartTime { get; set; }
         DateTime? StopTime { get; set; }
+        int? NCount { get; set; }
         ITaskParametersFreq[] ListTaskParametersFreq { get; set; }
     }
 }

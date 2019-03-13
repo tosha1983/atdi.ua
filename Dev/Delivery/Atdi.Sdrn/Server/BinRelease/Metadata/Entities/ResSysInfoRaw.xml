@@ -27,8 +27,8 @@
     <Field Desc="Lac" Title="Lac" Name="Lac" DataType="Integer.32" SourceName="LAC" SourceType="Column" Required="false"/>
     <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
     <Field Desc="Asl" Title="Asl" Name="Asl" DataType="Decimal.22.8" SourceName="ASL" SourceType="Column" Required="false"/>
-    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC.xml"/>
-    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC.xml"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
     <Field Desc="Mcc" Title="Mcc" Name="Mcc" DataType="Integer.32" SourceName="MCC" SourceType="Column" Required="false"/>
     <Field Desc="Mnc" Title="Mnc" Name="Mnc" DataType="Integer.32" SourceName="MNC" SourceType="Column" Required="false"/>
     <Field Desc="Nid" Title="Nid" Name="Nid" DataType="Integer.32" SourceName="NID" SourceType="Column" Required="false"/>

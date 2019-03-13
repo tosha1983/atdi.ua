@@ -87,6 +87,75 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
 
             }
 
+            //===============================================
+            CreateViewForAccess(s, "XV_WEB_RR", "WebQuery_RR_View", plugin3, "MOB_STATION", "WebQuery_RR");
+            {
+                s.DeclareField("ADDRESS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("AGL", "NUMBER(5,1)", null, null, null);
+                s.DeclareField("ANGLE_ELEV", "NUMBER(5,2)", null, null, null);
+                s.DeclareField("ANTENNA_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("ANTENNA_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("AZIMUTH", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("BW", "NUMBER(15,5)", null, null, null);
+                s.DeclareField("CHANNELS", "VARCHAR(2000)", null, null, null);
+                s.DeclareField("CONC_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("CONC_NUMBER", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DES_EMISSION", "VARCHAR(9)", null, null, null);
+                s.DeclareField("DIAG", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("DOZV_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("DOZV_NUMBER", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DUPLEX", "NUMBER(15,6)", null, null, null);
+                s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EQUIP_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EQUIP_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EQ_FREQ_RANGE", "VARCHAR(164)", null, null, null);
+                s.DeclareField("GAIN", "NUMBER(6,2)", null, null, null);
+                s.DeclareField("LATITUDE", "NUMBER(10,6)", null, null, null);
+                s.DeclareField("LICENCE", "VARCHAR(200)", null, null, null);
+                s.DeclareField("LIC_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("LONGITUDE", "NUMBER(10,6)", null, null, null);
+                s.DeclareField("MODULATION", "VARCHAR(20)", null, null, null);
+                s.DeclareField("POLARIZATION", "VARCHAR(4)", null, null, null);
+                s.DeclareField("POS_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("POWER", "NUMBER(22,8)", null, null, null);
+                s.DeclareField("PROVINCE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("RADIOTECH", "VARCHAR(10)", null, null, null);
+                s.DeclareField("TX_FREQ", "VARCHAR(2000)", null, null, null);
+                s.DeclareField("RX_FREQ", "VARCHAR(2000)", null, null, null);
+                s.DeclareField("SECTOR_NUMBER", "VARCHAR(1)", null, null, null);
+            }
+
+            //===============================================
+            CreateViewForAccess(s, "XV_WEB_RS", "WebQuery_RS_View", plugin3, "MICROWS", "WebQuery_RS");
+            {
+                s.DeclareField("ADDRESS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("AGL", "VARCHAR(86)", null, null, null);
+                s.DeclareField("ANTENNA_ID", "VARCHAR(86)", null, null, null);
+                s.DeclareField("ANTENNA_NAME", "VARCHAR(106)", null, null, null);
+                s.DeclareField("AZIMUTH", "VARCHAR(86)", null, null, null);
+                s.DeclareField("CONC_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("CONC_NUMBER", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DES_EMISSION", "VARCHAR(9)", null, null, null);
+                s.DeclareField("DIAMETER", "VARCHAR(86)", null, null, null);
+                s.DeclareField("DOZV_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("DOZV_NUMBER", "VARCHAR(200)", null, null, null);
+                s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EQUIP_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("GAIN", "VARCHAR(86)", null, null, null);
+                s.DeclareField("LATITUDE", "VARCHAR(86)", null, null, null);
+                s.DeclareField("LICENCE", "VARCHAR(200)", null, null, null);
+                s.DeclareField("LIC_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("LONGITUDE", "VARCHAR(86)", null, null, null);
+                s.DeclareField("MODULATION", "VARCHAR(20)", null, null, null);
+                s.DeclareField("POLARIZATION", "VARCHAR(14)", null, null, null);
+                s.DeclareField("POS_ID", "VARCHAR(86)", null, null, null);
+                s.DeclareField("POWER", "VARCHAR(86)", null, null, null);
+                s.DeclareField("PROVINCE", "VARCHAR(106)", null, null, null);
+                s.DeclareField("RADIOTECH", "VARCHAR(10)", null, null, null);
+                s.DeclareField("TX_FREQ", "VARCHAR(86)", null, null, null);
+            }
+
+
         }
 
 

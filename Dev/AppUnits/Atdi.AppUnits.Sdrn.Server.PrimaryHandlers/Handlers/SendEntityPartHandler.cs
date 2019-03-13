@@ -37,7 +37,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent4", "SendEntityPartProcess");
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 int valIns = 0;
@@ -59,7 +58,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     queryExecuter.CommitTransaction();
                     // с этого момента нужно считать что сообщение удачно обработано
                     result.Status = SdrnMessageHandlingStatus.Confirmed;
-                    this._eventEmitter.Emit("OnSendEntityPart", "SendEntityPartProccesing");
+                    //this._eventEmitter.Emit("OnSendEntityPart", "SendEntityPartProccesing");
                 }
                 catch (Exception e)
                 {
@@ -87,7 +86,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     else if (valIns>0)
                     {
@@ -95,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
                     envelop.SensorName = incomingEnvelope.SensorName;

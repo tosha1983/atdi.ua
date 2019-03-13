@@ -6,7 +6,7 @@ using Atdi.Platform.Logging;
 using System;
 using Atdi.Contracts.WcfServices.Sdrn.Server;
 using System.Linq;
-
+using Atdi.Modules.Sdrn.Server.Events;
 
 namespace Atdi.WcfServices.Sdrn.Server
 {
@@ -77,11 +77,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                 int? IdTsk = null;
                 if (measTask != null)
                 {
-                    if (actionType == MeasTaskMode.Del.ToString())
-                    {
-                        isSuccess = saveMeasTask.SetStatusTasksInDB(measTask, Status.Z.ToString());
-                        return isSuccess;
-                    }
                     foreach (int SensorId in sensorIds)
                     {
                         var fndSensor = loadSensor.LoadObjectSensor(SensorId);
@@ -110,10 +105,26 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.A.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
+                                    else if (actionType == MeasTaskMode.Del.ToString())
+                                    {
+                                        saveMeasTask.SetStatusTasksInDB(measTask, Status.Z.ToString());
+                                        IdTsk = measTask.Id.Value;
+                                    }
 
                                     if (IdTsk != null)
                                     {
-                                        this._eventEmitter.Emit($"On{actionType}MeasTaskEvent", string.Format("{0}|{1}|{2}", IdTsk.Value, fndSensor.Name, fndSensor.Equipment.TechId));
+                                        var masTaskEvent = new OnMeasTaskEvent()
+                                        {
+                                            MeasTaskId = IdTsk.Value,
+                                            SensorName = fndSensor.Name,
+                                            EquipmentTechId = fndSensor.Equipment.TechId,
+                                            Name = $"On{actionType}MeasTaskEvent"
+                                        };
+                                        this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                        {
+                                             Rule = EventEmittingRule.Default,
+                                             Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
+                                        });
                                     }
                                 }
                             }

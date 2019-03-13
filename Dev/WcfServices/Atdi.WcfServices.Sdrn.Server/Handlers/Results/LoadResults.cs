@@ -557,48 +557,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
 
-                        var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
-                        var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
-                        builderResStLevelCar.Select(c => c.Agl);
-                        builderResStLevelCar.Select(c => c.Altitude);
-                        builderResStLevelCar.Select(c => c.Bw);
-                        builderResStLevelCar.Select(c => c.CentralFrequency);
-                        builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
-                        builderResStLevelCar.Select(c => c.Id);
-                        builderResStLevelCar.Select(c => c.Lat);
-                        builderResStLevelCar.Select(c => c.LevelDbm);
-                        builderResStLevelCar.Select(c => c.LevelDbmkvm);
-                        builderResStLevelCar.Select(c => c.Lon);
-                        builderResStLevelCar.Select(c => c.Rbw);
-                        builderResStLevelCar.Select(c => c.ResStationId);
-                        builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                        builderResStLevelCar.Select(c => c.Vbw);
-                        builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
-                        builderResStLevelCar.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
-                        {
-                            while (readerResStLevelCar.Read())
-                            {
-                                var levelMeasurementsCar = new LevelMeasurementsCar();
-                                levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
-                                levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
-                                levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
-                                levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
-                                levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
-                                levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
-                                levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
-                                levelMeasurementsCar.RBW = readerResStLevelCar.GetValue(c => c.Rbw);
-                                if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
-                                {
-                                    levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
-                                }
-                                levelMeasurementsCar.VBW = readerResStLevelCar.GetValue(c => c.Vbw);
-                                listLevelMeasurementsCar.Add(levelMeasurementsCar);
-                            }
-                            return true;
-                        });
-                        resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
+
+                        double? rbw = null;
+                        double? vbw = null;
+
 
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
@@ -618,6 +580,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.TimeFinishMeas);
                         builderResStGeneral.Select(c => c.TimeStartMeas);
                         builderResStGeneral.Select(c => c.TraceCount);
+                        builderResStGeneral.Select(c => c.Rbw);
+                        builderResStGeneral.Select(c => c.Vbw);
                         builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
@@ -635,6 +599,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                 measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
                                 measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
+                                rbw = readerResStGeneral.GetValue(c => c.Rbw);
+                                vbw = readerResStGeneral.GetValue(c => c.Vbw);
 
 
 
@@ -683,6 +649,53 @@ namespace Atdi.WcfServices.Sdrn.Server
                             return true;
                         });
                         resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+
+
+
+                        var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
+                        var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
+                        builderResStLevelCar.Select(c => c.Agl);
+                        builderResStLevelCar.Select(c => c.Altitude);
+                        builderResStLevelCar.Select(c => c.Bw);
+                        builderResStLevelCar.Select(c => c.CentralFrequency);
+                        builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
+                        builderResStLevelCar.Select(c => c.Id);
+                        builderResStLevelCar.Select(c => c.Lat);
+                        builderResStLevelCar.Select(c => c.LevelDbm);
+                        builderResStLevelCar.Select(c => c.LevelDbmkvm);
+                        builderResStLevelCar.Select(c => c.Lon);
+                        builderResStLevelCar.Select(c => c.ResStationId);
+                        builderResStLevelCar.Select(c => c.TimeOfMeasurements);
+                        builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStLevelCar.OrderByAsc(c => c.Id);
+                        queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
+                        {
+                            while (readerResStLevelCar.Read())
+                            {
+                                var levelMeasurementsCar = new LevelMeasurementsCar();
+                                levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
+                                levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
+                                levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
+                                levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
+                                levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
+                                levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
+                                levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
+                                levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
+                                levelMeasurementsCar.RBW = rbw;
+                                levelMeasurementsCar.VBW = vbw;
+
+
+
+                                if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
+                                {
+                                    levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
+                                }
+                                listLevelMeasurementsCar.Add(levelMeasurementsCar);
+                            }
+                            return true;
+                        });
+                        resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
+
                     }
                     return true;
                 });
@@ -1021,49 +1034,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
 
-                        var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
-                        var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
-                        builderResStLevelCar.Select(c => c.Agl);
-                        builderResStLevelCar.Select(c => c.Altitude);
-                        builderResStLevelCar.Select(c => c.Bw);
-                        builderResStLevelCar.Select(c => c.CentralFrequency);
-                        builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
-                        builderResStLevelCar.Select(c => c.Id);
-                        builderResStLevelCar.Select(c => c.Lat);
-                        builderResStLevelCar.Select(c => c.LevelDbm);
-                        builderResStLevelCar.Select(c => c.LevelDbmkvm);
-                        builderResStLevelCar.Select(c => c.Lon);
-                        builderResStLevelCar.Select(c => c.Rbw);
-                        builderResStLevelCar.Select(c => c.ResStationId);
-                        builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                        builderResStLevelCar.Select(c => c.Vbw);
-                        builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
-                        builderResStLevelCar.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
-                        {
-                            while (readerResStLevelCar.Read())
-                            {
-                                var levelMeasurementsCar = new LevelMeasurementsCar();
-                                levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
-                                levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
-                                levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
-                                levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
-                                levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
-                                levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
-                                levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
-                                levelMeasurementsCar.RBW = readerResStLevelCar.GetValue(c => c.Rbw);
-                                if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
-                                {
-                                    levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
-                                }
-                                levelMeasurementsCar.VBW = readerResStLevelCar.GetValue(c => c.Vbw);
-                                listLevelMeasurementsCar.Add(levelMeasurementsCar);
-                            }
-                            return true;
-                        });
-                        resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
+                      
 
+                        double? rbw = null;
+                        double? vbw = null;
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -1082,6 +1056,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.TimeFinishMeas);
                         builderResStGeneral.Select(c => c.TimeStartMeas);
                         builderResStGeneral.Select(c => c.TraceCount);
+                        builderResStGeneral.Select(c => c.Rbw);
+                        builderResStGeneral.Select(c => c.Vbw);
                         builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
@@ -1099,7 +1075,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                 measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
                                 measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
-
+                                rbw = readerResStGeneral.GetValue(c => c.Rbw);
+                                vbw = readerResStGeneral.GetValue(c => c.Vbw);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -1147,6 +1124,51 @@ namespace Atdi.WcfServices.Sdrn.Server
                             return true;
                         });
                         resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+
+                        var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
+                        var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
+                        builderResStLevelCar.Select(c => c.Agl);
+                        builderResStLevelCar.Select(c => c.Altitude);
+                        builderResStLevelCar.Select(c => c.Bw);
+                        builderResStLevelCar.Select(c => c.CentralFrequency);
+                        builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
+                        builderResStLevelCar.Select(c => c.Id);
+                        builderResStLevelCar.Select(c => c.Lat);
+                        builderResStLevelCar.Select(c => c.LevelDbm);
+                        builderResStLevelCar.Select(c => c.LevelDbmkvm);
+                        builderResStLevelCar.Select(c => c.Lon);
+                        builderResStLevelCar.Select(c => c.ResStationId);
+                        builderResStLevelCar.Select(c => c.TimeOfMeasurements);
+                        builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStLevelCar.OrderByAsc(c => c.Id);
+                        queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
+                        {
+                            while (readerResStLevelCar.Read())
+                            {
+                                var levelMeasurementsCar = new LevelMeasurementsCar();
+                                levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
+                                levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
+                                levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
+                                levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
+                                levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
+                                levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
+                                levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
+                                levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
+                                levelMeasurementsCar.RBW = rbw;
+                                levelMeasurementsCar.VBW = vbw;
+
+                                if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
+                                {
+                                    levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
+                                }
+                                listLevelMeasurementsCar.Add(levelMeasurementsCar);
+                            }
+                            return true;
+                        });
+                        resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
+
+
+
                         listResMeasStatiion.Add(resMeasStatiion);
                     }
                     return true;
@@ -1701,49 +1723,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
 
-                                var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
-                                var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
-                                builderResStLevelCar.Select(c => c.Agl);
-                                builderResStLevelCar.Select(c => c.Altitude);
-                                builderResStLevelCar.Select(c => c.Bw);
-                                builderResStLevelCar.Select(c => c.CentralFrequency);
-                                builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
-                                builderResStLevelCar.Select(c => c.Id);
-                                builderResStLevelCar.Select(c => c.Lat);
-                                builderResStLevelCar.Select(c => c.LevelDbm);
-                                builderResStLevelCar.Select(c => c.LevelDbmkvm);
-                                builderResStLevelCar.Select(c => c.Lon);
-                                builderResStLevelCar.Select(c => c.Rbw);
-                                builderResStLevelCar.Select(c => c.ResStationId);
-                                builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                                builderResStLevelCar.Select(c => c.Vbw);
-                                builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
-                                builderResStLevelCar.OrderByAsc(c => c.Id);
-                                queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
-                                {
-                                    while (readerResStLevelCar.Read())
-                                    {
-                                        var levelMeasurementsCar = new LevelMeasurementsCar();
-                                        levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
-                                        levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                        levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
-                                        levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
-                                        levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
-                                        levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
-                                        levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
-                                        levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
-                                        levelMeasurementsCar.RBW = readerResStLevelCar.GetValue(c => c.Rbw);
-                                        if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
-                                        {
-                                            levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
-                                        }
-                                        levelMeasurementsCar.VBW = readerResStLevelCar.GetValue(c => c.Vbw);
-                                        listLevelMeasurementsCar.Add(levelMeasurementsCar);
-                                    }
-                                    return true;
-                                });
-                                resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
 
+                                double? rbw = null;
+                                double? vbw = null;
 
                                 var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -1762,6 +1744,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResStGeneral.Select(c => c.TimeFinishMeas);
                                 builderResStGeneral.Select(c => c.TimeStartMeas);
                                 builderResStGeneral.Select(c => c.TraceCount);
+                                builderResStGeneral.Select(c => c.Rbw);
+                                builderResStGeneral.Select(c => c.Vbw);
                                 builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                                 builderResStGeneral.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
@@ -1779,7 +1763,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                         measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
                                         measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
-
+                                        rbw = readerResStGeneral.GetValue(c => c.Rbw);
+                                        vbw = readerResStGeneral.GetValue(c => c.Vbw);
 
 
                                         var listMaskElements = new List<MaskElements>();
@@ -1828,6 +1813,51 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     return true;
                                 });
                                 resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+
+
+                                var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
+                                var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
+                                builderResStLevelCar.Select(c => c.Agl);
+                                builderResStLevelCar.Select(c => c.Altitude);
+                                builderResStLevelCar.Select(c => c.Bw);
+                                builderResStLevelCar.Select(c => c.CentralFrequency);
+                                builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
+                                builderResStLevelCar.Select(c => c.Id);
+                                builderResStLevelCar.Select(c => c.Lat);
+                                builderResStLevelCar.Select(c => c.LevelDbm);
+                                builderResStLevelCar.Select(c => c.LevelDbmkvm);
+                                builderResStLevelCar.Select(c => c.Lon);
+                                builderResStLevelCar.Select(c => c.ResStationId);
+                                builderResStLevelCar.Select(c => c.TimeOfMeasurements);
+                                builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                                builderResStLevelCar.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
+                                {
+                                    while (readerResStLevelCar.Read())
+                                    {
+                                        var levelMeasurementsCar = new LevelMeasurementsCar();
+                                        levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
+                                        levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
+                                        levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
+                                        levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
+                                        levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
+                                        levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
+                                        levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
+                                        levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
+                                        levelMeasurementsCar.RBW = rbw;
+                                        levelMeasurementsCar.VBW = vbw;
+
+                                        if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
+                                        {
+                                            levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
+                                        }
+                                        listLevelMeasurementsCar.Add(levelMeasurementsCar);
+                                    }
+                                    return true;
+                                });
+                                resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
+
+
                                 listResMeasStatiion.Add(resMeasStatiion);
                             }
                             return true;

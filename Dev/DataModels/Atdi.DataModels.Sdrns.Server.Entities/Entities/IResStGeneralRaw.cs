@@ -11,6 +11,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface IResStGeneralRaw
     {
         int Id { get; set; }
+        double? Rbw { get; set; }
+        double? Vbw { get; set; }
         int? ResMeasStaId { get; set; }
         double? CentralFrequency { get; set; }
         double? CentralFrequencyMeas { get; set; }

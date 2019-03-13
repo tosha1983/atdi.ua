@@ -19,13 +19,13 @@
     <Field Desc="Remark" Title="Remark" Name="Remark" DataType="Text.250" SourceName="REMARK" SourceType="Column" Required="false"/>
     <Field Desc="Bring into use date" Title="Bring into use date" Name="BiuseDate" DataType="DateTime" SourceName="BIUSEDATE" SourceType="Column" Required="false"/>
     <Field Desc="End of use date" Title="End of use date" Name="EouseDate" DataType="DateTime" SourceName="EOUSEDATE" SourceType="Column" Required="false"/>
-    <Field Desc="Azimuth, Azimuth" Title="Azimuth, degree" Name="Azimuth" DataType="Decimal.22.8" SourceName="AZIMUTH" SourceType="Column" Required="false" Unit="Angle.Degree.xml"/>
-    <Field Desc="Elevation, degree" Title="Elevation, degree" Name="Elevation" DataType="Decimal.22.8" SourceName="ELEVATION" SourceType="Column" Required="false" Unit="Angle.Degree.xml"/>
-    <Field Desc="Altitude above ground level, m" Title="Altitude above ground level, m" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false" Unit="Length.m.xml"/>
+    <Field Desc="Azimuth, Azimuth" Title="Azimuth, degree" Name="Azimuth" DataType="Decimal.22.8" SourceName="AZIMUTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Desc="Elevation, degree" Title="Elevation, degree" Name="Elevation" DataType="Decimal.22.8" SourceName="ELEVATION" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Desc="Altitude above ground level, m" Title="Altitude above ground level, m" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false" Unit="Length.m"/>
     <Field Desc="IdSysArgus" Title="IdSysArgus" Name="IdSysArgus" DataType="Text.50" SourceName="IDSYSARGUS" SourceType="Column" Required="false"/>
     <Field Desc="TypeSensor" Title="TypeSensor" Name="TypeSensor" DataType="Text.50" SourceName="TYPESENSOR" SourceType="Column" Required="false"/>
     <Field Desc="StepMeasTime" Title="StepMeasTime" Name="StepMeasTime" DataType="Decimal.22.8" SourceName="STEPMEASTIME" SourceType="Column" Required="false"/>
-    <Field Desc="RxLoss, dB" Title="RxLoss, dB" Name="RxLoss" DataType="Decimal.22.8" SourceName="RXLOSS" SourceType="Column" Required="false" Unit="Power.dB.xml"/>
+    <Field Desc="RxLoss, dB" Title="RxLoss, dB" Name="RxLoss" DataType="Decimal.22.8" SourceName="RXLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
     <Field Desc="Operation HH From" Title="Operation HH From" Name="OpHhFr" DataType="Decimal.22.8" SourceName="OPHHFR" SourceType="Column" Required="false"/>
     <Field Desc="Operation HH To" Title="Operation HH To" Name="OpHhTo" DataType="Decimal.22.8" SourceName="OPHHTO" SourceType="Column" Required="false"/>
     <Field Desc="Operation Days" Title="Operation Days" Name="OpDays" DataType="Text.50" SourceName="OPDAYS" SourceType="Column" Required="false"/>
@@ -36,6 +36,7 @@
     <Field Desc="CreatedBy" Title="CreatedBy" Name="CreatedBy" DataType="Text.50" SourceName="CREATEDBY" SourceType="Column" Required="false"/>
     <Field Desc="ApiVersion" Title="ApiVersion" Name="ApiVersion" DataType="Text.10" SourceName="APIVERSION" SourceType="Column" Required="false"/>
     <Field Desc="TechId" Title="TechId" Name="TechId" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
+    <Field Desc="LastActivity" Title="LastActivity" Name="LastActivity" DataType="DateTime" SourceName="LASTACTIVITY" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -18,7 +18,7 @@
     <Field Desc="Level max dBm" Title="Level max dBm" Name="LevelMax_dBm" DataType="Decimal.30.10" SourceName="LEVELMAXDBM" SourceType="Column" Required="false" Unit="Level.dBm"/>
     <Field Desc="OccupationPt" Title="OccupationPt" Name="OccupationPt" DataType="Decimal.30.10" SourceName="OCCUPATIONPT" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation FreqSampleRaw to ResMeas">
+    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeasRaw" Title="Relation FreqSampleRaw to ResMeasRaw">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
       </PrimaryKeyMapping>

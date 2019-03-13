@@ -74,7 +74,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                this._eventEmitter.Emit("OnEvent5", "SendMeasResultsProcess");
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 int valInsResMeas = 0;
@@ -99,12 +98,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     builderInsertIResMeas.SetValue(c => c.StartTime, resObject.StartTime);
                     builderInsertIResMeas.SetValue(c => c.StopTime, resObject.StopTime);
                     builderInsertIResMeas.SetValue(c => c.ScansNumber, resObject.ScansNumber);
-
                     builderInsertIResMeas.Select(c => c.Id);
                     queryExecuter
-                   .ExecuteAndFetch(builderInsertIResMeas, reader =>
-                   {
-                       var res = reader.Read();
+                    .ExecuteAndFetch(builderInsertIResMeas, reader =>
+                    {
+                        var res = reader.Read();
                        if (res)
                        {
                            valInsResMeas = reader.GetValue(c => c.Id);
@@ -112,7 +110,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                        return res;
                    });
 
-                    if (valInsResMeas > -1)
+                    if (valInsResMeas > 0)
                     {
 
                         if (resObject.BandwidthResult != null)
@@ -320,6 +318,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         builderInsertResStGeneral.SetValue(c => c.CentralFrequencyMeas, generalResult.CentralFrequencyMeas_MHz);
                                         builderInsertResStGeneral.SetValue(c => c.CentralFrequency, generalResult.CentralFrequency_MHz);
                                         builderInsertResStGeneral.SetValue(c => c.DurationMeas, generalResult.MeasDuration_sec);
+                                        builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
+                                        builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
+
                                         if (generalResult.BandwidthResult != null)
                                         {
                                             var bandwidthResult = generalResult.BandwidthResult;
@@ -348,7 +349,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         });
 
 
-                                        if (IDResGeneral > -1)
+                                        if (IDResGeneral > 0)
                                         {
                                             if (station.GeneralResult.StationSysInfo != null)
                                             {
@@ -408,7 +409,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 });
 
 
-                                                if (IDResSysInfoGeneral > -1)
+                                                if (IDResSysInfoGeneral > 0)
                                                 {
                                                     if (stationSysInfo.InfoBlocks != null)
                                                     {
@@ -505,8 +506,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                         {
                                                             var generalResults = station.GeneralResult;
 
-                                                            builderInsertResStLevelCar.SetValue(c => c.Rbw, generalResults.RBW_kHz);
-                                                            builderInsertResStLevelCar.SetValue(c => c.Vbw, generalResults.VBW_kHz);
+
                                                             builderInsertResStLevelCar.SetValue(c => c.CentralFrequency, generalResults.CentralFrequency_MHz);
                                                             if (generalResults.BandwidthResult != null)
                                                             {
@@ -533,7 +533,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     queryExecuter.CommitTransaction();
                     // с этого момента нужно считать что сообщение удачно обработано
                     result.Status = SdrnMessageHandlingStatus.Confirmed;
-                    this._eventEmitter.Emit("OnSendMeasResults", "SendMeasResultsProccesing");
+                    //this._eventEmitter.Emit("OnSendMeasResults", "SendMeasResultsProccesing");
                 }
                 catch (Exception e)
                 {
@@ -561,7 +561,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     else if (valInsResMeas > 0)
                     {
@@ -569,7 +569,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     }
                     else
                     {
-                        deviceCommandResult.CustTxt1 = "Fault";
+                        deviceCommandResult.CustTxt1 = "Error";
                     }
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
                     envelop.SensorName = incomingEnvelope.SensorName;

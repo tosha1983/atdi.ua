@@ -1,9 +1,4 @@
 ﻿using Atdi.Platform.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.Platform.AppComponent;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements

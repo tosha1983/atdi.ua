@@ -25,16 +25,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly EventCategory ConfigLoading = "Config loading";
         public static readonly EventCategory GetMeasTaskFromBus = "Get MeasTask from bus";
         public static readonly EventCategory SendMeasTaskHandlerStart = "Get MeasTask from bus";
-
-
+        public static readonly EventCategory SendCommandHandlerHandlerStart = "SendCommandHandler started";
+        
     }
 
     static class Events
     {
+        public static readonly EventText ReceivedSensorRegistrationConfirmation = "Received sensor registration confirmation";
         public static readonly EventText MessageIsBeingHandled = "The message is being handled: Type = '{0}'";
         public static readonly EventText IncorrectMessage = "Incorrect message";
-        public static readonly EventText StartProcessSendMeasTask = "Start process SendMeasTaskHandler";
-
+        public static readonly EventText CreateNewTaskParameters = "Create new TaskParameters";
+        public static readonly EventText UpdateTaskParameters = "Update TaskParameters";
+        public static readonly EventText StartedEventTask = "Started EventTask Task.Id = {0}";
+        public static readonly EventText StartedSendRegistrationResultTask = "Started SendRegistrationResultTask Task.Id = {0}";
     }
     static class TraceScopeNames
     {
@@ -47,6 +50,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly string ConfigWasNotLoaded = "The config was not loaded";
         public static readonly string IncorrectMessageParams = "Incorrect message parameters";
         public static readonly string ErrorSaveSensorParametersInDB = "Error in method 'SaveSensorParametersInDB'";
+        public static readonly string UnknownErrorsInSendMeasTaskHandler = "Unknown errors in 'SendMeasTaskHandler'";
+        public static readonly string UnknownErrorsInSendCommandHandler = "Unknown errors in 'SendCommandHandler'";
+        public static readonly string UnknownErrorsInSendRegistrationResultHandler = "Unknown errors in 'SendRegistrationResultHandler'";
+        public static readonly string DeviceServerCanNotBeStarted = "The DeviceServer can not be started, because there is no information about the registered object in the database";
+
 
     }
 }
