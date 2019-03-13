@@ -113,7 +113,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (valInsResMeas > 0)
                     {
-
                         if (resObject.BandwidthResult != null)
                         {
                             int valInsBWMeasResultRaw = 0;
@@ -290,6 +289,45 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                 if (valInsResMeasStation > 0)
                                 {
+                                    if (station.Bearings != null)
+                                    {
+                                        if (station.Bearings.Length > 0)
+                                        {
+                                            var listBearings = station.Bearings;
+                                            var lstInsBearingRaw = new IQueryInsertStatement<MD.IBearingRaw>[listBearings.Length];
+                                            for (int p = 0; p < listBearings.Length; p++)
+                                            {
+                                                DirectionFindingData directionFindingData = listBearings[p];
+                                                var builderInsertBearingRaw = this._dataLayer.GetBuilder<MD.IBearingRaw>().Insert();
+                                                builderInsertBearingRaw.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                                if (directionFindingData.Location != null)
+                                                {
+                                                    builderInsertBearingRaw.SetValue(c => c.Agl, directionFindingData.Location.AGL);
+                                                    builderInsertBearingRaw.SetValue(c => c.Asl, directionFindingData.Location.ASL);
+                                                    builderInsertBearingRaw.SetValue(c => c.Lon, directionFindingData.Location.Lon);
+                                                    builderInsertBearingRaw.SetValue(c => c.Lat, directionFindingData.Location.Lat);
+                                                }
+
+                                                builderInsertBearingRaw.SetValue(c => c.Level_dBm, directionFindingData.Level_dBm);
+                                                builderInsertBearingRaw.SetValue(c => c.Level_dBmkVm, directionFindingData.Level_dBmkVm);
+                                                builderInsertBearingRaw.SetValue(c => c.MeasurementTime, directionFindingData.MeasurementTime);
+                                                builderInsertBearingRaw.SetValue(c => c.Quality, directionFindingData.Quality);
+                                                builderInsertBearingRaw.SetValue(c => c.AntennaAzimut, directionFindingData.AntennaAzimut);
+                                                builderInsertBearingRaw.SetValue(c => c.Bandwidth_kHz, directionFindingData.Bandwidth_kHz);
+                                                builderInsertBearingRaw.SetValue(c => c.Bearing, directionFindingData.Bearing);
+                                                builderInsertBearingRaw.SetValue(c => c.CentralFrequency_MHz, directionFindingData.CentralFrequency_MHz);
+                                                builderInsertBearingRaw.Select(c => c.Id);
+                                                lstInsBearingRaw[p] = builderInsertBearingRaw;
+                                            }
+
+                                            queryExecuter.ExecuteAndFetch(lstInsBearingRaw, reader =>
+                                            {
+                                                return true;
+                                            });
+                                        }
+                                    }
+
+
                                     int StationId;
                                     int idLinkRes = -1;
                                     var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Insert();

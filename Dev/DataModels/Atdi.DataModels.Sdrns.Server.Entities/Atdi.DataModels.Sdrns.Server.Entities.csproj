@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\IAntennaPattern.cs" />
+    <Compile Include="Entities\IBearingRaw.cs" />
+    <Compile Include="Entities\IBearing.cs" />
     <Compile Include="Entities\IEntityPart.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IBWMeasResultRaw.cs" />
@@ -137,6 +139,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
+    <Content Include="Metadata\Entities\Bearing.xml" />
     <Content Include="Metadata\Entities\Entity.xml" />
     <Content Include="Metadata\Entities\EntityPart.xml" />
     <Content Include="Metadata\Entities\BWMeasResultRaw.xml" />
@@ -160,6 +163,7 @@
     <Content Include="Metadata\Entities\ResMeasStation.xml" />
     <Content Include="Metadata\Entities\ResRoutesRaw.xml" />
     <Content Include="Metadata\Entities\ResStGeneral.xml" />
+    <Content Include="Metadata\Entities\BearingRaw.xml" />
     <Content Include="Metadata\Entities\ResStGeneralRaw.xml" />
     <Content Include="Metadata\Entities\ResStLevelCar.xml" />
     <Content Include="Metadata\Entities\ResStLevelCarRaw.xml" />
