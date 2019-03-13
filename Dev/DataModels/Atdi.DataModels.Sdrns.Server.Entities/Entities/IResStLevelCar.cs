@@ -20,9 +20,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Lat { get; set; }
         double? LevelDbm { get; set; }
         double? LevelDbmkvm { get; set; }
-        double? Rbw { get; set; }
         DateTime? TimeOfMeasurements { get; set; }
-        double? Vbw { get; set; }
         double? Agl { get; set; }
         IResMeasStation RESSTATION { get; set; }
     }

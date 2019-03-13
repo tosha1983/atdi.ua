@@ -318,6 +318,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         builderInsertResStGeneral.SetValue(c => c.CentralFrequencyMeas, generalResult.CentralFrequencyMeas_MHz);
                                         builderInsertResStGeneral.SetValue(c => c.CentralFrequency, generalResult.CentralFrequency_MHz);
                                         builderInsertResStGeneral.SetValue(c => c.DurationMeas, generalResult.MeasDuration_sec);
+                                        builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
+                                        builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
+
                                         if (generalResult.BandwidthResult != null)
                                         {
                                             var bandwidthResult = generalResult.BandwidthResult;
@@ -503,8 +506,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                         {
                                                             var generalResults = station.GeneralResult;
 
-                                                            builderInsertResStLevelCar.SetValue(c => c.Rbw, generalResults.RBW_kHz);
-                                                            builderInsertResStLevelCar.SetValue(c => c.Vbw, generalResults.VBW_kHz);
+
                                                             builderInsertResStLevelCar.SetValue(c => c.CentralFrequency, generalResults.CentralFrequency_MHz);
                                                             if (generalResults.BandwidthResult != null)
                                                             {
