@@ -11,7 +11,7 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Press any key to start SDRN Device App Server ...");
+            Console.WriteLine($"Press any key to start SDRN Device App Server (AK) ...");
             //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
@@ -26,8 +26,10 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
                     Console.WriteLine("Exception: " + e.Message);
                 }
 
+                Console.WriteLine($"Press any key to stop SDRN Device App Server (AK) ...");
                 Console.ReadLine();
                 host.Stop();
+                
 
             }
             Console.ReadLine();

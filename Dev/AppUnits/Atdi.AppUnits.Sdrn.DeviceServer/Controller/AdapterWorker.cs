@@ -21,6 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly ICommandsHost _commandsHost;
         private readonly IResultsHost _resultsHost;
         private readonly ITimeService _timeService;
+        private readonly IEventWaiter _eventWaiter;
         private readonly ILogger _logger;
         private readonly int _abortingTimeout = 1000;
         private Thread _adapterThread;
@@ -42,13 +43,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public Type AdapterType => this._adapterType;
 
-        public AdapterWorker(Type adapterType, IAdapterFactory adapterFactory, ICommandsHost commandsHost, IResultsHost resultsHost, ITimeService timeService, ILogger logger)
+        public AdapterWorker(
+            Type adapterType, 
+            IAdapterFactory adapterFactory, 
+            ICommandsHost commandsHost, 
+            IResultsHost resultsHost, 
+            ITimeService timeService,
+            IEventWaiter eventWaiter,
+            ILogger logger)
         {
             this._adapterType = adapterType ?? throw new ArgumentNullException(nameof(adapterType));
             this._adapterFactory = adapterFactory ?? throw new ArgumentNullException(nameof(adapterFactory));
             this._commandsHost = commandsHost;
             this._resultsHost = resultsHost;
             this._timeService = timeService;
+            this._eventWaiter = eventWaiter;
             this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.DeviceId = Guid.NewGuid();
             this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
@@ -78,11 +87,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             try
             {
-                this._adapterObject = this._adapterFactory.Create(this._adapterType);
-                _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.CreatedAdapter.With(_adapterType));
+                try
+                {
+                    this._adapterObject = this._adapterFactory.Create(this._adapterType);
+                    _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.CreatedAdapter.With(_adapterType));
 
-                this._adapterObject.Connect(this);
-                _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.ConnectedAdapter.With(_adapterType));
+                    this._adapterObject.Connect(this);
+                    _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.ConnectedAdapter.With(_adapterType));
+                }
+                catch(Exception)
+                {
+                    this._state = DeviceState.Failure;
+                    throw;
+                }
+                finally
+                {
+                    this._eventWaiter.Emit(this);
+                }
 
                 while (true)
                 {
@@ -127,12 +148,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             catch (ThreadAbortException)
             {
                 Thread.ResetAbort();
-
+                
                 if (_adapterObject != null && _isDisposing)
                 {
                     try
                     {
                         _adapterObject.Disconnect();
+                        this._state = DeviceState.Aborted;
                     }
                     catch (Exception e)
                     {
@@ -141,11 +163,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     this._adapterObject = null;
                     return;
                 }
-
+                this._state = DeviceState.Aborted;
                 _logger.Critical(Contexts.AdapterWorker, Categories.Processing, Events.AbortAdapterThread.With(_adapterType.FullName));
             }
             catch(Exception e)
             {
+                this._state = DeviceState.Failure;
                 _logger.Critical(Contexts.AdapterWorker, Categories.Processing, Events.ProcessingAdapterError.With(_adapterType.FullName), e);
             }
         }

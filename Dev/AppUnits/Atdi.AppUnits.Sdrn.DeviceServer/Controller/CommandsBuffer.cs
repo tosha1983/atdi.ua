@@ -13,12 +13,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
     {
         private readonly object _locker = new object();
         private readonly Queue<CommandDescriptor> _queue;
+        private readonly Queue<CommandDescriptor> _scheduelQueue;
         private CommandDescriptor _urgentCommand;
         private EventWaitHandle _waiter;
 
         public CommandsBuffer()
         {
             this._queue = new Queue<CommandDescriptor>();
+            this._scheduelQueue = new Queue<CommandDescriptor>();
             this._waiter = new AutoResetEvent(false);
         }
 
@@ -37,6 +39,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     }
 
                     this._urgentCommand = commandDescriptor;
+                }
+                else if ((command.Options & CommandOption.StartDelayed) == CommandOption.StartDelayed)
+                {
+                    this._scheduelQueue.Enqueue(commandDescriptor);
                 }
                 else
                 {
@@ -60,7 +66,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         this._urgentCommand = null;
                         return result;
                     }
-
+                    if (_scheduelQueue.Count > 0)
+                    {
+                        result = _scheduelQueue.Dequeue();
+                        return result;
+                    }
                     if (_queue.Count > 0)
                     {
                         result = _queue.Dequeue();

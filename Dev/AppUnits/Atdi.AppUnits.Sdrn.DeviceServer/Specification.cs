@@ -12,6 +12,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
     {
         public static readonly EventContext ThisComponent = "SDRN.DeviceServer";
         public static readonly EventContext AdapterWorker = "SDRN.AdapterWorker";
+        public static readonly EventContext Controller = "SDRN.Controller";
         public static readonly EventContext DevicesHost = "SDRN.DevicesHost";
         public static readonly EventContext ResultWorker = "SDRN.ResultWorker";
         public static readonly EventContext ResultHandler = "SDRN.ResultHandler";
@@ -21,6 +22,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly EventContext ProcessingDispatcher = "SDRN.ProcessingDispatcher";
         public static readonly EventContext WorkScheduler = "SDRN.WorkScheduler";
         public static readonly EventContext TaskStarter = "SDRN.TaskStarter";
+        public static readonly EventContext EventWaiter = "SDRN.EventWaiter";
+        public static readonly EventContext TimerScheduler = "SDRN.TimerScheduler";
     }
 
     static class Categories
@@ -41,6 +44,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly EventCategory Finishing = "Finishing";
 
         public static readonly EventCategory Initilazing = "Initilazing";
+        public static readonly EventCategory Callbacking = "Callbacking";
 
 
     }
@@ -93,6 +97,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
         public static readonly EventText ProcessingObjectsWereRegistered = "The Processing Objects were registered";
         public static readonly EventText ControllerObjectsWereRegistered = "The Controller Objects were registered";
+
+        public static readonly EventText CreatedEventWaiter = "The Event Waiter object was created";
+
+        public static readonly EventText AdapterRegistrationTimedOut = "Adapter registration timed out: AdapterType = '{0}'";
+        public static readonly EventText AdapterRegistrationFailed = "Adapter registration failed: AdapterType = '{0}'";
+        public static readonly EventText AdapterRegistrationAborted = "Adapter registration aborted: AdapterType = '{0}'";
+        public static readonly EventText AdapterRegistrationCompleted = "Adapter registration is completed successfully: AdapterType = '{0}', Assigned ID = '{1}'";
+
+        public static readonly EventText ErrorOccurredDuringCallbackCall = "An error occurred during the callback call: Command Type = '{0}'";
+        public static readonly EventText AbortSchedulerThread = "Abort the thread: Command Type = '{0}'";
+        public static readonly EventText ProcessingSchedulerError = "Error occurred while processing the scheduler: Command Type = '{0}'";
+
     }
     static class TraceScopeNames
     {
@@ -102,6 +118,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
     static class Exceptions
     {
-        public static readonly ExceptionText ErrorCccurredWhileStartingTask = "Error occurred while starting the task: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly ExceptionText ErrorOccurredWhileStartingTask = "An error occurred while starting the task: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
+        public static readonly ExceptionText ErrorOccurredWhileInvokingControllerCommand = "An error occurred while invoking a controller command: CommandType = '{0}', CommandId = '{1}'";
+
     }
 }

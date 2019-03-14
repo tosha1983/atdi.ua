@@ -356,7 +356,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     }
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     queryExecuter.RollbackTransaction();
                 }

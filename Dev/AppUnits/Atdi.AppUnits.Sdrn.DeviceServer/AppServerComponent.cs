@@ -3,6 +3,7 @@ using Atdi.AppUnits.Sdrn.DeviceServer.Controller;
 using Atdi.AppUnits.Sdrn.DeviceServer.Processing;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.Modules.Licensing;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
@@ -58,8 +59,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             {
                this.Logger.Exception(Contexts.ThisComponent, Categories.Initilazing, e);
             }
-            
 
+            this.Container.Register<IEventWaiter, EventWaiter>(ServiceLifetime.Singleton);
             this.Container.Register<IProcessingDispatcher, ProcessingDispatcher>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkerFactory, TaskWorkerFactory>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkersHost, TaskWorkersHost>(ServiceLifetime.Singleton);
@@ -118,11 +119,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             // that implements the interface "IAdapter" in the container and in the devices host 
 
             var devicesHost = this.Resolver.Resolve<IDevicesHost>();
+            var eventWaiter = this.Resolver.Resolve<IEventWaiter>();
             var adapterTypes = typeResolver.GetTypesByInterface<IAdapter>();
+
+            var adapterRegistrationTimeout = this.Config.GetParameterAsInteger("SDRN.DeviceServer.AdapterRegistrationTimeoutSec") ?? -1;
+            if (adapterRegistrationTimeout > 0)
+            {
+                adapterRegistrationTimeout *= 1000;
+            }
+
             foreach (var adapterType in adapterTypes)
             {
                 this.Container.Register(adapterType, adapterType, ServiceLifetime.Transient);
                 devicesHost.Register(adapterType);
+
+                if (eventWaiter.Wait<AdapterWorker>(out AdapterWorker adapterWorker, adapterRegistrationTimeout))
+                {
+                    if(adapterWorker.State == DeviceState.Failure)
+                    {
+                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationFailed.With(adapterType));
+                    }
+                    else if (adapterWorker.State == DeviceState.Aborted)
+                    {
+                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationAborted.With(adapterType));
+                    }
+                    else
+                    {
+                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationCompleted.With(adapterType));
+                    }
+                }
+                else
+                {
+                    Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationTimedOut.With(adapterType));
+                }
             }
 
             // Start AutoTasks

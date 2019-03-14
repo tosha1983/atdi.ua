@@ -21,11 +21,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters
             // конфигурация
             var adapterConfig = new ADP.ExampleAdapter.AdapterConfig()
             {
-                Prop1 = 1,
-                Prop2 = 2,
-                Prop3 = 3,
-                Prop4 = 4,
-                Prop5 = 5
+                //Prop1 = 1,
+                //Prop2 = 2,
+                //Prop3 = 3,
+                //Prop4 = 4,
+                //Prop5 = 5
             };
 
             // проходим по фазам
