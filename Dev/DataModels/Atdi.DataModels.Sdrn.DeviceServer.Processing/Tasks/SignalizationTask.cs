@@ -15,5 +15,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public MesureTraceParameter mesureTraceParameter;
         public TaskParameters taskParameters;
         public ReferenceLevels ReferenceLevels;
+        public Emitting[] EmittingsRaw;
+        public Emitting[] EmittingsDetailed;
+        public Emitting[] EmittingsSummary;
     }
 }
