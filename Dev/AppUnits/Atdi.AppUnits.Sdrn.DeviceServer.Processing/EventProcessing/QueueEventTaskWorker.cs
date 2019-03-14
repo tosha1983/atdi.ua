@@ -142,19 +142,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             {
                                 var tskParam = taskParams[i];
 
-                                ITaskContext<SOTask, SpectrumOccupationProcess> findSOTask = null;
-
-                                context.Task.taskParameters = tskParam;
-
-                                if (tskParam.status == StatusTask.N.ToString())
+                                if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                                 {
-                                    findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.N.ToString());
-                                    if (findSOTask != null)
+
+                                    ITaskContext<SOTask, SpectrumOccupationProcess> findSOTask = null;
+
+                                    context.Task.taskParameters = tskParam;
+
+                                    if (tskParam.status == StatusTask.N.ToString())
                                     {
-                                        continue;
-                                    }
-                                    if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
-                                    {
+                                        findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.N.ToString());
+                                        if (findSOTask != null)
+                                        {
+                                            continue;
+                                        }
+
 
                                         if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
                                         {
@@ -183,21 +185,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                             this._repositoryTaskParametersByInt.Update(tskParam);
                                         }
                                     }
-                                    else
+                                    else if (tskParam.status == StatusTask.A.ToString())
                                     {
-                                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                        throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                    }
-                                }
-                                else if (tskParam.status == StatusTask.A.ToString())
-                                {
-                                    findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.A.ToString());
-                                    if (findSOTask != null)
-                                    {
-                                        continue;
-                                    }
-                                    if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
-                                    {
+                                        findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.A.ToString());
+                                        if (findSOTask != null)
+                                        {
+                                            continue;
+                                        }
+
                                         findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
                                         if (findSOTask != null)
                                         {
@@ -233,17 +228,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 this._repositoryTaskParametersByInt.Update(tskParam);
                                             }
                                         }
+
                                     }
-                                    else
+                                    else if (tskParam.status == StatusTask.F.ToString())
                                     {
-                                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                        throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                    }
-                                }
-                                else if (tskParam.status == StatusTask.F.ToString())
-                                {
-                                    if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
-                                    {
+
                                         findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
                                         if (findSOTask != null)
                                         {
@@ -272,47 +261,42 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 }
                                             }
                                         }
+
                                     }
-                                    else
+                                    else if (tskParam.status == StatusTask.Z.ToString())
                                     {
-                                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                        throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                    }
-                                }
-                                else if (tskParam.status == StatusTask.Z.ToString())
-                                {
-                                    if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
-                                    {
+
                                         findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
                                         if (findSOTask != null)
                                         {
                                             findSOTask.Task.taskParameters.status = StatusTask.Z.ToString();
                                         }
+
                                     }
-                                    else
-                                    {
-                                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                        throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
-                                    }
+                                    context.Process.contextSOTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
                                 }
-                            }
-                            context.Process.contextSOTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
-                            if (lastUpdateTaskParameter != null)
-                            {
-                                lastUpdateTaskParameter.Status = StatusTask.C.ToString();
-                                this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
-                            }
-                            else
-                            {
-                                var lastUpdate = new LastUpdate()
+                                else
                                 {
-                                    TableName = "XBS_TASKPARAMETERS",
-                                    LastDateTimeUpdate = DateTime.Now,
-                                    Status = StatusTask.C.ToString()
-                                };
-                                this._repositoryLastUpdateByInt.Create(lastUpdate);
+                                    _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
+                                    throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
+                                }
+                                if (lastUpdateTaskParameter != null)
+                                {
+                                    lastUpdateTaskParameter.Status = StatusTask.C.ToString();
+                                    this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
+                                }
+                                else
+                                {
+                                    var lastUpdate = new LastUpdate()
+                                    {
+                                        TableName = "XBS_TASKPARAMETERS",
+                                        LastDateTimeUpdate = DateTime.Now,
+                                        Status = StatusTask.C.ToString()
+                                    };
+                                    this._repositoryLastUpdateByInt.Create(lastUpdate);
+                                }
+                                cntActiveTaskParameters = 0;
                             }
-                            cntActiveTaskParameters = 0;
                         }
                     }
                 }
