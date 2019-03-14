@@ -58,6 +58,7 @@
     <Compile Include="ModelParameters\Signaling\ReferenceLevels.cs" />
     <Compile Include="ModelParameters\Signaling\SignalMask.cs" />
     <Compile Include="ModelParameters\Signaling\ReferenceSignal.cs" />
+    <Compile Include="ModelParameters\BWResult.cs" />
     <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
     <Compile Include="ModelParameters\LastUpdate.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
