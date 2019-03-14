@@ -58,7 +58,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
                 ) =>
                 {
-                    taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(failureReason, ex));
+                    //taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(failureReason, ex));
                 });
                 //////////////////////////////////////////////
                 // 

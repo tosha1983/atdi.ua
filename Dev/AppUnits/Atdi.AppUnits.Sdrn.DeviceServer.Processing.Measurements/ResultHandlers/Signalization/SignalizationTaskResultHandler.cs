@@ -30,7 +30,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 catch (Exception ex)
                 {
-                    taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(CommandFailureReason.Exception, ex));
+                    //taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(CommandFailureReason.Exception, ex));
                 }
             }
         }

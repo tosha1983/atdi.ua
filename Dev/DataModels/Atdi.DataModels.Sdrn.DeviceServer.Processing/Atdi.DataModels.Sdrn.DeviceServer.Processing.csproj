@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessGPS.cs" />
-    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSignalization.cs" />
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
@@ -51,6 +50,7 @@
     <Compile Include="ModelParameters\SemplFreq.cs" />
     <Compile Include="ModelParameters\SensorParameters.cs" />
     <Compile Include="ModelParameters\Signaling\GroupEmmiting.cs" />
+    <Compile Include="ModelParameters\BWResult.cs" />
     <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
     <Compile Include="ModelParameters\LastUpdate.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
