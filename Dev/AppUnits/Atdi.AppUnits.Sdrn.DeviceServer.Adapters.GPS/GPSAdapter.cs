@@ -83,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
-                // дальше кода быть не должно, освобождаем поток
+                throw new InvalidOperationException(Categories.Processing + ":" + e.Message, e);
             }
         }
 
@@ -127,20 +127,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
             gnssWrapper = new GNSSReceiverWrapper(portSettings);
             gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
-            if (gnssWrapper.IsOpen)
-            {
-                try
-                {
-                    gnssWrapper.Close();
-                    this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.CloseDevice);
-                }
-                catch (Exception ex)
-                {
-                    this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message));
-                    OpenGPSDevice();
-                }
-            }
-            else
+            if (!gnssWrapper.IsOpen)
             {
                 try
                 {
@@ -149,8 +136,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 }
                 catch (Exception ex)
                 {
-                    this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message));
-                    OpenGPSDevice();
+                    this._logger.Critical(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message), ex);
+                    throw new InvalidOperationException(Categories.Processing+":"+ex.Message, ex);
                 }
             }
         }
@@ -218,7 +205,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 }
                 catch (Exception ex)
                 {
-                    this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message));
+                    this._logger.Critical(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message));
+                    throw new InvalidOperationException(Categories.Processing + ":" + ex.Message, ex);
                 }
             }
         }

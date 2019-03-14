@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
+namespace Atdi.DataModels.Sdrns.Device
 {
     public struct ReferenceSignal
     {

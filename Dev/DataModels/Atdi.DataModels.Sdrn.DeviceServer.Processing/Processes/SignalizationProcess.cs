@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     public class SignalizationProcess : ProcessBase
     {
 
-        public SignalizationProcess() : base("Spectrum occupation process")
+        public SignalizationProcess() : base("Signalization  process")
         {
         }
     }

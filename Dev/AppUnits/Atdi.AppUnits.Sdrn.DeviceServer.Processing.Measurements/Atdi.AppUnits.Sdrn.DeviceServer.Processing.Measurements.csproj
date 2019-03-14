@@ -46,8 +46,10 @@
     <Compile Include="Calculation\SpectrumOccupation\CalcSpectrumOcupation.cs" />
     <Compile Include="ExampleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultHandlers\Signalization\SignalizationTaskResultHandler.cs" />
     <Compile Include="ResultHandlers\SpectrumOccupation\SOTaskResultHandler.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="TaskWorkers\Signalization\SignalizationTaskWorker.cs" />
     <Compile Include="TaskWorkers\SpectrumOccupation\SOTaskWorker.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -538,6 +538,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         public  List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
+            var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return ListMTSDR;
             foreach (MeasSubTask SubTask in task.MeasSubTasks)
@@ -550,7 +551,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            int? IdentValueTaskSDR = SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
+                            int? IdentValueTaskSDR = saveMeasTask.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
                             MTSDR.TaskId = MeasTaskId.ToString();//IdentValueTaskSDR.GetValueOrDefault().ToString();
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
@@ -790,77 +791,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             return ListMTSDR;
         }
 
-        public int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
-        {
-            int? numVal = null;
-            int? Num = null;
-            bool isNew = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            try
-            {
-                queryExecuter.BeginTransaction();
-                var builderMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().From();
-                builderMeasTaskSDR.Select(c => c.Id);
-                builderMeasTaskSDR.Select(c => c.Num);
-                builderMeasTaskSDR.OrderByDesc(c => c.Num);
-                queryExecuter.Fetch(builderMeasTaskSDR, readerMeasTaskSDR =>
-                {
-                    if (readerMeasTaskSDR.Read())
-                    {
-                        Num = readerMeasTaskSDR.GetValue(c=>c.Num);
-                    }
-                    return true;
-                });
-                
-                if (Num==null)
-                {
-                    Num = 0;
-                }
-                ++Num;
-
-                builderMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().From();
-                builderMeasTaskSDR.Select(c => c.Id);
-                builderMeasTaskSDR.Select(c => c.Num);
-                builderMeasTaskSDR.Where(c=>c.MeasTaskId, ConditionOperator.Equal, TaskId);
-                builderMeasTaskSDR.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, SubTaskId);
-                builderMeasTaskSDR.Where(c => c.MeasSubTaskStaId, ConditionOperator.Equal, SubTaskStationId);
-                builderMeasTaskSDR.Where(c => c.SensorId, ConditionOperator.Equal, SensorId);
-                builderMeasTaskSDR.OrderByDesc(c => c.Id);
-                queryExecuter.Fetch(builderMeasTaskSDR, readerMeasTaskSDR =>
-                {
-                    if (readerMeasTaskSDR.Read())
-                    {
-                        isNew = true;
-                        numVal = readerMeasTaskSDR.GetValue(c=>c.Num);
-                    }
-                    return true;
-                });
-
-               
-
-                if (!isNew)
-                {
-                    var builderInsertMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().Insert();
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasTaskId, TaskId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasSubTaskId, SubTaskId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasSubTaskStaId, SubTaskStationId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.SensorId, SensorId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.Num, Num);
-                    builderInsertMeasTaskSDR.Select(c => c.Id);
-                    queryExecuter.ExecuteAndFetch(builderInsertMeasTaskSDR, reader =>
-                    {
-                        return true;
-                    });
-                    numVal = Num;
-                    queryExecuter.CommitTransaction();
-                }
-            }
-            catch (Exception)
-            {
-                queryExecuter.RollbackTransaction();
-            }
-            return numVal;
-        }
+      
     }
 }
 

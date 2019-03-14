@@ -352,9 +352,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     queryExecuter.CommitTransaction();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 queryExecuter.RollbackTransaction();
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return numVal;
         }

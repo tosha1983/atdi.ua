@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
+namespace Atdi.DataModels.Sdrns.Device
 {
     /// <summary>
     /// Represent triggers levels adopted to trace of Devise (SDR)
