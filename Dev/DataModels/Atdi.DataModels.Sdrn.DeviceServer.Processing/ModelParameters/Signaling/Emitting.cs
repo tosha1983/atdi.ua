@@ -12,6 +12,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public double StopFrequency_MHz;
         public double CurentPower_dBm;
         public double ReferenceLevel_dBm;
+        public double MeanDeviationFromReference; // отклонение формы от эталонной в долях от 0 до 1
+        public double TriggerDeviationFromReference; // максимально допустимое отклонение формы от эталонной в долях от 0 до 1
         public WokrTime[] WokrTimes;
         public SignalMask SignalMask;
         public Spectrum Spectrum;
