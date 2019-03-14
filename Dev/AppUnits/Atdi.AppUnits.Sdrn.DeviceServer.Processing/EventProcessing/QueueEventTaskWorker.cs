@@ -101,11 +101,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                                     var process = _processingDispatcher.Start<SpectrumOccupationProcess>(context.Process);
 
-                                    var soTask = new SOTask()
-                                    {
-                                        TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
-                                        Options = TaskExecutionOption.Default,
-                                    };
+                                    var soTask = new SOTask();
 
                                     soTask.sensorParameters = activeSensor.Convert();
 

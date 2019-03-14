@@ -109,13 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
 
                     var timeStamp = this._timeService.TimeStamp.Milliseconds;
-                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter)
-                    {
-                        Options = CommandOption.PutInQueue,
-                        StartTimeStamp = timeStamp,
-                        Timeout = timeStamp + maximumDurationMeas
-                    };
-
+                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
                     //////////////////////////////////////////////
                     // 
                     // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
@@ -283,7 +277,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         publisher.Dispose();
 
                         context.Finish();
-                        
                         break;
                     }
                     //////////////////////////////////////////////

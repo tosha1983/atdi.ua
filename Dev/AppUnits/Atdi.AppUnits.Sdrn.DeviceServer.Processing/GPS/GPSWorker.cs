@@ -52,10 +52,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 //////////////////////////////////////////////
                 var gpsParameter = new GpsParameter();
                 gpsParameter.GpsMode = GpsMode.Start;
-                var gpsDevice = new GpsCommand(gpsParameter)
-                {
-                    Options = CommandOption.PutInQueue
-                };
+                var gpsDevice = new GpsCommand(gpsParameter);
 
                 this._controller.SendCommand<GpsResult>(context, gpsDevice,
                 (
