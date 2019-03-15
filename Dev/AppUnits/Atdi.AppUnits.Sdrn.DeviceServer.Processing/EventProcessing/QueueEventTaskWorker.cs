@@ -200,8 +200,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     };
                                     this._repositoryLastUpdateByInt.Create(lastUpdate);
                                 }
-                                cntActiveTaskParameters = 0;
                             }
+                            cntActiveTaskParameters = 0;
                         }
                     }
                 }
