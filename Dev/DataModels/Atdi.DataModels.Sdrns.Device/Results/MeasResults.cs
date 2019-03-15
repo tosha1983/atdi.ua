@@ -125,16 +125,10 @@ namespace Atdi.DataModels.Sdrns.Device
         public ReferenceLevels RefLevels  { get; set; }
 
         /// <summary>
-        /// Emitting
+        /// Emittings
         /// </summary>
         [DataMember]
-        public Emitting Emitting { get; set; }
-
-        /// <summary>
-        /// Work Time
-        /// </summary>
-        [DataMember]
-        public WorkTime WorkTime { get; set; }
+        public Emitting[] Emittings { get; set; }
 
         ///// <summary>
         ///// Signaling. Parameters of emissions above predefined level. 

@@ -8,9 +8,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Atdi.Icsm.Plugins.WebQueryExtended</RootNamespace>
     <AssemblyName>XICSM_Atdi.Icsm.Plugins.WebQueryExtended</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
