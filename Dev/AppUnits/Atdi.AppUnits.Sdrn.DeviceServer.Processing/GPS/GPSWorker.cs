@@ -45,6 +45,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             try
             {
                 _logger.Verbouse(Contexts.GPSWorker, Categories.Processing, Events.StartGPSWorker.With(context.Task.Id));
+
+                //////////////////////////////////////////////
+                // 
+                // Задаем координаты сенсора по умолчанию 
+                //
+                //////////////////////////////////////////////
+
+                context.Process.Asl = this._configProcessing.AslDefault;
+                context.Process.Lon = this._configProcessing.LonDelta;
+                context.Process.Lat = this._configProcessing.LatDefault;
+
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер GPS

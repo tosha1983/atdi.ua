@@ -47,6 +47,7 @@
     <Compile Include="DispatcherWorker.cs" />
     <Compile Include="EventProcessing\DeferredTaskWorker.cs" />
     <Compile Include="ConfigProcessing.cs" />
+    <Compile Include="EventProcessing\EventCommand.cs" />
     <Compile Include="GPS\GPSWorker.cs" />
     <Compile Include="GPS\GPSTaskResultHandler.cs" />
     <Compile Include="EventProcessing\QueueEventTaskWorker.cs" />

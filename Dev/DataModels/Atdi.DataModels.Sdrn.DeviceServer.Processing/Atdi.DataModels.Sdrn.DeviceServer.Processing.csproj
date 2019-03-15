@@ -81,6 +81,7 @@
     <Compile Include="Tasks\LevelTask.cs" />
     <Compile Include="Tasks\BandWidthTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\RegisterSensorTask.cs" />
+    <Compile Include="Tasks\MeasurementTaskBase.cs" />
     <Compile Include="Tasks\SysInfoTask.cs" />
     <Compile Include="Tasks\SOTask.cs" />
     <Compile Include="Test\ExampleTask.cs" />

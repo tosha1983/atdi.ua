@@ -163,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         return;
                                     case CommandFailureReason.NotFoundConvertor:
                                     case CommandFailureReason.NotFoundDevice:
-                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.SOKoeffWaitingDevice;
+                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.KoeffWaitingDevice;
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
