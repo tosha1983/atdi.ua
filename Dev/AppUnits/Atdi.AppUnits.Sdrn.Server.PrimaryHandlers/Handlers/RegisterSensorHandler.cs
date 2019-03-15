@@ -124,8 +124,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             if (sensorData.Antenna.Patterns != null)
                             {
                                 int idSensorAntennaPattern = -1;
-                                foreach (AntennaPattern patt in sensorData.Antenna.Patterns)
+
+                                for (int l= 0; l < sensorData.Antenna.Patterns.Length; l++)
                                 {
+                                    var patt = sensorData.Antenna.Patterns[l];
+
                                     var builderInsertAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Insert();
                                     builderInsertAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
                                     builderInsertAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
@@ -193,8 +196,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                         if (sensorData.Equipment.Sensitivities != null)
                         {
-                            foreach (EquipmentSensitivity senseqps in sensorData.Equipment.Sensitivities)
+                            for (int l = 0; l < sensorData.Equipment.Sensitivities.Length; l++)
                             {
+                                var senseqps = sensorData.Equipment.Sensitivities[l];
+
                                 int idSensorEquipmentSensitivities = -1;
                                 var builderInsertSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Insert();
                                 builderInsertSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
@@ -220,8 +225,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         {
                             SensorPolygon sensPolygon = sensorData.Polygon;
                             int idsensPolygon = -1;
-                            foreach (Atdi.DataModels.Sdrns.GeoPoint geo in sensPolygon.Points)
+
+                            for (int l = 0; l < sensPolygon.Points.Length; l++)
                             {
+                                var geo = sensPolygon.Points[l];
+
                                 var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
                                 builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
                                 builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
@@ -243,8 +251,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         if (sensorData.Locations != null)
                         {
                             int idsensLocations = -1;
-                            foreach (var location in sensorData.Locations)
+
+                            for (int l = 0; l < sensorData.Locations.Length; l++)
                             {
+                                var location = sensorData.Locations[l];
+
                                 var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                 builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
                                 builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);

@@ -541,12 +541,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return ListMTSDR;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks)
-            {
+
+            for (int f=0; f < task.MeasSubTasks.Length; f++)
+            { 
+                var SubTask = task.MeasSubTasks[f];
                 if (SubTask.MeasSubTaskStations != null)
                 {
-                    foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations)
-                    {
+                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                    { 
+                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+                   
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {

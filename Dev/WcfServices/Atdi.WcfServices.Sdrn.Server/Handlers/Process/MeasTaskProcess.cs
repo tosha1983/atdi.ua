@@ -185,8 +185,10 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (mt.Stations != null)
                         {
-                            foreach (var item in mt.Stations)
+                            for (int d = 0; d < mt.Stations.Length; d++)
                             {
+                                var item = mt.Stations[d];
+
                                 if (item.StationId.Value > 0)
                                 {
                                     if (!SensorIds.Contains(item.StationId.Value))
@@ -200,16 +202,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                         int? id = null;
                         var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                         bool isSuccessTemp = false;
-                        if (SensorIds.Count > 0)
+
+                        var massSensor = SensorIds.ToArray();
+                        if (massSensor.Length > 0)
                         {
-                            Process(measTaskedit, SensorIds, MeasTaskMode.Stop.ToString(), false, out isSuccessTemp, out id);
+                            Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccessTemp, out id);
                             result.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
                         }
                         else
                         {
                             result.State = CommonOperationState.Fault;
                         }
-                        Process(measTaskedit, SensorIds, MeasTaskMode.Del.ToString(), false, out isSuccessTemp, out id);
+                        Process(measTaskedit, massSensor, MeasTaskMode.Del.ToString(), false, out isSuccessTemp, out id);
                         result.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
                     }
@@ -247,13 +251,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var SensorIds = new List<int>();
                         if (mt.MeasSubTasks != null)
                         {
-                            foreach (var item in mt.MeasSubTasks)
+                            for (int d = 0; d < mt.MeasSubTasks.Length; d++)
                             {
-                                foreach (var u in item.MeasSubTaskStations)
+                                var item = mt.MeasSubTasks[d];
+                                for (int r = 0; r < item.MeasSubTaskStations.Length; r++)
                                 {
-                                    if (!SensorIds.Contains(u.StationId.Value))
+                                    var measSubTaskStations = item.MeasSubTaskStations[r];
+
+                                    if (!SensorIds.Contains(measSubTaskStations.StationId.Value))
                                     {
-                                        SensorIds.Add(u.StationId.Value);
+                                        SensorIds.Add(measSubTaskStations.StationId.Value);
                                     }
                                 }
                             }
@@ -261,8 +268,10 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (mt.Stations != null)
                         {
-                            foreach (var item in mt.Stations)
+                            for (int d = 0; d < mt.Stations.Length; d++)
                             {
+                                var item = mt.Stations[d];
+
                                 if (item.StationId.Value > 0)
                                 {
                                     if (!SensorIds.Contains(item.StationId.Value))
@@ -274,11 +283,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
 
                         var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
-                        if (SensorIds.Count > 0)
+                        var massSensor = SensorIds.ToArray();
+                        if (massSensor.Length > 0)
                         {
                             bool isSuccess = false;
                             int? id = null;
-                            Process(measTaskedit, SensorIds, MeasTaskMode.Run.ToString(), false, out isSuccess, out id);
+                            Process(measTaskedit, massSensor, MeasTaskMode.Run.ToString(), false, out isSuccess, out id);
                             result.State = CommonOperationState.Success;
                         }
                     }
@@ -311,13 +321,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var SensorIds = new List<int>();
                         if (mt.MeasSubTasks != null)
                         {
-                            foreach (var item in mt.MeasSubTasks)
+                            for (int d = 0; d < mt.MeasSubTasks.Length; d++)
                             {
-                                foreach (var u in item.MeasSubTaskStations)
+                                var item = mt.MeasSubTasks[d];
+                                for (int r = 0; r < item.MeasSubTaskStations.Length; r++)
                                 {
-                                    if (!SensorIds.Contains(u.StationId.Value))
+                                    var measSubTaskStations = item.MeasSubTaskStations[r];
+
+                                    if (!SensorIds.Contains(measSubTaskStations.StationId.Value))
                                     {
-                                        SensorIds.Add(u.StationId.Value);
+                                        SensorIds.Add(measSubTaskStations.StationId.Value);
                                     }
                                 }
                             }
@@ -325,8 +338,10 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (mt.Stations != null)
                         {
-                            foreach (var item in mt.Stations)
+                            for (int d = 0; d < mt.Stations.Length; d++)
                             {
+                                var item = mt.Stations[d];
+
                                 if (item.StationId.Value > 0)
                                 {
                                     if (!SensorIds.Contains(item.StationId.Value))
@@ -338,11 +353,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
 
                         var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
-                        if (SensorIds.Count > 0)
+                        var massSensor = SensorIds.ToArray();
+                        if (massSensor.Length > 0)
                         {
                             bool isSuccess = false;
                             int? id = null;
-                            Process(measTaskedit, SensorIds, MeasTaskMode.Stop.ToString(), false, out isSuccess, out id);
+                            Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccess, out id);
                             result.State = CommonOperationState.Success;
                         }
                     }
