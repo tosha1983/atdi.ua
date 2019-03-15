@@ -42,9 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="Convertors\Signalization\ConvertReferenceSituationToEmitting.cs" />
-    <Compile Include="Convertors\Signalization\ConvertReferenceLevelsToEmitting.cs" />
-    <Compile Include="Convertors\Signalization\ConvertReferenceSituationToReferenceLevels.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertMeasTaskToTaskParameters.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />

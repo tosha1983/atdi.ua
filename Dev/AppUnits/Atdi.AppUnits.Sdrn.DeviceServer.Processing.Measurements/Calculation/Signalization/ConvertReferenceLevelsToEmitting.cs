@@ -9,7 +9,7 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class ConvertReferenceLevelsToEmitting
     {

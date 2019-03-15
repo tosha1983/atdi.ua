@@ -109,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                                     soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
 
-                                    soTask.SleepTimePeriodForWaitingStartingMeas = this._config.maximumTimeForWaitingResultSO;
+                                    soTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
 
                                     soTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
 
@@ -126,6 +126,58 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
                                 }
                             }
+                            else if (context.Task.taskParameters.MeasurementType == MeasType.Signaling)
+                            {
+                                var signalProcess = _processingDispatcher.Start<SignalizationProcess>(context.Process);
+
+                                var signalTask = new SignalizationTask();
+
+                                signalTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+
+                                signalTask.maximumTimeForWaitingResultSignalization = this._config.maximumTimeForWaitingResultSignalization;
+
+                                signalTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
+
+                                signalTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
+
+                                signalTask.LastTimeSend = DateTime.Now;
+
+                                signalTask.taskParameters = context.Task.taskParameters;
+
+                                signalTask.mesureTraceParameter = signalTask.taskParameters.Convert();
+
+                                _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(signalTask.Id));
+
+                                _taskStarter.RunParallel(signalTask, signalProcess, context);
+
+                                _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(signalTask.Id));
+                            }
+                            else if (context.Task.taskParameters.MeasurementType == MeasType.BandwidthMeas)
+                            {
+                                var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(context.Process);
+
+                                var bandWidtTask = new BandWidthTask();
+
+                                bandWidtTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+
+                                bandWidtTask.maximumTimeForWaitingResultBandWidth = this._config.maximumTimeForWaitingResultBandWidth;
+
+                                bandWidtTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
+
+                                bandWidtTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
+
+                                bandWidtTask.LastTimeSend = DateTime.Now;
+
+                                bandWidtTask.taskParameters = context.Task.taskParameters;
+
+                                bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.Convert();
+
+                                _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(bandWidtTask.Id));
+
+                                _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
+
+                                _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(bandWidtTask.Id));
+                            }
                             else
                             {
                                 _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(context.Task.taskParameters.MeasurementType));
@@ -137,18 +189,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         if (((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == "N")) || (lastUpdateTaskParameter == null) || (cntActiveTaskParameters > 0))
                         {
                             taskParams = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict();
-
                             for (int i = 0; i < taskParams.Length; i++)
                             {
                                 var tskParam = taskParams[i];
 
                                 if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                                 {
-
                                     ITaskContext<SOTask, SpectrumOccupationProcess> findSOTask = null;
-
                                     context.Task.taskParameters = tskParam;
-
                                     if (tskParam.status == StatusTask.N.ToString())
                                     {
                                         findSOTask = context.Process.contextSOTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.N.ToString());
@@ -156,7 +204,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         {
                                             continue;
                                         }
-
 
                                         if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
                                         {
@@ -274,6 +321,264 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                                     }
                                     context.Process.contextSOTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
+                                }
+                                else if (tskParam.MeasurementType == MeasType.Signaling)
+                                {
+                                    ITaskContext<SignalizationTask, SignalizationProcess> signalizationTask = null;
+                                    context.Task.taskParameters = tskParam;
+                                    if (tskParam.status == StatusTask.N.ToString())
+                                    {
+                                        signalizationTask = context.Process.contextSignalizationTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.N.ToString());
+                                        if (signalizationTask != null)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
+                                        {
+                                            TimeSpan timeSpan = context.Task.taskParameters.StartTime.Value - DateTime.Now;
+                                            //запускаем задачу в случае, если время 
+                                            if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
+                                            {
+                                                action.Invoke();
+                                            }
+                                            else
+                                            {
+                                                // здесь необходимо добавлять в список отложенных задач
+                                                if (!context.Process.listDeferredTasks.Contains(context.Task.taskParameters))
+                                                {
+                                                    context.Process.listDeferredTasks.Add(context.Task.taskParameters);
+                                                }
+                                            }
+                                        }
+                                        else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                        {
+                                            action.Invoke();
+                                        }
+                                        else
+                                        {
+                                            tskParam.status = StatusTask.C.ToString();
+                                            this._repositoryTaskParametersByInt.Update(tskParam);
+                                        }
+                                    }
+                                    else if (tskParam.status == StatusTask.A.ToString())
+                                    {
+                                        signalizationTask = context.Process.contextSignalizationTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.A.ToString());
+                                        if (signalizationTask != null)
+                                        {
+                                            continue;
+                                        }
+
+                                        signalizationTask = context.Process.contextSignalizationTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                        if (signalizationTask != null)
+                                        {
+                                            signalizationTask.Task.taskParameters.status = StatusTask.A.ToString();
+                                        }
+                                        else
+                                        {
+
+                                            if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
+                                            {
+                                                TimeSpan timeSpan = context.Task.taskParameters.StartTime.Value - DateTime.Now;
+                                                //запускаем задачу в случае, если время 
+                                                if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
+                                                {
+                                                    action.Invoke();
+                                                }
+                                                else
+                                                {
+                                                    // здесь необходимо добавлять в список отложенных задач
+                                                    if (!context.Process.listDeferredTasks.Contains(context.Task.taskParameters))
+                                                    {
+                                                        context.Process.listDeferredTasks.Add(context.Task.taskParameters);
+                                                    }
+                                                }
+                                            }
+                                            else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                            {
+                                                action.Invoke();
+                                            }
+                                            else
+                                            {
+                                                tskParam.status = StatusTask.C.ToString();
+                                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                            }
+                                        }
+
+                                    }
+                                    else if (tskParam.status == StatusTask.F.ToString())
+                                    {
+
+                                        signalizationTask = context.Process.contextSignalizationTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                        if (signalizationTask != null)
+                                        {
+                                            signalizationTask.Task.taskParameters.status = StatusTask.F.ToString();
+                                        }
+                                        else
+                                        {
+                                            if (cntActiveTaskParameters > 0)
+                                            {
+                                                if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                                {
+                                                    tskParam.status = StatusTask.A.ToString();
+                                                    this._repositoryTaskParametersByInt.Update(tskParam);
+                                                    action.Invoke();
+                                                    System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
+                                                    signalizationTask = context.Process.contextSignalizationTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                                    if (signalizationTask != null)
+                                                    {
+                                                        signalizationTask.Task.taskParameters.status = StatusTask.F.ToString();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    tskParam.status = StatusTask.C.ToString();
+                                                    this._repositoryTaskParametersByInt.Update(tskParam);
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    else if (tskParam.status == StatusTask.Z.ToString())
+                                    {
+
+                                        signalizationTask = context.Process.contextSignalizationTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                        if (signalizationTask != null)
+                                        {
+                                            signalizationTask.Task.taskParameters.status = StatusTask.Z.ToString();
+                                        }
+
+                                    }
+                                    context.Process.contextSignalizationTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
+                                }
+                                else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
+                                {
+                                    ITaskContext<BandWidthTask, BandWidthProcess> bandWidthTask = null;
+                                    context.Task.taskParameters = tskParam;
+                                    if (tskParam.status == StatusTask.N.ToString())
+                                    {
+                                        bandWidthTask = context.Process.contextBandWidthTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.N.ToString());
+                                        if (bandWidthTask != null)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
+                                        {
+                                            TimeSpan timeSpan = context.Task.taskParameters.StartTime.Value - DateTime.Now;
+                                            //запускаем задачу в случае, если время 
+                                            if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
+                                            {
+                                                action.Invoke();
+                                            }
+                                            else
+                                            {
+                                                // здесь необходимо добавлять в список отложенных задач
+                                                if (!context.Process.listDeferredTasks.Contains(context.Task.taskParameters))
+                                                {
+                                                    context.Process.listDeferredTasks.Add(context.Task.taskParameters);
+                                                }
+                                            }
+                                        }
+                                        else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                        {
+                                            action.Invoke();
+                                        }
+                                        else
+                                        {
+                                            tskParam.status = StatusTask.C.ToString();
+                                            this._repositoryTaskParametersByInt.Update(tskParam);
+                                        }
+                                    }
+                                    else if (tskParam.status == StatusTask.A.ToString())
+                                    {
+                                        bandWidthTask = context.Process.contextBandWidthTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.A.ToString());
+                                        if (bandWidthTask != null)
+                                        {
+                                            continue;
+                                        }
+
+                                        bandWidthTask = context.Process.contextBandWidthTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                        if (bandWidthTask != null)
+                                        {
+                                            bandWidthTask.Task.taskParameters.status = StatusTask.A.ToString();
+                                        }
+                                        else
+                                        {
+
+                                            if (context.Task.taskParameters.StartTime.Value > DateTime.Now)
+                                            {
+                                                TimeSpan timeSpan = context.Task.taskParameters.StartTime.Value - DateTime.Now;
+                                                //запускаем задачу в случае, если время 
+                                                if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
+                                                {
+                                                    action.Invoke();
+                                                }
+                                                else
+                                                {
+                                                    // здесь необходимо добавлять в список отложенных задач
+                                                    if (!context.Process.listDeferredTasks.Contains(context.Task.taskParameters))
+                                                    {
+                                                        context.Process.listDeferredTasks.Add(context.Task.taskParameters);
+                                                    }
+                                                }
+                                            }
+                                            else if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                            {
+                                                action.Invoke();
+                                            }
+                                            else
+                                            {
+                                                tskParam.status = StatusTask.C.ToString();
+                                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                            }
+                                        }
+
+                                    }
+                                    else if (tskParam.status == StatusTask.F.ToString())
+                                    {
+
+                                        bandWidthTask = context.Process.contextBandWidthTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                        if (bandWidthTask != null)
+                                        {
+                                            bandWidthTask.Task.taskParameters.status = StatusTask.F.ToString();
+                                        }
+                                        else
+                                        {
+                                            if (cntActiveTaskParameters > 0)
+                                            {
+                                                if ((context.Task.taskParameters.StartTime.Value <= DateTime.Now) && (context.Task.taskParameters.StopTime.Value >= DateTime.Now))
+                                                {
+                                                    tskParam.status = StatusTask.A.ToString();
+                                                    this._repositoryTaskParametersByInt.Update(tskParam);
+                                                    action.Invoke();
+                                                    System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
+                                                    bandWidthTask = context.Process.contextBandWidthTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                                    if (bandWidthTask != null)
+                                                    {
+                                                        bandWidthTask.Task.taskParameters.status = StatusTask.F.ToString();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    tskParam.status = StatusTask.C.ToString();
+                                                    this._repositoryTaskParametersByInt.Update(tskParam);
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    else if (tskParam.status == StatusTask.Z.ToString())
+                                    {
+
+                                        bandWidthTask = context.Process.contextBandWidthTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                                        if (bandWidthTask != null)
+                                        {
+                                            bandWidthTask.Task.taskParameters.status = StatusTask.Z.ToString();
+                                        }
+
+                                    }
+                                    context.Process.contextBandWidthTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
                                 }
                                 else
                                 {

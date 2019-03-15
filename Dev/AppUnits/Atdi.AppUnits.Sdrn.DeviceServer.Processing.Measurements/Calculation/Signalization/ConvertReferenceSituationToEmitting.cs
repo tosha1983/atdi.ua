@@ -9,16 +9,16 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public static class ConvertReferenceSituationToReferenceLevels
+    public static class ConvertReferenceSituationToEmitting
     {
-        public static ReferenceLevels Convert(this ReferenceSituation referenceSituation)
+        public static Emitting Convert(this ReferenceSituation referenceLevels)
         {
-            ReferenceLevels referenceLevels = new ReferenceLevels();
+            Emitting emitting = new Emitting();
 
           
-            return referenceLevels;
+            return emitting;
         }
     }
 }

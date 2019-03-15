@@ -42,6 +42,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public int maximumTimeForWaitingResultSO { get; set; }
 
         /// <summary>
+        /// Время в миллисекундах  ожидания сообщения типа MeasResults в воркере SignalizationTaskWorker
+        /// </summary>
+        public int maximumTimeForWaitingResultSignalization { get; set; }
+
+
+        /// <summary>
+        /// Время в миллисекундах  ожидания сообщения  в воркере BandWidthTaskWorker
+        /// </summary>
+        public int maximumTimeForWaitingResultBandWidth { get; set; }
+
+
+        /// <summary>
         /// Специальный коэффициент для расчета времени приостановки потока, выполняющего измерение SO 
         /// ДЛя огибок типа CommandFailureReason.NotFoundConvertor, CommandFailureReason.NotFoundDevice
         /// </summary>

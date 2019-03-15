@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessGPS.cs" />
+    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessBandWidth.cs" />
+    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSignalization.cs" />
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
@@ -56,9 +58,11 @@
     <Compile Include="ModelParameters\TaskParameters.cs" />
     <Compile Include="Processes\DispatchProcess.cs" />
     <Compile Include="Processes\ExampleContext.cs" />
+    <Compile Include="Processes\BandWidthProcess.cs" />
     <Compile Include="Processes\SignalizationProcess.cs" />
     <Compile Include="Processes\SpectrumOccupationProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Results\MeasBandwidthResult.cs" />
     <Compile Include="Tasks\AutoTasks\BaseAutoTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\DeferredTasks.cs" />
     <Compile Include="Tasks\DispatcherTasks\ActiveSensorTask.cs" />
@@ -75,7 +79,7 @@
     <Compile Include="Tasks\DispatcherTasks\SendRegistrationResultTask.cs" />
     <Compile Include="Tasks\SignalizationTask.cs" />
     <Compile Include="Tasks\LevelTask.cs" />
-    <Compile Include="Tasks\BandwidthTask.cs" />
+    <Compile Include="Tasks\BandWidthTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\RegisterSensorTask.cs" />
     <Compile Include="Tasks\SysInfoTask.cs" />
     <Compile Include="Tasks\SOTask.cs" />
