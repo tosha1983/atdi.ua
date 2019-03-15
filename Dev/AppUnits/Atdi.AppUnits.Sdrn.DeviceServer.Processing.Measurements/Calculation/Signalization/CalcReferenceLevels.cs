@@ -11,14 +11,14 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public static class ConvertReferenceLevelsToEmitting
+    public static class CalcReferenceLevels
     {
-        public static Emitting Convert(this ReferenceLevels referenceLevels)
+        public static ReferenceLevels Convert(this ReferenceSituation referenceSituation)
         {
-            Emitting emitting = new Emitting();
+            ReferenceLevels referenceLevels = new ReferenceLevels();
 
           
-            return emitting;
+            return referenceLevels;
         }
     }
 }

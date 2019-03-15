@@ -43,10 +43,10 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Calculation\BandWidth\BandWidthEstimation.cs" />
-    <Compile Include="Calculation\Signalization\ConvertEmittingToEmittingSummary.cs" />
-    <Compile Include="Calculation\Signalization\ConvertReferenceLevelsToEmitting.cs" />
-    <Compile Include="Calculation\Signalization\ConvertReferenceSituationToEmitting.cs" />
-    <Compile Include="Calculation\Signalization\ConvertReferenceSituationToReferenceLevels.cs" />
+    <Compile Include="Calculation\Signalization\CalcGroupingEmitting.cs" />
+    <Compile Include="Calculation\Signalization\CalcSearchInterruption.cs" />
+    <Compile Include="Calculation\Signalization\CalcSearchEmitting.cs" />
+    <Compile Include="Calculation\Signalization\CalcReferenceLevels.cs" />
     <Compile Include="Calculation\SpectrumOccupation\CalcFSFromLevel.cs" />
     <Compile Include="Calculation\SpectrumOccupation\CalcSpectrumOcupation.cs" />
     <Compile Include="ExampleConfig.cs" />

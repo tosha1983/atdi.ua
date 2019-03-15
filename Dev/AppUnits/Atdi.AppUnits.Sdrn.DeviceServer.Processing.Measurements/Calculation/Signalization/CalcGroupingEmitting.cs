@@ -11,7 +11,7 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public static class ConvertEmittingToEmittingSummary
+    public static class CalcGroupingEmitting
     {
         public static Emitting Convert(Emitting EmittingRaw, Emitting EmittingDetailed, Emitting EmittingSummary)
         {

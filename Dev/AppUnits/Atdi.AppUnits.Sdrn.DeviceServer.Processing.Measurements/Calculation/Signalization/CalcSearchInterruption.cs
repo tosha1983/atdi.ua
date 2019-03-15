@@ -11,9 +11,9 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public static class ConvertReferenceSituationToEmitting
+    public static class CalcSearchInterruption
     {
-        public static Emitting Convert(this ReferenceSituation referenceLevels)
+        public static Emitting Convert(this ReferenceLevels referenceLevels)
         {
             Emitting emitting = new Emitting();
 
