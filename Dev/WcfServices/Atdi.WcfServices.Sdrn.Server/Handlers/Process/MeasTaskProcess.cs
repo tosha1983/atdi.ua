@@ -65,7 +65,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="isSuccess"></param>
         /// <param name="idTask"></param>
         /// <returns></returns>
-        public bool Process(MeasTask measTask, List<int> sensorIds, string actionType, bool isOnline, out bool isSuccess, out int? idTask)
+        public bool Process(MeasTask measTask, int[] sensorIds, string actionType, bool isOnline, out bool isSuccess, out int? idTask)
         {
             isSuccess = false;
             idTask = null;
@@ -77,8 +77,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 int? IdTsk = null;
                 if (measTask != null)
                 {
-                    foreach (int SensorId in sensorIds)
+                    for (int d = 0; d < sensorIds.Length; d++)
                     {
+                        int SensorId = sensorIds[d];
+
                         var fndSensor = loadSensor.LoadObjectSensor(SensorId);
                         if (fndSensor != null)
                         {
@@ -164,10 +166,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var SensorIds = new List<int>();
                         if (mt.MeasSubTasks != null)
                         {
-                            foreach (var item in mt.MeasSubTasks)
+
+                            for (int i = 0; i < mt.MeasSubTasks.Length; i++)
                             {
-                                foreach (var u in item.MeasSubTaskStations)
+                                var item = mt.MeasSubTasks[i];
+
+                                for (int j = 0; j < item.MeasSubTaskStations.Length; j++)
                                 {
+                                    var u = item.MeasSubTaskStations[j];
+
                                     if (!SensorIds.Contains(u.StationId.Value))
                                     {
                                         SensorIds.Add(u.StationId.Value);

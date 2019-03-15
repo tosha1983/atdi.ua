@@ -8,7 +8,6 @@ using System.Linq;
 using Atdi.DataModels.EntityOrm;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {

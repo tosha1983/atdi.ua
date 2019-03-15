@@ -7,7 +7,6 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 using Atdi.Platform.Logging;
 using System;
 using DM = Atdi.DataModels.Sdrns.Device;
-using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;

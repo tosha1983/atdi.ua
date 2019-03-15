@@ -12,7 +12,6 @@ using Atdi.Common;
 using Atdi.Platform.Logging;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
