@@ -38,6 +38,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly Dictionary<Type, CommandLock> _typeLocks;
 
         private readonly Dictionary<CommandType, IDeviceProperties> _properties;
+        private long _counter;
 
         public DeviceState State => _state;
 
@@ -66,16 +67,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._enumLocks = new Dictionary<CommandType, CommandLock>();
             this._typeLocks = new Dictionary<Type, CommandLock>();
             this._properties = new Dictionary<CommandType, IDeviceProperties>();
+            this._counter = 0;
             this._state = DeviceState.Created;
         }
 
         public Guid DeviceId { get; private set; }
 
+        public long Counter => this._counter;
+
         public void Run()
         {
             this._adapterThread = new Thread(this.Process)
             {
-                Name = $"Adapter.[{this._adapterType.Namespace}].{this._adapterType.Name}"
+                Name = $"Adapter.[{this._adapterType.Namespace}].{this._adapterType.Name}",
+                Priority = ThreadPriority.Highest
             };
 
             this._adapterThread.Start();
@@ -93,6 +98,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.CreatedAdapter.With(_adapterType));
 
                     this._adapterObject.Connect(this);
+                    this._state = DeviceState.Available;
                     _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.ConnectedAdapter.With(_adapterType));
                 }
                 catch(Exception)
@@ -107,43 +113,56 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
                 while (true)
                 {
-                    this._state = DeviceState.Available;
+                    var start = _timeService.TimeStamp.Milliseconds;
                     var commandDescriptor = _buffer.Take();
-                    this._state = DeviceState.Basy;
+                    var waitTime = _timeService.TimeStamp.Milliseconds - start;
 
+                    this._state = DeviceState.Basy;
                     var command = commandDescriptor.Command;
 
-                    _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TookCommand.With(_adapterType, command.Type, command.ParameterType));
-
-                    if (command.StartTimeStamp > 0 && command.Timeout > 0)
+                    using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.ExecutingAdapterCommand.With(commandDescriptor.CommandType.Name, command.Type, command.Id, _adapterType, waitTime)))
                     {
-                        if (!_timeService.TimeStamp.HitMilliseconds(command.StartTimeStamp, command.Timeout))
+                        //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TookCommand.With(_adapterType, command.Type, command.ParameterType));
+
+                        if (command.StartTimeStamp > 0 && command.Timeout > 0)
                         {
-                            commandDescriptor.Reject(CommandFailureReason.TimeoutExpired);
-                            _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.TimeoutExpired));
+                            if (!_timeService.TimeStamp.HitMilliseconds(command.StartTimeStamp, command.Timeout, out long lateness))
+                            {
+                                this._state = DeviceState.Available;
+                                commandDescriptor.Reject(CommandFailureReason.TimeoutExpired);
+                                _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.TimeoutExpired));
+                                _logger.Debug(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommandByTimeout.With(command.Delay, command.Timeout, lateness));
+                                // ignore this command so to wait next command
+                                continue;
+                            }
+                        }
+
+                        // пока команда доходжила ее могли отменить
+                        if (commandDescriptor.CancellationToken.IsCancellationRequested)
+                        {
+                            this._state = DeviceState.Available;
+                            commandDescriptor.Reject(CommandFailureReason.CanceledBeforeExecution);
+                            continue;
+                        }
+
+                        // нужно убедится что именно эту комманду поддерживает адаптер 
+                        // и именно ее он в стостяни в текущий момент времени обработать
+                        // так допсуается ситуаци язапуска в отдельном потоке измерения по отдельнйо комманде
+                        if (!this.CheckLockState(commandDescriptor.CommandType, command.Type))
+                        {
+                            this._state = DeviceState.Available;
+                            commandDescriptor.Reject(CommandFailureReason.DeviceIsBusy);
+                            _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.DeviceIsBusy));
                             // ignore this command so to wait next command
                             continue;
                         }
-                    }
 
-                    if (commandDescriptor.CancellationToken.IsCancellationRequested)
-                    {
-                        commandDescriptor.Reject(CommandFailureReason.CanceledBeforeExecution);
-                        continue;
+                        // выполням комманду
+                        this.StartExecutingCommand(commandDescriptor);
+                        this._state = DeviceState.Available;
+                        //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TransferCommand.With(_adapterType, command.Type, command.ParameterType));
                     }
-
-                    if (!this.CheckLockState(commandDescriptor.CommandType, command.Type))
-                    {
-                        commandDescriptor.Reject(CommandFailureReason.DeviceIsBusy);
-                        _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.DeviceIsBusy));
-                        // ignore this command so to wait next command
-                        continue;
-                    }
-
-                    this.StartExecutingCommand(commandDescriptor);
-                    _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TransferCommand.With(_adapterType, command.Type, command.ParameterType));
                 }
-                
             }
             catch (ThreadAbortException)
             {
@@ -246,7 +265,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
             try
             {
-                handler.Invoker(this._adapterObject, command, executionContext);
+                using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.InvokingAdapterCommand.With(command.Id)))
+                {
+                    handler.Invoker(this._adapterObject, command, executionContext);
+                }
             }
             catch (Exception e)
             {
@@ -258,6 +280,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public bool TryPushCommand(ICommandDescriptor descriptor)
         {
+            Interlocked.Increment(ref _counter);
             return _buffer.TryPush(descriptor as CommandDescriptor);
         }
 

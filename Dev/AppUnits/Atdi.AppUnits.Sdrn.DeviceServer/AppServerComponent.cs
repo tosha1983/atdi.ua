@@ -7,6 +7,7 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.Modules.Licensing;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
+using Atdi.Platform.AppServer;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
 using System;
@@ -97,6 +98,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 workersHost.Register(workerType);
             }
 
+            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.TaskWorkerTypesWereRegistered);
+
             var handlersHost = this.Resolver.Resolve<IResultHandlersHost>();
             var handlerTypes = typeResolver.GetTypesByInterface(typeof(IResultHandler<,,,>));
 
@@ -106,6 +109,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 handlersHost.Register(handlerType);
             }
 
+            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.ResultHandlerTypesWereRegistered);
+
             var convertorsHost = this.Resolver.Resolve<IResultConvertorsHost>();
             var convertorTypes = typeResolver.GetTypesByInterface(typeof(IResultConvertor<,>));
 
@@ -114,6 +119,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 this.Container.Register(convertorType, convertorType, ServiceLifetime.Singleton);
                 convertorsHost.Register(convertorType);
             }
+
+            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.ResultConvertorTypesWereRegistered);
 
             // Scan assemblies loaded into memmory to include the types 
             // that implements the interface "IAdapter" in the container and in the devices host 
@@ -128,39 +135,47 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 adapterRegistrationTimeout *= 1000;
             }
 
-            foreach (var adapterType in adapterTypes)
-            {
-                this.Container.Register(adapterType, adapterType, ServiceLifetime.Transient);
-                devicesHost.Register(adapterType);
+            var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
 
-                if (eventWaiter.Wait<AdapterWorker>(out AdapterWorker adapterWorker, adapterRegistrationTimeout))
+            hostLoader.RegisterTrigger("Adapter Registration", () => 
+            {
+                foreach (var adapterType in adapterTypes)
                 {
-                    if(adapterWorker.State == DeviceState.Failure)
+                    this.Container.Register(adapterType, adapterType, ServiceLifetime.Transient);
+                    devicesHost.Register(adapterType);
+
+                    if (eventWaiter.Wait<AdapterWorker>(out AdapterWorker adapterWorker, adapterRegistrationTimeout))
                     {
-                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationFailed.With(adapterType));
-                    }
-                    else if (adapterWorker.State == DeviceState.Aborted)
-                    {
-                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationAborted.With(adapterType));
+                        if (adapterWorker.State == DeviceState.Failure)
+                        {
+                            Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationFailed.With(adapterType));
+                        }
+                        else if (adapterWorker.State == DeviceState.Aborted)
+                        {
+                            Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationAborted.With(adapterType));
+                        }
+                        else
+                        {
+                            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationCompleted.With(adapterType, adapterWorker.DeviceId));
+                        }
                     }
                     else
                     {
-                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationCompleted.With(adapterType));
+                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationTimedOut.With(adapterType));
                     }
                 }
-                else
-                {
-                    Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationTimedOut.With(adapterType));
-                }
-            }
+
+                Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterObjectsWereRegistered);
+            });
 
             // Start AutoTasks
 
-            var autoTaskActivator = this.Resolver.Resolve<IAutoTaskActivator>();
-            var task = autoTaskActivator.Run();
-            task.ContinueWith(t =>
+            hostLoader.RegisterTrigger("Running auto tasks", () =>
             {
-                //Logger.Verbouse()
+                var autoTaskActivator = this.Resolver.Resolve<IAutoTaskActivator>();
+                autoTaskActivator.Run();
+
+                Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.AutoTasksWereWtarted);
             });
 
             

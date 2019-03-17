@@ -11,42 +11,47 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
 {
-    public class Adapter1 : IAdapter
+    public class Adapter2 : IAdapter
     {
         private readonly ILogger _logger;
         private readonly AdapterConfig _adapterConfig;
 
-        public Adapter1(AdapterConfig adapterConfig, ILogger logger)
+        public Adapter2(AdapterConfig adapterConfig, ILogger logger)
         {
             this._logger = logger;
             this._adapterConfig = adapterConfig;
 
-            this._logger.Debug(Contexts.Adapter1, Categories.Ctor, Events.Call);
+            this._logger.Debug(Contexts.Adapter2, Categories.Ctor, Events.Call);
         }
 
         public void Connect(IAdapterHost host)
         {
-            this._logger.Debug(Contexts.Adapter1, Categories.Connect, Events.Call);
+            this._logger.Debug(Contexts.Adapter2, Categories.Connect, Events.Call);
 
-            var propertiers = new MesureDFDeviceProperties
+            var properties = new MesureDFDeviceProperties
             {
                 
             };
 
-            host.RegisterHandler<TestCommand1, Adapter1Result>(this.TestCommand1Handler);
+            host.RegisterHandler<TestCommand2, Adapter2Result>(this.TestCommand2Handler, properties);
         }
 
         public void Disconnect()
         {
-            this._logger.Debug(Contexts.Adapter1, Categories.Disconnect, Events.Call);
+            this._logger.Debug(Contexts.Adapter2, Categories.Disconnect, Events.Call);
         }
 
-        public void TestCommand1Handler(TestCommand1 command, IExecutionContext context)
+        public void TestCommand2Handler(TestCommand2 command, IExecutionContext context)
         {
-            this._logger.Debug(Contexts.Adapter1, Categories.Handle, Events.HandleCommand.With(command.GetType().Name));
+            context.Finish();
+            return;
+
+            this._logger.Debug(Contexts.Adapter2, Categories.Handle, Events.HandleCommand.With(command.GetType().Name));
 
             try
             {
+
+                var predel = command.Parameter.Predel;
                 for (int i = 0; i < command.Parameter.Count; i++)
                 {
                     var status = (i < (command.Parameter.Count - 1)) ? CommandResultStatus.Next : CommandResultStatus.Final;
@@ -57,10 +62,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                         status = CommandResultStatus.Final;
                     }
 
-                    var adapterResult = new Adapter1Result((ulong)i, status);
+                    var adapterResult = new Adapter2Result((ulong)0, CommandResultStatus.Next);
                     adapterResult.Value = (float)Math.PI;
 
-                    context.PushResult(adapterResult);
+                    //if (i <= predel)
+                    //{
+                    //    context.PushResult(adapterResult);
+                    //}
+                    
 
                     if (isCancelled)
                     {
@@ -68,7 +77,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                         return;
                     }
 
-                    Thread.Sleep(command.Parameter.Delay);
+                    //Thread.Sleep(command.Parameter.Delay);
                 }
 
                 context.Finish();

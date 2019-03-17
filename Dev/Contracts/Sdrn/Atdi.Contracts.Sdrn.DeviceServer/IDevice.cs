@@ -21,5 +21,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
         Type AdapterType { get;  }
 
         IDeviceProperties EnsureProperties(CommandType commandType);
+
+        long Counter { get; }
     }
 }

@@ -10,22 +10,22 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
 {
-    public class ResultConvertor1 : IResultConvertor<Adapter1Result, TestCommand1Result>
+    public class ResultConvertor2 : IResultConvertor<Adapter2Result, TestCommand2Result>
     {
         private readonly ILogger _logger;
 
-        public ResultConvertor1(ILogger logger)
+        public ResultConvertor2(ILogger logger)
         {
             this._logger = logger;
 
-            this._logger.Debug(Contexts.ResultConvertor1, Categories.Ctor, Events.Call);
+            this._logger.Debug(Contexts.ResultConvertor2, Categories.Ctor, Events.Call);
         }
 
-        public TestCommand1Result Convert(Adapter1Result result, ICommand command)
+        public TestCommand2Result Convert(Adapter2Result result, ICommand command)
         {
-            this._logger.Debug(Contexts.ResultConvertor1, Categories.Converting, Events.ConvertFromTo.With("Adapter1Type", "CommandResult1Type"));
+            //this._logger.Debug(Contexts.ResultConvertor2, Categories.Converting, Events.ConvertFromTo.With("Adapter2Type", "Command2ResultType"));
 
-            var commandResult = new TestCommand1Result(result.PartIndex, result.Status)
+            var commandResult = new TestCommand2Result(result.PartIndex, result.Status)
             {
                 Value = (double)result.Value
             };

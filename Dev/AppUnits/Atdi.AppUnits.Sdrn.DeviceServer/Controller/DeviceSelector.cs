@@ -25,6 +25,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             var decriptorImpl = descriptor as CommandDescriptor;
             var devices = _commandsHost.GetDevices(decriptorImpl.CommandType);
 
+            if (devices.Length == 1)
+            {
+                return devices[0];
+            }
+
+            // ищим свободнео устройство
+            var minCounter = long.MaxValue;
+            var minDevice = default(IDevice);
+
             for (int i = 0; i < devices.Length; i++)
             {
                 var device = devices[i];
@@ -37,8 +46,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         return device;
                     }
                 }
+
+                if (device.Counter < minCounter)
+                {
+                    minCounter = device.Counter;
+                    minDevice = device;
+                }
             }
-            return null;
+
+            // все заняты, нужно выбрать то устрйоство которое мньше всего комманд обработало
+            // т.е. было меньше всего нагружено
+            return minDevice;
         }
     }
 }

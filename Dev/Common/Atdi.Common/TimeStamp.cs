@@ -48,9 +48,15 @@ namespace Atdi.Common
         {
             var pasedTime = TimeStamp.Milliseconds - startStampMilliseconds;
             var delta = timeoutMilliseconds - pasedTime;
-            return delta > 0 ;
+            return delta >= 0 ;
         }
 
+        public static bool HitTimeout(long startStampMilliseconds, long timeoutMilliseconds, out long lateness)
+        {
+            var pasedTime = TimeStamp.Milliseconds - startStampMilliseconds;
+            lateness = timeoutMilliseconds - pasedTime;
+            return lateness >= 0;
+        }
 
         public static long Ticks
         {

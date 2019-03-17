@@ -212,5 +212,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             return AC.TimeStamp.HitTimeout(startStampMilliseconds, timeoutMilliseconds);
         }
+
+        public bool HitMilliseconds(long startStampMilliseconds, long timeoutMilliseconds, out long lateness)
+        {
+            return AC.TimeStamp.HitTimeout(startStampMilliseconds, timeoutMilliseconds, out lateness);
+        }
     }
 }

@@ -20,5 +20,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
         long Ticks { get; }
 
         bool HitMilliseconds(long startStampMilliseconds, long timeoutMilliseconds);
+
+        bool HitMilliseconds(long startStampMilliseconds, long timeoutMilliseconds, out long lateness);
     }
 }

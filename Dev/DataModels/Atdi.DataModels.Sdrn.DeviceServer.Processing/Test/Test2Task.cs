@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Contracts.Sdrn.DeviceServer
+namespace Atdi.DataModels.Sdrn.DeviceServer.Processing.Test
 {
-    public interface IAutoTaskActivator : IDisposable
+    public class Test2Task : TaskBase
     {
-        void Run();
     }
 }

@@ -31,16 +31,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
         {
             try
             {
-                var process = _processingDispatcher.Start<Test1Process>(context.Process);
-                var test1Task = new Test1Task
+                var process = _processingDispatcher.Start<Test2Process>(context.Process);
+                var test2Task = new Test2Task
                 {
                     TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
-                    Delay = 5, // необходимо запустить через 5 мс, с указанного момента
-                    Options = TaskExecutionOption.RunDelayed,
+                    //Delay = 5, // необходимо запустить через 5 мс, с указанного момента
+                    //Options = TaskExecutionOption.RunDelayed,
                 };
 
                 var cancelSource = new CancellationTokenSource();
-                var t = _taskStarter.RunParallel(test1Task, process, context, cancelSource.Token);
+                _taskStarter.Run(test2Task, process, context);
 
                 //for (int i = 0; i < 100; i++)
                 //{
@@ -77,10 +77,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
 
                 //}
 
-
-                Thread.Sleep(1000 * 60);
-
-                //cancelSource.Cancel();
 
                 context.Finish();
 

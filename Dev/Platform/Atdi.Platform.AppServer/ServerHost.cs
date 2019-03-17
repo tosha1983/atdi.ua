@@ -17,6 +17,7 @@ namespace Atdi.Platform.AppServer
         private List<ComponentDescriptor> _components;
         private HostState _state;
         private ITypeResolver _typeResolver;
+        private ServerHostLoader _loader;
 
         public ServerHost(ILogger logger, IServicesContainer container, IServerConfig config, ITypeResolver typeResolver) : base(logger)
         {
@@ -26,11 +27,20 @@ namespace Atdi.Platform.AppServer
                 this._container = container;
                 this._typeResolver = typeResolver;
                 this._state = HostState.Initializing;
+                
                 this.PrepareServerContext(config);
+                this.PrepareServerHostLoader();
                 this.InstallComponents(config.Components);
+
                 this._state = HostState.Initialized;
                 this.Logger.Info(Contexts.AppServerHost, Categories.Initialization, Events.CreatedServerHost.With(config.Instance));
             }
+        }
+
+        private void PrepareServerHostLoader()
+        {
+            this._loader = new ServerHostLoader(this.Logger);
+            this._container.RegisterInstance<IServerHostLoader>(this._loader, ServiceLifetime.Singleton);
         }
 
         private void PrepareServerContext(IServerConfig config)
@@ -322,8 +332,11 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerHostIsStarting);
             this._state = HostState.Starting;
             this.ActivateComponents();
+            this._loader.ExecuteTruggers();
             this._state = HostState.Started;
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerHostStarted);
+
+
         }
 
         public void Stop()

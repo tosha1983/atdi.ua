@@ -26,7 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             try
             {
-                using (this._logger.StartTrace(Contexts.ResultConvertor, Categories.Converting, TraceScopeNames.ConvertingResult.With(command.Id, this._decriptor.FromType, this._decriptor.ResultType, result.PartIndex, result.Status)))
+                //using (this._logger.StartTrace(Contexts.ResultConvertor, Categories.Converting, TraceScopeNames.ConvertingResult.With(command.Id, this._decriptor.FromType, this._decriptor.ResultType, result.PartIndex, result.Status)))
                 {
                     return this._decriptor.Invoker(this._instance, result, command);
                 }
