@@ -58,36 +58,59 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                     // здесь предварительная проверка(валидация) таска на возможность физической обработки
                     if (Validation(message.Data)) // пока заглушка
                     {
+
+                        var lastUpdate = new LastUpdate()
+                        {
+                            TableName = "XBS_TASKPARAMETERS",
+                            LastDateTimeUpdate = DateTime.Now,
+                            Status = "N"
+                        };
+                        var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
+                        if ((allTablesLastUpdated != null) && (allTablesLastUpdated.Length > 0))
+                        {
+                            var listAlTables = allTablesLastUpdated.ToList();
+                            var findTableProperties = listAlTables.Find(z => z.TableName == "XBS_TASKPARAMETERS");
+                            if (findTableProperties != null)
+                            {
+                                this._repositoryLastUpdateByInt.Update(lastUpdate);
+                            }
+                            else
+                            {
+                                this._repositoryLastUpdateByInt.Create(lastUpdate);
+                            }
+                        }
+                        else
+                        {
+                            this._repositoryLastUpdateByInt.Create(lastUpdate);
+                        }
+
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                         {
 
                             var taskParameters = message.Data.Convert();
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
-                            var lastUpdate = new LastUpdate()
-                            {
-                                TableName = "XBS_TASKPARAMETERS",
-                                LastDateTimeUpdate = DateTime.Now,
-                                Status = "N"
-                            };
-                            var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
-                            if ((allTablesLastUpdated!=null) && (allTablesLastUpdated.Length>0))
-                            {
-                                var listAlTables = allTablesLastUpdated.ToList();
-                                var findTableProperties = listAlTables.Find(z => z.TableName == "XBS_TASKPARAMETERS");
-                                if (findTableProperties!=null)
-                                {
-                                    this._repositoryLastUpdateByInt.Update(lastUpdate);
-                                }
-                                else
-                                {
-                                    this._repositoryLastUpdateByInt.Create(lastUpdate);
-                                }
-                            }
-                            else
-                            {
-                                this._repositoryLastUpdateByInt.Create(lastUpdate);
-                            }
+                            this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
+
+                            message.Result = MessageHandlingResult.Confirmed;
+
+                        }
+                        if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
+                        {
+
+                            var taskParameters = message.Data.Convert();
+                            var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
+
+                            this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
+
+                            message.Result = MessageHandlingResult.Confirmed;
+
+                        }
+                        if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
+                        {
+
+                            var taskParameters = message.Data.Convert();
+                            var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
 

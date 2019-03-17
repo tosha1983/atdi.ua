@@ -7,7 +7,6 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 using Atdi.Platform.Logging;
 using System;
 using DM = Atdi.DataModels.Sdrns.Device;
-using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
@@ -109,13 +108,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
 
                     var timeStamp = this._timeService.TimeStamp.Milliseconds;
-                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter)
-                    {
-                        Options = CommandOption.PutInQueue,
-                        StartTimeStamp = timeStamp,
-                        Timeout = timeStamp + maximumDurationMeas
-                    };
-
+                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
                     //////////////////////////////////////////////
                     // 
                     // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
@@ -170,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         return;
                                     case CommandFailureReason.NotFoundConvertor:
                                     case CommandFailureReason.NotFoundDevice:
-                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.SOKoeffWaitingDevice;
+                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.KoeffWaitingDevice;
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
@@ -283,7 +276,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         publisher.Dispose();
 
                         context.Finish();
-                        
                         break;
                     }
                     //////////////////////////////////////////////

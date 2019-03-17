@@ -268,9 +268,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 }
                 queryExecuter.CommitTransaction();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 queryExecuter.RollbackTransaction();
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return idSensor;
         }
@@ -374,10 +375,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     queryExecuter.CommitTransaction();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 isSuccess = false;
                 queryExecuter.RollbackTransaction();
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }

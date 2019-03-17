@@ -16,6 +16,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private object _syncActiveSensor = new object();
         private object _syncListDeferredTasks = new object();
         private object _syncContextSOTask = new object();
+        private object _syncContextSignalization = new object();
+        private object _syncContextBandWidth = new object();
 
 
         private double _lat;
@@ -23,6 +25,13 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private double _asl;
         private DM.Sensor _activeSensor;
         private List<ITaskContext<SOTask, SpectrumOccupationProcess>> _contextSOTasks;
+        private List<ITaskContext<SignalizationTask, SignalizationProcess>> _contextSignalizationTasks;
+        private List<ITaskContext<BandWidthTask, BandWidthProcess>> _contextBandWidthTasks;
+
+
+
+
+
         private List<TaskParameters> _listDeferredTasks;
 
          
@@ -116,11 +125,42 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
+        public List<ITaskContext<SignalizationTask, SignalizationProcess>> contextSignalizationTasks
+        {
+            get
+            {
+                lock (_syncContextSignalization)
+                    return _contextSignalizationTasks;
+            }
+            set
+            {
+                lock (_syncContextSignalization)
+                    _contextSignalizationTasks = value;
+            }
+        }
+
+        public List<ITaskContext<BandWidthTask, BandWidthProcess>> contextBandWidthTasks
+        {
+            get
+            {
+                lock (_syncContextBandWidth)
+                    return _contextBandWidthTasks;
+            }
+            set
+            {
+                lock (_syncContextBandWidth)
+                    _contextBandWidthTasks = value;
+            }
+        }
+
         
+
         public DispatchProcess() : base("Dispatch process")
         {
             listDeferredTasks = new List<TaskParameters>();
             contextSOTasks = new List<ITaskContext<SOTask, SpectrumOccupationProcess>>();
+            contextSignalizationTasks = new List<ITaskContext<SignalizationTask, SignalizationProcess>>();
+            contextBandWidthTasks = new List<ITaskContext<BandWidthTask, BandWidthProcess>>();
         }
     }
 }

@@ -211,8 +211,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (value.MeasLocParams != null)
                         {
-                            foreach (var locParam in value.MeasLocParams)
+                            for (int u = 0; u < value.MeasLocParams.Length; u++)
                             {
+                                var locParam = value.MeasLocParams[u];
                                 if (locParam.Id != null)
                                 {
                                     int valueIdMeasLocationParam = -1;
@@ -260,8 +261,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (value.MeasSubTasks != null)
                         {
-                            foreach (var measSubTask in value.MeasSubTasks)
+                            for (int u = 0; u < value.MeasSubTasks.Length; u++)
                             {
+                                var measSubTask = value.MeasSubTasks[u];
                                 if (measSubTask.Id != null)
                                 {
                                     int valueIdmeasSubTask = -1;
@@ -285,8 +287,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                     if ((measSubTask.MeasSubTaskStations != null) && (valueIdmeasSubTask > -1))
                                     {
-                                        foreach (var subTaskStation in measSubTask.MeasSubTaskStations)
+                                        for (int v = 0; v < measSubTask.MeasSubTaskStations.Length; v++)
                                         {
+                                            var subTaskStation = measSubTask.MeasSubTaskStations[v];
                                             int valueIdmeasSubTaskSta = -1;
                                             var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Insert();
                                             builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskStation.Count);
@@ -383,8 +386,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (value.StationsForMeasurements != null)
                         {
-                            foreach (var stationDataParam in value.StationsForMeasurements)
+                            for (int v = 0; v < value.StationsForMeasurements.Length; v++)
                             {
+                                var stationDataParam = value.StationsForMeasurements[v];
 
                                 int? idstationDataParam = -1;
                                 int? idOwnerdata = -1;
@@ -478,8 +482,11 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 if (stationDataParam.Sectors != null)
                                 {
-                                    foreach (var sector in stationDataParam.Sectors)
+
+                                    for (int g = 0; g < stationDataParam.Sectors.Length; g++)
                                     {
+                                        var sector = stationDataParam.Sectors[g];
+
                                         int? idSecForMeas = -1;
                                         var builderInsertSector = this._dataLayer.GetBuilder<MD.ISector>().Insert();
                                         builderInsertSector.SetValue(c => c.Agl, sector.AGL);
@@ -503,8 +510,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         if (sector.Frequencies != null)
                                         {
                                             var lstInsLinkSectorFreq = new List<IQueryInsertStatement<MD.ILinkSectorFreq>>();
-                                            foreach (var freq in sector.Frequencies)
+
+                                            for (int d = 0; d < sector.Frequencies.Length; d++)
                                             {
+                                                var freq = sector.Frequencies[d];
+
                                                 int? idSectorFreq = null;
                                                 var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
                                                 builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
@@ -544,8 +554,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         if (sector.MaskBW != null)
                                         {
                                             var lstInsLinkSectorMaskElement = new List<IQueryInsertStatement<MD.ILinkSectorMaskElement>>();
-                                            foreach (var maskBw in sector.MaskBW)
+
+                                            for (int d = 0; d < sector.MaskBW.Length; d++)
                                             {
+                                                var maskBw = sector.MaskBW[d];
+
                                                 int? sectorMaskElemId = -1;
                                                 var builderInsertSectorMaskElement = this._dataLayer.GetBuilder<MD.ISectorMaskElement>().Insert();
                                                 builderInsertSectorMaskElement.SetValue(c => c.Level, maskBw.level);

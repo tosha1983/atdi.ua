@@ -17,34 +17,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static SpectrumOcupationResult Calc(MesureTraceResult result, TaskParameters taskParameters, SensorParameters sensorParameters = null, SpectrumOcupationResult lastResultParameters = null)
         {
             //var spectrumOcupationResult = new SpectrumOcupationResult();
-            if ((taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) || (taskParameters.Type_of_SO == SOType.FreqChannelOccupation))
+            if ((taskParameters.TypeOfSO == SOType.FreqBandwidthOccupation) || (taskParameters.TypeOfSO == SOType.FreqChannelOccupation))
             {
                 // вот собственно само измерение
-                SemplFreq[] F_ch_res_ = new SemplFreq[taskParameters.List_freq_CH.Count];
+                SemplFreq[] F_ch_res_ = new SemplFreq[taskParameters.ListFreqCH.Count];
                 // замер 
                               
                 // Вот и дополнили значениями SO и прочим теперь значения красивые по микроканальчикам
                 // Вычисляем занятость для данного замера по каналам 
-                SemplFreq[] F_ch_res_temp = new SemplFreq[taskParameters.List_freq_CH.Count]; // здест будут храниться замеры приведенные к каналу
+                SemplFreq[] F_ch_res_temp = new SemplFreq[taskParameters.ListFreqCH.Count]; // здест будут храниться замеры приведенные к каналу
                 int start = 0;
 
                 double realRBW_Hz = result.Freq_Hz[1] - result.Freq_Hz[0]; //Вставить проверку на наличие result.Freq_Hz[1] - result.Freq_Hz[0] если отсутвует выходить тиз функции с ошибкой что принятый результат не верен
 
-                for (int i = 0; i < taskParameters.List_freq_CH.Count; i++) // Цикл по каналам
+                for (int i = 0; i < taskParameters.ListFreqCH.Count; i++) // Цикл по каналам
                 {
                     SemplFreq F_SO = new SemplFreq(); // здесь будет храниться один замер приведенный к каналу
                     int sempl_in_freq = 0; //количество замеров идущие в один канал 
                     for (int j = start; j < result.Level.Length; j++) // цикл по замерам по канальчикам
                     {
-                        if ( 1000000 * taskParameters.List_freq_CH[i] +  500 * taskParameters.StepSO_kHz < result.Freq_Hz[j]) { start = j; break; }
-                        if ((1000000 * taskParameters.List_freq_CH[i] - 500 * taskParameters.StepSO_kHz <= result.Freq_Hz[j]) && (1000000 * taskParameters.List_freq_CH[i] + 500 * taskParameters.StepSO_kHz  > result.Freq_Hz[j])) // проверка на попадание в диапазон частот
+                        if ( 1000000 * taskParameters.ListFreqCH[i] +  500 * taskParameters.StepSO_kHz < result.Freq_Hz[j]) { start = j; break; }
+                        if ((1000000 * taskParameters.ListFreqCH[i] - 500 * taskParameters.StepSO_kHz <= result.Freq_Hz[j]) && (1000000 * taskParameters.ListFreqCH[i] + 500 * taskParameters.StepSO_kHz  > result.Freq_Hz[j])) // проверка на попадание в диапазон частот
                         {
                             sempl_in_freq = sempl_in_freq + 1;
                             if (sempl_in_freq == 1)// заполняем первое попадание как есть
                             {
-                                F_SO.Freq = (float)taskParameters.List_freq_CH[i];
+                                F_SO.Freq = (float)taskParameters.ListFreqCH[i];
                                 F_SO.LeveldBm = result.Level[j];
-                                if (taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) // частотная занятость
+                                if (taskParameters.TypeOfSO == SOType.FreqBandwidthOccupation) // частотная занятость
                                 {
                                     if (result.Level[j] > taskParameters.LevelMinOccup_dBm + 10 * Math.Log10(realRBW_Hz / (taskParameters.StepSO_kHz * 1000)))
                                     { F_SO.OcupationPt = 100; }
@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 F_SO.LeveldBm = (float)(Math.Pow(10, F_SO.LeveldBm / 10) + Math.Pow(10, result.Level[j] / 10));
                                 F_SO.LeveldBm = (float)(10 * Math.Log10(F_SO.LeveldBm));
-                                if (taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) // частотная занятость //накапливаем
+                                if (taskParameters.TypeOfSO == SOType.FreqBandwidthOccupation) // частотная занятость //накапливаем
                                 {
                                     if (result.Level[j] > taskParameters.LevelMinOccup_dBm + 10 * Math.Log10(realRBW_Hz / (taskParameters.StepSO_kHz * 1000)))
                                     { F_SO.OcupationPt = F_SO.OcupationPt + 100; }
@@ -62,8 +62,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             }
                         }
                     }
-                    if (taskParameters.Type_of_SO == SOType.FreqBandwidthOccupation) { F_SO.OcupationPt = F_SO.OcupationPt / sempl_in_freq; }
-                    if (taskParameters.Type_of_SO == SOType.FreqChannelOccupation) { if (F_SO.LeveldBm > taskParameters.LevelMinOccup_dBm) { F_SO.OcupationPt = 100; } }
+                    if (taskParameters.TypeOfSO == SOType.FreqBandwidthOccupation) { F_SO.OcupationPt = F_SO.OcupationPt / sempl_in_freq; }
+                    if (taskParameters.TypeOfSO == SOType.FreqChannelOccupation) { if (F_SO.LeveldBm > taskParameters.LevelMinOccup_dBm) { F_SO.OcupationPt = 100; } }
                     F_SO.LevelMaxdBm = F_SO.LeveldBm;
                     F_SO.LevelMindBm = F_SO.LeveldBm;
                     //F_SO на данный момент готов

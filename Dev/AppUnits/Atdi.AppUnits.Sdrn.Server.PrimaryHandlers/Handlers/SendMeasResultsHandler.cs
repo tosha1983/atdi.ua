@@ -9,6 +9,7 @@ using Atdi.Platform.Logging;
 using System;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using MDE = Atdi.Modules.Sdrn.Server.Events;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 {
@@ -112,7 +113,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (valInsResMeas > 0)
                     {
-
                         if (resObject.BandwidthResult != null)
                         {
                             int valInsBWMeasResultRaw = 0;
@@ -221,8 +221,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                         if (resObject.Routes != null)
                         {
-                            foreach (Route route in resObject.Routes)
+
+                            for (int l = 0; l < resObject.Routes.Length; l++)
                             {
+                                Route route = resObject.Routes[l];
+
                                 if (route.RoutePoints != null)
                                 {
                                     var lstIns = new IQueryInsertStatement<MD.IResRoutesRaw>[route.RoutePoints.Length];
@@ -289,6 +292,45 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                 if (valInsResMeasStation > 0)
                                 {
+                                    if (station.Bearings != null)
+                                    {
+                                        if (station.Bearings.Length > 0)
+                                        {
+                                            var listBearings = station.Bearings;
+                                            var lstInsBearingRaw = new IQueryInsertStatement<MD.IBearingRaw>[listBearings.Length];
+                                            for (int p = 0; p < listBearings.Length; p++)
+                                            {
+                                                DirectionFindingData directionFindingData = listBearings[p];
+                                                var builderInsertBearingRaw = this._dataLayer.GetBuilder<MD.IBearingRaw>().Insert();
+                                                builderInsertBearingRaw.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                                if (directionFindingData.Location != null)
+                                                {
+                                                    builderInsertBearingRaw.SetValue(c => c.Agl, directionFindingData.Location.AGL);
+                                                    builderInsertBearingRaw.SetValue(c => c.Asl, directionFindingData.Location.ASL);
+                                                    builderInsertBearingRaw.SetValue(c => c.Lon, directionFindingData.Location.Lon);
+                                                    builderInsertBearingRaw.SetValue(c => c.Lat, directionFindingData.Location.Lat);
+                                                }
+
+                                                builderInsertBearingRaw.SetValue(c => c.Level_dBm, directionFindingData.Level_dBm);
+                                                builderInsertBearingRaw.SetValue(c => c.Level_dBmkVm, directionFindingData.Level_dBmkVm);
+                                                builderInsertBearingRaw.SetValue(c => c.MeasurementTime, directionFindingData.MeasurementTime);
+                                                builderInsertBearingRaw.SetValue(c => c.Quality, directionFindingData.Quality);
+                                                builderInsertBearingRaw.SetValue(c => c.AntennaAzimut, directionFindingData.AntennaAzimut);
+                                                builderInsertBearingRaw.SetValue(c => c.Bandwidth_kHz, directionFindingData.Bandwidth_kHz);
+                                                builderInsertBearingRaw.SetValue(c => c.Bearing, directionFindingData.Bearing);
+                                                builderInsertBearingRaw.SetValue(c => c.CentralFrequency_MHz, directionFindingData.CentralFrequency_MHz);
+                                                builderInsertBearingRaw.Select(c => c.Id);
+                                                lstInsBearingRaw[p] = builderInsertBearingRaw;
+                                            }
+
+                                            queryExecuter.ExecuteAndFetch(lstInsBearingRaw, reader =>
+                                            {
+                                                return true;
+                                            });
+                                        }
+                                    }
+
+
                                     int StationId;
                                     int idLinkRes = -1;
                                     var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Insert();
@@ -318,6 +360,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                         builderInsertResStGeneral.SetValue(c => c.CentralFrequencyMeas, generalResult.CentralFrequencyMeas_MHz);
                                         builderInsertResStGeneral.SetValue(c => c.CentralFrequency, generalResult.CentralFrequency_MHz);
                                         builderInsertResStGeneral.SetValue(c => c.DurationMeas, generalResult.MeasDuration_sec);
+                                        builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
+                                        builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
+
                                         if (generalResult.BandwidthResult != null)
                                         {
                                             var bandwidthResult = generalResult.BandwidthResult;
@@ -410,8 +455,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 {
                                                     if (stationSysInfo.InfoBlocks != null)
                                                     {
-                                                        foreach (StationSysInfoBlock blocks in stationSysInfo.InfoBlocks)
+                                                        for (int b=0; b< stationSysInfo.InfoBlocks.Length; b++)
                                                         {
+                                                            StationSysInfoBlock blocks = stationSysInfo.InfoBlocks[b];
+
                                                             int IDResSysInfoBlocks = -1;
                                                             var builderInsertStationSysInfoBlock = this._dataLayer.GetBuilder<MD.IResSysInfoBlsRaw>().Insert();
                                                             builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);
@@ -503,8 +550,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                         {
                                                             var generalResults = station.GeneralResult;
 
-                                                            builderInsertResStLevelCar.SetValue(c => c.Rbw, generalResults.RBW_kHz);
-                                                            builderInsertResStLevelCar.SetValue(c => c.Vbw, generalResults.VBW_kHz);
+
                                                             builderInsertResStLevelCar.SetValue(c => c.CentralFrequency, generalResults.CentralFrequency_MHz);
                                                             if (generalResults.BandwidthResult != null)
                                                             {
@@ -531,7 +577,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     queryExecuter.CommitTransaction();
                     // с этого момента нужно считать что сообщение удачно обработано
                     result.Status = SdrnMessageHandlingStatus.Confirmed;
-                    //this._eventEmitter.Emit("OnSendMeasResults", "SendMeasResultsProccesing");
+                    this._eventEmitter.Emit(new MDE.OnReceivedNewSOResultEvent() { ResultId = valInsResMeas }, new EventEmittingOptions { Rule = EventEmittingRule.Default });
                 }
                 catch (Exception e)
                 {

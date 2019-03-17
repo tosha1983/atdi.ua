@@ -33,16 +33,21 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         
 
-        public  List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
+        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
-            if (task.MeasSubTasks == null) return ListMTSDR;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks)
+            if (task.MeasSubTasks == null) return null;
+
+            for (int f = 0; f < task.MeasSubTasks.Length; f++)
             {
+                var SubTask = task.MeasSubTasks[f];
+
                 if (SubTask.MeasSubTaskStations != null)
                 {
-                    foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations)
+                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
                     {
+                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {
@@ -284,7 +289,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     }
                 }
             }
-            return ListMTSDR;
+            return ListMTSDR.ToArray();
         }
 
         public int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
@@ -352,9 +357,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     queryExecuter.CommitTransaction();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 queryExecuter.RollbackTransaction();
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return numVal;
         }

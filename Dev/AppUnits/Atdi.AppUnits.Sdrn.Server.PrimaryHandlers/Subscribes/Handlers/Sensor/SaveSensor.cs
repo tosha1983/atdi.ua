@@ -35,18 +35,25 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         public bool UpdateStatus(int id, string status)
         {
             bool isSuccess = false;
-            var query = this._dataLayer.GetBuilder<MD.ISensor>()
-                .Update()
-                .SetValue(c => c.Status, status)
-                .SetValue(c => c.LastActivity, DateTime.Now)
-                .Where(c => c.Id, ConditionOperator.Equal, id);
-
-            var cntUpdateRec = this._dataLayer.Executor<SdrnServerDataContext>()
-            .Execute(query);
-
-            if (cntUpdateRec > 0)
+            try
             {
-                isSuccess = true;
+                var query = this._dataLayer.GetBuilder<MD.ISensor>()
+                    .Update()
+                    .SetValue(c => c.Status, status)
+                    .SetValue(c => c.LastActivity, DateTime.Now)
+                    .Where(c => c.Id, ConditionOperator.Equal, id);
+
+                var cntUpdateRec = this._dataLayer.Executor<SdrnServerDataContext>()
+                .Execute(query);
+
+                if (cntUpdateRec > 0)
+                {
+                    isSuccess = true;
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }

@@ -20,9 +20,7 @@
     <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
     <Field Desc="LevelDbm" Title="LevelDbm" Name="LevelDbm" DataType="Decimal.22.8" SourceName="LEVELDBM" SourceType="Column" Required="false"/>
     <Field Desc="LevelDbmkvm" Title="LevelDbmkvm" Name="LevelDbmkvm" DataType="Decimal.22.8" SourceName="LEVELDBMKVM" SourceType="Column" Required="false"/>
-    <Field Desc="Rbw" Title="Rbw" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false"/>
     <Field Desc="TimeOfMeasurements" Title="TimeOfMeasurements" Name="TimeOfMeasurements" DataType="DateTime" SourceName="TIMEOFMEASUREMENTS" SourceType="Column" Required="false"/>
-    <Field Desc="Vbw" Title="Vbw" Name="Vbw" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false"/>
     <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
     <Field Name="RESSTATION" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStLevelCar to ResMeasStation">
       <PrimaryKeyMapping>

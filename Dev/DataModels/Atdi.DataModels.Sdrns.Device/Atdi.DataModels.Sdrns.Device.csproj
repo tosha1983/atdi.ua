@@ -74,6 +74,13 @@
     <Compile Include="Results\Route.cs" />
     <Compile Include="Results\RoutePoint.cs" />
     <Compile Include="Results\SignalingSample.cs" />
+    <Compile Include="Results\Signaling\Emitting.cs" />
+    <Compile Include="Results\Signaling\EmittingParameters.cs" />
+    <Compile Include="Results\Signaling\LevelsDistribution.cs" />
+    <Compile Include="Results\Signaling\ReferenceLevels.cs" />
+    <Compile Include="Results\Signaling\SignalMask.cs" />
+    <Compile Include="Results\Signaling\Spectrum.cs" />
+    <Compile Include="Results\Signaling\WorkTime.cs" />
     <Compile Include="Results\StationMeasResult.cs" />
     <Compile Include="Sensors\SensorDescriptor.cs" />
     <Compile Include="Sensors\SensorUpdatingResult.cs" />
@@ -100,6 +107,8 @@
     <Compile Include="Results\StationSysInfoBlock.cs" />
     <Compile Include="Tasks\DeviceMeasParam.cs" />
     <Compile Include="Tasks\LocationMeasParam.cs" />
+    <Compile Include="Tasks\Signaling\ReferenceSituation.cs" />
+    <Compile Include="Tasks\Signaling\ReferenceSignal.cs" />
     <Compile Include="Tasks\SpectrumOccupationMeasParam.cs" />
     <Compile Include="Tasks\MeasTask.cs" />
     <Compile Include="Tasks\MeasuredFrequencies.cs" />
@@ -114,5 +123,6 @@
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

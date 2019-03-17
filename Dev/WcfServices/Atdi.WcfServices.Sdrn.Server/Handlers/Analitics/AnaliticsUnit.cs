@@ -35,12 +35,12 @@ namespace Atdi.WcfServices.Sdrn.Server
             try
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCalcAppUnitMethod.Text);
-                int count = options.Frequencies_MHz.Count;
                 var hitVal = new List<Hit>();
                 var listLevelMeasFreq = new List<SOFrequencyTemp>();
-                for (int i = 0; i < options.Frequencies_MHz.Count; i++)
+                var massFrequencies_MHz = options.Frequencies_MHz.ToArray();
+                for (int i = 0; i < massFrequencies_MHz.Length; i++)
                 {
-                    listLevelMeasFreq.Add(new SOFrequencyTemp() { Frequency_MHz = options.Frequencies_MHz[i] });
+                    listLevelMeasFreq.Add(new SOFrequencyTemp() { Frequency_MHz = massFrequencies_MHz[i] });
                 }
 
                 var listLevelMeas2 = new List<LevelMeasurementsCarForSO>();
@@ -99,7 +99,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             };
                             listLevelMeas2.Add(prm);
                         }
-                        for (int i = 0; i < options.Frequencies_MHz.Count; i++)
+                        for (int i = 0; i < massFrequencies_MHz.Length; i++)
                         {
                             BW = null;
                             if ((readerXVUnit2.GetValue(c => c.BW) != null) && (readerXVUnit2.GetValue(c => c.BW) <= 0) && (readerXVUnit2.GetValue(c => c.SpecrumSteps) != null) && (readerXVUnit2.GetValue(c => c.T1) != null) && (readerXVUnit2.GetValue(c => c.T2) != null))
@@ -117,8 +117,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                             if (BW != null)
                             {
-                                if (((((readerXVUnit2.GetValue(c => c.CentralFrequency) - (BW / 2000)) < options.Frequencies_MHz[i]) && ((readerXVUnit2.GetValue(c => c.CentralFrequency) + (BW / 2000)) > options.Frequencies_MHz[i]))
-                                || (((options.Frequencies_MHz[i] - (options.BW_kHz / 2000)) < readerXVUnit2.GetValue(c => c.CentralFrequency)) && ((options.Frequencies_MHz[i] + (options.BW_kHz / 2000)) > readerXVUnit2.GetValue(c => c.CentralFrequency)))) && ((readerXVUnit2.GetValue(c => c.LeveldBm) > options.TrLevel_dBm)))
+                                if (((((readerXVUnit2.GetValue(c => c.CentralFrequency) - (BW / 2000)) < massFrequencies_MHz[i]) && ((readerXVUnit2.GetValue(c => c.CentralFrequency) + (BW / 2000)) > massFrequencies_MHz[i]))
+                                || (((massFrequencies_MHz[i] - (options.BW_kHz / 2000)) < readerXVUnit2.GetValue(c => c.CentralFrequency)) && ((massFrequencies_MHz[i] + (options.BW_kHz / 2000)) > readerXVUnit2.GetValue(c => c.CentralFrequency)))) && ((readerXVUnit2.GetValue(c => c.LeveldBm) > options.TrLevel_dBm)))
                                 {
                                     listLevelMeasFreq[i].hit++;
                                     if ((readerXVUnit2.GetValue(c => c.IdStation).HasValue) && (readerXVUnit2.GetValue(c => c.IdStation) != 0))
@@ -189,7 +189,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 for (int t = 0; t < 24; t++)
                 {
                     int val1 = 0;
-                    for (int i = 0; i < options.Frequencies_MHz.Count; i++)
+                    for (int i = 0; i < massFrequencies_MHz.Length; i++)
                     {
                         if (val1 < listLevelMeasFreq[i].HitByHuors[t])
                         {
@@ -208,7 +208,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 }
 
 
-                for (int i = 0; i < options.Frequencies_MHz.Count; i++)
+                for (int i = 0; i < massFrequencies_MHz.Length; i++)
                 {
                     var freqOut = new SOFrequency();
                     freqOut.Frequency_MHz = listLevelMeasFreq[i].Frequency_MHz;

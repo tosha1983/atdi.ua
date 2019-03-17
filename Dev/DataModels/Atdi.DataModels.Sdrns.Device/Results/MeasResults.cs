@@ -118,6 +118,18 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public Route[] Routes { get; set; }
 
+        /// <summary>
+        /// Reference levels
+        /// </summary>
+        [DataMember]
+        public ReferenceLevels RefLevels  { get; set; }
+
+        /// <summary>
+        /// Emittings
+        /// </summary>
+        [DataMember]
+        public Emitting[] Emittings { get; set; }
+
         ///// <summary>
         ///// Signaling. Parameters of emissions above predefined level. 
         ///// </summary>

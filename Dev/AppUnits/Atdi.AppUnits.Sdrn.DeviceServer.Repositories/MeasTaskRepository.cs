@@ -261,10 +261,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     }
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     queryExecuter.RollbackTransaction();
-                    //this._logger.Error(Contexts.ThisComponent, Exceptions.ErrorSaveSensorParametersInDB);
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return ID;

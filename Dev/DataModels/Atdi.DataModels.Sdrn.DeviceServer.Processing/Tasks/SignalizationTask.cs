@@ -8,12 +8,14 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
-    public class SignalizationTask : TaskBase
+    public class SignalizationTask : MeasurementTaskBase
     {
         public MeasResults MeasResults; //  результат измерения
         public DateTime? LastTimeSend = null;
-        public MesureTraceParameter mesureTraceParameter;
-        public TaskParameters taskParameters;
         public ReferenceLevels ReferenceLevels;
+        public Emitting[] EmittingsRaw;
+        public Emitting[] EmittingsDetailed;
+        public Emitting[] EmittingsSummary;
+        public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
     }
 }

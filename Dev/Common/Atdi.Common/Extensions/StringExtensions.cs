@@ -41,5 +41,13 @@ namespace Atdi.Common
                 return format;
             }
         }
+        public static string SubString(this string value, int length)
+        {
+            if (!string.IsNullOrEmpty(value) && length > 0 && value.Length > length)
+            {
+                return value.Substring(0, length);
+            }
+            return value;
+        }
     }
 }
