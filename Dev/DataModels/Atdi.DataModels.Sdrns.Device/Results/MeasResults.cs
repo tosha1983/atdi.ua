@@ -129,18 +129,5 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public Emitting Emitting { get; set; }
-
-        /// <summary>
-        /// Work Time
-        /// </summary>
-        [DataMember]
-        public WorkTime WorkTime { get; set; }
-
-        ///// <summary>
-        ///// Signaling. Parameters of emissions above predefined level. 
-        ///// </summary>
-        //[DataMember]
-        //public SignalingSample[] SignalingSamples { get; set; }
-
     }
 }
