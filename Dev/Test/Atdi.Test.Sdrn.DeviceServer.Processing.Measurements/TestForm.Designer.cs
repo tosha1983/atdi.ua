@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.ButtonCalcGroupingEmitting = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // ButtonCalcGroupingEmitting
@@ -40,6 +41,11 @@
             this.ButtonCalcGroupingEmitting.Text = "CalcGroupingEmitting";
             this.ButtonCalcGroupingEmitting.UseVisualStyleBackColor = true;
             this.ButtonCalcGroupingEmitting.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.DefaultExt = "dat";
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // TestForm
             // 
@@ -56,6 +62,7 @@
         #endregion
 
         private System.Windows.Forms.Button ButtonCalcGroupingEmitting;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

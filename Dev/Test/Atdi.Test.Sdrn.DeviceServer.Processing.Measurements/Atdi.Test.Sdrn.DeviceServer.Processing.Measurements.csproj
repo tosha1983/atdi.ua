@@ -74,6 +74,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Source\0c0cc0ea-c283-4f85-a6ff-a85f960e3316.dat" />
+    <None Include="Source\5db23b66-f711-458f-9ad8-2250e0143c56.dat" />
+    <None Include="Source\a9d2e570-827c-40b6-bb75-9fa81a718e21.dat" />
+    <None Include="Source\fc018655-6c7e-4580-9bb0-c0a2905f1737.dat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -83,13 +87,25 @@
       <Project>{66fb8f09-a0cf-4cdc-a3f0-2fad21bf8bef}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
+      <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
       <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Processing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
+      <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
