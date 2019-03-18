@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                 
             };
 
-            host.RegisterHandler<Test1Command, Adapter1Result>(this.TestCommand1Handler);
+            host.RegisterHandler<TestCommand1, Adapter1Result>(this.TestCommand1Handler);
         }
 
         public void Disconnect()
@@ -41,7 +41,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
             this._logger.Debug(Contexts.Adapter1, Categories.Disconnect, Events.Call);
         }
 
-        public void TestCommand1Handler(Test1Command command, IExecutionContext context)
+        public void TestCommand1Handler(TestCommand1 command, IExecutionContext context)
         {
             this._logger.Debug(Contexts.Adapter1, Categories.Handle, Events.HandleCommand.With(command.GetType().Name));
 

@@ -2,6 +2,7 @@
 using Atdi.DataModels.Sdrn.DeviceServer;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,7 +13,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
     class ResultBuffer : IResultBuffer
     {
         private readonly object _locker = new object();
-        private readonly Queue<ICommandResultPart> _queue;
+        //private readonly ConcurrentBag<ICommandResultPart> _queue;
+        private readonly ConcurrentQueue<ICommandResultPart> _queue;
         private readonly CommandDescriptor _descriptor;
         private readonly CancellationTokenSource _tokenSource;
         private readonly CancellationToken _cancellationToken;
@@ -20,7 +22,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public ResultBuffer(CommandDescriptor descriptor)
         {
-            this._queue = new Queue<ICommandResultPart>();
+            this._queue = new ConcurrentQueue<ICommandResultPart>();
+            //this._queue = new ConcurrentBag<ICommandResultPart>();
             this._waiter = new AutoResetEvent(false);
             this._descriptor = descriptor;
             this._tokenSource = new CancellationTokenSource();
@@ -31,10 +34,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public void Push(ICommandResultPart resultPart)
         {
-            lock (_locker)
-            {
-                this._queue.Enqueue(resultPart);
-            }
+            this._queue.Enqueue(resultPart);
+            //this._queue.Add(resultPart);
+
             /// to send event about new command 
             this._waiter.Set();
         }
@@ -43,13 +45,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             while (true)
             {
-                lock (_locker)
+
+                if (_queue.TryDequeue(out ICommandResultPart resultPart))
                 {
-                    if (_queue.Count > 0)
-                    {
-                        return _queue.Dequeue();
-                    }
+                    return resultPart;
                 }
+
+                //if (_queue.TryTake(out ICommandResultPart resultPart))
+                //{
+                //    return resultPart;
+                //}
                 /// to wait next command
                 _waiter.WaitOne();
                 

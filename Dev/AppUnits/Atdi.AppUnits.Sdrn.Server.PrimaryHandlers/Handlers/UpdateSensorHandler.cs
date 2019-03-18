@@ -177,8 +177,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                     if (sensorData.Antenna.Patterns != null)
                                     {
                                         int idSensorAntennaPattern = -1;
-                                        foreach (AntennaPattern patt in sensorData.Antenna.Patterns)
+
+                                        for (int b = 0; b < sensorData.Antenna.Patterns.Length; b++)
                                         {
+                                            AntennaPattern patt = sensorData.Antenna.Patterns[b];
+
                                             var querySensorAntennaPatterns = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
                                             .From()
                                             .Select(c => c.Id)
@@ -337,8 +340,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 {
                                     if (sensorData.Equipment.Sensitivities != null)
                                     {
-                                        foreach (EquipmentSensitivity senseqps in sensorData.Equipment.Sensitivities)
+                                        for (int g = 0; g < sensorData.Equipment.Sensitivities.Length; g++)
                                         {
+                                            EquipmentSensitivity senseqps = sensorData.Equipment.Sensitivities[g];
+
                                             int idSensorEquipmentSensitivities = -1;
                                             var querySensorSensitivites = this._dataLayer.GetBuilder<MD.ISensorSensitivites>()
                                            .From()
@@ -402,8 +407,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 if (sensorData.Polygon != null)
                                 {
                                     SensorPolygon sensPolygon = sensorData.Polygon;
-                                    foreach (Atdi.DataModels.Sdrns.GeoPoint geo in sensPolygon.Points)
+                                    for (int f = 0; f < sensPolygon.Points.Length; f++)
                                     {
+                                        Atdi.DataModels.Sdrns.GeoPoint geo = sensPolygon.Points[f];
+
                                         var idSensorPolygon = -1;
                                         var querySensorPolygon = this._dataLayer.GetBuilder<MD.ISensorPolygon>()
                                         .From()
@@ -460,8 +467,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                 if (sensorData.Locations != null)
                                 {
-                                    foreach (var location in sensorData.Locations)
+
+                                    for (int f = 0; f < sensorData.Locations.Length; f++)
                                     {
+                                        var location = sensorData.Locations[f];
 
                                         var idSensorlocation = -1;
                                         var querySensorPolygon = this._dataLayer.GetBuilder<MD.ISensorLocation>()

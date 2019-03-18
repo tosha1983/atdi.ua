@@ -222,6 +222,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             geoLocation.AGL = readerLev.GetValue(c => c.Agl);
 
                             validationResult = this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResStLevelCarRaw");
+                            if (validationResult)
+                                levelMeasResult.Location = geoLocation;
 
                             if (readerLev.GetValue(c => c.LevelDbm).HasValue && readerLev.GetValue(c => c.LevelDbm) >= -150 && readerLev.GetValue(c => c.LevelDbm) <= 20)
                                 levelMeasResult.Level_dBm = readerLev.GetValue(c => c.LevelDbm).Value;
@@ -251,15 +253,60 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             if (validationResult)
                             {
                                 listLevelMeasResult.Add(levelMeasResult);
-                                measStation.LevelResults = listLevelMeasResult.ToArray();
                             }
                         }
                         return true;
                     });
 
+                    measStation.LevelResults = listLevelMeasResult.ToArray();
+
                     var builderDelResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCarRaw>().Delete();
                     builderDelResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
                     queryExecuter.Execute(builderDelResStLevelCar);
+                    #endregion
+
+                    #region DirectionFindingData
+
+                    var listFindingData = new List<DEV.DirectionFindingData>();
+                    var queryFinfdingData = this._dataLayer.GetBuilder<MD.IBearingRaw>()
+                    .From()
+                    .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Lon, c => c.Lat, c => c.Agl, c => c.Level_dBm, c => c.Level_dBmkVm, c => c.MeasurementTime, c => c.Quality, c => c.AntennaAzimut, c => c.Bandwidth_kHz, c => c.Bearing, c => c.CentralFrequency_MHz)
+                    .Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Fetch(queryFinfdingData, readerData =>
+                    {
+                        while (readerData.Read())
+                        {
+                            var findingData = new DEV.DirectionFindingData();
+                            var geoLocation = new DM.GeoLocation();
+
+                            if (readerData.GetValue(c => c.Lon).HasValue)
+                                geoLocation.Lon = readerData.GetValue(c => c.Lon).Value;
+                            if (readerData.GetValue(c => c.Lat).HasValue)
+                                geoLocation.Lat = readerData.GetValue(c => c.Lat).Value;
+                            geoLocation.ASL = readerData.GetValue(c => c.Asl);
+                            geoLocation.AGL = readerData.GetValue(c => c.Agl);
+
+                            if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IBearingRaw"))
+                                findingData.Location = geoLocation;
+
+                            findingData.Level_dBm = readerData.GetValue(c => c.Level_dBm);
+                            findingData.Level_dBmkVm = readerData.GetValue(c => c.Level_dBmkVm);
+                            findingData.MeasurementTime = readerData.GetValue(c => c.MeasurementTime);
+                            findingData.Quality = readerData.GetValue(c => c.Quality);
+                            findingData.AntennaAzimut = readerData.GetValue(c => c.AntennaAzimut);
+                            findingData.Bandwidth_kHz = readerData.GetValue(c => c.Bandwidth_kHz);
+                            findingData.Bearing = readerData.GetValue(c => c.Bearing);
+                            findingData.CentralFrequency_MHz = readerData.GetValue(c => c.CentralFrequency_MHz);
+
+                            listFindingData.Add(findingData);
+                        }
+                        return true;
+                    });
+                    measStation.Bearings = listFindingData.ToArray();
+
+                    var builderDelBearing = this._dataLayer.GetBuilder<MD.IBearingRaw>().Delete();
+                    builderDelBearing.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderDelBearing);
                     #endregion
 
                     #region GeneralMeasResult
@@ -490,7 +537,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     queryExecuter.Execute(builderDelResGeneral);
                 }
 
-
                 return true;
             });
 
@@ -705,6 +751,44 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                                         }
                                         queryExecuter.ExecuteAndFetch(lstIns, reader =>
+                                        {
+                                            return true;
+                                        });
+                                    }
+                                }
+
+                                if (station.Bearings != null)
+                                {
+                                    if (station.Bearings.Length > 0)
+                                    {
+                                        var listBearings = station.Bearings;
+                                        var lstInsBearingRaw = new IQueryInsertStatement<MD.IBearingRaw>[listBearings.Length];
+                                        for (int p = 0; p < listBearings.Length; p++)
+                                        {
+                                            DEV.DirectionFindingData directionFindingData = listBearings[p];
+                                            var builderInsertBearingRaw = this._dataLayer.GetBuilder<MD.IBearingRaw>().Insert();
+                                            builderInsertBearingRaw.SetValue(c => c.ResMeasStaId, idMeasResultStation);
+                                            if (directionFindingData.Location != null)
+                                            {
+                                                builderInsertBearingRaw.SetValue(c => c.Agl, directionFindingData.Location.AGL);
+                                                builderInsertBearingRaw.SetValue(c => c.Asl, directionFindingData.Location.ASL);
+                                                builderInsertBearingRaw.SetValue(c => c.Lon, directionFindingData.Location.Lon);
+                                                builderInsertBearingRaw.SetValue(c => c.Lat, directionFindingData.Location.Lat);
+                                            }
+
+                                            builderInsertBearingRaw.SetValue(c => c.Level_dBm, directionFindingData.Level_dBm);
+                                            builderInsertBearingRaw.SetValue(c => c.Level_dBmkVm, directionFindingData.Level_dBmkVm);
+                                            builderInsertBearingRaw.SetValue(c => c.MeasurementTime, directionFindingData.MeasurementTime);
+                                            builderInsertBearingRaw.SetValue(c => c.Quality, directionFindingData.Quality);
+                                            builderInsertBearingRaw.SetValue(c => c.AntennaAzimut, directionFindingData.AntennaAzimut);
+                                            builderInsertBearingRaw.SetValue(c => c.Bandwidth_kHz, directionFindingData.Bandwidth_kHz);
+                                            builderInsertBearingRaw.SetValue(c => c.Bearing, directionFindingData.Bearing);
+                                            builderInsertBearingRaw.SetValue(c => c.CentralFrequency_MHz, directionFindingData.CentralFrequency_MHz);
+                                            builderInsertBearingRaw.Select(c => c.Id);
+                                            lstInsBearingRaw[p] = builderInsertBearingRaw;
+                                        }
+
+                                        queryExecuter.ExecuteAndFetch(lstInsBearingRaw, reader =>
                                         {
                                             return true;
                                         });
@@ -1151,6 +1235,44 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                 });
                                             }
                                         }
+
+                                        if (station.Bearings != null)
+                                        {
+                                            if (station.Bearings.Length > 0)
+                                            {
+                                                var listBearings = station.Bearings;
+                                                var lstInsBearingRaw = new IQueryInsertStatement<MD.IBearingRaw>[listBearings.Length];
+                                                for (int p = 0; p < listBearings.Length; p++)
+                                                {
+                                                    DEV.DirectionFindingData directionFindingData = listBearings[p];
+                                                    var builderInsertBearingRaw = this._dataLayer.GetBuilder<MD.IBearingRaw>().Insert();
+                                                    builderInsertBearingRaw.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                                    if (directionFindingData.Location != null)
+                                                    {
+                                                        builderInsertBearingRaw.SetValue(c => c.Agl, directionFindingData.Location.AGL);
+                                                        builderInsertBearingRaw.SetValue(c => c.Asl, directionFindingData.Location.ASL);
+                                                        builderInsertBearingRaw.SetValue(c => c.Lon, directionFindingData.Location.Lon);
+                                                        builderInsertBearingRaw.SetValue(c => c.Lat, directionFindingData.Location.Lat);
+                                                    }
+
+                                                    builderInsertBearingRaw.SetValue(c => c.Level_dBm, directionFindingData.Level_dBm);
+                                                    builderInsertBearingRaw.SetValue(c => c.Level_dBmkVm, directionFindingData.Level_dBmkVm);
+                                                    builderInsertBearingRaw.SetValue(c => c.MeasurementTime, directionFindingData.MeasurementTime);
+                                                    builderInsertBearingRaw.SetValue(c => c.Quality, directionFindingData.Quality);
+                                                    builderInsertBearingRaw.SetValue(c => c.AntennaAzimut, directionFindingData.AntennaAzimut);
+                                                    builderInsertBearingRaw.SetValue(c => c.Bandwidth_kHz, directionFindingData.Bandwidth_kHz);
+                                                    builderInsertBearingRaw.SetValue(c => c.Bearing, directionFindingData.Bearing);
+                                                    builderInsertBearingRaw.SetValue(c => c.CentralFrequency_MHz, directionFindingData.CentralFrequency_MHz);
+                                                    builderInsertBearingRaw.Select(c => c.Id);
+                                                    lstInsBearingRaw[p] = builderInsertBearingRaw;
+                                                }
+
+                                                queryExecuter.ExecuteAndFetch(lstInsBearingRaw, reader =>
+                                                {
+                                                    return true;
+                                                });
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -1161,8 +1283,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 queryExecuter.CommitTransaction();
                 return true;
             }
-            catch (Exception)
+            catch (Exception exp)
             {
+                _logger.Exception(Contexts.ThisComponent, exp);
                 queryExecuter.RollbackTransaction();
                 return false;
             }
@@ -1342,8 +1465,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 queryExecuter.CommitTransaction();
                 return true;
             }
-            catch (Exception)
+            catch (Exception exp)
             {
+                _logger.Exception(Contexts.ThisComponent, exp);
                 queryExecuter.RollbackTransaction();
                 return false;
             }

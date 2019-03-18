@@ -14,6 +14,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         TimeoutExpired,
         CanceledBeforeExecution,
         CanceledExecution,
-        Exception
+        Exception,
+        ExecutionCompleted
     }
 }

@@ -29,8 +29,11 @@ namespace Atdi.Platform.AppComponent
 
         public void Activate()
         {
+            _logger.Debug("AppServer Host", "Activating", (EventText)$"The server component is activating: Name = '{this.Name}'");
+
             this.OnActivate();
-            _logger.Debug("AppServer Host", "Activating", (EventText)$"The component {this.Name} was activated.");
+
+            _logger.Debug("AppServer Host", "Activating", (EventText)$"The server component was activated: Name = '{this.Name}'");
         }
 
         public void Deactivate()
@@ -46,9 +49,11 @@ namespace Atdi.Platform.AppComponent
             this._resolver = container.GetResolver<IServicesResolver>();
             this._logger = this._resolver.Resolve<ILogger>();
 
+            _logger.Debug("AppServer Host", "Installation", (EventText)$"The server component is installing: Name = '{this.Name}', Type = '{this.Type.ToString()}'");
+
             this.OnInstall();
 
-            _logger.Debug("AppServer Host", "Installation", (EventText)$"The component {this.Name} was installed. The component type is {this.Type.ToString()}");
+            _logger.Debug("AppServer Host", "Installation", (EventText)$"The server component was installed: Name = '{this.Name}', Type = '{this.Type.ToString()}'");
         }
 
         public void Uninstall()

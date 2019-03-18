@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 _logger.Exception(Contexts.TaskStarter, Categories.Running, e);
                 var taskBase = task as TaskBase;
                 taskBase.ChangeState(TaskState.Rejected);
-                throw new InvalidOperationException(Exceptions.ErrorCccurredWhileStartingTask.With(descriptor.TaskType, task.Id, process.Name), e);
+                throw new InvalidOperationException(Exceptions.ErrorOccurredWhileStartingTask.With(descriptor.TaskType, task.Id, process.Name), e);
             }
             
         }
@@ -149,7 +149,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 this._logger.Exception(Contexts.TaskStarter, Categories.Running, e);
                 var taskBase = task as TaskBase;
                 taskBase.ChangeState(TaskState.Rejected);
-                throw new InvalidOperationException(Exceptions.ErrorCccurredWhileStartingTask.With(descriptor.TaskType, task.Id, process.Name), e);
+                throw new InvalidOperationException(Exceptions.ErrorOccurredWhileStartingTask.With(descriptor.TaskType, task.Id, process.Name), e);
             }
             
         }

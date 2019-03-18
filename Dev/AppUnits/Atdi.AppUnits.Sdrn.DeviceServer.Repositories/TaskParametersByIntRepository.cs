@@ -130,7 +130,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -139,7 +139,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -152,7 +152,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
@@ -265,7 +265,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -274,7 +274,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -287,7 +287,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
@@ -323,7 +323,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                     builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
                     builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.Type_of_SO.ToString());
+                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                     builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                     builderInsertTaskParameters.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertTaskParameters, readerMeasTask =>
@@ -337,11 +337,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (ID != null)
                     {
-                        for (int i = 0; i < item.List_freq_CH.Count; i++)
+                        var massFreq = item.ListFreqCH.ToArray();
+                        for (int i = 0; i < massFreq.Length; i++)
                         {
                             int? idTaskParametersFreq = null;
                             var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
-                            builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, item.List_freq_CH[i]);
+                            builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
                             builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
                             builderInsertTaskParametersFreq.Select(c => c.Id);
                             queryExecuter.ExecuteAndFetch(builderInsertTaskParametersFreq, readerTaskParametersFreq =>
@@ -389,7 +390,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                     builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
                     builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.Type_of_SO.ToString());
+                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                     builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                     builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
                     int cntUpdate = queryExecuter.Execute(builderInsertTaskParameters);
@@ -519,7 +520,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -528,7 +529,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -541,7 +542,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
@@ -658,7 +659,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -667,7 +668,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -680,7 +681,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Atdi.Platform.Logging.EventsConsumers
@@ -35,6 +36,8 @@ namespace Atdi.Platform.Logging.EventsConsumers
 
         private void WriteEventRow(IEvent @event)
         {
+            this.Write($"({Thread.CurrentThread.ManagedThreadId}) ", ConsoleColor.Red);
+
             // the part of time
             var timeFormat = "HH:mm:ss";
             var timeString = @event.Time.ToString(timeFormat);
@@ -333,38 +336,48 @@ namespace Atdi.Platform.Logging.EventsConsumers
 
         public void Write(IEvent @event)
         {
-            this.WriteEventRow(@event);
-
-            if (@event.Level == EventLevel.Verbouse || 
-                @event.Level == EventLevel.Info ||
-                @event.Level == EventLevel.Warning)
+            try
             {
-                return;
-            }
+                this.WriteEventRow(@event);
 
-            this.PushOffset();
-            if (@event is IDebugEvent)
-            {
-                
-                this.WriteEventDebugInfo((IDebugEvent)@event);
-            }
+                if (@event.Level == EventLevel.Verbouse ||
+                    @event.Level == EventLevel.Info ||
+                    @event.Level == EventLevel.Warning)
+                {
+                    return;
+                }
 
-            IExceptionData exception = null;
-            if (@event.Level == EventLevel.Exception)
-            {
-                exception = ((IExceptionEvent)@event).Exception;
-            }
-            if (@event.Level == EventLevel.Critical)
-            {
-                exception = ((ICriticalEvent)@event).Exception;
-            }
+                this.PushOffset();
+                if (@event is IDebugEvent)
+                {
 
-            if (exception != null)
-            {
-                this.WriteEventExceptionInfo(exception);
-            }
+                    this.WriteEventDebugInfo((IDebugEvent)@event);
+                }
 
-            this.PopOffset();
+                IExceptionData exception = null;
+                if (@event.Level == EventLevel.Exception)
+                {
+                    exception = ((IExceptionEvent)@event).Exception;
+                }
+                if (@event.Level == EventLevel.Critical)
+                {
+                    exception = ((ICriticalEvent)@event).Exception;
+                }
+
+                if (exception != null)
+                {
+                    this.WriteEventExceptionInfo(exception);
+                }
+
+                this.PopOffset();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine();
+                Console.WriteLine(e.ToString());
+                Console.WriteLine();
+            }
+            
         }
 
 

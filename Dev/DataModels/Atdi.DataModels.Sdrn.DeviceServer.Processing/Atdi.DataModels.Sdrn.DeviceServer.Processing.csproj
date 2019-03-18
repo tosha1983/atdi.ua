@@ -81,10 +81,13 @@
     <Compile Include="Tasks\LevelTask.cs" />
     <Compile Include="Tasks\BandWidthTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\RegisterSensorTask.cs" />
+    <Compile Include="Tasks\MeasurementTaskBase.cs" />
     <Compile Include="Tasks\SysInfoTask.cs" />
     <Compile Include="Tasks\SOTask.cs" />
     <Compile Include="Test\ExampleTask.cs" />
+    <Compile Include="Test\Test2Process.cs" />
     <Compile Include="Test\Test1Process.cs" />
+    <Compile Include="Test\Test2Task.cs" />
     <Compile Include="Test\Test1Task.cs" />
   </ItemGroup>
   <ItemGroup>

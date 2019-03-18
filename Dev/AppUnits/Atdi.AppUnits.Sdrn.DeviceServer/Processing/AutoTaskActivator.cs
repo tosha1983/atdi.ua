@@ -54,19 +54,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
         }
 
-        public Task Run()
+        public void Run()
         {
-            return _workScheduler.Run("Automatic task activation", this.RunAutoTasks);
+            this.RunAutoTasks();
+            //return _workScheduler.Run("Automatic task activation", this.RunAutoTasks);
         }
 
         private void RunAutoTasks()
         {
-            _logger.Verbouse(Contexts.TaskActivator, Categories.Running, Events.AutomaticTaskActivationWasStarted);
+            _logger.Verbouse(Contexts.AutoTaskActivator, Categories.Running, Events.AutomaticTaskActivationWasStarted);
             try
             {
                 var process = this._processingDispatcher.Start<DeviceServerBackgroundProcess>();
 
                 var tasks = this._workersHost.GetAutoTasks();
+
+                _logger.Verbouse(Contexts.AutoTaskActivator, Categories.Running, Events.AutomaticTasksDetected.With(tasks.Length));
+
                 for (int i = 0; i < tasks.Length; i++)
                 {
                     var (taskType, processType) = tasks[i];
@@ -82,7 +86,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     result.ContinueWith((t) =>
                     {
                         _runningTasks.TryRemove(key, out Task t2);
-                        _logger.Verbouse(Contexts.TaskActivator, Categories.Running, Events.AutomaticTaskWorkerCodeHasCompleted.With(taskType, processType));
+                        _logger.Verbouse(Contexts.AutoTaskActivator, Categories.Running, Events.AutomaticTaskWorkerCodeHasCompleted.With(taskType, processType));
                     });
                     this._runningTasks.TryAdd(key, result);
 
@@ -90,9 +94,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.TaskActivator, Categories.Running, e);
+                _logger.Exception(Contexts.AutoTaskActivator, Categories.Running, e);
             }
-            _logger.Verbouse(Contexts.TaskActivator, Categories.Running, Events.AutomaticTaskActivationWasFinished);
+
+            _logger.Verbouse(Contexts.AutoTaskActivator, Categories.Running, Events.AutomaticTaskActivationWasFinished);
         }
     }
 }
