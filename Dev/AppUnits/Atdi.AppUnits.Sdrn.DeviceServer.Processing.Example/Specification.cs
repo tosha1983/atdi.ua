@@ -10,7 +10,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
     static class Contexts
     {
         public static readonly EventContext Test1TaskWorker = "SDRN.Test1TaskWorker";
-        public static readonly EventContext Test1CommandResultHandler = "SDRN.Test1ResultHandler";
+        public static readonly EventContext Test2TaskWorker = "SDRN.Test2TaskWorker";
+
+        public static readonly EventContext TestCommand1ResultHandler = "SDRN.TestCommand1ResultHandler";
+        public static readonly EventContext TestCommand2ResultHandler = "SDRN.TestCommand2ResultHandler";
+
+
     }
 
     static class Categories

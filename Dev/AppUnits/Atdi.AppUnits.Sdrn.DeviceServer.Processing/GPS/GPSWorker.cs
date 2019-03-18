@@ -45,6 +45,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             try
             {
                 _logger.Verbouse(Contexts.GPSWorker, Categories.Processing, Events.StartGPSWorker.With(context.Task.Id));
+
+                //////////////////////////////////////////////
+                // 
+                // Задаем координаты сенсора по умолчанию 
+                //
+                //////////////////////////////////////////////
+
+                context.Process.Asl = this._configProcessing.AslDefault;
+                context.Process.Lon = this._configProcessing.LonDelta;
+                context.Process.Lat = this._configProcessing.LatDefault;
+
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер GPS
@@ -95,10 +106,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             if (lSensorLocations.Count == 0)
                             {
                                 lSensorLocations.OrderByDescending(x => x.Created);
-                                var sensorLocation = new DM.SensorLocation[lSensorLocations.Count + 1];
-                                if (lSensorLocations.Count >= 1)
+                                var mass = lSensorLocations.ToArray();
+                                var sensorLocation = new DM.SensorLocation[mass.Length + 1];
+                                if (mass.Length >= 1)
                                 {
-                                    for (int i = 0; i < lSensorLocations.Count; i++)
+                                    for (int i = 0; i < mass.Length; i++)
                                     {
                                         sensorLocation[i] = sensorCurr.Locations[i];
                                         sensorLocation[i].Status = "Z";
@@ -116,7 +128,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
                                 };
 
-                                sensorLocation[lSensorLocations.Count] = location;
+                                sensorLocation[mass.Length] = location;
                                 sensorCurr.Locations = sensorLocation;
                                 this._repositorySensor.Update(sensorCurr);
 

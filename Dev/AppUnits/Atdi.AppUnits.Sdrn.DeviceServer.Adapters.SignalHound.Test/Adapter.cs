@@ -556,7 +556,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
                     (double BlockDuration, double ReceiveTime) = LPC.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
 
                     
-                    return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
+                    return_len = 0; samples_per_sec = 0; //bandwidth = 0.0;
                     Status = EN.Status.NoError;
                     if (Status != EN.Status.NoError)
                     {
@@ -674,8 +674,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
         #endregion Freqs
 
         #region RBW / VBW
-        private EN.Rejection Rejection = EN.Rejection.SpurReject;
-        private EN.RBWShape RBWShape = EN.RBWShape.Shape_FlatTop;
+        //private EN.Rejection Rejection = EN.Rejection.SpurReject;
+        //private EN.RBWShape RBWShape = EN.RBWShape.Shape_FlatTop;
         public decimal RBWMax = 10000000;
         public decimal RBW = 10000;
 
@@ -733,14 +733,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
 
         public double LowestLevel { get; set; } = -140;
         #endregion
-        private EN.Scale Scale = EN.Scale.LogScale;
+        //private EN.Scale Scale = EN.Scale.LogScale;
         public MEN.LevelUnit LevelUnit = MEN.LevelUnit.dBm;
         private EN.Gain Gain = EN.Gain.Gain_AUTO;
         private EN.Attenuator Attenuator = EN.Attenuator.Atten_AUTO;
         #endregion
 
         #region Trace Data
-        private bool NewTrace;
+        //private bool NewTrace = false;
 
         private decimal FreqStep = 10000;
 
@@ -768,7 +768,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
         public EN.Detector DetectorUse = EN.Detector.MaxOnly;
         public EN.Detector DetectorToSet = EN.Detector.MinAndMax;
         private EN.TraceType TraceType = EN.TraceType.ClearWrite;
-        private EN.Unit VideoUnit = EN.Unit.Log;
+        //private EN.Unit VideoUnit = EN.Unit.Log;
         #endregion
         #endregion
 
@@ -790,7 +790,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
         /// <summary>
         /// последняя температура калибровки
         /// </summary>
-        private double Device_LastCalcBoardTemp;
+        //private double Device_LastCalcBoardTemp;
 
         public double Device_USBVoltage;
 
@@ -838,7 +838,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
         private int DownsampleFactor;
         private int return_len;
         private int samples_per_sec;
-        private double bandwidth;        
+        //private double bandwidth;        
         #endregion IQStream
 
         #endregion Param
@@ -848,7 +848,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
         {
             try
             {
-                float temp = 0.0F, voltage = 0.0F, current = 0.0F;
+                //float temp = 0.0F, voltage = 0.0F, current = 0.0F;
                 Status = EN.Status.NoError;
             }
             #region Exception
@@ -1282,7 +1282,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
                         TraceReset = false;
                     }
                 }
-                NewTrace = true;
+                //NewTrace = true;
             }
         }
 
@@ -1320,7 +1320,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
             bool IsCancellationRequested = false;
             // расчет количества шагов которое мы должны записать. 
 
-            int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
+            int iqSec = 0, iqNano = 0;
             int count = 0; //количевство прослушанных блоков за время приема
 
             // Константы

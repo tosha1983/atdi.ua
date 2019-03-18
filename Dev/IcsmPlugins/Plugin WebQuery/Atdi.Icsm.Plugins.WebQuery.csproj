@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XICSM.Atdi.Icsm.Plugins.WebQuery</RootNamespace>
     <AssemblyName>XICSM_Atdi.Icsm.Plugins.WebQuery</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -226,7 +226,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)Localization\XICSM_Atdi.Icsm.Plugins.WebQuery_CST.txt" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
 copy "$(TargetDir)Resources\Atdi.Icsm.Plugins.WebQuery.Schema" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
-copy "$(TargetDir)XICSM_Atdi.Icsm.Plugins.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"</PostBuildEvent>
+copy "$(TargetDir)XICSM_Atdi.Icsm.Plugins.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
+copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

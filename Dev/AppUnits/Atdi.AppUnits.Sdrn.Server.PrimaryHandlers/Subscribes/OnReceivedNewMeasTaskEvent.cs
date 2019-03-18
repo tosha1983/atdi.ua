@@ -41,12 +41,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
                     var loadTask = loadMeasTask.ReadTask(@event.MeasTaskId);
                     var listMeasTask = saveMeasTask.CreateeasTaskSDRsApi(loadTask, @event.SensorName, this._environment.ServerInstance, @event.EquipmentTechId, @event.MeasTaskId, "New");
-                    foreach (var item in listMeasTask)
+                    for (int i=0; i< listMeasTask.Length; i++)
                     {
                         var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
                         envelop.SensorName = @event.SensorName;
                         envelop.SensorTechId = @event.EquipmentTechId;
-                        envelop.DeliveryObject = item;
+                        envelop.DeliveryObject = listMeasTask[i];
                         _messagePublisher.Send(envelop);
                     }
                 }

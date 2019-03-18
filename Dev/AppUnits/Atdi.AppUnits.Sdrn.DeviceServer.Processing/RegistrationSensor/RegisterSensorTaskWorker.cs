@@ -63,8 +63,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     bool isFindDeviceProps = false;
                     DM.Sensor sensor = null;
                     var deviceProperties = this._controller.GetDevicesProperties();
-                    var listTraceDeviceProperties = deviceProperties.Values.ToList();
-                    for (int i = 0; i < listTraceDeviceProperties.Count; i++)
+                    var listTraceDeviceProperties = deviceProperties.Values.ToArray();
+                    for (int i = 0; i < listTraceDeviceProperties.Length; i++)
                     {
                         var traceDeviceProperties = listTraceDeviceProperties[i];
                         for (int j = 0; j < traceDeviceProperties.Length; j++)

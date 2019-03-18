@@ -11,22 +11,23 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         {
             if (task.Status == Status.N.ToString())
             {
-                List<MeasSubTask> ListMST = new List<MeasSubTask>();
+                var ListMST = new List<MeasSubTask>();
                 if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); };
                 if (task.MeasDtParam.TypeMeasurements == MeasurementType.MonitoringStations)
                 { // 21_02_2018 в данном случае мы делаем таски исключительно для системы мониторинга станций т.е. один таск на месяц.
-                    MeasSubTask MST = new MeasSubTask();
+                    var MST = new MeasSubTask();
                     if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int?)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
                     MST.Id = new MeasTaskIdentifier();
                     MST.Id.Value = 1;
                     MST.TimeStart = task.MeasTimeParamList.PerStart;
                     MST.TimeStop = task.MeasTimeParamList.PerStop;
                     MST.Status = Status.A.ToString();
-                    List<MeasSubTaskStation> ListMSTS = new List<MeasSubTaskStation>();
+                    var ListMSTS = new List<MeasSubTaskStation>();
                     int j = 0;
-                    foreach (MeasStation St in task.Stations)
+                    for (int f=0; f< task.Stations.Length; f++)
                     {
-                        MeasSubTaskStation MSTS = new MeasSubTaskStation();
+                        var St = task.Stations[f];
+                        var MSTS = new MeasSubTaskStation();
                         MSTS.Id = j; j++;
                         MSTS.Status = Status.N.ToString();
                         MSTS.StationId = new SensorIdentifier();
@@ -46,18 +47,19 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                     if (task.MeasTimeParamList.TimeStop != null) { hour_stop = task.MeasTimeParamList.TimeStop.GetValueOrDefault().Hour; min_stop = task.MeasTimeParamList.TimeStop.GetValueOrDefault().Minute; sec_stop = task.MeasTimeParamList.TimeStop.GetValueOrDefault().Second; }
                     for (var day = task.MeasTimeParamList.PerStart; day.Date <= task.MeasTimeParamList.PerStop; day = day.AddDays(1))
                     {
-                        MeasSubTask MST = new MeasSubTask();
+                        var MST = new MeasSubTask();
                         if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int?)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
                         MST.Id = new MeasTaskIdentifier();
                         MST.Id.Value = i; i++;
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);
                         MST.TimeStop = new DateTime(day.Year, day.Month, day.Day, hour_stop, min_stop, sec_stop);
                         MST.Status = Status.A.ToString();
-                        List<MeasSubTaskStation> ListMSTS = new List<MeasSubTaskStation>();
+                        var ListMSTS = new List<MeasSubTaskStation>();
                         int j = 0;
-                        foreach (MeasStation St in task.Stations)
+                        for (int f = 0; f < task.Stations.Length; f++)
                         {
-                            MeasSubTaskStation MSTS = new MeasSubTaskStation();
+                            var St = task.Stations[f];
+                            var MSTS = new MeasSubTaskStation();
                             MSTS.Id = j; j++;
                             MSTS.Status = Status.N.ToString();
                             MSTS.StationId = new SensorIdentifier();
@@ -79,12 +81,16 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public static void UpdateStatusSubTasks(this MeasTask task, int Id_Sensor, string Type, bool isOnline)
         {
             if (task.MeasSubTasks == null) return;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
+            var measSubTasks = task.MeasSubTasks.ToArray();
+            for (int f = 0; f < measSubTasks.Length; f++)
             {
+                var SubTask = measSubTasks[f];
                 if (SubTask.MeasSubTaskStations != null)
                 {
-                    foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations.ToArray())
+                    var measSubTaskStations = SubTask.MeasSubTaskStations.ToArray();
+                    for (int l = 0; l < measSubTaskStations.Length; l++)
                     {
+                        var SubTaskStation = measSubTaskStations[l];
                         if (SubTaskStation.StationId.Value == Id_Sensor)
                         {
                             if (Type == MeasTaskMode.Run.ToString())
@@ -118,7 +124,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         {
             //правила переходов из статуса в статусы при заданной операции
 
-            List<RuleStatusTransition> OperationTransitionRule = new List<RuleStatusTransition>();
+            var OperationTransitionRule = new List<RuleStatusTransition>();
             OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.N.ToString(), Status.F.ToString()));
             OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.A.ToString(), Status.F.ToString()));
             OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Run.ToString(), Status.F.ToString(), Status.A.ToString()));
@@ -127,7 +133,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
             OperationTransitionRule.Add(new RuleStatusTransition(MeasTaskMode.Stop.ToString(), Status.O.ToString(), Status.P.ToString()));
 
 
-            List<StatusDescription> Descr_MeasSubTaskStation = new List<StatusDescription>();
+            var Descr_MeasSubTaskStation = new List<StatusDescription>();
             Descr_MeasSubTaskStation.Add(new StatusDescription("", 0, ModeStatus.cur));
             Descr_MeasSubTaskStation.Add(new StatusDescription(Status.N.ToString(), 2, ModeStatus.cur));
             Descr_MeasSubTaskStation.Add(new StatusDescription(Status.A.ToString(), 9, ModeStatus.cur));
@@ -141,7 +147,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
             Descr_MeasSubTaskStation.Add(new StatusDescription(Status.P.ToString(), 10, ModeStatus.cur));
             Descr_MeasSubTaskStation.Add(new StatusDescription(Status.O.ToString(), 11, ModeStatus.cur));
 
-            List<StatusDescription> Descr_MeasSubTask = new List<StatusDescription>();
+            var Descr_MeasSubTask = new List<StatusDescription>();
             Descr_MeasSubTask.Add(new StatusDescription("", 0, ModeStatus.cur));
             Descr_MeasSubTask.Add(new StatusDescription(Status.N.ToString(), 2, ModeStatus.cur));
             Descr_MeasSubTask.Add(new StatusDescription(Status.A.ToString(), 9, ModeStatus.cur));
@@ -155,17 +161,21 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
             Descr_MeasSubTask.Add(new StatusDescription(Status.P.ToString(), 10, ModeStatus.cur));
             Descr_MeasSubTask.Add(new StatusDescription(Status.O.ToString(), 11, ModeStatus.cur));
 
-            List<int> MaxWeightLst = new List<int>();
+            var MaxWeightLst = new List<int>();
             if (task.MeasSubTasks == null) return;
 
-            foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
+            var measSubTasks = task.MeasSubTasks.ToArray();
+            for (int l = 0; l < measSubTasks.Length; l++)
             {
+                var SubTask = measSubTasks[l];
                 string StatusWithMaxWeight = "";
                 MaxWeightLst = new List<int>();
                 if (SubTask.MeasSubTaskStations != null)
                 {
-                    foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations.ToArray())
+                    var measSubTaskStations = SubTask.MeasSubTaskStations.ToArray();
+                    for (int f = 0; f < measSubTaskStations.Length; f++)
                     {
+                        var SubTaskStation = measSubTaskStations[f];
                         if (Type == MeasTaskMode.Run.ToString())
                         {
                             if (SubTaskStation.Status == Status.P.ToString())
@@ -195,7 +205,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                         }
                         else if (Type == MeasTaskMode.Stop.ToString())
                         {
-                            StatusDescription DescrStat = Descr_MeasSubTaskStation.Find(t => t.Type != ModeStatus.final && t.NameStatus == SubTaskStation.Status);
+                            var DescrStat = Descr_MeasSubTaskStation.Find(t => t.Type != ModeStatus.final && t.NameStatus == SubTaskStation.Status);
                             if (DescrStat != null)
                             {
                                 if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.P.ToString())) != null)
@@ -212,7 +222,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                                 }
                             }
                         }
-                        StatusDescription val_fnd_status = Descr_MeasSubTaskStation.Find(t => t.NameStatus == SubTaskStation.Status);
+                        var val_fnd_status = Descr_MeasSubTaskStation.Find(t => t.NameStatus == SubTaskStation.Status);
                         if (val_fnd_status != null)
                         {
                             MaxWeightLst.Add(val_fnd_status.Weight);
@@ -222,7 +232,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                 if (MaxWeightLst.Count > 0)
                 {
                     int Max_ = MaxWeightLst.Max();
-                    StatusDescription val_fnd_status_ = Descr_MeasSubTaskStation.Find(t => t.Weight == Max_);
+                    var val_fnd_status_ = Descr_MeasSubTaskStation.Find(t => t.Weight == Max_);
                     if (val_fnd_status_ != null)
                     {
                         StatusWithMaxWeight = val_fnd_status_.NameStatus;
@@ -231,9 +241,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                 }
             }
             MaxWeightLst = new List<int>();
-            foreach (MeasSubTask SubTask in task.MeasSubTasks.ToArray())
+            var massMeasSubTasks = task.MeasSubTasks.ToArray();
+            for (int r = 0; r < massMeasSubTasks.Length; r++)
             {
-                StatusDescription val_fnd_status = Descr_MeasSubTask.Find(t => t.NameStatus == SubTask.Status);
+                var SubTask = massMeasSubTasks[r];
+                var val_fnd_status = Descr_MeasSubTask.Find(t => t.NameStatus == SubTask.Status);
                 if (val_fnd_status != null)
                 {
                     MaxWeightLst.Add(val_fnd_status.Weight);
@@ -242,7 +254,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
             if (MaxWeightLst.Count > 0)
             {
                 int Max_ = MaxWeightLst.Max();
-                StatusDescription val_fnd_status_ = Descr_MeasSubTask.Find(t => t.Weight == Max_);
+                var val_fnd_status_ = Descr_MeasSubTask.Find(t => t.Weight == Max_);
                 if (val_fnd_status_ != null)
                 {
                     task.Status = val_fnd_status_.NameStatus;

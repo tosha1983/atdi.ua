@@ -12,22 +12,22 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
 {
-    public class Test1CommandResultHandler : IResultHandler<Test1Command, Test1CommandResult, Test1Task, Test1Process>
+    public class TestCommand1ResultHandler : IResultHandler<TestCommand1, TestCommand1Result, Test1Task, Test1Process>
     {
         private readonly IWorkScheduler _workScheduler;
         private readonly ILogger _logger;
 
-        public Test1CommandResultHandler(IWorkScheduler workScheduler, ILogger logger)
+        public TestCommand1ResultHandler(IWorkScheduler workScheduler, ILogger logger)
         {
             this._workScheduler = workScheduler;
             this._logger = logger;
 
-            this._logger.Debug(Contexts.Test1CommandResultHandler, Categories.Ctor, Events.Call);
+            this._logger.Debug(Contexts.TestCommand1ResultHandler, Categories.Ctor, Events.Call);
         }
 
-        public void Handle(Test1Command command, Test1CommandResult result, ITaskContext<Test1Task, Test1Process> taskContext)
+        public void Handle(TestCommand1 command, TestCommand1Result result, ITaskContext<Test1Task, Test1Process> taskContext)
         {
-            this._logger.Debug(Contexts.Test1CommandResultHandler, Categories.Handle, Events.HandlingResult.With(result.PartIndex, result.Status));
+            this._logger.Debug(Contexts.TestCommand1ResultHandler, Categories.Handle, Events.HandlingResult.With(result.PartIndex, result.Status));
 
             if (result.Status == CommandResultStatus.Ragged)
             {
@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
             
         }
 
-        private void Action(int partId, ITaskContext<Test1Task, Test1Process> context, Test1Command command)
+        private void Action(int partId, ITaskContext<Test1Task, Test1Process> context, TestCommand1 command)
         {
             for (int i = 1; i <= command.Parameter.Count2; i++)
             {
@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
                 Thread.Sleep(5);
             }
 
-            this._logger.Debug(Contexts.Test1CommandResultHandler, Categories.Handle, $"Set events: PartId = [{partId}]");
+            this._logger.Debug(Contexts.TestCommand1ResultHandler, Categories.Handle, $"Set events: PartId = [{partId}]");
         }
     }
 }

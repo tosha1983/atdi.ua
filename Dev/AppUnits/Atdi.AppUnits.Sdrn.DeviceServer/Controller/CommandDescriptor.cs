@@ -85,6 +85,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         public void Done()
         {
             this._command.State = CommandState.Done;
+            if ((this._command.Options & CommandOption.RaiseExecutionCompleted) == CommandOption.RaiseExecutionCompleted)
+            {
+                this.RaiseFailureAction(CommandFailureReason.ExecutionCompleted, null);
+            }
+            
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

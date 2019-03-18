@@ -55,6 +55,7 @@
     <Compile Include="ResultHandlers\Signalization\SignalizationTaskResultHandler.cs" />
     <Compile Include="ResultHandlers\SpectrumOccupation\SOTaskResultHandler.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
     <Compile Include="TaskWorkers\BandWidth\BandWidthTaskWorker.cs" />
     <Compile Include="TaskWorkers\Signalization\SignalizationTaskWorker.cs" />
     <Compile Include="TaskWorkers\SpectrumOccupation\SOTaskWorker.cs" />
@@ -123,10 +124,6 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppUnits.Sdrn.DeviceServer.Messaging\Atdi.AppUnits.Sdrn.DeviceServer.Messaging.csproj">
-      <Project>{e4157d42-8855-479c-9732-ac8fb891f7ff}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Messaging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>

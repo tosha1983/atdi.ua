@@ -57,7 +57,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// Специальный коэффициент для расчета времени приостановки потока, выполняющего измерение SO 
         /// ДЛя огибок типа CommandFailureReason.NotFoundConvertor, CommandFailureReason.NotFoundDevice
         /// </summary>
-        public int SOKoeffWaitingDevice { get; set; }
+        public int KoeffWaitingDevice { get; set; }
 
         /// <summary>
         /// Погрешность для долготы
@@ -95,5 +95,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         public int SleepTimeForUpdateContextSOTask_ms { get; set; }
 
+        /// <summary>
+        /// Default Asl
+        /// </summary>
+        [ComponentConfigProperty("AslDefault.double")]
+        public double AslDefault { get; set; }
+        /// <summary>
+        /// Default Longitude
+        /// </summary>
+        [ComponentConfigProperty("LonDefault.double")]
+        public double LonDefault { get; set; }
+
+        /// <summary>
+        /// Default Latitude
+        /// </summary>
+        [ComponentConfigProperty("LatDefault.double")]
+        public double LatDefault { get; set; }
     }
 }

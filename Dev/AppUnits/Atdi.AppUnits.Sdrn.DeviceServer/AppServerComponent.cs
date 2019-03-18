@@ -3,9 +3,11 @@ using Atdi.AppUnits.Sdrn.DeviceServer.Controller;
 using Atdi.AppUnits.Sdrn.DeviceServer.Processing;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.Modules.Licensing;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
+using Atdi.Platform.AppServer;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
 using System;
@@ -58,8 +60,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             {
                this.Logger.Exception(Contexts.ThisComponent, Categories.Initilazing, e);
             }
-            
 
+            this.Container.Register<IEventWaiter, EventWaiter>(ServiceLifetime.Singleton);
             this.Container.Register<IProcessingDispatcher, ProcessingDispatcher>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkerFactory, TaskWorkerFactory>(ServiceLifetime.Singleton);
             this.Container.Register<ITaskWorkersHost, TaskWorkersHost>(ServiceLifetime.Singleton);
@@ -96,6 +98,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 workersHost.Register(workerType);
             }
 
+            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.TaskWorkerTypesWereRegistered);
+
             var handlersHost = this.Resolver.Resolve<IResultHandlersHost>();
             var handlerTypes = typeResolver.GetTypesByInterface(typeof(IResultHandler<,,,>));
 
@@ -104,6 +108,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 this.Container.Register(handlerType, handlerType, ServiceLifetime.PerThread);
                 handlersHost.Register(handlerType);
             }
+
+            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.ResultHandlerTypesWereRegistered);
 
             var convertorsHost = this.Resolver.Resolve<IResultConvertorsHost>();
             var convertorTypes = typeResolver.GetTypesByInterface(typeof(IResultConvertor<,>));
@@ -114,24 +120,62 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 convertorsHost.Register(convertorType);
             }
 
+            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.ResultConvertorTypesWereRegistered);
+
             // Scan assemblies loaded into memmory to include the types 
             // that implements the interface "IAdapter" in the container and in the devices host 
 
             var devicesHost = this.Resolver.Resolve<IDevicesHost>();
+            var eventWaiter = this.Resolver.Resolve<IEventWaiter>();
             var adapterTypes = typeResolver.GetTypesByInterface<IAdapter>();
-            foreach (var adapterType in adapterTypes)
+
+            var adapterRegistrationTimeout = this.Config.GetParameterAsInteger("SDRN.DeviceServer.AdapterRegistrationTimeoutSec") ?? -1;
+            if (adapterRegistrationTimeout > 0)
             {
-                this.Container.Register(adapterType, adapterType, ServiceLifetime.Transient);
-                devicesHost.Register(adapterType);
+                adapterRegistrationTimeout *= 1000;
             }
+
+            var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
+
+            hostLoader.RegisterTrigger("Adapter Registration", () => 
+            {
+                foreach (var adapterType in adapterTypes)
+                {
+                    this.Container.Register(adapterType, adapterType, ServiceLifetime.Transient);
+                    devicesHost.Register(adapterType);
+
+                    if (eventWaiter.Wait<AdapterWorker>(out AdapterWorker adapterWorker, adapterRegistrationTimeout))
+                    {
+                        if (adapterWorker.State == DeviceState.Failure)
+                        {
+                            Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationFailed.With(adapterType));
+                        }
+                        else if (adapterWorker.State == DeviceState.Aborted)
+                        {
+                            Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationAborted.With(adapterType));
+                        }
+                        else
+                        {
+                            Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationCompleted.With(adapterType, adapterWorker.DeviceId));
+                        }
+                    }
+                    else
+                    {
+                        Logger.Error(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterRegistrationTimedOut.With(adapterType));
+                    }
+                }
+
+                Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.AdapterObjectsWereRegistered);
+            });
 
             // Start AutoTasks
 
-            var autoTaskActivator = this.Resolver.Resolve<IAutoTaskActivator>();
-            var task = autoTaskActivator.Run();
-            task.ContinueWith(t =>
+            hostLoader.RegisterTrigger("Running auto tasks", () =>
             {
-                //Logger.Verbouse()
+                var autoTaskActivator = this.Resolver.Resolve<IAutoTaskActivator>();
+                autoTaskActivator.Run();
+
+                Logger.Info(Contexts.ThisComponent, Categories.Initilazing, Events.AutoTasksWereWtarted);
             });
 
             

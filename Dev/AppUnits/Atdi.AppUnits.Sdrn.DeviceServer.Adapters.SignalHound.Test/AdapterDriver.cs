@@ -8,7 +8,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
     {        
         public static string bbGetDeviceName(int device)
         {
-            int device_type = -1;
+            //int device_type = -1;
             return "BB60C";
         }
 

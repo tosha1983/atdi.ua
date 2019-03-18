@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrn.DeviceServer;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     public static class ConvertSensorToSensorParameters
     {

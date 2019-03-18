@@ -221,8 +221,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                         if (resObject.Routes != null)
                         {
-                            foreach (Route route in resObject.Routes)
+
+                            for (int l = 0; l < resObject.Routes.Length; l++)
                             {
+                                Route route = resObject.Routes[l];
+
                                 if (route.RoutePoints != null)
                                 {
                                     var lstIns = new IQueryInsertStatement<MD.IResRoutesRaw>[route.RoutePoints.Length];
@@ -452,8 +455,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 {
                                                     if (stationSysInfo.InfoBlocks != null)
                                                     {
-                                                        foreach (StationSysInfoBlock blocks in stationSysInfo.InfoBlocks)
+                                                        for (int b=0; b< stationSysInfo.InfoBlocks.Length; b++)
                                                         {
+                                                            StationSysInfoBlock blocks = stationSysInfo.InfoBlocks[b];
+
                                                             int IDResSysInfoBlocks = -1;
                                                             var builderInsertStationSysInfoBlock = this._dataLayer.GetBuilder<MD.IResSysInfoBlsRaw>().Insert();
                                                             builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);

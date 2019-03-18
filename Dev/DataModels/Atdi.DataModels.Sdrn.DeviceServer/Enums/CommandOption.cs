@@ -12,5 +12,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         PutInQueue = 0,
         StartDelayed = 1,
         StartImmediately = 2,
+        RaiseExecutionCompleted = 4
     }
 }
