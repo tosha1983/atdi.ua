@@ -770,7 +770,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     queryExecuter.CommitTransaction();
                     // с этого момента нужно считать что сообщение удачно обработано
                     result.Status = SdrnMessageHandlingStatus.Confirmed;
-                    //this._eventEmitter.Emit(new MDE.OnReceivedNewSOResultEvent() { ResultId = valInsResMeas }, new EventEmittingOptions { Rule = EventEmittingRule.Default });
+                    this._eventEmitter.Emit(new MDE.OnReceivedNewSOResultEvent() { ResultId = valInsResMeas }, new EventEmittingOptions { Rule = EventEmittingRule.Default });
                 }
                 catch (Exception e)
                 {
