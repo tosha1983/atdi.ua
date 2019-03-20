@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
 {
+    [Serializable]
     public class MesureTraceResult : CommandResultPartBase
     {
         public MesureTraceResult(ulong partIndex, CommandResultStatus status)

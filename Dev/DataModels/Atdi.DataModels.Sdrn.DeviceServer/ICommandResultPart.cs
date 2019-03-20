@@ -1,4 +1,5 @@
-﻿namespace Atdi.DataModels.Sdrn.DeviceServer
+﻿using System;
+namespace Atdi.DataModels.Sdrn.DeviceServer
 {
     public interface ICommandResultPart
     {
@@ -7,6 +8,7 @@
         CommandResultStatus Status { get; }
     }
 
+    [Serializable]
     public class CommandResultPartBase : ICommandResultPart
     {
         public CommandResultPartBase(ulong partIndex, CommandResultStatus status)
