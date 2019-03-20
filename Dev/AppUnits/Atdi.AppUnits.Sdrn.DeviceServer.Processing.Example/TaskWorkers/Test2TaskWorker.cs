@@ -16,14 +16,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
     {
         private readonly ExampleConfig _config;
         private readonly IController _controller;
+        private readonly IEventWaiter _eventWaiter;
         private readonly ITimeService _timeService;
         private readonly ILogger _logger;
         private long _timeoutExpiredCount = 0;
+        private long _callCommandCount = 0;
 
-        public Test2TaskWorker(ExampleConfig config, IController controller, ITimeService timeService, ILogger logger)
+        public Test2TaskWorker(ExampleConfig config, IController controller, IEventWaiter eventWaiter, ITimeService timeService, ILogger logger)
         {
             this._config = config;
             this._controller = controller;
+            this._eventWaiter = eventWaiter;
             this._timeService = timeService;
             this._logger = logger;
 
@@ -34,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
         {
             this._logger.Debug(Contexts.Test2TaskWorker, Categories.Run, Events.RunTask.With(context.Task.Id));
 
-            var count = 20000;
+            var count = 200000; // 0;
             var delayStep = 50;
             var timestamp = this._timeService.TimeStamp.Milliseconds;
             var timeoutStep = 10;
@@ -43,7 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
             {
                 var delay = delayStep;
                 var timeout = delayStep + timeoutStep;
-                this.SendTask2ToController(timestamp, delay, timeout, context);
+                this.SendTask2ToController(100, 0, timestamp, delay, timeout, context);
 
                 timestamp = this._timeService.TimeStamp.Milliseconds;
             }
@@ -52,25 +55,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
             {
                 var delay = i * delayStep;
                 var timeout = i * delayStep + timeoutStep;
-                this.SendTask2ToController(timestamp, delay, timeout, context);
+                this.SendTask2ToController(count, i, timestamp, delay, timeout, context);
             }
-            
+
+            _eventWaiter.Wait<TestCommand2>();
+            Thread.Sleep(50000);
+            this._logger.Debug(Contexts.Test2TaskWorker, Categories.Run, $"Finished: result count = {context.Process.TotalValues.Count}, count 2 = {context.Process.Count}");
 
             context.Finish();
         }
 
-        private void SendTask2ToController(long timestamp, long delay, long timeout, ITaskContext<Test2Task, Test2Process> context)
+        private void SendTask2ToController(int lastIndex, int index, long timestamp, long delay, long timeout, ITaskContext<Test2Task, Test2Process> context)
         {
             var deviceCommand2 = new TestCommand2()
             {
-                Options = CommandOption.StartDelayed, // | CommandOption.RaiseExecutionCompleted,
+                Options = CommandOption.StartDelayed | CommandOption.RaiseExecutionCompleted,
                 StartTimeStamp = timestamp,
                 Delay = delay,
-                Timeout = timeout
+                Timeout = timeout,
+                Index = index,
+                LastIndex = lastIndex
             };
 
-            deviceCommand2.Parameter.Count = 100_000;
-            deviceCommand2.Parameter.Predel = 1_00;
+            deviceCommand2.Parameter.Count = 1_0;// 0_000;
+            deviceCommand2.Parameter.Predel = 1_0;
 
 
             this._controller.SendCommand<TestCommand2Result>(context, deviceCommand2, this.ControllerFailureAction);
@@ -78,32 +86,33 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
 
         private void ControllerFailureAction(ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception exception)
         {
+            Interlocked.Increment(ref _callCommandCount);
             switch (failureReason)
             {
                 case CommandFailureReason.NotFoundDevice:
-                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Not found device: Delay = {command.Delay}");
+                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Not found device: Delay = {command.Delay}, Count = {_callCommandCount}");
                     break;
                 case CommandFailureReason.NotFoundConvertor:
-                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Not found convertor: Delay = {command.Delay}");
+                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Not found convertor: Delay = {command.Delay}, Count = {_callCommandCount}");
                     break;
                 case CommandFailureReason.DeviceIsBusy:
-                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Device is busy: Delay = {command.Delay}");
+                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Device is busy: Delay = {command.Delay}, Count = {_callCommandCount}");
                     break;
                 case CommandFailureReason.TimeoutExpired:
                     Interlocked.Increment(ref _timeoutExpiredCount);
-                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Timeout expired: Delay = {command.Delay}, timeout = {command.Timeout}");
+                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Timeout expired: Delay = {command.Delay}, timeout = {command.Timeout}, Count = {_callCommandCount}");
                     break;
                 case CommandFailureReason.CanceledBeforeExecution:
-                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Canceled before execution: Delay = {command.Delay}");
+                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Canceled before execution: Delay = {command.Delay}, Count = {_callCommandCount}");
                     break;
                 case CommandFailureReason.CanceledExecution:
-                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Canceled execution: Delay = {command.Delay}");
+                    _logger.Error(Contexts.Test2TaskWorker, Categories.Run, $"Canceled execution: Delay = {command.Delay}, Count = {_callCommandCount}");
                     break;
                 case CommandFailureReason.Exception:
                     _logger.Exception(Contexts.Test2TaskWorker, Categories.Run, exception);
                     break;
                 case CommandFailureReason.ExecutionCompleted:
-                    _logger.Info(Contexts.Test2TaskWorker, Categories.Run, $"Execution Completed: Delay = {command.Delay}, TimeoutExpired = {this._timeoutExpiredCount}");
+                    _logger.Info(Contexts.Test2TaskWorker, Categories.Run, $"Execution Completed: Delay = {command.Delay}, TimeoutExpiredCount = {this._timeoutExpiredCount}, Count = {_callCommandCount}");
                     break;
                 default:
                     break;

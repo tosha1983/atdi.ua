@@ -37,12 +37,12 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
     public class TestCommand1 : CommandBase<TestCommand1Parameter>
     {
         public TestCommand1()
-            : base(CommandType.MesureAudio, new TestCommand1Parameter())
+            : base(CommandType.MesureDF, new TestCommand1Parameter())
         {
         }
 
         public TestCommand1(TestCommand1Parameter parameter)
-            : base(CommandType.MesureAudio, parameter)
+            : base(CommandType.MesureDF, parameter)
         {
         }
     }
