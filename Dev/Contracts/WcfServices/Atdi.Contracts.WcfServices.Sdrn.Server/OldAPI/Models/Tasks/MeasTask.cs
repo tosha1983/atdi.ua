@@ -118,6 +118,12 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public MeasTimeParamList MeasTimeParamList;
 
         [DataMember]
-        public StationDataForMeasurements[] StationsForMeasurements; 
+        public StationDataForMeasurements[] StationsForMeasurements;
+
+        ///// <summary>
+        ///// Reference situation
+        ///// </summary>
+        [DataMember]
+        public ReferenceSituation RefSituation { get; set; }
     }
 }

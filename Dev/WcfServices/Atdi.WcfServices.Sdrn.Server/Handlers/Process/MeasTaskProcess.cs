@@ -65,7 +65,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="isSuccess"></param>
         /// <param name="idTask"></param>
         /// <returns></returns>
-        public bool Process(MeasTask measTask, int[] sensorIds, string actionType, bool isOnline, out bool isSuccess, out int? idTask)
+        public bool Process(MeasTask measTask, int[] sensorIds, string actionType, bool isOnline, out bool isSuccess, out int? idTask, bool isSendMessageToBus)
         {
             isSuccess = false;
             idTask = null;
@@ -113,7 +113,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         IdTsk = measTask.Id.Value;
                                     }
 
-                                    if (IdTsk != null)
+                                    if ((IdTsk != null) && (isSendMessageToBus))
                                     {
                                         var masTaskEvent = new OnMeasTaskEvent()
                                         {
@@ -206,14 +206,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var massSensor = SensorIds.ToArray();
                         if (massSensor.Length > 0)
                         {
-                            Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccessTemp, out id);
+                            Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccessTemp, out id, false);
                             result.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
                         }
                         else
                         {
                             result.State = CommonOperationState.Fault;
                         }
-                        Process(measTaskedit, massSensor, MeasTaskMode.Del.ToString(), false, out isSuccessTemp, out id);
+                        Process(measTaskedit, massSensor, MeasTaskMode.Del.ToString(), false, out isSuccessTemp, out id, true);
                         result.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
                     }
@@ -288,7 +288,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             bool isSuccess = false;
                             int? id = null;
-                            Process(measTaskedit, massSensor, MeasTaskMode.Run.ToString(), false, out isSuccess, out id);
+                            Process(measTaskedit, massSensor, MeasTaskMode.Run.ToString(), false, out isSuccess, out id, true);
                             result.State = CommonOperationState.Success;
                         }
                     }
@@ -358,7 +358,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             bool isSuccess = false;
                             int? id = null;
-                            Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccess, out id);
+                            Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccess, out id, true);
                             result.State = CommonOperationState.Success;
                         }
                     }
