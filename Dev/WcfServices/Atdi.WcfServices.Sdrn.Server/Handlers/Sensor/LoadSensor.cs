@@ -56,7 +56,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderSelectSensor.Select("Status");
                 builderSelectSensor.Select("StepMeasTime");
                 builderSelectSensor.Select("TypeSensor");
-                builderSelectSensor.Where(condition);
+                if (condition != null)
+                {
+                    builderSelectSensor.Where(condition);
+                }
                 builderSelectSensor.OrderByAsc("Id");
                 queryExecuter.Fetch(builderSelectSensor, reader =>
                 {
