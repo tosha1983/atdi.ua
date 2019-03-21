@@ -24,6 +24,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 SpectrumOcupationResult measResults = null;
                 try
                 {
+                    /*
                     FileStream fs = new FileStream(Guid.NewGuid().ToString() + ".dat", FileMode.Create);
 
                     // Construct a BinaryFormatter and use it to serialize the data to the stream.
@@ -41,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         fs.Close();
                     }
-
+                    */
                     measResults = CalcSpectrumOcupation.Calc(result, taskContext.Task.taskParameters, taskContext.Task.sensorParameters, taskContext.Task.lastResultParameters);
                     // Обновление последнего результата в буфере (кеше)
                     taskContext.Task.lastResultParameters = measResults;  //new  SpectrumOcupationResult() { fSemplesResult = measResults.fSemplesResult, NN = measResults.NN };
