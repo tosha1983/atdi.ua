@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ReferenceLevelsRaw"
+  Title       = "ReferenceLevelsRaw"
+  Desc        = ""
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_REFLEVELSRAW</Name>
+    <Schema>ICSM</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
+    <Field Desc="StartFrequency_Hz" Title="StartFrequency_Hz" Name="StartFrequency_Hz" DataType="Decimal.22.8" SourceName="STARTFREQ_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="StepFrequency_Hz" Title="StepFrequency_Hz" Name="StepFrequency_Hz" DataType="Decimal.22.8" SourceName="STEPFREQ_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
+    <Field Name="RESMEASRAW" SourceType="Reference" SourceName="ResMeasRaw" Title="Relation ReferenceLevelsRaw to ResMeasRaw">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

@@ -113,6 +113,199 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (valInsResMeas > 0)
                     {
+                        if (resObject.RefLevels != null)
+                        {
+                            int valInsReferenceLevelsRaw = 0;
+                            var refLevels = resObject.RefLevels;
+                            var builderInsertReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>().Insert();
+                            builderInsertReferenceLevelsRaw.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
+                            builderInsertReferenceLevelsRaw.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
+                            builderInsertReferenceLevelsRaw.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertReferenceLevelsRaw.Select(c => c.Id);
+                            queryExecuter
+                            .ExecuteAndFetch(builderInsertReferenceLevelsRaw, readerReferenceLevelsRaw =>
+                            {
+                                var res = readerReferenceLevelsRaw.Read();
+                                if (res)
+                                {
+                                    valInsReferenceLevelsRaw = readerReferenceLevelsRaw.GetValue(c => c.Id);
+                                    if (valInsReferenceLevelsRaw > 0)
+                                    {
+                                        var lstInslevels = new IQueryInsertStatement<MD.IDetailReferenceLevelsRaw>[refLevels.levels.Length];
+                                        for (int l = 0; l < refLevels.levels.Length; l++)
+                                        {
+                                            var lvl = refLevels.levels[l];
+
+                                            var builderInsertDetailReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IDetailReferenceLevelsRaw>().Insert();
+                                            builderInsertDetailReferenceLevelsRaw.SetValue(c => c.level, lvl);
+                                            builderInsertDetailReferenceLevelsRaw.SetValue(c => c.ReferenceLevelId, valInsReferenceLevelsRaw);
+                                            builderInsertDetailReferenceLevelsRaw.Select(c => c.Id);
+                                            lstInslevels[l] = builderInsertDetailReferenceLevelsRaw;
+                                        }
+                                        queryExecuter.ExecuteAndFetch(lstInslevels, readerDetailReferenceLevelsRaw =>
+                                        {
+                                            return true;
+                                        });
+                                    }
+
+                                }
+                                return true;
+                            });
+                        }
+
+                        if (resObject.Emittings != null)
+                        {
+                            var emittings = resObject.Emittings;
+                            for (int l = 0; l < emittings.Length; l++)
+                            {
+                                int valInsReferenceEmittingRaw = 0;
+                                var builderInsertEmittingRaw = this._dataLayer.GetBuilder<MD.IEmittingRaw>().Insert();
+                                builderInsertEmittingRaw.SetValue(c => c.CurentPower_dBm, emittings[l].CurentPower_dBm);
+                                builderInsertEmittingRaw.SetValue(c => c.MeanDeviationFromReference, emittings[l].MeanDeviationFromReference);
+                                builderInsertEmittingRaw.SetValue(c => c.ReferenceLevel_dBm, emittings[l].ReferenceLevel_dBm);
+                                builderInsertEmittingRaw.SetValue(c => c.ResMeasId, valInsResMeas);
+                                if (emittings[l].EmittingParameters != null)
+                                {
+                                    builderInsertEmittingRaw.SetValue(c => c.RollOffFactor, emittings[l].EmittingParameters.RollOffFactor);
+                                    builderInsertEmittingRaw.SetValue(c => c.StandardBW, emittings[l].EmittingParameters.StandardBW);
+                                }
+                                builderInsertEmittingRaw.SetValue(c => c.StartFrequency_MHz, emittings[l].StartFrequency_MHz);
+                                builderInsertEmittingRaw.SetValue(c => c.StopFrequency_MHz, emittings[l].StopFrequency_MHz);
+                                builderInsertEmittingRaw.SetValue(c => c.TriggerDeviationFromReference, emittings[l].TriggerDeviationFromReference);
+                                builderInsertEmittingRaw.Select(c => c.Id);
+                                queryExecuter
+                                .ExecuteAndFetch(builderInsertEmittingRaw, readerEmittingRaw =>
+                                {
+                                    var res = readerEmittingRaw.Read();
+                                    if (res)
+                                    {
+                                        valInsReferenceEmittingRaw = readerEmittingRaw.GetValue(c=>c.Id);
+                                        if (valInsReferenceEmittingRaw > 0)
+                                        {
+                                            var workTimes = emittings[l].WorkTimes;
+                                            if (workTimes != null)
+                                            {
+                                                var lstInsWorkTimeRaw = new IQueryInsertStatement<MD.IWorkTimeRaw>[workTimes.Length];
+                                                for (int r = 0; r < workTimes.Length; r++)
+                                                {
+                                                    var builderInsertIWorkTimeRaw = this._dataLayer.GetBuilder<MD.IWorkTimeRaw>().Insert();
+                                                    builderInsertIWorkTimeRaw.SetValue(c => c.EmittingId, valInsReferenceEmittingRaw);
+                                                    builderInsertIWorkTimeRaw.SetValue(c => c.HitCount, workTimes[r].HitCount);
+                                                    builderInsertIWorkTimeRaw.SetValue(c => c.PersentAvailability, workTimes[r].PersentAvailability);
+                                                    builderInsertIWorkTimeRaw.SetValue(c => c.StartEmitting, workTimes[r].StartEmitting);
+                                                    builderInsertIWorkTimeRaw.SetValue(c => c.StopEmitting, workTimes[r].StopEmitting);
+                                                    builderInsertIWorkTimeRaw.Select(c => c.Id);
+                                                    lstInsWorkTimeRaw[r] = builderInsertIWorkTimeRaw;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsWorkTimeRaw, readerWorkTimeRaw =>
+                                                {
+                                                    return true;
+                                                });
+                                            }
+
+                                            var spectrum = emittings[l].Spectrum;
+                                            if (spectrum != null)
+                                            {
+                                                int valInsSpectrumRaw = 0;
+
+                                                var builderInsertISpectrumRaw = this._dataLayer.GetBuilder<MD.ISpectrumRaw>().Insert();
+                                                builderInsertISpectrumRaw.SetValue(c => c.EmittingId, valInsReferenceEmittingRaw);
+                                                builderInsertISpectrumRaw.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations);
+                                                builderInsertISpectrumRaw.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
+                                                builderInsertISpectrumRaw.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
+                                                builderInsertISpectrumRaw.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
+                                                builderInsertISpectrumRaw.SetValue(c => c.SpectrumStartFreq_MHz, spectrum.SpectrumStartFreq_MHz);
+                                                builderInsertISpectrumRaw.SetValue(c => c.SpectrumSteps_kHz, spectrum.SpectrumSteps_kHz);
+                                                builderInsertISpectrumRaw.SetValue(c => c.T1, spectrum.T1);
+                                                builderInsertISpectrumRaw.SetValue(c => c.T2, spectrum.T2);
+                                                builderInsertISpectrumRaw.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                                builderInsertISpectrumRaw.Select(c => c.Id);
+                                                queryExecuter
+                                                .ExecuteAndFetch(builderInsertISpectrumRaw, readerISpectrumRaw =>
+                                                {
+                                                    var resSpectrumRaw = readerISpectrumRaw.Read();
+                                                    if (resSpectrumRaw)
+                                                    {
+                                                        valInsSpectrumRaw = readerISpectrumRaw.GetValue(c => c.Id);
+                                                        if (valInsSpectrumRaw > 0)
+                                                        {
+                                                            var lstInsLevels_dBm = new IQueryInsertStatement<MD.IDetailSpectrumLevelsRaw>[spectrum.Levels_dBm.Length];
+                                                            for (int k = 0; k < spectrum.Levels_dBm.Length; k++)
+                                                            {
+                                                                var level_dBm = spectrum.Levels_dBm[k];
+
+                                                                var builderInsertIDetailReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevelsRaw>().Insert();
+                                                                builderInsertIDetailReferenceLevelsRaw.SetValue(c => c.level, level_dBm);
+                                                                builderInsertIDetailReferenceLevelsRaw.SetValue(c => c.SpectrumId, valInsSpectrumRaw);
+                                                                builderInsertIDetailReferenceLevelsRaw.Select(c => c.Id);
+                                                                lstInsLevels_dBm[k] = builderInsertIDetailReferenceLevelsRaw;
+                                                            }
+                                                            queryExecuter.ExecuteAndFetch(lstInsLevels_dBm, readerDetailSpectrumLevelsRaw =>
+                                                            {
+                                                                return true;
+                                                            });
+                                                        }
+                                                    }
+                                                    return true;
+                                                });
+
+
+                                     
+                                            }
+
+                                            var signalMask = emittings[l].SignalMask;
+                                            if (signalMask != null)
+                                            {
+                                                var lstInsSignalMaskRaw = new IQueryInsertStatement<MD.ISignalMaskRaw>[signalMask.Freq_kHz.Length];
+                                                for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                                {
+                                                    var freq_kH = signalMask.Freq_kHz[k];
+                                                    var loss_dB = signalMask.Loss_dB[k];
+
+                                                    var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Insert();
+                                                    builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
+                                                    builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
+                                                    builderInsertSignalMaskRaw.SetValue(c => c.EmittingId, valInsReferenceEmittingRaw);
+                                                    builderInsertSignalMaskRaw.Select(c => c.Id);
+                                                    lstInsSignalMaskRaw[k] = builderInsertSignalMaskRaw;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsSignalMaskRaw, readerSignalMaskRaw =>
+                                                {
+                                                    return true;
+                                                });
+                                            }
+
+                                            var levelsDistribution = emittings[l].LevelsDistribution;
+                                            if (levelsDistribution!=null)
+                                            {
+                                                var lstInsLevelsDistributionRaw = new IQueryInsertStatement<MD.ILevelsDistributionRaw>[levelsDistribution.Levels.Length];
+                                                for (int k = 0; k < levelsDistribution.Levels.Length; k++)
+                                                {
+                                                    var lvl = levelsDistribution.Levels[k];
+                                                    var count = levelsDistribution.Count[k];
+                                                    var builderInsertLevelsDistributionRaw = this._dataLayer.GetBuilder<MD.ILevelsDistributionRaw>().Insert();
+                                                    builderInsertLevelsDistributionRaw.SetValue(c => c.level, lvl);
+                                                    builderInsertLevelsDistributionRaw.SetValue(c => c.count, count);
+                                                    builderInsertLevelsDistributionRaw.SetValue(c => c.EmittingId, valInsReferenceEmittingRaw);
+                                                    builderInsertLevelsDistributionRaw.Select(c => c.Id);
+                                                    lstInsLevelsDistributionRaw[k] = builderInsertLevelsDistributionRaw;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsLevelsDistributionRaw, readerLevelsDistributionRaw =>
+                                                {
+                                                    return true;
+                                                });
+
+
+                                            }
+                                        }
+                                    }
+                                    return true;
+                                });
+                            }
+                        }
+
+
+
                         if (resObject.BandwidthResult != null)
                         {
                             int valInsBWMeasResultRaw = 0;

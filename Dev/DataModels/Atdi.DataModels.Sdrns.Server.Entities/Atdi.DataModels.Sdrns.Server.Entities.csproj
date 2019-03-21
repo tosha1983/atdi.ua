@@ -43,6 +43,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\IAntennaPattern.cs" />
+    <Compile Include="Entities\IDetailSpectrumLevelsRaw.cs" />
+    <Compile Include="Entities\ILevelsDistributionRaw.cs" />
+    <Compile Include="Entities\ISignalMaskRaw.cs" />
+    <Compile Include="Entities\IWorkTimeRaw.cs" />
+    <Compile Include="Entities\IReferenceLevelsRaw.cs" />
+    <Compile Include="Entities\IReferenceSignalRaw.cs" />
+    <Compile Include="Entities\IEmittingRaw.cs" />
+    <Compile Include="Entities\ISpectrumRaw.cs" />
+    <Compile Include="Entities\IDetailReferenceLevelsRaw.cs" />
     <Compile Include="Entities\IBearingRaw.cs" />
     <Compile Include="Entities\IBearing.cs" />
     <Compile Include="Entities\IEntityPart.cs" />
@@ -140,12 +149,19 @@
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\Bearing.xml" />
+    <Content Include="Metadata\Entities\LevelsDistributionRaw.xml" />
+    <Content Include="Metadata\Entities\DetailSpectrumLevelsRaw.xml" />
+    <Content Include="Metadata\Entities\EmittingRaw.xml" />
     <Content Include="Metadata\Entities\Entity.xml" />
     <Content Include="Metadata\Entities\EntityPart.xml" />
     <Content Include="Metadata\Entities\BWMeasResultRaw.xml" />
     <Content Include="Metadata\Entities\FreqSample.xml" />
     <Content Include="Metadata\Entities\LinkResSensorRaw.xml" />
     <Content Include="Metadata\Entities\Logs.xml" />
+    <Content Include="Metadata\Entities\SpectrumRaw.xml" />
+    <Content Include="Metadata\Entities\WorkTimeRaw.xml" />
+    <Content Include="Metadata\Entities\ReferenceLevelsRaw.xml" />
+    <Content Include="Metadata\Entities\ReferenceSignalRaw.xml" />
     <Content Include="Metadata\Entities\ResFreqLevelsRaw.xml" />
     <Content Include="Metadata\Entities\LinkMeasStation.xml" />
     <Content Include="Metadata\Entities\LinkResSensor.xml" />
@@ -175,6 +191,8 @@
     <Content Include="Metadata\Entities\ResSysInfoBlocks.xml" />
     <Content Include="Metadata\Entities\ResSysInfoBlsRaw.xml" />
     <Content Include="Metadata\Entities\ResSysInfoRaw.xml" />
+    <Content Include="Metadata\Entities\DetailReferenceLevelsRaw.xml" />
+    <Content Include="Metadata\Entities\SignalMaskRaw.xml" />
     <Content Include="Metadata\Entities\XVUnit2.xml" />
     <Content Include="Metadata\Entities\SectorMaskElement.xml" />
     <Content Include="Metadata\Entities\MeasDtParam.xml" />
