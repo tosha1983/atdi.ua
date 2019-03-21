@@ -16,6 +16,7 @@
         <StackPanel Grid.Column="1">
             <Button Click="Connect_Click" Content="Connect"/>
             <Button Click="Disconnect_Click" Content="Disconnect"/>
+            <Button Click="SaveToFile" Content="Save Trace To File"/>
             <RepeatButton Click="SetMeas1_Click" Content="Set Meas 1" Delay="10"/>
             <TextBox Name="points"  Text="800"/>
             <RepeatButton Click="SetMeas2_Click" Content="Set Meas 2" Delay="10"/>
