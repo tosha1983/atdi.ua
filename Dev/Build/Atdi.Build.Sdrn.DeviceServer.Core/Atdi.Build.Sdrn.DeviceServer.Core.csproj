@@ -193,7 +193,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+    <PostBuildEvent>copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\Environment.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata"
+copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\DataTypes\Database\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata\DataTypes\Database"
+copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\Entities\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata\Entities"
+copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\Units\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata\Units"
+
+
+copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.CoreServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 
