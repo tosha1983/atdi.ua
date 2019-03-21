@@ -231,12 +231,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                             measResult.Location.Lon = dispatchProcessParent.Lon;
                                             measResult.Location.Lat = dispatchProcessParent.Lat;
                                         }
+                                        else
+                                        {
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
                                         _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
                                     }
                                 }
+                                else
+                                {
+                                    _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                }
+                            }
+                            else
+                            {
+                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
                             measResult.TaskId = context.Task.taskParameters.SDRTaskId;
                             //Отправка результатов в шину 

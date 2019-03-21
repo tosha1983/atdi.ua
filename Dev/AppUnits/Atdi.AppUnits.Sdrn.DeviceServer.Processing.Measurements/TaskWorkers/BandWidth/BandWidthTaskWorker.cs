@@ -162,6 +162,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         //  Здесь получаем данные с GPS приемника
                         //  
                         //////////////////////////////////////////////
+                        outResultData.Location = new DataModels.Sdrns.GeoLocation();
                         var parentProcess = context.Process.Parent;
                         if (parentProcess != null)
                         {
@@ -177,12 +178,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         outResultData.Location.Lon = dispatchProcessParent.Lon;
                                         outResultData.Location.Lat = dispatchProcessParent.Lat;
                                     }
+                                    else
+                                    {
+                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
                                     _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
                                 }
                             }
+                            else
+                            {
+                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                            }
+                        }
+                        else
+                        {
+                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                         }
                         outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
                         //Отправка результатов в шину 
