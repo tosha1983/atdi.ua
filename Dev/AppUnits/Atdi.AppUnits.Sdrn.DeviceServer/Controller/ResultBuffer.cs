@@ -16,9 +16,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         //private readonly ConcurrentBag<ICommandResultPart> _queue;
         private readonly ConcurrentQueue<ICommandResultPart> _queue;
         private readonly CommandDescriptor _descriptor;
-        private readonly CancellationTokenSource _tokenSource;
-        private readonly CancellationToken _cancellationToken;
+        //private readonly CancellationTokenSource _tokenSource;
+        //private readonly CancellationToken _cancellationToken;
         private EventWaitHandle _waiter;
+        //private volatile bool _isDisposing = false;
 
         public ResultBuffer(CommandDescriptor descriptor)
         {
@@ -26,8 +27,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             //this._queue = new ConcurrentBag<ICommandResultPart>();
             this._waiter = new AutoResetEvent(false);
             this._descriptor = descriptor;
-            this._tokenSource = new CancellationTokenSource();
-            this._cancellationToken = _tokenSource.Token;
+            //this._tokenSource = new CancellationTokenSource();
+            //this._cancellationToken = _tokenSource.Token;
         }
 
         public ICommandDescriptor Descriptor => _descriptor;
@@ -49,16 +50,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 {
                     return resultPart;
                 }
-                else if (_cancellationToken.IsCancellationRequested)
-                {
-                    Thread.MemoryBarrier();
-                    // може возникнуть результат в этот момент
-                    if (_queue.TryDequeue(out resultPart))
-                    {
-                        return resultPart;
-                    }
-                    return null;
-                }
+                //else if (_cancellationToken.IsCancellationRequested)
+                //{
+                //    Thread.MemoryBarrier();
+                //    // може возникнуть результат в этот момент
+                //    if (_queue.TryDequeue(out resultPart))
+                //    {
+                //        return resultPart;
+                //    }
+                //    return null;
+                //}
                 //if (_queue.TryTake(out ICommandResultPart resultPart))
                 //{
                 //    return resultPart;
@@ -70,11 +71,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             }
         }
 
-        public void Cancel()
-        {
-            this._tokenSource.Cancel();
-            this._waiter.Set();
-        }
+        //public void Cancel()
+        //{
+        //    this._tokenSource.Cancel();
+
+        //    Thread.MemoryBarrier();
+        //    if (!this._isDisposing)
+        //    {
+        //        this._waiter.Set();
+        //    } 
+        //}
 
         public void Dispose()
         {

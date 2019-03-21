@@ -42,15 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\IAntennaPattern.cs" />
-    <Compile Include="Entities\IFSemples.cs" />
     <Compile Include="Entities\ILastUpdate.cs" />
     <Compile Include="Entities\IReferenceSignalRaw.cs" />
     <Compile Include="Entities\ISignalMaskRaw.cs" />
     <Compile Include="Entities\ITaskParametersFreq.cs" />
-    <Compile Include="Entities\IMeasResultsLevel.cs" />
-    <Compile Include="Entities\IMeasResultsFreq.cs" />
     <Compile Include="Entities\ITaskParameters.cs" />
-    <Compile Include="Entities\IMeasSDRResults.cs" />
     <Compile Include="Entities\IMeasStation.cs" />
     <Compile Include="Entities\IMeasTask.cs" />
     <Compile Include="Entities\IOwnerData.cs" />
@@ -60,7 +56,6 @@
     <Compile Include="Entities\ISensor.cs" />
     <Compile Include="Entities\ISensorAntenna.cs" />
     <Compile Include="Entities\ISensorEquipment.cs" />
-    <Compile Include="Entities\IResultsLocation.cs" />
     <Compile Include="Entities\ISensorLocation.cs" />
     <Compile Include="Entities\ISensorPolygon.cs" />
     <Compile Include="Entities\ISensorSensitivites.cs" />
@@ -108,15 +103,10 @@
     <Content Include="Metadata\Entities\ReferenceSignalRaw.xml" />
     <Content Include="Metadata\Entities\SignalMaskRaw.xml" />
     <Content Include="Metadata\Entities\TaskParametersFreq.xml" />
-    <Content Include="Metadata\Entities\MeasResultsLevel.xml" />
-    <Content Include="Metadata\Entities\MeasResultsFreq.xml" />
     <Content Include="Metadata\Entities\TaskParameters.xml" />
     <Content Include="Metadata\Entities\MeasStation.xml" />
     <Content Include="Metadata\Entities\MeasTask.xml" />
     <Content Include="Metadata\Entities\OwnerData.xml" />
-    <Content Include="Metadata\Entities\ResultsLocation.xml" />
-    <Content Include="Metadata\Entities\FSemples.xml" />
-    <Content Include="Metadata\Entities\MeasSDRResults.xml" />
     <Content Include="Metadata\Entities\Sector.xml" />
     <Content Include="Metadata\Entities\SectorFreq.xml" />
     <Content Include="Metadata\Entities\SectorMaskElement.xml" />

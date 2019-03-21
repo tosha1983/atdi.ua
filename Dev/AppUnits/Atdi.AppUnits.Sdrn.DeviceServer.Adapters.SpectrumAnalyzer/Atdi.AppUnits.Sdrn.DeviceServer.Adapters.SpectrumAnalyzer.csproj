@@ -97,5 +97,8 @@
     <Content Include="dll\NationalInstruments.Common.dll" />
     <Content Include="dll\NationalInstruments.VisaNS.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
