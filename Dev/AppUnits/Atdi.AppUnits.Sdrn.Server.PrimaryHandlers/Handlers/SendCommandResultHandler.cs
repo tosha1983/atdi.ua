@@ -112,19 +112,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                             if (Id > 0)
                             {
-                                var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
-                                builderUpdateSensor.Where(c => c.SensorId, ConditionOperator.Equal, Id);
-                                builderUpdateSensor.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
-                                builderUpdateSensor.SetValue(c => c.Status, "Z");
-                                queryExecuter
-                                 .Execute(builderUpdateSensor);
-                                
-
                                 var values = incomingEnvelope.DeliveryObject.CustTxt1.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                                 if ((values!=null) && (values.Length>0))
                                 {
                                     if (values.Length==3)
                                     {
+
                                         double Lon=-1;
                                         double Lat=-1;
                                         double Asl=-1;
@@ -142,6 +135,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             var cnt = queryExecuter.Execute(queryCheck);
                                             if (cnt == 0)
                                             {
+                                                var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                                                builderUpdateSensor.Where(c => c.SensorId, ConditionOperator.Equal, Id);
+                                                builderUpdateSensor.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
+                                                builderUpdateSensor.SetValue(c => c.Status, "Z");
+                                                queryExecuter
+                                                 .Execute(builderUpdateSensor);
+
                                                 var builderInsertSensor = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                                 builderInsertSensor.SetValue(c => c.SensorId, Id);
                                                 builderInsertSensor.SetValue(c => c.Lon, Lon);
@@ -154,6 +154,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 builderInsertSensor.Select(c => c.Id);
                                                 queryExecuter
                                                 .Execute(builderInsertSensor);
+
                                             }
                                         }
                                     }

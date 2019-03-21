@@ -114,13 +114,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 while (true)
                 {
                     var start = _timeService.TimeStamp.Milliseconds;
+                    var timer = System.Diagnostics.Stopwatch.StartNew();
                     var commandDescriptor = _buffer.Take();
+                    
                     var waitTime = _timeService.TimeStamp.Milliseconds - start;
+                    timer.Stop();
 
                     this._state = DeviceState.Basy;
                     var command = commandDescriptor.Command;
 
-                    using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.ExecutingAdapterCommand.With(commandDescriptor.CommandType.Name, command.Type, command.Id, _adapterType, waitTime)))
+                    using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.ExecutingAdapterCommand.With(commandDescriptor.CommandType.Name, command.Type, command.Id, _adapterType, waitTime, timer.Elapsed.TotalMilliseconds)))
                     {
                         //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TookCommand.With(_adapterType, command.Type, command.ParameterType));
 

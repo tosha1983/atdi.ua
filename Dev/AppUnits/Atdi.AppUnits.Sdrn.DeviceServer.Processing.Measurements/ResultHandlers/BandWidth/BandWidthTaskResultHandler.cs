@@ -24,12 +24,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     var measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level);
 
                     // Отправка результата в родительский процесс (если он есть)
-                    if (taskContext.Descriptor.Parent != null)
+                    var parentProcess = taskContext.Descriptor.Parent;
+                    if (parentProcess != null)
                     {
                         ///если родительский контекст - сигнализация, то отправить результат 
-                        if (taskContext.Descriptor.Parent is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>)
+                        if (parentProcess is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>)
                         {
-                            taskContext.Descriptor.Parent.SetEvent(measBandWidthResults);
+                            parentProcess.SetEvent(measBandWidthResults);
                         }
                         else // иначе отправка в воркер BandWidthTaskWorker 
                         {

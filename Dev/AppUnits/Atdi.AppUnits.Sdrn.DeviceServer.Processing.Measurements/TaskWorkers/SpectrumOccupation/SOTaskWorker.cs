@@ -50,7 +50,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 _logger.Verbouse(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskWorker.With(context.Task.Id));
-                (context.Process.Parent as DispatchProcess).contextSOTasks.Add(context);
+                if (context.Process.Parent != null)
+                {
+                    if (context.Process.Parent is DispatchProcess)
+                    {
+                        (context.Process.Parent as DispatchProcess).contextSOTasks.Add(context);
+                    }
+                }
+
 
                 DateTime dateTimeNow = DateTime.Now;
                 TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
@@ -209,10 +216,40 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
-                            measResult.Location.ASL = (context.Process.Parent as DispatchProcess).Asl;
-                            measResult.Location.Lon = (context.Process.Parent as DispatchProcess).Lon;
-                            measResult.Location.Lat = (context.Process.Parent as DispatchProcess).Lat;
-
+                            var parentProcess = context.Process.Parent;
+                            if (parentProcess != null)
+                            {
+                                if (parentProcess is DispatchProcess)
+                                {
+                                    DispatchProcess dispatchProcessParent = null;
+                                    try
+                                    {
+                                        dispatchProcessParent = (parentProcess as DispatchProcess);
+                                        if (dispatchProcessParent != null)
+                                        {
+                                            measResult.Location.ASL = dispatchProcessParent.Asl;
+                                            measResult.Location.Lon = dispatchProcessParent.Lon;
+                                            measResult.Location.Lat = dispatchProcessParent.Lat;
+                                        }
+                                        else
+                                        {
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                    }
+                                }
+                                else
+                                {
+                                    _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                }
+                            }
+                            else
+                            {
+                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
+                            }
                             measResult.TaskId = context.Task.taskParameters.SDRTaskId;
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");

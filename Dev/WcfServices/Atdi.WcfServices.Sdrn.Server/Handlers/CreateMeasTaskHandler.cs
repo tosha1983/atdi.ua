@@ -75,7 +75,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     var massSensor = SensorIds.ToArray();
                     if (massSensor.Length > 0)
                     {
-                        measTaskProcess.Process(task, massSensor, MeasTaskMode.New.ToString(), false, out bool isSuccessTemp, out int? ID);
+                        measTaskProcess.Process(task, massSensor, MeasTaskMode.New.ToString(), false, out bool isSuccessTemp, out int? ID, true);
                         if (ID != null)
                         {
                             measTaskIdentifier.Value = ID.Value;

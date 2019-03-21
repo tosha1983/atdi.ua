@@ -43,8 +43,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
 
         public void TestCommand2Handler(TestCommand2 command, IExecutionContext context)
         {
-            context.Finish();
-            return;
+            //context.Finish();
+            //return;
 
             this._logger.Debug(Contexts.Adapter2, Categories.Handle, Events.HandleCommand.With(command.GetType().Name));
 
@@ -52,9 +52,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
             {
 
                 var predel = command.Parameter.Predel;
-                for (int i = 0; i < command.Parameter.Count; i++)
+                for (int i = 1; i <= command.Parameter.Count; i++)
                 {
-                    var status = (i < (command.Parameter.Count - 1)) ? CommandResultStatus.Next : CommandResultStatus.Final;
+                    var status = (i == command.Parameter.Count) ? CommandResultStatus.Final : CommandResultStatus.Next;
 
                     var isCancelled = context.Token.IsCancellationRequested;
                     if (isCancelled)
@@ -62,14 +62,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                         status = CommandResultStatus.Final;
                     }
 
-                    var adapterResult = new Adapter2Result((ulong)0, CommandResultStatus.Next);
+                    var adapterResult = new Adapter2Result((ulong)i, status);
                     adapterResult.Value = (float)Math.PI;
 
                     //if (i <= predel)
                     //{
                     //    context.PushResult(adapterResult);
                     //}
-                    
+                    context.PushResult(adapterResult);
 
                     if (isCancelled)
                     {

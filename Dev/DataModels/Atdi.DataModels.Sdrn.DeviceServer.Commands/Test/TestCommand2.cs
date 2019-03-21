@@ -41,5 +41,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
             : base(CommandType.MesureAudio, parameter)
         {
         }
+
+        public int Index { get; set; }
+
+        public int LastIndex { get; set; }
     }
 }
