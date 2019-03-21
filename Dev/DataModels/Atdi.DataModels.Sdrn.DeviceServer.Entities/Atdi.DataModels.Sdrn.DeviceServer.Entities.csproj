@@ -44,6 +44,8 @@
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\IFSemples.cs" />
     <Compile Include="Entities\ILastUpdate.cs" />
+    <Compile Include="Entities\IReferenceSignalRaw.cs" />
+    <Compile Include="Entities\ISignalMaskRaw.cs" />
     <Compile Include="Entities\ITaskParametersFreq.cs" />
     <Compile Include="Entities\IMeasResultsLevel.cs" />
     <Compile Include="Entities\IMeasResultsFreq.cs" />
@@ -103,6 +105,8 @@
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\LastUpdate.xml" />
+    <Content Include="Metadata\Entities\ReferenceSignalRaw.xml" />
+    <Content Include="Metadata\Entities\SignalMaskRaw.xml" />
     <Content Include="Metadata\Entities\TaskParametersFreq.xml" />
     <Content Include="Metadata\Entities\MeasResultsLevel.xml" />
     <Content Include="Metadata\Entities\MeasResultsFreq.xml" />

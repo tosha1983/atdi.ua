@@ -7,9 +7,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     static class Contexts
     {
         public static readonly EventContext SOTaskWorker = "SOTaskWorker";
-    
+        public static readonly EventContext SignalizationTaskWorker = "SignalizationTaskWorker";
+        public static readonly EventContext BandWidthTaskWorker = "BandWidthTaskWorker";
 
-        
+
     }
 
     static class Categories
@@ -26,7 +27,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly EventText SleepThread = "Sleep thread for command id = {0} at time {1}";
         public static readonly EventText MaximumDurationMeas = "Maximum duration meas can not be -1";
 
-        
+
+
+        public static readonly EventText StartSignalizationTaskWorker = "Start SignalizationTaskWorker context.Task.Id = {0}";
+        public static readonly EventText StartBandWidthTaskWorker = "Start BandWidthTaskWorker context.Task.Id = {0}";
 
 
     }
@@ -39,7 +43,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     {
 
         public static readonly string UnknownErrorSOTaskWorker = "Unknown error in SOTaskWorker";
-
-       
+        public static readonly string UnknownErrorSignalizationTaskWorker = "Unknown error in SignalizationTaskWorker";
+        public static readonly string UnknownErrorBandWidthTaskWorker = "Unknown error in BandWidthTaskWorker";
+        public static readonly string ErrorConvertToDispatchProcess = "Error convert to DispatchProcess";
+        public static readonly string ParentProcessIsNull = "Parent process is null";
+        public static readonly string ParentProcessIsNotTypeDispatchProcess = "Parent process is not type 'DispatchProcess'";
+        public static readonly string AfterConvertParentProcessIsNull = "After convert parent process Is Null value";
+        
     }
 }

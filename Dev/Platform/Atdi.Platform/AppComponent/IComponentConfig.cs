@@ -43,7 +43,7 @@ namespace Atdi.Platform.AppComponent
                     propertyName = propertyAttribute.Name;
                 }
 
-                if (propertyInfo.PropertyType == typeof(string) && propertyAttribute != null && string.IsNullOrEmpty(propertyAttribute.SharedSecret))
+                if (propertyInfo.PropertyType == typeof(string) && propertyAttribute != null && !string.IsNullOrEmpty(propertyAttribute.SharedSecret))
                 {
                     propertyInfo.SetValue(result, config.GetParameterAsDecodeString(propertyName, propertyAttribute.SharedSecret));
                 }

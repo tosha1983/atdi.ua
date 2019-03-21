@@ -130,7 +130,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -139,7 +139,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -152,11 +152,73 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
                     });
+
+                    //ReferenceSignal
+
+                    var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
+                    var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                    builderReferenceSignalRaw.Select(c => c.Id);
+                    builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
+                    builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
+                    builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
+                    builderReferenceSignalRaw.Select(c => c.MeasTaskId);
+                    builderReferenceSignalRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                    queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
+                    {
+                        while (readerReferenceSignalRaw.Read())
+                        {
+                            var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
+                            if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
+                            {
+                                referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
+                            {
+                                referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
+                            {
+                                referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                            }
+
+                            referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
+                            var freqs = new List<double>();
+                            var loss = new List<float>();
+                            var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                            builderSignalMaskRaw.Select(c => c.Id);
+                            builderSignalMaskRaw.Select(c => c.Freq_kHz);
+                            builderSignalMaskRaw.Select(c => c.Loss_dB);
+                            builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
+                            builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                            {
+                                while (readerSignalMaskRaw.Read())
+                                {
+                                    if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+                                    {
+                                        freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                    }
+                                    if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                    {
+                                        loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                    }
+                                }
+                                return true;
+                            });
+
+                            referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
+                            referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+
+                            referenceSignals.Add(referenceSignal);
+                        }
+                        return true;
+                    });
+                    taskParameters.ReferenceSignals = referenceSignals.ToArray();
                 }
                 return true;
             });
@@ -265,7 +327,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -274,7 +336,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -287,11 +349,73 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
                     });
+
+                    //ReferenceSignal
+
+                    var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
+                    var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                    builderReferenceSignalRaw.Select(c => c.Id);
+                    builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
+                    builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
+                    builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
+                    builderReferenceSignalRaw.Select(c => c.MeasTaskId);
+                    builderReferenceSignalRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                    queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
+                    {
+                        while (readerReferenceSignalRaw.Read())
+                        {
+                            var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
+                            if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
+                            {
+                                referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
+                            {
+                                referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
+                            {
+                                referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                            }
+
+                            referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
+                            var freqs = new List<double>();
+                            var loss = new List<float>();
+                            var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                            builderSignalMaskRaw.Select(c => c.Id);
+                            builderSignalMaskRaw.Select(c => c.Freq_kHz);
+                            builderSignalMaskRaw.Select(c => c.Loss_dB);
+                            builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
+                            builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                            {
+                                while (readerSignalMaskRaw.Read())
+                                {
+                                    if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+                                    {
+                                        freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                    }
+                                    if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                    {
+                                        loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                    }
+                                }
+                                return true;
+                            });
+
+                            referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
+                            referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+
+                            referenceSignals.Add(referenceSignal);
+                        }
+                        return true;
+                    });
+                    taskParameters.ReferenceSignals = referenceSignals.ToArray();
                 }
                 return true;
             });
@@ -323,7 +447,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                     builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
                     builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.Type_of_SO.ToString());
+                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                     builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                     builderInsertTaskParameters.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertTaskParameters, readerMeasTask =>
@@ -337,11 +461,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (ID != null)
                     {
-                        for (int i = 0; i < item.List_freq_CH.Count; i++)
+                        var massFreq = item.ListFreqCH.ToArray();
+                        for (int i = 0; i < massFreq.Length; i++)
                         {
                             int? idTaskParametersFreq = null;
                             var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
-                            builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, item.List_freq_CH[i]);
+                            builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
                             builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
                             builderInsertTaskParametersFreq.Select(c => c.Id);
                             queryExecuter.ExecuteAndFetch(builderInsertTaskParametersFreq, readerTaskParametersFreq =>
@@ -353,12 +478,66 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 return true;
                             });
                         }
+
+                        if (item.ReferenceSignals != null)
+                        {
+                            for (int j = 0; j < item.ReferenceSignals.Length; j++)
+                            {
+                                int valueIdReferenceSignal = -1;
+                                var RefSituationReferenceSignal = item.ReferenceSignals[j];
+                                var builderInsertReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().Insert();
+                                builderInsertReferenceSignalRaw.SetValue(c => c.Bandwidth_kHz, RefSituationReferenceSignal.Bandwidth_kHz);
+                                builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, RefSituationReferenceSignal.Frequency_MHz);
+                                builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, RefSituationReferenceSignal.LevelSignal_dBm);
+                                builderInsertReferenceSignalRaw.SetValue(c => c.MeasTaskId, ID);
+                                builderInsertReferenceSignalRaw.Select(c => c.Id);
+                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSignalRaw, readerReferenceSignalRaw =>
+                                {
+                                    while (readerReferenceSignalRaw.Read())
+                                    {
+                                        valueIdReferenceSignal = readerReferenceSignalRaw.GetValue(c => c.Id);
+                                        if (valueIdReferenceSignal > 0)
+                                        {
+                                            var signalMask = RefSituationReferenceSignal.SignalMask;
+                                            if (signalMask != null)
+                                            {
+                                                var lstInsSignalMaskRaw = new IQueryInsertStatement<MD.ISignalMaskRaw>[signalMask.Freq_kHz.Length];
+                                                for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                                {
+                                                    var freq_kH = signalMask.Freq_kHz[k];
+                                                    var loss_dB = signalMask.Loss_dB[k];
+
+                                                    var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Insert();
+                                                    builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
+                                                    builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
+                                                    builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, valueIdReferenceSignal);
+                                                    builderInsertSignalMaskRaw.Select(c => c.Id);
+                                                    lstInsSignalMaskRaw[k] = builderInsertSignalMaskRaw;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsSignalMaskRaw, readerSignalMaskRaw =>
+                                                {
+                                                    while (readerSignalMaskRaw.Read())
+                                                    {
+                                                        var ids = readerSignalMaskRaw.GetValue(c => c.Id);
+                                                    }
+                                                    return true;
+                                                });
+                                            }
+                                        }
+                                    }
+                                    return true;
+                                });
+                            }
+                        }
+
+
                     }
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
                     queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return ID;
@@ -388,7 +567,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                     builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
                     builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.Type_of_SO.ToString());
+                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                     builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                     builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
                     int cntUpdate = queryExecuter.Execute(builderInsertTaskParameters);
@@ -398,9 +577,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     }
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return isSuccessUpdate;
@@ -517,7 +697,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -526,7 +706,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -539,11 +719,75 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
                     });
+
+                    //ReferenceSignal
+
+                    var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
+                    var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                    builderReferenceSignalRaw.Select(c => c.Id);
+                    builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
+                    builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
+                    builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
+                    builderReferenceSignalRaw.Select(c => c.MeasTaskId);
+                    builderReferenceSignalRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                    queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
+                    {
+                        while (readerReferenceSignalRaw.Read())
+                        {
+                            var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
+                            if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
+                            {
+                                referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
+                            {
+                                referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
+                            {
+                                referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                            }
+
+                            referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
+                            var freqs = new List<double>();
+                            var loss = new List<float>();
+                            var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                            builderSignalMaskRaw.Select(c => c.Id);
+                            builderSignalMaskRaw.Select(c => c.Freq_kHz);
+                            builderSignalMaskRaw.Select(c => c.Loss_dB);
+                            builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
+                            builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                            {
+                                while (readerSignalMaskRaw.Read())
+                                {
+                                    if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+                                    {
+                                        freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                    }
+                                    if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                    {
+                                        loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                    }
+                                }
+                                return true;
+                            });
+
+                            referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
+                            referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+
+                            referenceSignals.Add(referenceSignal);
+                        }
+                        return true;
+                    });
+                    taskParameters.ReferenceSignals = referenceSignals.ToArray();
+
+
                     listTaskParameters.Add(taskParameters);
                 }
 
@@ -578,7 +822,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.VBW_Hz);
             builderInsertTaskParameters.Select(c => c.Id);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
-            builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
+            //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
                 while (readerMeasTask.Read())
@@ -656,7 +900,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     SOType sOType;
                     if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
                     {
-                        taskParameters.Type_of_SO = sOType;
+                        taskParameters.TypeOfSO = sOType;
                     }
 
 
@@ -665,7 +909,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
                     }
 
-                    taskParameters.List_freq_CH = new List<double>();
+                    taskParameters.ListFreqCH = new List<double>();
 
                     var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
                     builderInsertTaskParametersFreq.Select(c => c.FreqCH);
@@ -678,11 +922,74 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
                             {
-                                taskParameters.List_freq_CH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
+                                taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
                             }
                         }
                         return true;
                     });
+
+                    //ReferenceSignal
+
+                    var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
+                    var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                    builderReferenceSignalRaw.Select(c => c.Id);
+                    builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
+                    builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
+                    builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
+                    builderReferenceSignalRaw.Select(c => c.MeasTaskId);
+                    builderReferenceSignalRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                    queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
+                    {
+                        while (readerReferenceSignalRaw.Read())
+                        {
+                            var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
+                            if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
+                            {
+                                referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
+                            {
+                                referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
+                            }
+                            if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
+                            {
+                                referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                            }
+
+                            referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
+                            var freqs = new List<double>();
+                            var loss = new List<float>();
+                            var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                            builderSignalMaskRaw.Select(c => c.Id);
+                            builderSignalMaskRaw.Select(c => c.Freq_kHz);
+                            builderSignalMaskRaw.Select(c => c.Loss_dB);
+                            builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
+                            builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                            {
+                                while (readerSignalMaskRaw.Read())
+                                {
+                                    if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+                                    {
+                                        freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                    }
+                                    if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                    {
+                                        loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                    }
+                                }
+                                return true;
+                            });
+
+                            referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
+                            referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+
+                            referenceSignals.Add(referenceSignal);
+                        }
+                        return true;
+                    });
+                    taskParameters.ReferenceSignals = referenceSignals.ToArray();
+
                     listTaskParameters.Add(taskParameters);
                 }
 

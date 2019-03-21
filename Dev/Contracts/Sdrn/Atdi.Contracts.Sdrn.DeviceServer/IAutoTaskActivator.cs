@@ -8,6 +8,6 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IAutoTaskActivator : IDisposable
     {
-        Task Run();
+        void Run();
     }
 }

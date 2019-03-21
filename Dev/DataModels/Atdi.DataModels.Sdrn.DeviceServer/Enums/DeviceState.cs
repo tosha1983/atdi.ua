@@ -21,6 +21,16 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         /// <summary>
         /// Устройство занято
         /// </summary>
-        Basy = 2
+        Basy = 2,
+
+        /// <summary>
+        /// Устройство перешло в состояние отказа
+        /// </summary>
+        Failure = 3,
+
+        /// <summary>
+        /// Устройство прервали
+        /// </summary>
+        Aborted = 4
     }
 }

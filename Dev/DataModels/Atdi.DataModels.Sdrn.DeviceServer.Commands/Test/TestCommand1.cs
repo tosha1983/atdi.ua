@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
 {
-    public class Test1CommandParameter
+    public class TestCommand1Parameter
     {
         public int Count;
         public int Count2;
@@ -25,24 +25,24 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
         }
     }
 
-    public class Test1CommandResult : CommandResultPartBase
+    public class TestCommand1Result : CommandResultPartBase
     {
         public double Value;
 
-        public Test1CommandResult(ulong partIndex, CommandResultStatus status) : base(partIndex, status)
+        public TestCommand1Result(ulong partIndex, CommandResultStatus status) : base(partIndex, status)
         {
         }
     }
 
-    public class Test1Command : CommandBase<Test1CommandParameter>
+    public class TestCommand1 : CommandBase<TestCommand1Parameter>
     {
-        public Test1Command()
-            : base(CommandType.MesureAudio, new Test1CommandParameter())
+        public TestCommand1()
+            : base(CommandType.MesureDF, new TestCommand1Parameter())
         {
         }
 
-        public Test1Command(Test1CommandParameter parameter)
-            : base(CommandType.MesureAudio, parameter)
+        public TestCommand1(TestCommand1Parameter parameter)
+            : base(CommandType.MesureDF, parameter)
         {
         }
     }

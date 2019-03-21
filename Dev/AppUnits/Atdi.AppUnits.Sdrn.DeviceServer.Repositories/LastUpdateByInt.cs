@@ -50,9 +50,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return ID;
@@ -75,9 +76,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     }
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return isSuccessDelete;
@@ -163,9 +165,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     }
                     queryExecuter.CommitTransaction();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     queryExecuter.RollbackTransaction();
+                    this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
             return isSuccessUpdate;

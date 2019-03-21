@@ -42,8 +42,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                     var SensorIds = new List<int>();
                     if (measTask.Stations != null)
                     {
-                        foreach (var station in measTask.Stations)
+
+                        for (int u=0; u< measTask.Stations.Length; u++)
                         {
+                            var station = measTask.Stations[u];
+
                             if (station.StationId != null)
                             {
                                 if (station.StationId != null)
@@ -69,9 +72,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                         }
                     }
-                    if (SensorIds.Count > 0)
+                    var massSensor = SensorIds.ToArray();
+                    if (massSensor.Length > 0)
                     {
-                        measTaskProcess.Process(task, SensorIds, MeasTaskMode.New.ToString(), false, out bool isSuccessTemp, out int? ID);
+                        measTaskProcess.Process(task, massSensor, MeasTaskMode.New.ToString(), false, out bool isSuccessTemp, out int? ID, true);
                         if (ID != null)
                         {
                             measTaskIdentifier.Value = ID.Value;

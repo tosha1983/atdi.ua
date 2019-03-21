@@ -90,6 +90,71 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
 
+
+
+                        measTask.RefSituation = new ReferenceSituation();
+                        var referenceSignals = new List<ReferenceSignal>();
+                        var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                        builderReferenceSignalRaw.Select(c => c.Id);
+                        builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
+                        builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
+                        builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
+                        builderReferenceSignalRaw.Select(c => c.MeasTaskId);
+                        builderReferenceSignalRaw.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
+                        {
+                            while (readerReferenceSignalRaw.Read())
+                            {
+                                var referenceSignal = new ReferenceSignal();
+                                if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
+                                {
+                                    referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
+                                }
+                                if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
+                                {
+                                    referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
+                                }
+                                if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
+                                {
+                                    referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                                }
+                              
+                                referenceSignal.SignalMask = new SignalMask();
+                                List<double> freqs = new List<double>();
+                                List<float> loss = new List<float>();
+                                var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                builderSignalMaskRaw.Select(c => c.Id);
+                                builderSignalMaskRaw.Select(c => c.EmittingId);
+                                builderSignalMaskRaw.Select(c => c.Freq_kHz);
+                                builderSignalMaskRaw.Select(c => c.Loss_dB);
+                                builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
+                                builderSignalMaskRaw.Where(c => c.ReferenceSignalId, ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
+                                queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                                {
+                                    while (readerSignalMaskRaw.Read())
+                                    {
+                                        if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+                                        {
+                                            freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                        }
+                                        if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                        {
+                                            loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                        }
+                                    }
+                                    return true;
+                                });
+
+                                referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
+                                referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+
+                                referenceSignals.Add(referenceSignal);
+                            }
+                            return true;
+                        });
+
+                        measTask.RefSituation.ReferenceSignal = referenceSignals.ToArray(); 
+
                         // MeasTimeParamList
 
                         var timeParamList = new MeasTimeParamList();
@@ -538,19 +603,24 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         public  List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
+            var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return ListMTSDR;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks)
-            {
+
+            for (int f=0; f < task.MeasSubTasks.Length; f++)
+            { 
+                var SubTask = task.MeasSubTasks[f];
                 if (SubTask.MeasSubTaskStations != null)
                 {
-                    foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations)
-                    {
+                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                    { 
+                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+                   
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            int? IdentValueTaskSDR = SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
+                            int? IdentValueTaskSDR = saveMeasTask.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
                             MTSDR.TaskId = MeasTaskId.ToString();//IdentValueTaskSDR.GetValueOrDefault().ToString();
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
@@ -790,77 +860,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             return ListMTSDR;
         }
 
-        public int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
-        {
-            int? numVal = null;
-            int? Num = null;
-            bool isNew = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            try
-            {
-                queryExecuter.BeginTransaction();
-                var builderMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().From();
-                builderMeasTaskSDR.Select(c => c.Id);
-                builderMeasTaskSDR.Select(c => c.Num);
-                builderMeasTaskSDR.OrderByDesc(c => c.Num);
-                queryExecuter.Fetch(builderMeasTaskSDR, readerMeasTaskSDR =>
-                {
-                    if (readerMeasTaskSDR.Read())
-                    {
-                        Num = readerMeasTaskSDR.GetValue(c=>c.Num);
-                    }
-                    return true;
-                });
-                
-                if (Num==null)
-                {
-                    Num = 0;
-                }
-                ++Num;
-
-                builderMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().From();
-                builderMeasTaskSDR.Select(c => c.Id);
-                builderMeasTaskSDR.Select(c => c.Num);
-                builderMeasTaskSDR.Where(c=>c.MeasTaskId, ConditionOperator.Equal, TaskId);
-                builderMeasTaskSDR.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, SubTaskId);
-                builderMeasTaskSDR.Where(c => c.MeasSubTaskStaId, ConditionOperator.Equal, SubTaskStationId);
-                builderMeasTaskSDR.Where(c => c.SensorId, ConditionOperator.Equal, SensorId);
-                builderMeasTaskSDR.OrderByDesc(c => c.Id);
-                queryExecuter.Fetch(builderMeasTaskSDR, readerMeasTaskSDR =>
-                {
-                    if (readerMeasTaskSDR.Read())
-                    {
-                        isNew = true;
-                        numVal = readerMeasTaskSDR.GetValue(c=>c.Num);
-                    }
-                    return true;
-                });
-
-               
-
-                if (!isNew)
-                {
-                    var builderInsertMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().Insert();
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasTaskId, TaskId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasSubTaskId, SubTaskId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasSubTaskStaId, SubTaskStationId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.SensorId, SensorId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.Num, Num);
-                    builderInsertMeasTaskSDR.Select(c => c.Id);
-                    queryExecuter.ExecuteAndFetch(builderInsertMeasTaskSDR, reader =>
-                    {
-                        return true;
-                    });
-                    numVal = Num;
-                    queryExecuter.CommitTransaction();
-                }
-            }
-            catch (Exception)
-            {
-                queryExecuter.RollbackTransaction();
-            }
-            return numVal;
-        }
+      
     }
 }
 

@@ -7,7 +7,6 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 using Atdi.Platform.Logging;
 using System;
 using DM = Atdi.DataModels.Sdrns.Device;
-using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
@@ -51,7 +50,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 _logger.Verbouse(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskWorker.With(context.Task.Id));
-                (context.Process.Parent as DispatchProcess).contextSOTasks.Add(context);
+                if (context.Process.Parent != null)
+                {
+                    if (context.Process.Parent is DispatchProcess)
+                    {
+                        (context.Process.Parent as DispatchProcess).contextSOTasks.Add(context);
+                    }
+                }
+
 
                 DateTime dateTimeNow = DateTime.Now;
                 TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
@@ -109,13 +115,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
 
                     var timeStamp = this._timeService.TimeStamp.Milliseconds;
-                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter)
-                    {
-                        Options = CommandOption.PutInQueue,
-                        StartTimeStamp = timeStamp,
-                        Timeout = timeStamp + maximumDurationMeas
-                    };
-
+                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
                     //////////////////////////////////////////////
                     // 
                     // Отправка команды в контроллер (причем context уже содержит информацию о сообщение с шины RabbitMq)
@@ -158,34 +158,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (error._ex != null)
                             {
                                 /// реакция на ошибку выполнения команды
-                                _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
+                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
                                 switch (error._failureReason)
                                 {
                                     case CommandFailureReason.DeviceIsBusy:
                                     case CommandFailureReason.CanceledExecution:
                                     case CommandFailureReason.TimeoutExpired:
                                     case CommandFailureReason.CanceledBeforeExecution:
-                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
                                         Thread.Sleep((int)maximumDurationMeas);
                                         return;
                                     case CommandFailureReason.NotFoundConvertor:
                                     case CommandFailureReason.NotFoundDevice:
-                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.SOKoeffWaitingDevice;
+                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.KoeffWaitingDevice;
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
-                                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                             context.Cancel();
                                             return;
                                         }
                                         else
                                         {
-                                            _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
                                             Thread.Sleep(durationToRepietMeas);
                                         }
                                         break;
                                     case CommandFailureReason.Exception:
-                                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
                                         context.Cancel();
                                         return;
                                     default:
@@ -216,10 +216,40 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
-                            measResult.Location.ASL = (context.Process.Parent as DispatchProcess).Asl;
-                            measResult.Location.Lon = (context.Process.Parent as DispatchProcess).Lon;
-                            measResult.Location.Lat = (context.Process.Parent as DispatchProcess).Lat;
-
+                            var parentProcess = context.Process.Parent;
+                            if (parentProcess != null)
+                            {
+                                if (parentProcess is DispatchProcess)
+                                {
+                                    DispatchProcess dispatchProcessParent = null;
+                                    try
+                                    {
+                                        dispatchProcessParent = (parentProcess as DispatchProcess);
+                                        if (dispatchProcessParent != null)
+                                        {
+                                            measResult.Location.ASL = dispatchProcessParent.Asl;
+                                            measResult.Location.Lon = dispatchProcessParent.Lon;
+                                            measResult.Location.Lat = dispatchProcessParent.Lat;
+                                        }
+                                        else
+                                        {
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                    }
+                                }
+                                else
+                                {
+                                    _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                }
+                            }
+                            else
+                            {
+                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
+                            }
                             measResult.TaskId = context.Task.taskParameters.SDRTaskId;
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
@@ -283,7 +313,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         publisher.Dispose();
 
                         context.Finish();
-                        
                         break;
                     }
                     //////////////////////////////////////////////

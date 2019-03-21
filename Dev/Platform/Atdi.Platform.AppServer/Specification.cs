@@ -24,6 +24,7 @@ namespace Atdi.Platform.AppServer
         public static readonly EventCategory Stopping = "Stopping";
         public static readonly EventCategory Starting = "Starting";
         public static readonly EventCategory Disposabling = "Disposabling";
+        public static readonly EventCategory Triggering = "Triggering";
     }
 
     static class Events
@@ -59,6 +60,10 @@ namespace Atdi.Platform.AppServer
         public static readonly EventText ServerComponentDidNotInstall = "The Server Component did not install. Type is {0}, instance '{1}', assembly {2}";
         public static readonly EventText ServerComponentInstalled = "The Server Component installed successfully";
 
+        public static readonly EventText TriggerExecuting = "The trigger is executing: Context = '{0}'";
+        public static readonly EventText TriggerExecuted = "The trigger was executed: Context = '{0}'";
+
+        public static readonly EventText ExecutingTriggerError = "Error occurred while executing the trigger: Context = '{0}'";
     }
 
     static class TraceScopeNames

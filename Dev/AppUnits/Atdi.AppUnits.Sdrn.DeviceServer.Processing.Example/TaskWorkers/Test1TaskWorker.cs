@@ -26,14 +26,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
             this._timeService = timeService;
             this._logger = logger;
 
-            this._logger.Debug(Contexts.Test1CommandResultHandler, Categories.Ctor, Events.Call);
+            this._logger.Debug(Contexts.Test1TaskWorker, Categories.Ctor, Events.Call);
         }
 
         public void Run(ITaskContext<Test1Task, Test1Process> context)
         {
-            this._logger.Debug(Contexts.Test1CommandResultHandler, Categories.Run, Events.RunTask.With(context.Task.Id));
+            this._logger.Debug(Contexts.Test1TaskWorker, Categories.Run, Events.RunTask.With(context.Task.Id));
 
-            var deviceCommand1 = new Test1Command()
+            var deviceCommand1 = new TestCommand1()
             {
                 Timeout = this._timeService.TimeStamp.Milliseconds
             };
@@ -43,7 +43,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
             deviceCommand1.Parameter.Delay = 2;
             deviceCommand1.Parameter.ResultDelay = 3;
 
-            this._controller.SendCommand<Test1CommandResult>(context, deviceCommand1);
+            this._controller.SendCommand<TestCommand1Result>(context, deviceCommand1);
             var isDone = false;
             var c = 0;
             while (!context.Process.IsDone || !isDone)

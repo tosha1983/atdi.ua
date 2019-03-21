@@ -43,9 +43,6 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertMeasTaskToTaskParameters.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />
-    <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
     <Compile Include="Handlers\SendCommandHandler.cs" />
     <Compile Include="Handlers\SendRegistrationResultHandler.cs" />
     <Compile Include="Handlers\SendSensorUpdatingResultHandler.cs" />
@@ -124,6 +121,8 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

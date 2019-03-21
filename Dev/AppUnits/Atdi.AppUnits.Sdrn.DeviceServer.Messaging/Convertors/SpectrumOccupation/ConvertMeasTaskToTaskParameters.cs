@@ -25,23 +25,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             {
                 if (taskSDR.Frequencies.Values_MHz != null)
                 {
-                    taskParameters.List_freq_CH = new List<double>();
-                    taskParameters.List_freq_CH.Clear();
+                    taskParameters.ListFreqCH = new List<double>();
+                    taskParameters.ListFreqCH.Clear();
                     for (int i = 0; i < taskSDR.Frequencies.Values_MHz.Length; i++)
                     {
                         var freq = taskSDR.Frequencies.Values_MHz[i];
-                        taskParameters.List_freq_CH.Add(freq);
+                        taskParameters.ListFreqCH.Add(freq);
                     }
                 }
                 if ((taskSDR.Frequencies.RgL_MHz == null) || (taskSDR.Frequencies.RgU_MHz == null)) // если вдруг отсутвуют начало и конец
                 {
-                    if (taskParameters.List_freq_CH != null)
+                    if (taskParameters.ListFreqCH != null)
                     {
-                        if (taskParameters.List_freq_CH.Count > 0)
+                        if (taskParameters.ListFreqCH.Count > 0)
                         {
-                            taskParameters.List_freq_CH.Sort();
-                            taskParameters.MinFreq_MHz = taskParameters.List_freq_CH[0];
-                            taskParameters.MaxFreq_MHz = taskParameters.List_freq_CH[taskParameters.List_freq_CH.Count - 1];
+                            taskParameters.ListFreqCH.Sort();
+                            taskParameters.MinFreq_MHz = taskParameters.ListFreqCH[0];
+                            taskParameters.MaxFreq_MHz = taskParameters.ListFreqCH[taskParameters.ListFreqCH.Count - 1];
                         }
                     }
                     else { taskParameters.MinFreq_MHz = 100; taskParameters.MaxFreq_MHz = 110; }
@@ -77,13 +77,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     {
                         if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else {taskParameters.NChenal = 10;}
                         if (taskSDR.SOParam.LevelMinOccup_dBm <= 0) { taskParameters.LevelMinOccup_dBm = taskSDR.SOParam.LevelMinOccup_dBm; } else { taskParameters.LevelMinOccup_dBm = -80; }
-                        taskParameters.Type_of_SO = sOtype;
-                        if ((taskParameters.List_freq_CH != null) && (taskParameters.List_freq_CH.Count>0))
+                        taskParameters.TypeOfSO = sOtype;
+                        if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count>0))
                         {
                             // формируем начало и конец для измерений 
-                            taskParameters.List_freq_CH.Sort();
-                            taskParameters.MinFreq_MHz = taskParameters.List_freq_CH[0] - taskParameters.StepSO_kHz / 2000;
-                            taskParameters.MaxFreq_MHz = taskParameters.List_freq_CH[taskParameters.List_freq_CH.Count - 1] + taskParameters.StepSO_kHz / 2000;
+                            taskParameters.ListFreqCH.Sort();
+                            taskParameters.MinFreq_MHz = taskParameters.ListFreqCH[0] - taskParameters.StepSO_kHz / 2000;
+                            taskParameters.MaxFreq_MHz = taskParameters.ListFreqCH[taskParameters.ListFreqCH.Count - 1] + taskParameters.StepSO_kHz / 2000;
                         }
                         // расчитываем желаемое RBW и VBW
                         taskParameters.VBW_Hz = taskParameters.StepSO_kHz * 1000 / taskParameters.NChenal;
@@ -95,6 +95,46 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             taskParameters.SDRTaskId = taskSDR.TaskId;
             taskParameters.MeasurementType = GetMeasTypeFromMeasurementType(taskSDR.Measurement);
             taskParameters.status = taskSDR.Status;
+
+            if (taskSDR.RefSituation != null)
+            {
+                var referenceSignal = taskSDR.RefSituation.ReferenceSignal;
+                if (referenceSignal != null)
+                {
+                    taskParameters.ReferenceSignals = new ReferenceSignal[referenceSignal.Length];
+                    for (int l=0; l< referenceSignal.Length; l++)
+                    {
+                        taskParameters.ReferenceSignals[l] = new ReferenceSignal();
+                        var referenceSignalVal = taskParameters.ReferenceSignals[l];
+                        referenceSignalVal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
+                        referenceSignalVal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
+                        referenceSignalVal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                        referenceSignalVal.SignalMask = new SignalMask();
+
+                        var signalMask = referenceSignal[l].SignalMask;
+                        if (signalMask!=null)
+                        {
+                            if ((signalMask.Freq_kHz != null) && (signalMask.Freq_kHz.Length > 0))
+                            {
+                                var massFreq = new double[signalMask.Freq_kHz.Length];
+                                var massLoss = new float[signalMask.Freq_kHz.Length];
+
+                                for (int r = 0; r < signalMask.Freq_kHz.Length; r++)
+                                {
+                                    massFreq[r]=signalMask.Freq_kHz[r];
+                                }
+                                for (int r = 0; r < signalMask.Loss_dB.Length; r++)
+                                {
+                                    massLoss[r] =signalMask.Loss_dB[r];
+                                }
+                                referenceSignalVal.SignalMask.Freq_kHz = massFreq;
+                                referenceSignalVal.SignalMask.Loss_dB = massLoss;
+                            }
+                        }
+                        taskParameters.ReferenceSignals[l] = referenceSignalVal;
+                    }
+                }
+            }
 
             // до конца не определенные блоки
             taskParameters.ReceivedIQStreemDuration_sec = 1.0;

@@ -16,6 +16,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static readonly EventContext SendRegistrationResultTaskWorker = "SendRegistrationResultTaskWorker";
         public static readonly EventContext EventTaskWorker = "EventTaskWorker";
         public static readonly EventContext DeviceCommandTaskWorker = "DeviceCommandTaskWorker";
+        public static readonly EventContext EventCommand = "EventCommand";
+
         
     }
 
@@ -72,6 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static readonly string DeviceServerCanNotBeStarted = "The DeviceServer can not be started, because there is no information about the registered object in the database";
         public static readonly string NotFoundInformationWithGetDevicesProperties = "Not found information about sensor by 'GetDevicesProperties'";
         public static readonly string NotFoundInformationAboutSensor = "Not found information about sensor";
-
+        public static readonly string UnknownErrorEventCommand = "Unknown error in EventCommand";
+        
     }
 }

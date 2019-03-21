@@ -20,5 +20,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         {
             return AC.TimeStamp.HitTimeout(startStampMilliseconds, timeoutMilliseconds);
         }
+
+        public bool HitMilliseconds(long startStampMilliseconds, long timeoutMilliseconds, out long lateness)
+        {
+            return AC.TimeStamp.HitTimeout(startStampMilliseconds, timeoutMilliseconds, out lateness);
+        }
     }
 }

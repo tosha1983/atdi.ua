@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
 {
-    public class ResultConvertor1 : IResultConvertor<Adapter1Result, Test1CommandResult>
+    public class ResultConvertor1 : IResultConvertor<Adapter1Result, TestCommand1Result>
     {
         private readonly ILogger _logger;
 
@@ -21,11 +21,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
             this._logger.Debug(Contexts.ResultConvertor1, Categories.Ctor, Events.Call);
         }
 
-        public Test1CommandResult Convert(Adapter1Result result, ICommand command)
+        public TestCommand1Result Convert(Adapter1Result result, ICommand command)
         {
             this._logger.Debug(Contexts.ResultConvertor1, Categories.Converting, Events.ConvertFromTo.With("Adapter1Type", "CommandResult1Type"));
 
-            var commandResult = new Test1CommandResult(result.PartIndex, result.Status)
+            var commandResult = new TestCommand1Result(result.PartIndex, result.Status)
             {
                 Value = (double)result.Value
             };

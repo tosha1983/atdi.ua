@@ -33,16 +33,21 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         
 
-        public  List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
+        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
-            if (task.MeasSubTasks == null) return ListMTSDR;
-            foreach (MeasSubTask SubTask in task.MeasSubTasks)
+            if (task.MeasSubTasks == null) return null;
+
+            for (int f = 0; f < task.MeasSubTasks.Length; f++)
             {
+                var SubTask = task.MeasSubTasks[f];
+
                 if (SubTask.MeasSubTaskStations != null)
                 {
-                    foreach (MeasSubTaskStation SubTaskStation in SubTask.MeasSubTaskStations)
+                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
                     {
+                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {
@@ -151,6 +156,34 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     MTSDR.Frequencies.RgL_MHz = task.MeasFreqParam.RgL;
                                     MTSDR.Frequencies.RgU_MHz = task.MeasFreqParam.RgU;
                                     MTSDR.Frequencies.Step_kHz = task.MeasFreqParam.Step;
+                                }
+
+                                if (task.RefSituation!=null)
+                                {
+                                    if (task.RefSituation.ReferenceSignal != null)
+                                    {
+                                        MTSDR.RefSituation = new DEV.ReferenceSituation();
+                                        var referenceSignal = task.RefSituation.ReferenceSignal;
+                                        if (referenceSignal.Length > 0)
+                                        {
+                                            MTSDR.RefSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
+                                            for (int l=0; l< referenceSignal.Length; l++)
+                                            {
+                                                var refSituationReferenceSignal = MTSDR.RefSituation.ReferenceSignal[l];
+                                                refSituationReferenceSignal = new DEV.ReferenceSignal();
+                                                refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
+                                                refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
+                                                refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                                                refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
+                                                if (referenceSignal[l].SignalMask!=null)
+                                                {
+                                                    refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
+                                                    refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
+                                                }
+                                                MTSDR.RefSituation.ReferenceSignal[l] = refSituationReferenceSignal;
+                                            }
+                                        }
+                                    }
                                 }
 
                                 double subFreqMaxMin = 0;
@@ -284,7 +317,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     }
                 }
             }
-            return ListMTSDR;
+            return ListMTSDR.ToArray();
         }
 
         public int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
@@ -352,9 +385,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     queryExecuter.CommitTransaction();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 queryExecuter.RollbackTransaction();
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return numVal;
         }

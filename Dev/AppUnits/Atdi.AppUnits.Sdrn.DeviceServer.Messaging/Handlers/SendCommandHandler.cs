@@ -46,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             try
             {
                 DM.DeviceCommand deviceCommand = message.Data;
+
                 if (deviceCommand.CustNbr1 != null)
                 {
                     int idTask = (int)deviceCommand.CustNbr1;

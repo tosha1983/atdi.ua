@@ -65,8 +65,10 @@
     <Compile Include="Controller\ResultHandlersHost.cs" />
     <Compile Include="Controller\ResultsHost.cs" />
     <Compile Include="Controller\ResultWorker.cs" />
+    <Compile Include="Controller\TimerScheduler.cs" />
     <Compile Include="DeviceServerConfig.cs" />
     <Compile Include="Processing\AutoTaskActivator.cs" />
+    <Compile Include="Processing\EventWaiter.cs" />
     <Compile Include="Processing\ProcessingDispatcher.cs" />
     <Compile Include="Processing\TaskContext.cs" />
     <Compile Include="Processing\TaskDescriptor.cs" />
@@ -135,6 +137,8 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

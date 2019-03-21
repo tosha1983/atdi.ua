@@ -92,6 +92,12 @@ namespace Atdi.DataModels.Sdrns.Device
         public MeasuredFrequencies Frequencies { get; set; }
 
         ///// <summary>
+        ///// Reference situation
+        ///// </summary>
+        [DataMember]
+        public ReferenceSituation  RefSituation { get; set; }
+
+        ///// <summary>
         ///// Measurement equipment parameters
         ///// </summary>
         [DataMember]

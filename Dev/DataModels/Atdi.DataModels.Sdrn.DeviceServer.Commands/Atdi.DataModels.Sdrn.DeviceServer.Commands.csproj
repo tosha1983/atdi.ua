@@ -58,6 +58,7 @@
     <Compile Include="Results\MesureIQStreamResult.cs" />
     <Compile Include="Results\MesureTraceResult.cs" />
     <Compile Include="Test\MesureGpsLocationExampleResult.cs" />
+    <Compile Include="Test\TestCommand2.cs" />
     <Compile Include="Test\TestCommand1.cs" />
   </ItemGroup>
   <ItemGroup>

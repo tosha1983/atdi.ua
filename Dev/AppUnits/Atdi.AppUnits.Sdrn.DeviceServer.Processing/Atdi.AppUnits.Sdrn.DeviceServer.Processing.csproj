@@ -42,9 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
+    <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />
     <Compile Include="DispatcherWorker.cs" />
     <Compile Include="EventProcessing\DeferredTaskWorker.cs" />
     <Compile Include="ConfigProcessing.cs" />
+    <Compile Include="EventProcessing\EventCommand.cs" />
     <Compile Include="GPS\GPSWorker.cs" />
     <Compile Include="GPS\GPSTaskResultHandler.cs" />
     <Compile Include="EventProcessing\QueueEventTaskWorker.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureTraceDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\RegisterSensorTaskWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SensorActivity\SensorActivityWorker.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,15 +114,13 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppUnits.Sdrn.DeviceServer.Messaging\Atdi.AppUnits.Sdrn.DeviceServer.Messaging.csproj">
-      <Project>{e4157d42-8855-479c-9732-ac8fb891f7ff}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Messaging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

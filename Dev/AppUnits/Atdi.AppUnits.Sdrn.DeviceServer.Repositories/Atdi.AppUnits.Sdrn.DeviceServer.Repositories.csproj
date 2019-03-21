@@ -44,6 +44,7 @@
     <Compile Include="RepositoryComponent.cs" />
     <Compile Include="MeasTaskRepository.cs" />
     <Compile Include="LastUpdateByInt.cs" />
+    <Compile Include="Specification.cs" />
     <Compile Include="TaskParametersByStringRepository.cs" />
     <Compile Include="TaskParametersByIntRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,6 +94,9 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -53,6 +53,8 @@
     <Compile Include="Specification.cs" />
     <Compile Include="Subscribes\Handlers\MeasTaskProcess\SaveMeasTask.cs" />
     <Compile Include="Subscribes\Handlers\MeasTaskProcess\LoadMeasTask.cs" />
+    <Compile Include="Subscribes\Handlers\Sensor\SaveSensor.cs" />
+    <Compile Include="Subscribes\Handlers\Sensor\LoadSensor.cs" />
     <Compile Include="Subscribes\OnReceivedRunMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedDelMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedStopMeasTaskEvent.cs" />

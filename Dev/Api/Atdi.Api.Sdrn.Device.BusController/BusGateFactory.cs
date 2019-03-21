@@ -227,12 +227,12 @@ namespace Atdi.Api.Sdrn.Device.BusController
             result = string.Empty;
             if (!gateConfig.TryGetValue(paramName, out result))
             {
-                logger.Error(BusEvents.ConfigParameterError, " ValidateParameter", $"Parameter with name '{paramName}' was undefined", this);
+                logger.Error(BusEvents.ConfigParameterError, "SDRN.Bus: ValidateParameter", $"Parameter with name '{paramName}' was undefined", this);
                 return false;
             }
             if (string.IsNullOrEmpty(result))
             {
-                logger.Error(BusEvents.ConfigParameterError, " ValidateParameter", $"Parameter with name '{paramName}' is empty", this);
+                logger.Error(BusEvents.ConfigParameterError, "SDRN.Bus: ValidateParameter", $"Parameter with name '{paramName}' is empty", this);
                 return false;
             }
             return true;
@@ -300,13 +300,13 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
                 var gate = new BusGate(gateTag, descriptor, messageConvertor, logger);
 
-                logger.Info(0, "CreateGate", "The object of the gate was created saccessfully", this);
+                logger.Info(0, "SDRN.Bus: CreateGate", "The Gate Object was created saccessfully", this);
 
                 return gate;
             }
             catch(Exception e)
             {
-                throw new InvalidOperationException("The object of the gate was not created", e);
+                throw new InvalidOperationException("SDRN.Bus: The Gate Object was not created", e);
             }
         }
 

@@ -6,7 +6,6 @@ using Atdi.Platform.Logging;
 using System;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
@@ -71,42 +70,54 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 {
                                     if (context.Process.activeSensor != null)
                                     {
-
                                         var process = _processingDispatcher.Start<SpectrumOccupationProcess>(context.Process);
-
-                                        var soTask = new SOTask()
-                                        {
-                                            TimeStamp = _timeService.TimeStamp.Milliseconds, // фиксируем текущий момент, или берем заранее снятый
-                                            Options = TaskExecutionOption.Default,
-                                        };
-
+                                        var soTask = new SOTask();
                                         soTask.sensorParameters = context.Process.activeSensor.Convert();
-
                                         soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
-
                                         soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
-
-                                        soTask.SleepTimePeriodForWaitingStartingMeas = this._config.maximumTimeForWaitingResultSO;
-
-                                        soTask.SOKoeffWaitingDevice = this._config.SOKoeffWaitingDevice;
-
+                                        soTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
+                                        soTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                         soTask.LastTimeSend = DateTime.Now;
-
                                         soTask.taskParameters = taskParameters;
-
                                         soTask.mesureTraceParameter = soTask.taskParameters.Convert();
-
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
-
                                         _taskStarter.RunParallel(soTask, process, context);
-
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(soTask.Id));
-
                                         if (context.Process.listDeferredTasks.Contains(taskParameters))
                                         {
                                             context.Process.listDeferredTasks.Remove(taskParameters);
                                         }
                                     }
+                                }
+                                else if (taskParameters.MeasurementType == MeasType.Signaling)
+                                {
+                                    var signalProcess = _processingDispatcher.Start<SignalizationProcess>(context.Process);
+                                    var signalTask = new SignalizationTask();
+                                    signalTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                    signalTask.maximumTimeForWaitingResultSignalization = this._config.maximumTimeForWaitingResultSO;
+                                    signalTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
+                                    signalTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
+                                    signalTask.LastTimeSend = DateTime.Now;
+                                    signalTask.taskParameters = taskParameters;
+                                    signalTask.mesureTraceParameter = signalTask.taskParameters.Convert();
+                                    _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
+                                    _taskStarter.RunParallel(signalTask, signalProcess, context);
+                                    _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));
+                                }
+                                else if (taskParameters.MeasurementType == MeasType.BandwidthMeas)
+                                {
+                                    var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(context.Process);
+                                    var bandWidtTask = new BandWidthTask();
+                                    bandWidtTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                    bandWidtTask.maximumTimeForWaitingResultBandWidth = this._config.maximumTimeForWaitingResultBandWidth;
+                                    bandWidtTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
+                                    bandWidtTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
+                                    bandWidtTask.LastTimeSend = DateTime.Now;
+                                    bandWidtTask.taskParameters = taskParameters;
+                                    bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.Convert();
+                                    _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
+                                    _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
+                                    _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(bandWidtTask.Id));
                                 }
                                 else
                                 {
