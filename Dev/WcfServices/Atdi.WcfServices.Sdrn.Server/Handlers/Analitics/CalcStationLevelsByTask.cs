@@ -55,9 +55,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStLevelCar.Select(c => c.ResStationId);
                 builderResStLevelCar.Select(c => c.TimeOfMeasurements);
                 builderResStLevelCar.Select(c => c.RESSTATION.RESMEAS.MeasTaskId);
-                builderResStLevelCar.Where(c => c.RESSTATION.RESMEAS.Id, ConditionOperator.In, paramsStationLevelsByTask.MeasResultID.ToArray());
-                builderResStLevelCar.Where(c => c.RESSTATION.RESMEAS.MeasTaskId, ConditionOperator.Equal, paramsStationLevelsByTask.MeasTaskId.ToString());
-                builderResStLevelCar.Where(c => c.RESSTATION.SectorId, ConditionOperator.Equal, paramsStationLevelsByTask.SectorId);
+                if ((paramsStationLevelsByTask.MeasResultID != null) && (paramsStationLevelsByTask.MeasResultID.Count>0))
+                {
+                    builderResStLevelCar.Where(c => c.RESSTATION.RESMEAS.Id, ConditionOperator.In, paramsStationLevelsByTask.MeasResultID.ToArray());
+                }
+                if (paramsStationLevelsByTask.MeasTaskId>0)
+                {
+                    builderResStLevelCar.Where(c => c.RESSTATION.RESMEAS.MeasTaskId, ConditionOperator.Equal, paramsStationLevelsByTask.MeasTaskId.ToString());
+                }
+                if (paramsStationLevelsByTask.SectorId > 0)
+                {
+                    builderResStLevelCar.Where(c => c.RESSTATION.SectorId, ConditionOperator.Equal, paramsStationLevelsByTask.SectorId);
+                }
                 queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
                 {
                     while (readerResStLevelCar.Read())
