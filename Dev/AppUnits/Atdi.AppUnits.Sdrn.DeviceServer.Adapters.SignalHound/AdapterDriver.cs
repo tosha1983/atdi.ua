@@ -108,14 +108,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             return "Unknown device";
         }
 
-        public static string bbGetSerialString(int device)
+        public static int bbGetSerialString(int device)
         {
             uint serial_number = 0;
             if (bbGetSerialNumber(device, ref serial_number) == EN.Status.NoError)
             {
-                return serial_number.ToString();
+                return (int)serial_number;
             }
-            return "";
+            return (int)serial_number;
         }
 
         public static string bbGetFirmwareString(int device)
