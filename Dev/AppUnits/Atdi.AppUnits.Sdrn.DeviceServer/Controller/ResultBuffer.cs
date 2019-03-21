@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class ResultBuffer : IResultBuffer
+    class ResultBuffer : IResultBuffer, IDisposable
     {
         private readonly object _locker = new object();
         //private readonly ConcurrentBag<ICommandResultPart> _queue;
@@ -45,12 +45,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             while (true)
             {
-
                 if (_queue.TryDequeue(out ICommandResultPart resultPart))
                 {
                     return resultPart;
                 }
-
+                else if (_cancellationToken.IsCancellationRequested)
+                {
+                    Thread.MemoryBarrier();
+                    // може возникнуть результат в этот момент
+                    if (_queue.TryDequeue(out resultPart))
+                    {
+                        return resultPart;
+                    }
+                    return null;
+                }
                 //if (_queue.TryTake(out ICommandResultPart resultPart))
                 //{
                 //    return resultPart;
@@ -58,10 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 /// to wait next command
                 _waiter.WaitOne();
                 
-                if (_cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
+                
             }
         }
 
@@ -69,6 +74,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             this._tokenSource.Cancel();
             this._waiter.Set();
+        }
+
+        public void Dispose()
+        {
+            if (_waiter != null)
+            {
+                _waiter.Close();
+                _waiter = null;
+            }
         }
     }
 }
