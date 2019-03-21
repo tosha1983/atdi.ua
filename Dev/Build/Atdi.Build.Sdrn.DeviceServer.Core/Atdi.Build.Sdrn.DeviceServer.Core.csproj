@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CE621174-5114-4FDF-8B90-ECF741199E37}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Build.Sdrn.DeviceServer</RootNamespace>
-    <AssemblyName>Atdi.Build.Sdrn.DeviceServer</AssemblyName>
+    <RootNamespace>Atdi.Build.Sdrn.DeviceServer.Core</RootNamespace>
+    <AssemblyName>Atdi.Build.Sdrn.DeviceServer.Core</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -54,22 +54,6 @@
       <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
       <Name>Atdi.Api.Sdrn.Device.BusController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter.csproj">
-      <Project>{a285896e-a91a-40f3-ba2e-556b2767f5aa}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test.csproj">
-      <Project>{3d3c1f36-7c53-43d4-adf9-6ec801f6a94e}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.csproj">
-      <Project>{93f2ca4c-2c15-481c-8ce3-30baa661d1ff}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.csproj">
-      <Project>{72d0eaae-5ae0-41c6-b87e-dc01139e7f17}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Repositories\Atdi.AppUnits.Sdrn.DeviceServer.Repositories.csproj">
       <Project>{53367a1d-485e-4d43-81e3-d4008a03773b}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Repositories</Name>
@@ -77,18 +61,6 @@
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Messaging\Atdi.AppUnits.Sdrn.DeviceServer.Messaging.csproj">
       <Project>{e4157d42-8855-479c-9732-ac8fb891f7ff}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.csproj">
-      <Project>{a381b0b1-6897-4b7b-8b4c-6835a0f94f3c}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.csproj">
-      <Project>{66fb8f09-a0cf-4cdc-a3f0-2fad21bf8bef}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing\Atdi.AppUnits.Sdrn.DeviceServer.Processing.csproj">
-      <Project>{df8d6b14-e4a9-4786-9c81-ab6fdf2de152}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer\Atdi.AppUnits.Sdrn.DeviceServer.csproj">
       <Project>{729e3ff4-3732-40d8-aa60-f5aa0bf8ad2e}</Project>
@@ -220,4 +192,22 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.CoreServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Tools.LicenseAnalyzer.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)\Atdi.Build.Sdrn.DeviceServer.Core.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\template.config.xml"
+
+copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

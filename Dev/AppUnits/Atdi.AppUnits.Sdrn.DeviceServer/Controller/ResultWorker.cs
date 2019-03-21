@@ -92,7 +92,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         
         public void Stop()
         {
-            this._resultBuffer.Cancel();
+            // ничего делать не нужно - юуфер сам освободитьс якогда поток результатов перестанет поступать, 
+            // так как его нужно обрботать если данные бегут
+            //this._resultBuffer.Cancel();
         }
     }
 }
