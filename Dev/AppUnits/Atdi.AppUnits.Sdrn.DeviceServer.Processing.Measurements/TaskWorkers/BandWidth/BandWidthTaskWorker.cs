@@ -162,18 +162,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         //  Здесь получаем данные с GPS приемника
                         //  
                         //////////////////////////////////////////////
-                        if (context.Process.Parent != null)
+                        var parentProcess = context.Process.Parent;
+                        if (parentProcess != null)
                         {
-                            if (context.Process.Parent is DispatchProcess)
+                            if (parentProcess is DispatchProcess)
                             {
-                                outResultData.Location.ASL = (context.Process.Parent as DispatchProcess).Asl;
-                                outResultData.Location.Lon = (context.Process.Parent as DispatchProcess).Lon;
-                                outResultData.Location.Lat = (context.Process.Parent as DispatchProcess).Lat;
+                                DispatchProcess dispatchProcessParent = null;
+                                try
+                                {
+                                    dispatchProcessParent = (parentProcess as DispatchProcess);
+                                    if (dispatchProcessParent != null)
+                                    {
+                                        outResultData.Location.ASL = dispatchProcessParent.Asl;
+                                        outResultData.Location.Lon = dispatchProcessParent.Lon;
+                                        outResultData.Location.Lat = dispatchProcessParent.Lat;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                }
                             }
                         }
                         outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
-                            //Отправка результатов в шину 
-                            var publisher = this._busGate.CreatePublisher("main");
+                        //Отправка результатов в шину 
+                        var publisher = this._busGate.CreatePublisher("main");
                         publisher.Send<DM.MeasResults>("SendMeasResults", outResultData);
                         publisher.Dispose();
                         context.Task.MeasResults = null;

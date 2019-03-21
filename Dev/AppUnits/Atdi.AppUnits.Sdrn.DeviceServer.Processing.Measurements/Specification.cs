@@ -45,6 +45,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly string UnknownErrorSOTaskWorker = "Unknown error in SOTaskWorker";
         public static readonly string UnknownErrorSignalizationTaskWorker = "Unknown error in SignalizationTaskWorker";
         public static readonly string UnknownErrorBandWidthTaskWorker = "Unknown error in BandWidthTaskWorker";
-
+        public static readonly string ErrorConvertToDispatchProcess = "Error convert to DispatchProcess";
     }
 }

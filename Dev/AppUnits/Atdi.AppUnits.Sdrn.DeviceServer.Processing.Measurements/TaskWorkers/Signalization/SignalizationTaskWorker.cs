@@ -49,7 +49,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.Id));
-                (context.Process.Parent as DispatchProcess).contextSignalizationTasks.Add(context);
+                if (context.Process.Parent != null)
+                {
+                    if (context.Process.Parent is DispatchProcess)
+                    {
+                        (context.Process.Parent as DispatchProcess).contextSignalizationTasks.Add(context);
+                    }
+                }
 
                 DateTime dateTimeNow = DateTime.Now;
                 TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
@@ -209,9 +215,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
-                            outResultData.Location.ASL = (context.Process.Parent as DispatchProcess).Asl;
-                            outResultData.Location.Lon = (context.Process.Parent as DispatchProcess).Lon;
-                            outResultData.Location.Lat = (context.Process.Parent as DispatchProcess).Lat;
+                            var parentProcess = context.Process.Parent;
+                            if (parentProcess != null)
+                            {
+                                if (parentProcess is DispatchProcess)
+                                {
+                                    DispatchProcess dispatchProcessParent = null;
+                                    try
+                                    {
+                                        dispatchProcessParent = (parentProcess as DispatchProcess);
+                                        if (dispatchProcessParent != null)
+                                        {
+                                            outResultData.Location.ASL = dispatchProcessParent.Asl;
+                                            outResultData.Location.Lon = dispatchProcessParent.Lon;
+                                            outResultData.Location.Lat = dispatchProcessParent.Lat;
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                    }
+                                }
+                            }
 
                             outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
                             //Отправка результатов в шину 
