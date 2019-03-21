@@ -153,6 +153,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.DeviceServe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.DeviceServer.Processing", "Build\Atdi.Build.Sdrn.DeviceServer.Processing\Atdi.Build.Sdrn.DeviceServer.Processing.csproj", "{9EBF735C-0A8C-49F5-B2CE-408701CB87BA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "80 - Test 1", "80 - Test 1", "{105F8961-547E-4AB5-8CCE-CA07BD67A66F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
