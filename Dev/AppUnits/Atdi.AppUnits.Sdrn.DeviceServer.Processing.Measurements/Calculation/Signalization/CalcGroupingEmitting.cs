@@ -13,11 +13,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcGroupingEmitting
     {
-        public static Emitting Convert(Emitting EmittingRaw, Emitting EmittingDetailed, Emitting EmittingSummary)
+        public static Emitting[] Convert(Emitting[] EmittingRaw, Emitting[] EmittingTemp, Emitting[] EmittingSummary)
         {
-            Emitting emittingSummary = new Emitting();
 
-          
+            
+            Emitting[] emittingSummary = new Emitting[1];
             return emittingSummary;
         }
     }

@@ -18,7 +18,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             // НЕ ТЕСТИРОВАННО
             //const
-            double allowableExcess_dB = 10;
+            double allowableExcess_dB = 10; 
             double triggerLevel_dBm_Hz = -150; // должно быть определено в оборудовании
             //const
             ReferenceLevels referenceLevels = new ReferenceLevels();
