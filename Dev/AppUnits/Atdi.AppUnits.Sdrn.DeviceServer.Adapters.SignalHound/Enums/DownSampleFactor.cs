@@ -8,7 +8,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums
 {
     public enum DownSampleFactor : int
     {
-        MinDecimation = 1,
-        MaxDecimation = 8192,
+        MinDecimation = 1,// 2^0
+        MaxDecimation = 8192,// 2^13
     }
 }

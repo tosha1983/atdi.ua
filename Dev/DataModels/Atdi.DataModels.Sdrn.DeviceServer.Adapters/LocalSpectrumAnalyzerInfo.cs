@@ -55,6 +55,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters
             set { _SweepPointFix = value; }
         }
         public int[] SweepPointArr { get; set; }
+        public double SWTMin { get; set; }
+        public double SWTMax { get; set; }
         public int DefaultSweepPoint { get; set; }
         public decimal[] RBWArr { get; set; }
         public decimal[] VBWArr { get; set; }
@@ -86,6 +88,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters
         public bool OBW { get; set; }
         public bool ChnPow { get; set; }
         public bool RangeFixed { get; set; }
+        public decimal RefLevelMin { get; set; }
+        public decimal RefLevelMax { get; set; }
+        public decimal RefLevelStep { get; set; }
 
         //private List<Transducer> _Transducers;
         //public List<Transducer> Transducers

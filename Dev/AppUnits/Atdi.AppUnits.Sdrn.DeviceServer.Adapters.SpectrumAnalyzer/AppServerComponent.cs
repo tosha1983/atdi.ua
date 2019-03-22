@@ -1,9 +1,5 @@
 ﻿using Atdi.Platform.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Atdi.Platform.AppComponent;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 {
@@ -18,7 +14,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         protected override void OnInstallUnit()
         {
-            var adapterConfig = new AdapterConfig(this.Config, this.Logger);
+            var adapterConfig = this.Config.Extract<AdapterConfig>();
             this.Container.RegisterInstance(adapterConfig, ServiceLifetime.Singleton);
 
         }
