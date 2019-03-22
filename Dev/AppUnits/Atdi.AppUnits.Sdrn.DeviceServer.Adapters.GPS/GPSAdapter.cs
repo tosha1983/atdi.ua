@@ -146,39 +146,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             try
             {
-                if (_executionContextGps != null)
+                if ((_executionContextGps != null) && (e!=null))
                 {
                     var resultMember = new COMR.GpsResult(part++, CommandResultStatus.Final);
                     var data = e.LogString;
-                    var result = NMEAParser.Parse(data);
-                    if (result is NMEAStandartSentence)
+                    if (data != null)
                     {
-                        var sentence = (result as NMEAStandartSentence);
-                        if (sentence.SentenceID == SentenceIdentifiers.GGA)
+                        var result = NMEAParser.Parse(data);
+                        if (result != null)
                         {
-
-                            if (_executionContextGps.Token.IsCancellationRequested)
+                            if (result is NMEAStandartSentence)
                             {
-                                _executionContextGps.Cancel();
-                                CloseGPSDevice();
-                                return;
+                                var sentence = (result as NMEAStandartSentence);
+                                if (sentence.SentenceID == SentenceIdentifiers.GGA)
+                                {
+
+                                    if (_executionContextGps.Token.IsCancellationRequested)
+                                    {
+                                        _executionContextGps.Cancel();
+                                        CloseGPSDevice();
+                                        return;
+                                    }
+
+                                    resultMember.Lat = (double)sentence.parameters[1];
+                                    if ((string)sentence.parameters[2] == "S")
+                                        resultMember.Lat = resultMember.Lat * (-1);
+                                    resultMember.Lat = (double)Math.Round(resultMember.Lat.Value, 6);
+
+                                    resultMember.Lon = (double)sentence.parameters[3];
+                                    if ((string)sentence.parameters[4] == "W")
+                                        resultMember.Lon = resultMember.Lon * (-1);
+                                    resultMember.Lon = (double)Math.Round(resultMember.Lon.Value, 6);
+                                    resultMember.Asl = (double)Math.Round((double)sentence.parameters[8], 2);
+
+                                    _executionContextGps.PushResult(resultMember);
+
+                                    // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
+                                    //_executionContextGps.Finish();
+                                }
                             }
-
-                            resultMember.Lat = (double)sentence.parameters[1];
-                            if ((string)sentence.parameters[2] == "S")
-                                resultMember.Lat = resultMember.Lat * (-1);
-                            resultMember.Lat = (double)Math.Round(resultMember.Lat.Value, 6);
-
-                            resultMember.Lon = (double)sentence.parameters[3];
-                            if ((string)sentence.parameters[4] == "W")
-                                resultMember.Lon = resultMember.Lon * (-1);
-                            resultMember.Lon = (double)Math.Round(resultMember.Lon.Value, 6);
-                            resultMember.Asl = (double)Math.Round((double)sentence.parameters[8], 2);
-
-                            _executionContextGps.PushResult(resultMember);
-
-                            // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
-                            //_executionContextGps.Finish();
                         }
                     }
                 }

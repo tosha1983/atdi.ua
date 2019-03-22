@@ -106,25 +106,7 @@
                         <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, StringFormat='{}{0:HH:mm}'}"/>
 
                         <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Duration, s"  />
-                        <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3">
-                          <TextBox.Text>
-                              <Binding Path="MeasTimeParamListPerInterval">
-                                  <Binding.ValidationRules>
-                                      <DataErrorValidationRule />
-                                  </Binding.ValidationRules>
-                              </Binding>
-                          </TextBox.Text>
-                          <TextBox.Style>
-                              <Style TargetType="TextBox">
-                                  <Style.Triggers>
-                                      <Trigger Property="Validation.HasError" Value="True">
-                                          <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-                                          <Setter Property="Foreground" Value="Red" />
-                                      </Trigger>
-                                  </Style.Triggers>
-                              </Style>                        
-                          </TextBox.Style>
-                        </TextBox>
+                        <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=MeasTimeParamListPerInterval}"/>
                       </Grid>
                     </Expander>
                     <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency">
@@ -140,53 +122,182 @@
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Start freq, MHz"  />
-                        <TextBox Grid.Column="1" Grid.Row="0">
-                          <TextBox.Text>
-                              <Binding Path="MeasFreqParamRgL">
-                                  <Binding.ValidationRules>
-                                      <DataErrorValidationRule />
-                                  </Binding.ValidationRules>
-                              </Binding>
-                          </TextBox.Text>
+                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mode"  />
+                        <ComboBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" SelectedValue="{Binding MeasFreqParamMode, Mode=TwoWay}" ItemsSource="{Binding MeasFreqParamModeValues}"/>
+
+                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Start freq, MHz">
+                          <Label.Style>
+                            <Style TargetType="Label">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Label.Style>
+                        </Label>
+                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasFreqParamRgL}">
                           <TextBox.Style>
-                              <Style TargetType="TextBox">
-                                  <Style.Triggers>
-                                      <Trigger Property="Validation.HasError" Value="True">
-                                          <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-                                          <Setter Property="Foreground" Value="Red" />
-                                      </Trigger>
-                                  </Style.Triggers>
-                              </Style>                        
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+
+                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Stop freq, MHz">
+                          <Label.Style>
+                            <Style TargetType="Label">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Label.Style>
+                        </Label>
+                        <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasFreqParamRgU}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+                        
+                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Step whith, kHz">
+                          <!--<Label.Style>
+                            <Style TargetType="Label">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Label.Style>-->
+                        </Label>
+                        <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=MeasFreqParamStep}">
+                          <!--<TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>-->
+                        </TextBox>
+
+                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq, MHz">
+                          <Label.Style>
+                            <Style TargetType="Label">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Label.Style>
+                        </Label>                          
+                        <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding MeasFreqParam}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq list, MHz">
+                          <Label.Style>
+                            <Style TargetType="Label">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Label.Style>
+                        </Label>                          
+                        <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding MeasFreqParams}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="SingleFrequency">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyList">
+                                  <Setter  Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasFreqParamMode}" Value="FrequencyRange">
+                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
                           </TextBox.Style>
                         </TextBox>                          
-
-                        <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "Stop freq, MHz"  />
-                        <TextBox Grid.Column="3" Grid.Row="0">
-                          <TextBox.Text>
-                              <Binding Path="MeasFreqParamRgU">
-                                  <Binding.ValidationRules>
-                                      <DataErrorValidationRule />
-                                  </Binding.ValidationRules>
-                              </Binding>
-                          </TextBox.Text>
-                          <TextBox.Style>
-                              <Style TargetType="TextBox">
-                                  <Style.Triggers>
-                                      <Trigger Property="Validation.HasError" Value="True">
-                                          <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-                                          <Setter Property="Foreground" Value="Red" />
-                                      </Trigger>
-                                  </Style.Triggers>
-                              </Style>                        
-                          </TextBox.Style>
-                        </TextBox>                            
-
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Step whith, kHz"  />
-                        <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Path=MeasFreqParamStep}"/>
-
-                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Mode"  />
-                        <ComboBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" SelectedValue="{Binding MeasFreqParamMode, Mode=TwoWay}" ItemsSource="{Binding MeasFreqParamModeValues}"/>
                       </Grid>
                     </Expander>
                     <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters">
@@ -204,22 +315,22 @@
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
-                        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}"  IsReadOnly="True"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}"/>
 
                         <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"  />
-                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}"  IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}"/>
 
                         <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"  />
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}"  IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}"/>
 
                         <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"  />
                         <ComboBox Grid.Column="1" Grid.Row="3" SelectedValue="{Binding MeasDtParamDetectType, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamDetectTypeValues}"/>
 
                         <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"  />
-                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}"  IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}"/>
 
                         <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"  />
-                        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}"  IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}"/>
                       </Grid>
                     </Expander>
                     <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Other">
@@ -239,10 +350,10 @@
                         <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasOtherTypeSpectrumOccupation, Mode=TwoWay}" ItemsSource="{Binding MeasOtherTypeSpectrumOccupationValues}"/>
 
                         <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Level of min. occupation, dBm"  />
-                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasOtherLevelMinOccup}"  IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasOtherLevelMinOccup}"/>
 
                         <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Number of scans at a time"  />
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasOtherSwNumber}"  IsReadOnly="True" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasOtherSwNumber}"/>
 
                         <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of spectrums scan"  />
                         <ComboBox Grid.Column="1" Grid.Row="3" SelectedValue="{Binding MeasOtherTypeSpectrumScan, Mode=TwoWay}" ItemsSource="{Binding MeasOtherTypeSpectrumScanValues}"/>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.Platform.Logging;
+using Atdi.DataModels.Sdrn.DeviceServer;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
@@ -44,8 +45,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 var resultPart = this._resultBuffer.Take();
                 if (resultPart == null)
                 {
-                    /// null - признак окончания процесса
-                    return;
+                    /// null - признак окончания процесса - cancel
+                    break;
                 }
 
                 var resultPartType = resultPart.GetType();
@@ -76,13 +77,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
                     this._logger.Exception(Contexts.ResultWorker, Categories.Processing, Events.ProcessingResultError.With(_descriptor.Device.AdapterType, _descriptor.CommandType), e);
                 }
+
+                // возможно стоит прекратить процесс
+                if (resultPart.Status == CommandResultStatus.Final ||
+                        resultPart.Status == CommandResultStatus.Ragged)
+                {
+                    break;
+                }
             }
+
+            this._resultBuffer.Dispose();
         }
 
         
         public void Stop()
         {
-            this._resultBuffer.Cancel();
+            // ничего делать не нужно - юуфер сам освободитьс якогда поток результатов перестанет поступать, 
+            // так как его нужно обрботать если данные бегут
+            //this._resultBuffer.Cancel();
         }
     }
 }

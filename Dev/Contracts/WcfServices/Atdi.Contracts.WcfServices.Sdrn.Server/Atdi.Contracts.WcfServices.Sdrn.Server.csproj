@@ -87,6 +87,7 @@
     <Compile Include="OldAPI\Models\Measurements\Route.cs" />
     <Compile Include="OldAPI\Models\Measurements\RoutePoint.cs" />
     <Compile Include="OldAPI\Models\Measurements\ShortMeasurementResults.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\SignalMask.cs" />
     <Compile Include="OldAPI\Models\Measurements\StationMeasurements.cs" />
     <Compile Include="OldAPI\Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />
     <Compile Include="OldAPI\Models\ResultsMeasurementsStation\MeasurementsParameterGeneral.cs" />
@@ -122,6 +123,8 @@
     <Compile Include="OldAPI\Models\Tasks\MeasTaskIdentifier.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasTimeParamList.cs" />
     <Compile Include="OldAPI\Models\Tasks\ShortMeasTask.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\ReferenceSignal.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\ReferenceSituation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

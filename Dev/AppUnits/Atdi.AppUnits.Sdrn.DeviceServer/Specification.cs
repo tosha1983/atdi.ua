@@ -124,7 +124,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
     }
     static class TraceScopeNames
     {
-        public static readonly TraceScopeName ExecutingAdapterCommand = "({4}ms) Executing adapter command = '{0}', Type = '{1}', Id = '{2}', AdapterType = '{3}'";
+        public static readonly TraceScopeName ExecutingAdapterCommand = "({4} - {5}) Executing adapter command = '{0}', Type = '{1}', Id = '{2}', AdapterType = '{3}'";
         public static readonly TraceScopeName InvokingAdapterCommand = "Invoking command - Id='{0}'";
         public static readonly TraceScopeName HandlingResult = "Id = '{0}', CommandType = '{1}', ResultType = '{2}', PartIndex = '{3}', Status = '{4}'";
         public static readonly TraceScopeName ConvertingResult = "Id = '{0}', FromType = '{1}', ResultType = '{2}', PartIndex = '{3}', Status = '{4}'";

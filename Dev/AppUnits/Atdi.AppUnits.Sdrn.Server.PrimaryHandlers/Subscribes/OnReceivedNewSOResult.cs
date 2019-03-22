@@ -91,6 +91,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         SaveMeasResultSpectrumOccupation(measResult);
                     }
                 }
+                if (measResult.Measurement == DM.MeasurementType.Signaling)
+                {
+                    validationResult = VaildateMeasResultSignaling(ref measResult, @event.ResultId);
+                    if (validationResult)
+                    {
+                        SaveMeasResultSignaling(measResult);
+                    }
+                }
+
             }
             catch (Exception e)
             {
@@ -1427,7 +1436,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     return res;
                 });
 
-                if (valInsResMeas > -1)
+                if (valInsResMeas > 0)
                 {
                     if (measResult.FrequencySamples != null)
                     {
@@ -1472,6 +1481,668 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 return false;
             }
         }
+        private bool VaildateMeasResultSignaling(ref DEV.MeasResults measResult, int resultId)
+        {
+            var result = true;
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+
+            if (string.IsNullOrEmpty(measResult.ResultId))
+            {
+                WriteLog("Undefined value ResultId", "IResMeasRaw");
+                result = false;
+            }
+            else if (measResult.ResultId.Length > 50)
+                measResult.ResultId.SubString(50);
+
+            if (string.IsNullOrEmpty(measResult.TaskId))
+            {
+                WriteLog("Undefined value TaskId", "IResMeasRaw");
+                result = false;
+            }
+            else if (measResult.TaskId.Length > 200)
+                measResult.TaskId.SubString(200);
+
+            if (measResult.Status.Length > 5)
+                measResult.Status = "";
+
+            if (measResult.StartTime > measResult.StopTime)
+                WriteLog("StartTime must be less than StopTime", "IResMeasRaw");
+
+            if (!(measResult.ScansNumber >= 1 && measResult.ScansNumber <= 10000000))
+                WriteLog("Incorrect value SwNumber", "IResMeasRaw");
+
+            var geoLocation = new DM.GeoLocation();
+            var queryLoc = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>()
+            .From()
+            .Select(c => c.Id, c => c.Lon, c => c.Lat, c => c.Agl, c => c.Asl)
+            .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            queryExecuter.Fetch(queryLoc, reader =>
+            {
+                while (reader.Read())
+                {
+                    if (reader.GetValue(c => c.Lon).HasValue)
+                        geoLocation.Lon = reader.GetValue(c => c.Lon).Value;
+                    if (reader.GetValue(c => c.Lat).HasValue)
+                        geoLocation.Lat = reader.GetValue(c => c.Lat).Value;
+                    geoLocation.ASL = reader.GetValue(c => c.Asl);
+                    geoLocation.AGL = reader.GetValue(c => c.Agl);
+                }
+                return true;
+            });
+
+            if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
+                measResult.Location = geoLocation;
+
+            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+            builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            queryExecuter.Execute(builderDelLocSensor);
+
+            #region Emittings
+            var listEmitting = new List<DEV.Emitting>();
+            var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
+            .From()
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference)
+            .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            queryExecuter.Fetch(queryEmitting, reader =>
+            {
+                while (reader.Read())
+                {
+                    bool validationResult = true;
+                    var emitting = new DEV.Emitting();
+
+                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue && reader.GetValue(c => c.StartFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StartFrequency_MHz).Value <= 400000)
+                    {
+                        WriteLog("Incorrect value StartFrequency_MHz", "IEmittingRaw");
+                        validationResult = false;
+                    }
+                    if (reader.GetValue(c => c.StopFrequency_MHz).HasValue && reader.GetValue(c => c.StopFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StopFrequency_MHz).Value <= 400000)
+                    {
+                        WriteLog("Incorrect value StopFrequency_MHz", "IEmittingRaw");
+                        validationResult = false;
+                    }
+                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue && reader.GetValue(c => c.StopFrequency_MHz).HasValue && reader.GetValue(c => c.StartFrequency_MHz).Value > reader.GetValue(c => c.StopFrequency_MHz).Value)
+                    {
+                        WriteLog("StartFrequency_MHz must be less than StopFrequency_MHz", "IEmittingRaw");
+                        validationResult = false;
+                    }
+                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue)
+                        emitting.StartFrequency_MHz = reader.GetValue(c => c.StartFrequency_MHz).Value;
+                    if (reader.GetValue(c => c.StopFrequency_MHz).HasValue)
+                        emitting.StopFrequency_MHz = reader.GetValue(c => c.StopFrequency_MHz).Value;
+                    if (reader.GetValue(c => c.CurentPower_dBm).HasValue && reader.GetValue(c => c.CurentPower_dBm).Value >= -200 && reader.GetValue(c => c.CurentPower_dBm).Value <= 50)
+                        emitting.CurentPower_dBm = reader.GetValue(c => c.CurentPower_dBm).Value;
+                    if (reader.GetValue(c => c.ReferenceLevel_dBm).HasValue && reader.GetValue(c => c.ReferenceLevel_dBm).Value >= -200 && reader.GetValue(c => c.ReferenceLevel_dBm).Value <= 50)
+                        emitting.ReferenceLevel_dBm = reader.GetValue(c => c.ReferenceLevel_dBm).Value;
+                    if (reader.GetValue(c => c.MeanDeviationFromReference).HasValue && reader.GetValue(c => c.MeanDeviationFromReference).Value >= 0 && reader.GetValue(c => c.MeanDeviationFromReference).Value <= 1)
+                        emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
+                    if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue && reader.GetValue(c => c.TriggerDeviationFromReference).Value >= 0 && reader.GetValue(c => c.TriggerDeviationFromReference).Value <= 1)
+                        emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
+
+                    var emittingParam = new DEV.EmittingParameters();
+
+                    if (reader.GetValue(c => c.RollOffFactor).HasValue && reader.GetValue(c => c.RollOffFactor).Value >= 0 && reader.GetValue(c => c.RollOffFactor).Value <= 2.5)
+                        emittingParam.RollOffFactor = reader.GetValue(c => c.RollOffFactor).Value;
+                    if (reader.GetValue(c => c.StandardBW).HasValue && reader.GetValue(c => c.StandardBW).Value >= 0 && reader.GetValue(c => c.StandardBW).Value <= 1000000)
+                    {
+                        emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
+                        emitting.EmittingParameters = emittingParam;
+                    }
+                    else
+                        WriteLog("Incorrect value StandardBW", "IEmittingRaw");
+
+                    #region WorkTime
+                    var listTime = new List<DEV.WorkTime>();
+                    var queryTime = this._dataLayer.GetBuilder<MD.IWorkTimeRaw>()
+                    .From()
+                    .Select(c => c.Id, c => c.StartEmitting, c => c.StopEmitting, c => c.HitCount, c => c.PersentAvailability)
+                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Fetch(queryTime, readerTime =>
+                    {
+                        while (readerTime.Read())
+                        {
+                            bool validationTimeResult = true;
+                            var workTime = new DEV.WorkTime();
+
+                            if (readerTime.GetValue(c => c.StartEmitting).HasValue && readerTime.GetValue(c => c.StopEmitting).HasValue && readerTime.GetValue(c => c.StartEmitting).Value > readerTime.GetValue(c => c.StopEmitting).Value)
+                            {
+                                WriteLog("StartEmitting must be less than StopEmitting", "IWorkTimeRaw");
+                                validationTimeResult = false;
+                            }
+                            if (readerTime.GetValue(c => c.StartEmitting).HasValue)
+                                workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting).Value;
+                            if (readerTime.GetValue(c => c.StopEmitting).HasValue)
+                                workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting).Value;
+                            if (readerTime.GetValue(c => c.HitCount).HasValue && readerTime.GetValue(c => c.HitCount).Value >= 0 && readerTime.GetValue(c => c.HitCount).Value <= Int32.MaxValue)
+                                workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
+                            if (readerTime.GetValue(c => c.PersentAvailability).HasValue && readerTime.GetValue(c => c.PersentAvailability).Value >= 0 && readerTime.GetValue(c => c.PersentAvailability).Value <= 100)
+                                workTime.PersentAvailability = (float)readerTime.GetValue(c => c.PersentAvailability).Value;
+                            else
+                            {
+                                WriteLog("Incorrect value PersentAvailability", "IWorkTimeRaw");
+                                validationTimeResult = false;
+                            }
+                            if (validationTimeResult)
+                                listTime.Add(workTime);
+                        }
+                        return true;
+                    });
+                    if (listTime.Count > 0)
+                        emitting.WorkTimes = listTime.ToArray();
+
+                    var builderDelTime = this._dataLayer.GetBuilder<MD.IWorkTimeRaw>().Delete();
+                    builderDelTime.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderDelTime);
+
+                    #endregion
+
+                    #region SignalMask
+                    var listLoss_dB = new List<float>();
+                    var listFreq_kHz = new List<double>();
+                    var querySignalMask = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>()
+                    .From()
+                    .Select(c => c.Id, c => c.Loss_dB, c => c.Freq_kHz)
+                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Fetch(querySignalMask, readerSignalMask =>
+                    {
+                        while (readerSignalMask.Read())
+                        {
+                            if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue && readerSignalMask.GetValue(c => c.Loss_dB).Value >= -100 && readerSignalMask.GetValue(c => c.Loss_dB).Value <= 500)
+                                listLoss_dB.Add((float)readerSignalMask.GetValue(c => c.Loss_dB).Value);
+                            else
+                                WriteLog("Incorrect value Loss_dB", "ISignalMaskRaw");
+                            if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue && readerSignalMask.GetValue(c => c.Freq_kHz).Value >= -1000000 && readerSignalMask.GetValue(c => c.Freq_kHz).Value <= 1000000)
+                                listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
+                            else
+                                WriteLog("Incorrect value Freq_kHz", "ISignalMaskRaw");
+                        }
+                        return true;
+                    });
+
+                    var signalMask = new DEV.SignalMask();
+                    if (listLoss_dB.Count > 0)
+                        signalMask.Loss_dB = listLoss_dB.ToArray();
+                    if (listFreq_kHz.Count > 0)
+                        signalMask.Freq_kHz = listFreq_kHz.ToArray();
+
+                    emitting.SignalMask = signalMask;
+
+                    var builderSignalDel = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Delete();
+                    builderSignalDel.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderSignalDel);
+
+                    #endregion
+
+                    #region LevelDistribution
+                    var listLevel = new List<int>();
+                    var listCount = new List<int>();
+                    bool validationLevelResult = true;
+                    var queryLevelDist = this._dataLayer.GetBuilder<MD.ILevelsDistributionRaw>()
+                    .From()
+                    .Select(c => c.Id, c => c.level, c => c.count)
+                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Fetch(queryLevelDist, readerLevelDist =>
+                    {
+                        while (readerLevelDist.Read())
+                        {
+                            if (readerLevelDist.GetValue(c => c.level).HasValue && readerLevelDist.GetValue(c => c.level).Value >= -200 && readerLevelDist.GetValue(c => c.level).Value <= 100)
+                                validationLevelResult = true;
+                            else
+                            {
+                                validationLevelResult = false;
+                                WriteLog("Incorrect value readerLevelDist", "ILevelsDistributionRaw");
+                            }
+
+                            if (readerLevelDist.GetValue(c => c.count).HasValue && readerLevelDist.GetValue(c => c.count).Value >= 0 && readerLevelDist.GetValue(c => c.count).Value <= Int32.MaxValue)
+                                validationLevelResult = true;
+                            else
+                            {
+                                validationLevelResult = false;
+                                WriteLog("Incorrect value readerLevelDist", "ILevelsDistributionRaw");
+                            }
+
+                            if (validationLevelResult)
+                            {
+                                listLevel.Add(readerLevelDist.GetValue(c => c.level).Value);
+                                listCount.Add(readerLevelDist.GetValue(c => c.count).Value);
+                            }
+                        }
+                        return true;
+                    });
+
+                    var levelDist = new DEV.LevelsDistribution();
+                    if (listLevel.Count > 0)
+                        levelDist.Levels = listLevel.ToArray();
+                    if (listCount.Count > 0)
+                        levelDist.Count = listCount.ToArray();
+
+                    emitting.LevelsDistribution = levelDist;
+
+                    var builderLevelDist = this._dataLayer.GetBuilder<MD.ILevelsDistributionRaw>().Delete();
+                    builderLevelDist.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderLevelDist);
+
+                    #endregion
+
+                    #region Spectrum
+                    bool validationSpectrumResult = true;
+                    var spectrum = new DEV.Spectrum();
+                    var listLevelsdBm = new List<float>();
+                    var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrumRaw>()
+                    .From()
+                    .Select(c => c.Id, c => c.Bandwidth_kHz, c => c.CorrectnessEstimations, c => c.MarkerIndex, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.T1, c => c.T2, c => c.TraceCount)
+                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Fetch(querySpectrum, readerSpectrum =>
+                    {
+                        while (readerSpectrum.Read())
+                        {
+                            #region LevelsdBm
+                            var queryLevelsdBm = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevelsRaw>()
+                            .From()
+                            .Select(c => c.Id, c => c.level)
+                            .Where(c => c.SpectrumId, ConditionOperator.Equal, readerSpectrum.GetValue(c => c.Id));
+                            queryExecuter.Fetch(queryLevelsdBm, readerLevelsdBm =>
+                            {
+                                while (readerLevelsdBm.Read())
+                                {
+                                    if (readerLevelsdBm.GetValue(c => c.level).HasValue && readerLevelsdBm.GetValue(c => c.level).Value >= -200 && readerLevelsdBm.GetValue(c => c.level).Value <= 50)
+                                        listLevelsdBm.Add((float)readerLevelsdBm.GetValue(c => c.level).Value);
+                                    else
+                                        WriteLog("Incorrect value level", "IDetailSpectrumLevelsRaw");
+                                }
+                                return true;
+                            });
+
+                            if (listLevelsdBm.Count > 0)
+                                spectrum.Levels_dBm = listLevelsdBm.ToArray();
+                            else
+                                validationSpectrumResult = false;
+
+                            var builderLevelsdBm = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevelsRaw>().Delete();
+                            builderLevelsdBm.Where(c => c.SpectrumId, ConditionOperator.Equal, readerSpectrum.GetValue(c => c.Id));
+                            queryExecuter.Execute(builderLevelsdBm);
+
+                            #endregion
+
+                            if (readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).HasValue && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value >= 0.009 && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value <= 400000)
+                                spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
+                            else
+                            {
+                                WriteLog("Incorrect value SpectrumStartFreq_MHz", "ISpectrumRaw");
+                                validationSpectrumResult = false;
+                            }
+
+                            if (readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).HasValue && readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value >= 0.001 && readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value <= 1000000)
+                                spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
+                            else
+                            {
+                                WriteLog("Incorrect value SpectrumSteps_kHz", "ISpectrumRaw");
+                                validationSpectrumResult = false;
+                            }
+
+                            if (readerSpectrum.GetValue(c => c.Bandwidth_kHz).HasValue && readerSpectrum.GetValue(c => c.Bandwidth_kHz).Value >= 0 && readerSpectrum.GetValue(c => c.Bandwidth_kHz).Value <= 1000000)
+                                spectrum.Bandwidth_kHz = readerSpectrum.GetValue(c => c.Bandwidth_kHz).Value;
+                            else
+                                WriteLog("Incorrect value Bandwidth_kHz", "ISpectrumRaw");
+
+                            if (readerSpectrum.GetValue(c => c.TraceCount).HasValue && readerSpectrum.GetValue(c => c.TraceCount).Value >= 0 && readerSpectrum.GetValue(c => c.TraceCount).Value <= 10000)
+                                spectrum.TraceCount = readerSpectrum.GetValue(c => c.TraceCount).Value;
+                            else
+                                WriteLog("Incorrect value TraceCount", "ISpectrumRaw");
+
+                            if (readerSpectrum.GetValue(c => c.SignalLevel_dBm).HasValue && readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value >= -200 && readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value <= 50)
+                                spectrum.SignalLevel_dBm = (float)readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value;
+                            else
+                                WriteLog("Incorrect value SignalLevel_dBm", "ISpectrumRaw");
+
+                            if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.MarkerIndex).HasValue
+                                && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.MarkerIndex).Value && readerSpectrum.GetValue(c => c.MarkerIndex).Value >= readerSpectrum.GetValue(c => c.T2).Value)
+                                spectrum.MarkerIndex = readerSpectrum.GetValue(c => c.MarkerIndex).Value;
+                            else
+                                WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
+
+                            if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.T1).Value >= 0 && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.T2).Value)
+                                spectrum.T1 = readerSpectrum.GetValue(c => c.T1).Value;
+                            else
+                            {
+                                WriteLog("Incorrect value T1", "ISpectrumRaw");
+                                validationSpectrumResult = false;
+                            }
+
+                            if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.T2).Value >= readerSpectrum.GetValue(c => c.T1).Value && readerSpectrum.GetValue(c => c.T2).Value <= spectrum.Levels_dBm.Length)
+                                spectrum.T2 = readerSpectrum.GetValue(c => c.T2).Value;
+                            else
+                            {
+                                WriteLog("Incorrect value T2", "ISpectrumRaw");
+                                validationSpectrumResult = false;
+                            }
+                        }
+                        return true;
+                    });
+
+                    if (validationSpectrumResult)
+                    {
+                        spectrum.Levels_dBm = listLevelsdBm.ToArray();
+                        emitting.Spectrum = spectrum;
+                    }
+
+                    var builderSpectrumDel = this._dataLayer.GetBuilder<MD.ISpectrumRaw>().Delete();
+                    builderSpectrumDel.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderSpectrumDel);
+
+                    #endregion
+
+                    if (validationResult)
+                        listEmitting.Add(emitting);
+                }
+                return true;
+            });
+
+            var builderDelEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>().Delete();
+            builderDelEmitting.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            queryExecuter.Execute(builderDelEmitting);
+
+            if (listEmitting.Count > 0)
+                measResult.Emittings = listEmitting.ToArray();
+            else
+                return false;
+
+            #endregion
+
+            #region ReferenceLevels
+            bool validationLevelsResult = true;
+            var level = new DEV.ReferenceLevels();
+            var listLevels = new List<float>();
+            var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>()
+            .From()
+            .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz)
+            .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            queryExecuter.Fetch(queryLevels, readerLevels =>
+            {
+                while (readerLevels.Read())
+                {
+                    if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue && readerLevels.GetValue(c => c.StartFrequency_Hz).Value >= 9000 && readerLevels.GetValue(c => c.StartFrequency_Hz).Value <= 400000000000)
+                        level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                    else
+                    {
+                        validationLevelsResult = false;
+                        WriteLog("Incorrect value StartFrequency_Hz", "IReferenceLevelsRaw");
+                    }
+
+                    if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue && readerLevels.GetValue(c => c.StepFrequency_Hz).Value >= 1 && readerLevels.GetValue(c => c.StepFrequency_Hz).Value <= 1000000000)
+                        level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                    else
+                    {
+                        validationLevelsResult = false;
+                        WriteLog("Incorrect value StepFrequency_Hz", "IReferenceLevelsRaw");
+                    }
+
+                    var queryLevelsDet = this._dataLayer.GetBuilder<MD.IDetailReferenceLevelsRaw>()
+                    .From()
+                    .Select(c => c.Id, c => c.level)
+                    .Where(c => c.ReferenceLevelId, ConditionOperator.Equal, readerLevels.GetValue(c => c.Id));
+                    queryExecuter.Fetch(queryLevelsDet, readerLevelsDet =>
+                    {
+                        while (readerLevelsDet.Read())
+                        {
+                            if (readerLevelsDet.GetValue(c => c.level).HasValue && readerLevelsDet.GetValue(c => c.level).Value >= -200 && readerLevelsDet.GetValue(c => c.level).Value <= 50)
+                                listLevels.Add((float)readerLevelsDet.GetValue(c => c.level).Value);
+                            else
+                                WriteLog("Incorrect value Level", "IDetailReferenceLevelsRaw");
+                        }
+                        return true;
+                    });
+
+                    if (listLevels.Count > 0)
+                        level.levels = listLevels.ToArray();
+                    else
+                        validationLevelsResult = false;
+
+                    var builderDelLevelsDet = this._dataLayer.GetBuilder<MD.IDetailReferenceLevelsRaw>().Delete();
+                    builderDelLevelsDet.Where(c => c.ReferenceLevelId, ConditionOperator.Equal, readerLevels.GetValue(c => c.Id));
+                    queryExecuter.Execute(builderDelLevelsDet);
+                }
+                return true;
+            });
+
+            if (validationLevelsResult)
+                measResult.RefLevels = level;
+
+            var builderLevelDel = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>().Delete();
+            builderLevelDel.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            queryExecuter.Execute(builderLevelDel);
+
+            #endregion
+
+            return result;
+        }
+        private bool SaveMeasResultSignaling(DEV.MeasResults measResult)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            try
+            {
+                queryExecuter.BeginTransaction();
+
+                int valInsResMeas = 0;
+                var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
+                builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
+                builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
+                builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
+                builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
+                builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
+                builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
+                builderInsertIResMeas.Select(c => c.Id);
+                queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
+                {
+                    var res = reader.Read();
+                    if (res)
+                        valInsResMeas = reader.GetValue(c => c.Id);
+                    return res;
+                });
+
+                if (valInsResMeas > 0)
+                {
+                    if (measResult.RefLevels != null)
+                    {
+                        int valInsReferenceLevels = 0;
+                        var refLevels = measResult.RefLevels;
+                        var builderInsertReferenceLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Insert();
+                        builderInsertReferenceLevels.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
+                        builderInsertReferenceLevels.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
+                        builderInsertReferenceLevels.SetValue(c => c.ResMeasId, valInsResMeas);
+                        builderInsertReferenceLevels.Select(c => c.Id);
+                        queryExecuter
+                        .ExecuteAndFetch(builderInsertReferenceLevels, readerReferenceLevels =>
+                        {
+                            var res = readerReferenceLevels.Read();
+                            if (res)
+                            {
+                                valInsReferenceLevels = readerReferenceLevels.GetValue(c => c.Id);
+                                if (valInsReferenceLevels > 0)
+                                {
+                                    var lstInslevels = new IQueryInsertStatement<MD.IDetailReferenceLevels>[refLevels.levels.Length];
+                                    for (int l = 0; l < refLevels.levels.Length; l++)
+                                    {
+                                        var lvl = refLevels.levels[l];
+
+                                        var builderInsertDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailReferenceLevels>().Insert();
+                                        builderInsertDetailReferenceLevels.SetValue(c => c.level, lvl);
+                                        builderInsertDetailReferenceLevels.SetValue(c => c.ReferenceLevelId, valInsReferenceLevels);
+                                        builderInsertDetailReferenceLevels.Select(c => c.Id);
+                                        lstInslevels[l] = builderInsertDetailReferenceLevels;
+                                    }
+                                    queryExecuter.ExecuteAndFetch(lstInslevels, readerDetailReferenceLevels =>
+                                    {
+                                        return true;
+                                    });
+                                }
+
+                            }
+                            return true;
+                        });
+                    }
+                    if (measResult.Emittings != null)
+                    {
+                        var emittings = measResult.Emittings;
+                        for (int l = 0; l < emittings.Length; l++)
+                        {
+                            int valInsReferenceEmitting = 0;
+                            var builderInsertEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Insert();
+                            builderInsertEmitting.SetValue(c => c.CurentPower_dBm, emittings[l].CurentPower_dBm);
+                            builderInsertEmitting.SetValue(c => c.MeanDeviationFromReference, emittings[l].MeanDeviationFromReference);
+                            builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emittings[l].ReferenceLevel_dBm);
+                            builderInsertEmitting.SetValue(c => c.ResMeasId, valInsResMeas);
+                            if (emittings[l].EmittingParameters != null)
+                            {
+                                builderInsertEmitting.SetValue(c => c.RollOffFactor, emittings[l].EmittingParameters.RollOffFactor);
+                                builderInsertEmitting.SetValue(c => c.StandardBW, emittings[l].EmittingParameters.StandardBW);
+                            }
+                            builderInsertEmitting.SetValue(c => c.StartFrequency_MHz, emittings[l].StartFrequency_MHz);
+                            builderInsertEmitting.SetValue(c => c.StopFrequency_MHz, emittings[l].StopFrequency_MHz);
+                            builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emittings[l].TriggerDeviationFromReference);
+                            builderInsertEmitting.Select(c => c.Id);
+                            queryExecuter
+                            .ExecuteAndFetch(builderInsertEmitting, readerEmitting =>
+                            {
+                                var res = readerEmitting.Read();
+                                if (res)
+                                {
+                                    valInsReferenceEmitting = readerEmitting.GetValue(c => c.Id);
+                                    if (valInsReferenceEmitting > 0)
+                                    {
+                                        var workTimes = emittings[l].WorkTimes;
+                                        if (workTimes != null)
+                                        {
+                                            var lstInsWorkTime = new IQueryInsertStatement<MD.IWorkTime>[workTimes.Length];
+                                            for (int r = 0; r < workTimes.Length; r++)
+                                            {
+                                                var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Insert();
+                                                builderInsertIWorkTime.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                builderInsertIWorkTime.SetValue(c => c.HitCount, workTimes[r].HitCount);
+                                                builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTimes[r].PersentAvailability);
+                                                builderInsertIWorkTime.SetValue(c => c.StartEmitting, workTimes[r].StartEmitting);
+                                                builderInsertIWorkTime.SetValue(c => c.StopEmitting, workTimes[r].StopEmitting);
+                                                builderInsertIWorkTime.Select(c => c.Id);
+                                                lstInsWorkTime[r] = builderInsertIWorkTime;
+                                            }
+                                            queryExecuter.ExecuteAndFetch(lstInsWorkTime, readerWorkTime =>
+                                            {
+                                                return true;
+                                            });
+                                        }
+
+                                        var spectrum = emittings[l].Spectrum;
+                                        if (spectrum != null)
+                                        {
+                                            int valInsSpectrum = 0;
+
+                                            var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
+                                            builderInsertISpectrum.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                            builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations);
+                                            builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
+                                            builderInsertISpectrum.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
+                                            builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
+                                            builderInsertISpectrum.SetValue(c => c.SpectrumStartFreq_MHz, spectrum.SpectrumStartFreq_MHz);
+                                            builderInsertISpectrum.SetValue(c => c.SpectrumSteps_kHz, spectrum.SpectrumSteps_kHz);
+                                            builderInsertISpectrum.SetValue(c => c.T1, spectrum.T1);
+                                            builderInsertISpectrum.SetValue(c => c.T2, spectrum.T2);
+                                            builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                            builderInsertISpectrum.Select(c => c.Id);
+                                            queryExecuter
+                                            .ExecuteAndFetch(builderInsertISpectrum, readerISpectrum =>
+                                            {
+                                                var resSpectrum = readerISpectrum.Read();
+                                                if (resSpectrum)
+                                                {
+                                                    valInsSpectrum = readerISpectrum.GetValue(c => c.Id);
+                                                    if (valInsSpectrum > 0)
+                                                    {
+                                                        var lstInsLevels_dBm = new IQueryInsertStatement<MD.IDetailSpectrumLevels>[spectrum.Levels_dBm.Length];
+                                                        for (int k = 0; k < spectrum.Levels_dBm.Length; k++)
+                                                        {
+                                                            var level_dBm = spectrum.Levels_dBm[k];
+
+                                                            var builderInsertIDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevels>().Insert();
+                                                            builderInsertIDetailReferenceLevels.SetValue(c => c.level, level_dBm);
+                                                            builderInsertIDetailReferenceLevels.SetValue(c => c.SpectrumId, valInsSpectrum);
+                                                            builderInsertIDetailReferenceLevels.Select(c => c.Id);
+                                                            lstInsLevels_dBm[k] = builderInsertIDetailReferenceLevels;
+                                                        }
+                                                        queryExecuter.ExecuteAndFetch(lstInsLevels_dBm, readerDetailSpectrumLevels =>
+                                                        {
+                                                            return true;
+                                                        });
+                                                    }
+                                                }
+                                                return true;
+                                            });
+                                        }
+
+                                        var signalMask = emittings[l].SignalMask;
+                                        if (signalMask != null)
+                                        {
+                                            var lstInsSignalMask = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
+                                            for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                            {
+                                                var freq_kH = signalMask.Freq_kHz[k];
+                                                var loss_dB = signalMask.Loss_dB[k];
+
+                                                var builderInsertSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
+                                                builderInsertSignalMask.SetValue(c => c.Freq_kHz, freq_kH);
+                                                builderInsertSignalMask.SetValue(c => c.Loss_dB, loss_dB);
+                                                builderInsertSignalMask.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                builderInsertSignalMask.Select(c => c.Id);
+                                                lstInsSignalMask[k] = builderInsertSignalMask;
+                                            }
+                                            queryExecuter.ExecuteAndFetch(lstInsSignalMask, readerSignalMask =>
+                                            {
+                                                return true;
+                                            });
+                                        }
+
+                                        var levelsDistribution = emittings[l].LevelsDistribution;
+                                        if (levelsDistribution != null)
+                                        {
+                                            var lstInsLevelsDistribution = new IQueryInsertStatement<MD.ILevelsDistribution>[levelsDistribution.Levels.Length];
+                                            for (int k = 0; k < levelsDistribution.Levels.Length; k++)
+                                            {
+                                                var lvl = levelsDistribution.Levels[k];
+                                                var count = levelsDistribution.Count[k];
+                                                var builderInsertLevelsDistribution = this._dataLayer.GetBuilder<MD.ILevelsDistribution>().Insert();
+                                                builderInsertLevelsDistribution.SetValue(c => c.level, lvl);
+                                                builderInsertLevelsDistribution.SetValue(c => c.count, count);
+                                                builderInsertLevelsDistribution.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                builderInsertLevelsDistribution.Select(c => c.Id);
+                                                lstInsLevelsDistribution[k] = builderInsertLevelsDistribution;
+                                            }
+                                            queryExecuter.ExecuteAndFetch(lstInsLevelsDistribution, readerLevelsDistribution =>
+                                            {
+                                                return true;
+                                            });
+
+
+                                        }
+                                    }
+                                }
+                                return true;
+                            });
+                        }
+                    }
+
+                }
+
+                queryExecuter.CommitTransaction();
+                return true;
+            }
+            catch (Exception exp)
+            {
+                _logger.Exception(Contexts.ThisComponent, exp);
+                queryExecuter.RollbackTransaction();
+                return false;
+            }
+        }
+
         private bool ValidateGeoLocation<T>(T location, string tableName)
             where T : DM.GeoLocation
         {

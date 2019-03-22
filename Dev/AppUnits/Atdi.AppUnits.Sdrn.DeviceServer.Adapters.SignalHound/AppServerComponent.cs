@@ -20,11 +20,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         protected override void OnInstallUnit()
         {
-            //var adapterConfig = this.Config.Extract<AdapterConfig>();
-            //this.Container.RegisterInstance(adapterConfig, ServiceLifetime.Singleton);
-            var adapterConfig = new AdapterConfig(this.Config, this.Logger);//old
-            this.Container.RegisterInstance(adapterConfig, ServiceLifetime.Singleton);//old
-
+            var adapterConfig = this.Config.Extract<AdapterConfig>();
+            this.Container.RegisterInstance(adapterConfig, ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()

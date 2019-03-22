@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         public double SweepTime_s; //-1 = auto
         public int Att_dB; //-1 = auto, 
         public int PreAmp_dB; //-1 = auto, 
-        public int RefLevel_dBm; // -1 = auto
+        public int RefLevel_dBm; // 1000000000 = auto
         public DetectorType DetectorType; //
         public TraceType TraceType; // 
         public int TraceCount; // количество трейсов  // mandatory 
