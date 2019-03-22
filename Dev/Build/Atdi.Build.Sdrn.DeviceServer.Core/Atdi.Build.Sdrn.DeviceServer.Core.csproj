@@ -190,6 +190,14 @@
       <Project>{7a762e12-0f04-4b0b-a8a4-d888ccd74b28}</Project>
       <Name>Atdi.Tools.LicenseAnalyzer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj">
+      <Project>{ca3f294b-9c66-433f-84b3-d27ce3ab40f1}</Project>
+      <Name>Atdi.WebApiServices.SelfHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices\Atdi.WebApiServices.csproj">
+      <Project>{4803ae0c-1a06-4fc5-9be7-6affc943ee7c}</Project>
+      <Name>Atdi.WebApiServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -202,6 +210,7 @@ copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata
 copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.CoreServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.WebApiServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
@@ -213,7 +222,9 @@ copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppSe
 copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
-
+copy "$(TargetDir)\System.Net.Http.Formatting.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)\System.Web.Http.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)\System.Web.Http.SelfHost.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
