@@ -248,9 +248,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                     }
                                                     return true;
                                                 });
-
-
-                                     
                                             }
 
                                             var signalMask = emittings[l].SignalMask;
@@ -294,8 +291,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 {
                                                     return true;
                                                 });
-
-
                                             }
                                         }
                                     }

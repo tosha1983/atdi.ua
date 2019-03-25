@@ -781,7 +781,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         public int Device_FirmwareVersion = 0;
 
-        public int Device_FirmwareVersionActual = 7;
+        public int Device_FirmwareVersionActual = 8;
 
         public string Device_APIVersion = "";
 

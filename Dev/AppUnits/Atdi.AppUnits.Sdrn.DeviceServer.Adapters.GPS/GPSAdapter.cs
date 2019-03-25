@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using COM = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using COMR = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
-using Atdi.Platform.DependencyInjection;
+using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
@@ -71,6 +71,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Start)
                 {
                     _executionContextGps = context;
+                    gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
                 }
                 else if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Stop)
                 {
@@ -126,7 +127,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
 
             gnssWrapper = new GNSSReceiverWrapper(portSettings);
-            gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+
             if (!gnssWrapper.IsOpen)
             {
                 try
@@ -137,7 +138,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 catch (Exception ex)
                 {
                     this._logger.Critical(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message), ex);
-                    throw new InvalidOperationException(Categories.Processing+":"+ex.Message, ex);
+                    throw new InvalidOperationException(Categories.Processing + ":" + ex.Message, ex);
                 }
             }
         }
@@ -146,46 +147,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             try
             {
-                if (_executionContextGps != null)
+                if ((_executionContextGps != null) && (e != null))
                 {
                     var resultMember = new COMR.GpsResult(part++, CommandResultStatus.Final);
                     var data = e.LogString;
-                    var result = NMEAParser.Parse(data);
-                    if (result is NMEAStandartSentence)
+                    if (data != null)
                     {
-                        var sentence = (result as NMEAStandartSentence);
-                        if (sentence.SentenceID == SentenceIdentifiers.GGA)
+                        var result = NMEAParser.Parse(data);
+                        if (result != null)
                         {
-
-                            if (_executionContextGps.Token.IsCancellationRequested)
+                            if (result is NMEAStandartSentence)
                             {
-                                _executionContextGps.Cancel();
-                                CloseGPSDevice();
-                                return;
+                                var sentence = (result as NMEAStandartSentence);
+                                if (sentence.SentenceID == SentenceIdentifiers.GGA)
+                                {
+
+                                    if (_executionContextGps.Token.IsCancellationRequested)
+                                    {
+                                        _executionContextGps.Cancel();
+                                        CloseGPSDevice();
+                                        return;
+                                    }
+
+                                    resultMember.Lat = (double)sentence.parameters[1];
+                                    if ((string)sentence.parameters[2] == "S")
+                                        resultMember.Lat = resultMember.Lat * (-1);
+                                    resultMember.Lat = (double)Math.Round(resultMember.Lat.Value, 6);
+
+                                    resultMember.Lon = (double)sentence.parameters[3];
+                                    if ((string)sentence.parameters[4] == "W")
+                                        resultMember.Lon = resultMember.Lon * (-1);
+                                    resultMember.Lon = (double)Math.Round(resultMember.Lon.Value, 6);
+                                    resultMember.Asl = (double)Math.Round((double)sentence.parameters[8], 2);
+
+
+                                    _executionContextGps.PushResult(resultMember);
+                                    // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
+                                    _executionContextGps.Finish();
+                                    gnssWrapper.LogEvent -= new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+                                }
                             }
-
-                            resultMember.Lat = (double)sentence.parameters[1];
-                            if ((string)sentence.parameters[2] == "S")
-                                resultMember.Lat = resultMember.Lat * (-1);
-                            resultMember.Lat = (double)Math.Round(resultMember.Lat.Value, 6);
-
-                            resultMember.Lon = (double)sentence.parameters[3];
-                            if ((string)sentence.parameters[4] == "W")
-                                resultMember.Lon = resultMember.Lon * (-1);
-                            resultMember.Lon = (double)Math.Round(resultMember.Lon.Value, 6);
-                            resultMember.Asl = (double)Math.Round((double)sentence.parameters[8], 2);
-
-                            _executionContextGps.PushResult(resultMember);
-
-                            // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
-                            //_executionContextGps.Finish();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                 this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.LogEventError.ToString(), ex.Message));
+                this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.LogEventError.ToString(), ex.Message));
             }
         }
 

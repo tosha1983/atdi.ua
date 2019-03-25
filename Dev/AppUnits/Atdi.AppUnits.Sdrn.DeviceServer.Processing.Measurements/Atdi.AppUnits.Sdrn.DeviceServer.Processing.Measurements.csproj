@@ -45,6 +45,7 @@
     <Compile Include="Calculation\CalcSDRParameters.cs" />
     <Compile Include="Calculation\BandWidth\BandWidthEstimation.cs" />
     <Compile Include="Calculation\Signalization\CalcGroupingEmitting.cs" />
+    <Compile Include="Calculation\Signalization\StandartBW.cs" />
     <Compile Include="Calculation\Signalization\CalcSearchInterruption.cs" />
     <Compile Include="Calculation\Signalization\CalcSearchEmitting.cs" />
     <Compile Include="Calculation\Signalization\CalcReferenceLevels.cs" />
