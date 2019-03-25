@@ -83,8 +83,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// 
         /// </summary>
         [EnumMember]
-        MonitoringStations
-
-
+        MonitoringStations,
+        /// <summary>
+        /// 
+        /// </summary>
+        [EnumMember]
+        Signaling
     }
 }
