@@ -95,7 +95,8 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// Reference situation
         ///// </summary>
         [DataMember]
-        public ReferenceSituation[]  RefSituation { get; set; }
+        //public ReferenceSituation[]  RefSituation { get; set; }
+        public ReferenceSituation RefSituation { get; set; }
 
         ///// <summary>
         ///// Measurement equipment parameters

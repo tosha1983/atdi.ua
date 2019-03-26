@@ -81,7 +81,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         continue;
                     }
 
-                    var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    var maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
                     if (maximumDurationMeas < 0)
                     {
                         // обновление TaskParameters в БД
@@ -215,6 +215,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
+                            outResultData.StartTime = context.Task.LastTimeSend.Value;
+                            outResultData.StopTime = currTime;
                             outResultData.Location = new DataModels.Sdrns.GeoLocation();
                             var parentProcess = context.Process.Parent;
                             if (parentProcess != null)
@@ -323,35 +325,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         Thread.Sleep((int)sleepTime);
                     }
                     if (isDown) context.Task.CountMeasurementDone++;
-
-
                 }
-
             }
             catch (Exception e)
             {
                 _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, e.Message);
                 context.Abort(e);
             }
-        }
-
-
-
-        /// <summary>
-        ///Вычисление задержки выполнения потока результатом является количество vмилисекунд на которое необходимо приостановить поток
-        /// </summary>
-        /// <param name="taskParameters">Параметры таска</param> 
-        /// <param name="doneCount">Количество измерений которое было проведено</param>
-        /// <returns></returns>
-        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
-        {
-            DateTime dateTimeNow = DateTime.Now;
-            if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
-            TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            double interval_ms = interval.TotalMilliseconds;
-            if (taskParameters.NCount <= DoneCount) { return -1; }
-            long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
-            return duration;
         }
     }
 }

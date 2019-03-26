@@ -266,7 +266,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                         if (listReferenceSituation.Count > 0)
                         {
-                            taskParameters.RefSituation = listReferenceSituation.ToArray();
+                            taskParameters.RefSituation = listReferenceSituation[0];
                         }
                     }
                     return true;

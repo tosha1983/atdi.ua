@@ -120,7 +120,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                     {
                         Type = AAC.ConditionType.Expression,
                         Operator = AAC.ConditionOperator.Equal,
-                        LeftOperand = new AAC.ColumnOperand { Type = AAC.OperandType.Column, ColumnName = "Equipment.TechId", Source = "Sensor"},
+                        LeftOperand = new AAC.ColumnOperand { Type = AAC.OperandType.Column, ColumnName = "TechId", Source = "Sensor"},
                         RightOperand = new AAC.StringValueOperand { Type = AAC.OperandType.Value, Value = tour.SensorEquipTechId}
                     }
                 }

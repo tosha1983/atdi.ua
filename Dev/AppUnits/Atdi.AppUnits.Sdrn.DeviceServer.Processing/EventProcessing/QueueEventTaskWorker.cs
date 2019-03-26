@@ -23,6 +23,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ITaskStarter _taskStarter;
         private readonly ConfigProcessing _config;
         private readonly IWorkScheduler _workScheduler;
+        private readonly IController _controller;
         private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
         private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
         private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
@@ -37,6 +38,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             IRepository<TaskParameters, string> repositoryTaskParametersBystring,
             IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
             ConfigProcessing config,
+            IController controller,
             ITaskStarter taskStarter
             )
         {
@@ -49,6 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._repositoryTaskParametersByString = repositoryTaskParametersBystring;
             this._repositoryLastUpdateByInt = repositoryLastUpdateByInt;
             this._workScheduler = workScheduler;
+            this._controller = controller;
         }
 
         public void Run(ITaskContext<QueueEventTask, DispatchProcess> context)
@@ -125,6 +128,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 signalTask.LastTimeSend = DateTime.Now;
                                 signalTask.taskParameters = context.Task.taskParameters;
                                 signalTask.mesureTraceParameter = signalTask.taskParameters.Convert();
+                                var deviceProperties = this._controller.GetDevicesProperties();
+                                var listTraceDeviceProperties = deviceProperties.Values.ToArray();
+                                for (int i = 0; i < listTraceDeviceProperties.Length; i++)
+                                {
+                                    bool isFindProperties = false;
+                                    var traceDeviceProperties = listTraceDeviceProperties[i];
+                                    for (int j = 0; j < traceDeviceProperties.Length; j++)
+                                    {
+                                        var trace = traceDeviceProperties[j];
+                                        if (trace is MesureTraceDeviceProperties)
+                                        {
+                                            signalTask.mesureTraceDeviceProperties = (trace as MesureTraceDeviceProperties);
+                                            break;
+                                        }
+                                    }
+                                    if (isFindProperties)
+                                    {
+                                        break;
+                                    }
+                                }
                                 _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(signalTask.Id));
                                 _taskStarter.RunParallel(signalTask, signalProcess, context);
                                 _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(signalTask.Id));

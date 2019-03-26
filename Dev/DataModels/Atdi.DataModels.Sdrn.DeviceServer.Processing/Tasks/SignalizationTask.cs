@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     {
         public MeasResults MeasResults; //  результат измерения
         public DateTime? LastTimeSend = null;
+        public MesureTraceDeviceProperties mesureTraceDeviceProperties;
         public ReferenceLevels ReferenceLevels;
         public Emitting[] EmittingsRaw;
         public Emitting[] EmittingsDetailed;
