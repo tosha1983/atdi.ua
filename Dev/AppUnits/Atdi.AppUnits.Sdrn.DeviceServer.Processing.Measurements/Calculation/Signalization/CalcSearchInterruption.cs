@@ -125,6 +125,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
                             emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start / 1000;
                             emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
+                            emitting.Spectrum.СorrectnessEstimations = true;
                         }
                         else
                         {
@@ -162,6 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);
                 emitting.WorkTimes = new WorkTime[1];
                 emitting.WorkTimes[0].StartEmitting = DateTime.Now;
+                emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting; 
             }
             // наверно нужно пройтись и обеденить излучения если они пересекаются более чем на допустиный процент
             return emittings.ToArray();
