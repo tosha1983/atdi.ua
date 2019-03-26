@@ -49,5 +49,29 @@ namespace Atdi.Common
             }
             return value;
         }
+        public static int? TryToInt(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+            if (int.TryParse(value, out int result))
+            {
+                return result;
+            }
+            return null;
+        }
+        public static double? TryToDouble(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+            if (double.TryParse(value, out double result))
+            {
+                return result;
+            }
+            return null;
+        }
     }
 }
