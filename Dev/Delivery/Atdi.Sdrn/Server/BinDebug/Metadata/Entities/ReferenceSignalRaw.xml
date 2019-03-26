@@ -14,10 +14,10 @@
     <Field Desc="Frequency_MHz" Title="Frequency_MHz" Name="Frequency_MHz" DataType="Decimal.22.8" SourceName="FREQ_MHZ" SourceType="Column" Required="false"/>
     <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BANDWIDTH_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="LevelSignal_dBm" Title="LevelSignal_dBm" Name="LevelSignal_dBm" DataType="Decimal.22.8" SourceName="LEVELSIGNAL_DBM" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEASTASKID" SourceType="Column" Required="true"/>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation ReferenceSignalRaw to MeasTask">
+    <Field Desc="RefSituationId" Title="RefSituationId" Name="RefSituationId" DataType="Integer.64" SourceName="REFSITUATIONID" SourceType="Column" Required="true"/>
+    <Field Name="REFSITUATION" SourceType="Reference" SourceName="ReferenceSituation" Title="Relation ReferenceSignalRaw to ReferenceSituation">
       <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
+        <Mapped KeyFieldName="Id" MatchWith="Field">RefSituationId</Mapped>
       </PrimaryKeyMapping>
     </Field>
   </Fields>
