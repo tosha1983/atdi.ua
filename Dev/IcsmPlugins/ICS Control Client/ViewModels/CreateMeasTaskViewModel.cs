@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
 using XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Models.WcfDataApadters;
@@ -16,7 +17,8 @@ using ICSM;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
 using System.Windows.Controls;
 using System.Collections;
-using System.Windows.Input;
+using fm = System.Windows.Forms;
+using Atdi.Common;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -86,7 +88,6 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._currentShortSensor = value;
                 RedrawMap();
             }
-
         }
         public double? FreqParam
         {
@@ -134,10 +135,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
-        }
-        private void SensorSelectItemsCommand(object sender, SelectionChangedEventArgs args)
-        {
-
         }
         private void OnCreateMeasTaskCommand(object parameter)
         {
@@ -257,6 +254,77 @@ namespace XICSM.ICSControlClient.ViewModels
                         break;
                 }
 
+                List<SDR.ReferenceSituation> listRef = new List<SDR.ReferenceSituation>();
+
+                if (this._currentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling)
+                {
+                    foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
+                    {
+                        fm.OpenFileDialog openFile = new fm.OpenFileDialog() { Filter = "Текстовые файлы(*.csv)|*.csv", Title = shortSensor.Name };
+                        if (openFile.ShowDialog() == fm.DialogResult.OK)
+                        {
+                            SDR.ReferenceSituation refSit = new SDR.ReferenceSituation();
+                            List<SDR.ReferenceSignal> listRefSig = new List<SDR.ReferenceSignal>();
+
+                            using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
+                            {
+                                parser.TextFieldType = FieldType.Delimited;
+                                parser.SetDelimiters(",");
+                                int i = 0;
+                                while (!parser.EndOfData)
+                                {
+                                    i++;
+                                    var record = parser.ReadFields();
+
+                                    if (i >= 4)
+                                    {
+                                        SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
+
+                                        if (record[9].TryToDouble().HasValue)
+                                        {
+                                            refSig.Frequency_MHz = record[9].TryToDouble().Value;
+
+                                            IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                                            rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                            rs2.Select("ID,Station.BW");
+                                            for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+                                            {
+                                                var bw = rs2.GetD("Station.BW");
+                                                if (bw != 0 && bw != IM.NullD)
+                                                    refSig.LevelSignal_dBm = bw;
+                                            }
+
+                                            if (refSig.LevelSignal_dBm == 0)
+                                            {
+                                                IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                                                rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                rs.Select("ID,Station.BW");
+                                                for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                {
+                                                    var bw = rs.GetD("Station.BW");
+                                                    if (bw != 0 && bw != IM.NullD)
+                                                        refSig.LevelSignal_dBm = bw;
+                                                }
+                                            }
+                                        }
+
+
+                                        if (record[4].TryToDouble().HasValue)
+                                            refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
+
+                                        refSig.LevelSignal_dBm = 0;
+                                        listRefSig.Add(refSig);
+                                    }
+                                }
+                            }
+                            refSit.ReferenceSignal = listRefSig.ToArray();
+                            refSit.SensorId = shortSensor.Id;
+                            listRef.Add(refSit);
+                        }
+                    }
+                }
+
+
                 List<SDR.MeasStation> stationsList = new List<SDR.MeasStation>();
                 foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                 {
@@ -317,7 +385,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     Task = SDR.MeasTaskType.Scan,
                     ExecutionMode = SDR.MeasTaskExecutionMode.Automatic,
                     DateCreated = DateTime.Now,
-                    CreatedBy = IM.ConnectedUser()
+                    CreatedBy = IM.ConnectedUser(),
+                    RefSituation = listRef.ToArray()
                 };
 
                 var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
