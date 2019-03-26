@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
-    public class ReferenceSituation
+    public class EmittingParameters
     {
-        public ReferenceSignal[] ReferenceSignal;
-        public int SensorId;
+        public double RollOffFactor; // from 0.85 to 1.35
+        public double StandardBW; // or channel BW
     }
 }

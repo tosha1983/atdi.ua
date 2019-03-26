@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
-    public class ReferenceSituation
+    public class WorkTime
     {
-        public ReferenceSignal[] ReferenceSignal;
-        public int SensorId;
+        public DateTime StartEmitting;
+        public DateTime StopEmitting;
+        public int HitCount;
+        public float PersentAvailability;
     }
 }

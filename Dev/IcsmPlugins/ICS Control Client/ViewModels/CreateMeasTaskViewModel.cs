@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
 using XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Models.WcfDataApadters;
@@ -14,15 +15,41 @@ using System.Windows;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
+using System.Windows.Controls;
+using System.Collections;
+using fm = System.Windows.Forms;
+using Atdi.Common;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
+    public class CustomDataGrid : DataGrid
+    {
+        public CustomDataGrid()
+        {
+            this.SelectionChanged += CustomDataGrid_SelectionChanged;
+        }
 
+        void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
+        }
+        #region SelectedItemsList
+
+        public IList SelectedItemsList
+        {
+            get { return (IList)GetValue(SelectedItemsListProperty); }
+            set { SetValue(SelectedItemsListProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new PropertyMetadata(null));
+
+        #endregion
+    }
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
         #region Current Objects
         private MeasTaskViewModel _currentMeasTask;
-        private ShortSensorViewModel _currentShortSensor;
+        private IList _currentShortSensor;
         private MP.MapDrawingData _currentMapData;
         #endregion
 
@@ -53,10 +80,14 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._currentMeasTask;
             set => this.Set(ref this._currentMeasTask, value, () => { ReloadShortSensors(); RedrawMap(); });
         }
-        public ShortSensorViewModel CurrentShortSensor
+        public IList CurrentShortSensor
         {
             get => this._currentShortSensor;
-            set => this.Set(ref this._currentShortSensor, value, RedrawMap);
+            set
+            {
+                this._currentShortSensor = value;
+                RedrawMap();
+            }
         }
         public double? FreqParam
         {
@@ -74,7 +105,7 @@ namespace XICSM.ICSControlClient.ViewModels
         #endregion
         private void SetDefaultVaues()
         {
-            this._currentMeasTask.MeasDtParamTypeMeasurements = SDR.MeasurementType.Level;
+            this._currentMeasTask.MeasDtParamTypeMeasurements = SDR.MeasurementType.Signaling;
             this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
             this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
             this._currentMeasTask.MeasTimeParamListTimeStart = DateTime.Today;
@@ -223,6 +254,83 @@ namespace XICSM.ICSControlClient.ViewModels
                         break;
                 }
 
+                List<SDR.ReferenceSituation> listRef = new List<SDR.ReferenceSituation>();
+
+                if (this._currentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling)
+                {
+                    foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
+                    {
+                        fm.OpenFileDialog openFile = new fm.OpenFileDialog() { Filter = "Текстовые файлы(*.csv)|*.csv", Title = shortSensor.Name };
+                        if (openFile.ShowDialog() == fm.DialogResult.OK)
+                        {
+                            SDR.ReferenceSituation refSit = new SDR.ReferenceSituation();
+                            List<SDR.ReferenceSignal> listRefSig = new List<SDR.ReferenceSignal>();
+
+                            using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
+                            {
+                                parser.TextFieldType = FieldType.Delimited;
+                                parser.SetDelimiters(",");
+                                int i = 0;
+                                while (!parser.EndOfData)
+                                {
+                                    i++;
+                                    var record = parser.ReadFields();
+
+                                    if (i >= 4)
+                                    {
+                                        SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
+
+                                        if (record[9].TryToDouble().HasValue)
+                                        {
+                                            refSig.Frequency_MHz = record[9].TryToDouble().Value;
+
+                                            IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                                            rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                            rs2.Select("ID,Station.BW");
+                                            for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+                                            {
+                                                var bw = rs2.GetD("Station.BW");
+                                                if (bw != 0 && bw != IM.NullD)
+                                                    refSig.LevelSignal_dBm = bw;
+                                            }
+
+                                            if (refSig.LevelSignal_dBm == 0)
+                                            {
+                                                IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                                                rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                rs.Select("ID,Station.BW");
+                                                for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                {
+                                                    var bw = rs.GetD("Station.BW");
+                                                    if (bw != 0 && bw != IM.NullD)
+                                                        refSig.LevelSignal_dBm = bw;
+                                                }
+                                            }
+                                        }
+
+
+                                        if (record[4].TryToDouble().HasValue)
+                                            refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
+
+                                        refSig.LevelSignal_dBm = 0;
+                                        listRefSig.Add(refSig);
+                                    }
+                                }
+                            }
+                            refSit.ReferenceSignal = listRefSig.ToArray();
+                            refSit.SensorId = shortSensor.Id;
+                            listRef.Add(refSit);
+                        }
+                    }
+                }
+
+
+                List<SDR.MeasStation> stationsList = new List<SDR.MeasStation>();
+                foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
+                {
+                    stationsList.Add(new SDR.MeasStation() { StationId = new SDR.MeasStationIdentifier() { Value = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id).Id.Value } });
+                };
+
                 var measTask = new SDR.MeasTask()
                 {
                     Name = this._currentMeasTask.Name,
@@ -273,16 +381,12 @@ namespace XICSM.ICSControlClient.ViewModels
                         Days = this._currentMeasTask.MeasTimeParamListDays,
                         PerInterval = this._currentMeasTask.MeasTimeParamListPerInterval
                     },
-
-                    Stations = new SDR.MeasStation[] { new SDR.MeasStation()
-                    {
-                        StationId = new SDR.MeasStationIdentifier() { Value = SVC.SdrnsControllerWcfClient.GetSensorById(this._currentShortSensor.Id).Id.Value }
-                    } } ,
-                    //StationsForMeasurements = PreparedStationDataForMeasurements(tour, inspections),
+                    Stations = stationsList.ToArray(),
                     Task = SDR.MeasTaskType.Scan,
                     ExecutionMode = SDR.MeasTaskExecutionMode.Automatic,
                     DateCreated = DateTime.Now,
-                    CreatedBy = IM.ConnectedUser()
+                    CreatedBy = IM.ConnectedUser(),
+                    RefSituation = listRef.ToArray()
                 };
 
                 var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
@@ -304,38 +408,42 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
                 Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat)
+                Location = new Models.Location(lon, lat),
+                Opacity = 0.5,
+                Height = 5,
+                Width = 5
             };
         }
-
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
             var points = new List<MP.MapDrawingDataPoint>();
 
-            if (this.CurrentShortSensor != null)
+            if (this._currentShortSensor != null)
             {
-                var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(this.CurrentShortSensor.Id);
-                if (svcSensor != null)
+                foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                 {
-                    var modelSensor = Mappers.Map(svcSensor);
-                    if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
+                    var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id);
+                    if (svcSensor != null)
                     {
-                        var sensorPoints = modelSensor.Locations
-                            .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
-                                    || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
-                                    && l.Lon.HasValue
-                                    && l.Lat.HasValue)
-                            .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
-                            .ToArray();
+                        var modelSensor = Mappers.Map(svcSensor);
+                        if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
+                        {
+                            var sensorPoints = modelSensor.Locations
+                                .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+                                        || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+                                        && l.Lon.HasValue
+                                        && l.Lat.HasValue)
+                                .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                                .ToArray();
 
-                        points.AddRange(sensorPoints);
+                            points.AddRange(sensorPoints);
+                        }
                     }
                 }
             }
             data.Points = points.ToArray();
             this.CurrentMapData = data;
         }
-        
     }
 }

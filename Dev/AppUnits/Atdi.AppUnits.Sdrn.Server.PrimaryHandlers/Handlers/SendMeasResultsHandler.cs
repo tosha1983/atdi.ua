@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._eventEmitter = eventEmitter;
             this._logger = logger;
         }
-
+        /*
         public void GetMeasTaskSDRIdentifier(MeasResults measResults,  out int SubTaskId, out int SubTaskStationId, out int SensorId)
         {
             int? _SubTaskId = null;
@@ -61,6 +61,42 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 {
                     _SubTaskId = reader.GetValue(c => c.MeasSubTaskId);
                     _SubTaskStationId = reader.GetValue(c => c.MeasSubTaskStaId);
+                    _SensorId = reader.GetValue(c => c.SensorId);
+                    result = true;
+                }
+                return result;
+            });
+            SubTaskId = _SubTaskId.HasValue ? _SubTaskId.Value : -1;
+            SubTaskStationId = _SubTaskStationId.HasValue ? _SubTaskStationId.Value : -1;
+            SensorId = _SensorId.HasValue ? _SensorId.Value : -1;
+        }
+        */
+
+        public void GetMeasTaskSDRIdentifier(MeasResults measResults, out int SubTaskId, out int SubTaskStationId, out int SensorId)
+        {
+            int? _SubTaskId = null;
+            int? _SubTaskStationId = null;
+            int? _SensorId = null;
+
+            int valMeasTask = -1;
+            Int32.TryParse(measResults.TaskId, out valMeasTask);
+            var query = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>()
+                  .From()
+                  .Select(c => c.Id)
+                  .Select(c => c.SensorId)
+                  .Select(c => c.MeasSubTaskId)
+                  .Where(c => c.MEASSUBTASK.MeasTaskId, ConditionOperator.Equal, valMeasTask)
+                  .OrderByAsc(c => c.Id)
+                  ;
+
+            var res = this._dataLayer.Executor<SdrnServerDataContext>()
+            .Fetch(query, reader =>
+            {
+                var result = false;
+                while (reader.Read())
+                {
+                    _SubTaskId = reader.GetValue(c => c.MeasSubTaskId);
+                    _SubTaskStationId = reader.GetValue(c => c.Id);
                     _SensorId = reader.GetValue(c => c.SensorId);
                     result = true;
                 }
@@ -248,9 +284,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                     }
                                                     return true;
                                                 });
-
-
-                                     
                                             }
 
                                             var signalMask = emittings[l].SignalMask;
@@ -294,8 +327,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 {
                                                     return true;
                                                 });
-
-
                                             }
                                         }
                                     }

@@ -99,6 +99,16 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public ResultsMeasurementsStation[] ResultsMeasStation;
         /// <summary>
+        /// Reference levels
+        /// </summary>
+        [DataMember]
+        public ReferenceLevels RefLevels { get; set; }
+        /// <summary>
+        /// Emittings
+        /// </summary>
+        [DataMember]
+        public Emitting[] Emittings { get; set; }
+        /// <summary>
         /// 
         /// </summary>
         [DataMember]

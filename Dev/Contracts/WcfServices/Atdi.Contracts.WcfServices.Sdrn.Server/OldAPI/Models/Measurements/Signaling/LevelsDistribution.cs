@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
-    public class ReferenceSituation
+    public class LevelsDistribution
     {
-        public ReferenceSignal[] ReferenceSignal;
-        public int SensorId;
+        public int[] Levels;
+        public int[] Count;
     }
+
 }
