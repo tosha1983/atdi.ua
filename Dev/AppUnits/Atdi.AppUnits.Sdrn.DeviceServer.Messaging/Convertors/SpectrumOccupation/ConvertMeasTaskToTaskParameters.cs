@@ -101,10 +101,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 if (taskSDR.RefSituation != null)
                 {
                     var listReferenceSituation = new List<ReferenceSituation>();
-                    for (int k = 0; k < taskSDR.RefSituation.Length; k++)
                     {
                         var refSituation = new ReferenceSituation();
-                        var refSituationTemp = taskSDR.RefSituation[k];
+                        var refSituationTemp = taskSDR.RefSituation;
                         refSituation.SensorId = refSituationTemp.SensorId;
                         var referenceSignal = refSituationTemp.ReferenceSignal;
                         if (referenceSignal.Length > 0)
@@ -128,7 +127,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         }
                         listReferenceSituation.Add(refSituation);
                     }
-                    taskParameters.RefSituation = listReferenceSituation.ToArray();
+                    if (listReferenceSituation.Count > 0)
+                    {
+                        taskParameters.RefSituation = listReferenceSituation[0];
+                    }
                 }
             }
 

@@ -9,6 +9,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly EventContext SOTaskWorker = "SOTaskWorker";
         public static readonly EventContext SignalizationTaskWorker = "SignalizationTaskWorker";
         public static readonly EventContext BandWidthTaskWorker = "BandWidthTaskWorker";
+        public static readonly EventContext SignalizationTaskResultHandler = "SignalizationTaskResultHandler";
 
 
     }
@@ -26,7 +27,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly EventText HandlingErrorSendCommandController = "Handling error send command  Id = {0} to controller";
         public static readonly EventText SleepThread = "Sleep thread for command id = {0} at time {1}";
         public static readonly EventText MaximumDurationMeas = "Maximum duration meas can not be -1";
-
+        public static readonly EventText FinishedBandWidthTaskWorker = "Finished 'BandWidthTaskWorker'";
 
 
         public static readonly EventText StartSignalizationTaskWorker = "Start SignalizationTaskWorker context.Task.Id = {0}";

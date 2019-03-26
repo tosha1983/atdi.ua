@@ -245,7 +245,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (listReferenceSituation.Count > 0)
                     {
-                        taskParameters.RefSituation = listReferenceSituation.ToArray();
+                        taskParameters.RefSituation = listReferenceSituation[0];
                     }
                 }
                 return true;
@@ -470,7 +470,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (listReferenceSituation.Count > 0)
                     {
-                        taskParameters.RefSituation = listReferenceSituation.ToArray();
+                        taskParameters.RefSituation = listReferenceSituation[0];
                     }
                 }
                 return true;
@@ -538,10 +538,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                         if (item.RefSituation != null)
                         {
-                            for (int l = 0; l < item.RefSituation.Length; l++)
+                            //for (int l = 0; l < item.RefSituation.Length; l++)
+                            var refSituation = item.RefSituation;
                             {
                                 int valueIdReferenceSituationRaw = -1;
-                                var refSituationReferenceSignal = item.RefSituation[l];
+                                var refSituationReferenceSignal = refSituation; //item.RefSituation[l];
                                 var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
                                 builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
                                 builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
@@ -885,7 +886,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (listReferenceSituation.Count > 0)
                     {
-                        taskParameters.RefSituation = listReferenceSituation.ToArray();
+                        taskParameters.RefSituation = listReferenceSituation[0];
                     }
 
                     listTaskParameters.Add(taskParameters);
@@ -1115,7 +1116,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (listReferenceSituation.Count > 0)
                     {
-                        taskParameters.RefSituation = listReferenceSituation.ToArray();
+                        taskParameters.RefSituation = listReferenceSituation[0];
                     }
 
                     listTaskParameters.Add(taskParameters);

@@ -13,9 +13,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSearchEmitting
     {
-        public static Emitting Convert(this ReferenceSituation referenceLevels)
+        public static Emitting[] Convert(ReferenceSituation referenceLevels)
         {
-            Emitting emitting = new Emitting();
+            Emitting[] emitting = new Emitting[1];
 
           
             return emitting;

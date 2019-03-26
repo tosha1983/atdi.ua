@@ -195,7 +195,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             }
                                             listReferenceSituation.Add(refSituation);
                                         }
-                                        MTSDR.RefSituation = listReferenceSituation.ToArray();
+                                        if (listReferenceSituation.Count > 0)
+                                        {
+                                            //MTSDR.RefSituation = listReferenceSituation.ToArray();
+                                            MTSDR.RefSituation = listReferenceSituation[0];
+                                        }
                                     }
                                 }
 

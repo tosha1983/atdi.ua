@@ -66,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     Thread.Sleep((int)waitStartTask.TotalMilliseconds);
                 }
 
-                var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                var maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////
                 // 
@@ -74,10 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
+                //context.Task.mesureTraceParameter
 
 
                 //////////////////////////////////////////////
@@ -100,8 +97,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // Получение очередного  результат от Result Handler
                 //
                 //////////////////////////////////////////////
-                MeasResults outResultData = null;
-                bool isDown = context.WaitEvent<MeasResults>(out outResultData, (int)context.Task.maximumTimeForWaitingResultBandWidth);
+                MeasBandwidthResult outResultData = null;
+                bool isDown = context.WaitEvent<MeasBandwidthResult>(out outResultData, (int)context.Task.maximumTimeForWaitingResultBandWidth);
                 if (isDown == false) // таймут - результатов нет
                 {
                     var error = new ExceptionProcessBandWidth();
@@ -154,15 +151,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                 var action = new Action(() =>
                 {
-                        //реакция на принятые результаты измерения
+                    //реакция на принятые результаты измерения
                     if (outResultData != null)
                     {
+                        DM.MeasResults measResult = new DM.MeasResults();
+                        measResult.BandwidthResult = new BandwidthMeasResult();
+                        measResult.BandwidthResult.Bandwidth_kHz = outResultData.BandwidthkHz;
+                        measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
+                        measResult.BandwidthResult.T1 = outResultData.T1;
+                        measResult.BandwidthResult.T2 = outResultData.T2;
+                        measResult.BandwidthResult.СorrectnessEstimations = outResultData.СorrectnessEstimations;
+                        measResult.StartTime = context.Task.LastTimeSend.Value;
+                        measResult.StopTime = currTime;
+                        measResult.Location = new DataModels.Sdrns.GeoLocation();
                         //////////////////////////////////////////////
                         // 
                         //  Здесь получаем данные с GPS приемника
                         //  
                         //////////////////////////////////////////////
-                        outResultData.Location = new DataModels.Sdrns.GeoLocation();
                         var parentProcess = context.Process.Parent;
                         if (parentProcess != null)
                         {
@@ -174,9 +180,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                     dispatchProcessParent = (parentProcess as DispatchProcess);
                                     if (dispatchProcessParent != null)
                                     {
-                                        outResultData.Location.ASL = dispatchProcessParent.Asl;
-                                        outResultData.Location.Lon = dispatchProcessParent.Lon;
-                                        outResultData.Location.Lat = dispatchProcessParent.Lat;
+                                        measResult.Location.ASL = dispatchProcessParent.Asl;
+                                        measResult.Location.Lon = dispatchProcessParent.Lon;
+                                        measResult.Location.Lat = dispatchProcessParent.Lat;
                                     }
                                     else
                                     {
@@ -197,10 +203,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                         }
-                        outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
+                        measResult.TaskId = context.Task.taskParameters.SDRTaskId;
                         //Отправка результатов в шину 
                         var publisher = this._busGate.CreatePublisher("main");
-                        publisher.Send<DM.MeasResults>("SendMeasResults", outResultData);
+                        publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
                         publisher.Dispose();
                         context.Task.MeasResults = null;
                         context.Task.LastTimeSend = currTime;
@@ -213,6 +219,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //  Принять решение о полноте результатов
                 //  
                 //////////////////////////////////////////////
+                if (outResultData != null)
+                {
+                    action.Invoke();
+                }
 
 
                 //////////////////////////////////////////////
@@ -221,9 +231,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // 
                 //
                 //////////////////////////////////////////////
-
-
-
+                context.Finish();
+                _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.FinishedBandWidthTaskWorker);
 
             }
             catch (Exception e)
@@ -231,25 +240,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.UnknownErrorBandWidthTaskWorker, e.Message);
                 context.Abort(e);
             }
-        }
-
-
-
-        /// <summary>
-        ///Вычисление задержки выполнения потока результатом является количество vмилисекунд на которое необходимо приостановить поток
-        /// </summary>
-        /// <param name="taskParameters">Параметры таска</param> 
-        /// <param name="doneCount">Количество измерений которое было проведено</param>
-        /// <returns></returns>
-        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
-        {
-            DateTime dateTimeNow = DateTime.Now;
-            if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
-            TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            double interval_ms = interval.TotalMilliseconds;
-            if (taskParameters.NCount <= DoneCount) { return -1; }
-            long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
-            return duration;
         }
     }
 }
