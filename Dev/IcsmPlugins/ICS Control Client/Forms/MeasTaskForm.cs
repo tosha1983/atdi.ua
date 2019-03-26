@@ -42,5 +42,6 @@ namespace XICSM.ICSControlClient.Forms
             //_wpfControl = new MainFormWpfControl();
             //this._wpfElementHost.Child = _wpfControl;
         }
+
     }
 }
