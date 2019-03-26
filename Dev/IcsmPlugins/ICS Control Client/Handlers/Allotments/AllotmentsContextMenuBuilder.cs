@@ -21,12 +21,9 @@ namespace XICSM.ICSControlClient
 
             if (IsBuildContextMenu(tableName, nbRecMin))
             {
-                nodes.AddContextMenuToolForEachRecords(
-                    PluginMetadata.ContextMenu.Allotment.StartMeasurementsSO,
-                    HD.StartMeasurementsSOCommand.Handle
-                );
-
+                nodes.AddContextMenuToolForEachRecords(PluginMetadata.ContextMenu.Allotment.StartMeasurementsSO, HD.StartMeasurementsSOCommand.Handle);
                 nodes.Add(new IMQueryMenuNode(PluginMetadata.ContextMenu.Allotment.CalcSOByMeasResult, null, HD.CalcSOByMeasResultCommand.Handle, IMQueryMenuNode.ExecMode.SelectionOfRecords));
+                nodes.AddContextMenuToolForEachRecords(PluginMetadata.ContextMenu.Allotment.StartSignalization, HD.StartSignalizationCommand.Handle);
             }
 
             return nodes;

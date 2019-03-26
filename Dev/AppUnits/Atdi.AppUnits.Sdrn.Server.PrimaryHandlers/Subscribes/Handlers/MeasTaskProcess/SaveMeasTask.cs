@@ -91,6 +91,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     case MeasurementType.BandwidthMeas:
                                         MTSDR.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                                         break;
+                                    case MeasurementType.Signaling:
+                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
+                                        break;
+
                                     default:
                                         throw new NotImplementedException($"Type '{task.MeasDtParam.TypeMeasurements}' not supported");
                                 }
