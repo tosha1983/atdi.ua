@@ -63,7 +63,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         // 1) Нужно ли исследование существующих сигналов?
                         if (NeedResearchExistSignals(result))
                         {
-                            taskContext.Task.EmittingsDetailed = CalcSearchEmitting.Convert(taskContext.Task.taskParameters.RefSituation);
+                            var emittingsDetailed = CalcSearchEmitting.Convert(taskContext.Task.taskParameters.RefSituation);
+                            taskContext.Task.EmittingsDetailed = emittingsDetailed.ToList();
                         }
                         else
                         {
@@ -79,7 +80,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
 
                    
-                        taskContext.Task.EmittingsSummary = CalcGroupingEmitting.Convert(taskContext.Task.EmittingsRaw, taskContext.Task.EmittingsDetailed, taskContext.Task.EmittingsSummary);
+                        CalcGroupingEmitting.Convert(taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsDetailed, ref taskContext.Task.EmittingsSummary);
 
                         //////////////////////////////////////////
                         //
@@ -162,13 +163,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 measResults.BandwidthResult.СorrectnessEstimations = outMeasBandwidthResultData.СorrectnessEstimations;
                             }
 
-                            measResults.Emittings = taskContext.Task.EmittingsSummary;
+                            measResults.Emittings = taskContext.Task.EmittingsSummary.ToArray();
                             // Отправка результата в Task Handler
                             taskContext.SetEvent(measResults);
                         }
                         else
                         {
-                            measResults.Emittings = taskContext.Task.EmittingsSummary;
+                            measResults.Emittings = taskContext.Task.EmittingsSummary.ToArray();
                             // Отправка результата в Task Handler
                             taskContext.SetEvent(measResults);
                         }
@@ -197,7 +198,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         // Необходим доп иследование спектра
         //
         //////////////////////////////////////////////
-        private bool IsAdditionalSpectrumStudyRrequired(Emitting[] EmittingsSummary)
+        private bool IsAdditionalSpectrumStudyRrequired(List<Emitting> EmittingsSummary)
         {
             //заглушка
             return true;

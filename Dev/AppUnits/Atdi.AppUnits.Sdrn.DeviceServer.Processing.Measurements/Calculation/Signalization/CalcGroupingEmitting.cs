@@ -20,7 +20,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool Convert(Emitting[] EmittingsRaw, ref List <Emitting> EmittingsTemp, ref List<Emitting> EmittingsSummary)
+        public static bool Convert(Emitting[] EmittingsRaw, ref List<Emitting> EmittingsTemp, ref List<Emitting> EmittingsSummary)
         {
             for (int i = 0; EmittingsRaw.Length>i; i++)
             {
