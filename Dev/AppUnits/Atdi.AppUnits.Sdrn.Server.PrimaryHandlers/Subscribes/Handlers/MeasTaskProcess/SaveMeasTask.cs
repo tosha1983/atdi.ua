@@ -164,29 +164,38 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                                 if (task.RefSituation!=null)
                                 {
-                                    if (task.RefSituation.ReferenceSignal != null)
+                                    if (task.RefSituation != null)
                                     {
-                                        MTSDR.RefSituation = new DEV.ReferenceSituation();
-                                        var referenceSignal = task.RefSituation.ReferenceSignal;
-                                        if (referenceSignal.Length > 0)
+                                        var listReferenceSituation = new List<DEV.ReferenceSituation>();
+                                        for (int k = 0; k < task.RefSituation.Length; k++)
                                         {
-                                            MTSDR.RefSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
-                                            for (int l=0; l< referenceSignal.Length; l++)
+                                            var refSituation = new DEV.ReferenceSituation();
+                                            var refSituationTemp = task.RefSituation[k];
+                                            refSituation.SensorId = refSituationTemp.SensorId;
+
+                                            var referenceSignal = refSituationTemp.ReferenceSignal;
+                                            if (referenceSignal.Length > 0)
                                             {
-                                                var refSituationReferenceSignal = MTSDR.RefSituation.ReferenceSignal[l];
-                                                refSituationReferenceSignal = new DEV.ReferenceSignal();
-                                                refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
-                                                refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
-                                                refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
-                                                refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
-                                                if (referenceSignal[l].SignalMask!=null)
+                                                refSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
+                                                for (int l = 0; l < referenceSignal.Length; l++)
                                                 {
-                                                    refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
-                                                    refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
+                                                    var refSituationReferenceSignal = refSituation.ReferenceSignal[l];
+                                                    refSituationReferenceSignal = new DEV.ReferenceSignal();
+                                                    refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
+                                                    refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
+                                                    refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                                                    refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
+                                                    if (referenceSignal[l].SignalMask != null)
+                                                    {
+                                                        refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
+                                                        refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
+                                                    }
+                                                    refSituation.ReferenceSignal[l] = refSituationReferenceSignal;
                                                 }
-                                                MTSDR.RefSituation.ReferenceSignal[l] = refSituationReferenceSignal;
                                             }
+                                            listReferenceSituation.Add(refSituation);
                                         }
+                                        MTSDR.RefSituation = listReferenceSituation.ToArray();
                                     }
                                 }
 
