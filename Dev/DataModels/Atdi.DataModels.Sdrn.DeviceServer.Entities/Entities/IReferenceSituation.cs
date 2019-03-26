@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Server.Entities
+namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
     [Entity]
-    public interface IReferenceSituationRaw
+    public interface IReferenceSituation
     {
         int Id { get; set; }
         int? SensorId { get; set; }

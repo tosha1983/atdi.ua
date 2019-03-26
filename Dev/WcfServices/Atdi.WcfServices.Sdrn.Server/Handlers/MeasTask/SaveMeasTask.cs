@@ -188,7 +188,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 int valueIdReferenceSituationRaw = -1;
                                 var refSituationReferenceSignal = value.RefSituation[l];
-                                var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituationRaw>().Insert();
+                                var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
                                 builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
                                 builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
                                 builderInsertReferenceSituationRaw.Select(c => c.Id);
@@ -205,7 +205,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 var situationReferenceSignal = refSituationReferenceSignal.ReferenceSignal[j];
 
 
-                                                var builderInsertReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().Insert();
+                                                var builderInsertReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().Insert();
                                                 builderInsertReferenceSignalRaw.SetValue(c => c.Bandwidth_kHz, situationReferenceSignal.Bandwidth_kHz);
                                                 builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
                                                 builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
@@ -221,13 +221,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                             var signalMask = situationReferenceSignal.SignalMask;
                                                             if (signalMask != null)
                                                             {
-                                                                var lstInsSignalMaskRaw = new IQueryInsertStatement<MD.ISignalMaskRaw>[signalMask.Freq_kHz.Length];
+                                                                var lstInsSignalMaskRaw = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
                                                                 for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
                                                                 {
                                                                     var freq_kH = signalMask.Freq_kHz[k];
                                                                     var loss_dB = signalMask.Loss_dB[k];
 
-                                                                    var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Insert();
+                                                                    var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
                                                                     builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
                                                                     builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
                                                                     builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, valueIdReferenceSignal);

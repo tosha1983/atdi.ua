@@ -92,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
 
                         var listReferenceSituation = new List<ReferenceSituation>();
-                        var builderReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituationRaw>().From();
+                        var builderReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().From();
                         builderReferenceSituationRaw.Select(c => c.Id);
                         builderReferenceSituationRaw.Select(c => c.SensorId);
                         builderReferenceSituationRaw.Select(c => c.MeasTaskId);
@@ -108,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 }
 
                                 var referenceSignals = new List<ReferenceSignal>();
-                                var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                                var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
                                 builderReferenceSignalRaw.Select(c => c.Id);
                                 builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                                 builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
@@ -137,7 +137,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         referenceSignal.SignalMask = new SignalMask();
                                         List<double> freqs = new List<double>();
                                         List<float> loss = new List<float>();
-                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
                                         builderSignalMaskRaw.Select(c => c.Id);
                                         builderSignalMaskRaw.Select(c => c.EmittingId);
                                         builderSignalMaskRaw.Select(c => c.Freq_kHz);

@@ -98,41 +98,37 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 
             if (taskSDR.RefSituation != null)
             {
-                var referenceSignal = taskSDR.RefSituation.ReferenceSignal;
-                if (referenceSignal != null)
+                if (taskSDR.RefSituation != null)
                 {
-                    taskParameters.ReferenceSignals = new ReferenceSignal[referenceSignal.Length];
-                    for (int l=0; l< referenceSignal.Length; l++)
+                    var listReferenceSituation = new List<ReferenceSituation>();
+                    for (int k = 0; k < taskSDR.RefSituation.Length; k++)
                     {
-                        taskParameters.ReferenceSignals[l] = new ReferenceSignal();
-                        var referenceSignalVal = taskParameters.ReferenceSignals[l];
-                        referenceSignalVal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
-                        referenceSignalVal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
-                        referenceSignalVal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
-                        referenceSignalVal.SignalMask = new SignalMask();
-
-                        var signalMask = referenceSignal[l].SignalMask;
-                        if (signalMask!=null)
+                        var refSituation = new ReferenceSituation();
+                        var refSituationTemp = taskSDR.RefSituation[k];
+                        refSituation.SensorId = refSituationTemp.SensorId;
+                        var referenceSignal = refSituationTemp.ReferenceSignal;
+                        if (referenceSignal.Length > 0)
                         {
-                            if ((signalMask.Freq_kHz != null) && (signalMask.Freq_kHz.Length > 0))
+                            refSituation.ReferenceSignal = new ReferenceSignal[referenceSignal.Length];
+                            for (int l = 0; l < referenceSignal.Length; l++)
                             {
-                                var massFreq = new double[signalMask.Freq_kHz.Length];
-                                var massLoss = new float[signalMask.Freq_kHz.Length];
-
-                                for (int r = 0; r < signalMask.Freq_kHz.Length; r++)
+                                var refSituationReferenceSignal = refSituation.ReferenceSignal[l];
+                                refSituationReferenceSignal = new ReferenceSignal();
+                                refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
+                                refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
+                                refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                                refSituationReferenceSignal.SignalMask = new SignalMask();
+                                if (referenceSignal[l].SignalMask != null)
                                 {
-                                    massFreq[r]=signalMask.Freq_kHz[r];
+                                    refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
+                                    refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
                                 }
-                                for (int r = 0; r < signalMask.Loss_dB.Length; r++)
-                                {
-                                    massLoss[r] =signalMask.Loss_dB[r];
-                                }
-                                referenceSignalVal.SignalMask.Freq_kHz = massFreq;
-                                referenceSignalVal.SignalMask.Loss_dB = massLoss;
+                                refSituation.ReferenceSignal[l] = refSituationReferenceSignal;
                             }
                         }
-                        taskParameters.ReferenceSignals[l] = referenceSignalVal;
+                        listReferenceSituation.Add(refSituation);
                     }
+                    taskParameters.RefSituation = listReferenceSituation.ToArray();
                 }
             }
 
