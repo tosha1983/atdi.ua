@@ -46,8 +46,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
         public void Run(ITaskContext<SignalizationTask, SignalizationProcess> context)
         {
+            const int maximumDurationMeasSignaling_ms = 1000;
             try
             {
+
                 _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.Id));
                 if (context.Process.Parent != null)
                 {
@@ -81,43 +83,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         continue;
                     }
 
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////
+                    // 
+                    //  Определяеим актуальный период времени между единичными измерениями в общей задаче Signalization если оно отрицательное значит время измерения вышло пора закругляться
+                    // 
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////
                     var maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
                     if (maximumDurationMeas < 0)
                     {
                         // обновление TaskParameters в БД
                         context.Task.taskParameters.status = StatusTask.C.ToString();
                         this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
-
-
                         DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
                         deviceCommandResult.CustTxt1 = "";
                         deviceCommandResult.Status = StatusTask.C.ToString();
                         deviceCommandResult.CustNbr1 = int.Parse(context.Task.taskParameters.SDRTaskId);
-
                         var publisher = this._busGate.CreatePublisher("main");
                         publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
                         publisher.Dispose();
-
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
                         context.Cancel();
-
                         break;
                     }
-
-
-
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // 
-                    //  Определяеим актуальный период времени между единичными измерениями в общей задаче Signalization
-                    // 
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
 
 
                     //////////////////////////////////////////////
@@ -171,11 +160,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                     case CommandFailureReason.TimeoutExpired:
                                     case CommandFailureReason.CanceledBeforeExecution:
                                         _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
-                                        Thread.Sleep((int)maximumDurationMeas);
+                                        Thread.Sleep(maximumDurationMeasSignaling_ms); // вынести в константу (по умолчанию 1 сек)
                                         return;
                                     case CommandFailureReason.NotFoundConvertor:
                                     case CommandFailureReason.NotFoundDevice:
-                                        var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.KoeffWaitingDevice;
+                                        var durationToRepietMeas = (int)maximumDurationMeasSignaling_ms * (int)context.Task.KoeffWaitingDevice;
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
@@ -270,7 +259,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //  
                     //////////////////////////////////////////////
                     TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                    if (timeSpan.TotalMilliseconds > context.Task.durationForSendResult)
+                    if (timeSpan.TotalMilliseconds > context.Task.durationForSendResultSignaling)
                     {
                         //реакция на принятые результаты измерения
                         action.Invoke();
@@ -289,7 +278,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outResultData != null)
                         {
                             timeSpan = currTime - context.Task.LastTimeSend.Value;
-                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResult / 2.0))
+                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResultSignaling / 2.0))
                             {
                                 action.Invoke();
                             }
