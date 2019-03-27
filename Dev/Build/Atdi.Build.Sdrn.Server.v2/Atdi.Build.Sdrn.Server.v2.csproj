@@ -179,6 +179,18 @@
       <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
       <Name>Atdi.WcfServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.Sdrn.Server\Atdi.WebApiServices.Sdrn.Server.csproj">
+      <Project>{504660e4-4905-4d62-aff9-5ee2aa52faf3}</Project>
+      <Name>Atdi.WebApiServices.Sdrn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj">
+      <Project>{ca3f294b-9c66-433f-84b3-d27ce3ab40f1}</Project>
+      <Name>Atdi.WebApiServices.SelfHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices\Atdi.WebApiServices.csproj">
+      <Project>{4803ae0c-1a06-4fc5-9be7-6affc943ee7c}</Project>
+      <Name>Atdi.WebApiServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
