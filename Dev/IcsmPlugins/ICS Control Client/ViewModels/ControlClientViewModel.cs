@@ -16,6 +16,8 @@ using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
+using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -758,7 +760,15 @@ namespace XICSM.ICSControlClient.ViewModels
                     break;
             }
         }
-
+        //private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    DataGridRow row = sender as DataGridRow;
+        //    if (row != null)
+        //    {
+        //        var data = row.Item as ShortMeasTaskViewModel;
+        //        System.Windows.MessageBox.Show(data.Id.ToString());
+        //    }
+        //}
 
         private void UpdateCurrentChartOption()
         {

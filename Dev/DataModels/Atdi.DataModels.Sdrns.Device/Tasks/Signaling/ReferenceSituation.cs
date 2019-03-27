@@ -9,5 +9,6 @@ namespace Atdi.DataModels.Sdrns.Device
     public class ReferenceSituation
     {
         public ReferenceSignal[] ReferenceSignal;
+        public int SensorId;
     }
 }

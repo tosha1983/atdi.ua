@@ -79,7 +79,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         soTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                         soTask.LastTimeSend = DateTime.Now;
                                         soTask.taskParameters = taskParameters;
-                                        soTask.mesureTraceParameter = soTask.taskParameters.Convert();
+                                        soTask.mesureTraceParameter = soTask.taskParameters.ConvertForSO();
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
                                         _taskStarter.RunParallel(soTask, process, context);
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(soTask.Id));
@@ -99,7 +99,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     signalTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     signalTask.LastTimeSend = DateTime.Now;
                                     signalTask.taskParameters = taskParameters;
-                                    signalTask.mesureTraceParameter = signalTask.taskParameters.Convert();
+                                    signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
                                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));
@@ -114,7 +114,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     bandWidtTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     bandWidtTask.LastTimeSend = DateTime.Now;
                                     bandWidtTask.taskParameters = taskParameters;
-                                    bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.Convert();
+                                    bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
                                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(bandWidtTask.Id));

@@ -44,6 +44,7 @@
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\ILastUpdate.cs" />
     <Compile Include="Entities\IReferenceSignalRaw.cs" />
+    <Compile Include="Entities\IReferenceSituation.cs" />
     <Compile Include="Entities\ISignalMaskRaw.cs" />
     <Compile Include="Entities\ITaskParametersFreq.cs" />
     <Compile Include="Entities\ITaskParameters.cs" />
@@ -101,6 +102,7 @@
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\LastUpdate.xml" />
     <Content Include="Metadata\Entities\ReferenceSignalRaw.xml" />
+    <Content Include="Metadata\Entities\ReferenceSituation.xml" />
     <Content Include="Metadata\Entities\SignalMaskRaw.xml" />
     <Content Include="Metadata\Entities\TaskParametersFreq.xml" />
     <Content Include="Metadata\Entities\TaskParameters.xml" />

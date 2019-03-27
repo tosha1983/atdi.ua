@@ -44,7 +44,12 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Calculation\CalcSDRParameters.cs" />
     <Compile Include="Calculation\BandWidth\BandWidthEstimation.cs" />
+    <Compile Include="Calculation\Common\BandwidthEstimation.cs" />
+    <Compile Include="Calculation\Signalization\CalcEmittingSummuryByEmittingDetailed.cs" />
     <Compile Include="Calculation\Signalization\CalcGroupingEmitting.cs" />
+    <Compile Include="Calculation\Signalization\CalcEmittingDetailed.cs" />
+    <Compile Include="Calculation\Signalization\CalcNeedResearchExistSignals.cs" />
+    <Compile Include="Calculation\Signalization\StandartBW.cs" />
     <Compile Include="Calculation\Signalization\CalcSearchInterruption.cs" />
     <Compile Include="Calculation\Signalization\CalcSearchEmitting.cs" />
     <Compile Include="Calculation\Signalization\CalcReferenceLevels.cs" />

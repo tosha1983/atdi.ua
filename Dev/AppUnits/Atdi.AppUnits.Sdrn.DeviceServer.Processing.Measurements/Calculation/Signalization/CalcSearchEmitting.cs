@@ -8,14 +8,16 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
+using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
+
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSearchEmitting
     {
-        public static Emitting Convert(this ReferenceSituation referenceLevels)
+        public static Emitting[] CalcSearch(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
         {
-            Emitting emitting = new Emitting();
+            Emitting[] emitting = new Emitting[1];
 
           
             return emitting;

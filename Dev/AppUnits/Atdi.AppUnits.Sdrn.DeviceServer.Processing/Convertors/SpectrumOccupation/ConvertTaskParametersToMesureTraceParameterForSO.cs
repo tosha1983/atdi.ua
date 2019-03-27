@@ -13,7 +13,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     public static class ConvertTaskParametersToMesureTraceParameterForSO
     {
-        public static MesureTraceParameter Convert(this TaskParameters taskParameters)
+        public static MesureTraceParameter ConvertForSO(this TaskParameters taskParameters)
         {
             
             MesureTraceParameter mesureTraceParameter = new MesureTraceParameter();
