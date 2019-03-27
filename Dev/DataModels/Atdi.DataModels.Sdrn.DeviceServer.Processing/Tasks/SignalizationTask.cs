@@ -15,8 +15,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public MesureTraceDeviceProperties mesureTraceDeviceProperties;
         public ReferenceLevels ReferenceLevels;
         public Emitting[] EmittingsRaw;
-        public List<Emitting> EmittingsDetailed = new List<Emitting>();
-        public List<Emitting> EmittingsSummary = new List<Emitting>();
+        public Emitting[] EmittingsDetailed;
+        public Emitting[] EmittingsSummary;
         public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
     }
 }

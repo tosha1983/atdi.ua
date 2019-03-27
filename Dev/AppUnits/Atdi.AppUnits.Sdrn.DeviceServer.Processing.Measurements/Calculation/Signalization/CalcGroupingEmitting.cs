@@ -20,33 +20,37 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool Convert(Emitting[] EmittingsRaw, ref List<Emitting> EmittingsTemp, ref List<Emitting> EmittingsSummary)
+        public static bool Convert(Emitting[] EmittingsRaw, ref Emitting[] EmittingsDetailed, ref Emitting[] EmittingsSummary)
         {
+            var emittingsSummaryTemp = EmittingsSummary.ToList();
+            var emittingsDetailedTemp = EmittingsDetailed.ToList();
             for (int i = 0; EmittingsRaw.Length>i; i++)
             {
-                bool ExistTheSameEmitting = false;
-                for (int j = 0; EmittingsSummary.Count > j ; j++)
+                bool existTheSameEmitting = false;
+                for (int j = 0; emittingsSummaryTemp.Count > j ; j++)
                 {
-                    ExistTheSameEmitting = MatchCheckEmitting(EmittingsSummary[j], EmittingsRaw[i]);
-                    if (ExistTheSameEmitting) { var em = EmittingsSummary[j]; JoinEmmiting(ref em, EmittingsRaw[i]); EmittingsSummary[j] = em; break;}
+                    existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
+                    if (existTheSameEmitting) { var em = emittingsSummaryTemp[j]; JoinEmmiting(ref em, EmittingsRaw[i]); emittingsSummaryTemp[j] = em; break;}
                 }
-                for (int l = 0; EmittingsTemp.Count > l; l++)
+                for (int l = 0; emittingsDetailedTemp.Count > l; l++)
                 {
-                    ExistTheSameEmitting = MatchCheckEmitting(EmittingsTemp[l], EmittingsRaw[i]);
-                    if (ExistTheSameEmitting) { var em = EmittingsTemp[l]; JoinEmmiting(ref em, EmittingsRaw[i]); EmittingsTemp[l] = em; break; }
+                    existTheSameEmitting = MatchCheckEmitting(emittingsDetailedTemp[l], EmittingsRaw[i]);
+                    if (existTheSameEmitting) { var em = emittingsDetailedTemp[l]; JoinEmmiting(ref em, EmittingsRaw[i]); emittingsDetailedTemp[l] = em; break; }
                 }
-                if (!ExistTheSameEmitting)
+                if (!existTheSameEmitting)
                 {
                     if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
                     {
-                        EmittingsSummary.Add(EmittingsRaw[i]);
+                        emittingsSummaryTemp.Add(EmittingsRaw[i]);
                     }
                     else
                     {
-                        EmittingsTemp.Add(EmittingsRaw[i]);
+                        emittingsDetailedTemp.Add(EmittingsRaw[i]);
                     }
                 }
             }
+            EmittingsDetailed = emittingsDetailedTemp.ToArray();
+            EmittingsSummary = emittingsSummaryTemp.ToArray();
             return true;
         }
         /// <summary>

@@ -64,7 +64,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (NeedResearchExistSignals(result))
                         {
                             var emittingsDetailed = CalcSearchEmitting.Convert(taskContext.Task.taskParameters.RefSituation);
-                            taskContext.Task.EmittingsDetailed = emittingsDetailed.ToList();
+                            taskContext.Task.EmittingsDetailed = emittingsDetailed;
                         }
                         else
                         {
@@ -198,7 +198,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         // Необходим доп иследование спектра
         //
         //////////////////////////////////////////////
-        private bool IsAdditionalSpectrumStudyRrequired(List<Emitting> EmittingsSummary)
+        private bool IsAdditionalSpectrumStudyRrequired(Emitting[] EmittingsSummary)
         {
             //заглушка
             return true;
