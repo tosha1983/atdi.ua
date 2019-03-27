@@ -11,9 +11,9 @@ using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
-    public static class ConvertTaskParametersToMesureTraceParameterForSO
+    public static class ConvertTaskParametersToMesureTraceParameterForSignaling
     {
-        public static MesureTraceParameter ConvertForSO(this TaskParameters taskParameters)
+        public static MesureTraceParameter ConvertForSignaling(this TaskParameters taskParameters)
         {
             
             MesureTraceParameter mesureTraceParameter = new MesureTraceParameter();
@@ -23,15 +23,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             mesureTraceParameter.SweepTime_s = taskParameters.SweepTime_s;
             mesureTraceParameter.TracePoint = (int)Math.Ceiling((double) ((mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz)) / (1000*(taskParameters.StepSO_kHz / taskParameters.NChenal)));
 
-            mesureTraceParameter.RefLevel_dBm = -1; // константа для SO
-            mesureTraceParameter.TraceType = TraceType.ClearWhrite; // константа для SO
-            mesureTraceParameter.TraceCount = 1; // константа для SO
-            mesureTraceParameter.Att_dB = -1;    // константа для SO
-            mesureTraceParameter.PreAmp_dB = -1; // константа для SO
-            mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для SO
-            mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для SO
-            mesureTraceParameter.VBW_Hz = -1; // константа для SO
-            mesureTraceParameter.RBW_Hz = -1; // константа для SO
+            mesureTraceParameter.RefLevel_dBm = -1; // константа для Signaling
+            mesureTraceParameter.TraceType = TraceType.MaxHold; // константа для Signaling
+            mesureTraceParameter.TraceCount = 10; // константа для Signaling
+            mesureTraceParameter.Att_dB = -1;    // константа для Signaling
+            mesureTraceParameter.PreAmp_dB = -1; // константа для Signaling
+            mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для Signaling
+            mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для Signaling
+            mesureTraceParameter.VBW_Hz = -1; // константа для Signaling
+            mesureTraceParameter.RBW_Hz = -1; // константа для Signaling
             return mesureTraceParameter;
         }
     }

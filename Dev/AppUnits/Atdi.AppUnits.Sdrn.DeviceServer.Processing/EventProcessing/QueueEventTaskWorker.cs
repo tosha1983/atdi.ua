@@ -111,7 +111,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     soTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     soTask.LastTimeSend = DateTime.Now;
                                     soTask.taskParameters = context.Task.taskParameters;
-                                    soTask.mesureTraceParameter = soTask.taskParameters.Convert();
+                                    soTask.mesureTraceParameter = soTask.taskParameters.ConvertForSO();
                                     _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(soTask.Id));
                                     _taskStarter.RunParallel(soTask, process, context);
                                     _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
@@ -127,7 +127,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 signalTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                 signalTask.LastTimeSend = DateTime.Now;
                                 signalTask.taskParameters = context.Task.taskParameters;
-                                signalTask.mesureTraceParameter = signalTask.taskParameters.Convert();
+                                signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
                                 var deviceProperties = this._controller.GetDevicesProperties();
                                 var listTraceDeviceProperties = deviceProperties.Values.ToArray();
                                 for (int i = 0; i < listTraceDeviceProperties.Length; i++)
@@ -162,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 bandWidtTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                 bandWidtTask.LastTimeSend = DateTime.Now;
                                 bandWidtTask.taskParameters = context.Task.taskParameters;
-                                bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.Convert();
+                                bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                                 _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(bandWidtTask.Id));
                                 _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                 _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(bandWidtTask.Id));

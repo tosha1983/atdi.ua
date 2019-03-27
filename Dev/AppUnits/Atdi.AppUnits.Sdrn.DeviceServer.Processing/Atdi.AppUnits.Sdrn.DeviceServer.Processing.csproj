@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="Convertors\BandWidth\ConvertTaskParametersToMesureTraceParameterForBandWidth.cs" />
+    <Compile Include="Convertors\Signaling\ConvertTaskParametersToMesureTraceParameterForSignaling.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />
     <Compile Include="DispatcherWorker.cs" />
@@ -122,5 +124,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

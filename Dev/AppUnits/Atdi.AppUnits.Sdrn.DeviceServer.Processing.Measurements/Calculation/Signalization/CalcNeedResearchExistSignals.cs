@@ -10,17 +10,15 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 
-
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public static class CalcSearchEmitting
+    public static class CalcNeedResearchExistSignals
     {
-        public static Emitting[] CalcSearch(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
+        public static bool NeedResearchExistSignals(Emitting[] EmittingsTemp, out TaskParameters[] taskParameters)
         {
-            Emitting[] emitting = new Emitting[1];
-
-          
-            return emitting;
+            taskParameters = null;
+                //заглушка
+            return false;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public double VBW_Hz { get; set; }
         public double SweepTime_s { get; set; }
         public double StepSO_kHz { get; set; } //- шаг сетки частот для измерения SO
-        public int NChenal { get; set; } //количество интервалов на которое делиться канал при измерении SO
+        public int NChenal { get; set; } //количество интервалов на которое делиться канал при измерении SO, Signalization
         public double LevelMinOccup_dBm { get; set; } //минимальный уровень для расчета занятости канала SO
         public SOType TypeOfSO { get; set; } // Тип измеряемой занятости канала
         public List<Double> ListFreqCH { get; set; } //MHz // перечень частот для измерения SO
