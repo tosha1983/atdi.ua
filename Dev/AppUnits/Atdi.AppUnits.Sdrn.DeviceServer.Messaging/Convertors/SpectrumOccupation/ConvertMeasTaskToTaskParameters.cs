@@ -11,9 +11,17 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 {
     public static class ConvertMeasTaskToTaskParameters
-    { 
+    {
         public static TaskParameters Convert(this MeasTask taskSDR)
         {
+            const int SO_Ncount = 10000;
+            const int SignalizationNCount = 1000000;
+            const int OtherNCount = 1000;
+
+
+            const int SO_NChenal = 10;
+            const int SignalizationNChenal = 100;
+
             var taskParameters = new TaskParameters();
 
             //
@@ -59,12 +67,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 if (taskSDR.DeviceParam.VBW_kHz != 0) { taskParameters.VBW_Hz = taskSDR.DeviceParam.VBW_kHz.Value * 1000; } else { taskParameters.VBW_Hz = 10000; }
             }
             if (taskSDR.DeviceParam.MeasTime_sec != null) { taskParameters.SweepTime_s = taskSDR.DeviceParam.MeasTime_sec.Value; } else { taskParameters.SweepTime_s = 0.0001; }
-            
+
             if (taskSDR.SOParam != null)
             {
                 if ((taskSDR.DeviceParam.MeasTime_sec == null) || (taskSDR.Interval_sec == 0) || ((taskSDR.DeviceParam.MeasTime_sec != null) && (taskSDR.DeviceParam.MeasTime_sec == 0)))
                 {
-                    taskParameters.NCount = 10000;
+                    switch (taskSDR.Measurement)
+                    {
+                        case DataModels.Sdrns.MeasurementType.SpectrumOccupation:
+                            taskParameters.NCount = SO_Ncount;
+                            break;
+                        case DataModels.Sdrns.MeasurementType.Signaling:
+                            taskParameters.NCount = SignalizationNCount;
+                            break;
+                        default:
+                            taskParameters.NCount = OtherNCount;
+                            break;
+                    }
                 }
                 else
                 {
@@ -75,10 +94,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 {
                     if ((taskSDR.SOParam.Type == DataModels.Sdrns.SpectrumOccupationType.FreqBandOccupancy) || (taskSDR.SOParam.Type == DataModels.Sdrns.SpectrumOccupationType.FreqChannelOccupancy))
                     {
-                        if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else {taskParameters.NChenal = 10;}
+                        if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SO_NChenal; }
                         if (taskSDR.SOParam.LevelMinOccup_dBm <= 0) { taskParameters.LevelMinOccup_dBm = taskSDR.SOParam.LevelMinOccup_dBm; } else { taskParameters.LevelMinOccup_dBm = -80; }
                         taskParameters.TypeOfSO = sOtype;
-                        if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count>0))
+                        if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
                         {
                             // формируем начало и конец для измерений 
                             taskParameters.ListFreqCH.Sort();
@@ -90,13 +109,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         taskParameters.RBW_Hz = taskParameters.StepSO_kHz * 1000 / taskParameters.NChenal;
                     }
                 }
+                else if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
+                {
+                    if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SignalizationNChenal; }
+                    if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
+                    {
+                        // формируем начало и конец для измерений 
+                        taskParameters.ListFreqCH.Sort();
+                        taskParameters.MinFreq_MHz = taskParameters.ListFreqCH[0] - taskParameters.StepSO_kHz / 2000;
+                        taskParameters.MaxFreq_MHz = taskParameters.ListFreqCH[taskParameters.ListFreqCH.Count - 1] + taskParameters.StepSO_kHz / 2000;
+                    }
+                }
             }
             // коректировка режима измерения 
             taskParameters.SDRTaskId = taskSDR.TaskId;
             taskParameters.MeasurementType = GetMeasTypeFromMeasurementType(taskSDR.Measurement);
             taskParameters.status = taskSDR.Status;
 
-            if (taskSDR.RefSituation != null)
+            if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
             {
                 if (taskSDR.RefSituation != null)
                 {
@@ -133,6 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     }
                 }
             }
+        
 
             // до конца не определенные блоки
             taskParameters.ReceivedIQStreemDuration_sec = 1.0;

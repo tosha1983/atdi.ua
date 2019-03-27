@@ -10,17 +10,14 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 
-
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public static class CalcSearchEmitting
+    public static class CalcEmittingDetailed
     {
-        public static Emitting[] CalcSearch(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
+        public static Emitting[] GetEmittingDetailed(List<MeasBandwidthResult> listMeasBandwidthResult)
         {
-            Emitting[] emitting = new Emitting[1];
-
-          
-            return emitting;
+                //заглушка
+            return null;
         }
     }
 }
