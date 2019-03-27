@@ -22,42 +22,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool CalcGrouping(Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary)
         {
-            var emittingsSummaryTemp = EmittingsSummary.ToList();
-            var emittingsDetailedTemp = EmittingsTemp.ToList();
-            for (int i = 0; EmittingsRaw.Length > i; i++)
+            if ((EmittingsSummary != null) && (EmittingsTemp != null))
             {
-                bool isSuccess = false;
-                bool existTheSameEmitting = false;
-                for (int j = 0; emittingsSummaryTemp.Count > j; j++)
+                var emittingsSummaryTemp = EmittingsSummary.ToList();
+                var emittingsDetailedTemp = EmittingsTemp.ToList();
+                for (int i = 0; EmittingsRaw.Length > i; i++)
                 {
-                    existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
-                    if (existTheSameEmitting) { var em = emittingsSummaryTemp[j]; JoinEmmiting(ref em, EmittingsRaw[i]); emittingsSummaryTemp[j] = em; isSuccess = true; break; }
-                }
-
-                if (isSuccess == false)
-                {
-                    for (int l = 0; emittingsDetailedTemp.Count > l; l++)
+                    bool isSuccess = false;
+                    bool existTheSameEmitting = false;
+                    for (int j = 0; emittingsSummaryTemp.Count > j; j++)
                     {
-                        existTheSameEmitting = MatchCheckEmitting(emittingsDetailedTemp[l], EmittingsRaw[i]);
-                        if (existTheSameEmitting) { var em = emittingsDetailedTemp[l]; JoinEmmiting(ref em, EmittingsRaw[i]); emittingsDetailedTemp[l] = em; break; }
+                        existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
+                        if (existTheSameEmitting) { var em = emittingsSummaryTemp[j]; JoinEmmiting(ref em, EmittingsRaw[i]); emittingsSummaryTemp[j] = em; isSuccess = true; break; }
                     }
-                    if (!existTheSameEmitting)
-                    {
-                        if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
-                        {
-                            emittingsSummaryTemp.Add(EmittingsRaw[i]);
-                        }
-                        else
-                        {
-                            emittingsDetailedTemp.Add(EmittingsRaw[i]);
-                        }
-                    }
-                }
 
+                    if (isSuccess == false)
+                    {
+                        for (int l = 0; emittingsDetailedTemp.Count > l; l++)
+                        {
+                            existTheSameEmitting = MatchCheckEmitting(emittingsDetailedTemp[l], EmittingsRaw[i]);
+                            if (existTheSameEmitting) { var em = emittingsDetailedTemp[l]; JoinEmmiting(ref em, EmittingsRaw[i]); emittingsDetailedTemp[l] = em; break; }
+                        }
+                        if (!existTheSameEmitting)
+                        {
+                            if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
+                            {
+                                emittingsSummaryTemp.Add(EmittingsRaw[i]);
+                            }
+                            else
+                            {
+                                emittingsDetailedTemp.Add(EmittingsRaw[i]);
+                            }
+                        }
+                    }
+
+                }
+                EmittingsTemp = emittingsDetailedTemp.ToArray();
+                EmittingsSummary = emittingsSummaryTemp.ToArray();
+                EmittingsRaw = null;
             }
-            EmittingsTemp = emittingsDetailedTemp.ToArray();
-            EmittingsSummary = emittingsSummaryTemp.ToArray();
-            EmittingsRaw = null;
             return true;
         }
         /// <summary>
@@ -74,14 +77,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // конец констант
 
             // тупа нет пересечения
-            if ((emitting1.StopFrequency_MHz < emitting2.StartFrequency_MHz)||(emitting1.StartFrequency_MHz > emitting2.StopFrequency_MHz)) { return false; }
+            if ((emitting1.StopFrequency_MHz < emitting2.StartFrequency_MHz) || (emitting1.StartFrequency_MHz > emitting2.StopFrequency_MHz)) { return false; }
 
             // пересечение есть следует оценить его степень
             if (emitting1.Spectrum.СorrectnessEstimations && emitting2.Spectrum.СorrectnessEstimations)
             {// оба излучения являються коректными т.е. просто определим степень максимального не пересечения
                 double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                intersection = 100*intersection/Math.Max(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Min(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                if (intersection > CrossingBWPercentageForGoodSignals) { return true; } else { return false;}
+                intersection = 100 * intersection / Math.Max(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Min(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
+                if (intersection > CrossingBWPercentageForGoodSignals) { return true; } else { return false; }
             }
             else if (emitting1.Spectrum.СorrectnessEstimations || emitting2.Spectrum.СorrectnessEstimations)
             { // коректно только одно излучение т.е. другой процент перекрытия считаем, что коректное может быть больше 
@@ -90,7 +93,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {// первый сигнал корректен
                     if ((100 * intersection / (emitting1.StopFrequency_MHz - emitting1.StartFrequency_MHz) > CrossingBWPercentageForBadSignals) &&
                         (100 * intersection / (emitting2.StopFrequency_MHz - emitting2.StartFrequency_MHz) > CrossingBWPercentageForGoodSignals)) { return true; }
-                    else { return false;}
+                    else { return false; }
                 }
                 else
                 { //второй сигнал корректен
@@ -117,11 +120,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             //константа 
             double CriticalDeltaPow_dB = 10;
             //конец констант 
-            bool res = false; 
+            bool res = false;
             // определяем какое излучение более качественно 
             if ((MasterEmitting.Spectrum.СorrectnessEstimations) && (!AttachableEmitting.Spectrum.СorrectnessEstimations))
             {// коректен мастер
-                res =JoinSecondToFirst(ref MasterEmitting, AttachableEmitting);
+                res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting);
             }
             else if ((!MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations))
             {// коректно второе
@@ -192,7 +195,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 int k = MasterEmitting.LevelsDistribution.Levels[0] - AttachableEmitting.LevelsDistribution.Levels[0];
                 for (int i = 0; MasterEmitting.LevelsDistribution.Levels.Length > i; i++)
                 {
-                    if ((k+i >= 0) && (k+i < MasterEmitting.LevelsDistribution.Levels.Length))
+                    if ((k + i >= 0) && (k + i < MasterEmitting.LevelsDistribution.Levels.Length))
                     {
                         MasterEmitting.LevelsDistribution.Count[i] = MasterEmitting.LevelsDistribution.Count[i] + AttachableEmitting.LevelsDistribution.Count[i + k];
                     }
@@ -223,14 +226,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting select z;
                 List<WorkTime> WorkTimes = NewWorkTimes.ToList();
                 // найдем и удалим пересечения 
-                for (int i = 0; WorkTimes.Count - 1 > i ; i++)
+                for (int i = 0; WorkTimes.Count - 1 > i; i++)
                 {
                     TimeSpan timeSpan = WorkTimes[i].StopEmitting - WorkTimes[i].StartEmitting;
                     if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
                     {// производим обединение и удаление лишнего
                         WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
                         if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
-                        { WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting;}
+                        { WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting; }
                         i--;
                     }
                 }
@@ -247,15 +250,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             Emitting.WorkTimes[0].HitCount = 1;
             Emitting.WorkTimes[0].StartEmitting = DateTime.Now;
             //Emitting.WorkTimes[0].PersentAvailability = 100;
-            Emitting.LevelsDistribution.Count = new int [NumberPointForLevelDistribution];
+            Emitting.LevelsDistribution.Count = new int[NumberPointForLevelDistribution];
             Emitting.LevelsDistribution.Levels = new int[NumberPointForLevelDistribution];
-            for (int i = 0; i< NumberPointForLevelDistribution; i++)
+            for (int i = 0; i < NumberPointForLevelDistribution; i++)
             {
                 Emitting.LevelsDistribution.Levels[i] = StartLevelsForLevelDistribution + i;
                 Emitting.LevelsDistribution.Count[i] = 0;
             }
             int indexLevel = (int)Math.Floor(Emitting.CurentPower_dBm) - Emitting.LevelsDistribution.Levels[0];
-            if ((indexLevel >= 0) && (indexLevel < Emitting.LevelsDistribution.Levels.Length)){ Emitting.LevelsDistribution.Count[indexLevel]++;}
+            if ((indexLevel >= 0) && (indexLevel < Emitting.LevelsDistribution.Levels.Length)) { Emitting.LevelsDistribution.Count[indexLevel]++; }
             return Emitting;
         }
         private static Emitting CreatIndependEmitting(Emitting emitting)

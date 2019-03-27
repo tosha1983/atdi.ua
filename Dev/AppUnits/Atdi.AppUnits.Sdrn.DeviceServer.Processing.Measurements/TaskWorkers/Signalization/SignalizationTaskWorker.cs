@@ -310,7 +310,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     var sleepTime = maximumDurationMeas - (DateTime.Now - currTime).TotalMilliseconds;
                     if (sleepTime >= 0)
                     {
-                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
+                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
                         Thread.Sleep((int)sleepTime);
                     }
                     if (isDown) context.Task.CountMeasurementDone++;
