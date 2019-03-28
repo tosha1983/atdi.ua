@@ -16,12 +16,40 @@ using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
-using System.Windows.Input;
+using INP = System.Windows.Input;
 using System.Windows.Controls;
+using System.Collections;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    
+    public class CustomDataGridMeasTasks : DataGrid
+    {
+        public CustomDataGridMeasTasks()
+        {
+            this.MouseDoubleClick += test;
+        }
+        private void test(object sender, INP.MouseButtonEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
+            foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
+            {
+                if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
+                {
+                    var dlgForm = new FM.MeasTaskSignalizationForm();
+                    dlgForm._taskId = item.Id;
+                    dlgForm.ShowDialog();
+                    dlgForm.Dispose();
+                }
+            }
+        }
+        public IList SelectedItemsList
+        {
+            get { return (IList)GetValue(SelectedItemsListProperty); }
+            set { SetValue(SelectedItemsListProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasTasks), new PropertyMetadata(null));
+    }
     public class ControlClientViewModel : WpfViewModelBase
     {
         public enum ModelType
@@ -34,7 +62,7 @@ namespace XICSM.ICSControlClient.ViewModels
             Sensors
         }
 
-        #region Corrent Objects
+        #region Current Objects
         
         // Tasks
         private MeasTaskViewModel _currentMeasTask;
@@ -102,6 +130,18 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #endregion
 
+        //private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (sender != null)
+        //    {
+        //        DataGridRow row = sender as DataGridRow;
+        //        if (row != null)
+        //        {
+        //            var data = row.Item as ShortMeasTaskViewModel;
+        //            System.Windows.MessageBox.Show(data.Id.ToString());
+        //        }
+        //    }
+        //}
         private CS.ChartOption GetDefaultChartOption()
         {
             return new CS.ChartOption
@@ -760,15 +800,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     break;
             }
         }
-        //private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    DataGridRow row = sender as DataGridRow;
-        //    if (row != null)
-        //    {
-        //        var data = row.Item as ShortMeasTaskViewModel;
-        //        System.Windows.MessageBox.Show(data.Id.ToString());
-        //    }
-        //}
 
         private void UpdateCurrentChartOption()
         {
