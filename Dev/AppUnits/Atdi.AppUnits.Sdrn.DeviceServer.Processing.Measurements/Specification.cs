@@ -34,7 +34,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly EventText StartBandWidthTaskWorker = "Start BandWidthTaskWorker context.Task.Id = {0}";
         public static readonly EventText GetEmittingDetailedNull = "'GetEmittingDetailed' returned NULL";
         public static readonly EventText CalcGroupingNull = "'CalcGrouping' returned NULL";
-
+        
 
     }
     static class TraceScopeNames
@@ -52,6 +52,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly string ParentProcessIsNull = "Parent process is null";
         public static readonly string ParentProcessIsNotTypeDispatchProcess = "Parent process is not type 'DispatchProcess'";
         public static readonly string AfterConvertParentProcessIsNull = "After convert parent process Is Null value";
-
+        
     }
 }

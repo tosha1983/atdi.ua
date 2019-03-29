@@ -47,79 +47,83 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 var measResults = new MeasResults();
+                if ((NeedSearchEmitting(taskContext.Task.CountMeasurementDone)) == true)
                 {
-                    if ((NeedSearchEmitting(taskContext.Task.CountMeasurementDone)) == true)
+                    taskContext.Task.EmittingsRaw = CalcSearchEmitting.CalcSearch(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                }
+                else
+                {
+                    if (taskContext.Task.CountMeasurementDone == 0)
                     {
-                        taskContext.Task.EmittingsRaw = CalcSearchEmitting.CalcSearch(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                        taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties);
+                    }
+                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                }
+                // Результат содержится в taskContext.Task.EmittingsRaw
+
+
+                //получаем результаты BW
+                var listMeasBandwidthResult = new List<MeasBandwidthResult>();
+                while (true)
+                {
+                    MeasBandwidthResult outMeasBandwidthResultData = null;
+                    bool isDown = taskContext.WaitEvent<MeasBandwidthResult>(out outMeasBandwidthResultData, 1);
+                    if (isDown == true)
+                    {
+                        if (outMeasBandwidthResultData != null)
+                        {
+                            listMeasBandwidthResult.Add(outMeasBandwidthResultData);
+                        }
                     }
                     else
                     {
-                        if (taskContext.Task.CountMeasurementDone == 0)
-                        {
-                            taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties);
-                        }
-                        taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                        break;
                     }
-                    // Результат содержится в taskContext.Task.EmittingsRaw
-
-
-                    //получаем результаты BW
-                    var listMeasBandwidthResult = new List<MeasBandwidthResult>();
-                    while (true)
+                }
+                //Обработка результатов BW если они есть
+                if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
+                {
+                    taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailed(ref taskContext.Task.EmittingsSummary, taskContext.Task.EmittingsDetailed, ref taskContext.Task.EmittingsTemp);
+                    if (isSuccess == false)
                     {
-                        MeasBandwidthResult outMeasBandwidthResultData = null;
-                        bool isDown = taskContext.WaitEvent<MeasBandwidthResult>(out outMeasBandwidthResultData, 1);
-                        if (isDown == true)
-                        {
-                            if (outMeasBandwidthResultData != null)
-                            {
-                                listMeasBandwidthResult.Add(outMeasBandwidthResultData);
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        //обработка  ошибка
+                        _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.GetEmittingDetailedNull);
                     }
-                    //Обработка результатов BW если они есть
+                }
+
+                //Групируем сырые данные измерений к существующим
+                bool isSuccessCalcGrouping = CalcGroupingEmitting.CalcGrouping(taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsTemp, ref taskContext.Task.EmittingsSummary, _logger);
+                if (isSuccessCalcGrouping == false)
+                {
+                    //обработка  ошибка
+                    _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.CalcGroupingNull);
+                }
+
+
+                //Нужно ли исследование существующих сигналов?
+                if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsTemp, out taskContext.Task.taskParametersForBW))
+                {
                     if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
                     {
                         taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
-                        bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailed(ref taskContext.Task.EmittingsSummary, taskContext.Task.EmittingsDetailed, ref taskContext.Task.EmittingsTemp);
-                        if (isSuccess == false)
-                        {
-                            //обработка  ошибка
-                            _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.GetEmittingDetailedNull);
-                        }
                     }
-
-                    //Групируем сырые данные измерений к существующим
-                    bool isSuccessCalcGrouping = CalcGroupingEmitting.CalcGrouping(taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsTemp, ref taskContext.Task.EmittingsSummary);
-                    if (isSuccessCalcGrouping == false)
-                    {
-                        //обработка  ошибка
-                        _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.CalcGroupingNull);
-                    }
-
-
-                    //Нужно ли исследование существующих сигналов?
-                    if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsTemp, out taskContext.Task.taskParametersForBW))
-                    {
-                        if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
-                        {
-                            taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
-                        }
-                        // вызов функции по отправке BandWidthTask в контроллер
-                        SendCommandBW(taskContext);
-                    }
-                    // Отправка результата в Task Handler
-                    if (taskContext.Task.EmittingsSummary != null)
-                    {
-                        measResults.Emittings = taskContext.Task.EmittingsSummary.ToArray();
-                        taskContext.SetEvent(measResults);
-                    }
-                    taskContext.Finish();
+                    // вызов функции по отправке BandWidthTask в контроллер
+                    //SendCommandBW(taskContext);
                 }
+                // Отправка результата в Task Handler
+                if (taskContext.Task.EmittingsSummary != null)
+                {
+                    var allEmitting = new List<Emitting>();
+                    allEmitting.AddRange(taskContext.Task.EmittingsSummary);
+                    allEmitting.AddRange(taskContext.Task.EmittingsTemp);
+                    var sortedByFreqAsc = from z in allEmitting orderby z.StartFrequency_MHz ascending select z;
+                    measResults.Emittings = sortedByFreqAsc.ToArray();
+                    taskContext.SetEvent(measResults);
+                }
+
+                taskContext.Task.CountMeasurementDone++;
+                taskContext.Finish();
             }
             catch (Exception ex)
             {

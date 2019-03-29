@@ -130,7 +130,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     MeasResults outResultData = null;
-                    bool isDown = context.WaitEvent<MeasResults>(out outResultData, (int)context.Task.maximumTimeForWaitingResultSignalization);
+                    bool isDown = context.WaitEvent<MeasResults>(out outResultData,  (int)context.Task.maximumTimeForWaitingResultSignalization);
                     if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
@@ -204,6 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
+                            outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
                             outResultData.StartTime = context.Task.LastTimeSend.Value;
                             outResultData.StopTime = currTime;
                             outResultData.Location = new DataModels.Sdrns.GeoLocation();
@@ -313,7 +314,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
                         Thread.Sleep((int)sleepTime);
                     }
-                    if (isDown) context.Task.CountMeasurementDone++;
+                    //if (isDown) context.Task.CountMeasurementDone++;
                 }
             }
             catch (Exception e)
