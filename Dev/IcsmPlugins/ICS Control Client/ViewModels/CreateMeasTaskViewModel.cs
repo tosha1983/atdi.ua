@@ -22,9 +22,9 @@ using Atdi.Common;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGrid : DataGrid
+    public class CustomDataGridSensors : DataGrid
     {
-        public CustomDataGrid()
+        public CustomDataGridSensors()
         {
             this.SelectionChanged += CustomDataGrid_SelectionChanged;
         }
@@ -41,7 +41,7 @@ namespace XICSM.ICSControlClient.ViewModels
             set { SetValue(SelectedItemsListProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new PropertyMetadata(null));
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridSensors), new PropertyMetadata(null));
 
         #endregion
     }
@@ -269,7 +269,7 @@ namespace XICSM.ICSControlClient.ViewModels
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
                             {
                                 parser.TextFieldType = FieldType.Delimited;
-                                parser.SetDelimiters(",");
+                                parser.SetDelimiters(";");
                                 int i = 0;
                                 while (!parser.EndOfData)
                                 {
@@ -409,9 +409,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
                 Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
                 Location = new Models.Location(lon, lat),
-                Opacity = 0.5,
-                Height = 5,
-                Width = 5
+                Opacity = 0.85,
+                Width = 10,
+                Height = 10
             };
         }
         private void RedrawMap()

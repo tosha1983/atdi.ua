@@ -102,6 +102,12 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\MeasTaskSignalizationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
+      <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
       <SubType>Form</SubType>
@@ -220,6 +226,7 @@
     <Compile Include="Handlers\Tour\ToursContextMenuBuilder.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
+    <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
@@ -245,6 +252,9 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
+      <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">
       <DependentUpon>CalcSODlg1Form.cs</DependentUpon>
     </EmbeddedResource>
