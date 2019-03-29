@@ -206,6 +206,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outSpectrumOcupation.fSemplesResult != null)
                         {
                             DM.MeasResults measResult = new DM.MeasResults();
+                            measResult.Status = "N";
+                            //measResult.ResultId = Guid.NewGuid().ToString();
                             measResult.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
                             measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
                             measResult.ScansNumber = outSpectrumOcupation.NN;

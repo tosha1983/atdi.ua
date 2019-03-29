@@ -155,6 +155,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outResultData != null)
                     {
                         DM.MeasResults measResult = new DM.MeasResults();
+                        //measResult.ResultId = Guid.NewGuid().ToString();
+                        measResult.Status = "N";
                         measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                         measResult.BandwidthResult = new BandwidthMeasResult();
                         measResult.BandwidthResult.Bandwidth_kHz = outResultData.BandwidthkHz;

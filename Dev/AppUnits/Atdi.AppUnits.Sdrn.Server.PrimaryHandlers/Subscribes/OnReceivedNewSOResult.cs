@@ -1550,12 +1550,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     bool validationResult = true;
                     var emitting = new DEV.Emitting();
 
-                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue && reader.GetValue(c => c.StartFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StartFrequency_MHz).Value <= 400000)
+                    if ((reader.GetValue(c => c.StartFrequency_MHz).HasValue && !(reader.GetValue(c => c.StartFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StartFrequency_MHz).Value <= 400000)) || (!reader.GetValue(c => c.StartFrequency_MHz).HasValue))
                     {
                         WriteLog("Incorrect value StartFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
                     }
-                    if (reader.GetValue(c => c.StopFrequency_MHz).HasValue && reader.GetValue(c => c.StopFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StopFrequency_MHz).Value <= 400000)
+                    if ((reader.GetValue(c => c.StopFrequency_MHz).HasValue && !(reader.GetValue(c => c.StopFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StopFrequency_MHz).Value <= 400000)) || (!reader.GetValue(c => c.StopFrequency_MHz).HasValue))
                     {
                         WriteLog("Incorrect value StopFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
@@ -1587,8 +1587,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
                         emitting.EmittingParameters = emittingParam;
                     }
-                    else
+                    else if (reader.GetValue(c => c.StandardBW).HasValue && !(reader.GetValue(c => c.StandardBW).Value >= 0 && reader.GetValue(c => c.StandardBW).Value <= 1000000))
+                    {
                         WriteLog("Incorrect value StandardBW", "IEmittingRaw");
+                    }
 
                     #region WorkTime
                     var listTime = new List<DEV.WorkTime>();
@@ -1961,21 +1963,24 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 valInsReferenceLevels = readerReferenceLevels.GetValue(c => c.Id);
                                 if (valInsReferenceLevels > 0)
                                 {
-                                    var lstInslevels = new IQueryInsertStatement<MD.IDetailReferenceLevels>[refLevels.levels.Length];
-                                    for (int l = 0; l < refLevels.levels.Length; l++)
+                                    if (refLevels.levels != null)
                                     {
-                                        var lvl = refLevels.levels[l];
+                                        var lstInslevels = new IQueryInsertStatement<MD.IDetailReferenceLevels>[refLevels.levels.Length];
+                                        for (int l = 0; l < refLevels.levels.Length; l++)
+                                        {
+                                            var lvl = refLevels.levels[l];
 
-                                        var builderInsertDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailReferenceLevels>().Insert();
-                                        builderInsertDetailReferenceLevels.SetValue(c => c.level, lvl);
-                                        builderInsertDetailReferenceLevels.SetValue(c => c.ReferenceLevelId, valInsReferenceLevels);
-                                        builderInsertDetailReferenceLevels.Select(c => c.Id);
-                                        lstInslevels[l] = builderInsertDetailReferenceLevels;
+                                            var builderInsertDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailReferenceLevels>().Insert();
+                                            builderInsertDetailReferenceLevels.SetValue(c => c.level, lvl);
+                                            builderInsertDetailReferenceLevels.SetValue(c => c.ReferenceLevelId, valInsReferenceLevels);
+                                            builderInsertDetailReferenceLevels.Select(c => c.Id);
+                                            lstInslevels[l] = builderInsertDetailReferenceLevels;
+                                        }
+                                        queryExecuter.ExecuteAndFetch(lstInslevels, readerDetailReferenceLevels =>
+                                        {
+                                            return true;
+                                        });
                                     }
-                                    queryExecuter.ExecuteAndFetch(lstInslevels, readerDetailReferenceLevels =>
-                                    {
-                                        return true;
-                                    });
                                 }
 
                             }
@@ -2058,21 +2063,24 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     valInsSpectrum = readerISpectrum.GetValue(c => c.Id);
                                                     if (valInsSpectrum > 0)
                                                     {
-                                                        var lstInsLevels_dBm = new IQueryInsertStatement<MD.IDetailSpectrumLevels>[spectrum.Levels_dBm.Length];
-                                                        for (int k = 0; k < spectrum.Levels_dBm.Length; k++)
+                                                        if (spectrum.Levels_dBm != null)
                                                         {
-                                                            var level_dBm = spectrum.Levels_dBm[k];
+                                                            var lstInsLevels_dBm = new IQueryInsertStatement<MD.IDetailSpectrumLevels>[spectrum.Levels_dBm.Length];
+                                                            for (int k = 0; k < spectrum.Levels_dBm.Length; k++)
+                                                            {
+                                                                var level_dBm = spectrum.Levels_dBm[k];
 
-                                                            var builderInsertIDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevels>().Insert();
-                                                            builderInsertIDetailReferenceLevels.SetValue(c => c.level, level_dBm);
-                                                            builderInsertIDetailReferenceLevels.SetValue(c => c.SpectrumId, valInsSpectrum);
-                                                            builderInsertIDetailReferenceLevels.Select(c => c.Id);
-                                                            lstInsLevels_dBm[k] = builderInsertIDetailReferenceLevels;
+                                                                var builderInsertIDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevels>().Insert();
+                                                                builderInsertIDetailReferenceLevels.SetValue(c => c.level, level_dBm);
+                                                                builderInsertIDetailReferenceLevels.SetValue(c => c.SpectrumId, valInsSpectrum);
+                                                                builderInsertIDetailReferenceLevels.Select(c => c.Id);
+                                                                lstInsLevels_dBm[k] = builderInsertIDetailReferenceLevels;
+                                                            }
+                                                            queryExecuter.ExecuteAndFetch(lstInsLevels_dBm, readerDetailSpectrumLevels =>
+                                                            {
+                                                                return true;
+                                                            });
                                                         }
-                                                        queryExecuter.ExecuteAndFetch(lstInsLevels_dBm, readerDetailSpectrumLevels =>
-                                                        {
-                                                            return true;
-                                                        });
                                                     }
                                                 }
                                                 return true;
@@ -2082,46 +2090,50 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         var signalMask = emittings[l].SignalMask;
                                         if (signalMask != null)
                                         {
-                                            var lstInsSignalMask = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
-                                            for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                            if (signalMask.Freq_kHz != null)
                                             {
-                                                var freq_kH = signalMask.Freq_kHz[k];
-                                                var loss_dB = signalMask.Loss_dB[k];
+                                                var lstInsSignalMask = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
+                                                for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                                {
+                                                    var freq_kH = signalMask.Freq_kHz[k];
+                                                    var loss_dB = signalMask.Loss_dB[k];
 
-                                                var builderInsertSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
-                                                builderInsertSignalMask.SetValue(c => c.Freq_kHz, freq_kH);
-                                                builderInsertSignalMask.SetValue(c => c.Loss_dB, loss_dB);
-                                                builderInsertSignalMask.SetValue(c => c.EmittingId, valInsReferenceEmitting);
-                                                builderInsertSignalMask.Select(c => c.Id);
-                                                lstInsSignalMask[k] = builderInsertSignalMask;
+                                                    var builderInsertSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
+                                                    builderInsertSignalMask.SetValue(c => c.Freq_kHz, freq_kH);
+                                                    builderInsertSignalMask.SetValue(c => c.Loss_dB, loss_dB);
+                                                    builderInsertSignalMask.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                    builderInsertSignalMask.Select(c => c.Id);
+                                                    lstInsSignalMask[k] = builderInsertSignalMask;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsSignalMask, readerSignalMask =>
+                                                {
+                                                    return true;
+                                                });
                                             }
-                                            queryExecuter.ExecuteAndFetch(lstInsSignalMask, readerSignalMask =>
-                                            {
-                                                return true;
-                                            });
                                         }
 
                                         var levelsDistribution = emittings[l].LevelsDistribution;
                                         if (levelsDistribution != null)
                                         {
-                                            var lstInsLevelsDistribution = new IQueryInsertStatement<MD.ILevelsDistribution>[levelsDistribution.Levels.Length];
-                                            for (int k = 0; k < levelsDistribution.Levels.Length; k++)
+                                            if (levelsDistribution.Levels != null)
                                             {
-                                                var lvl = levelsDistribution.Levels[k];
-                                                var count = levelsDistribution.Count[k];
-                                                var builderInsertLevelsDistribution = this._dataLayer.GetBuilder<MD.ILevelsDistribution>().Insert();
-                                                builderInsertLevelsDistribution.SetValue(c => c.level, lvl);
-                                                builderInsertLevelsDistribution.SetValue(c => c.count, count);
-                                                builderInsertLevelsDistribution.SetValue(c => c.EmittingId, valInsReferenceEmitting);
-                                                builderInsertLevelsDistribution.Select(c => c.Id);
-                                                lstInsLevelsDistribution[k] = builderInsertLevelsDistribution;
+                                                var lstInsLevelsDistribution = new IQueryInsertStatement<MD.ILevelsDistribution>[levelsDistribution.Levels.Length];
+                                                for (int k = 0; k < levelsDistribution.Levels.Length; k++)
+                                                {
+                                                    var lvl = levelsDistribution.Levels[k];
+                                                    var count = levelsDistribution.Count[k];
+                                                    var builderInsertLevelsDistribution = this._dataLayer.GetBuilder<MD.ILevelsDistribution>().Insert();
+                                                    builderInsertLevelsDistribution.SetValue(c => c.level, lvl);
+                                                    builderInsertLevelsDistribution.SetValue(c => c.count, count);
+                                                    builderInsertLevelsDistribution.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                    builderInsertLevelsDistribution.Select(c => c.Id);
+                                                    lstInsLevelsDistribution[k] = builderInsertLevelsDistribution;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsLevelsDistribution, readerLevelsDistribution =>
+                                                {
+                                                    return true;
+                                                });
                                             }
-                                            queryExecuter.ExecuteAndFetch(lstInsLevelsDistribution, readerLevelsDistribution =>
-                                            {
-                                                return true;
-                                            });
-
-
                                         }
                                     }
                                 }

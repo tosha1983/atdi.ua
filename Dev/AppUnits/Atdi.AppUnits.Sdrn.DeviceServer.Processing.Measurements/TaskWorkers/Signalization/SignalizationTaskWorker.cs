@@ -204,6 +204,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  Здесь получаем данные с GPS приемника
                             //  
                             //////////////////////////////////////////////
+                            //outResultData.ResultId = Guid.NewGuid().ToString();
+                            outResultData.Status = "N";
+                            outResultData.ScansNumber = context.Task.CountMeasurementDone;
                             outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
                             outResultData.StartTime = context.Task.LastTimeSend.Value;
                             outResultData.StopTime = currTime;

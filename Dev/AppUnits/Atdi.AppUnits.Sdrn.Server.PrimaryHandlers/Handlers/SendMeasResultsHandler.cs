@@ -149,6 +149,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (valInsResMeas > 0)
                     {
+                        var builderUpdateIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Update();
+                        builderUpdateIResMeas.SetValue(c => c.MeasResultSID, valInsResMeas.ToString());
+                        builderUpdateIResMeas.Where(c => c.Id, ConditionOperator.Equal, valInsResMeas);
+                        var cnt = queryExecuter.Execute(builderUpdateIResMeas);
+
                         if (resObject.RefLevels != null)
                         {
                             int valInsReferenceLevelsRaw = 0;
