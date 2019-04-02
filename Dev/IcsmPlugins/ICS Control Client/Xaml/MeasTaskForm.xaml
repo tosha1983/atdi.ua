@@ -7,6 +7,7 @@
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:StyleAlias="clr-namespace:XICSM.ICSControlClient.Models.Views"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -381,9 +382,9 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItem="{Binding CurrentShortSensor}" >
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                  <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
+                      <DataGrid.Columns>
+                          <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Adm" Binding="{Binding Path=Administration}"></DataGridTextColumn>
@@ -398,10 +399,10 @@
                             <DataGridTextColumn Header="Bring into use" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
                             <DataGridTextColumn Header="End of use" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
                         </DataGrid.Columns>                      
-                    </DataGrid>
+                    </cdg:CustomDataGridSensors>
                     <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
                     <maps:Map Grid.Column="0" Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
-                </Grid>
+              </Grid>
             </GroupBox>
         </Grid>
     </DockPanel>

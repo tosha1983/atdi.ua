@@ -206,6 +206,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outSpectrumOcupation.fSemplesResult != null)
                         {
                             DM.MeasResults measResult = new DM.MeasResults();
+                            measResult.Status = "N";
+                            context.Task.CountSendResults++;
+                            measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            measResult.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
                             measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
                             measResult.ScansNumber = outSpectrumOcupation.NN;
                             measResult.StartTime = context.Task.LastTimeSend.Value;
@@ -250,7 +254,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
-                            measResult.TaskId = context.Task.taskParameters.SDRTaskId;
+
+                            measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
+                        
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
                             publisher.Send<DM.MeasResults>("SendMeasResults", measResult);

@@ -22,14 +22,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static Emitting[] Calc(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
         { //НЕ ТЕСТИРОВАННО
-            //Emitting[] emittings = new Emitting[0];
+            // Константы 
+            int NumberPointForChangeExcess=10; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
+            // Конец констант
+
 
             if (refLevels.levels.Length != Trace.Level.Length)
             {
                 return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
             }
             bool excess = false; int startSignalIndex = 0;
-
+            int NumberPointBeforExcess = 0;
+            int NumberPointAfterExcess = 0;
             if (Trace.Level[0] > refLevels.levels[0]) { excess = true; startSignalIndex = 0; }
             // выделение мест где произошло превышение порога 
             List<int> index_start_stop = new List<int>();
@@ -37,19 +41,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 if (Trace.Level[i] > refLevels.levels[i])
                 { //Превышение
+                    NumberPointAfterExcess = 0;
                     if (!excess)
                     {//начало превышения
-                        startSignalIndex = i;
-                        excess = true;
+                        NumberPointBeforExcess++;
+                        if (NumberPointBeforExcess >= NumberPointForChangeExcess)
+                        {
+                            startSignalIndex = i - NumberPointBeforExcess + 1;
+                            excess = true;
+                        }
                     }
                 }
                 else
                 { // Не превышение
+                    NumberPointBeforExcess = 0;
                     if (excess)
-                    { // Конец превышения
-                        index_start_stop.Add(startSignalIndex);
-                        index_start_stop.Add(i);
-                        excess = false;
+                    {
+                        NumberPointAfterExcess++;
+                        if (NumberPointAfterExcess >= NumberPointForChangeExcess)
+                        {
+                            // Конец превышения
+                            index_start_stop.Add(startSignalIndex);
+                            index_start_stop.Add(i - NumberPointAfterExcess + 1);
+                            excess = false;
+                        }
                     }
                 }
             }
@@ -97,7 +112,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (measSdrBandwidthResults.T1 != null) { start = start + measSdrBandwidthResults.T1.Value; emitting.Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
                         if (measSdrBandwidthResults.T2 != null) { stop = start + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
                         if (measSdrBandwidthResults.MarkerIndex != null) { emitting.Spectrum.MarkerIndex = measSdrBandwidthResults.MarkerIndex.Value; }
-                        if (measSdrBandwidthResults.BandwidthkHz != null) { emitting.Spectrum.Bandwidth_kHz = measSdrBandwidthResults.BandwidthkHz.Value; }
+                        emitting.Spectrum.Bandwidth_kHz = (stop - start) * stepBW_kHz;
                         emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz *start_/ 1000;
                         emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                         emitting.Spectrum.Levels_dBm = templevel;
@@ -162,8 +177,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.ReferenceLevel_dBm = 10 * Math.Log10(emitting.ReferenceLevel_dBm);
                 emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);
                 emitting.WorkTimes = new WorkTime[1];
+                emitting.WorkTimes[0] = new WorkTime();
                 emitting.WorkTimes[0].StartEmitting = DateTime.Now;
-                emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting; 
+                emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting;
+                emitting.WorkTimes[0].HitCount = 1;
+                emittings.Add(emitting);
             }
             // наверно нужно пройтись и обеденить излучения если они пересекаются более чем на допустиный процент
             return emittings.ToArray();
