@@ -2886,14 +2886,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                     StartFrequency_Hz = refLevelesValues.StartFrequency_Hz;
                     StartIndex = 0;
                 }
-                else if (refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1) <= StartFrequency_Hz)
+                else if ((refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1)) >= StartFrequency_Hz)
                 {
                     StartIndex = (int)Math.Floor((StartFrequency_Hz.Value - refLevelesValues.StartFrequency_Hz) / refLevelesValues.StepFrequency_Hz);
                     StartFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.levels[StartIndex] * refLevelesValues.StepFrequency_Hz;
                 }
                 else { return null; }
                 // определение конеца 
-                if (refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1) <= StopFrequency_Hz)
+                if ((refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1)) <= StopFrequency_Hz)
                 {
                     StopFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1);
                     StopIndex = refLevelesValues.levels.Length - 1;
@@ -2914,7 +2914,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 referenceLevels.StepFrequency_Hz = refLevelesValues.StepFrequency_Hz;
                 referenceLevels.levels = new float[StopIndex - StartIndex + 1];
                 Array.Copy(refLevelesValues.levels, StartIndex, referenceLevels.levels, 0, StopIndex - StartIndex + 1);
-                return refLevelesValues;
+                return referenceLevels;
             }
             else
             {
@@ -2928,7 +2928,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 for (int i = 0; Arr_Count-1 > i; i++)
                 {
                     referenceLevels.levels[i] = refLevelesValues.levels[i*k];
-                    for (int j = 0; k > j; k++)
+                    for (int j = 0; k > j; j++)
                     {
                         if (refLevelesValues.levels[i*k+j] > referenceLevels.levels[i]) { referenceLevels.levels[i] = refLevelesValues.levels[i * k + j];}
                     }
@@ -2936,7 +2936,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 if (refLevelesValues.levels.Length - 1 >= (Arr_Count - 1) * k)
                 {
                     referenceLevels.levels[Arr_Count-1] = refLevelesValues.levels[(Arr_Count-1) * k];
-                    for (int j = 0; k > j; k++)
+                    for (int j = 0; k > j; j++)
                     {
                         if (refLevelesValues.levels.Length - 1 >= (Arr_Count - 1) * k + j)
                         {
