@@ -255,7 +255,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        MeasurementResults GetMeasurementResultByResId(int ResId);
+        MeasurementResults GetMeasurementResultByResId(int ResId, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
         /// <summary>
         /// 

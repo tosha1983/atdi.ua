@@ -28,7 +28,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         }
 
 
-        public void GetEmittingAndReferenceLevels(int resId, out Emitting[] emittings, out ReferenceLevels referenceLevels)
+        public void GetEmittingAndReferenceLevels(int resId, out Emitting[] emittings, out ReferenceLevels referenceLevels, double? StartFrequency_Hz =null, double? StopFrequency_Hz=null)
         {
             emittings = null;
             var listIdsEmittings = new List<int>();
@@ -387,7 +387,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                 return true;
             });
 
-            referenceLevels = level;
+            if ((StartFrequency_Hz != null) && (StopFrequency_Hz != null))
+            {
+                referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz.Value, StopFrequency_Hz.Value);
+            }
+            else
+            {
+                referenceLevels = level;
+            }
         }
 
         /// <summary>
@@ -1555,7 +1562,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// </summary>
         /// <param name="measurementType"></param>
         /// <returns></returns>
-        public MeasurementResults GetMeasurementResultByResId(int ResId)
+        public MeasurementResults GetMeasurementResultByResId(int ResId, double? StartFrequency_Hz=null, double? StopFrequency_Hz = null)
         {
             var levelmeasurementResults = new MeasurementResults();
             try
@@ -1791,7 +1798,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
+                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
                         levelmeasurementResults.Emittings = emittings;
                         levelmeasurementResults.RefLevels = referenceLevels;
 
@@ -2848,6 +2855,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return listlevelmeasurementResults.ToArray();
+        }
+
+
+        private static ReferenceLevels ReferenceLevelsCut(ReferenceLevels refLevelesValues, double StartFrequency_Hz, double StopFrequency_Hz)
+        {
+            var referenceLevels = new ReferenceLevels();
+
+            return referenceLevels;
         }
 
     }
