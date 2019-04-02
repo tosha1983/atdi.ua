@@ -119,6 +119,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     allEmitting.AddRange(taskContext.Task.EmittingsTemp);
                     var sortedByFreqAsc = from z in allEmitting orderby z.StartFrequency_MHz ascending select z;
                     measResults.Emittings = sortedByFreqAsc.ToArray();
+                    measResults.RefLevels = taskContext.Task.ReferenceLevels;
                     taskContext.SetEvent(measResults);
                 }
 

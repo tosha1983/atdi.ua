@@ -573,6 +573,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 bool isMerge = false;
                 double? diffDates = null;
 
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
+
                 var builderResMeasSearch = this._dataLayer.GetBuilder<MD.IResMeas>().From();
                 builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas, c => c.DataRank);
                 builderResMeasSearch.OrderByAsc(c => c.Id);
@@ -599,30 +602,38 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 if (isMerge)
                 {
                     var builderUpdateResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Update();
-                    builderUpdateResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                    builderUpdateResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                     builderUpdateResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                     builderUpdateResMeas.SetValue(c => c.Status, measResult.Status);
                     builderUpdateResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                     builderUpdateResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
                     builderUpdateResMeas.Where(c => c.Id, ConditionOperator.Equal, idResMeas);
                     queryExecuter.Execute(builderUpdateResMeas);
+
                 }
                 else
                 {
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                    builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                    builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                     builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                     builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                     builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
+                    builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                    builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
+                    builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                     builderInsertIResMeas.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                     {
                         var res = reader.Read();
                         if (res)
+                        {
                             idResMeas = reader.GetValue(c => c.Id);
+                        }
                         return res;
                     });
+
+                    
                 }
 
                 if (measResult.Routes != null)
@@ -1417,9 +1428,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 queryExecuter.BeginTransaction();
 
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
+
                 int valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
@@ -1427,12 +1441,17 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                 builderInsertIResMeas.Select(c => c.Id);
                 queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                 {
                     var res = reader.Read();
                     if (res)
+                    {
                         valInsResMeas = reader.GetValue(c => c.Id);
+                    }
                     return res;
                 });
 
@@ -1796,11 +1815,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             else
                                 WriteLog("Incorrect value SignalLevel_dBm", "ISpectrumRaw");
 
+
                             if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.MarkerIndex).HasValue
-                                && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.MarkerIndex).Value && readerSpectrum.GetValue(c => c.MarkerIndex).Value >= readerSpectrum.GetValue(c => c.T2).Value)
-                                spectrum.MarkerIndex = readerSpectrum.GetValue(c => c.MarkerIndex).Value;
+                            && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.MarkerIndex).Value && readerSpectrum.GetValue(c => c.MarkerIndex).Value <= readerSpectrum.GetValue(c => c.T2).Value)
+                            spectrum.MarkerIndex = readerSpectrum.GetValue(c => c.MarkerIndex).Value;
                             else
-                                WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
+                            WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
 
                             if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.T1).Value >= 0 && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.T2).Value)
                                 spectrum.T1 = readerSpectrum.GetValue(c => c.T1).Value;
@@ -1924,9 +1944,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 queryExecuter.BeginTransaction();
 
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
+
                 int valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
@@ -1934,12 +1957,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                 builderInsertIResMeas.Select(c => c.Id);
                 queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                 {
                     var res = reader.Read();
                     if (res)
+                    {
                         valInsResMeas = reader.GetValue(c => c.Id);
+                    }
+                    
+
                     return res;
                 });
 
@@ -2180,6 +2210,21 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             return result;
         }
 
+        private void GetIds(string ResultId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId)
+        {
+            subMeasTaskId = -1; subMeasTaskStaId = -1; sensorId = -1; resultId = -1;
+            if (ResultId != null)
+            {
+                string[] word = ResultId.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if ((word != null) && (word.Length == 5))
+                {
+                    subMeasTaskId = int.Parse(word[1]);
+                    subMeasTaskStaId = int.Parse(word[2]);
+                    sensorId = int.Parse(word[3]);
+                    resultId = int.Parse(word[4]);
+                }
+            }
+        }
 
         private void WriteLog(string msg, string tableName)
         {

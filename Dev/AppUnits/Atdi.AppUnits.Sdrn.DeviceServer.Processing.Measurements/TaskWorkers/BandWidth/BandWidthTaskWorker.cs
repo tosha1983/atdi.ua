@@ -155,7 +155,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outResultData != null)
                     {
                         DM.MeasResults measResult = new DM.MeasResults();
-                        //measResult.ResultId = Guid.NewGuid().ToString();
+
+                        context.Task.CountSendResults++;
+                        measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
                         measResult.Status = "N";
                         measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                         measResult.BandwidthResult = new BandwidthMeasResult();
@@ -206,7 +208,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                         }
-                        measResult.TaskId = context.Task.taskParameters.SDRTaskId;
+                        measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
                         //Отправка результатов в шину 
                         var publisher = this._busGate.CreatePublisher("main");
                         publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
