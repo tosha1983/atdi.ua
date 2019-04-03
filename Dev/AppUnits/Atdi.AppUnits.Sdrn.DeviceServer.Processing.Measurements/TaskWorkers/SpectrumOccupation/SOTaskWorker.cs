@@ -215,6 +215,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.StartTime = context.Task.LastTimeSend.Value;
                             measResult.StopTime = currTime;
                             measResult.Location = new DataModels.Sdrns.GeoLocation();
+                            measResult.Measured = currTime;
                             //////////////////////////////////////////////
                             // 
                             //  Здесь получаем данные с GPS приемника

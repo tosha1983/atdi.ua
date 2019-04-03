@@ -212,6 +212,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
                             outResultData.StartTime = context.Task.LastTimeSend.Value;
                             outResultData.StopTime = currTime;
+                            outResultData.Measured = currTime;
                             outResultData.Location = new DataModels.Sdrns.GeoLocation();
                             var parentProcess = context.Process.Parent;
                             if (parentProcess != null)

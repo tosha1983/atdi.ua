@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
-    public class ConfigProcessing 
+    public class ConfigProcessing
     {
         /// <summary>
         /// Время в миллисекундах задержки потока обработки отложенных задач
@@ -25,18 +25,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// <summary>
         /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Signaling
         /// </summary>
-        public long durationForSendResultSignaling = 600000;  
+        public int durationForSendResultSignaling { get; set; }
 
         /// <summary>
         /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения BandWidth
         /// </summary>
-        public long durationForSendResultBandWidth = 600000; 
+        public int durationForSendResultBandWidth { get; set; }
 
         /// <summary>
         /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Spectrum Occupation
         /// </summary>
 
-        public long durationForSendResultSO = 600000;  
+        public int durationForSendResultSO { get; set; }
 
         /// <summary>
         /// Время в миллисекундах  ожидания сообщения типа SensorRegistrationResult в воркере RegisterSensorTaskWorker
