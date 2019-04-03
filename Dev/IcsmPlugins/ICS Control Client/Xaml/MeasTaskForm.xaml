@@ -382,7 +382,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                  <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
+                    <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
                       <DataGrid.Columns>
                           <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>

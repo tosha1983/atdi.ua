@@ -35,7 +35,7 @@ namespace XICSM.ICSControlClient.Environment
         static public FrequencyRange CalcFrequencyRange(double minValue, double maxValue, int maxNumberLine)
         {
             List<decimal> Steps = new List<decimal>();
-            int number = 0;
+            long number = 0;
             int Razrad = -6;
             int LastPoint = 10;
             decimal step, fstart, fstop;
@@ -45,7 +45,7 @@ namespace XICSM.ICSControlClient.Environment
                 step = (decimal)(LastPoint * Math.Pow(10, Razrad));
                 fstart = Math.Floor((decimal)minValue / step) * step;
                 fstop = Math.Ceiling((decimal)maxValue / step) * step;
-                number = (int)((fstop - fstart) / step);
+                number = (long)((fstop - fstart) / step);
             }
             while (number > maxNumberLine);
 

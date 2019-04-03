@@ -329,7 +329,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                 {
                     stationsList.Add(new SDR.MeasStation() { StationId = new SDR.MeasStationIdentifier() { Value = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id).Id.Value } });
-                };
+                }
 
                 var measTask = new SDR.MeasTask()
                 {

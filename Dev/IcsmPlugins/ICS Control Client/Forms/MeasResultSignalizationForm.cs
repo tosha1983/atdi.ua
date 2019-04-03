@@ -16,17 +16,16 @@ using XICSM.ICSControlClient.ViewModels;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasTaskSignalizationForm : Form
+    public partial class MeasResultSignalizationForm : Form
     {
-        private int _taskId;
+        private int _resultId;
         private ElementHost _wpfElementHost;
-        public MeasTaskSignalizationForm(int taskId)
+        public MeasResultSignalizationForm(int resultId)
         {
-            _taskId = taskId;
+            _resultId = resultId;
             InitializeComponent();
         }
-
-        private void MeasTaskSignalizationForm_Load(object sender, EventArgs e)
+        private void MeasResultSignalizationForm_Load(object sender, EventArgs e)
         {
             _wpfElementHost = new ElementHost();
             _wpfElementHost.Dock = DockStyle.Fill;
@@ -35,11 +34,11 @@ namespace XICSM.ICSControlClient.Forms
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
-            var fileName = Path.Combine(appFolder, "XICSM_ICSControlClient\\Xaml\\MeasTaskSignalizationForm.xaml");
+            var fileName = Path.Combine(appFolder, "XICSM_ICSControlClient\\Xaml\\MeasResultSignalizationForm.xaml");
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasTaskSignalizationViewModel(_taskId);
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasResultSignalizationViewModel(_resultId);
             }
         }
     }

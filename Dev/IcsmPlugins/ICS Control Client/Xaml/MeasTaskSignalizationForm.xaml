@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -70,51 +71,7 @@
                         <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Name"  />
                         <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Center" Text="{Binding Path=Name}"  IsReadOnly="True" />
 
-                      <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="TimeMeas">
-                        <Grid>
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="75" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="75" />
-                            <ColumnDefinition Width="*" />
-                          </Grid.ColumnDefinitions>
-                          <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                          </Grid.RowDefinitions>
-                          <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Date Start"  />
-                          <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasTimeParamListPerStart, StringFormat='{}{0:dd.MM.yyyy}'}"  IsReadOnly="True"/>
-
-                          <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "Date Stop"  />
-                          <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=MeasTimeParamListPerStop, StringFormat='{}{0:dd.MM.yyyy}'}"  IsReadOnly="True" />
-
-                          <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Time Start"  />
-                          <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStart, StringFormat='{}{0:HH:mm}'}"  IsReadOnly="True" />
-
-                          <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Time Stop"  />
-                          <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, StringFormat='{}{0:HH:mm}'}"  IsReadOnly="True"/>
-
-                          <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Duration, s"  />
-                          <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=MeasTimeParamListPerInterval}"  IsReadOnly="True" />
-                        </Grid>
-                      </Expander>
                       <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency" >
-                        <Expander.Style>
-                          <Style TargetType="Expander">
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="MonitoringStations">
-                                <Setter  Property="Visibility" Value="Collapsed"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
-                                <Setter  Property="Visibility" Value="Visible"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
-                                <Setter  Property="Visibility" Value="Visible"/>
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </Expander.Style>
                         <Grid>
                           <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
@@ -141,21 +98,6 @@
                         </Grid>
                       </Expander>
                       <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters">
-                        <Expander.Style>
-                          <Style TargetType="Expander">
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="MonitoringStations">
-                                <Setter  Property="Visibility" Value="Collapsed"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
-                                <Setter  Property="Visibility" Value="Visible"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
-                                <Setter  Property="Visibility" Value="Visible"/>
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </Expander.Style>
                         <Grid>
                           <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="130" />
@@ -188,54 +130,10 @@
                           <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}"  IsReadOnly="True" />
                         </Grid>
                       </Expander>
-                      <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Other">
-                        <Expander.Style>
-                          <Style TargetType="Expander">
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="MonitoringStations">
-                                <Setter  Property="Visibility" Value="Collapsed"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
-                                <Setter  Property="Visibility" Value="Visible"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
-                                <Setter  Property="Visibility" Value="Collapsed"/>
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </Expander.Style>
-                        <Grid>
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="160" />
-                            <ColumnDefinition Width="*" />
-                          </Grid.ColumnDefinitions>
-                          <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                          </Grid.RowDefinitions>
-                          <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TypeSpectrumOccupation"  />
-                          <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasOtherTypeSpectrumOccupation}"  IsReadOnly="True"/>
-
-                          <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Level of min. occupation, dBm"  />
-                          <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasOtherLevelMinOccup}"  IsReadOnly="True" />
-
-                          <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Number of scans at a time"  />
-                          <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasOtherSwNumber}"  IsReadOnly="True" />
-
-                          <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of spectrums scan"  />
-                          <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasOtherTypeSpectrumScan}"  IsReadOnly="True"/>
-
-                          <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "TypeMeasurements"  />
-                          <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamTypeMeasurements}"  IsReadOnly="True"/>
-                        </Grid>
-                      </Expander>
                     </Grid>
                   </ScrollViewer>
                   <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
-                  <DataGrid Grid.Column="0" Grid.Row="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}">
+                  <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}">
                     <DataGrid.Columns>
                       <DataGridTextColumn Header="Id" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
                       <DataGridTextColumn Header="TaskId" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
@@ -250,7 +148,7 @@
                       <DataGridTextColumn Header="CountStationMeasurements" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
                       <DataGridTextColumn Header="CountUnknownStationMeasurements" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
                     </DataGrid.Columns>
-                  </DataGrid>
+                  </cdg:CustomDataGridMeasResult>
                 </Grid>
             </GroupBox>
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
