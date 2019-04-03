@@ -21,10 +21,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         public int MaxDurationBeforeStartTimeTask { get; set; }
 
+
         /// <summary>
-        /// Время в миллисекундах  задержки перед отправкой результата в шину
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Signaling
         /// </summary>
-        public int DurationForSendResult { get; set; }
+        public long durationForSendResultSignaling = 600000;  
+
+        /// <summary>
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения BandWidth
+        /// </summary>
+        public long durationForSendResultBandWidth = 600000; 
+
+        /// <summary>
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Spectrum Occupation
+        /// </summary>
+
+        public long durationForSendResultSO = 600000;  
 
         /// <summary>
         /// Время в миллисекундах  ожидания сообщения типа SensorRegistrationResult в воркере RegisterSensorTaskWorker
