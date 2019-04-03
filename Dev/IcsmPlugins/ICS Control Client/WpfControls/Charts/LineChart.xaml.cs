@@ -117,14 +117,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
             this.DrawGridlines();
 
-            if(this._option.Points == null)
+            if(this._option.Points == null && this._option.PointsArray == null)
             {
                 return;
             }
 
             if (this._option.ChartType == ChartType.Line)
             {
-                this.DrawLine();
+                if (this._option.PointsArray == null)
+                    this.DrawLine();
+                else
+                    this.DrawLines();
             }
             else if (this._option.ChartType == ChartType.Columns)
             {
@@ -358,10 +361,24 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             }
             chartCanvas.Children.Add(line);
         }
-
-        private void ApplyStyleToLine(Polyline line)
+        private void DrawLines()
         {
-            line.Stroke = this._lineStyle.Color;
+            foreach (var points in _option.PointsArray)
+            {
+                var line = new Polyline();
+                this.ApplyStyleToLine(line, points.LineColor);
+
+                for (int i = 0; i < points.Points.Length; i++)
+                {
+                    var point = this.NormalizePoint(points.Points[i]);
+                    line.Points.Add(point);
+                }
+                chartCanvas.Children.Add(line);
+            }
+        }
+        private void ApplyStyleToLine(Polyline line, Brush lineColor)
+        {
+            line.Stroke = lineColor;
             line.StrokeThickness = this._lineStyle.Thickness;
 
             switch (this._lineStyle.Pattern)
@@ -379,6 +396,10 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     line.Stroke = Brushes.Transparent;
                     break;
             }
+        }
+        private void ApplyStyleToLine(Polyline line)
+        {
+            this.ApplyStyleToLine(line, this._lineStyle.Color);
         }
 
         private void DrawColumns()

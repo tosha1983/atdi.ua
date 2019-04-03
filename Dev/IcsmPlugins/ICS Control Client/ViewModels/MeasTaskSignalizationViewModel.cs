@@ -16,9 +16,36 @@ using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
+using System.Windows.Controls;
+using INP = System.Windows.Input;
+using System.Collections;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
+    public class CustomDataGridMeasResult : DataGrid
+    {
+        public CustomDataGridMeasResult()
+        {
+            this.MouseDoubleClick += DoubleClick;
+        }
+        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
+            foreach (MeasurementResultsViewModel item in this.SelectedItemsList)
+            {
+                var dlgForm = new FM.MeasResultSignalizationForm(item.MeasSdrResultsId);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+            }
+        }
+        public IList SelectedItemsList
+        {
+            get { return (IList)GetValue(SelectedItemsListProperty); }
+            set { SetValue(SelectedItemsListProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasResult), new PropertyMetadata(null));
+    }
     public class MeasTaskSignalizationViewModel : WpfViewModelBase
     {
         private int _taskId;

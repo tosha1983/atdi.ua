@@ -26,17 +26,16 @@ namespace XICSM.ICSControlClient.ViewModels
     {
         public CustomDataGridMeasTasks()
         {
-            this.MouseDoubleClick += test;
+            this.MouseDoubleClick += DoubleClick;
         }
-        private void test(object sender, INP.MouseButtonEventArgs e)
+        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
         {
             this.SelectedItemsList = this.SelectedItems;
             foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
             {
                 if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
                 {
-                    var dlgForm = new FM.MeasTaskSignalizationForm();
-                    dlgForm._taskId = item.Id;
+                    var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
                     dlgForm.ShowDialog();
                     dlgForm.Dispose();
                 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace XICSM.ICSControlClient.WpfControls.Charts
 {
@@ -12,6 +13,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         public string Title { get; set; }
 
         public Point[] Points { get; set; }
+
+        public ChartPoints[] PointsArray { get; set; }
 
         public ChartType ChartType { get; set; }
 
