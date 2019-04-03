@@ -263,5 +263,45 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 VBW = source.VBW.ToNull()
             };
         }
+        public static VM.EmittingViewModel Map(SDR.Emitting source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.EmittingViewModel
+            {
+                StartFrequency_MHz = source.StartFrequency_MHz,
+                StopFrequency_MHz = source.StopFrequency_MHz,
+                CurentPower_dBm = source.CurentPower_dBm,
+                ReferenceLevel_dBm = source.ReferenceLevel_dBm,
+                MeanDeviationFromReference = source.MeanDeviationFromReference,
+                TriggerDeviationFromReference = source.TriggerDeviationFromReference,
+                Bandwidth_kHz = source.Spectrum.Bandwidth_kHz,
+                CorrectnessEstimations = source.Spectrum.СorrectnessEstimations,
+                TraceCount = source.Spectrum.TraceCount,
+                SignalLevel_dBm = source.Spectrum.SignalLevel_dBm,
+                RollOffFactor = source.EmittingParameters.RollOffFactor,
+                StandardBW = source.EmittingParameters.StandardBW,
+                WorkTimes = source.WorkTimes,
+                Spectrum = source.Spectrum
+            };
+        }
+        public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.EmittingWorkTimeViewModel
+            {
+                StartEmitting = source.StartEmitting,
+                StopEmitting = source.StopEmitting,
+                HitCount = source.HitCount,
+                PersentAvailability = source.HitCount
+            };
+        }
     }
 }

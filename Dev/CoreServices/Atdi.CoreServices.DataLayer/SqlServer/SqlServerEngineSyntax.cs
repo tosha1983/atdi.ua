@@ -24,6 +24,8 @@ namespace Atdi.CoreServices.DataLayer
 
         public int MaxLengthAlias => 128;
 
+        public int MaxBatchSizeBuffer => 800;
+
         public string SortedColumn(string expression, SortDirection direction)
         {
             switch (direction)

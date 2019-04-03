@@ -28,7 +28,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         }
 
 
-        public void GetEmittingAndReferenceLevels(int resId, out Emitting[] emittings, out ReferenceLevels referenceLevels)
+        public void GetEmittingAndReferenceLevels(int resId, out Emitting[] emittings, out ReferenceLevels referenceLevels, double? StartFrequency_Hz =null, double? StopFrequency_Hz=null)
         {
             emittings = null;
             var listIdsEmittings = new List<int>();
@@ -387,7 +387,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                 return true;
             });
 
-            referenceLevels = level;
+            if ((StartFrequency_Hz != null) && (StopFrequency_Hz != null))
+            {
+                referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz.Value, StopFrequency_Hz.Value);
+            }
+            else
+            {
+                referenceLevels = level;
+            }
         }
 
         /// <summary>
@@ -1555,7 +1562,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// </summary>
         /// <param name="measurementType"></param>
         /// <returns></returns>
-        public MeasurementResults GetMeasurementResultByResId(int ResId)
+        public MeasurementResults GetMeasurementResultByResId(int ResId, double? StartFrequency_Hz=null, double? StopFrequency_Hz = null)
         {
             var levelmeasurementResults = new MeasurementResults();
             try
@@ -1791,7 +1798,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
+                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
                         levelmeasurementResults.Emittings = emittings;
                         levelmeasurementResults.RefLevels = referenceLevels;
 
@@ -2848,6 +2855,98 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return listlevelmeasurementResults.ToArray();
+        }
+
+        /// <summary>
+        /// Обрезание графика refLevelesValues.levels когда много значений
+        /// </summary>
+        /// <param name="refLevelesValues"></param>
+        /// <param name="StartFrequency_Hz"></param>
+        /// <param name="StopFrequency_Hz"></param>
+        /// <returns></returns>
+        private static ReferenceLevels ReferenceLevelsCut(ReferenceLevels refLevelesValues, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null, int Npoint = 5000)
+        { // НЕ ТЕСТИРОВАННО
+            if (refLevelesValues == null) { return null;}
+            if (refLevelesValues.levels.Length < Npoint) { return refLevelesValues;}
+            if (StartFrequency_Hz > StopFrequency_Hz) { double k = StartFrequency_Hz.Value; StartFrequency_Hz = StopFrequency_Hz; StopFrequency_Hz = k;}
+            int StartIndex;
+            int StopIndex;
+            if ((StartFrequency_Hz is null)  || (StopFrequency_Hz is null))
+            {
+                StartFrequency_Hz = refLevelesValues.StartFrequency_Hz;
+                StopFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length-1);
+                StartIndex = 0;
+                StopIndex = refLevelesValues.levels.Length - 1;
+            }
+            else
+            {
+                // определение начала 
+                if (refLevelesValues.StartFrequency_Hz >= StartFrequency_Hz)
+                {
+                    StartFrequency_Hz = refLevelesValues.StartFrequency_Hz;
+                    StartIndex = 0;
+                }
+                else if ((refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1)) >= StartFrequency_Hz)
+                {
+                    StartIndex = (int)Math.Floor((StartFrequency_Hz.Value - refLevelesValues.StartFrequency_Hz) / refLevelesValues.StepFrequency_Hz);
+                    StartFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.levels[StartIndex] * refLevelesValues.StepFrequency_Hz;
+                }
+                else { return null; }
+                // определение конеца 
+                if ((refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1)) <= StopFrequency_Hz)
+                {
+                    StopFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1);
+                    StopIndex = refLevelesValues.levels.Length - 1;
+                }
+                else if (refLevelesValues.StartFrequency_Hz < StopFrequency_Hz)
+                {
+                    StopIndex = (int)Math.Ceiling((StopFrequency_Hz.Value - refLevelesValues.StartFrequency_Hz) / refLevelesValues.StepFrequency_Hz);
+                    if (StopIndex > refLevelesValues.levels.Length-1) { StopIndex = refLevelesValues.levels.Length - 1; }
+                    StartFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.levels[StopIndex] * refLevelesValues.StepFrequency_Hz;
+                }
+                else { return null; }
+            }
+            if (StopIndex - StartIndex < Npoint)
+            {
+                // возвращаем просто усеченное значение
+                var referenceLevels = new ReferenceLevels();
+                referenceLevels.StartFrequency_Hz = StartFrequency_Hz.Value;
+                referenceLevels.StepFrequency_Hz = refLevelesValues.StepFrequency_Hz;
+                referenceLevels.levels = new float[StopIndex - StartIndex + 1];
+                Array.Copy(refLevelesValues.levels, StartIndex, referenceLevels.levels, 0, StopIndex - StartIndex + 1);
+                return referenceLevels;
+            }
+            else
+            {
+                // надо сжимать определяем коэфициент сжатия
+                int k = (int)Math.Ceiling((double)(StopIndex - StartIndex) / Npoint);
+                var referenceLevels = new ReferenceLevels();
+                referenceLevels.StartFrequency_Hz = StartFrequency_Hz.Value;
+                referenceLevels.StepFrequency_Hz = refLevelesValues.StepFrequency_Hz * k;
+                int Arr_Count = (int)Math.Ceiling((double)(StopIndex - StartIndex+1) / k);
+                referenceLevels.levels = new float[Arr_Count];
+                for (int i = 0; Arr_Count-1 > i; i++)
+                {
+                    referenceLevels.levels[i] = refLevelesValues.levels[i*k];
+                    for (int j = 0; k > j; j++)
+                    {
+                        if (refLevelesValues.levels[i*k+j] > referenceLevels.levels[i]) { referenceLevels.levels[i] = refLevelesValues.levels[i * k + j];}
+                    }
+                }
+                if (refLevelesValues.levels.Length - 1 >= (Arr_Count - 1) * k)
+                {
+                    referenceLevels.levels[Arr_Count-1] = refLevelesValues.levels[(Arr_Count-1) * k];
+                    for (int j = 0; k > j; j++)
+                    {
+                        if (refLevelesValues.levels.Length - 1 >= (Arr_Count - 1) * k + j)
+                        {
+                            if (refLevelesValues.levels[(Arr_Count - 1) * k + j] > referenceLevels.levels[(Arr_Count - 1)])
+                            { referenceLevels.levels[(Arr_Count - 1)] = refLevelesValues.levels[(Arr_Count - 1) * k + j]; }
+                        }
+                    }
+                }
+                return referenceLevels;
+            }
         }
 
     }
