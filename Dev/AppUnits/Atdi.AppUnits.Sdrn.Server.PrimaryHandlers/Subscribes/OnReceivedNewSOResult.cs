@@ -1459,20 +1459,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 {
                     if (measResult.FrequencySamples != null)
                     {
-                        var lstIns = new IQueryInsertStatement<MD.IFreqSampleRaw>[measResult.FrequencySamples.Length];
+                        var lstIns = new IQueryInsertStatement<MD.IResLevels>[measResult.FrequencySamples.Length];
                         for (int i = 0; i < measResult.FrequencySamples.Length; i++)
                         {
                             var item = measResult.FrequencySamples[i];
-                            var builderInsertFreqSampleRaw = this._dataLayer.GetBuilder<MD.IFreqSampleRaw>().Insert();
-                            builderInsertFreqSampleRaw.SetValue(c => c.Freq_MHz, item.Freq_MHz);
-                            builderInsertFreqSampleRaw.SetValue(c => c.LevelMax_dBm, item.LevelMax_dBm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.LevelMin_dBm, item.LevelMin_dBm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.Level_dBm, item.Level_dBm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.Level_dBmkVm, item.Level_dBmkVm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.OccupationPt, item.Occupation_Pt);
-                            builderInsertFreqSampleRaw.SetValue(c => c.ResMeasId, valInsResMeas);
-                            builderInsertFreqSampleRaw.Select(c => c.Id);
-                            lstIns[i] = builderInsertFreqSampleRaw;
+
+                            var builderInsertResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Insert();
+                            builderInsertResLevels.SetValue(c => c.FreqMeas, item.Freq_MHz);
+                            builderInsertResLevels.SetValue(c => c.VMMaxLvl, item.LevelMax_dBm);
+                            builderInsertResLevels.SetValue(c => c.VMinLvl, item.LevelMin_dBm);
+                            builderInsertResLevels.SetValue(c => c.ValueLvl, item.Level_dBm);
+                            builderInsertResLevels.SetValue(c => c.ValueSpect, item.Level_dBmkVm);
+                            builderInsertResLevels.SetValue(c => c.OccupancySpect, item.Occupation_Pt);
+                            builderInsertResLevels.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertResLevels.Select(c => c.Id);
+                            lstIns[i] = builderInsertResLevels;
+                            /*
+                            var builderInsertResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Insert();
+                            builderInsertResLevels.SetValue(c => c.Freq_MHz, item.Freq_MHz);
+                            builderInsertResLevels.SetValue(c => c.LevelMax_dBm, item.LevelMax_dBm);
+                            builderInsertResLevels.SetValue(c => c.LevelMin_dBm, item.LevelMin_dBm);
+                            builderInsertResLevels.SetValue(c => c.Level_dBm, item.Level_dBm);
+                            builderInsertResLevels.SetValue(c => c.Level_dBmkVm, item.Level_dBmkVm);
+                            builderInsertResLevels.SetValue(c => c.OccupationPt, item.Occupation_Pt);
+                            builderInsertResLevels.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertResLevels.Select(c => c.Id);
+                            lstIns[i] = builderInsertResLevels;
+                            */
                         }
                         queryExecuter.ExecuteAndFetch(lstIns, reader =>
                         {
