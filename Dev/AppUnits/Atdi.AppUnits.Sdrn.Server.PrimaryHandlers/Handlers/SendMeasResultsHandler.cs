@@ -33,78 +33,25 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._eventEmitter = eventEmitter;
             this._logger = logger;
         }
-        /*
-        public void GetMeasTaskSDRIdentifier(MeasResults measResults,  out int SubTaskId, out int SubTaskStationId, out int SensorId)
+
+        public void GetMeasTaskSDRIdentifier(string TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId)
         {
-            int? _SubTaskId = null;
-            int? _SubTaskStationId = null;
-            int? _SensorId = null;
+            SubTaskId = -1;
+            SubTaskStationId = -1;
+            SensorId = -1;
+            ResultId = -1;
 
-            int valMeasTask = -1;
-            Int32.TryParse(measResults.TaskId, out valMeasTask);
-            var query = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>()
-                  .From()
-                  .Select(c => c.MeasTaskId)
-                  .Select(c => c.Id)
-                  .Select(c => c.MeasSubTaskId)
-                  .Select(c => c.MeasSubTaskStaId)
-                  .Select(c => c.SensorId)
-                  .Where(c => c.MeasTaskId, ConditionOperator.Equal, valMeasTask)
-                  .OrderByAsc(c => c.Id)
-                  ;
-
-            var res = this._dataLayer.Executor<SdrnServerDataContext>()
-            .Fetch(query, reader =>
+            if (TaskId != null)
             {
-                var result = false;
-                while (reader.Read())
+                string[] word = TaskId.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if ((word != null) && (word.Length == 5))
                 {
-                    _SubTaskId = reader.GetValue(c => c.MeasSubTaskId);
-                    _SubTaskStationId = reader.GetValue(c => c.MeasSubTaskStaId);
-                    _SensorId = reader.GetValue(c => c.SensorId);
-                    result = true;
+                    SubTaskId = int.Parse(word[1]);
+                    SubTaskStationId = int.Parse(word[2]);
+                    SensorId = int.Parse(word[3]);
+                    ResultId = int.Parse(word[4]);
                 }
-                return result;
-            });
-            SubTaskId = _SubTaskId.HasValue ? _SubTaskId.Value : -1;
-            SubTaskStationId = _SubTaskStationId.HasValue ? _SubTaskStationId.Value : -1;
-            SensorId = _SensorId.HasValue ? _SensorId.Value : -1;
-        }
-        */
-
-        public void GetMeasTaskSDRIdentifier(MeasResults measResults, out int SubTaskId, out int SubTaskStationId, out int SensorId)
-        {
-            int? _SubTaskId = null;
-            int? _SubTaskStationId = null;
-            int? _SensorId = null;
-
-            int valMeasTask = -1;
-            Int32.TryParse(measResults.TaskId, out valMeasTask);
-            var query = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>()
-                  .From()
-                  .Select(c => c.Id)
-                  .Select(c => c.SensorId)
-                  .Select(c => c.MeasSubTaskId)
-                  .Where(c => c.MEASSUBTASK.MeasTaskId, ConditionOperator.Equal, valMeasTask)
-                  .OrderByAsc(c => c.Id)
-                  ;
-
-            var res = this._dataLayer.Executor<SdrnServerDataContext>()
-            .Fetch(query, reader =>
-            {
-                var result = false;
-                while (reader.Read())
-                {
-                    _SubTaskId = reader.GetValue(c => c.MeasSubTaskId);
-                    _SubTaskStationId = reader.GetValue(c => c.Id);
-                    _SensorId = reader.GetValue(c => c.SensorId);
-                    result = true;
-                }
-                return result;
-            });
-            SubTaskId = _SubTaskId.HasValue ? _SubTaskId.Value : -1;
-            SubTaskStationId = _SubTaskStationId.HasValue ? _SubTaskStationId.Value : -1;
-            SensorId = _SensorId.HasValue ? _SensorId.Value : -1;
+            }
         }
 
         public void Handle(ISdrnIncomingEnvelope<MeasResults> incomingEnvelope, ISdrnMessageHandlingResult result)
@@ -119,8 +66,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     queryExecuter.BeginTransaction();
                     result.Status = SdrnMessageHandlingStatus.Trash;
                     var resObject = incomingEnvelope.DeliveryObject;
-                    int SensorId; int SubMeasTaskId; int SubMeasTaskStationId;
-                    GetMeasTaskSDRIdentifier(resObject, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId);
+                    int SensorId; int SubMeasTaskId; int SubMeasTaskStationId; int resultId;
+
+                    GetMeasTaskSDRIdentifier(resObject.ResultId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId);
 
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Insert();
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, resObject.Measured);
@@ -149,11 +97,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                     if (valInsResMeas > 0)
                     {
-                        var builderUpdateIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Update();
-                        builderUpdateIResMeas.SetValue(c => c.MeasResultSID, valInsResMeas.ToString());
-                        builderUpdateIResMeas.Where(c => c.Id, ConditionOperator.Equal, valInsResMeas);
-                        var cnt = queryExecuter.Execute(builderUpdateIResMeas);
-
                         if (resObject.RefLevels != null)
                         {
                             int valInsReferenceLevelsRaw = 0;

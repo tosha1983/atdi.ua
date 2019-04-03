@@ -205,6 +205,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //  
                             //////////////////////////////////////////////
                             //outResultData.ResultId = Guid.NewGuid().ToString();
+                            context.Task.CountSendResults++;
+                            outResultData.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
                             outResultData.Status = "N";
                             outResultData.ScansNumber = context.Task.CountMeasurementDone;
                             outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
@@ -246,7 +248,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
 
-                            outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
+                            outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
+                            
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
                             publisher.Send<DM.MeasResults>("SendMeasResults", outResultData);

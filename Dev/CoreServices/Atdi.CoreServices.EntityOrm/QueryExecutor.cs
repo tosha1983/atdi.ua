@@ -21,7 +21,6 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
         private readonly EntityOrmQueryBuilder _icsmOrmQueryBuilder;
-        private const int _maxBatchSizeBuffer = 300;
         private const string _propertyName = "Statement";
         private const string _nameIdentFieldParameter = "v_ID";
 
@@ -970,7 +969,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int j = 0; j < listBulkQueryInsert.Length; j++)
             {
                 cnt++;
-                if (cnt == _maxBatchSizeBuffer)
+                if (cnt == _syntax.MaxBatchSizeBuffer)
                 {
                     listTempBulkQueryInsert.Add(listBulkQueryInsert[j]);
                     var command = new EngineCommand();
@@ -1047,7 +1046,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int j = 0; j < listBulkQueryInsert.Length; j++)
             {
                 cnt++;
-                if (cnt == _maxBatchSizeBuffer)
+                if (cnt == _syntax.MaxBatchSizeBuffer)
                 {
                     listTempBulkQueryInsert.Add(listBulkQueryInsert[j]);
                     var command = new EngineCommand();
