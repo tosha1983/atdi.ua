@@ -463,6 +463,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
                         {
@@ -647,6 +655,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                             }
+                            if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                            {
+                                levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                            }
+                            if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                            {
+                                levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            }
                             MeasurementType outResType;
                             if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                             {
@@ -772,6 +788,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
@@ -1622,6 +1646,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
+                        }
+
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
                         {
@@ -1877,6 +1910,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
                         {
@@ -1961,6 +2002,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerResMeas.GetValue(c => c.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
                         }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
@@ -2339,6 +2388,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             shortMeasurementResultsFast.TimeMeas = readerResLocSensorMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            shortMeasurementResultsFast.StartTime = readerResLocSensorMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            shortMeasurementResultsFast.StopTime = readerResLocSensorMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResLocSensorMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -2567,6 +2624,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
+
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -2684,6 +2750,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -2799,6 +2873,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
