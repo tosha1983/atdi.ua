@@ -215,6 +215,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.StartTime = context.Task.LastTimeSend.Value;
                             measResult.StopTime = currTime;
                             measResult.Location = new DataModels.Sdrns.GeoLocation();
+                            measResult.Measured = currTime;
                             //////////////////////////////////////////////
                             // 
                             //  Здесь получаем данные с GPS приемника
@@ -274,7 +275,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outSpectrumOcupation != null)
                     {
                         TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                        if (timeSpan.TotalMilliseconds > context.Task.durationForSendResult)
+                        if (timeSpan.TotalMilliseconds > context.Task.durationForSendResultSO)
                         {
                             //реакция на принятые результаты измерения
                             if (outSpectrumOcupation.fSemplesResult != null)
@@ -297,7 +298,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outSpectrumOcupation != null)
                         {
                             TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResult / 2.0))
+                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResultSO / 2.0))
                             {
                                 action.Invoke();
                             }
