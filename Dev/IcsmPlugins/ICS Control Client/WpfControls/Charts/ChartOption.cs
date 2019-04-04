@@ -37,5 +37,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         public double YInnerTickCount { get; set; }
 
         public string YLabel { get; set; }
+
+        public bool UseZoom { get; set; }
     }
 }

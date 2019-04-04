@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Diagnostics;
 using System.Windows.Shapes;
 using XICSM.ICSControlClient;
 
@@ -35,10 +36,15 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
     public partial class LineChart : UserControl
     {
+        private Point startPoint;
+        private Rectangle rect;
+
         private ChartOption _option;
         private ChartLineStyle _lineStyle;
         private ChartColumnsStyle _columnsStyle;
         private ChartGridStyle _gridStyle;
+
+        private double[] _selectedRangeX;
 
         private static ChartOption GetDefaultChartOption()
         {
@@ -56,7 +62,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 YMax = 10,
                 YTick = 1,
                 YInnerTickCount = 5,
-                YLabel = "Y - Label"
+                YLabel = "Y - Label",
+                UseZoom = false
             };
         }
         public LineChart()
@@ -114,6 +121,14 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             textCanvas.Height = chartGrid.ActualHeight;
             chartCanvas.Children.RemoveRange(1, chartCanvas.Children.Count - 1);
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+
+            rect = new Rectangle()
+            {
+                Stroke = Brushes.LightBlue,
+                StrokeThickness = 2,
+                Fill = new SolidColorBrush(Color.FromArgb(50, 0, 100, 0))
+            };
+            chartCanvas.Children.Add(rect);
 
             this.DrawGridlines();
 
@@ -474,6 +489,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             result.Y = chartCanvas.Height - (pt.Y - this._option.YMin) * chartCanvas.Height / (this._option.YMax - this._option.YMin);
             return result;
         }
+        private Point DeNormalizePoint(Point pt)
+        {
+            if (chartCanvas.Width.ToString() == "NaN")
+                chartCanvas.Width = 270;
+            if (chartCanvas.Height.ToString() == "NaN")
+                chartCanvas.Height = 250;
+            Point result = new Point();
+            result.X = (pt.X * (this._option.XMax - this._option.XMin) / chartCanvas.Width) + this._option.XMin;
+            result.Y = ((chartCanvas.Height - pt.Y) * (this._option.YMax - this._option.YMin) + this._option.YMin * chartCanvas.Height) / chartCanvas.Height;
+            return result;
+        }
 
         private void ApplyStyleToColumnRectangle(Rectangle rect)
         {
@@ -496,8 +522,6 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 DrawChart();
             }
         }
-
-        
 
         public static DependencyProperty IsXGridProperty = DependencyProperty.Register("IsXGrid", typeof(bool), typeof(LineChart),
             new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
@@ -553,9 +577,18 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             }
         }
 
+        public static DependencyProperty SelectedRangeXProperty = DependencyProperty.Register("SelectedRangeX", typeof(double[]), typeof(LineChart),
+           new FrameworkPropertyMetadata(default(double[]), new PropertyChangedCallback(OnPropertyChanged)));
 
-
-
+        public double[] SelectedRangeX
+        {
+            get { return (double[])GetValue(SelectedRangeXProperty); } 
+            set
+            {
+                SetValue(SelectedRangeXProperty, value);
+                this._selectedRangeX = value;
+            }
+        }
 
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -571,6 +604,76 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 lcc.IsYGrid = (bool)e.NewValue;
             else if (e.Property == OptionProperty)
                 lcc.Option = (ChartOption)e.NewValue;
+            //else if (e.Property == SelectedRangeXProperty)
+            //    lcc.SelectedRangeX = (double[])e.NewValue;
+
+        }
+
+        private void chartCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (this._option.UseZoom)
+                {
+                    startPoint = e.GetPosition(chartCanvas);
+
+                    Canvas.SetLeft(rect, startPoint.X);
+                    Canvas.SetTop(rect, 0);
+                }
+            }
+            catch (Exception msg)
+            {
+                Debug.Print(msg.Message);
+            }
+        }
+        private void chartCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (this._option.UseZoom)
+                {
+                    if (e.LeftButton == MouseButtonState.Released || rect == null)
+                        return;
+
+                    var pos = e.GetPosition(chartCanvas);
+
+                    var x = Math.Min(pos.X, startPoint.X);
+                    var y = Math.Min(pos.Y, 0);
+                    var w = Math.Max(pos.X, startPoint.X) - x;
+                    var h = Math.Max(pos.Y, startPoint.Y) - y;
+
+                    rect.Width = w;
+                    rect.Height = chartCanvas.ActualHeight;
+
+                    Canvas.SetLeft(rect, x);
+                    Canvas.SetTop(rect, y);
+                }
+            }
+            catch (Exception msg)
+            {
+                Debug.Print(msg.Message);
+            }
+        }
+
+        private void chartCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this._option.UseZoom)
+            {
+                var pos = e.GetPosition(chartCanvas);
+                Point point1 = new Point() { X = startPoint.X, Y = startPoint.Y};
+                Point point2 = new Point() { X = pos.X, Y = pos.Y };
+
+                var realPoint1 = DeNormalizePoint(point1);
+                var realPoint2 = DeNormalizePoint(point2);
+
+                double[] result;
+                if (realPoint1.X > realPoint2.X)
+                    result = new double[] { realPoint2.X, realPoint1.X };
+                else
+                    result = new double[] { realPoint1.X, realPoint2.X };
+
+                this.SelectedRangeX = result;
+            }
         }
     }
 }
