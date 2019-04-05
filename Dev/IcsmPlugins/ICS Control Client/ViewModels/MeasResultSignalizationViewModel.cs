@@ -114,7 +114,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadMeasResult()
         {
-            _currentMeasResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId);
+            _currentMeasResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId, null, null);
             this._emittings.Source = _currentMeasResult.Emittings;
         }
         private void UpdateCurrentChartOption(double? startFreq, double? stopFreq)

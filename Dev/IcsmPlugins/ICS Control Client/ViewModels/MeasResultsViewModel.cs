@@ -274,7 +274,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
                 this._resultsMeasurementsStations.Source = sdrMeasResults;
 
-                var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId);
+                var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId, null, null);
                 LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
                 UpFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Max(f => f.Freq));
             }
@@ -435,7 +435,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
 
             var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
@@ -493,7 +493,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
 
             var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
