@@ -243,10 +243,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                     return true;
                 });
 
-
-                for (int i = 0; i < listIdsEmittings.Count; i++)
+                var arrayListIdsEmittings = listIdsEmittings.ToArray();
+                for (int i = 0; i < arrayListIdsEmittings.Length; i++)
                 {
-                    var id = listIdsEmittings[i];
+                    var id = arrayListIdsEmittings[i];
                     var fndEmitings = listEmitings.Find(c => c.Key == id);
                     if (fndEmitings.Value != null)
                     {
@@ -255,10 +255,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var fndWorkTime = listWorkTimes.FindAll(c => c.Key == id);
                         if (fndWorkTime != null)
                         {
+                            var arrayFndWorkTime = fndWorkTime.ToArray();
                             var listWorkTime = new List<WorkTime>();
-                            foreach (var x in fndWorkTime)
+                            for (int t=0; t < arrayFndWorkTime.Length; t++)
                             {
-                                listWorkTime.Add(x.Value);
+                                listWorkTime.Add(arrayFndWorkTime[t].Value);
                             }
                             if (listWorkTime.Count > 0)
                             {
@@ -267,18 +268,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
 
                         listWorkTimes.RemoveAll(c => c.Key == id);
-
                         var fndSignalMask = listSignalMask.FindAll(c => c.Key == id);
                         if (fndSignalMask != null)
                         {
-
+                            var arrayFndSignalMask = fndSignalMask.ToArray();
                             var signalMask = new SignalMask();
                             listLoss_dB = new List<float>();
                             listFreq_kHz = new List<double>();
-                            foreach (var x in fndSignalMask)
+                            for (int t = 0; t < arrayFndSignalMask.Length; t++)
                             {
-                                listLoss_dB.AddRange(x.Value.Loss_dB.ToList());
-                                listFreq_kHz.AddRange(x.Value.Freq_kHz.ToList());
+                                var x = arrayFndSignalMask[t];
+                                listLoss_dB.AddRange(x.Value.Loss_dB);
+                                listFreq_kHz.AddRange(x.Value.Freq_kHz);
                             }
                             if (listLoss_dB.Count > 0)
                             {
@@ -287,20 +288,21 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                             emitting.SignalMask = signalMask;
                         }
-
                         listSignalMask.RemoveAll(c => c.Key == id);
 
 
                         var fndLevelsDistribution = listLevelsDistribution.FindAll(c => c.Key == id);
                         if (fndLevelsDistribution != null)
                         {
+                            var arrayFndLevelsDistribution = fndLevelsDistribution.ToArray();
                             var levelDist = new LevelsDistribution();
                             listLevel = new List<int>();
                             listCount = new List<int>();
-                            foreach (var x in fndLevelsDistribution)
+                            for (int t = 0; t < arrayFndLevelsDistribution.Length; t++)
                             {
-                                listLevel.AddRange(x.Value.Levels.ToList());
-                                listCount.AddRange(x.Value.Count.ToList());
+                                var x = arrayFndLevelsDistribution[t];
+                                listLevel.AddRange(x.Value.Levels);
+                                listCount.AddRange(x.Value.Count);
                             }
                             if (listCount.Count > 0)
                             {
@@ -315,12 +317,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var fndSpectrum = listSpectrum.FindAll(c => c.Key == id);
                         if (fndSpectrum != null)
                         {
+                            var arrayFndSpectrum = fndSpectrum.ToArray();
                             var listLevelsdBm = new List<float>();
-                            foreach (var x in fndSpectrum)
+                            for (int t = 0; t < arrayFndSpectrum.Length; t++)
                             {
+                                var x = arrayFndSpectrum[t];
                                 if (x.Value != null)
                                 {
-                                    listLevelsdBm.AddRange(x.Value.Levels_dBm.ToList());
+                                    listLevelsdBm.AddRange(x.Value.Levels_dBm);
                                     emitting.Spectrum = x.Value;
                                 }
                             }
@@ -330,7 +334,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                         }
                         listSpectrum.RemoveAll(c => c.Key == id);
-
                         listEmitting.Add(emitting);
                     }
                     listEmitings.RemoveAll(c => c.Key == id);
