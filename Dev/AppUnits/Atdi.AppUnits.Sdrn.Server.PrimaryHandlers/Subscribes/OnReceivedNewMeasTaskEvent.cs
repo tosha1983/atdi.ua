@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))
             {
-                if ((@event.MeasTaskId > 0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
+                if ((@event.MeasTaskId>0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
                 {
                     var loadMeasTask = new LoadMeasTask(this._dataLayer, this._logger);
                     var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);

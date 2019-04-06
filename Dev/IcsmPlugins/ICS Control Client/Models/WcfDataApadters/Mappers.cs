@@ -193,7 +193,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SensorName = source.SensorName,
                 SensorTechId = source.SensorTechId,
                 CountStationMeasurements = source.CountStationMeasurements,
-                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements
+                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements,
+                StartTime = source.StartTime,
+                StopTime = source.StopTime
             };
         }
 
@@ -279,7 +281,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeanDeviationFromReference = source.MeanDeviationFromReference,
                 TriggerDeviationFromReference = source.TriggerDeviationFromReference,
                 Bandwidth_kHz = source.Spectrum.Bandwidth_kHz,
-                CorrectnessEstimations = source.Spectrum.СorrectnessEstimations,
+                CorrectnessEstimations = source.Spectrum.CorrectnessEstimations,
                 TraceCount = source.Spectrum.TraceCount,
                 SignalLevel_dBm = source.Spectrum.SignalLevel_dBm,
                 RollOffFactor = source.EmittingParameters.RollOffFactor,

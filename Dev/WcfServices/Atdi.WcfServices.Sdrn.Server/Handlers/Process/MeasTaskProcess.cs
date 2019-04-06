@@ -84,11 +84,19 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var fndSensor = loadSensor.LoadObjectSensor(SensorId);
                         if (fndSensor != null)
                         {
-                            if ((fndSensor.Name != null) && (fndSensor.Equipment!=null))
+                            if ((fndSensor.Name != null) && (fndSensor.Equipment != null))
                             {
                                 if (actionType == MeasTaskMode.New.ToString())
                                 {
-                                    measTask.CreateAllSubTasks();
+                                    if ((measTask.MeasTimeParamList.PerStart > measTask.MeasTimeParamList.PerStop) || (measTask.MeasTimeParamList.TimeStart > measTask.MeasTimeParamList.TimeStop))
+                                    {
+                                        this._logger.Error(Contexts.ThisComponent, Categories.Processing, Events.MeasTimeParamListIncorrect.Text);
+                                        throw new Exception(Events.MeasTimeParamListIncorrect.Text);
+                                    }
+                                    else
+                                    {
+                                        measTask.CreateAllSubTasks();
+                                    }
                                 }
                                 if ((measTask.Stations != null) && (measTask.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null))
                                 {
@@ -115,18 +123,55 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                     if ((IdTsk != null) && (isSendMessageToBus))
                                     {
-                                        var masTaskEvent = new OnMeasTaskEvent()
+                                        var measTaskIds = "";
+                                        if (measTask.MeasSubTasks != null)
                                         {
-                                            MeasTaskId = IdTsk.Value,
-                                            SensorName = fndSensor.Name,
-                                            EquipmentTechId = fndSensor.Equipment.TechId,
-                                            Name = $"On{actionType}MeasTaskEvent"
-                                        };
-                                        this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                            for (int f = 0; f < measTask.MeasSubTasks.Length; f++)
+                                            {
+                                                var SubTask = measTask.MeasSubTasks[f];
+                                                if (SubTask.MeasSubTaskStations != null)
+                                                {
+                                                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                                                    {
+                                                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+                                                        measTaskIds = string.Format("{0}|{1}|{2}|{3}", IdTsk.Value, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
+                                                        if (actionType != MeasTaskMode.New.ToString())
+                                                        {
+                                                            var masTaskEvent = new OnMeasTaskEvent()
+                                                            {
+                                                                MeasTaskId = IdTsk.Value,
+                                                                SensorName = fndSensor.Name,
+                                                                EquipmentTechId = fndSensor.Equipment.TechId,
+                                                                Name = $"On{actionType}MeasTaskEvent",
+                                                                MeasTaskIds = measTaskIds
+                                                            };
+                                                            this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                                            {
+                                                                Rule = EventEmittingRule.Default,
+                                                                Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if (actionType == MeasTaskMode.New.ToString())
                                         {
-                                             Rule = EventEmittingRule.Default,
-                                             Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
-                                        });
+                                            var masTaskEvent = new OnMeasTaskEvent()
+                                            {
+                                                MeasTaskId = IdTsk.Value,
+                                                SensorName = fndSensor.Name,
+                                                EquipmentTechId = fndSensor.Equipment.TechId,
+                                                Name = $"On{actionType}MeasTaskEvent",
+                                                MeasTaskIds = measTaskIds
+                                            };
+                                            this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                            {
+                                                Rule = EventEmittingRule.Default,
+                                                Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
+                                            });
+                                        }
                                     }
                                 }
                             }

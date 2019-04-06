@@ -46,13 +46,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             try
             {
                 DM.DeviceCommand deviceCommand = message.Data;
-
-                if (deviceCommand.CustNbr1 != null)
+                if (deviceCommand.CustTxt1 != null)
                 {
-                    int idTask = (int)deviceCommand.CustNbr1;
-                    if (idTask > 0)
+                    string idsTask = deviceCommand.CustTxt1;
+                    if (!string.IsNullOrEmpty(idsTask))
                     {
-                        var taskParams = this._repositoryTaskParametersByString.LoadObject(idTask.ToString());
+                        var taskParams = this._repositoryTaskParametersByString.LoadObject(idsTask);
                         if (taskParams != null)
                         {
                             if (deviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
