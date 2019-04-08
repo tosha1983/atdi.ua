@@ -225,7 +225,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 foreach (EmittingViewModel emitting in this._currentEmittings)
                 {
-                    var count = _currentMeasResult.Emittings.Length;
+                    var count = emitting.Spectrum.Levels_dBm.Count(); // _currentMeasResult.Emittings.Length;
                     var points = new List<Point>();
 
                     for (int i = 0; i < count; i++)
