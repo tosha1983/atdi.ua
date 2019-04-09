@@ -508,38 +508,42 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.LocationSensorMeasurement = listLocationSensorMeasurement.ToArray();
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
 
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+                         
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
 
                         var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                         builderLinkResSensoT.Select(c => c.Id);
@@ -680,37 +684,41 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                             levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                            builderResMeasStation.Select(c => c.Id);
-                            builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                            builderResMeasStation.OrderByAsc(c => c.Id);
-                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                            {
-                                while (readerResMeasStation.Read())
-                                {
-                                    levelmeasurementResults.CountUnknownStationMeasurements++;
-                                }
-                                return true;
-                            });
-
-
                             levelmeasurementResults.CountStationMeasurements = 0;
-                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                            builderResMeasStation.Select(c => c.Id);
-                            builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                            builderResMeasStation.OrderByAsc(c => c.Id);
-                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            if (outResType == MeasurementType.MonitoringStations)
                             {
-                                while (readerResMeasStation.Read())
+                                var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                                builderResMeasStation.Select(c => c.Id);
+                                builderResMeasStation.Select(c => c.Status);
+                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                                builderResMeasStation.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                                 {
-                                    levelmeasurementResults.CountStationMeasurements++;
-                                }
-                                return true;
-                            });
+                                    while (readerResMeasStation.Read())
+                                    {
+                                        levelmeasurementResults.CountUnknownStationMeasurements++;
+                                    }
+                                    return true;
+                                });
+
+
+
+                                builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                                builderResMeasStation.Select(c => c.Id);
+                                builderResMeasStation.Select(c => c.Status);
+                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                                builderResMeasStation.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                                {
+                                    while (readerResMeasStation.Read())
+                                    {
+                                        levelmeasurementResults.CountStationMeasurements++;
+                                    }
+                                    return true;
+                                });
+                            }
 
                         }
                         return true;
@@ -814,37 +822,41 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
 
                         if ((results.Find(x => x.Id.MeasSdrResultsId == levelmeasurementResults.Id.MeasSdrResultsId)) == null)
                         {
@@ -1776,60 +1788,65 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.LocationSensorMeasurement = listLocationSensorMeasurement.ToArray();
 
 
+
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
-                        var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
-                        builderLinkResSensoT.Select(c => c.Id);
-                        builderLinkResSensoT.Select(c => c.SensorId);
-                        builderLinkResSensoT.Select(c => c.SENSOR.Name);
-                        builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                        builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderLinkResSensoT.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
-                        {
-                            while (readerLinkResSensor.Read())
-                            {
-                                if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
+                                while (readerResMeasStation.Read())
                                 {
-                                    levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
-                                    levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
-                                    break;
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
                                 }
-                            }
-                            return true;
-                        });
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+                            var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
+                            builderLinkResSensoT.Select(c => c.Id);
+                            builderLinkResSensoT.Select(c => c.SensorId);
+                            builderLinkResSensoT.Select(c => c.SENSOR.Name);
+                            builderLinkResSensoT.Select(c => c.SENSOR.TechId);
+                            builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderLinkResSensoT.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
+                            {
+                                while (readerLinkResSensor.Read())
+                                {
+                                    if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
+                                    {
+                                        levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
+                                        levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
+                                        break;
+                                    }
+                                }
+                                return true;
+                            });
+                        }
 
 
                         Emitting[] emittings = null;
@@ -2645,39 +2662,44 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
                         levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
                         levelmeasurementResults.CurrentLat = readerResMeas.GetValue(c => c.Lat);
+
+
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
 
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
                     return true;
@@ -2772,38 +2794,42 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.CurrentLat = readerResMeas.GetValue(c => c.Lat);
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
 
+                        if (outResType == MeasurementType.MonitoringStations)
+                        {
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
                     return true;
@@ -2899,37 +2925,40 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+                           
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
                     return true;
