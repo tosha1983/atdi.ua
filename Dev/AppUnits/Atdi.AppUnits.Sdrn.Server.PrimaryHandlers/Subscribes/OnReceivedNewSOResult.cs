@@ -1795,6 +1795,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 validationSpectrumResult = false;
 
                             #endregion
+                            if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
+                            {
+                                spectrum.СorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
+                            }
+
 
                             if (readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).HasValue && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value >= 0.009 && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value <= 400000)
                                 spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
