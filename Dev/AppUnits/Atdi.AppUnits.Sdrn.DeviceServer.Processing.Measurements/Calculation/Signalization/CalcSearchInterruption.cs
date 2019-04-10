@@ -109,8 +109,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (measSdrBandwidthResults.СorrectnessEstimations.Value)
                     {
                         // значит спектр хороший можно брать его параметры
-                        if (measSdrBandwidthResults.T1 != null) { start = start + measSdrBandwidthResults.T1.Value; emitting.Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
-                        if (measSdrBandwidthResults.T2 != null) { stop = start + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
+                        if (measSdrBandwidthResults.T1 != null) { start = start_ + measSdrBandwidthResults.T1.Value; emitting.Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
+                        if (measSdrBandwidthResults.T2 != null) { stop = start_ + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
                         if (measSdrBandwidthResults.MarkerIndex != null) { emitting.Spectrum.MarkerIndex = measSdrBandwidthResults.MarkerIndex.Value; }
                         emitting.Spectrum.Bandwidth_kHz = (stop - start) * stepBW_kHz;
                         emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz *start_/ 1000;
