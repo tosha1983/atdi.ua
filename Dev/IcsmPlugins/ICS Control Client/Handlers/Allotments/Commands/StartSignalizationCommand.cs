@@ -28,6 +28,7 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
             try
             {
                 var measTaskForm = new FM.MeasTaskForm();
+                measTaskForm.AllotId = allotmentId;
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
                 return true;

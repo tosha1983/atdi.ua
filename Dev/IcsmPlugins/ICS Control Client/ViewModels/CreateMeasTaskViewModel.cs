@@ -48,6 +48,8 @@ namespace XICSM.ICSControlClient.ViewModels
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
         #region Current Objects
+        private int? _allotId;
+        private SDR.MeasurementType _measType = SDR.MeasurementType.Signaling;
         private MeasTaskViewModel _currentMeasTask;
         private IList _currentShortSensor;
         private MP.MapDrawingData _currentMapData;
@@ -62,11 +64,12 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand CreateMeasTaskCommand { get; set; }
         #endregion
 
-        public CreateMeasTaskViewModel()
+        public CreateMeasTaskViewModel(int? allotId)
         {
             this.CreateMeasTaskCommand = new WpfCommand(this.OnCreateMeasTaskCommand);
             this._shortSensors = new ShortSensorDataAdatper();
             this._currentMeasTask = new MeasTaskViewModel();
+            this._allotId = allotId;
             this.SetDefaultVaues();
             this.ReloadShortSensors();
         }
@@ -105,16 +108,82 @@ namespace XICSM.ICSControlClient.ViewModels
         #endregion
         private void SetDefaultVaues()
         {
+            if (_measType == SDR.MeasurementType.Signaling && _allotId.HasValue)
+            {
+                int planId = IM.NullI;
+                IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadOnly);
+                rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
+                rsAllot.Select("ID,CUST_TXT1,CUST_DAT1,CUST_DAT2,PLAN_ID,Plan.BANDWIDTH");
+                for (rsAllot.Open(); !rsAllot.IsEOF(); rsAllot.MoveNext())
+                {
+                    this._currentMeasTask.Name = rsAllot.GetS("CUST_TXT1");
+                    if (rsAllot.GetT("CUST_DAT1") != IM.NullT)
+                        this._currentMeasTask.MeasTimeParamListPerStart = rsAllot.GetT("CUST_DAT1");
+                    else
+                        this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
+
+                    if (rsAllot.GetT("CUST_DAT2") != IM.NullT)
+                        this._currentMeasTask.MeasTimeParamListPerStop = rsAllot.GetT("CUST_DAT2");
+                    else
+                        this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
+
+                    if (rsAllot.GetD("Plan.BANDWIDTH") != IM.NullD)
+                        this._currentMeasTask.MeasFreqParamStep = rsAllot.GetD("Plan.BANDWIDTH");
+                    else
+                        this._currentMeasTask.MeasFreqParamStep = 100;
+                    planId = rsAllot.GetI("PLAN_ID");
+                }
+
+                if (planId != IM.NullI)
+                {
+                    double? minFq = null;
+                    double? maxFq = null;
+
+                    IMRecordset rs = new IMRecordset("FREQ_PLAN_CHAN", IMRecordset.Mode.ReadOnly);
+                    rs.SetWhere("PLAN_ID", IMRecordset.Operation.Eq, planId);
+                    rs.Select("PLAN_ID,FREQ");
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        if (rs.GetD("FREQ") != IM.NullD)
+                        {
+                            if (!minFq.HasValue || minFq.Value > rs.GetD("FREQ"))
+                                minFq = rs.GetD("FREQ");
+                            if (!maxFq.HasValue || maxFq.Value < rs.GetD("FREQ"))
+                                maxFq = rs.GetD("FREQ");
+                        }
+                    }
+                    if (minFq.HasValue)
+                        this._currentMeasTask.MeasFreqParamRgL = minFq.Value;
+                    else
+                        this._currentMeasTask.MeasFreqParamRgL = 900;
+
+                    if (maxFq.HasValue)
+                        this._currentMeasTask.MeasFreqParamRgU = maxFq.Value;
+                    else
+                        this._currentMeasTask.MeasFreqParamRgU = 1000;
+                }
+                else
+                {
+                    this._currentMeasTask.MeasFreqParamRgL = 900;
+                    this._currentMeasTask.MeasFreqParamRgU = 1000;
+                    this._currentMeasTask.MeasFreqParamStep = 100;
+                }
+                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
+            }
+            else
+            {
+                this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
+                this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
+                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
+                this._currentMeasTask.MeasFreqParamRgL = 900;
+                this._currentMeasTask.MeasFreqParamRgU = 1000;
+                this._currentMeasTask.MeasFreqParamStep = 100;
+            }
+
             this._currentMeasTask.MeasDtParamTypeMeasurements = SDR.MeasurementType.Signaling;
-            this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
-            this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
             this._currentMeasTask.MeasTimeParamListTimeStart = DateTime.Today;
             this._currentMeasTask.MeasTimeParamListTimeStop = DateTime.Today.AddDays(1).AddMinutes(-1);
             this._currentMeasTask.MeasTimeParamListPerInterval = 600;
-            this._currentMeasTask.MeasFreqParamRgL = 900;
-            this._currentMeasTask.MeasFreqParamRgU = 1000;
-            this._currentMeasTask.MeasFreqParamStep = 100;
-            this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
             this._currentMeasTask.MeasDtParamRBW = 100;
             this._currentMeasTask.MeasDtParamVBW = 100;
             this._currentMeasTask.MeasDtParamMeasTime = 0.001;
