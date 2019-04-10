@@ -13,6 +13,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int Id { get; set; }
         double? StartFrequency_Hz { get; set; }
         double? StepFrequency_Hz { get; set; }
+        byte[] ReferenceLevels { get; set; }
         int? ResMeasId { get; set; }
         IResMeasRaw RESMEASRAW { get; set; }
     }

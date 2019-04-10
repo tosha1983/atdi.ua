@@ -187,21 +187,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     var eventCommand = new EventCommand<SOTask, SpectrumOccupationProcess>(this._logger,  this._repositoryTaskParametersByInt,  this._config);
                                     var listDeferredTasksTemp = new List<TaskParameters>();
                                     var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSOTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
-                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                    if (listDeferredTasksTemp.Count > 0)
+                                    {
+                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                        {
+                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                        }
+                                    }
                                 }
                                 else if (tskParam.MeasurementType == MeasType.Signaling)
                                 {
                                     var eventCommand = new EventCommand<SignalizationTask, SignalizationProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
                                     var listDeferredTasksTemp = new List<TaskParameters>();
                                     var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSignalizationTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
-                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                    if (listDeferredTasksTemp.Count > 0)
+                                    {
+                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                        {
+                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                        }
+                                    }
                                 }
                                 else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
                                 {
                                     var eventCommand = new EventCommand<BandWidthTask, BandWidthProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
                                     var listDeferredTasksTemp = new List<TaskParameters>();
                                     var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextBandWidthTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
-                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                    if (listDeferredTasksTemp.Count > 0)
+                                    {
+                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                        {
+                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                        }
+                                    }
                                 }
                                 else
                                 {
