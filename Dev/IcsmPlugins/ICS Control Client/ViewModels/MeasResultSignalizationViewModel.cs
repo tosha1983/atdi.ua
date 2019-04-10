@@ -267,7 +267,7 @@ namespace XICSM.ICSControlClient.ViewModels
             option.YMin = preparedDataY.MinValue;
             option.YMax = preparedDataY.MaxValue;
 
-            var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 50);
+            var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 20);
             option.XTick = preparedDataX.Step;
             option.XMin = preparedDataX.MinValue;
             option.XMax = preparedDataX.MaxValue;

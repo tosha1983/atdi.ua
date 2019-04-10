@@ -82,6 +82,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static Emitting[] CreateEmittings(float[] levels, float[] refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm)
         { // задача локализовать излучения
             // константы начало
+            List<Emitting> emittings = new List<Emitting>();
+
             double DiffLevelForCalcBW = 25;
             double windowBW = 1.5;
             double nDbLevel_dB = 15;
@@ -89,7 +91,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double MinExcessNoseLevel_dB = 5;
             // константы конец
 
-            List<Emitting> emittings = new List<Emitting>();
             for (int i = 0; i < index_start_stop.Count; i = i + 2)
             {
                 // для каждого излучения вычислим BW 
@@ -109,11 +110,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (measSdrBandwidthResults.СorrectnessEstimations.Value)
                     {
                         // значит спектр хороший можно брать его параметры
-                        if (measSdrBandwidthResults.T1 != null) { start = start + measSdrBandwidthResults.T1.Value; emitting.Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
-                        if (measSdrBandwidthResults.T2 != null) { stop = start + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
+                        if (measSdrBandwidthResults.T1 != null) { start = start_ + measSdrBandwidthResults.T1.Value; emitting.Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
+                        if (measSdrBandwidthResults.T2 != null) { stop = start_ + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
                         if (measSdrBandwidthResults.MarkerIndex != null) { emitting.Spectrum.MarkerIndex = measSdrBandwidthResults.MarkerIndex.Value; }
                         emitting.Spectrum.Bandwidth_kHz = (stop - start) * stepBW_kHz;
-                        emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz *start_/ 1000;
+                        emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start_ / 1000;
                         emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                         emitting.Spectrum.Levels_dBm = templevel;
                         emitting.StartFrequency_MHz = startFreq_MHz + stepBW_kHz * start / 1000.0;
@@ -129,14 +130,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             // необходимо найти корректное значение полосы частот
                             double tempBW = StandartBW.GetStandartBW_kHz((stoptreal - startreal) * stepBW_kHz);
-                            double CentralFreq = startFreq_MHz + stepBW_kHz * (startreal + stoptreal) / 2;
-                            emitting.StartFrequency_MHz = CentralFreq - tempBW / 2;
-                            emitting.StopFrequency_MHz = CentralFreq + tempBW / 2;
-                            start = (int)Math.Floor(emitting.StartFrequency_MHz - startFreq_MHz / stepBW_kHz);
+                            double CentralFreq = startFreq_MHz + stepBW_kHz * (startreal + stoptreal) / 2000;
+
+                            emitting.StartFrequency_MHz = CentralFreq - tempBW / 2000;
+                            emitting.StopFrequency_MHz = CentralFreq + tempBW / 2000;
+                            start = (int)Math.Floor((emitting.StartFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
                             if (start < 0) { start = 0; }
-                            stop = (int)Math.Ceiling(emitting.StopFrequency_MHz - startFreq_MHz / stepBW_kHz);
-                            if (stop >= levels.Length) { stop = levels.Length-1; }
+                            stop = (int)Math.Ceiling((emitting.StopFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
+                            if (stop >= levels.Length) { stop = levels.Length - 1; }
+                            
                             emitting.Spectrum.Levels_dBm = new float[stop - start];
+
                             Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
                             emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start / 1000;
                             emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
@@ -183,13 +187,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.WorkTimes[0].HitCount = 1;
                 emittings.Add(emitting);
             }
-            // наверно нужно пройтись и обеденить излучения если они пересекаются более чем на допустиный процент
             return emittings.ToArray();
         }
+
+    
         private static bool CalcBW(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, int NumberIgnoredPoints, ref int IndexStart, ref int IndexStop)
         {
-            IndexStart = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, true, NumberIgnoredPoints);
-            IndexStop = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
+            IndexStart = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
+            IndexStop = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, true, NumberIgnoredPoints);
             if ((IndexStart == -1)||(IndexStop == -1)){ return false;}
             return true;
         }

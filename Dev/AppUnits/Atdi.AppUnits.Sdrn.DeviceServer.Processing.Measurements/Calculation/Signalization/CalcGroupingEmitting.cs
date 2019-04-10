@@ -327,7 +327,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // найдем и удалим пересечения 
                     for (int i = 0; WorkTimes.Count - 1 > i; i++)
                     {
-                        TimeSpan timeSpan = WorkTimes[i].StopEmitting - WorkTimes[i].StartEmitting;
+                        TimeSpan timeSpan = WorkTimes[i+1].StartEmitting - WorkTimes[i].StopEmitting;
                         if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
                         {// производим обединение и удаление лишнего
                             WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;

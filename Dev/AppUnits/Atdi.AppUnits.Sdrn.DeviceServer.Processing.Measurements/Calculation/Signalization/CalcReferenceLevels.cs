@@ -44,7 +44,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         double freqStopSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz/ 2000);
                         if (((freqStart < freqStopSignal) && (freqStop > freqStartSignal)))
                         { // попали определяем долю сигнала в данном таймштампе в ватах
-                            double interseption = (Math.Min(freqStop, freqStopSignal) - Math.Max(freqStart, freqStartSignal)) / (freqStop - freqStart);
+                            double interseption = (Math.Min(freqStop, freqStopSignal) - Math.Max(freqStart, freqStartSignal)) / (freqStopSignal - freqStartSignal);
                             levelFromSignal_mW = levelFromSignal_mW + interseption * Math.Pow(10, referenceSituation.ReferenceSignal[j].LevelSignal_dBm / 10);
                         }
                     }
