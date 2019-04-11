@@ -1,5 +1,4 @@
-﻿
-using Atdi.Contracts.Api.EventSystem;
+﻿using Atdi.Contracts.Api.EventSystem;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
@@ -10,6 +9,8 @@ using System;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using MDE = Atdi.Modules.Sdrn.Server.Events;
+using Atdi.Common;
+using System.Collections.Generic;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 {
@@ -99,42 +100,31 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     {
                         if (resObject.RefLevels != null)
                         {
-                            int valInsReferenceLevelsRaw = 0;
-                            var refLevels = resObject.RefLevels;
-                            var builderInsertReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>().Insert();
-                            builderInsertReferenceLevelsRaw.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
-                            builderInsertReferenceLevelsRaw.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
-                            builderInsertReferenceLevelsRaw.SetValue(c => c.ResMeasId, valInsResMeas);
-                            builderInsertReferenceLevelsRaw.Select(c => c.Id);
-                            queryExecuter
-                            .ExecuteAndFetch(builderInsertReferenceLevelsRaw, readerReferenceLevelsRaw =>
+                            // пишем RefLevels только для первого результата
+                            if (resultId == 1)
                             {
-                                var res = readerReferenceLevelsRaw.Read();
-                                if (res)
+                                int valInsReferenceLevelsRaw = 0;
+                                var refLevels = resObject.RefLevels;
+                                var builderInsertReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>().Insert();
+                                builderInsertReferenceLevelsRaw.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
+                                builderInsertReferenceLevelsRaw.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
+                                builderInsertReferenceLevelsRaw.SetValue(c => c.ResMeasId, valInsResMeas);
+                                if (refLevels.levels != null)
                                 {
-                                    valInsReferenceLevelsRaw = readerReferenceLevelsRaw.GetValue(c => c.Id);
-                                    if (valInsReferenceLevelsRaw > 0)
-                                    {
-                                        var lstInslevels = new IQueryInsertStatement<MD.IDetailReferenceLevelsRaw>[refLevels.levels.Length];
-                                        for (int l = 0; l < refLevels.levels.Length; l++)
-                                        {
-                                            var lvl = refLevels.levels[l];
-
-                                            var builderInsertDetailReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IDetailReferenceLevelsRaw>().Insert();
-                                            builderInsertDetailReferenceLevelsRaw.SetValue(c => c.level, lvl);
-                                            builderInsertDetailReferenceLevelsRaw.SetValue(c => c.ReferenceLevelId, valInsReferenceLevelsRaw);
-                                            builderInsertDetailReferenceLevelsRaw.Select(c => c.Id);
-                                            lstInslevels[l] = builderInsertDetailReferenceLevelsRaw;
-                                        }
-                                        queryExecuter.ExecuteAndFetch(lstInslevels, readerDetailReferenceLevelsRaw =>
-                                        {
-                                            return true;
-                                        });
-                                    }
-
+                                    builderInsertReferenceLevelsRaw.SetValue(c => c.ReferenceLevels, BinaryDecoder.ObjectToByteArray(refLevels.levels));
                                 }
-                                return true;
-                            });
+                                builderInsertReferenceLevelsRaw.Select(c => c.Id);
+                                queryExecuter
+                                .ExecuteAndFetch(builderInsertReferenceLevelsRaw, readerReferenceLevelsRaw =>
+                                {
+                                    var res = readerReferenceLevelsRaw.Read();
+                                    if (res)
+                                    {
+                                        valInsReferenceLevelsRaw = readerReferenceLevelsRaw.GetValue(c => c.Id);
+                                    }
+                                    return true;
+                                });
+                            }
                         }
 
                         if (resObject.Emittings != null)
@@ -156,6 +146,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 builderInsertEmittingRaw.SetValue(c => c.StartFrequency_MHz, emittings[l].StartFrequency_MHz);
                                 builderInsertEmittingRaw.SetValue(c => c.StopFrequency_MHz, emittings[l].StopFrequency_MHz);
                                 builderInsertEmittingRaw.SetValue(c => c.TriggerDeviationFromReference, emittings[l].TriggerDeviationFromReference);
+
+
+                                var levelsDistribution = emittings[l].LevelsDistribution;
+                                if (levelsDistribution != null)
+                                {
+                                    var outListStrings = new List<string>();
+                                    for (int p=0; p< levelsDistribution.Levels.Length; p++)
+                                    {
+                                        outListStrings.Add(string.Format("{0} {1}", levelsDistribution.Levels[p], levelsDistribution.Count[p]));
+                                    }
+                                    var outString = string.Join(";", outListStrings);
+                                    builderInsertEmittingRaw.SetValue(c => c.LevelsDistribution, BinaryDecoder.ObjectToByteArray(outString));
+                                }
+
                                 builderInsertEmittingRaw.Select(c => c.Id);
                                 queryExecuter
                                 .ExecuteAndFetch(builderInsertEmittingRaw, readerEmittingRaw =>
@@ -194,7 +198,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                                 var builderInsertISpectrumRaw = this._dataLayer.GetBuilder<MD.ISpectrumRaw>().Insert();
                                                 builderInsertISpectrumRaw.SetValue(c => c.EmittingId, valInsReferenceEmittingRaw);
-                                                builderInsertISpectrumRaw.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations);
+                                                builderInsertISpectrumRaw.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations == true ? 1: 0);
                                                 builderInsertISpectrumRaw.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
                                                 builderInsertISpectrumRaw.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
                                                 builderInsertISpectrumRaw.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
@@ -203,6 +207,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 builderInsertISpectrumRaw.SetValue(c => c.T1, spectrum.T1);
                                                 builderInsertISpectrumRaw.SetValue(c => c.T2, spectrum.T2);
                                                 builderInsertISpectrumRaw.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                                if (spectrum.Levels_dBm != null)
+                                                {
+                                                    builderInsertISpectrumRaw.SetValue(c => c.LevelsdBm, BinaryDecoder.ObjectToByteArray(spectrum.Levels_dBm));
+                                                }
                                                 builderInsertISpectrumRaw.Select(c => c.Id);
                                                 queryExecuter
                                                 .ExecuteAndFetch(builderInsertISpectrumRaw, readerISpectrumRaw =>
@@ -211,24 +219,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                     if (resSpectrumRaw)
                                                     {
                                                         valInsSpectrumRaw = readerISpectrumRaw.GetValue(c => c.Id);
-                                                        if (valInsSpectrumRaw > 0)
-                                                        {
-                                                            var lstInsLevels_dBm = new IQueryInsertStatement<MD.IDetailSpectrumLevelsRaw>[spectrum.Levels_dBm.Length];
-                                                            for (int k = 0; k < spectrum.Levels_dBm.Length; k++)
-                                                            {
-                                                                var level_dBm = spectrum.Levels_dBm[k];
-
-                                                                var builderInsertIDetailReferenceLevelsRaw = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevelsRaw>().Insert();
-                                                                builderInsertIDetailReferenceLevelsRaw.SetValue(c => c.level, level_dBm);
-                                                                builderInsertIDetailReferenceLevelsRaw.SetValue(c => c.SpectrumId, valInsSpectrumRaw);
-                                                                builderInsertIDetailReferenceLevelsRaw.Select(c => c.Id);
-                                                                lstInsLevels_dBm[k] = builderInsertIDetailReferenceLevelsRaw;
-                                                            }
-                                                            queryExecuter.ExecuteAndFetch(lstInsLevels_dBm, readerDetailSpectrumLevelsRaw =>
-                                                            {
-                                                                return true;
-                                                            });
-                                                        }
                                                     }
                                                     return true;
                                                 });
@@ -256,6 +246,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                 });
                                             }
 
+                                            /*
                                             var levelsDistribution = emittings[l].LevelsDistribution;
                                             if (levelsDistribution!=null)
                                             {
@@ -276,6 +267,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                     return true;
                                                 });
                                             }
+                                            */
                                         }
                                     }
                                     return true;
@@ -796,7 +788,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
             }
         }
-
     }
 }
 

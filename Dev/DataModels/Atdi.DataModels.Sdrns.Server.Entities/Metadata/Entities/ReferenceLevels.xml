@@ -13,6 +13,7 @@
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
     <Field Desc="StartFrequency_Hz" Title="StartFrequency_Hz" Name="StartFrequency_Hz" DataType="Decimal.22.8" SourceName="STARTFREQ_HZ" SourceType="Column" Required="false"/>
     <Field Desc="StepFrequency_Hz" Title="StepFrequency_Hz" Name="StepFrequency_Hz" DataType="Decimal.22.8" SourceName="STEPFREQ_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="ReferenceLevels" Title="ReferenceLevels" Name="ReferenceLevels" DataType="Bytes.MAX" SourceName="REFLEVELS" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ReferenceLevels to ResMeas">
       <PrimaryKeyMapping>

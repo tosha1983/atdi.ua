@@ -17,10 +17,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? T2 { get; set; }
         int? MarkerIndex { get; set; }
         double? Bandwidth_kHz { get; set; }
-        bool? CorrectnessEstimations { get; set; }
+        int? CorrectnessEstimations { get; set; }
         int? TraceCount { get; set; }
         double? SignalLevel_dBm { get; set; }
         int? EmittingId { get; set; }
+        byte[] LevelsdBm { get; set; }
         IEmittingRaw EMITTING { get; set; }
     }
 }
