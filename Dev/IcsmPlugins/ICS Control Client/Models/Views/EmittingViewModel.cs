@@ -48,5 +48,6 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public WorkTime[] WorkTimes { get; set; }
         public Spectrum Spectrum { get; set; }
+        public LevelsDistribution LevelsDistribution { get; set; }
     }
 }

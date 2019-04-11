@@ -287,7 +287,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 RollOffFactor = source.EmittingParameters.RollOffFactor,
                 StandardBW = source.EmittingParameters.StandardBW,
                 WorkTimes = source.WorkTimes,
-                Spectrum = source.Spectrum
+                Spectrum = source.Spectrum,
+                LevelsDistribution = source.LevelsDistribution
             };
         }
         public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)

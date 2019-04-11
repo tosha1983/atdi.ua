@@ -366,7 +366,7 @@
                   </Grid>
                 </ScrollViewer>
                 <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
-                <Button Grid.Column="0" Grid.Row="2" Content="Start" Command="{Binding CreateMeasTaskCommand}"/>
+                <Button Grid.Column="0" Grid.Row="2" Content="Start" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40"/>
               </Grid>
             </GroupBox>
 

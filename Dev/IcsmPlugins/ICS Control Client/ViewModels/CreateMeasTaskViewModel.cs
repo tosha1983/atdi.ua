@@ -337,54 +337,64 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
                             {
-                                parser.TextFieldType = FieldType.Delimited;
-                                parser.SetDelimiters(";");
-                                int i = 0;
-                                while (!parser.EndOfData)
+                                try
                                 {
-                                    i++;
-                                    var record = parser.ReadFields();
-
-                                    if (i >= 4)
+                                    parser.TextFieldType = FieldType.Delimited;
+                                    parser.SetDelimiters(";");
+                                    int i = 0;
+                                    while (!parser.EndOfData)
                                     {
-                                        SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
+                                        i++;
+                                        var record = parser.ReadFields();
 
-                                        if (record[9].TryToDouble().HasValue)
+                                        if (i >= 4)
                                         {
-                                            refSig.Frequency_MHz = record[9].TryToDouble().Value;
+                                            SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
 
-                                            IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
-                                            rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
-                                            rs2.Select("ID,Station.BW");
-                                            for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+                                            if (record[9].TryToDouble().HasValue)
                                             {
-                                                var bw = rs2.GetD("Station.BW");
-                                                if (bw != 0 && bw != IM.NullD)
-                                                    refSig.LevelSignal_dBm = bw;
-                                            }
+                                                refSig.Frequency_MHz = record[9].TryToDouble().Value;
 
-                                            if (refSig.LevelSignal_dBm == 0)
-                                            {
-                                                IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
-                                                rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
-                                                rs.Select("ID,Station.BW");
-                                                for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                                                rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                rs2.Select("ID,Station.BW");
+                                                for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                                                 {
-                                                    var bw = rs.GetD("Station.BW");
+                                                    var bw = rs2.GetD("Station.BW");
                                                     if (bw != 0 && bw != IM.NullD)
                                                         refSig.LevelSignal_dBm = bw;
                                                 }
+
+                                                if (refSig.LevelSignal_dBm == 0)
+                                                {
+                                                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                                                    rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                    rs.Select("ID,Station.BW");
+                                                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                    {
+                                                        var bw = rs.GetD("Station.BW");
+                                                        if (bw != 0 && bw != IM.NullD)
+                                                            refSig.LevelSignal_dBm = bw;
+                                                    }
+                                                }
                                             }
+
+
+                                            if (record[4].TryToDouble().HasValue)
+                                                refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
+
+                                            refSig.LevelSignal_dBm = 0;
+                                            listRefSig.Add(refSig);
                                         }
-
-
-                                        if (record[4].TryToDouble().HasValue)
-                                            refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
-
-                                        refSig.LevelSignal_dBm = 0;
-                                        listRefSig.Add(refSig);
                                     }
                                 }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("Incorrect format file: " + openFile.FileName + "!");
+                                    return;
+                                }
+
+
                             }
                             refSit.ReferenceSignal = listRefSig.ToArray();
                             refSit.SensorId = shortSensor.Id;

@@ -54,6 +54,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private IList _currentEmittings;
         private EmittingViewModel _currentEmitting;
         private CS.ChartOption _currentChartOption;
+        private CS.ChartOption _currentChartLevelsDistrbutionOption;
         private double[] _selectedRangeX;
         private Stack<double[]> _zoomHistory = new Stack<double[]>();
         #endregion
@@ -75,12 +76,19 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
             this.ReloadMeasResult();
             this.UpdateCurrentChartOption(null, null);
+            this.UpdateCurrentChartLevelsDistrbutionOption();
         }
         public CS.ChartOption CurrentChartOption
         {
             get => this._currentChartOption;
             set => this.Set(ref this._currentChartOption, value);
         }
+        public CS.ChartOption CurrentChartLevelsDistrbutionOption
+        {
+            get => this._currentChartLevelsDistrbutionOption;
+            set => this.Set(ref this._currentChartLevelsDistrbutionOption, value);
+        }
+        
         public IList CurrentEmittings
         {
             get => this._currentEmittings;
@@ -96,7 +104,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public EmittingViewModel CurrentEmitting
         {
             get => this._currentEmitting;
-            set => this.Set(ref this._currentEmitting, value, () => { ReloadEmittingWorkTime(); });
+            set => this.Set(ref this._currentEmitting, value, () => { ReloadEmittingWorkTime(); UpdateCurrentChartLevelsDistrbutionOption(); });
         }
         public double[] SelectedRangeX
         {
@@ -120,6 +128,10 @@ namespace XICSM.ICSControlClient.ViewModels
         private void UpdateCurrentChartOption(double? startFreq, double? stopFreq)
         {
             this.CurrentChartOption = this.GetChartOption(startFreq, stopFreq);
+        }
+        private void UpdateCurrentChartLevelsDistrbutionOption()
+        {
+            this.CurrentChartLevelsDistrbutionOption = this.GetChartLevelsDistrbutionOption();
         }
         private void ReloadEmittingWorkTime()
         {
@@ -225,7 +237,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 foreach (EmittingViewModel emitting in this._currentEmittings)
                 {
-                    var count = emitting.Spectrum.Levels_dBm.Count(); // _currentMeasResult.Emittings.Length;
+                    var count = emitting.Spectrum.Levels_dBm.Count();
                     var points = new List<Point>();
 
                     for (int i = 0; i < count; i++)
@@ -273,6 +285,77 @@ namespace XICSM.ICSControlClient.ViewModels
             option.XMax = preparedDataX.MaxValue;
 
             option.PointsArray = pointsList.ToArray();
+
+            return option;
+        }
+        private CS.ChartOption GetChartLevelsDistrbutionOption()
+        {
+            var option = new CS.ChartOption
+            {
+                Title = "Levels Distribution",
+                YLabel = "Count",
+                XLabel = "Levels",
+                ChartType = CS.ChartType.Columns,
+                XInnerTickCount = 10,
+                YInnerTickCount = 10,
+                YMin = 0,
+                YMax = 100,
+                XMin = 900,
+                XMax = 960,
+                YTick = 10,
+                XTick = 10
+            };
+
+
+            if (this._currentEmitting != null)
+            {
+                var count = this._currentEmitting.LevelsDistribution.Levels.Count();
+                var points = new Point[count];
+                var maxX = default(double);
+                var minX = default(double);
+                var maxY = default(double);
+                var minY = default(double);
+
+                for (int i = 0; i < count; i++)
+                {
+                    var valX = this._currentEmitting.LevelsDistribution.Levels[i];
+                    var valY = this._currentEmitting.LevelsDistribution.Count[i];
+                    var point = new Point
+                    {
+                        X = valX,
+                        Y = valY
+                    };
+                    if (i == 0)
+                    {
+                        maxX = valX;
+                        minX = valX;
+                        maxY = valY;
+                        minY = valY;
+
+                    }
+                    else
+                    {
+                        if (maxX < valX)
+                            maxX = valX;
+                        if (minX > valX)
+                            minX = valX;
+                        if (maxY < valY)
+                            maxY = valY;
+                        if (minY > valY)
+                            minY = valY;
+                    }
+                    points[i] = point;
+                }
+
+                var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 6);
+                option.XTick = preparedDataX.Step;
+                option.XMin = preparedDataX.MinValue;
+                option.XMax = preparedDataX.MaxValue;
+                option.YMin = minY;
+                option.YMax = maxY + 2;
+                option.YTick = Math.Round(maxY / 5, 0);
+                option.Points = points;
+            }
 
             return option;
         }
