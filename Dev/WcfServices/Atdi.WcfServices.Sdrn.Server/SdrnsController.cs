@@ -73,6 +73,12 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadResults.GetMeasurementResultByResId(ResId, StartFrequency_Hz, StopFrequency_Hz);
         }
 
+        public ReferenceLevels GetReferenceLevelsByResultId(int resId, double? StartFrequency_Hz, double? StopFrequency_Hz)
+        {
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetReferenceLevelsByResultId(resId, StartFrequency_Hz, StopFrequency_Hz);
+        }
+
         public ResultsMeasurementsStation[] GetResMeasStation(int ResId, int StationId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);

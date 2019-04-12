@@ -36,7 +36,6 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listEmitings = new List<KeyValuePair<int, Emitting>>();
             var listWorkTimes = new List<KeyValuePair<int, WorkTime>>();
             var listSignalMask = new List<KeyValuePair<int, SignalMask>>();
-            //var listLevelsDistribution = new List<KeyValuePair<int, LevelsDistribution>>();
             var listSpectrum = new List<KeyValuePair<int, Spectrum>>();
             referenceLevels = new ReferenceLevels();
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
@@ -175,35 +174,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                     return true;
                 });
 
-
-                /*
-                var queryLevelDist = this._dataLayer.GetBuilder<MD.ILevelsDistribution>()
-                .From()
-                .Select(c => c.Id, c => c.level, c => c.count, c => c.EMITTING.Id)
-                .Where(c => c.EMITTING.Id, ConditionOperator.In, listIdsEmittings.ToArray());
-                queryExecuter.Fetch(queryLevelDist, readerLevelDist =>
-                {
-                    while (readerLevelDist.Read())
-                    {
-                        listLevel = new List<int>();
-                        listCount = new List<int>();
-
-                        listLevel.Add(readerLevelDist.GetValue(c => c.level).Value);
-                        listCount.Add(readerLevelDist.GetValue(c => c.count).Value);
-
-                        var levelDist = new LevelsDistribution();
-                        if (listLevel.Count > 0)
-                            levelDist.Levels = listLevel.ToArray();
-                        if (listCount.Count > 0)
-                            levelDist.Count = listCount.ToArray();
-
-                        listLevelsDistribution.Add(new KeyValuePair<int, LevelsDistribution>(readerLevelDist.GetValue(c => c.EMITTING.Id), levelDist));
-                    }
-                    return true;
-                });
-                */
-
-
                 var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                 .From()
                 .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id)
@@ -333,30 +303,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         listSignalMask.RemoveAll(c => c.Key == id);
 
 
-                        /*
-                        var fndLevelsDistribution = listLevelsDistribution.FindAll(c => c.Key == id);
-                        if (fndLevelsDistribution != null)
-                        {
-                            var arrayFndLevelsDistribution = fndLevelsDistribution.ToArray();
-                            var levelDist = new LevelsDistribution();
-                            listLevel = new List<int>();
-                            listCount = new List<int>();
-                            for (int t = 0; t < arrayFndLevelsDistribution.Length; t++)
-                            {
-                                var x = arrayFndLevelsDistribution[t];
-                                listLevel.AddRange(x.Value.Levels);
-                                listCount.AddRange(x.Value.Count);
-                            }
-                            if (listCount.Count > 0)
-                            {
-                                levelDist.Count = listCount.ToArray();
-                                levelDist.Levels = listLevel.ToArray();
-                            }
-                            emitting.LevelsDistribution = levelDist;
-                        }
-                        listLevelsDistribution.RemoveAll(c => c.Key == id);
-                        */
-
                         var fndSpectrum = listSpectrum.FindAll(c => c.Key == id);
                         if (fndSpectrum != null)
                         {
@@ -453,16 +399,81 @@ namespace Atdi.WcfServices.Sdrn.Server
                     return true;
                 });
             }
-
-            if ((StartFrequency_Hz != null) && (StopFrequency_Hz != null))
-            {
-                referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz.Value, StopFrequency_Hz.Value);
-            }
-            else
-            {
-                referenceLevels = level;
-            }
+            referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
         }
+
+        public ReferenceLevels GetReferenceLevelsByResultId(int resId, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var level = new ReferenceLevels();
+            var taskId = "";
+            int? subMeasTaskId = null;
+            int? subMeasTaskStaId = null;
+            int? sensorId = null;
+
+            var queryMeasTaskId = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+          .From()
+          .Select(c => c.Id, c => c.RESMEAS.MeasTaskId, c => c.RESMEAS.MeasSubTaskId, c => c.RESMEAS.MeasSubTaskStationId, c => c.RESMEAS.SensorId)
+          .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+            queryExecuter.Fetch(queryMeasTaskId, readerReferenceLevels =>
+            {
+                if (readerReferenceLevels.Read())
+                {
+                    taskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasTaskId);
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).HasValue)
+                    {
+                        subMeasTaskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                    }
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).HasValue)
+                    {
+                        subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                    }
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).HasValue)
+                    {
+                        sensorId = readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).Value;
+                    }
+                }
+                return true;
+            });
+            if (!string.IsNullOrEmpty(taskId) && (subMeasTaskId != null) && (subMeasTaskStaId != null) && (sensorId != null))
+            {
+                var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+               .From()
+               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.ReferenceLevels)
+               .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
+               .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
+               .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
+               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+                queryExecuter.Fetch(queryLevels, readerLevels =>
+                {
+                    while (readerLevels.Read())
+                    {
+                        if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue)
+                        {
+                            level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                        }
+
+                        if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue)
+                        {
+                            level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                        }
+
+                        if (readerLevels.GetValue(c => c.ReferenceLevels) != null)
+                        {
+                            var refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
+                            if (refLevels != null)
+                            {
+                                level.levels = refLevels as float[];
+                            }
+                        }
+                    }
+                    return true;
+                });
+            }
+            return ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+        }
+
 
         /// <summary>
         /// 

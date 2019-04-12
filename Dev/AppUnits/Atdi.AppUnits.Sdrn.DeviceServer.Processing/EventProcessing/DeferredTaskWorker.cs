@@ -103,6 +103,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
                                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));
+                                    if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                    {
+                                        context.Process.listDeferredTasks.Remove(taskParameters);
+                                    }
                                 }
                                 else if (taskParameters.MeasurementType == MeasType.BandwidthMeas)
                                 {
@@ -118,6 +122,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
                                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(bandWidtTask.Id));
+                                    if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                    {
+                                        context.Process.listDeferredTasks.Remove(taskParameters);
+                                    }
                                 }
                                 else
                                 {

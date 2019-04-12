@@ -293,5 +293,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
         ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resId"></param>
+        /// <param name="StartFrequency_Hz"></param>
+        /// <param name="StopFrequency_Hz"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ReferenceLevels GetReferenceLevelsByResultId(int resId, double? StartFrequency_Hz, double? StopFrequency_Hz);
+
     }
 }
