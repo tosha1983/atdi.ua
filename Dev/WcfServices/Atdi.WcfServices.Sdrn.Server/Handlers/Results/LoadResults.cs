@@ -29,7 +29,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         }
 
 
-        public void GetEmittingAndReferenceLevels(int resId, out Emitting[] emittings, out ReferenceLevels referenceLevels, double? StartFrequency_Hz =null, double? StopFrequency_Hz=null)
+        public void GetEmittingAndReferenceLevels(int resId, bool isLoadAllData, out Emitting[] emittings, out ReferenceLevels referenceLevels, double? StartFrequency_Hz =null, double? StopFrequency_Hz=null)
         {
             emittings = null;
             var listIdsEmittings = new List<int>();
@@ -399,10 +399,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                     return true;
                 });
             }
-            referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+            if (isLoadAllData == false)
+            {
+                referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+            }
+            else
+            {
+                referenceLevels = level;
+            }
+
         }
 
-        public ReferenceLevels GetReferenceLevelsByResultId(int resId, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null)
+        public ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null)
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var level = new ReferenceLevels();
@@ -471,7 +479,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                     return true;
                 });
             }
-            return ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+            if (isLoadAllData == false)
+            {
+                return ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+            }
+            else
+            {
+                return level;
+            }
         }
 
 
@@ -1676,7 +1691,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// </summary>
         /// <param name="measurementType"></param>
         /// <returns></returns>
-        public MeasurementResults GetMeasurementResultByResId(int ResId, double? StartFrequency_Hz=null, double? StopFrequency_Hz = null)
+        public MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz=null, double? StopFrequency_Hz = null)
         {
             var levelmeasurementResults = new MeasurementResults();
             try
@@ -1926,7 +1941,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
+                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), isLoadAllData, out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
                         levelmeasurementResults.Emittings = emittings;
                         levelmeasurementResults.RefLevels = referenceLevels;
 
