@@ -287,8 +287,65 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (CountPoint > 0) { return limit; }
             return -1;
         }
-     
-        
-
+        public static Spectrum CreateSpectrum(float[] templevels, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm, double DiffLevelForCalcBW = 25, double windowBW = 1.5, 
+        double nDbLevel_dB = 15, int NumberIgnoredPoints = 1, double MinExcessNoseLevel_dB = 5)
+        {
+            MeasBandwidthResult measSdrBandwidthResults = BandWidthEstimation.GetBandwidthPoint(templevels, BandWidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, 0);
+            Spectrum Spectrum = new Spectrum();
+            int start = 0; int stop = templevels.Length;
+            if (measSdrBandwidthResults.СorrectnessEstimations != null)
+            {
+                if (measSdrBandwidthResults.СorrectnessEstimations.Value)
+                {
+                    // значит спектр хороший можно брать его параметры
+                    if (measSdrBandwidthResults.T1 != null) { start =  measSdrBandwidthResults.T1.Value; Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
+                    if (measSdrBandwidthResults.T2 != null) { stop = measSdrBandwidthResults.T2.Value; Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
+                    if (measSdrBandwidthResults.MarkerIndex != null) { Spectrum.MarkerIndex = measSdrBandwidthResults.MarkerIndex.Value; }
+                    Spectrum.Bandwidth_kHz = (stop - start) * stepBW_kHz;
+                    Spectrum.SpectrumStartFreq_MHz = startFreq_MHz;
+                    Spectrum.SpectrumSteps_kHz = stepBW_kHz;
+                    Spectrum.Levels_dBm = templevels;
+                    Spectrum.СorrectnessEstimations = true;
+                }
+                else
+                {// попробуем пройтись по масиву с помощью метода nDbDown и всеже определить ширину спектра
+                    int startreal = -1;
+                    int stoptreal = -1;
+                    bool CorectCalcBW = CalcBW(templevels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, NumberIgnoredPoints, ref startreal, ref stoptreal);
+                    if (CorectCalcBW)
+                    {
+                        // необходимо найти корректное значение полосы частот
+                        double tempBW = StandartBW.GetStandartBW_kHz((stoptreal - startreal) * stepBW_kHz);
+                        double CentralFreq = startFreq_MHz + stepBW_kHz * (startreal + stoptreal) / 2000;
+                        double StartFrequency_MHz = CentralFreq - tempBW / 2000;
+                        double StopFrequency_MHz = CentralFreq + tempBW / 2000;
+                        start = (int)Math.Floor((StartFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
+                        if (start < 0) { start = 0; }
+                        stop = (int)Math.Ceiling((StopFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
+                        if (stop >= templevels.Length) { stop = templevels.Length - 1; }
+                        Spectrum.Levels_dBm = new float[stop - start];
+                        Array.Copy(templevels, start, Spectrum.Levels_dBm, 0, stop - start);
+                        Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start / 1000;
+                        Spectrum.SpectrumSteps_kHz = stepBW_kHz;
+                        Spectrum.СorrectnessEstimations = true;
+                    }
+                    else
+                    {
+                        Spectrum.SpectrumStartFreq_MHz = startFreq_MHz;
+                        Spectrum.SpectrumSteps_kHz = stepBW_kHz;
+                        Spectrum.Levels_dBm = templevels;
+                        Spectrum.СorrectnessEstimations = false;
+                    }
+                }
+            }
+            else
+            {
+                Spectrum.SpectrumStartFreq_MHz = startFreq_MHz;
+                Spectrum.SpectrumSteps_kHz = stepBW_kHz;
+                Spectrum.Levels_dBm = templevels;
+                Spectrum.СorrectnessEstimations = false;
+            }
+            return Spectrum;
+        }
     }
 }
