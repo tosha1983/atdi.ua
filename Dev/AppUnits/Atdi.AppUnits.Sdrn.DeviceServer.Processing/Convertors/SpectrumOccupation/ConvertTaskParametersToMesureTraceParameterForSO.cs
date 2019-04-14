@@ -23,6 +23,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             mesureTraceParameter.SweepTime_s = taskParameters.SweepTime_s;
             mesureTraceParameter.TracePoint = (int)Math.Ceiling((double) ((mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz)) / (1000*(taskParameters.StepSO_kHz / taskParameters.NChenal)));
 
+            mesureTraceParameter.RefLevel_dBm = 1000000000; // константа для Signaling
             mesureTraceParameter.RefLevel_dBm = -1; // константа для SO
             mesureTraceParameter.TraceType = TraceType.ClearWhrite; // константа для SO
             mesureTraceParameter.TraceCount = 1; // константа для SO

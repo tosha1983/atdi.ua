@@ -114,7 +114,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 case CommandFailureReason.CanceledExecution:
                                 case CommandFailureReason.TimeoutExpired:
                                 case CommandFailureReason.CanceledBeforeExecution:
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
+                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas), error._ex.StackTrace);
                                     Thread.Sleep((int)maximumDurationMeas);
                                     return;
                                 case CommandFailureReason.NotFoundConvertor:
@@ -123,18 +123,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                     TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                     if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                     {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
                                         context.Cancel();
                                         return;
                                     }
                                     else
                                     {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
+                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas), error._ex.StackTrace);
                                         Thread.Sleep(durationToRepietMeas);
                                     }
                                     break;
                                 case CommandFailureReason.Exception:
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
                                     context.Cancel();
                                     return;
                                 default:
@@ -155,6 +155,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outResultData != null)
                     {
                         DM.MeasResults measResult = new DM.MeasResults();
+
+                        context.Task.CountSendResults++;
+                        measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                        measResult.Status = "N";
+                        measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                         measResult.BandwidthResult = new BandwidthMeasResult();
                         measResult.BandwidthResult.Bandwidth_kHz = outResultData.BandwidthkHz;
                         measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
@@ -164,6 +169,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         measResult.StartTime = context.Task.LastTimeSend.Value;
                         measResult.StopTime = currTime;
                         measResult.Location = new DataModels.Sdrns.GeoLocation();
+                        measResult.Measured = currTime;
                         //////////////////////////////////////////////
                         // 
                         //  Здесь получаем данные с GPS приемника
@@ -203,7 +209,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                         }
-                        measResult.TaskId = context.Task.taskParameters.SDRTaskId;
+                        measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
                         //Отправка результатов в шину 
                         var publisher = this._busGate.CreatePublisher("main");
                         publisher.Send<DM.MeasResults>("SendMeasResults", measResult);

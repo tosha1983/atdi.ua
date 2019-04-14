@@ -102,6 +102,18 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\MeasResultSignalizationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasResultSignalizationForm.Designer.cs">
+      <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MeasTaskSignalizationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
+      <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
       <SubType>Form</SubType>
@@ -192,6 +204,8 @@
     <Compile Include="Metadata\Tours.cs" />
     <Compile Include="Models\Processes\SynchroInspections\Inspection.cs" />
     <Compile Include="Models\Processes\SynchroInspections\Tour.cs" />
+    <Compile Include="Models\Views\EmittingViewModel.cs" />
+    <Compile Include="Models\Views\EmittingWorkTimeViewModel.cs" />
     <Compile Include="Models\Views\LevelMeasurementsCarViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
@@ -202,6 +216,8 @@
     <Compile Include="Models\Views\ShortMeasurementResultsViewModel.cs" />
     <Compile Include="Models\Views\ShortResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\ShortSensorViewModel.cs" />
+    <Compile Include="Models\WcfDataApadters\EmittingDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\Mappers.cs" />
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
@@ -220,12 +236,15 @@
     <Compile Include="Handlers\Tour\ToursContextMenuBuilder.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
+    <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
+    <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartLineStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartOption.cs" />
+    <Compile Include="WpfControls\Charts\ChartPoints.cs" />
     <Compile Include="WpfControls\Charts\ChartStyle.cs" />
     <Compile Include="WpfControls\Charts\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
@@ -245,6 +264,12 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
+      <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
+      <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">
       <DependentUpon>CalcSODlg1Form.cs</DependentUpon>
     </EmbeddedResource>

@@ -16,12 +16,39 @@ using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
-using System.Windows.Input;
+using INP = System.Windows.Input;
 using System.Windows.Controls;
+using System.Collections;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    
+    public class CustomDataGridMeasTasks : DataGrid
+    {
+        public CustomDataGridMeasTasks()
+        {
+            this.MouseDoubleClick += DoubleClick;
+        }
+        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
+            foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
+            {
+                if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
+                {
+                    var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
+                    dlgForm.ShowDialog();
+                    dlgForm.Dispose();
+                }
+            }
+        }
+        public IList SelectedItemsList
+        {
+            get { return (IList)GetValue(SelectedItemsListProperty); }
+            set { SetValue(SelectedItemsListProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasTasks), new PropertyMetadata(null));
+    }
     public class ControlClientViewModel : WpfViewModelBase
     {
         public enum ModelType
@@ -34,7 +61,7 @@ namespace XICSM.ICSControlClient.ViewModels
             Sensors
         }
 
-        #region Corrent Objects
+        #region Current Objects
         
         // Tasks
         private MeasTaskViewModel _currentMeasTask;
@@ -102,6 +129,18 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #endregion
 
+        //private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (sender != null)
+        //    {
+        //        DataGridRow row = sender as DataGridRow;
+        //        if (row != null)
+        //        {
+        //            var data = row.Item as ShortMeasTaskViewModel;
+        //            System.Windows.MessageBox.Show(data.Id.ToString());
+        //        }
+        //    }
+        //}
         private CS.ChartOption GetDefaultChartOption()
         {
             return new CS.ChartOption
@@ -384,7 +423,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (this.MeasResultsDetailVisibility == Visibility.Visible)
                 {
-                    var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId);
+                    var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId, null, null);
                     LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
                     UpFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Max(f => f.Freq));
                 }
@@ -760,15 +799,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     break;
             }
         }
-        //private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    DataGridRow row = sender as DataGridRow;
-        //    if (row != null)
-        //    {
-        //        var data = row.Item as ShortMeasTaskViewModel;
-        //        System.Windows.MessageBox.Show(data.Id.ToString());
-        //    }
-        //}
 
         private void UpdateCurrentChartOption()
         {
@@ -911,7 +941,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
 
             var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
@@ -969,7 +999,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
 
             var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];

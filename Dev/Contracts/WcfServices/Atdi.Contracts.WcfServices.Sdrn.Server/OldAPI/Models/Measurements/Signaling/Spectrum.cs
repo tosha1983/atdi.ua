@@ -15,7 +15,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public int T2;
         public int MarkerIndex;
         public double Bandwidth_kHz;
-        public bool СorrectnessEstimations;
+        public bool CorrectnessEstimations;
         public int TraceCount;
         public float SignalLevel_dBm;
     }

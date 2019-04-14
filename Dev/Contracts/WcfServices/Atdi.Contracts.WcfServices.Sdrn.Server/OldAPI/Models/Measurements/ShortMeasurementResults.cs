@@ -19,12 +19,22 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public MeasurementResultsIdentifier Id;
-
         /// <summary>
         /// TimeMeas
         /// </summary>
         [DataMember]
         public DateTime? TimeMeas;
+        ///// <summary>
+        ///// Time start (SpectrumOccupation, Level, BandwidthMeas)
+        ///// </summary>
+        [DataMember]
+        public DateTime StartTime { get; set; }
+
+        ///// <summary>
+        ///// Time stop  (SpectrumOccupation, Level, BandwidthMeas)
+        ///// </summary>
+        [DataMember]
+        public DateTime StopTime { get; set; }
         /// <summary>
         /// DataRank;
         /// </summary>

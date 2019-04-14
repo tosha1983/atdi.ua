@@ -255,7 +255,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        MeasurementResults GetMeasurementResultByResId(int ResId);
+        MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
         /// <summary>
         /// 
@@ -292,6 +292,16 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resId"></param>
+        /// <param name="StartFrequency_Hz"></param>
+        /// <param name="StopFrequency_Hz"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
     }
 }

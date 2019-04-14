@@ -18,8 +18,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             // НЕ ТЕСТИРОВАННО
             //const
+            //mesureTraceDeviceProperties.StandardDeviceProperties.
             double allowableExcess_dB = 10; 
-            double triggerLevel_dBm_Hz = -150; // должно быть определено в оборудовании
+            double triggerLevel_dBm_Hz = -120; // должно быть определено в оборудовании
             //const
             ReferenceLevels referenceLevels = new ReferenceLevels();
             referenceLevels.StartFrequency_Hz = Trace.Freq_Hz[0];
@@ -33,16 +34,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 double gainInFreq = CalcSDRParameters.SDRGainFromFrequency(mesureTraceDeviceProperties, referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i));
                 if ((referenceSituation != null)&&(referenceSituation.ReferenceSignal != null))
                 {
+                    double freqStart = (referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i - 0.5)) / 1000000;
+                    double freqStop = (referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i + 0.5)) / 1000000;
+
                     for (int j = 0; j < referenceSituation.ReferenceSignal.Length; j++)
                     {
                         // проверка на попадение
-                        double freqStart = (referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i - 0.5))/1000000;
-                        double freqStop = (referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i + 0.5))/1000000;
-                        double freqStartSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz - 500 * referenceSituation.ReferenceSignal[j].Bandwidth_kHz;
-                        double freqStopSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + 500 * referenceSituation.ReferenceSignal[j].Bandwidth_kHz;
-                        if (!((freqStart < freqStopSignal) || (freqStop > freqStartSignal)))
+                        double freqStartSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz -  (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz/2000);
+                        double freqStopSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz/ 2000);
+                        if (((freqStart < freqStopSignal) && (freqStop > freqStartSignal)))
                         { // попали определяем долю сигнала в данном таймштампе в ватах
-                            double interseption = Math.Min(freqStop, freqStopSignal) - Math.Min(freqStart, freqStartSignal) / (freqStop - freqStart);
+                            double interseption = (Math.Min(freqStop, freqStopSignal) - Math.Max(freqStart, freqStartSignal)) / (freqStopSignal - freqStartSignal);
                             levelFromSignal_mW = levelFromSignal_mW + interseption * Math.Pow(10, referenceSituation.ReferenceSignal[j].LevelSignal_dBm / 10);
                         }
                     }

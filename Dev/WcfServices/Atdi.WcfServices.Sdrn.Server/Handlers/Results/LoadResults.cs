@@ -10,6 +10,7 @@ using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.Contracts.WcfServices.Sdrn.Server;
 using System.Xml;
 using System.Linq;
+using Atdi.Common;
 
 
 namespace Atdi.WcfServices.Sdrn.Server
@@ -26,17 +27,23 @@ namespace Atdi.WcfServices.Sdrn.Server
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
-        
 
-        public void GetEmittingAndReferenceLevels(int resId, out Emitting[] emittings, out ReferenceLevels referenceLevels)
+
+        public void GetEmittingAndReferenceLevels(int resId, bool isLoadAllData, out Emitting[] emittings, out ReferenceLevels referenceLevels, double? StartFrequency_Hz =null, double? StopFrequency_Hz=null)
         {
             emittings = null;
+            var listIdsEmittings = new List<int>();
+            var listEmitings = new List<KeyValuePair<int, Emitting>>();
+            var listWorkTimes = new List<KeyValuePair<int, WorkTime>>();
+            var listSignalMask = new List<KeyValuePair<int, SignalMask>>();
+            var listSpectrum = new List<KeyValuePair<int, Spectrum>>();
             referenceLevels = new ReferenceLevels();
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var listEmitting = new List<Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution)
+            .OrderByAsc(c=>c.StartFrequency_MHz)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
             queryExecuter.Fetch(queryEmitting, reader =>
             {
@@ -65,119 +72,130 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
                     }
-                    emitting.EmittingParameters = emittingParam;
-
-                    var listTime = new List<WorkTime>();
-                    var queryTime = this._dataLayer.GetBuilder<MD.IWorkTime>()
-                    .From()
-                    .Select(c => c.Id, c => c.StartEmitting, c => c.StopEmitting, c => c.HitCount, c => c.PersentAvailability)
-                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Fetch(queryTime, readerTime =>
-                    {
-                        while (readerTime.Read())
-                        {
-                            var workTime = new WorkTime();
-                            if (readerTime.GetValue(c => c.StartEmitting).HasValue)
-                                workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting).Value;
-                            if (readerTime.GetValue(c => c.StopEmitting).HasValue)
-                                workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting).Value;
-                            if (readerTime.GetValue(c => c.HitCount).HasValue)
-                                workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
-                            if (readerTime.GetValue(c => c.PersentAvailability).HasValue)
-                                workTime.PersentAvailability = (float)readerTime.GetValue(c => c.PersentAvailability).Value;
-
-                            listTime.Add(workTime);
-                        }
-                        return true;
-                    });
-                    if (listTime.Count > 0)
-                        emitting.WorkTimes = listTime.ToArray();
-
-
-
-                    var listLoss_dB = new List<float>();
-                    var listFreq_kHz = new List<double>();
-                    var querySignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>()
-                    .From()
-                    .Select(c => c.Id, c => c.Loss_dB, c => c.Freq_kHz)
-                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Fetch(querySignalMask, readerSignalMask =>
-                    {
-                        while (readerSignalMask.Read())
-                        {
-                            if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue)
-                                listLoss_dB.Add((float)readerSignalMask.GetValue(c => c.Loss_dB).Value);
-
-                            if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue)
-                                listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
-
-                        }
-                        return true;
-                    });
-
-                    var signalMask = new SignalMask();
-                    if (listLoss_dB.Count > 0)
-                        signalMask.Loss_dB = listLoss_dB.ToArray();
-                    if (listFreq_kHz.Count > 0)
-                        signalMask.Freq_kHz = listFreq_kHz.ToArray();
-
-                    emitting.SignalMask = signalMask;
 
                     var listLevel = new List<int>();
                     var listCount = new List<int>();
-                    var queryLevelDist = this._dataLayer.GetBuilder<MD.ILevelsDistribution>()
-                    .From()
-                    .Select(c => c.Id, c => c.level, c => c.count)
-                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Fetch(queryLevelDist, readerLevelDist =>
-                    {
-                        while (readerLevelDist.Read())
-                        {
-                            listLevel.Add(readerLevelDist.GetValue(c => c.level).Value);
-                            listCount.Add(readerLevelDist.GetValue(c => c.count).Value);
-                        }
-                        return true;
-                    });
 
+                    if (reader.GetValue(c => c.LevelsDistribution) != null)
+                    {
+                        var objLevelsDistribution = BinaryDecoder.Deserialize<string>(reader.GetValue(c => c.LevelsDistribution));
+                        if (!string.IsNullOrEmpty(objLevelsDistribution))
+                        {
+                            var wrds = objLevelsDistribution.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                            if ((wrds != null) && (wrds.Length > 0))
+                            {
+                                for (int h = 0; h < wrds.Length; h++)
+                                {
+                                    var oneString = wrds[h];
+                                    if (!string.IsNullOrEmpty(oneString))
+                                    {
+                                        var wrdLevelCount = oneString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                        if ((wrdLevelCount != null) && (wrdLevelCount.Length == 2))
+                                        {
+                                            int levelValue; int countValue;
+                                            if ((int.TryParse(wrdLevelCount[0], out levelValue)) && (int.TryParse(wrdLevelCount[1], out countValue)))
+                                            {
+                                                listLevel.Add(levelValue);
+                                                listCount.Add(countValue);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     var levelDist = new LevelsDistribution();
                     if (listLevel.Count > 0)
                         levelDist.Levels = listLevel.ToArray();
                     if (listCount.Count > 0)
                         levelDist.Count = listCount.ToArray();
-
                     emitting.LevelsDistribution = levelDist;
-             
-                    var spectrum = new Spectrum();
-                    var listLevelsdBm = new List<float>();
-                    var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
-                    .From()
-                    .Select(c => c.Id, c => c.Bandwidth_kHz, c => c.CorrectnessEstimations, c => c.MarkerIndex, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.T1, c => c.T2, c => c.TraceCount)
-                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Fetch(querySpectrum, readerSpectrum =>
+                    emitting.EmittingParameters = emittingParam;
+                    listIdsEmittings.Add(reader.GetValue(c => c.Id));
+                    listEmitings.Add(new KeyValuePair<int, Emitting>(reader.GetValue(c => c.Id), emitting));
+                }
+                return true;
+            });
+
+
+            if (listIdsEmittings.Count > 0)
+            {
+                var queryTime = this._dataLayer.GetBuilder<MD.IWorkTime>()
+                .From()
+                .Select(c => c.Id, c => c.StartEmitting, c => c.StopEmitting, c => c.HitCount, c => c.PersentAvailability, c => c.EMITTING.Id)
+                .Where(c => c.EMITTING.Id, ConditionOperator.In, listIdsEmittings.ToArray());
+                queryExecuter.Fetch(queryTime, readerTime =>
+                {
+                    while (readerTime.Read())
                     {
-                        while (readerSpectrum.Read())
+                        var workTime = new WorkTime();
+                        if (readerTime.GetValue(c => c.StartEmitting).HasValue)
+                            workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting).Value;
+                        if (readerTime.GetValue(c => c.StopEmitting).HasValue)
+                            workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting).Value;
+                        if (readerTime.GetValue(c => c.HitCount).HasValue)
+                            workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
+                        if (readerTime.GetValue(c => c.PersentAvailability).HasValue)
+                            workTime.PersentAvailability = (float)readerTime.GetValue(c => c.PersentAvailability).Value;
+
+                        listWorkTimes.Add(new KeyValuePair<int, WorkTime>(readerTime.GetValue(c => c.EMITTING.Id), workTime));
+                    }
+                    return true;
+                });
+
+
+                var listLoss_dB = new List<float>();
+                var listFreq_kHz = new List<double>();
+                var querySignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>()
+                .From()
+                .Select(c => c.Id, c => c.Loss_dB, c => c.Freq_kHz, c => c.EMITTING.Id)
+                .Where(c => c.EMITTING.Id, ConditionOperator.In, listIdsEmittings.ToArray());
+                queryExecuter.Fetch(querySignalMask, readerSignalMask =>
+                {
+                    while (readerSignalMask.Read())
+                    {
+                        listLoss_dB = new List<float>();
+                        listFreq_kHz = new List<double>();
+
+                        if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue)
+                            listLoss_dB.Add((float)readerSignalMask.GetValue(c => c.Loss_dB).Value);
+
+                        if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue)
+                            listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
+
+                        var signalMask = new SignalMask();
+                        if (listLoss_dB.Count > 0)
+                            signalMask.Loss_dB = listLoss_dB.ToArray();
+                        if (listFreq_kHz.Count > 0)
+                            signalMask.Freq_kHz = listFreq_kHz.ToArray();
+
+                        listSignalMask.Add(new KeyValuePair<int, SignalMask>(readerSignalMask.GetValue(c => c.EMITTING.Id), signalMask));
+                    }
+                    return true;
+                });
+
+                var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
+                .From()
+                .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id)
+                .Where(c => c.EMITTING.Id, ConditionOperator.In, listIdsEmittings.ToArray());
+                queryExecuter.Fetch(querySpectrum, readerSpectrum =>
+                {
+                    while (readerSpectrum.Read())
+                    {
+                        var spectrum = new Spectrum();
+                        var listLevelsdBm = new List<float>();
+
+                        if (readerSpectrum.GetValue(c => c.LevelsdBm) != null)
                         {
-
-                            var queryLevelsdBm = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevels>()
-                            .From()
-                            .Select(c => c.Id, c => c.level)
-                            .Where(c => c.SpectrumId, ConditionOperator.Equal, readerSpectrum.GetValue(c => c.Id));
-                            queryExecuter.Fetch(queryLevelsdBm, readerLevelsdBm =>
+                            var levelsdBm = BinaryDecoder.Deserialize<float[]>(readerSpectrum.GetValue(c => c.LevelsdBm));
+                            if (levelsdBm != null)
                             {
-                                while (readerLevelsdBm.Read())
-                                {
-                                    if (readerLevelsdBm.GetValue(c => c.level).HasValue)
-                                    {
-                                        listLevelsdBm.Add((float)readerLevelsdBm.GetValue(c => c.level).Value);
-                                    }
-                                }
-                                return true;
-                            });
+                                listLevelsdBm.AddRange(levelsdBm as float[]);
+                            }
+                        }
 
-                            if (listLevelsdBm.Count > 0)
-                                spectrum.Levels_dBm = listLevelsdBm.ToArray();
-
-
+                        if (spectrum.SpectrumStartFreq_MHz == 0)
+                        {
                             if (readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).HasValue)
                             {
                                 spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
@@ -227,74 +245,250 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                             if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
                             {
-                                spectrum.СorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value;
+                                spectrum.CorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
                             }
                         }
-                        return true;
-                    });
+                        spectrum.Levels_dBm = listLevelsdBm.ToArray();
+
+                        listSpectrum.Add(new KeyValuePair<int, Spectrum>(readerSpectrum.GetValue(c => c.EMITTING.Id), spectrum));
+                    }
+                    return true;
+                });
+
+                var arrayListIdsEmittings = listIdsEmittings.ToArray();
+                for (int i = 0; i < arrayListIdsEmittings.Length; i++)
+                {
+                    var id = arrayListIdsEmittings[i];
+                    var fndEmitings = listEmitings.Find(c => c.Key == id);
+                    if (fndEmitings.Value != null)
+                    {
+                        var emitting = fndEmitings.Value;
+
+                        var fndWorkTime = listWorkTimes.FindAll(c => c.Key == id);
+                        if (fndWorkTime != null)
+                        {
+                            var arrayFndWorkTime = fndWorkTime.ToArray();
+                            var listWorkTime = new List<WorkTime>();
+                            for (int t=0; t < arrayFndWorkTime.Length; t++)
+                            {
+                                listWorkTime.Add(arrayFndWorkTime[t].Value);
+                            }
+                            if (listWorkTime.Count > 0)
+                            {
+                                emitting.WorkTimes = listWorkTime.ToArray();
+                            }
+                        }
+
+                        listWorkTimes.RemoveAll(c => c.Key == id);
+                        var fndSignalMask = listSignalMask.FindAll(c => c.Key == id);
+                        if (fndSignalMask != null)
+                        {
+                            var arrayFndSignalMask = fndSignalMask.ToArray();
+                            var signalMask = new SignalMask();
+                            listLoss_dB = new List<float>();
+                            listFreq_kHz = new List<double>();
+                            for (int t = 0; t < arrayFndSignalMask.Length; t++)
+                            {
+                                var x = arrayFndSignalMask[t];
+                                listLoss_dB.AddRange(x.Value.Loss_dB);
+                                listFreq_kHz.AddRange(x.Value.Freq_kHz);
+                            }
+                            if (listLoss_dB.Count > 0)
+                            {
+                                signalMask.Loss_dB = listLoss_dB.ToArray();
+                                signalMask.Freq_kHz = listFreq_kHz.ToArray();
+                            }
+                            emitting.SignalMask = signalMask;
+                        }
+                        listSignalMask.RemoveAll(c => c.Key == id);
 
 
-                    spectrum.Levels_dBm = listLevelsdBm.ToArray();
-                    emitting.Spectrum = spectrum;
-                    listEmitting.Add(emitting);
+                        var fndSpectrum = listSpectrum.FindAll(c => c.Key == id);
+                        if (fndSpectrum != null)
+                        {
+                            var arrayFndSpectrum = fndSpectrum.ToArray();
+                            var listLevelsdBm = new List<float>();
+                            for (int t = 0; t < arrayFndSpectrum.Length; t++)
+                            {
+                                var x = arrayFndSpectrum[t];
+                                if (x.Value != null)
+                                {
+                                    listLevelsdBm.AddRange(x.Value.Levels_dBm);
+                                    emitting.Spectrum = x.Value;
+                                }
+                            }
+                            if (listLevelsdBm.Count > 0)
+                            {
+                                emitting.Spectrum.Levels_dBm = listLevelsdBm.ToArray();
+                            }
+                        }
+                        listSpectrum.RemoveAll(c => c.Key == id);
+                        listEmitting.Add(emitting);
+                    }
+                    listEmitings.RemoveAll(c => c.Key == id);
                 }
-                return true;
-            });
-
-            if (listEmitting.Count > 0)
-            {
-                emittings = listEmitting.ToArray();
+                if (listEmitting.Count > 0)
+                {
+                    emittings = listEmitting.ToArray();
+                }
             }
 
-
             var level = new ReferenceLevels();
-            var listLevels = new List<float>();
-            var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
-            .From()
-            .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz)
-            .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
-            queryExecuter.Fetch(queryLevels, readerLevels =>
+            var taskId = "";
+            int? subMeasTaskId = null;
+            int? subMeasTaskStaId = null;
+            int? sensorId = null;
+
+            var queryMeasTaskId = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+          .From()
+          .Select(c => c.Id, c => c.RESMEAS.MeasTaskId, c => c.RESMEAS.MeasSubTaskId, c => c.RESMEAS.MeasSubTaskStationId, c => c.RESMEAS.SensorId)
+          .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+            queryExecuter.Fetch(queryMeasTaskId, readerReferenceLevels =>
             {
-                while (readerLevels.Read())
+                if (readerReferenceLevels.Read())
                 {
-                    if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue)
+                    taskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasTaskId);
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).HasValue)
                     {
-                        level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                        subMeasTaskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
                     }
-
-                    if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue)
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).HasValue)
                     {
-                        level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                        subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
                     }
-
-
-                    var queryLevelsDet = this._dataLayer.GetBuilder<MD.IDetailReferenceLevels>()
-                    .From()
-                    .Select(c => c.Id, c => c.level)
-                    .Where(c => c.ReferenceLevelId, ConditionOperator.Equal, readerLevels.GetValue(c => c.Id));
-                    queryExecuter.Fetch(queryLevelsDet, readerLevelsDet =>
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).HasValue)
                     {
-                        while (readerLevelsDet.Read())
-                        {
-                            if (readerLevelsDet.GetValue(c => c.level).HasValue)
-                            {
-                                listLevels.Add((float)readerLevelsDet.GetValue(c => c.level).Value);
-                            }
-                        }
-                        return true;
-                    });
-
-                    if (listLevels.Count > 0)
-                    {
-                        level.levels = listLevels.ToArray();
+                        sensorId = readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).Value;
                     }
-
                 }
                 return true;
             });
+            if (!string.IsNullOrEmpty(taskId) && (subMeasTaskId!=null) && (subMeasTaskStaId != null) && (sensorId != null)) 
+            {
+                var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+               .From()
+               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.ReferenceLevels)
+               .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
+               .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
+               .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
+               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+                queryExecuter.Fetch(queryLevels, readerLevels =>
+                {
+                    while (readerLevels.Read())
+                    {
+                        if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue)
+                        {
+                            level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                        }
 
-            referenceLevels = level;
+                        if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue)
+                        {
+                            level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                        }
+
+                        if (readerLevels.GetValue(c => c.ReferenceLevels) != null)
+                        {
+                            var refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
+                            if (refLevels != null)
+                            {
+                                level.levels = refLevels as float[];
+                            }
+                        }
+                    }
+                    return true;
+                });
+            }
+            if (isLoadAllData == false)
+            {
+                referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+            }
+            else
+            {
+                referenceLevels = level;
+            }
+
         }
+
+        public ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var level = new ReferenceLevels();
+            var taskId = "";
+            int? subMeasTaskId = null;
+            int? subMeasTaskStaId = null;
+            int? sensorId = null;
+
+            var queryMeasTaskId = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+          .From()
+          .Select(c => c.Id, c => c.RESMEAS.MeasTaskId, c => c.RESMEAS.MeasSubTaskId, c => c.RESMEAS.MeasSubTaskStationId, c => c.RESMEAS.SensorId)
+          .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+            queryExecuter.Fetch(queryMeasTaskId, readerReferenceLevels =>
+            {
+                if (readerReferenceLevels.Read())
+                {
+                    taskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasTaskId);
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).HasValue)
+                    {
+                        subMeasTaskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                    }
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).HasValue)
+                    {
+                        subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                    }
+                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).HasValue)
+                    {
+                        sensorId = readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).Value;
+                    }
+                }
+                return true;
+            });
+            if (!string.IsNullOrEmpty(taskId) && (subMeasTaskId != null) && (subMeasTaskStaId != null) && (sensorId != null))
+            {
+                var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+               .From()
+               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.ReferenceLevels)
+               .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
+               .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
+               .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
+               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+                queryExecuter.Fetch(queryLevels, readerLevels =>
+                {
+                    while (readerLevels.Read())
+                    {
+                        if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue)
+                        {
+                            level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                        }
+
+                        if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue)
+                        {
+                            level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                        }
+
+                        if (readerLevels.GetValue(c => c.ReferenceLevels) != null)
+                        {
+                            var refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
+                            if (refLevels != null)
+                            {
+                                level.levels = refLevels as float[];
+                            }
+                        }
+                    }
+                    return true;
+                });
+            }
+            if (isLoadAllData == false)
+            {
+                return ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+            }
+            else
+            {
+                return level;
+            }
+        }
+
 
         /// <summary>
         /// 
@@ -362,6 +556,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
                         {
@@ -396,38 +598,42 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.LocationSensorMeasurement = listLocationSensorMeasurement.ToArray();
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
 
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+                         
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
 
                         var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                         builderLinkResSensoT.Select(c => c.Id);
@@ -450,11 +656,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             return true;
                         });
 
-                        Emitting[] emittings = null;
-                        ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
-                        levelmeasurementResults.Emittings = emittings;
-                        levelmeasurementResults.RefLevels = referenceLevels;
+                        //Emitting[] emittings = null;
+                        //ReferenceLevels referenceLevels = null;
+                        //GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
+                        //levelmeasurementResults.Emittings = emittings;
+                        //levelmeasurementResults.RefLevels = referenceLevels;
                         results.Add(levelmeasurementResults);
                     }
                     return true;
@@ -546,6 +752,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                             }
+                            if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                            {
+                                levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                            }
+                            if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                            {
+                                levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            }
                             MeasurementType outResType;
                             if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                             {
@@ -560,37 +774,41 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                             levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                            builderResMeasStation.Select(c => c.Id);
-                            builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                            builderResMeasStation.OrderByAsc(c => c.Id);
-                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                            {
-                                while (readerResMeasStation.Read())
-                                {
-                                    levelmeasurementResults.CountUnknownStationMeasurements++;
-                                }
-                                return true;
-                            });
-
-
                             levelmeasurementResults.CountStationMeasurements = 0;
-                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                            builderResMeasStation.Select(c => c.Id);
-                            builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                            builderResMeasStation.OrderByAsc(c => c.Id);
-                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            if (outResType == MeasurementType.MonitoringStations)
                             {
-                                while (readerResMeasStation.Read())
+                                var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                                builderResMeasStation.Select(c => c.Id);
+                                builderResMeasStation.Select(c => c.Status);
+                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                                builderResMeasStation.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                                 {
-                                    levelmeasurementResults.CountStationMeasurements++;
-                                }
-                                return true;
-                            });
+                                    while (readerResMeasStation.Read())
+                                    {
+                                        levelmeasurementResults.CountUnknownStationMeasurements++;
+                                    }
+                                    return true;
+                                });
+
+
+
+                                builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                                builderResMeasStation.Select(c => c.Id);
+                                builderResMeasStation.Select(c => c.Status);
+                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                                builderResMeasStation.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                                {
+                                    while (readerResMeasStation.Read())
+                                    {
+                                        levelmeasurementResults.CountStationMeasurements++;
+                                    }
+                                    return true;
+                                });
+                            }
 
                         }
                         return true;
@@ -672,6 +890,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -686,37 +912,41 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
 
                         if ((results.Find(x => x.Id.MeasSdrResultsId == levelmeasurementResults.Id.MeasSdrResultsId)) == null)
                         {
@@ -1461,7 +1691,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// </summary>
         /// <param name="measurementType"></param>
         /// <returns></returns>
-        public MeasurementResults GetMeasurementResultByResId(int ResId)
+        public MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz=null, double? StopFrequency_Hz = null)
         {
             var levelmeasurementResults = new MeasurementResults();
             try
@@ -1521,6 +1751,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
+                        }
+
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
                         {
@@ -1639,65 +1878,70 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.LocationSensorMeasurement = listLocationSensorMeasurement.ToArray();
 
 
+
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
-                        var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
-                        builderLinkResSensoT.Select(c => c.Id);
-                        builderLinkResSensoT.Select(c => c.SensorId);
-                        builderLinkResSensoT.Select(c => c.SENSOR.Name);
-                        builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                        builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderLinkResSensoT.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
-                        {
-                            while (readerLinkResSensor.Read())
-                            {
-                                if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
+                                while (readerResMeasStation.Read())
                                 {
-                                    levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
-                                    levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
-                                    break;
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
                                 }
-                            }
-                            return true;
-                        });
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+                            var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
+                            builderLinkResSensoT.Select(c => c.Id);
+                            builderLinkResSensoT.Select(c => c.SensorId);
+                            builderLinkResSensoT.Select(c => c.SENSOR.Name);
+                            builderLinkResSensoT.Select(c => c.SENSOR.TechId);
+                            builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderLinkResSensoT.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
+                            {
+                                while (readerLinkResSensor.Read())
+                                {
+                                    if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
+                                    {
+                                        levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
+                                        levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
+                                        break;
+                                    }
+                                }
+                                return true;
+                            });
+                        }
 
 
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
+                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), isLoadAllData, out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
                         levelmeasurementResults.Emittings = emittings;
                         levelmeasurementResults.RefLevels = referenceLevels;
 
@@ -1776,6 +2020,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
                         {
@@ -1783,11 +2035,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
 
 
-                        Emitting[] emittings = null;
-                        ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
-                        levelmeasurementResults.Emittings = emittings;
-                        levelmeasurementResults.RefLevels = referenceLevels;
+                        //Emitting[] emittings = null;
+                        //ReferenceLevels referenceLevels = null;
+                        ///GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
+                        //levelmeasurementResults.Emittings = emittings;
+                        //levelmeasurementResults.RefLevels = referenceLevels;
 
                         results.Add(levelmeasurementResults);
                     }
@@ -1860,6 +2112,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerResMeas.GetValue(c => c.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.StopTime).Value;
                         }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out outResType))
@@ -2155,10 +2415,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.ResultsMeasStation = listResMeasStatiion.ToArray();
 
 
-                        Emitting[] emittings = null;
-                        ReferenceLevels referenceLevels = null;
-                        GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
-                        levelmeasurementResults.Emittings = emittings;
+                        //Emitting[] emittings = null;
+                        //ReferenceLevels referenceLevels = null;
+                        //GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), out emittings, out referenceLevels);
+                        //levelmeasurementResults.Emittings = emittings;
 
 
                         results.Add(levelmeasurementResults);
@@ -2237,6 +2497,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
                         {
                             shortMeasurementResultsFast.TimeMeas = readerResLocSensorMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
+                        }
+                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            shortMeasurementResultsFast.StartTime = readerResLocSensorMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            shortMeasurementResultsFast.StopTime = readerResLocSensorMeas.GetValue(c => c.RESMEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResLocSensorMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
@@ -2466,6 +2734,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
+
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -2475,39 +2752,44 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
                         levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
                         levelmeasurementResults.CurrentLat = readerResMeas.GetValue(c => c.Lat);
+
+
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
 
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
                     return true;
@@ -2583,6 +2865,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -2594,38 +2884,42 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.CurrentLat = readerResMeas.GetValue(c => c.Lat);
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
 
+                        if (outResType == MeasurementType.MonitoringStations)
+                        {
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
                     return true;
@@ -2699,6 +2993,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
+                        {
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
+                        {
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                        }
                         MeasurementType outResType;
                         if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
                         {
@@ -2713,37 +3015,40 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;
-                        var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
-                        {
-                            while (readerResMeasStation.Read())
-                            {
-                                levelmeasurementResults.CountUnknownStationMeasurements++;
-                            }
-                            return true;
-                        });
-
-
                         levelmeasurementResults.CountStationMeasurements = 0;
-                        builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
-                        builderResMeasStation.Select(c => c.Id);
-                        builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
-                        builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
-                        builderResMeasStation.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                        if (outResType == MeasurementType.MonitoringStations)
                         {
-                            while (readerResMeasStation.Read())
+                            var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
-                                levelmeasurementResults.CountStationMeasurements++;
-                            }
-                            return true;
-                        });
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountUnknownStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+                           
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+                        }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
                     return true;
@@ -2755,6 +3060,99 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return listlevelmeasurementResults.ToArray();
         }
+
+        /// <summary>
+        /// Обрезание графика refLevelesValues.levels когда много значений
+        /// </summary>
+        /// <param name="refLevelesValues"></param>
+        /// <param name="StartFrequency_Hz"></param>
+        /// <param name="StopFrequency_Hz"></param>
+        /// <returns></returns>
+        private static ReferenceLevels ReferenceLevelsCut(ReferenceLevels refLevelesValues, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null, int Npoint = 5000)
+        { // НЕ ТЕСТИРОВАННО
+            if (refLevelesValues == null) { return null;}
+            if (refLevelesValues.levels.Length < Npoint) { return refLevelesValues;}
+            if (StartFrequency_Hz > StopFrequency_Hz) { double k = StartFrequency_Hz.Value; StartFrequency_Hz = StopFrequency_Hz; StopFrequency_Hz = k;}
+            int StartIndex;
+            int StopIndex;
+            if ((StartFrequency_Hz is null)  || (StopFrequency_Hz is null))
+            {
+                StartFrequency_Hz = refLevelesValues.StartFrequency_Hz;
+                StopFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length-1);
+                StartIndex = 0;
+                StopIndex = refLevelesValues.levels.Length - 1;
+            }
+            else
+            {
+                // определение начала 
+                if (refLevelesValues.StartFrequency_Hz >= StartFrequency_Hz)
+                {
+                    StartFrequency_Hz = refLevelesValues.StartFrequency_Hz;
+                    StartIndex = 0;
+                }
+                else if ((refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1)) >= StartFrequency_Hz)
+                {
+                    StartIndex = (int)Math.Floor((StartFrequency_Hz.Value - refLevelesValues.StartFrequency_Hz) / refLevelesValues.StepFrequency_Hz);
+                    StartFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.levels[StartIndex] * refLevelesValues.StepFrequency_Hz;
+                }
+                else { return null; }
+                // определение конеца 
+                if ((refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1)) <= StopFrequency_Hz)
+                {
+                    StopFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.StepFrequency_Hz * (refLevelesValues.levels.Length - 1);
+                    StopIndex = refLevelesValues.levels.Length - 1;
+                }
+                else if (refLevelesValues.StartFrequency_Hz < StopFrequency_Hz)
+                {
+                    StopIndex = (int)Math.Ceiling((StopFrequency_Hz.Value - refLevelesValues.StartFrequency_Hz) / refLevelesValues.StepFrequency_Hz);
+                    if (StopIndex > refLevelesValues.levels.Length-1) { StopIndex = refLevelesValues.levels.Length - 1; }
+                    StartFrequency_Hz = refLevelesValues.StartFrequency_Hz + refLevelesValues.levels[StopIndex] * refLevelesValues.StepFrequency_Hz;
+                }
+                else { return null; }
+            }
+            if (StopIndex - StartIndex < Npoint)
+            {
+                // возвращаем просто усеченное значение
+                var referenceLevels = new ReferenceLevels();
+                referenceLevels.StartFrequency_Hz = StartFrequency_Hz.Value;
+                referenceLevels.StepFrequency_Hz = refLevelesValues.StepFrequency_Hz;
+                referenceLevels.levels = new float[StopIndex - StartIndex + 1];
+                Array.Copy(refLevelesValues.levels, StartIndex, referenceLevels.levels, 0, StopIndex - StartIndex + 1);
+                return referenceLevels;
+            }
+            else
+            {
+                // надо сжимать определяем коэфициент сжатия
+                int k = (int)Math.Ceiling((double)(StopIndex - StartIndex) / Npoint);
+                var referenceLevels = new ReferenceLevels();
+                referenceLevels.StartFrequency_Hz = StartFrequency_Hz.Value;
+                referenceLevels.StepFrequency_Hz = refLevelesValues.StepFrequency_Hz * k;
+                int Arr_Count = (int)Math.Ceiling((double)(StopIndex - StartIndex+1) / k);
+                referenceLevels.levels = new float[Arr_Count];
+                for (int i = 0; Arr_Count-1 > i; i++)
+                {
+                    referenceLevels.levels[i] = refLevelesValues.levels[i*k];
+                    for (int j = 0; k > j; j++)
+                    {
+                        if (refLevelesValues.levels[i*k+j] > referenceLevels.levels[i]) { referenceLevels.levels[i] = refLevelesValues.levels[i * k + j];}
+                    }
+                }
+                if (refLevelesValues.levels.Length - 1 >= (Arr_Count - 1) * k)
+                {
+                    referenceLevels.levels[Arr_Count-1] = refLevelesValues.levels[(Arr_Count-1) * k];
+                    for (int j = 0; k > j; j++)
+                    {
+                        if (refLevelesValues.levels.Length - 1 >= (Arr_Count - 1) * k + j)
+                        {
+                            if (refLevelesValues.levels[(Arr_Count - 1) * k + j] > referenceLevels.levels[(Arr_Count - 1)])
+                            { referenceLevels.levels[(Arr_Count - 1)] = refLevelesValues.levels[(Arr_Count - 1) * k + j]; }
+                        }
+                    }
+                }
+                return referenceLevels;
+            }
+        }
+
 
     }
 }

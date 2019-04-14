@@ -18,6 +18,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         double? RBW_Hz { get; set; }
         double? VBW_Hz { get; set; }
         double? StepSO_kHz { get; set; }
+        double? SweepTime_ms { get; set; }
         int? NChenal { get; set; }
         double? LevelMinOccup_dBm { get; set; }
         string Type_of_SO { get; set; }

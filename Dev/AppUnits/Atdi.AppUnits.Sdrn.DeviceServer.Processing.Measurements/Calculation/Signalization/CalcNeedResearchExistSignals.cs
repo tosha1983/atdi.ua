@@ -18,7 +18,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             taskParameters = null;
                 //заглушка
-            return false;
+            return true;
         }
     }
 }

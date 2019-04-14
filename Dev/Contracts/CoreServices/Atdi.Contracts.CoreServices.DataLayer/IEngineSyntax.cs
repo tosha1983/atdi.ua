@@ -41,6 +41,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int MaxLengthAlias { get; }
 
+        int MaxBatchSizeBuffer { get; }
+
         string ColumnExpression(string expression, string alias);
 
         string SortedColumn(string expression, SortDirection direction);

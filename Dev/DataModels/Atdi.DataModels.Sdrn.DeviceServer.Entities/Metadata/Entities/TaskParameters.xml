@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
-    <Field Desc="SDRTaskId" Title="SDRTaskId" Name="SDRTaskId" DataType="Text.20" SourceName="SDRTASKID" SourceType="Column" Required="true"/>
+    <Field Desc="SDRTaskId" Title="SDRTaskId" Name="SDRTaskId" DataType="Text.100" SourceName="SDRTASKID" SourceType="Column" Required="true"/>
     <Field Desc="MeasurementType" Title="MeasurementType" Name="MeasurementType" DataType="Text.100" SourceName="MEASTYPE" SourceType="Column" Required="true"/>
     <Field Desc="MinFreq_MHz" Title="MinFreq_MHz" Name="MinFreq_MHz" DataType="Decimal.22.8" SourceName="MINFREQ" SourceType="Column" Required="true"/>
     <Field Desc="MaxFreq_MHz" Title="MaxFreq_MHz" Name="MaxFreq_MHz" DataType="Decimal.22.8" SourceName="MAXFREQ" SourceType="Column" Required="true"/>
@@ -27,6 +27,7 @@
     <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="STARTTIME" SourceType="Column" Required="true"/>
     <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOPTTIME" SourceType="Column" Required="true"/>
     <Field Desc="NCount" Title="NCount" Name="NCount" DataType="Integer.32" SourceName="NCOUNT" SourceType="Column" Required="true"/>
+    <Field Desc="SweepTime_ms" Title="SweepTime_ms" Name="SweepTime_ms" DataType="Decimal.22.8" SourceName="SWEEPTIME" SourceType="Column" Required="true"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

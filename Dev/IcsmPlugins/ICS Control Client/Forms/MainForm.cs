@@ -14,6 +14,9 @@ using System.Windows.Markup;
 using System.Windows;
 using XICSM.ICSControlClient.ViewModels;
 using System.Reflection;
+using System.Windows.Input;
+using System.Windows.Controls;
+using XICSM.ICSControlClient.Models.Views;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -45,6 +48,15 @@ namespace XICSM.ICSControlClient.Forms
             }
             //_wpfControl = new MainFormWpfControl();
             //this._wpfElementHost.Child = _wpfControl;
+        }
+        private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DataGridRow row = sender as DataGridRow;
+            if (row != null)
+            {
+                //var data = row.Item as ShortMeasTaskViewModel;
+                //System.Windows.MessageBox.Show(data.Id.ToString());
+            }
         }
     }
 }

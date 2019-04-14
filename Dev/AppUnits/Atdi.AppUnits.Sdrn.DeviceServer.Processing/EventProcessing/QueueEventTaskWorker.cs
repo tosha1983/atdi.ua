@@ -105,7 +105,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     var process = _processingDispatcher.Start<SpectrumOccupationProcess>(context.Process);
                                     var soTask = new SOTask();
                                     soTask.sensorParameters = activeSensor.Convert();
-                                    soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                    soTask.durationForSendResultSO = this._config.durationForSendResultSO; // файл конфигурации (с него надо брать)
                                     soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
                                     soTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
                                     soTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
@@ -121,7 +121,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             {
                                 var signalProcess = _processingDispatcher.Start<SignalizationProcess>(context.Process);
                                 var signalTask = new SignalizationTask();
-                                signalTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                signalTask.durationForSendResultSignaling = this._config.durationForSendResultSignaling; // файл конфигурации (с него надо брать)
                                 signalTask.maximumTimeForWaitingResultSignalization = this._config.maximumTimeForWaitingResultSignalization;
                                 signalTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
                                 signalTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
@@ -156,7 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             {
                                 var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(context.Process);
                                 var bandWidtTask = new BandWidthTask();
-                                bandWidtTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                bandWidtTask.durationForSendResultBandWidth = this._config.durationForSendResultBandWidth; // файл конфигурации (с него надо брать)
                                 bandWidtTask.maximumTimeForWaitingResultBandWidth = this._config.maximumTimeForWaitingResultBandWidth;
                                 bandWidtTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
                                 bandWidtTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
@@ -187,21 +187,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     var eventCommand = new EventCommand<SOTask, SpectrumOccupationProcess>(this._logger,  this._repositoryTaskParametersByInt,  this._config);
                                     var listDeferredTasksTemp = new List<TaskParameters>();
                                     var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSOTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
-                                    context.Process.listDeferredTasks = listDeferredTasksTemp;
+                                    if (listDeferredTasksTemp.Count > 0)
+                                    {
+                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                        {
+                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                        }
+                                    }
                                 }
                                 else if (tskParam.MeasurementType == MeasType.Signaling)
                                 {
                                     var eventCommand = new EventCommand<SignalizationTask, SignalizationProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
                                     var listDeferredTasksTemp = new List<TaskParameters>();
                                     var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSignalizationTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
-                                    context.Process.listDeferredTasks = listDeferredTasksTemp;
+                                    if (listDeferredTasksTemp.Count > 0)
+                                    {
+                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                        {
+                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                        }
+                                    }
                                 }
                                 else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
                                 {
                                     var eventCommand = new EventCommand<BandWidthTask, BandWidthProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
                                     var listDeferredTasksTemp = new List<TaskParameters>();
                                     var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextBandWidthTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
-                                    context.Process.listDeferredTasks = listDeferredTasksTemp;
+                                    if (listDeferredTasksTemp.Count > 0)
+                                    {
+                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                        {
+                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                        }
+                                    }
                                 }
                                 else
                                 {

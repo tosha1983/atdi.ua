@@ -33,14 +33,11 @@
             </TextBlock.LayoutTransform>
         </TextBlock>
 
-        <Grid  Margin="0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1"
-			   ClipToBounds="True" Background="Transparent" SizeChanged="chartGrid_SizeChanged" />
-
+        <Grid  Margin="0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1" ClipToBounds="True" Background="Transparent" SizeChanged="chartGrid_SizeChanged" />
         <Canvas Margin="2" Name="textCanvas" ClipToBounds="True" Grid.Column="1" Grid.Row="1">
-            <Canvas Name="chartCanvas" ClipToBounds="True">
-                <Canvas Name="legendCanvas" Background="Transparent" />
+            <Canvas Name="chartCanvas" Background="Transparent" ClipToBounds="True" MouseDown="chartCanvas_MouseDown" MouseMove="chartCanvas_MouseMove" MouseUp="chartCanvas_MouseUp">
+                <Canvas Name="legendCanvas" Background="Transparent" MouseDown="chartCanvas_MouseDown" MouseMove="chartCanvas_MouseMove" MouseUp="chartCanvas_MouseUp" />
             </Canvas>
         </Canvas>
-
     </Grid>
 </UserControl>

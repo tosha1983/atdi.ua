@@ -30,6 +30,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static readonly EventText HandlerCallGetMeasResultsHeaderSpecialMethod = "Call 'GetMeasResultsHeaderSpecial' method";
         public static readonly EventText HandlerCallDeleteMeasTaskMethod = "Call 'DeleteMeasTask' method";
         public static readonly EventText HandlerMeasTaskProcessEnd = "End 'MeasTaskProcess' action '{0}'";
+        public static readonly EventText MeasTimeParamListIncorrect = "Incorrect task parameters (MeasTimeParamList.TimeStart or MeasTimeParamList.PerStart) greater  (MeasTimeParamList.TimeStop or MeasTimeParamList.PerStop)";
         public static readonly EventText HandlerDeleteMeasTaskProcess = "Start 'DeleteMeasTask' for ID  '{0}'";
         public static readonly EventText HandlerRunMeasTaskProcess = "Start 'RunMeasTask' for ID '{0}'";
         public static readonly EventText HandlerStopMeasTaskProcess = "Start 'StopMeasTask' for ID '{0}'";

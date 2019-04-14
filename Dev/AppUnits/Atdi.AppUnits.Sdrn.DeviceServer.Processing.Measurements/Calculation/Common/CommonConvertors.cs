@@ -25,5 +25,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
             return duration;
         }
+
+        public static string GetTaskId(string value)
+        {
+            var result = "";
+            if (value != null)
+            {
+                var words = value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if ((words != null) && (words.Length > 0))
+                {
+                    result = words[0];
+                }
+            }
+            return result;
+        }
     }
 }

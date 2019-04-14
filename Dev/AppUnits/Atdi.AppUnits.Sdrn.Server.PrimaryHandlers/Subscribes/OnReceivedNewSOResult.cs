@@ -16,6 +16,7 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 using Atdi.Modules.Sdrn.Server.Events;
 using Atdi.Common;
 
+
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
     [SubscriptionEvent(EventName = "OnReceivedNewSOResult", SubscriberName = "SubscriberSendMeasResultsProcess")]
@@ -573,6 +574,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 bool isMerge = false;
                 double? diffDates = null;
 
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
+
                 var builderResMeasSearch = this._dataLayer.GetBuilder<MD.IResMeas>().From();
                 builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas, c => c.DataRank);
                 builderResMeasSearch.OrderByAsc(c => c.Id);
@@ -599,30 +603,38 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 if (isMerge)
                 {
                     var builderUpdateResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Update();
-                    builderUpdateResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                    builderUpdateResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                     builderUpdateResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                     builderUpdateResMeas.SetValue(c => c.Status, measResult.Status);
                     builderUpdateResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                     builderUpdateResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
                     builderUpdateResMeas.Where(c => c.Id, ConditionOperator.Equal, idResMeas);
                     queryExecuter.Execute(builderUpdateResMeas);
+
                 }
                 else
                 {
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                    builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                    builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                     builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                     builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                     builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
+                    builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                    builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
+                    builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                     builderInsertIResMeas.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                     {
                         var res = reader.Read();
                         if (res)
+                        {
                             idResMeas = reader.GetValue(c => c.Id);
+                        }
                         return res;
                     });
+
+                    
                 }
 
                 if (measResult.Routes != null)
@@ -1417,9 +1429,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 queryExecuter.BeginTransaction();
 
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
+
                 int valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
@@ -1427,12 +1442,17 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                 builderInsertIResMeas.Select(c => c.Id);
                 queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                 {
                     var res = reader.Read();
                     if (res)
+                    {
                         valInsResMeas = reader.GetValue(c => c.Id);
+                    }
                     return res;
                 });
 
@@ -1440,20 +1460,21 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 {
                     if (measResult.FrequencySamples != null)
                     {
-                        var lstIns = new IQueryInsertStatement<MD.IFreqSampleRaw>[measResult.FrequencySamples.Length];
+                        var lstIns = new IQueryInsertStatement<MD.IResLevels>[measResult.FrequencySamples.Length];
                         for (int i = 0; i < measResult.FrequencySamples.Length; i++)
                         {
                             var item = measResult.FrequencySamples[i];
-                            var builderInsertFreqSampleRaw = this._dataLayer.GetBuilder<MD.IFreqSampleRaw>().Insert();
-                            builderInsertFreqSampleRaw.SetValue(c => c.Freq_MHz, item.Freq_MHz);
-                            builderInsertFreqSampleRaw.SetValue(c => c.LevelMax_dBm, item.LevelMax_dBm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.LevelMin_dBm, item.LevelMin_dBm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.Level_dBm, item.Level_dBm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.Level_dBmkVm, item.Level_dBmkVm);
-                            builderInsertFreqSampleRaw.SetValue(c => c.OccupationPt, item.Occupation_Pt);
-                            builderInsertFreqSampleRaw.SetValue(c => c.ResMeasId, valInsResMeas);
-                            builderInsertFreqSampleRaw.Select(c => c.Id);
-                            lstIns[i] = builderInsertFreqSampleRaw;
+
+                            var builderInsertResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Insert();
+                            builderInsertResLevels.SetValue(c => c.FreqMeas, item.Freq_MHz);
+                            builderInsertResLevels.SetValue(c => c.VMMaxLvl, item.LevelMax_dBm);
+                            builderInsertResLevels.SetValue(c => c.VMinLvl, item.LevelMin_dBm);
+                            builderInsertResLevels.SetValue(c => c.ValueLvl, item.Level_dBm);
+                            builderInsertResLevels.SetValue(c => c.ValueSpect, item.Level_dBmkVm);
+                            builderInsertResLevels.SetValue(c => c.OccupancySpect, item.Occupation_Pt);
+                            builderInsertResLevels.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertResLevels.Select(c => c.Id);
+                            lstIns[i] = builderInsertResLevels;
                         }
                         queryExecuter.ExecuteAndFetch(lstIns, reader =>
                         {
@@ -1541,21 +1562,24 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             var listEmitting = new List<DEV.Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Fetch(queryEmitting, reader =>
             {
                 while (reader.Read())
                 {
                     bool validationResult = true;
+                    var listLevel = new List<int>();
+                    var listCount = new List<int>();
+                    bool validationLevelResult = true;
                     var emitting = new DEV.Emitting();
 
-                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue && reader.GetValue(c => c.StartFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StartFrequency_MHz).Value <= 400000)
+                    if ((reader.GetValue(c => c.StartFrequency_MHz).HasValue && !(reader.GetValue(c => c.StartFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StartFrequency_MHz).Value <= 400000)) || (!reader.GetValue(c => c.StartFrequency_MHz).HasValue))
                     {
                         WriteLog("Incorrect value StartFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
                     }
-                    if (reader.GetValue(c => c.StopFrequency_MHz).HasValue && reader.GetValue(c => c.StopFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StopFrequency_MHz).Value <= 400000)
+                    if ((reader.GetValue(c => c.StopFrequency_MHz).HasValue && !(reader.GetValue(c => c.StopFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StopFrequency_MHz).Value <= 400000)) || (!reader.GetValue(c => c.StopFrequency_MHz).HasValue))
                     {
                         WriteLog("Incorrect value StopFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
@@ -1578,6 +1602,55 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue && reader.GetValue(c => c.TriggerDeviationFromReference).Value >= 0 && reader.GetValue(c => c.TriggerDeviationFromReference).Value <= 1)
                         emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
 
+
+                    if (reader.GetValue(c => c.LevelsDistribution)!=null)
+                    {
+                        var objLevelsDistribution = BinaryDecoder.Deserialize<string>(reader.GetValue(c => c.LevelsDistribution));
+                        if (!string.IsNullOrEmpty(objLevelsDistribution))
+                        {
+                            var wrds = objLevelsDistribution.Split(new char[] { ';'}, StringSplitOptions.RemoveEmptyEntries);
+                            if ((wrds!=null) && (wrds.Length>0))
+                            {
+                                for (int h=0; h< wrds.Length; h++)
+                                {
+                                    var oneString = wrds[h];
+                                    if (!string.IsNullOrEmpty(oneString))
+                                    {
+                                        var wrdLevelCount = oneString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                        if ((wrdLevelCount != null) && (wrdLevelCount.Length == 2))
+                                        {
+                                            int levelValue;   int countValue;
+                                            if ((int.TryParse(wrdLevelCount[0], out levelValue)) && (int.TryParse(wrdLevelCount[1], out countValue)))
+                                            {
+                                                if (levelValue >= -200 && levelValue <= 100)
+                                                    validationLevelResult = true;
+                                                else
+                                                {
+                                                    validationLevelResult = false;
+                                                    WriteLog("Incorrect value readerLevelDist", "ILevelsDistributionRaw");
+                                                }
+
+                                                if (countValue >= 0 && countValue <= Int32.MaxValue)
+                                                    validationLevelResult = true;
+                                                else
+                                                {
+                                                    validationLevelResult = false;
+                                                    WriteLog("Incorrect value readerLevelDist", "ILevelsDistributionRaw");
+                                                }
+
+                                                if (validationLevelResult)
+                                                {
+                                                    listLevel.Add(levelValue);
+                                                    listCount.Add(countValue);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     var emittingParam = new DEV.EmittingParameters();
 
                     if (reader.GetValue(c => c.RollOffFactor).HasValue && reader.GetValue(c => c.RollOffFactor).Value >= 0 && reader.GetValue(c => c.RollOffFactor).Value <= 2.5)
@@ -1587,8 +1660,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
                         emitting.EmittingParameters = emittingParam;
                     }
-                    else
+                    else if (reader.GetValue(c => c.StandardBW).HasValue && !(reader.GetValue(c => c.StandardBW).Value >= 0 && reader.GetValue(c => c.StandardBW).Value <= 1000000))
+                    {
                         WriteLog("Incorrect value StandardBW", "IEmittingRaw");
+                    }
 
                     #region WorkTime
                     var listTime = new List<DEV.WorkTime>();
@@ -1673,41 +1748,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     #endregion
 
                     #region LevelDistribution
-                    var listLevel = new List<int>();
-                    var listCount = new List<int>();
-                    bool validationLevelResult = true;
-                    var queryLevelDist = this._dataLayer.GetBuilder<MD.ILevelsDistributionRaw>()
-                    .From()
-                    .Select(c => c.Id, c => c.level, c => c.count)
-                    .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Fetch(queryLevelDist, readerLevelDist =>
-                    {
-                        while (readerLevelDist.Read())
-                        {
-                            if (readerLevelDist.GetValue(c => c.level).HasValue && readerLevelDist.GetValue(c => c.level).Value >= -200 && readerLevelDist.GetValue(c => c.level).Value <= 100)
-                                validationLevelResult = true;
-                            else
-                            {
-                                validationLevelResult = false;
-                                WriteLog("Incorrect value readerLevelDist", "ILevelsDistributionRaw");
-                            }
-
-                            if (readerLevelDist.GetValue(c => c.count).HasValue && readerLevelDist.GetValue(c => c.count).Value >= 0 && readerLevelDist.GetValue(c => c.count).Value <= Int32.MaxValue)
-                                validationLevelResult = true;
-                            else
-                            {
-                                validationLevelResult = false;
-                                WriteLog("Incorrect value readerLevelDist", "ILevelsDistributionRaw");
-                            }
-
-                            if (validationLevelResult)
-                            {
-                                listLevel.Add(readerLevelDist.GetValue(c => c.level).Value);
-                                listCount.Add(readerLevelDist.GetValue(c => c.count).Value);
-                            }
-                        }
-                        return true;
-                    });
 
                     var levelDist = new DEV.LevelsDistribution();
                     if (listLevel.Count > 0)
@@ -1717,10 +1757,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     emitting.LevelsDistribution = levelDist;
 
-                    var builderLevelDist = this._dataLayer.GetBuilder<MD.ILevelsDistributionRaw>().Delete();
-                    builderLevelDist.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderLevelDist);
-
                     #endregion
 
                     #region Spectrum
@@ -1729,39 +1765,41 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     var listLevelsdBm = new List<float>();
                     var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrumRaw>()
                     .From()
-                    .Select(c => c.Id, c => c.Bandwidth_kHz, c => c.CorrectnessEstimations, c => c.MarkerIndex, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.T1, c => c.T2, c => c.TraceCount)
+                    .Select(c => c.Id, c => c.Bandwidth_kHz, c => c.CorrectnessEstimations, c => c.MarkerIndex, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.T1, c => c.T2, c => c.TraceCount, c => c.LevelsdBm)
                     .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
                     queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                     {
                         while (readerSpectrum.Read())
                         {
                             #region LevelsdBm
-                            var queryLevelsdBm = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevelsRaw>()
-                            .From()
-                            .Select(c => c.Id, c => c.level)
-                            .Where(c => c.SpectrumId, ConditionOperator.Equal, readerSpectrum.GetValue(c => c.Id));
-                            queryExecuter.Fetch(queryLevelsdBm, readerLevelsdBm =>
+
+                            if (readerSpectrum.GetValue(c => c.LevelsdBm) != null)
                             {
-                                while (readerLevelsdBm.Read())
+                                object levelsdBm = BinaryDecoder.Deserialize<float[]>(readerSpectrum.GetValue(c => c.LevelsdBm));
+                                if (levelsdBm != null)
                                 {
-                                    if (readerLevelsdBm.GetValue(c => c.level).HasValue && readerLevelsdBm.GetValue(c => c.level).Value >= -200 && readerLevelsdBm.GetValue(c => c.level).Value <= 50)
-                                        listLevelsdBm.Add((float)readerLevelsdBm.GetValue(c => c.level).Value);
-                                    else
-                                        WriteLog("Incorrect value level", "IDetailSpectrumLevelsRaw");
+                                    var lvldBms = levelsdBm as float[];
+                                    for (int k=0; k< lvldBms.Length; k++)
+                                    {
+                                        if (lvldBms[k] >= -200 && lvldBms[k] <= 50)
+                                            listLevelsdBm.Add((float)lvldBms[k]);
+                                        else
+                                            WriteLog("Incorrect value level", "ISpectrumRaw");
+                                    }
                                 }
-                                return true;
-                            });
+                            }
 
                             if (listLevelsdBm.Count > 0)
                                 spectrum.Levels_dBm = listLevelsdBm.ToArray();
                             else
                                 validationSpectrumResult = false;
 
-                            var builderLevelsdBm = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevelsRaw>().Delete();
-                            builderLevelsdBm.Where(c => c.SpectrumId, ConditionOperator.Equal, readerSpectrum.GetValue(c => c.Id));
-                            queryExecuter.Execute(builderLevelsdBm);
-
                             #endregion
+                            if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
+                            {
+                                spectrum.СorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
+                            }
+
 
                             if (readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).HasValue && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value >= 0.009 && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value <= 400000)
                                 spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
@@ -1794,11 +1832,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             else
                                 WriteLog("Incorrect value SignalLevel_dBm", "ISpectrumRaw");
 
+
                             if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.MarkerIndex).HasValue
-                                && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.MarkerIndex).Value && readerSpectrum.GetValue(c => c.MarkerIndex).Value >= readerSpectrum.GetValue(c => c.T2).Value)
-                                spectrum.MarkerIndex = readerSpectrum.GetValue(c => c.MarkerIndex).Value;
+                            && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.MarkerIndex).Value && readerSpectrum.GetValue(c => c.MarkerIndex).Value <= readerSpectrum.GetValue(c => c.T2).Value)
+                            spectrum.MarkerIndex = readerSpectrum.GetValue(c => c.MarkerIndex).Value;
                             else
-                                WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
+                            WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
 
                             if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.T1).Value >= 0 && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.T2).Value)
                                 spectrum.T1 = readerSpectrum.GetValue(c => c.T1).Value;
@@ -1854,7 +1893,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             var listLevels = new List<float>();
             var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>()
             .From()
-            .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz)
+            .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.ReferenceLevels)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Fetch(queryLevels, readerLevels =>
             {
@@ -1876,30 +1915,26 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         WriteLog("Incorrect value StepFrequency_Hz", "IReferenceLevelsRaw");
                     }
 
-                    var queryLevelsDet = this._dataLayer.GetBuilder<MD.IDetailReferenceLevelsRaw>()
-                    .From()
-                    .Select(c => c.Id, c => c.level)
-                    .Where(c => c.ReferenceLevelId, ConditionOperator.Equal, readerLevels.GetValue(c => c.Id));
-                    queryExecuter.Fetch(queryLevelsDet, readerLevelsDet =>
+
+                    object refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
+                    if (refLevels != null)
                     {
-                        while (readerLevelsDet.Read())
+                        var lvls = refLevels as float[];
+                        for (int k = 0; k < lvls.Length; k++)
                         {
-                            if (readerLevelsDet.GetValue(c => c.level).HasValue && readerLevelsDet.GetValue(c => c.level).Value >= -200 && readerLevelsDet.GetValue(c => c.level).Value <= 50)
-                                listLevels.Add((float)readerLevelsDet.GetValue(c => c.level).Value);
+                            if (lvls[k] >= -200 && lvls[k] <= 50)
+                                listLevels.Add(lvls[k]);
                             else
                                 WriteLog("Incorrect value Level", "IDetailReferenceLevelsRaw");
                         }
-                        return true;
-                    });
+                    }
+
 
                     if (listLevels.Count > 0)
                         level.levels = listLevels.ToArray();
                     else
                         validationLevelsResult = false;
-
-                    var builderDelLevelsDet = this._dataLayer.GetBuilder<MD.IDetailReferenceLevelsRaw>().Delete();
-                    builderDelLevelsDet.Where(c => c.ReferenceLevelId, ConditionOperator.Equal, readerLevels.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderDelLevelsDet);
+                    
                 }
                 return true;
             });
@@ -1922,9 +1957,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 queryExecuter.BeginTransaction();
 
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
+
                 int valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
@@ -1932,12 +1970,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                 builderInsertIResMeas.Select(c => c.Id);
                 queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                 {
                     var res = reader.Read();
                     if (res)
+                    {
                         valInsResMeas = reader.GetValue(c => c.Id);
+                    }
+                    
+
                     return res;
                 });
 
@@ -1950,6 +1995,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var builderInsertReferenceLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Insert();
                         builderInsertReferenceLevels.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
                         builderInsertReferenceLevels.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
+                        if (refLevels.levels != null)
+                        {
+                            builderInsertReferenceLevels.SetValue(c => c.ReferenceLevels, BinaryDecoder.ObjectToByteArray(refLevels.levels));
+                        }
                         builderInsertReferenceLevels.SetValue(c => c.ResMeasId, valInsResMeas);
                         builderInsertReferenceLevels.Select(c => c.Id);
                         queryExecuter
@@ -1959,25 +2008,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             if (res)
                             {
                                 valInsReferenceLevels = readerReferenceLevels.GetValue(c => c.Id);
-                                if (valInsReferenceLevels > 0)
-                                {
-                                    var lstInslevels = new IQueryInsertStatement<MD.IDetailReferenceLevels>[refLevels.levels.Length];
-                                    for (int l = 0; l < refLevels.levels.Length; l++)
-                                    {
-                                        var lvl = refLevels.levels[l];
-
-                                        var builderInsertDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailReferenceLevels>().Insert();
-                                        builderInsertDetailReferenceLevels.SetValue(c => c.level, lvl);
-                                        builderInsertDetailReferenceLevels.SetValue(c => c.ReferenceLevelId, valInsReferenceLevels);
-                                        builderInsertDetailReferenceLevels.Select(c => c.Id);
-                                        lstInslevels[l] = builderInsertDetailReferenceLevels;
-                                    }
-                                    queryExecuter.ExecuteAndFetch(lstInslevels, readerDetailReferenceLevels =>
-                                    {
-                                        return true;
-                                    });
-                                }
-
                             }
                             return true;
                         });
@@ -2001,6 +2031,17 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             builderInsertEmitting.SetValue(c => c.StartFrequency_MHz, emittings[l].StartFrequency_MHz);
                             builderInsertEmitting.SetValue(c => c.StopFrequency_MHz, emittings[l].StopFrequency_MHz);
                             builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emittings[l].TriggerDeviationFromReference);
+                            var levelsDistribution = emittings[l].LevelsDistribution;
+                            if (levelsDistribution != null)
+                            {
+                                var outListStrings = new List<string>();
+                                for (int p = 0; p < levelsDistribution.Levels.Length; p++)
+                                {
+                                    outListStrings.Add(string.Format("{0} {1}", levelsDistribution.Levels[p], levelsDistribution.Count[p]));
+                                }
+                                var outString = string.Join(";", outListStrings);
+                                builderInsertEmitting.SetValue(c => c.LevelsDistribution, BinaryDecoder.ObjectToByteArray(outString));
+                            }
                             builderInsertEmitting.Select(c => c.Id);
                             queryExecuter
                             .ExecuteAndFetch(builderInsertEmitting, readerEmitting =>
@@ -2039,7 +2080,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                                             var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
                                             builderInsertISpectrum.SetValue(c => c.EmittingId, valInsReferenceEmitting);
-                                            builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations);
+                                            builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations==true ? 1: 0);
                                             builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
                                             builderInsertISpectrum.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
                                             builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
@@ -2048,6 +2089,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             builderInsertISpectrum.SetValue(c => c.T1, spectrum.T1);
                                             builderInsertISpectrum.SetValue(c => c.T2, spectrum.T2);
                                             builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                            if (spectrum.Levels_dBm != null)
+                                            {
+                                                builderInsertISpectrum.SetValue(c => c.LevelsdBm, BinaryDecoder.ObjectToByteArray(spectrum.Levels_dBm));
+                                            }
+
                                             builderInsertISpectrum.Select(c => c.Id);
                                             queryExecuter
                                             .ExecuteAndFetch(builderInsertISpectrum, readerISpectrum =>
@@ -2056,24 +2102,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                 if (resSpectrum)
                                                 {
                                                     valInsSpectrum = readerISpectrum.GetValue(c => c.Id);
-                                                    if (valInsSpectrum > 0)
-                                                    {
-                                                        var lstInsLevels_dBm = new IQueryInsertStatement<MD.IDetailSpectrumLevels>[spectrum.Levels_dBm.Length];
-                                                        for (int k = 0; k < spectrum.Levels_dBm.Length; k++)
-                                                        {
-                                                            var level_dBm = spectrum.Levels_dBm[k];
-
-                                                            var builderInsertIDetailReferenceLevels = this._dataLayer.GetBuilder<MD.IDetailSpectrumLevels>().Insert();
-                                                            builderInsertIDetailReferenceLevels.SetValue(c => c.level, level_dBm);
-                                                            builderInsertIDetailReferenceLevels.SetValue(c => c.SpectrumId, valInsSpectrum);
-                                                            builderInsertIDetailReferenceLevels.Select(c => c.Id);
-                                                            lstInsLevels_dBm[k] = builderInsertIDetailReferenceLevels;
-                                                        }
-                                                        queryExecuter.ExecuteAndFetch(lstInsLevels_dBm, readerDetailSpectrumLevels =>
-                                                        {
-                                                            return true;
-                                                        });
-                                                    }
                                                 }
                                                 return true;
                                             });
@@ -2082,47 +2110,54 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         var signalMask = emittings[l].SignalMask;
                                         if (signalMask != null)
                                         {
-                                            var lstInsSignalMask = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
-                                            for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                            if (signalMask.Freq_kHz != null)
                                             {
-                                                var freq_kH = signalMask.Freq_kHz[k];
-                                                var loss_dB = signalMask.Loss_dB[k];
+                                                var lstInsSignalMask = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
+                                                for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
+                                                {
+                                                    var freq_kH = signalMask.Freq_kHz[k];
+                                                    var loss_dB = signalMask.Loss_dB[k];
 
-                                                var builderInsertSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
-                                                builderInsertSignalMask.SetValue(c => c.Freq_kHz, freq_kH);
-                                                builderInsertSignalMask.SetValue(c => c.Loss_dB, loss_dB);
-                                                builderInsertSignalMask.SetValue(c => c.EmittingId, valInsReferenceEmitting);
-                                                builderInsertSignalMask.Select(c => c.Id);
-                                                lstInsSignalMask[k] = builderInsertSignalMask;
+                                                    var builderInsertSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
+                                                    builderInsertSignalMask.SetValue(c => c.Freq_kHz, freq_kH);
+                                                    builderInsertSignalMask.SetValue(c => c.Loss_dB, loss_dB);
+                                                    builderInsertSignalMask.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                    builderInsertSignalMask.Select(c => c.Id);
+                                                    lstInsSignalMask[k] = builderInsertSignalMask;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsSignalMask, readerSignalMask =>
+                                                {
+                                                    return true;
+                                                });
                                             }
-                                            queryExecuter.ExecuteAndFetch(lstInsSignalMask, readerSignalMask =>
-                                            {
-                                                return true;
-                                            });
                                         }
 
+
+                                        /*
                                         var levelsDistribution = emittings[l].LevelsDistribution;
                                         if (levelsDistribution != null)
                                         {
-                                            var lstInsLevelsDistribution = new IQueryInsertStatement<MD.ILevelsDistribution>[levelsDistribution.Levels.Length];
-                                            for (int k = 0; k < levelsDistribution.Levels.Length; k++)
+                                            if (levelsDistribution.Levels != null)
                                             {
-                                                var lvl = levelsDistribution.Levels[k];
-                                                var count = levelsDistribution.Count[k];
-                                                var builderInsertLevelsDistribution = this._dataLayer.GetBuilder<MD.ILevelsDistribution>().Insert();
-                                                builderInsertLevelsDistribution.SetValue(c => c.level, lvl);
-                                                builderInsertLevelsDistribution.SetValue(c => c.count, count);
-                                                builderInsertLevelsDistribution.SetValue(c => c.EmittingId, valInsReferenceEmitting);
-                                                builderInsertLevelsDistribution.Select(c => c.Id);
-                                                lstInsLevelsDistribution[k] = builderInsertLevelsDistribution;
+                                                var lstInsLevelsDistribution = new IQueryInsertStatement<MD.ILevelsDistribution>[levelsDistribution.Levels.Length];
+                                                for (int k = 0; k < levelsDistribution.Levels.Length; k++)
+                                                {
+                                                    var lvl = levelsDistribution.Levels[k];
+                                                    var count = levelsDistribution.Count[k];
+                                                    var builderInsertLevelsDistribution = this._dataLayer.GetBuilder<MD.ILevelsDistribution>().Insert();
+                                                    builderInsertLevelsDistribution.SetValue(c => c.level, lvl);
+                                                    builderInsertLevelsDistribution.SetValue(c => c.count, count);
+                                                    builderInsertLevelsDistribution.SetValue(c => c.EmittingId, valInsReferenceEmitting);
+                                                    builderInsertLevelsDistribution.Select(c => c.Id);
+                                                    lstInsLevelsDistribution[k] = builderInsertLevelsDistribution;
+                                                }
+                                                queryExecuter.ExecuteAndFetch(lstInsLevelsDistribution, readerLevelsDistribution =>
+                                                {
+                                                    return true;
+                                                });
                                             }
-                                            queryExecuter.ExecuteAndFetch(lstInsLevelsDistribution, readerLevelsDistribution =>
-                                            {
-                                                return true;
-                                            });
-
-
                                         }
+                                        */
                                     }
                                 }
                                 return true;
@@ -2168,6 +2203,21 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             return result;
         }
 
+        private void GetIds(string ResultId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId)
+        {
+            subMeasTaskId = -1; subMeasTaskStaId = -1; sensorId = -1; resultId = -1;
+            if (ResultId != null)
+            {
+                string[] word = ResultId.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if ((word != null) && (word.Length == 5))
+                {
+                    subMeasTaskId = int.Parse(word[1]);
+                    subMeasTaskStaId = int.Parse(word[2]);
+                    sensorId = int.Parse(word[3]);
+                    resultId = int.Parse(word[4]);
+                }
+            }
+        }
 
         private void WriteLog(string msg, string tableName)
         {
@@ -2182,6 +2232,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             builderInsertLog.Select(c => c.Id);
             queryExecuter.Execute(builderInsertLog);
         }
+
+       
 
     }
 }

@@ -22,9 +22,9 @@ using Atdi.Common;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGrid : DataGrid
+    public class CustomDataGridSensors : DataGrid
     {
-        public CustomDataGrid()
+        public CustomDataGridSensors()
         {
             this.SelectionChanged += CustomDataGrid_SelectionChanged;
         }
@@ -41,13 +41,15 @@ namespace XICSM.ICSControlClient.ViewModels
             set { SetValue(SelectedItemsListProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new PropertyMetadata(null));
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridSensors), new PropertyMetadata(null));
 
         #endregion
     }
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
         #region Current Objects
+        private int? _allotId;
+        private SDR.MeasurementType _measType = SDR.MeasurementType.Signaling;
         private MeasTaskViewModel _currentMeasTask;
         private IList _currentShortSensor;
         private MP.MapDrawingData _currentMapData;
@@ -62,11 +64,12 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand CreateMeasTaskCommand { get; set; }
         #endregion
 
-        public CreateMeasTaskViewModel()
+        public CreateMeasTaskViewModel(int? allotId)
         {
             this.CreateMeasTaskCommand = new WpfCommand(this.OnCreateMeasTaskCommand);
             this._shortSensors = new ShortSensorDataAdatper();
             this._currentMeasTask = new MeasTaskViewModel();
+            this._allotId = allotId;
             this.SetDefaultVaues();
             this.ReloadShortSensors();
         }
@@ -105,16 +108,82 @@ namespace XICSM.ICSControlClient.ViewModels
         #endregion
         private void SetDefaultVaues()
         {
+            if (_measType == SDR.MeasurementType.Signaling && _allotId.HasValue)
+            {
+                int planId = IM.NullI;
+                IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadOnly);
+                rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
+                rsAllot.Select("ID,CUST_TXT1,CUST_DAT1,CUST_DAT2,PLAN_ID,Plan.BANDWIDTH");
+                for (rsAllot.Open(); !rsAllot.IsEOF(); rsAllot.MoveNext())
+                {
+                    this._currentMeasTask.Name = rsAllot.GetS("CUST_TXT1");
+                    if (rsAllot.GetT("CUST_DAT1") != IM.NullT)
+                        this._currentMeasTask.MeasTimeParamListPerStart = rsAllot.GetT("CUST_DAT1");
+                    else
+                        this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
+
+                    if (rsAllot.GetT("CUST_DAT2") != IM.NullT)
+                        this._currentMeasTask.MeasTimeParamListPerStop = rsAllot.GetT("CUST_DAT2");
+                    else
+                        this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
+
+                    if (rsAllot.GetD("Plan.BANDWIDTH") != IM.NullD)
+                        this._currentMeasTask.MeasFreqParamStep = rsAllot.GetD("Plan.BANDWIDTH");
+                    else
+                        this._currentMeasTask.MeasFreqParamStep = 100;
+                    planId = rsAllot.GetI("PLAN_ID");
+                }
+
+                if (planId != IM.NullI)
+                {
+                    double? minFq = null;
+                    double? maxFq = null;
+
+                    IMRecordset rs = new IMRecordset("FREQ_PLAN_CHAN", IMRecordset.Mode.ReadOnly);
+                    rs.SetWhere("PLAN_ID", IMRecordset.Operation.Eq, planId);
+                    rs.Select("PLAN_ID,FREQ");
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        if (rs.GetD("FREQ") != IM.NullD)
+                        {
+                            if (!minFq.HasValue || minFq.Value > rs.GetD("FREQ"))
+                                minFq = rs.GetD("FREQ");
+                            if (!maxFq.HasValue || maxFq.Value < rs.GetD("FREQ"))
+                                maxFq = rs.GetD("FREQ");
+                        }
+                    }
+                    if (minFq.HasValue)
+                        this._currentMeasTask.MeasFreqParamRgL = minFq.Value;
+                    else
+                        this._currentMeasTask.MeasFreqParamRgL = 900;
+
+                    if (maxFq.HasValue)
+                        this._currentMeasTask.MeasFreqParamRgU = maxFq.Value;
+                    else
+                        this._currentMeasTask.MeasFreqParamRgU = 1000;
+                }
+                else
+                {
+                    this._currentMeasTask.MeasFreqParamRgL = 900;
+                    this._currentMeasTask.MeasFreqParamRgU = 1000;
+                    this._currentMeasTask.MeasFreqParamStep = 100;
+                }
+                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
+            }
+            else
+            {
+                this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
+                this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
+                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
+                this._currentMeasTask.MeasFreqParamRgL = 900;
+                this._currentMeasTask.MeasFreqParamRgU = 1000;
+                this._currentMeasTask.MeasFreqParamStep = 100;
+            }
+
             this._currentMeasTask.MeasDtParamTypeMeasurements = SDR.MeasurementType.Signaling;
-            this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
-            this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
             this._currentMeasTask.MeasTimeParamListTimeStart = DateTime.Today;
             this._currentMeasTask.MeasTimeParamListTimeStop = DateTime.Today.AddDays(1).AddMinutes(-1);
             this._currentMeasTask.MeasTimeParamListPerInterval = 600;
-            this._currentMeasTask.MeasFreqParamRgL = 900;
-            this._currentMeasTask.MeasFreqParamRgU = 1000;
-            this._currentMeasTask.MeasFreqParamStep = 100;
-            this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
             this._currentMeasTask.MeasDtParamRBW = 100;
             this._currentMeasTask.MeasDtParamVBW = 100;
             this._currentMeasTask.MeasDtParamMeasTime = 0.001;
@@ -268,54 +337,64 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
                             {
-                                parser.TextFieldType = FieldType.Delimited;
-                                parser.SetDelimiters(",");
-                                int i = 0;
-                                while (!parser.EndOfData)
+                                try
                                 {
-                                    i++;
-                                    var record = parser.ReadFields();
-
-                                    if (i >= 4)
+                                    parser.TextFieldType = FieldType.Delimited;
+                                    parser.SetDelimiters(";");
+                                    int i = 0;
+                                    while (!parser.EndOfData)
                                     {
-                                        SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
+                                        i++;
+                                        var record = parser.ReadFields();
 
-                                        if (record[9].TryToDouble().HasValue)
+                                        if (i >= 4)
                                         {
-                                            refSig.Frequency_MHz = record[9].TryToDouble().Value;
+                                            SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
 
-                                            IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
-                                            rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
-                                            rs2.Select("ID,Station.BW");
-                                            for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+                                            if (record[9].TryToDouble().HasValue)
                                             {
-                                                var bw = rs2.GetD("Station.BW");
-                                                if (bw != 0 && bw != IM.NullD)
-                                                    refSig.LevelSignal_dBm = bw;
-                                            }
+                                                refSig.Frequency_MHz = record[9].TryToDouble().Value;
 
-                                            if (refSig.LevelSignal_dBm == 0)
-                                            {
-                                                IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
-                                                rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
-                                                rs.Select("ID,Station.BW");
-                                                for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                                                rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                rs2.Select("ID,Station.BW");
+                                                for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                                                 {
-                                                    var bw = rs.GetD("Station.BW");
+                                                    var bw = rs2.GetD("Station.BW");
                                                     if (bw != 0 && bw != IM.NullD)
                                                         refSig.LevelSignal_dBm = bw;
                                                 }
+
+                                                if (refSig.LevelSignal_dBm == 0)
+                                                {
+                                                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                                                    rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                    rs.Select("ID,Station.BW");
+                                                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                    {
+                                                        var bw = rs.GetD("Station.BW");
+                                                        if (bw != 0 && bw != IM.NullD)
+                                                            refSig.LevelSignal_dBm = bw;
+                                                    }
+                                                }
                                             }
+
+
+                                            if (record[4].TryToDouble().HasValue)
+                                                refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
+
+                                            refSig.LevelSignal_dBm = 0;
+                                            listRefSig.Add(refSig);
                                         }
-
-
-                                        if (record[4].TryToDouble().HasValue)
-                                            refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
-
-                                        refSig.LevelSignal_dBm = 0;
-                                        listRefSig.Add(refSig);
                                     }
                                 }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("Incorrect format file: " + openFile.FileName + "!");
+                                    return;
+                                }
+
+
                             }
                             refSit.ReferenceSignal = listRefSig.ToArray();
                             refSit.SensorId = shortSensor.Id;
@@ -329,7 +408,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                 {
                     stationsList.Add(new SDR.MeasStation() { StationId = new SDR.MeasStationIdentifier() { Value = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id).Id.Value } });
-                };
+                }
 
                 var measTask = new SDR.MeasTask()
                 {
@@ -409,9 +488,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
                 Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
                 Location = new Models.Location(lon, lat),
-                Opacity = 0.5,
-                Height = 5,
-                Width = 5
+                Opacity = 0.85,
+                Width = 10,
+                Height = 10
             };
         }
         private void RedrawMap()

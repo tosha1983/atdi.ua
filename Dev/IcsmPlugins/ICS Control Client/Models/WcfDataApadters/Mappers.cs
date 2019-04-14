@@ -193,7 +193,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SensorName = source.SensorName,
                 SensorTechId = source.SensorTechId,
                 CountStationMeasurements = source.CountStationMeasurements,
-                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements
+                CountUnknownStationMeasurements = source.CountUnknownStationMeasurements,
+                StartTime = source.StartTime,
+                StopTime = source.StopTime
             };
         }
 
@@ -261,6 +263,47 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 RBW = source.RBW.ToNull(),
                 TimeOfMeasurements = source.TimeOfMeasurements,
                 VBW = source.VBW.ToNull()
+            };
+        }
+        public static VM.EmittingViewModel Map(SDR.Emitting source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.EmittingViewModel
+            {
+                StartFrequency_MHz = source.StartFrequency_MHz,
+                StopFrequency_MHz = source.StopFrequency_MHz,
+                CurentPower_dBm = source.CurentPower_dBm,
+                ReferenceLevel_dBm = source.ReferenceLevel_dBm,
+                MeanDeviationFromReference = source.MeanDeviationFromReference,
+                TriggerDeviationFromReference = source.TriggerDeviationFromReference,
+                Bandwidth_kHz = source.Spectrum.Bandwidth_kHz,
+                CorrectnessEstimations = source.Spectrum.CorrectnessEstimations,
+                TraceCount = source.Spectrum.TraceCount,
+                SignalLevel_dBm = source.Spectrum.SignalLevel_dBm,
+                RollOffFactor = source.EmittingParameters.RollOffFactor,
+                StandardBW = source.EmittingParameters.StandardBW,
+                WorkTimes = source.WorkTimes,
+                Spectrum = source.Spectrum,
+                LevelsDistribution = source.LevelsDistribution
+            };
+        }
+        public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.EmittingWorkTimeViewModel
+            {
+                StartEmitting = source.StartEmitting,
+                StopEmitting = source.StopEmitting,
+                HitCount = source.HitCount,
+                PersentAvailability = source.HitCount
             };
         }
     }
