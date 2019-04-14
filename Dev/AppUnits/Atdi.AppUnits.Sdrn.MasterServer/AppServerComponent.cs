@@ -103,19 +103,21 @@ namespace Atdi.AppUnits.Sdrn.MasterServer
             {
                 dataBusDispatcher.Activate();
                 Logger.Info(Contexts.ThisComponent, Categories.Activating, Events.DispatcherWasActivated);
-                var publisher = this.Resolver.Resolve<IPublisher>();
-                var envelope = publisher.CreateEnvelope<TestMessage1, TestDeliveryObject1>();
-                envelope.DeliveryObject = new TestDeliveryObject1
-                {
-                    Index = 1,
-                    Data = "MasterServer.Start"
-                };
-                envelope.To = "MasterServer";
 
-                for (int i = 0; i < 10000; i++)
-                {
-                    publisher.Send(envelope);
-                }
+                //some test
+                //var publisher = this.Resolver.Resolve<IPublisher>();
+                //var envelope = publisher.CreateEnvelope<TestMessage1, TestDeliveryObject1>();
+                //envelope.DeliveryObject = new TestDeliveryObject1
+                //{
+                //    Index = 1,
+                //    Data = "MasterServer.Start"
+                //};
+                //envelope.To = "MasterServer";
+
+                //for (int i = 0; i < 10000; i++)
+                //{
+                //    publisher.Send(envelope);
+                //}
                 
             });
 
