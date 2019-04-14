@@ -13,7 +13,7 @@ namespace Atdi.Modules.AmqpBroker
         public ConnectionFactory(IBrokerObserver brokerObserver)
         {
             this._brokerObserver = brokerObserver;
-            this._brokerObserver.Verbouse("RabbitMQ.ConnectionFactory", $"The connection factory is initialized successfully", this);
+            this._brokerObserver.Verbouse("AmqpBroker.ConnectionFactory", $"The connection factory is initialized successfully", this);
         }
 
         public Connection Create(ConnectionConfig config)

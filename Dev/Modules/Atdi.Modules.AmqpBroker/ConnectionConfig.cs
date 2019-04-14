@@ -22,5 +22,10 @@ namespace Atdi.Modules.AmqpBroker
         public string Password { get; set; }
 
         public bool? AutoRecovery { get; set; }
+
+        public override string ToString()
+        {
+            return $"Name = '{ConnectionName}', Host = '{HostName}', Port = '{Port}', VirtualHost = '{VirtualHost}', User = '{UserName}'";
+        }
     }
 }
