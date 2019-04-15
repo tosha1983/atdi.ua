@@ -48,6 +48,7 @@
     <Compile Include="ISdrnMessagePublisher.cs" />
     <Compile Include="ISdrnServerEnvironment.cs" />
     <Compile Include="ISdrnOutgoingEnvelope.cs" />
+    <Compile Include="ISdrnServerEnvironmentModifier.cs" />
     <Compile Include="SdrnMessageDispatcherState.cs" />
     <Compile Include="SdrnMessageHandlingStatus.cs" />
     <Compile Include="ISdrnMessageHandler.cs" />

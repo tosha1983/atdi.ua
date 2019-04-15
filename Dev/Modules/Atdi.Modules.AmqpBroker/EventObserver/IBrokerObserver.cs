@@ -11,7 +11,7 @@ namespace Atdi.Modules.AmqpBroker
         void OnEvent(IBrokerEvent brokerEvent);
     }
 
-    public static class BrokerObserverExtention
+    internal static class BrokerObserverExtention
     {
         private class Event : IBrokerEvent
         {

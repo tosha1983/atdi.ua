@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{10B0219C-440E-4DA1-88CC-A83D61E933EF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Build.Sdrn.MasterServer</RootNamespace>
+    <AssemblyName>Atdi.Build.Sdrn.MasterServer</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.DataBus\Atdi.Api.DataBus.csproj">
+      <Project>{99db48bc-14ca-4088-8927-5ad2e5ff4d69}</Project>
+      <Name>Atdi.Api.DataBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers\Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.csproj">
+      <Project>{17182aaf-af86-4cad-a590-a535a16c36c2}</Project>
+      <Name>Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.MasterServer\Atdi.AppUnits.Sdrn.MasterServer.csproj">
+      <Project>{d0e50a3f-ac3f-4206-8239-23915df97dfb}</Project>
+      <Name>Atdi.AppUnits.Sdrn.MasterServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.DataBus\Atdi.Contracts.Api.DataBus.csproj">
+      <Project>{79b58893-5c73-4f83-81d2-30850a415975}</Project>
+      <Name>Atdi.Contracts.Api.DataBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj">
+      <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
+      <Name>Atdi.DataModels.Api.DataBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.AmqpBroker\Atdi.Modules.AmqpBroker.csproj">
+      <Project>{714f342f-3838-4088-80e5-a54c4173b0ea}</Project>
+      <Name>Atdi.Modules.AmqpBroker</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)Atdi.Modules.AmqpBroker.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Api.DataBus.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Api.DataBus.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Api.DataBus.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

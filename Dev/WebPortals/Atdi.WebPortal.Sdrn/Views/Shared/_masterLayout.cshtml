@@ -1,0 +1,46 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment _env
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <environment include="Development">
+    @*<link rel="stylesheet" href="~/lib/materialize/css/materialize.css" media="screen,projection" />*@
+    @RenderSection("DevStylesheets", required: false)
+    </environment>
+    <environment exclude="Development">
+    @*<link rel="stylesheet" href="~/lib/materialize/css/materialize.min.css" media="screen,projection" />*@
+    @RenderSection("ProdStylesheets", required: false)
+    </environment>
+    @if (_env.EnvironmentName == "Development" && IsSectionDefined("ProdStylesheets"))
+    {
+        IgnoreSection("ProdStylesheets");
+    }
+    @if (_env.EnvironmentName != "Development" && IsSectionDefined("DevStylesheets"))
+    {
+        IgnoreSection("DevStylesheets");
+    }
+</head>
+<body class="portal">
+    @RenderBody()
+    <environment include="Development">
+    @*<script type="text/javascript" src="~/lib/materialize/js/materialize.js"></script>
+    <script type="text/javascript" src="~/js/materialize.init.js"></script>*@
+    @RenderSection("DevScripts", required: false)
+    </environment>
+    <environment exclude="Development">
+    @*<script type="text/javascript" src="~/lib/materialize/js/materialize.min.js"></script>
+    <script type="text/javascript" src="~/js/materialize.init.js"></script>*@
+    @RenderSection("ProdScripts", required: false)
+    </environment>
+    @if (_env.EnvironmentName == "Development" && IsSectionDefined("ProdScripts"))
+    {
+        IgnoreSection("ProdScripts");
+    }
+    @if (_env.EnvironmentName != "Development" && IsSectionDefined("DevScripts"))
+    {
+        IgnoreSection("DevScripts");
+    }
+</body>
+</html>

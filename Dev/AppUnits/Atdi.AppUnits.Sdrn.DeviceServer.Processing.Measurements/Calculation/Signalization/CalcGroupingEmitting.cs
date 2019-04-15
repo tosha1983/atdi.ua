@@ -277,6 +277,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             //константа 
             int TimeBetweenWorkTimes_sec = 60;
+            int TypeJoinSpectrum = 0; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
             //константа 
 
             try
@@ -340,6 +341,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                    
                     MasterEmitting.WorkTimes = WorkTimes.ToArray();
                 }
+                // обединение уровней
+                if (TypeJoinSpectrum != 0)
+                {
+                    bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum);
+                }
             }
             catch (Exception ex)
             {
@@ -393,6 +399,67 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 WorkTimes = emitting.WorkTimes
             };
             return emitting1;
+        }
+        private static bool JoinSpectrum(ref Spectrum MasterSpectrum, Spectrum AttachableSpectrum, int TypeJoinSpectrum, double NoiseLevel_dBm)
+        {// НЕ ТЕСТИРОВАННО
+
+            // TypeJoinSpectrum = 2 пока игнорируется
+            bool done = false;
+            // вычисление старта спектра
+            double minStartFreq_Hz =1000000.0 * Math.Min(MasterSpectrum.SpectrumStartFreq_MHz, MasterSpectrum.SpectrumStartFreq_MHz);
+            double MinStep_Hz = 1000*Math.Min(MasterSpectrum.SpectrumSteps_kHz, MasterSpectrum.SpectrumSteps_kHz);
+            double maxFreq_Hz = 1000.0*Math.Max(1000.0*MasterSpectrum.SpectrumStartFreq_MHz + MasterSpectrum.SpectrumSteps_kHz * (MasterSpectrum.Levels_dBm.Length - 1),
+                1000.0*AttachableSpectrum.SpectrumStartFreq_MHz + AttachableSpectrum.SpectrumSteps_kHz * (AttachableSpectrum.Levels_dBm.Length - 1));
+            int NewLevelArrCount = (int)Math.Ceiling((maxFreq_Hz - minStartFreq_Hz) / MinStep_Hz);
+            float[] NewLevels_dBm = new float[NewLevelArrCount]; // массив с уровнями
+            if (Math.Abs(MasterSpectrum.SpectrumSteps_kHz - MasterSpectrum.SpectrumSteps_kHz)<0.001)
+            {
+                // сетки совпали просто складываем
+                for (int i = 0; NewLevelArrCount >i; i++)
+                {
+                    NewLevels_dBm[i] = -200;
+                    double curFreq = minStartFreq_Hz + i * MinStep_Hz;
+                    int indexMaster = (int)Math.Round((curFreq - MasterSpectrum.SpectrumStartFreq_MHz*1000000)/MinStep_Hz);
+                    int indexAttachable = (int)Math.Round((curFreq - AttachableSpectrum.SpectrumStartFreq_MHz * 1000000) / MinStep_Hz);
+                    if ((indexMaster>=0)&&(indexMaster < MasterSpectrum.Levels_dBm.Length))
+                    {
+                        NewLevels_dBm[i] = MasterSpectrum.Levels_dBm[indexMaster];
+                    }
+                    if ((indexAttachable >= 0) && (indexAttachable < AttachableSpectrum.Levels_dBm.Length))
+                    {
+                        if (NewLevels_dBm[i] < AttachableSpectrum.Levels_dBm[indexAttachable]) { NewLevels_dBm[i] = AttachableSpectrum.Levels_dBm[indexAttachable]; }
+                    }
+                }
+            }
+            else 
+            {
+                double deltaLevelMaster = 10*Math.Log10(MasterSpectrum.SpectrumSteps_kHz * 1000 / MinStep_Hz);
+                double deltaLevelAttachable = 10*Math.Log10(AttachableSpectrum.SpectrumSteps_kHz * 1000 / MinStep_Hz);
+                // сетки не совпали редкое явление но нужно складывать
+                for (int i = 0; NewLevelArrCount > i; i++)
+                {
+                    NewLevels_dBm[i] = -200;
+                    double curFreq = minStartFreq_Hz + i * MinStep_Hz;
+                    int indexMaster = (int)Math.Round((curFreq - MasterSpectrum.SpectrumStartFreq_MHz * 1000000) / (MasterSpectrum.SpectrumSteps_kHz*1000));
+                    int indexAttachable = (int)Math.Round((curFreq - AttachableSpectrum.SpectrumStartFreq_MHz * 1000000) / (AttachableSpectrum.SpectrumSteps_kHz*1000));
+                    if ((indexMaster >= 0) && (indexMaster < MasterSpectrum.Levels_dBm.Length))
+                    {
+                        NewLevels_dBm[i] = MasterSpectrum.Levels_dBm[indexMaster];
+                    }
+                    if ((indexAttachable >= 0) && (indexAttachable < AttachableSpectrum.Levels_dBm.Length))
+                    {
+                        if (NewLevels_dBm[i] < AttachableSpectrum.Levels_dBm[indexAttachable]) { NewLevels_dBm[i] = AttachableSpectrum.Levels_dBm[indexAttachable]; }
+                    }
+                }
+
+            }
+            Spectrum spectrum = CalcSearchInterruption.CreateSpectrum(NewLevels_dBm, MinStep_Hz, minStartFreq_Hz, NoiseLevel_dBm);
+            if (spectrum.СorrectnessEstimations)
+            {
+                MasterSpectrum = spectrum;
+            }
+            done = true;
+            return done;
         }
     }
 }

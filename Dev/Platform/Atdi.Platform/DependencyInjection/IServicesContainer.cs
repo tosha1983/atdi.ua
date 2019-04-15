@@ -31,6 +31,10 @@ namespace Atdi.Platform.DependencyInjection
         void RegisterInstance<TService>(TService instance, ServiceLifetime lifetime = ServiceLifetime.Transient)
             where TService : class;
 
+        void RegisterInstance<TService1, TService2>(TService1 instance, ServiceLifetime lifetime = ServiceLifetime.Transient)
+            where TService1 : class
+            where TService2 : class;
+
         void RegisterInstance(Type serviceType, object instance, ServiceLifetime lifetime = ServiceLifetime.Transient);
 
 

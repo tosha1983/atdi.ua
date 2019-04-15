@@ -59,6 +59,18 @@ namespace Atdi.Modules.AmqpBroker
             return new Channel(this, _logger);
         }
 
+        public bool IsOpen
+        {
+            get
+            {
+                if (this._connection != null)
+                {
+                    return this._connection.IsOpen;
+                }
+                return false;
+            }
+        }
+
         public void EstablishConnection()
         {
             if (this._connection != null)
