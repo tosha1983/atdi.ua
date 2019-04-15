@@ -14,6 +14,11 @@ namespace Atdi.DataModels.Sdrns
     public enum MeasurementType
     {
         /// <summary>
+        /// Monitoring stations
+        /// </summary>
+        [EnumMember]
+        MonitoringStations,
+        /// <summary>
         /// Spectrum occupation
         /// </summary>
         [EnumMember]
@@ -78,11 +83,6 @@ namespace Atdi.DataModels.Sdrns
         /// </summary>
         //[EnumMember]
         //Location,
-        /// <summary>
-        /// Monitoring stations
-        /// </summary>
-        [EnumMember]
-        MonitoringStations,
         /// <summary>
         /// Signaling unauthorized emissions
         /// </summary>
