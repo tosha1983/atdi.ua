@@ -99,7 +99,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 double winBW = (stop - start) * windowBW;
                 if ((start + stop - winBW) / 2 > 0) { start_ = (int)((start + stop - winBW) / 2.0); } else { start_ = 0; }
                 if ((start + stop + winBW) / 2 < levels.Length - 1) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = levels.Length - 1; }
-
                 Emitting emitting = new Emitting();
                 float[] templevel = new float[stop_ - start_];
                 Array.Copy(levels, start_, templevel, 0, stop_ - start_);
@@ -170,7 +169,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     emitting.Spectrum.Levels_dBm = templevel;
                     emitting.Spectrum.СorrectnessEstimations = false;
                 }
-
                 emitting.ReferenceLevel_dBm = 0;
                 emitting.CurentPower_dBm = 0;
                 for (int j = start; j < stop; j++)
@@ -189,8 +187,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return emittings.ToArray();
         }
-
-    
         private static bool CalcBW(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, int NumberIgnoredPoints, ref int IndexStart, ref int IndexStop)
         {
             IndexStart = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
@@ -347,5 +343,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return Spectrum;
         }
+
     }
 }

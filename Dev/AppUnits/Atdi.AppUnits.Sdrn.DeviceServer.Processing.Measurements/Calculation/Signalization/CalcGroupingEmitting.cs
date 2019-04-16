@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool CalcGrouping(Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary,  ILogger logger)
+        public static bool CalcGrouping(Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary,  ILogger logger, double NoiseLevel_dBm)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (existTheSameEmitting)
                         {
                             var em = emittingsSummaryTemp[j];
-                            JoinEmmiting(ref em, EmittingsRaw[i], logger); emittingsSummaryTemp[j] = em;
+                            JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm); emittingsSummaryTemp[j] = em;
                             isSuccess = true;
                             break;
                         }
@@ -69,7 +69,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (existTheSameEmitting)
                             {
                                 var em = emittingsTempTemp[l];
-                                JoinEmmiting(ref em, EmittingsRaw[i], logger);
+                                JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm);
                                 emittingsTempTemp[l] = em;
                                 break;
                             }
@@ -109,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (existTheSameEmitting)
                         {
                             var em = emittingsSummaryTemp[i];
-                            JoinEmmiting(ref em, emittingsSummaryTemp[j], logger);
+                            JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
                             emittingsSummaryTemp[i] = em;
                             emittingsSummaryTemp.RemoveRange(j, 1);
                             j--;
@@ -125,7 +125,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (existTheSameEmitting)
                         {
                             var em = emittingsTempTemp[i];
-                            JoinEmmiting(ref em, emittingsTempTemp[j], logger);
+                            JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
                             emittingsTempTemp[i] = em;
                             emittingsTempTemp.RemoveRange(j, 1);
                             j--;
@@ -199,7 +199,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="MasterEmitting"></param>
         /// <param name="AttachableEmitting"></param>
         /// <returns></returns>
-        public static bool JoinEmmiting(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger)
+        public static bool JoinEmmiting(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger, double NoiseLevel_dBm)
         {
             //константа 
             double CriticalDeltaPow_dB = 10;
@@ -210,13 +210,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // определяем какое излучение более качественно 
                 if ((MasterEmitting.Spectrum.СorrectnessEstimations) && (!AttachableEmitting.Spectrum.СorrectnessEstimations))
                 {// коректен мастер
-                    res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting,logger);
+                    res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting,logger, NoiseLevel_dBm);
                 }
                 else if ((!MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations))
                 {// коректно второе
 
                     AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                    res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger);
+                    res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
                     MasterEmitting = CreatIndependEmitting(AttachableEmitting);
                 }
                 else if ((MasterEmitting.Spectrum.СorrectnessEstimations) || (AttachableEmitting.Spectrum.СorrectnessEstimations))
@@ -227,12 +227,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         if (DeltaPow > 0)
                         {
-                            res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger);
+                            res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
                         }
                         else
                         {
                             AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                            res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger);
+                            res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
                             MasterEmitting = CreatIndependEmitting(AttachableEmitting);
                         }
                     }
@@ -240,12 +240,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {// если мощности не критичны сопоставим детализацию сигнала 
                         if (MasterEmitting.Spectrum.Levels_dBm.Length >= AttachableEmitting.Spectrum.Levels_dBm.Length)
                         {
-                            res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger);
+                            res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
                         }
                         else
                         {
                             AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                            res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger);
+                            res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
                             MasterEmitting = CreatIndependEmitting(AttachableEmitting);
                         }
                     }
@@ -255,12 +255,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     double DeltaPow = (MasterEmitting.CurentPower_dBm - AttachableEmitting.CurentPower_dBm);
                     if (DeltaPow > 0)
                     {
-                        res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger);
+                        res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
                     }
                     else
                     {
                         AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                        res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger);
+                        res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
                         MasterEmitting = CreatIndependEmitting(AttachableEmitting);
                     }
 
@@ -273,7 +273,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // формируем результирующее излуение
             return res;
         }
-        public static bool JoinSecondToFirst(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger)
+        public static bool JoinSecondToFirst(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger, double NoiseLevel_dBm)
         {
             //константа 
             int TimeBetweenWorkTimes_sec = 60;
@@ -344,7 +344,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // обединение уровней
                 if (TypeJoinSpectrum != 0)
                 {
-                    bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum);
+                    bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
                 }
             }
             catch (Exception ex)
