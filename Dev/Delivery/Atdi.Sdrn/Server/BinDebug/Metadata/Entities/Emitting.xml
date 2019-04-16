@@ -20,6 +20,7 @@
     <Field Desc="RollOffFactor" Title="RollOffFactor" Name="RollOffFactor" DataType="Decimal.22.8" SourceName="ROLLOFFACTOR" SourceType="Column" Required="false"/>
     <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Decimal.22.8" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsDistribution" Title="LevelsDistribution" Name="LevelsDistribution" DataType="Bytes.MAX" SourceName="LEVELSDISTR" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation Emitting to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
