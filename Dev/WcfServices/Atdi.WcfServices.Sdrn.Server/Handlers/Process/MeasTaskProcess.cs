@@ -96,6 +96,23 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     else
                                     {
                                         measTask.CreateAllSubTasks();
+                                        if (measTask.RefSituation != null)
+                                        {
+                                            for (int p = 0; p < measTask.RefSituation.Length; p++)
+                                            {
+                                                var refSituation = measTask.RefSituation[p];
+                                                if (refSituation != null)
+                                                {
+                                                    for (int z = 0; z < refSituation.ReferenceSignal.Length; z++)
+                                                    {
+                                                        if (refSituation.ReferenceSignal[z] != null)
+                                                        {
+                                                            MeasTaskExtend.SetDefaultSignalMask(ref refSituation.ReferenceSignal[z]);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 if ((measTask.Stations != null) && (measTask.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null))

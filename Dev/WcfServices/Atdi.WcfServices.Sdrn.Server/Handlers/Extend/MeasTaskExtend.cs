@@ -7,6 +7,31 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
     public static class MeasTaskExtend
     {
+        public static void SetDefaultSignalMask(ref ReferenceSignal referenceSignal)
+        {
+            //const 
+            double PersentBW30dBForDefaultMask = 1;
+            double PersentBW45dBForDefaultMask = 10;
+            double PersentBW60dBForDefaultMask = 100;
+            // end const
+            if (referenceSignal.SignalMask == null)
+            {
+                referenceSignal.SignalMask = new SignalMask();
+                referenceSignal.SignalMask.Freq_kHz = new double[8]{
+                    -(PersentBW60dBForDefaultMask/100+1)*(referenceSignal.Bandwidth_kHz/2.0),
+                    -(PersentBW45dBForDefaultMask/100+1)*(referenceSignal.Bandwidth_kHz/2.0),
+                    -(PersentBW30dBForDefaultMask/100+1)*(referenceSignal.Bandwidth_kHz/2.0),
+                    -(referenceSignal.Bandwidth_kHz/2.0),
+                    (referenceSignal.Bandwidth_kHz/2.0),
+                    (PersentBW30dBForDefaultMask/100+1)*(referenceSignal.Bandwidth_kHz/2.0),
+                    (PersentBW45dBForDefaultMask/100+1)*(referenceSignal.Bandwidth_kHz/2.0),
+                    (PersentBW60dBForDefaultMask/100+1)*(referenceSignal.Bandwidth_kHz/2.0)
+                };
+                referenceSignal.SignalMask.Loss_dB = new float[8] {60, 45,30,0,0,30,45,60};
+
+            }
+        }
+
         public static void CreateAllSubTasks(this MeasTask task)
         {
             if (task.Status == Status.N.ToString())
