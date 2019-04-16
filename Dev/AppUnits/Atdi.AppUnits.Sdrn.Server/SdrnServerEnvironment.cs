@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.Server
 {
-    public class SdrnServerEnvironment : ISdrnServerEnvironment
+    public class SdrnServerEnvironment : ISdrnServerEnvironment, ISdrnServerEnvironmentModifier
     {
         private readonly static string _sdatas = "Atdi.AppServer.AppService.SdrnsController";
 
@@ -26,6 +26,8 @@ namespace Atdi.AppUnits.Sdrn.Server
             this.ServerInstance = licenseData.Instance;
             this.LicenseNumber = licenseData.LicenseNumber;
             this.LicenseDateStop = licenseData.StopDate;
+
+            this.ServerRoles = ServerRole.SdrnServer;
         }
 
         private string AssemblyDirectory
@@ -80,10 +82,19 @@ namespace Atdi.AppUnits.Sdrn.Server
             }
         }
 
+        public void AddServerRole(ServerRole serverRole)
+        {
+            this.ServerRoles |= serverRole;
+        }
+
         public string ServerInstance { get; set; }
 
         public string LicenseNumber { get; set; }
 
         public DateTime LicenseDateStop { get; set; }
+
+        public ServerRole ServerRoles { get; set; }
+
+        public string MasterServerInstance { get; set; }
     }
 }

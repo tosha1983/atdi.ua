@@ -107,7 +107,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (error._ex != null)
                         {
                             /// реакция на ошибку выполнения команды
-                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
+                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
                             switch (error._failureReason)
                             {
                                 case CommandFailureReason.DeviceIsBusy:

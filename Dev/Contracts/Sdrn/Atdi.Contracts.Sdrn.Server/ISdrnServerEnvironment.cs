@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.Server
 {
+    [Flags]
+    public enum ServerRole
+    {
+        SdrnServer = 1,
+        MasterServer = 2,
+        AggregationServer = 4
+    }
+
     public interface ISdrnServerEnvironment
     {
         string ServerInstance { get;  }
@@ -13,6 +21,10 @@ namespace Atdi.Contracts.Sdrn.Server
         string LicenseNumber { get; }
 
         DateTime LicenseDateStop { get; }
+
+        ServerRole ServerRoles { get; }
+
+        string MasterServerInstance { get; }
     }
 
     public static class SdrnServerEnvironmentExtentions
