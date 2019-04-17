@@ -14,5 +14,9 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         public string LicenseNumber => throw new NotImplementedException();
 
         public DateTime LicenseDateStop => throw new NotImplementedException();
+
+        public ServerRole ServerRoles => throw new NotImplementedException();
+
+        public string MasterServerInstance => throw new NotImplementedException();
     }
 }
