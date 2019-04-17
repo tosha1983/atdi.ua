@@ -240,7 +240,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 index_max = stop;
                 level_max = levels[stop];
             }
-            for (int i = start+1; i >= stop-1; i++)
+            for (int i = start+1; i <= stop-1; i++)
             {
                 if (levels[i] >= level_max)
                 {

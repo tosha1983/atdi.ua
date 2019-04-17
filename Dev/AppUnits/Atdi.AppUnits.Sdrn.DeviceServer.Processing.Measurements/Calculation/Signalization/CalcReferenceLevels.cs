@@ -22,6 +22,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double PercentForCalcNoise = 10;
             //const
 
+
             if (triggerLevel_dBm_Hz == -999)
             {// расчитываем уровеньшума по трейсу // Надо проверить
                 triggerLevel_dBm_Hz = GetNoiseLeveldBm(Trace, PercentForCalcNoise) - 10*Math.Log10(Trace.Freq_Hz[1] - Trace.Freq_Hz[0]);
@@ -34,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             for (int i = 0; i < referenceLevels.levels.Length; i++)
             {
                 // расчет уровня для одной частоты StartFrequency_Hz + StepFrequency_Hz*i
-                referenceLevels.levels[i] = (float)(triggerLevel_dBm_Hz + 10.0 * Math.Log10(referenceLevels.StepFrequency_Hz));
+                referenceLevels.levels[i] = (float)(triggerLevel_dBm_Hz + 10.0 * Math.Log10(referenceLevels.StepFrequency_Hz) + allowableExcess_dB);
                 double levelFromSignal_mW = 0;
                 double gainInFreq = CalcSDRParameters.SDRGainFromFrequency(mesureTraceDeviceProperties, referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i));
                 if ((referenceSituation != null)&&(referenceSituation.ReferenceSignal != null))
@@ -45,8 +46,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     for (int j = 0; j < referenceSituation.ReferenceSignal.Length; j++)
                     {
                         // проверка на попадение
-                        double freqStartSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz -  (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz/2000);
-                        double freqStopSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz/ 2000);
+                        double freqStartSignal;
+                        double freqStopSignal; 
+                        if ((referenceSituation.ReferenceSignal[j].SignalMask != null) && 
+                            (referenceSituation.ReferenceSignal[j].SignalMask.Freq_kHz!=null)&&
+                            referenceSituation.ReferenceSignal[j].SignalMask.Freq_kHz.Length>1)
+                        {
+                            freqStartSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + (double)(referenceSituation.ReferenceSignal[j].SignalMask.Freq_kHz[0]/ 1000);
+                            freqStopSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + (double)(referenceSituation.ReferenceSignal[j].SignalMask.Freq_kHz[referenceSituation.ReferenceSignal[j].SignalMask.Freq_kHz.Length-1] / 1000);
+                        }
+                        else
+                        {
+                            freqStartSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz - (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz / 2000);
+                            freqStopSignal = referenceSituation.ReferenceSignal[j].Frequency_MHz + (double)(referenceSituation.ReferenceSignal[j].Bandwidth_kHz / 2000);
+                        }
                         if (((freqStart < freqStopSignal) && (freqStop > freqStartSignal)))
                         { // попали определяем долю сигнала в данном таймштампе в ватах
                             //double interseption = (Math.Min(freqStop, freqStopSignal) - Math.Max(freqStart, freqStartSignal)) / (freqStopSignal - freqStartSignal);
@@ -85,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
             }
-            return nums[number];
+            return nums[number-1];
         }
         private static bool SortReferenceSituationMask(ref ReferenceSituation referenceSituation)
         { //НЕ ПРОТЕСТИРОВАННО
@@ -114,11 +127,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return true;
         }
-        private static double GetPowerOfSignalInBand_mW(ReferenceSignal referenceSignal, double FreqStart_Hz, double FreqStop_Hz)
+        private static double GetPowerOfSignalInBand_mW(ReferenceSignal referenceSignal, double FreqStart_MHz, double FreqStop_MHz)
         {
             // НЕ ТЕСТИРОВАННО
-            double FreqStart_kHz = FreqStart_Hz / 1000.0;
-            double FreqStop_kHz = FreqStop_Hz / 1000.0;
+            double FreqStop_kHz = FreqStop_MHz * 1000.0;
+            double FreqStart_kHz = FreqStart_MHz * 1000.0;
             double freqStopSignal_kHz = referenceSignal.Frequency_MHz * 1000.0 + referenceSignal.Bandwidth_kHz / 2.0;
             double freqStartSignal_kHz = referenceSignal.Frequency_MHz * 1000.0 - referenceSignal.Bandwidth_kHz / 2.0;
             bool СalcWithautMask = false;
@@ -168,7 +181,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     double LocBW_Hz = (freq_stop_calc - freq_start_calc) * 1000.0;
                     Level_mW = Level_mW + SpectrumDensyti_mWinHz * (LocBW_Hz) / loss;
                 }
-                else if (FreqStart_kHz > MaskFreqStop_kHz) { break; }
+                else if (FreqStart_kHz < MaskFreqStop_kHz) { break; }
             }
             return Level_mW;
         }
