@@ -83,7 +83,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         { // задача локализовать излучения
             // константы начало
             List<Emitting> emittings = new List<Emitting>();
-
             double DiffLevelForCalcBW = 25;
             double windowBW = 1.5;
             double nDbLevel_dB = 15;
@@ -137,7 +136,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (start < 0) { start = 0; }
                             stop = (int)Math.Ceiling((emitting.StopFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
                             if (stop >= levels.Length) { stop = levels.Length - 1; }
-                            
+
                             emitting.Spectrum.Levels_dBm = new float[stop - start];
 
                             Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
@@ -149,9 +148,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             emitting.StartFrequency_MHz = startFreq_MHz + stepBW_kHz * start / 1000.0;
                             emitting.StopFrequency_MHz = startFreq_MHz + stepBW_kHz * stop / 1000.0;
-                            emitting.Spectrum.Levels_dBm = new float[stop_ - start_];
-                            Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop_ - start_);
-                            emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start_ / 1000;
+                            emitting.Spectrum.Levels_dBm = new float[stop - start];
+
+
+                            Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
+                            emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start / 1000;
                             emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                             emitting.Spectrum.Levels_dBm = templevel;
                             emitting.Spectrum.СorrectnessEstimations = false;
