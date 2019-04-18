@@ -16,6 +16,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
         public ChartPoints[] PointsArray { get; set; }
 
+        public ChartLine[] LinesArray { get; set; }
+
         public ChartType ChartType { get; set; }
 
         public double XMin { get; set; }

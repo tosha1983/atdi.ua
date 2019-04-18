@@ -288,7 +288,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StandardBW = source.EmittingParameters.StandardBW,
                 WorkTimes = source.WorkTimes,
                 Spectrum = source.Spectrum,
-                LevelsDistribution = source.LevelsDistribution
+                LevelsDistribution = source.LevelsDistribution,
+                SensorName = source.SensorName
             };
         }
         public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
@@ -303,7 +304,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StartEmitting = source.StartEmitting,
                 StopEmitting = source.StopEmitting,
                 HitCount = source.HitCount,
-                PersentAvailability = source.HitCount
+                PersentAvailability = source.PersentAvailability
             };
         }
     }

@@ -37,6 +37,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
     public partial class LineChart : UserControl
     {
         private Point startPoint;
+        private Point stopPoint;
         private Rectangle rect;
 
         private ChartOption _option;
@@ -105,7 +106,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             };
             
         }
-        private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void ChartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             DrawChart();
         }
@@ -143,6 +144,9 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     this.DrawLine();
                 else
                     this.DrawLines();
+
+                if (this._option.LinesArray != null)
+                    this.DrawNewLines();
             }
             else if (this._option.ChartType == ChartType.Columns)
             {
@@ -391,6 +395,33 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 chartCanvas.Children.Add(line);
             }
         }
+        private void DrawNewLines()
+        {
+            foreach (var lines in this._option.LinesArray)
+            {
+                if (lines.IsHorizontal)
+                {
+                    var line = new Polyline();
+                    this.ApplyStyleToLine(line, lines.LineColor);
+
+                    var point = this.NormalizePoint(lines.Point);
+                    line.Points.Add(new Point() { X = 0, Y = point.Y });
+                    line.Points.Add(new Point() { X = chartCanvas.ActualWidth, Y = point.Y });
+                    chartCanvas.Children.Add(line);
+
+                }
+                if (lines.IsVertical)
+                {
+                    var line = new Polyline();
+                    this.ApplyStyleToLine(line, lines.LineColor);
+
+                    var point = this.NormalizePoint(lines.Point);
+                    line.Points.Add(new Point() { X = point.X, Y = 0 });
+                    line.Points.Add(new Point() { X = point.X, Y = chartCanvas.ActualHeight });
+                    chartCanvas.Children.Add(line);
+                }
+            }
+        }
         private void ApplyStyleToLine(Polyline line, Brush lineColor)
         {
             line.Stroke = lineColor;
@@ -609,7 +640,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
         }
 
-        private void chartCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ChartCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             try
             {
@@ -626,7 +657,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 Debug.Print(msg.Message);
             }
         }
-        private void chartCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void ChartCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             try
             {
@@ -636,7 +667,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                         return;
 
                     var pos = e.GetPosition(chartCanvas);
-
+                    stopPoint = pos;
                     var x = Math.Min(pos.X, startPoint.X);
                     var y = Math.Min(pos.Y, 0);
                     var w = Math.Max(pos.X, startPoint.X) - x;
@@ -655,13 +686,13 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             }
         }
 
-        private void chartCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ChartCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (this._option.UseZoom)
             {
                 var pos = e.GetPosition(chartCanvas);
                 Point point1 = new Point() { X = startPoint.X, Y = startPoint.Y};
-                Point point2 = new Point() { X = pos.X, Y = pos.Y };
+                Point point2 = new Point() { X = stopPoint.X, Y = stopPoint.Y };
 
                 var realPoint1 = DeNormalizePoint(point1);
                 var realPoint2 = DeNormalizePoint(point2);
@@ -672,7 +703,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 else
                     result = new double[] { realPoint1.X, realPoint2.X };
 
-                this.SelectedRangeX = result;
+                if (realPoint1.X != realPoint2.X)
+                    this.SelectedRangeX = result;
             }
         }
     }
