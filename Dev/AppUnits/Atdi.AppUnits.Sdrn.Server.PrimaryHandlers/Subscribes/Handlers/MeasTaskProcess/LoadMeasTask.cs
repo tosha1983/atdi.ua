@@ -114,6 +114,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
                                 builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
                                 builderReferenceSignalRaw.Select(c => c.RefSituationId);
+                                builderReferenceSignalRaw.Select(c => c.IcsmId);
                                 builderReferenceSignalRaw.Where(c => c.RefSituationId, ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
                                 {
@@ -132,6 +133,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
                                         {
                                             referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                                        }
+                                        if (readerReferenceSignalRaw.GetValue(c => c.IcsmId) != null)
+                                        {
+                                            referenceSignal.IcsmId = readerReferenceSignalRaw.GetValue(c => c.IcsmId).Value;
                                         }
 
                                         referenceSignal.SignalMask = new SignalMask();
