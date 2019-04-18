@@ -57,7 +57,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                 {
                     DM.Sensor sensor = null;
                     var sensors = this._repositorySensor.LoadAllObjects();
-                    if ((sensor!=null) && (sensors.Length>0))
+                    if ((sensors!=null) && (sensors.Length>0))
                     {
                         sensor = sensors[0];
                     }
