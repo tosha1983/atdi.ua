@@ -50,6 +50,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private int _resultId;
 
         #region Current Objects
+        private string _emittingCaption;
         private SDR.MeasurementResults _currentMeasResult;
         private IList _currentEmittings;
         private EmittingViewModel _currentEmitting;
@@ -66,6 +67,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #region Commands
         public WpfCommand ZoomUndoCommand { get; set; }
+        public WpfCommand ZoomDefaultCommand { get; set; }
         #endregion
 
         public MeasResultSignalizationViewModel(int resultId)
@@ -74,9 +76,19 @@ namespace XICSM.ICSControlClient.ViewModels
             this._emittings = new EmittingDataAdapter();
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
+            this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
             this.ReloadMeasResult();
             this.UpdateCurrentChartOption(null, null);
             this.UpdateCurrentChartLevelsDistrbutionOption();
+        }
+        public string EmittingCaption
+        {
+            get => this._emittingCaption;
+            set => this.Set(ref this._emittingCaption, value);
+        }
+        public string RBW
+        {
+            get => this.GetCurrentRBWValue();
         }
         public CS.ChartOption CurrentChartOption
         {
@@ -116,6 +128,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (this._selectedRangeX != null && this._selectedRangeX.Count() == 2)
                 {
                     _zoomHistory.Push(this._selectedRangeX);
+                    this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
                     UpdateCurrentChartOption(this._selectedRangeX[0], this._selectedRangeX[1]);
                 }
             }
@@ -123,7 +136,8 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadMeasResult()
         {
             _currentMeasResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId, null, null);
-            this._emittings.Source = _currentMeasResult.Emittings;
+            this._emittings.Source = this._currentMeasResult.Emittings;
+            this.EmittingCaption = this.GetCurrentEmittingCaption();
         }
         private void UpdateCurrentChartOption(double? startFreq, double? stopFreq)
         {
@@ -133,9 +147,19 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this.CurrentChartLevelsDistrbutionOption = this.GetChartLevelsDistrbutionOption();
         }
+        private void FilterEmittings(double? startFreq, double? stopFreq)
+        {
+            if (startFreq.HasValue && stopFreq.HasValue)
+            {
+                this._emittings.ApplyFilter(c => (c.StartFrequency_MHz > startFreq.Value && c.StartFrequency_MHz < stopFreq.Value) || (c.StopFrequency_MHz > startFreq.Value && c.StopFrequency_MHz < stopFreq.Value));
+            }
+            else
+                this._emittings.ClearFilter();
+
+            this.EmittingCaption = this.GetCurrentEmittingCaption();
+        }
         private void ReloadEmittingWorkTime()
         {
-            //var emitting = this._currentEmittings[0] as EmittingViewModel;
             this._emittingWorkTimes.Source = _currentEmitting.WorkTimes;
         }
         private void OnZoomUndoCommand(object parameter)
@@ -146,19 +170,56 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (_zoomHistory.Count > 0)
                 {
                     var lastZoom = _zoomHistory.Peek();
+                    this._emittings.ClearFilter();
+                    this.FilterEmittings(lastZoom[0], lastZoom[1]);
                     UpdateCurrentChartOption(lastZoom[0], lastZoom[1]);
+                    this._selectedRangeX = lastZoom;
                 }
                 else
                 {
+                    this.FilterEmittings(null, null);
                     UpdateCurrentChartOption(null, null);
                     this._selectedRangeX = null;
                 }
             }
             else
             {
+                this.FilterEmittings(null, null);
                 UpdateCurrentChartOption(null, null);
                 this._selectedRangeX = null;
             }
+        }
+        private void OnZoomDefaultCommand(object parameter)
+        {
+            this._selectedRangeX = null;
+            _zoomHistory.Clear();
+            this.FilterEmittings(null, null);
+            UpdateCurrentChartOption(null, null);
+        }
+        private string GetCurrentRBWValue()
+        {
+            if (_currentMeasResult.RefLevels == null)
+                return "";
+            else
+            {
+                string res = "";
+                double rbw = _currentMeasResult.RefLevels.StepFrequency_Hz;
+
+                if (rbw > 1000)
+                    res = Math.Round(rbw, 1).ToString();
+                else if (1000 > rbw && rbw < 100)
+                    res = Math.Round(rbw, 2).ToString();
+                else if (100 > rbw && rbw < 10)
+                    res = Math.Round(rbw, 3).ToString();
+                else if (10 > rbw && rbw < 1)
+                    res = Math.Round(rbw, 4).ToString();
+
+                return "RBW = " + res + " kHz";
+            }
+        }
+        private string GetCurrentEmittingCaption()
+        {
+            return "Illegal emission (" + this._emittings.Count().ToString() + ")";
         }
         private CS.ChartOption GetChartOption(double? startFreq, double? stopFreq)
         {
@@ -188,6 +249,7 @@ namespace XICSM.ICSControlClient.ViewModels
             var maxY = default(double);
             var minY = default(double);
 
+            var linesList = new List<CS.ChartLine>();
             var pointsList = new List<CS.ChartPoints>();
             {
                 var count = _currentMeasResult.RefLevels.levels.Length;
@@ -228,9 +290,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     points.Add(point);
                     j++;
                 }
-
-                var chPoints = new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.Black };
-                pointsList.Add(chPoints);
+                pointsList.Add(new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkBlue });
             }
 
             if (this._currentEmittings != null)
@@ -269,8 +329,14 @@ namespace XICSM.ICSControlClient.ViewModels
                         }
                     }
 
-                    var chPoints = new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkRed };
-                    pointsList.Add(chPoints);
+                    pointsList.Add(new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkRed });
+
+                    if (emitting.Spectrum.T1 != 0)
+                        linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkGreen, IsHorizontal = false, IsVertical = true });
+                    if (emitting.Spectrum.T2 != 0)
+                        linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkGreen, IsHorizontal = false, IsVertical = true });
+                    if (emitting.Spectrum.MarkerIndex != 0)
+                        linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkGreen, IsHorizontal = false, IsVertical = true });
                 }
             }
 
@@ -281,10 +347,14 @@ namespace XICSM.ICSControlClient.ViewModels
 
             var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 20);
             option.XTick = preparedDataX.Step;
-            option.XMin = preparedDataX.MinValue;
-            option.XMax = preparedDataX.MaxValue;
+            //option.XMin = minX;
+            //option.XMax = maxX;
+            option.XMin = preparedDataX.MinValue;// + preparedDataX.Step;
+            option.XMax = preparedDataX.MaxValue;// - preparedDataX.Step;
+
 
             option.PointsArray = pointsList.ToArray();
+            option.LinesArray = linesList.ToArray();
 
             return option;
         }
@@ -293,16 +363,16 @@ namespace XICSM.ICSControlClient.ViewModels
             var option = new CS.ChartOption
             {
                 Title = "Levels Distribution",
-                YLabel = "Count",
+                YLabel = "P",
                 XLabel = "Levels",
                 ChartType = CS.ChartType.Columns,
                 XInnerTickCount = 10,
                 YInnerTickCount = 10,
                 YMin = 0,
-                YMax = 100,
-                XMin = 900,
-                XMax = 960,
-                YTick = 10,
+                YMax = 1,
+                XMin = -100,
+                XMax = 0,
+                YTick = 0.2,
                 XTick = 10
             };
 
@@ -310,22 +380,36 @@ namespace XICSM.ICSControlClient.ViewModels
             if (this._currentEmitting != null)
             {
                 var count = this._currentEmitting.LevelsDistribution.Levels.Count();
-                var points = new Point[count];
+                var points = new List<Point>();
                 var maxX = default(double);
                 var minX = default(double);
                 var maxY = default(double);
                 var minY = default(double);
 
+                int sumCount = this._currentEmitting.LevelsDistribution.Count.Sum();
+
+                int j = 0;
+                //bool startPos = false;
+
                 for (int i = 0; i < count; i++)
                 {
                     var valX = this._currentEmitting.LevelsDistribution.Levels[i];
-                    var valY = this._currentEmitting.LevelsDistribution.Count[i];
+                    double valY = sumCount != 0 ? (double)this._currentEmitting.LevelsDistribution.Count[i] / sumCount : 0 ;
+
+                    //if (valY == 0)
+                    //    continue;
+
+                    //if (valY == 0 && !startPos)
+                    //    continue;
+                    //else
+                    //    startPos = true;
+
                     var point = new Point
                     {
                         X = valX,
                         Y = valY
                     };
-                    if (i == 0)
+                    if (j == 0)
                     {
                         maxX = valX;
                         minX = valX;
@@ -344,17 +428,24 @@ namespace XICSM.ICSControlClient.ViewModels
                         if (minY > valY)
                             minY = valY;
                     }
-                    points[i] = point;
+                    points.Add(point);
+                    j++;
+                }
+
+                if (minX == maxX)
+                {
+                    minX = minX - 1;
+                    maxX = maxX + 1;
                 }
 
                 var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 6);
                 option.XTick = preparedDataX.Step;
                 option.XMin = preparedDataX.MinValue;
                 option.XMax = preparedDataX.MaxValue;
-                option.YMin = minY;
-                option.YMax = maxY + 2;
-                option.YTick = Math.Round(maxY / 5, 0);
-                option.Points = points;
+                option.YMin = 0;
+                option.YMax = 1;
+                option.YTick = 0.2; // Math.Round(maxY / 5, 3) != 0 ? Math.Round(maxY / 5, 3) : 1;
+                option.Points = points.ToArray();
             }
 
             return option;

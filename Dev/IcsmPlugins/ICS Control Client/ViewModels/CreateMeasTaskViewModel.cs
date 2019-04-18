@@ -19,6 +19,7 @@ using System.Windows.Controls;
 using System.Collections;
 using fm = System.Windows.Forms;
 using Atdi.Common;
+using System.Globalization;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -327,6 +328,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (this._currentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling)
                 {
+                    string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
                     foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                     {
                         fm.OpenFileDialog openFile = new fm.OpenFileDialog() { Filter = "Текстовые файлы(*.csv)|*.csv", Title = shortSensor.Name };
@@ -337,11 +340,11 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
                             {
+                                int i = 0;
                                 try
                                 {
                                     parser.TextFieldType = FieldType.Delimited;
                                     parser.SetDelimiters(";");
-                                    int i = 0;
                                     while (!parser.EndOfData)
                                     {
                                         i++;
@@ -351,46 +354,52 @@ namespace XICSM.ICSControlClient.ViewModels
                                         {
                                             SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
 
-                                            if (record[9].TryToDouble().HasValue)
+                                            if (record[9].Replace(".", sep).TryToDouble().HasValue)
                                             {
-                                                refSig.Frequency_MHz = record[9].TryToDouble().Value;
+                                                refSig.Frequency_MHz = record[9].Replace(".", sep).TryToDouble().Value;
 
                                                 IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
-                                                rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, refSig.Frequency_MHz);
                                                 rs2.Select("ID,Station.BW");
                                                 for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                                                 {
                                                     var bw = rs2.GetD("Station.BW");
                                                     if (bw != 0 && bw != IM.NullD)
-                                                        refSig.LevelSignal_dBm = bw;
+                                                        refSig.Bandwidth_kHz = bw;
                                                 }
 
-                                                if (refSig.LevelSignal_dBm == 0)
+                                                if (rs2.IsOpen())
+                                                    rs2.Close();
+                                                rs2.Destroy();
+
+                                                if (refSig.Bandwidth_kHz == 0)
                                                 {
                                                     IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
-                                                    rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, record[9].TryToDouble().Value);
+                                                    rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, refSig.Frequency_MHz);
                                                     rs.Select("ID,Station.BW");
                                                     for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                                                     {
                                                         var bw = rs.GetD("Station.BW");
                                                         if (bw != 0 && bw != IM.NullD)
-                                                            refSig.LevelSignal_dBm = bw;
+                                                            refSig.Bandwidth_kHz = bw;
                                                     }
+                                                    if (rs.IsOpen())
+                                                        rs.Close();
+                                                    rs.Destroy();
                                                 }
                                             }
 
 
-                                            if (record[4].TryToDouble().HasValue)
-                                                refSig.LevelSignal_dBm = record[4].TryToDouble().Value;
+                                            if (record[4].Replace(".", sep).TryToDouble().HasValue)
+                                                refSig.LevelSignal_dBm = record[4].Replace(".", sep).TryToDouble().Value;
 
-                                            refSig.LevelSignal_dBm = 0;
                                             listRefSig.Add(refSig);
                                         }
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    MessageBox.Show("Incorrect format file: " + openFile.FileName + "!");
+                                    MessageBox.Show("Incorrect format file: " + openFile.FileName + "!\r\n" + "Line: " + i.ToString());
                                     return;
                                 }
 

@@ -242,6 +242,7 @@
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
+    <Compile Include="WpfControls\Charts\ChartLine.cs" />
     <Compile Include="WpfControls\Charts\ChartLineStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartOption.cs" />
     <Compile Include="WpfControls\Charts\ChartPoints.cs" />

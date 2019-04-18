@@ -38,12 +38,41 @@
               <RowDefinition Height="Auto"></RowDefinition>
               <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Content="Zoom undo" Command="{Binding ZoomUndoCommand}" Width="120" Height="40"/>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+              </Grid.RowDefinitions>
+              <Label Grid.Column="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{Binding RBW}"  />
+              <Button Grid.Column="9" Content="Zoom undo" Command="{Binding ZoomUndoCommand}" Width="120" Height="40"/>
+              <Button Grid.Column="10" Content="Default Zoom" Command="{Binding ZoomDefaultCommand}" Width="120" Height="40"/>
+            </Grid>
             <cs:LineChart Grid.Row="1" Option="{Binding CurrentChartOption}" SelectedRangeX="{Binding SelectedRangeX, Mode=TwoWay}"/>
           </Grid>  
         </GroupBox>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
-        <GroupBox Grid.Row="2" Header="" Margin="0, 5, 5, 5">
+        <GroupBox Grid.Row="2" Header="{Binding EmittingCaption}" Margin="0, 5, 5, 5">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -67,6 +96,7 @@
                 <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
                 <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
                 <DataGridTextColumn Header="StandardBW" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
+                <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
               </DataGrid.Columns>
             </cdg:CustomDataGridEmitting>
             <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>

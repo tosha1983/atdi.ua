@@ -46,6 +46,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("StandardBW", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public double StandardBW { get; set; }
 
+        [WpfColumn("SensorName", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string SensorName { get; set; }
+
         public WorkTime[] WorkTimes { get; set; }
         public Spectrum Spectrum { get; set; }
         public LevelsDistribution LevelsDistribution { get; set; }
