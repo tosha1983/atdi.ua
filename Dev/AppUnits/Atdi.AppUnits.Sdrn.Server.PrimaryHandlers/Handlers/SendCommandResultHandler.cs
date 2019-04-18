@@ -76,16 +76,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             result.Status = SdrnMessageHandlingStatus.Confirmed;
                             break;
                         case "UpdateStatusMeasTask":
-                            var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
-                                .Update()
-                                .Where(c => c.Id, ConditionOperator.Equal, (int?)incomingEnvelope.DeliveryObject.CustNbr1)
-                                .SetValue(c => c.Status, incomingEnvelope.DeliveryObject.Status);
-                            var updated = queryExecuter
-                            .Execute(queryMeasTask) == 1;
-                            if (updated == true)
+                            string taskId = "";
+                            int subTaskId = -1;
+                            int subTaskStationId = -1;
+                            int sensorId = -1;
+                            if (incomingEnvelope.DeliveryObject.CustTxt1 != null)
                             {
-                                queryExecuter.CommitTransaction();
-                                //this._eventEmitter.Emit("OnUpdateStatusMeasTask", "UpdateStatusMeasTaskProccesing");
+                                string[] word = incomingEnvelope.DeliveryObject.CustTxt1.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                                if ((word != null) && (word.Length == 4))
+                                {
+                                    taskId = word[0];
+                                    subTaskId = int.Parse(word[1]);
+                                    subTaskStationId = int.Parse(word[2]);
+                                    sensorId = int.Parse(word[3]);
+                                    if (!string.IsNullOrEmpty(taskId))
+                                    {
+                                        var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
+                                        .Update()
+                                        .Where(c => c.Id, ConditionOperator.Equal, int.Parse(taskId))
+                                        .SetValue(c => c.Status, incomingEnvelope.DeliveryObject.Status);
+                                        var updated = queryExecuter
+                                        .Execute(queryMeasTask) == 1;
+                                        if (updated == true)
+                                        {
+                                            queryExecuter.CommitTransaction();
+                                        }
+                                    }
+                                }
                             }
                             result.Status = SdrnMessageHandlingStatus.Confirmed;
                             break;
