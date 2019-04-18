@@ -236,17 +236,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 index_max = start;
                 level_max = levels[start];
             }
-            else 
+            else
             {
                 index_max = stop;
                 level_max = levels[stop];
             }
-            for (int i = start+1; i <= stop-1; i++)
+            for (int i = start + 1; i <= stop - 1; i++)
             {
                 if (levels[i] >= level_max)
                 {
                     double difference;
-                    if (Math.Abs(levels[i] - levels[i - 1]) > Math.Abs(levels[i] - levels[i + 1]) )
+                    if (Math.Abs(levels[i] - levels[i - 1]) > Math.Abs(levels[i] - levels[i + 1]))
                     { difference = Math.Abs(levels[i] - levels[i + 1]); }
                     else { difference = Math.Abs(levels[i] - levels[i - 1]); }
                     if (difference < fluctuationCoef * everage_fluct)
@@ -264,7 +264,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // идем от максимума по направлению 
             int k = -1;
             int limit = 0;
-            if (MoveRight) { k = 1; limit = levels.Length; }
+            if (MoveRight) { k = 1; limit = levels.Length - 1; }
             int CountPoint = 0;
             for (int i = index_max; i * k <= limit * k; i = i + k)
             {// цикл обеспечивающий движение по спектру в нужную сторону от максимального уровня
@@ -273,7 +273,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     CountPoint++;
                     if (CountPoint > NumberIgnoredPoints)
                     {
-                        return (i - k*CountPoint);
+                        return (i - k * CountPoint);
                     }
                 }
                 else
