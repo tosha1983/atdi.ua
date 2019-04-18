@@ -19,5 +19,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public Spectrum Spectrum;
         public LevelsDistribution LevelsDistribution;
         public EmittingParameters EmittingParameters;
+        public string SensorName;
+        public string SensorTechId;
     }
 }

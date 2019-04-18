@@ -42,7 +42,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listEmitting = new List<Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c => c.SensorName, c => c.TechId)
             .OrderByAsc(c=>c.StartFrequency_MHz)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
             queryExecuter.Fetch(queryEmitting, reader =>
@@ -62,7 +62,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
                     if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue)
                         emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
-
+                    
+                    emitting.SensorName = reader.GetValue(c => c.SensorName);
+                    emitting.SensorTechId = reader.GetValue(c => c.TechId);
 
                     var emittingParam = new EmittingParameters();
 

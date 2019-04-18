@@ -168,6 +168,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             taskParameters.TypeTechnology = TypeTechnology.Unknown;
             // до конца не определенные блоки
             taskParameters.ReceivedIQStreemDuration_sec = 1.0;
+            taskParameters.SensorName = taskSDR.SensorName;
+            taskParameters.SensorTechId = taskSDR.EquipmentTechId;
             return taskParameters;
         }
 

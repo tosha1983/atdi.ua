@@ -29,5 +29,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public DateTime? StopTime { get; set; }
         public int NCount = 0; //количество сканированиия за измерение (он вичисляется в проессе трансформации из MeasTask)
         public ReferenceSituation RefSituation { get; set; }
+        public string SensorName { get; set; }
+        public string SensorTechId { get; set; }
     }
 }

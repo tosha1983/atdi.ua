@@ -21,6 +21,8 @@
     <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Decimal.22.8" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
     <Field Desc="LevelsDistribution" Title="LevelsDistribution" Name="LevelsDistribution" DataType="Bytes.MAX" SourceName="LEVELSDISTR" SourceType="Column" Required="false"/>
+    <Field Desc="SensorName" Title="SensorName" Name="SensorName" DataType="Text.150" SourceName="SENSORNAME" SourceType="Column" Required="false"/>
+    <Field Desc="TechId" Title="TechId" Name="TechId" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation Emitting to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
