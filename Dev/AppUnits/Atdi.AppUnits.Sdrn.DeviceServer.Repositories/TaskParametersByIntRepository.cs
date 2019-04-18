@@ -53,6 +53,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.VBW_Hz);
             builderInsertTaskParameters.Select(c => c.SweepTime_ms);
             builderInsertTaskParameters.Select(c => c.Id);
+            builderInsertTaskParameters.Select(c => c.SensorName);
+            builderInsertTaskParameters.Select(c => c.TechId);
             builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, SDRTaskId);
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
@@ -105,6 +107,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     taskParameters.SDRTaskId = readerMeasTask.GetValue(c => c.SDRTaskId);
                     taskParameters.status = readerMeasTask.GetValue(c => c.Status);
+
+                    taskParameters.SensorName = readerMeasTask.GetValue(c => c.SensorName);
+                    taskParameters.SensorTechId = readerMeasTask.GetValue(c => c.TechId);
 
                     if (readerMeasTask.GetValue(c => c.StartTime) != null)
                     {
@@ -285,12 +290,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.VBW_Hz);
             builderInsertTaskParameters.Select(c => c.SweepTime_ms);
             builderInsertTaskParameters.Select(c => c.Id);
+            builderInsertTaskParameters.Select(c => c.SensorName);
+            builderInsertTaskParameters.Select(c => c.TechId);
+
             builderInsertTaskParameters.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.GreaterThan, 0);
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
                 if (readerMeasTask.Read())
                 {
                     taskParameters = new TaskParameters();
+
+
+                    taskParameters.SensorName = readerMeasTask.GetValue(c => c.SensorName);
+                    taskParameters.SensorTechId = readerMeasTask.GetValue(c => c.TechId);
 
                     if (readerMeasTask.GetValue(c => c.LevelMinOccup_dBm) != null)
                     {
@@ -515,6 +527,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
                     builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                     builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
+                    builderInsertTaskParameters.SetValue(c => c.SensorName, item.SensorName);
+                    builderInsertTaskParameters.SetValue(c => c.TechId, item.SensorTechId);
+
                     if (item.TypeTechnology != TypeTechnology.Unknown)
                     {
                         builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
@@ -661,6 +676,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                     builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                     builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
+                    builderInsertTaskParameters.SetValue(c => c.SensorName, item.SensorName);
+                    builderInsertTaskParameters.SetValue(c => c.TechId, item.SensorTechId);
                     builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
                     int cntUpdate = queryExecuter.Execute(builderInsertTaskParameters);
                     if (cntUpdate > 0)
@@ -712,12 +729,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.VBW_Hz);
             builderInsertTaskParameters.Select(c => c.SweepTime_ms);
             builderInsertTaskParameters.Select(c => c.Id);
+            builderInsertTaskParameters.Select(c => c.SensorName);
+            builderInsertTaskParameters.Select(c => c.TechId);
             builderInsertTaskParameters.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.GreaterThan, 0);
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
                 while (readerMeasTask.Read())
                 {
                     TaskParameters taskParameters = new TaskParameters();
+
+                    taskParameters.SensorName = readerMeasTask.GetValue(c => c.SensorName);
+                    taskParameters.SensorTechId = readerMeasTask.GetValue(c => c.TechId);
 
                     if (readerMeasTask.GetValue(c => c.LevelMinOccup_dBm) != null)
                     {
@@ -948,6 +970,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.VBW_Hz);
             builderInsertTaskParameters.Select(c => c.SweepTime_ms);
             builderInsertTaskParameters.Select(c => c.Id);
+            builderInsertTaskParameters.Select(c => c.SensorName);
+            builderInsertTaskParameters.Select(c => c.TechId);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
             //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
@@ -955,6 +979,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 while (readerMeasTask.Read())
                 {
                     TaskParameters taskParameters = new TaskParameters();
+
+                    taskParameters.SensorName = readerMeasTask.GetValue(c => c.SensorName);
+                    taskParameters.SensorTechId = readerMeasTask.GetValue(c => c.TechId);
 
                     if (readerMeasTask.GetValue(c => c.LevelMinOccup_dBm) != null)
                     {
