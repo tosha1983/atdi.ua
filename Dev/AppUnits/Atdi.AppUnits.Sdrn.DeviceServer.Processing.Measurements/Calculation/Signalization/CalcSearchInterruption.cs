@@ -236,17 +236,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 index_max = start;
                 level_max = levels[start];
             }
-            else 
+            else
             {
                 index_max = stop;
                 level_max = levels[stop];
             }
-            for (int i = start+1; i <= stop-1; i++)
+            for (int i = start + 1; i <= stop - 1; i++)
             {
                 if (levels[i] >= level_max)
                 {
                     double difference;
-                    if (Math.Abs(levels[i] - levels[i - 1]) > Math.Abs(levels[i] - levels[i + 1]) )
+                    if (Math.Abs(levels[i] - levels[i - 1]) > Math.Abs(levels[i] - levels[i + 1]))
                     { difference = Math.Abs(levels[i] - levels[i + 1]); }
                     else { difference = Math.Abs(levels[i] - levels[i - 1]); }
                     if (difference < fluctuationCoef * everage_fluct)
@@ -273,7 +273,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     CountPoint++;
                     if (CountPoint > NumberIgnoredPoints)
                     {
-                        return (i - k*CountPoint);
+                        return (i - k * CountPoint);
                     }
                 }
                 else
