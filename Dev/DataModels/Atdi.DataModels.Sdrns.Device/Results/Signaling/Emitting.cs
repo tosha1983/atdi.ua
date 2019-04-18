@@ -19,7 +19,6 @@ namespace Atdi.DataModels.Sdrns.Device
         public Spectrum Spectrum;
         public LevelsDistribution LevelsDistribution;
         public EmittingParameters EmittingParameters;
-        public string SensorName;
-        public string SensorTechId;
+        public int? SensorId;
     }
 }

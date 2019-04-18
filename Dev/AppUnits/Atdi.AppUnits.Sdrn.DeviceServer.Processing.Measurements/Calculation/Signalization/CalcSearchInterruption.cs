@@ -264,7 +264,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // идем от максимума по направлению 
             int k = -1;
             int limit = 0;
-            if (MoveRight) { k = 1; limit = levels.Length; }
+            if (MoveRight) { k = 1; limit = levels.Length - 1; }
             int CountPoint = 0;
             for (int i = index_max; i * k <= limit * k; i = i + k)
             {// цикл обеспечивающий движение по спектру в нужную сторону от максимального уровня

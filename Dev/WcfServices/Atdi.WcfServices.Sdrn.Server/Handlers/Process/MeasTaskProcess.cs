@@ -156,6 +156,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                         {
                                                             var masTaskEvent = new OnMeasTaskEvent()
                                                             {
+                                                                SensorId = SensorId,
                                                                 MeasTaskId = IdTsk.Value,
                                                                 SensorName = fndSensor.Name,
                                                                 EquipmentTechId = fndSensor.Equipment.TechId,
@@ -177,6 +178,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         {
                                             var masTaskEvent = new OnMeasTaskEvent()
                                             {
+                                                SensorId = SensorId,
                                                 MeasTaskId = IdTsk.Value,
                                                 SensorName = fndSensor.Name,
                                                 EquipmentTechId = fndSensor.Equipment.TechId,

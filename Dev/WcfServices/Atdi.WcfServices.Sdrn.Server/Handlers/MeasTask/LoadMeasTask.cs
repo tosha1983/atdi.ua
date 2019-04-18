@@ -335,6 +335,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
                                 builderReferenceSignalRaw.Select(c => c.RefSituationId);
                                 builderReferenceSignalRaw.Select(c => c.IcsmId);
+                                builderReferenceSignalRaw.Select(c => c.IcsmTable);
                                 builderReferenceSignalRaw.Where(c => c.RefSituationId, ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
                                 {
@@ -358,6 +359,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         {
                                             referenceSignal.IcsmId = readerReferenceSignalRaw.GetValue(c => c.IcsmId).Value;
                                         }
+
+                                        referenceSignal.IcsmTable = readerReferenceSignalRaw.GetValue(c => c.IcsmTable);
 
                                         referenceSignal.SignalMask = new SignalMask();
                                         List<double> freqs = new List<double>();

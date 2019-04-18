@@ -13,5 +13,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public double LevelSignal_dBm;
         public SignalMask SignalMask;
         public int IcsmId;
+        public string IcsmTable;
     }
 }

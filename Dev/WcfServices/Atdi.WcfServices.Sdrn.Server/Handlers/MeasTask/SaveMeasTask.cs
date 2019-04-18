@@ -211,6 +211,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
                                                 builderInsertReferenceSignalRaw.SetValue(c => c.RefSituationId, valueIdReferenceSituationRaw);
                                                 builderInsertReferenceSignalRaw.SetValue(c => c.IcsmId, situationReferenceSignal.IcsmId);
+                                                builderInsertReferenceSignalRaw.SetValue(c => c.IcsmTable, situationReferenceSignal.IcsmTable);
                                                 builderInsertReferenceSignalRaw.Select(c => c.Id);
                                                 queryExecuter.ExecuteAndFetch(builderInsertReferenceSignalRaw, readerReferenceSignalRaw =>
                                                 {

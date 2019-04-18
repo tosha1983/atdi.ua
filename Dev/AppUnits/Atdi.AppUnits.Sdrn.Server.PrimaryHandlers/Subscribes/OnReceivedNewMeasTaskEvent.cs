@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))
             {
-                if ((@event.MeasTaskId>0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
+                if ((@event.MeasTaskId>0) && (@event.SensorId >0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
                 {
                     var loadMeasTask = new LoadMeasTask(this._dataLayer, this._logger);
                     var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
@@ -46,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
                         envelop.SensorName = @event.SensorName;
                         envelop.SensorTechId = @event.EquipmentTechId;
+                        listMeasTask[i].SensorId = @event.SensorId;
                         envelop.DeliveryObject = listMeasTask[i];
                         _messagePublisher.Send(envelop);
                     }
