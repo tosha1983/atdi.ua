@@ -1914,7 +1914,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             var listEmitting = new List<DEV.Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c =>c.TechId, c => c.SensorName)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Fetch(queryEmitting, reader =>
             {
@@ -1953,6 +1953,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
                     if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue && reader.GetValue(c => c.TriggerDeviationFromReference).Value >= 0 && reader.GetValue(c => c.TriggerDeviationFromReference).Value <= 1)
                         emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
+
+                    emitting.SensorName = reader.GetValue(c => c.SensorName);
+                    emitting.SensorTechId = reader.GetValue(c => c.TechId);
 
 
                     if (reader.GetValue(c => c.LevelsDistribution)!=null)
@@ -2375,6 +2378,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             builderInsertEmitting.SetValue(c => c.MeanDeviationFromReference, emittings[l].MeanDeviationFromReference);
                             builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emittings[l].ReferenceLevel_dBm);
                             builderInsertEmitting.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertEmitting.SetValue(c => c.SensorName, emittings[l].SensorName);
+                            builderInsertEmitting.SetValue(c => c.TechId, emittings[l].SensorTechId);
                             if (emittings[l].EmittingParameters != null)
                             {
                                 builderInsertEmitting.SetValue(c => c.RollOffFactor, emittings[l].EmittingParameters.RollOffFactor);

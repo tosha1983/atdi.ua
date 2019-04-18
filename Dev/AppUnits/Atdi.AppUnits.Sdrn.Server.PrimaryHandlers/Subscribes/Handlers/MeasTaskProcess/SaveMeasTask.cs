@@ -183,6 +183,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
                                                     refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
                                                     refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                                                    refSituationReferenceSignal.IcsmId = referenceSignal[l].IcsmId;
                                                     refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
                                                     if (referenceSignal[l].SignalMask != null)
                                                     {
