@@ -165,7 +165,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 }
             }
 
-            taskParameters.TypeTechnology = TypeTechnology.Ununknown;
+            taskParameters.TypeTechnology = TypeTechnology.Unknown;
             // до конца не определенные блоки
             taskParameters.ReceivedIQStreemDuration_sec = 1.0;
             return taskParameters;

@@ -515,7 +515,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
                     builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                     builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
-                    if (item.TypeTechnology != TypeTechnology.Ununknown)
+                    if (item.TypeTechnology != TypeTechnology.Unknown)
                     {
                         builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
                     }
