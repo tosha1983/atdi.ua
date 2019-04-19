@@ -23,5 +23,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         byte[] LevelsDistribution { get; set; }
         IResMeasRaw RESMEASRAW { get; set; }
         int? SensorId { get; set; }
+        int? StationID { get; set; }
+        string StationTableName { get; set; }
     }
 }
