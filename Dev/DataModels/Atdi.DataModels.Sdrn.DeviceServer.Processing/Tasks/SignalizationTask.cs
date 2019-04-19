@@ -14,7 +14,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public DateTime? LastTimeSend = null;
         public MesureTraceDeviceProperties mesureTraceDeviceProperties;
         public ReferenceLevels ReferenceLevels;
-
+        public TaskParameters[] taskParametersForBW;
+        
         //сырой поток излучений после трейса
         public Emitting[] EmittingsRaw;
         // обработанные излучения которые нелзя выдавать в результаты

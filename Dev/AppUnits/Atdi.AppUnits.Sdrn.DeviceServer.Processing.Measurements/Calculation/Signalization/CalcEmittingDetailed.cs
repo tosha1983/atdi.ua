@@ -14,7 +14,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcEmittingDetailed
     {
-        public static Emitting[] GetEmittingDetailed(List<MeasBandwidthResult> listMeasBandwidthResult)
+        public static Emitting[] GetEmittingDetailed(List<BWResult> listMeasBandwidthResult)
         {
                 //заглушка
             return null;

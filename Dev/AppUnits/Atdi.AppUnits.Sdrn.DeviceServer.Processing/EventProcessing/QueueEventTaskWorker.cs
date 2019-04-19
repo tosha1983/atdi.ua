@@ -156,6 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             {
                                 var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(context.Process);
                                 var bandWidtTask = new BandWidthTask();
+                                bandWidtTask.durationForMeasBW_ms = this._config.durationForMeasBW_ms;
                                 bandWidtTask.durationForSendResultBandWidth = this._config.durationForSendResultBandWidth; // файл конфигурации (с него надо брать)
                                 bandWidtTask.maximumTimeForWaitingResultBandWidth = this._config.maximumTimeForWaitingResultBandWidth;
                                 bandWidtTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
