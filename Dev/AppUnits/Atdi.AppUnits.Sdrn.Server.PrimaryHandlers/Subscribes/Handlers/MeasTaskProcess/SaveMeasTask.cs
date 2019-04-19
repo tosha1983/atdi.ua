@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         
 
-        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
+        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, int? SensorId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return null;
@@ -51,6 +51,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {
+                            if (SensorId!= SubTaskStation.StationId.Value)
+                            {
+                                continue;
+                            }
+
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
                             MTSDR.TaskId = string.Format("{0}|{1}|{2}|{3}", MeasTaskId, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();

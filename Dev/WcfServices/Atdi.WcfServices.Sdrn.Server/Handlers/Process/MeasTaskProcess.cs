@@ -118,21 +118,21 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if ((measTask.Stations != null) && (measTask.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null))
                                 {
                                     measTask.UpdateStatusSubTasks(SensorId, actionType, isOnline);
-                                    if (actionType == MeasTaskMode.New.ToString())
+                                    if ((actionType == MeasTaskMode.New.ToString()) && (IdTsk == null))
                                     {
                                         IdTsk = CreateNewMeasTask(measTask, MeasTaskMode.New.ToString());
                                     }
-                                    else if (actionType == MeasTaskMode.Stop.ToString())
+                                    else if ((actionType == MeasTaskMode.Stop.ToString()) && (measTask.Id!=null))
                                     {
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.F.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
-                                    else if (actionType == MeasTaskMode.Run.ToString())
+                                    else if ((actionType == MeasTaskMode.Run.ToString()) && (measTask.Id != null))
                                     {
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.A.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
-                                    else if (actionType == MeasTaskMode.Del.ToString())
+                                    else if ((actionType == MeasTaskMode.Del.ToString()) && (measTask.Id != null))
                                     {
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.Z.ToString());
                                         IdTsk = measTask.Id.Value;
