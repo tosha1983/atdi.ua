@@ -63,11 +63,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
 
                 //получаем результаты BW
-                var listMeasBandwidthResult = new List<MeasBandwidthResult>();
+                var listMeasBandwidthResult = new List<BWResult>();
                 while (true)
                 {
-                    MeasBandwidthResult outMeasBandwidthResultData = null;
-                    bool isDown = taskContext.WaitEvent<MeasBandwidthResult>(out outMeasBandwidthResultData, 1);
+                    BWResult outMeasBandwidthResultData = null;
+                    bool isDown = taskContext.WaitEvent<BWResult>(out outMeasBandwidthResultData, 1);
                     if (isDown == true)
                     {
                         if (outMeasBandwidthResultData != null)
@@ -109,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
                     }
                     // вызов функции по отправке BandWidthTask в контроллер
-                    //SendCommandBW(taskContext);
+                    SendCommandBW(taskContext);
                 }
                 // Отправка результата в Task Handler
                 if (taskContext.Task.EmittingsSummary != null)
@@ -156,6 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 var taskParametersForBW = taskContext.Task.taskParametersForBW[i];
                 var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(taskContext.Process);
                 var bandWidtTask = new BandWidthTask();
+                bandWidtTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
                 bandWidtTask.durationForSendResultBandWidth = taskContext.Task.durationForSendResultBandWidth; // файл конфигурации (с него надо брать)
                 bandWidtTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
                 bandWidtTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;
@@ -164,6 +165,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 bandWidtTask.taskParameters = taskParametersForBW;
                 bandWidtTask.mesureTraceParameter = taskContext.Task.mesureTraceParameter;
                 _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, taskContext);
+                Thread.Sleep((int)(bandWidtTask.durationForMeasBW_ms / 4));
             }
         }
     }
