@@ -156,16 +156,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         static private void CalcSumAndMaxFromArry(ref float[] SpecrtumArrdBm, int MaximumIgnorPoint, double LevelOfSuspiciousJumpdB, out double SumPow, out int imax)
         { // не отлаженно на поиск скачков, не отлаженно без скачков
+
             SumPow = Math.Pow(10, SpecrtumArrdBm[0] / 10.0);
             imax = 0;
             double MaxLeveldBm = SpecrtumArrdBm[0];
             for (int i = 1; i < SpecrtumArrdBm.Length; i++)
             {
-                SumPow = SumPow + Math.Pow(10,SpecrtumArrdBm[i]/10.0);
+                SumPow = SumPow + Math.Pow(10, SpecrtumArrdBm[i] / 10.0);
                 if (MaxLeveldBm < SpecrtumArrdBm[i])
                 {
-                    if (SpecrtumArrdBm.Length >= i + MaximumIgnorPoint+1) // условие что это у нас не конец масива
-                    { 
+                    if (SpecrtumArrdBm.Length > i + MaximumIgnorPoint + 1) // условие что это у нас не конец масива
+                    {
                         if ((SpecrtumArrdBm[i] - SpecrtumArrdBm[i - 1]) > LevelOfSuspiciousJumpdB)
                         {
                             // Т.е. резкий скачек теперь проверяем что он единичный

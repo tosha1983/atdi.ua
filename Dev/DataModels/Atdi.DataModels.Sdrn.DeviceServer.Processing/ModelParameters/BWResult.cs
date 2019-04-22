@@ -14,7 +14,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public double Bandwidth_kHz;
         public bool СorrectnessEstimations;
         public int TraceCount;
-        public float[] Frequencies; 
+        public double[] Freq_Hz; 
         public float[] Levels_dBm;
         public DateTime TimeMeas;
     }

@@ -39,10 +39,11 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listSpectrum = new List<KeyValuePair<int, Spectrum>>();
             referenceLevels = new ReferenceLevels();
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var listSensors = new List<Sensor>();
             var listEmitting = new List<Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c => c.SensorName, c => c.TechId)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c => c.SensorId, c => c.StationID, c => c.StationTableName)
             .OrderByAsc(c=>c.StartFrequency_MHz)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
             queryExecuter.Fetch(queryEmitting, reader =>
@@ -50,6 +51,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                 while (reader.Read())
                 {
                     var emitting = new Emitting();
+                    emitting.Id = reader.GetValue(c => c.Id);
+                    if (reader.GetValue(c => c.StationID).HasValue)
+                    {
+                        emitting.AssociatedStationID = reader.GetValue(c => c.StationID).Value;
+                    }
+                    emitting.AssociatedStationTableName = reader.GetValue(c => c.StationTableName);
+
                     if (reader.GetValue(c => c.StartFrequency_MHz).HasValue)
                         emitting.StartFrequency_MHz = reader.GetValue(c => c.StartFrequency_MHz).Value;
                     if (reader.GetValue(c => c.StopFrequency_MHz).HasValue)
@@ -62,9 +70,48 @@ namespace Atdi.WcfServices.Sdrn.Server
                         emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
                     if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue)
                         emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
-                    
-                    emitting.SensorName = reader.GetValue(c => c.SensorName);
-                    emitting.SensorTechId = reader.GetValue(c => c.TechId);
+
+                    if (reader.GetValue(c => c.SensorId).HasValue)
+                    {
+                        if (listSensors.Find(x=>x.Id.Value== reader.GetValue(c => c.SensorId).Value)==null)
+                        {
+                            var querySensor = this._dataLayer.GetBuilder<MD.ISensor>()
+                            .From()
+                            .Select(c => c.Id, c => c.Name, c => c.TechId)
+                            .Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SensorId).Value);
+                            queryExecuter.Fetch(querySensor, readerSensor =>
+                            {
+                                while (readerSensor.Read())
+                                {
+                                    emitting.SensorName = readerSensor.GetValue(c => c.Name);
+                                    emitting.SensorTechId = readerSensor.GetValue(c => c.TechId);
+                                    listSensors.Add(new Sensor()
+                                    {
+                                        Id = new SensorIdentifier()
+                                        {
+                                            Value = reader.GetValue(c => c.SensorId).Value
+                                        },
+                                        Name = readerSensor.GetValue(c => c.Name),
+                                        Equipment = new SensorEquip()
+                                        {
+                                            TechId = readerSensor.GetValue(c => c.TechId)
+                                        }
+                                    });
+                                    break;
+                                }
+                                return true;
+                            });
+                        }
+                        else
+                        {
+                            var fndSensor = listSensors.Find(x => x.Id.Value == reader.GetValue(c => c.SensorId).Value);
+                            if (fndSensor!=null)
+                            {
+                                emitting.SensorName = fndSensor.Name;
+                                emitting.SensorTechId = fndSensor.Equipment.TechId;
+                            }
+                        }
+                    }
 
                     var emittingParam = new EmittingParameters();
 

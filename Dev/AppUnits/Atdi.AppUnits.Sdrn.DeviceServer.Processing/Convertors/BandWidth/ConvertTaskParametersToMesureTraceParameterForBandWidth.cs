@@ -21,17 +21,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             mesureTraceParameter.FreqStart_Hz = (decimal)(taskParameters.MinFreq_MHz*1000000 - taskParameters.StepSO_kHz*500);
             mesureTraceParameter.FreqStop_Hz = (decimal)(taskParameters.MaxFreq_MHz*1000000 + taskParameters.StepSO_kHz * 500);
             mesureTraceParameter.SweepTime_s = taskParameters.SweepTime_s;
-            mesureTraceParameter.TracePoint = (int)Math.Ceiling((double) ((mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz)) / (1000*(taskParameters.StepSO_kHz / taskParameters.NChenal)));
-
-            mesureTraceParameter.RefLevel_dBm = -1; // константа для Signaling
-            mesureTraceParameter.TraceType = TraceType.MaxHold; // константа для Signaling
-            mesureTraceParameter.TraceCount = 10; // константа для Signaling
-            mesureTraceParameter.Att_dB = -1;    // константа для Signaling
-            mesureTraceParameter.PreAmp_dB = -1; // константа для Signaling
-            mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для Signaling
-            mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для Signaling
-            mesureTraceParameter.VBW_Hz = -1; // константа для Signaling
-            mesureTraceParameter.RBW_Hz = -1; // константа для Signaling
+            mesureTraceParameter.TraceCount = taskParameters.NCount;
+            if (mesureTraceParameter.TraceCount == 0) { mesureTraceParameter.TraceCount = 1; }
+            mesureTraceParameter.TracePoint = 300; // константа для BandWidth
+            mesureTraceParameter.RefLevel_dBm = -1; // константа для BandWidth
+            mesureTraceParameter.TraceType = TraceType.MaxHold; // константа для BandWidth
+            mesureTraceParameter.Att_dB = -1;    // константа для BandWidth
+            mesureTraceParameter.PreAmp_dB = -1; // константа для BandWidth
+            mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для BandWidth
+            mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для BandWidth
+            mesureTraceParameter.VBW_Hz = -1; // константа для BandWidth
+            mesureTraceParameter.RBW_Hz = -1; // константа для BandWidth
             return mesureTraceParameter;
         }
     }

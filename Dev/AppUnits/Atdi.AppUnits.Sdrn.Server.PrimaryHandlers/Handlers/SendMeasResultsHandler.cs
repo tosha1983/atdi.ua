@@ -138,6 +138,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 builderInsertEmittingRaw.SetValue(c => c.MeanDeviationFromReference, emittings[l].MeanDeviationFromReference);
                                 builderInsertEmittingRaw.SetValue(c => c.ReferenceLevel_dBm, emittings[l].ReferenceLevel_dBm);
                                 builderInsertEmittingRaw.SetValue(c => c.ResMeasId, valInsResMeas);
+                                builderInsertEmittingRaw.SetValue(c => c.SensorId, emittings[l].SensorId);
                                 if (emittings[l].EmittingParameters != null)
                                 {
                                     builderInsertEmittingRaw.SetValue(c => c.RollOffFactor, emittings[l].EmittingParameters.RollOffFactor);
