@@ -97,7 +97,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     validationResult = VaildateMeasResultSignaling(ref measResult, @event.ResultId);
                     if (validationResult)
                     {
-                        SaveMeasResultSignaling(measResult);
+                        int newResMeasId; int newResSensorId;
+                        if (SaveMeasResultSignaling(measResult, out newResMeasId, out newResSensorId))
+                            DeleteOldMeasResultSignaling(measResult, newResMeasId, newResSensorId);
                     }
                 }
 
@@ -1715,7 +1717,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
                 measResult.Location = geoLocation;
 
-            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
             builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Execute(builderDelLocSensor);
 
@@ -1906,7 +1908,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
                 measResult.Location = geoLocation;
 
-            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
             builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Execute(builderDelLocSensor);
 
@@ -2302,17 +2304,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
             return result;
         }
-        private bool SaveMeasResultSignaling(DEV.MeasResults measResult)
+        private bool SaveMeasResultSignaling(DEV.MeasResults measResult, out int ResMeasId, out int ResSensorId)
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            int valInsResMeas = 0;
+            int sensorId = -1;
             try
             {
                 queryExecuter.BeginTransaction();
 
-                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int resultId = -1;
                 GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
 
-                int valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
@@ -2334,12 +2337,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         valInsResMeas = reader.GetValue(c => c.Id);
                     }
                     
-
                     return res;
                 });
 
                 if (valInsResMeas > 0)
                 {
+                    var builderInsertResLocSensorMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Insert();
+                    builderInsertResLocSensorMeas.SetValue(c => c.Agl, measResult.Location.AGL);
+                    builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
+                    builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
+                    builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
+                    builderInsertResLocSensorMeas.SetValue(c => c.ResMeasId, valInsResMeas);
+                    builderInsertResLocSensorMeas.Select(c => c.Id);
+                    queryExecuter.Execute(builderInsertResLocSensorMeas);
+
                     if (measResult.RefLevels != null)
                     {
                         int valInsReferenceLevels = 0;
@@ -2490,8 +2501,113 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             });
                         }
                     }
-
                 }
+
+                ResMeasId = valInsResMeas; ResSensorId = sensorId;
+                queryExecuter.CommitTransaction();
+                return true;
+            }
+            catch (Exception exp)
+            {
+                ResMeasId = valInsResMeas; ResSensorId = sensorId;
+                _logger.Exception(Contexts.ThisComponent, exp);
+                queryExecuter.RollbackTransaction();
+                return false;
+            }
+        }
+        private bool DeleteOldMeasResultSignaling(DEV.MeasResults measResult, int ResMeasId, int ResSensorId)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            try
+            {
+                queryExecuter.BeginTransaction();
+
+                bool isCopyRefLev = false;
+
+                var queryResMeas = this._dataLayer.GetBuilder<MD.IResMeas>()
+                .From()
+                .Select(c => c.Id, c => c.TimeMeas)
+                .Where(c => c.MeasTaskId, ConditionOperator.Equal, measResult.TaskId)
+                .Where(c => c.SensorId, ConditionOperator.Equal, ResSensorId)
+                .Where(c => c.Id, ConditionOperator.NotEqual, ResMeasId)
+                .OrderByDesc(c => c.TimeMeas);
+                queryExecuter.Fetch(queryResMeas, reader =>
+                {
+                    while (reader.Read())
+                    {
+                        int ResOldMeasId = reader.GetValue(c => c.Id);
+                        DateTime? timeMeas = reader.GetValue(c => c.TimeMeas);
+
+                        if (timeMeas.HasValue && measResult.Measured.Year == timeMeas.Value.Year && measResult.Measured.Month == timeMeas.Value.Month && measResult.Measured.Day == timeMeas.Value.Day && measResult.Location != null)
+                        {
+                            var queryLoc = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>()
+                            .From()
+                            .Select(c => c.Id, c => c.Lon, c => c.Lat)
+                            .Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                            queryExecuter.Fetch(queryLoc, readerLoc =>
+                            {
+                                while (readerLoc.Read())
+                                {
+                                    double? lon = readerLoc.GetValue(c => c.Lon);
+                                    double? lat = readerLoc.GetValue(c => c.Lat);
+
+                                    if (lon.HasValue && lat.HasValue && Math.Abs(measResult.Location.Lon - lon.Value) <= 0.0004 && Math.Abs(measResult.Location.Lat - lat.Value) <= 0.0004)
+                                    {
+                                        if (measResult.RefLevels == null)
+                                        {
+                                            if (!isCopyRefLev)
+                                            {
+                                                var builderUpdateRefLev = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Update();
+                                                builderUpdateRefLev.SetValue(c => c.ResMeasId, ResMeasId);
+                                                builderUpdateRefLev.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+
+                                                if (queryExecuter.Execute(builderUpdateRefLev) > 0)
+                                                    isCopyRefLev = true;
+                                            }
+                                        }
+
+                                        var builderLevelDel = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Delete();
+                                        builderLevelDel.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderLevelDel);
+
+                                        var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+                                        builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderDelLocSensor);
+
+                                        var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
+                                        .From()
+                                        .Select(c => c.Id)
+                                        .Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Fetch(queryEmitting, readerEmitt =>
+                                        {
+                                            while (readerEmitt.Read())
+                                            {
+                                                var builderDelTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Delete();
+                                                builderDelTime.Where(c => c.EmittingId, ConditionOperator.Equal, readerEmitt.GetValue(c => c.Id));
+                                                queryExecuter.Execute(builderDelTime);
+
+                                                var builderSignalDel = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();
+                                                builderSignalDel.Where(c => c.EmittingId, ConditionOperator.Equal, readerEmitt.GetValue(c => c.Id));
+                                                queryExecuter.Execute(builderSignalDel);
+
+                                                var builderSpectrumDel = this._dataLayer.GetBuilder<MD.ISpectrum>().Delete();
+                                                builderSpectrumDel.Where(c => c.EmittingId, ConditionOperator.Equal, readerEmitt.GetValue(c => c.Id));
+                                                queryExecuter.Execute(builderSpectrumDel);
+                                            }
+                                            return true;
+                                        });
+
+                                        var builderDelEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Delete();
+                                        builderDelEmitting.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderDelEmitting);
+                                    }
+                                }
+                                return true;
+                            });
+                        }
+                    }
+                    return true;
+                });
 
                 queryExecuter.CommitTransaction();
                 return true;
