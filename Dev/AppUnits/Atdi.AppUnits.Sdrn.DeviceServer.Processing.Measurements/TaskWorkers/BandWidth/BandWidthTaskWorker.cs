@@ -59,26 +59,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
 
-               
-                //ar maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
-                // 
-                //  Вычисление MesureTraceParameter
-                // 
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                //context.Task.mesureTraceParameter
-
 
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер 
                 //
                 //////////////////////////////////////////////
+                var datenow = DateTime.Now;
                 var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
                 deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
+                deviceCommand.Delay = 0;
                 deviceCommand.Options = CommandOption.StartImmediately;
+                deviceCommand.StartTimeStamp = TimeStamp.Ticks;
                 _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                 (
@@ -87,13 +79,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
                 });
+
+                var dateTimeValue = DateTime.Now - datenow;
+                var mlsc = dateTimeValue.TotalMilliseconds;
+
                 //////////////////////////////////////////////
                 // 
                 // Получение очередного  результат от Result Handler
                 //
                 //////////////////////////////////////////////
                 BWResult outResultData = null;
-                bool isDown = context.WaitEvent<BWResult>(out outResultData, 10000 /*(int)context.Task.durationForMeasBW_ms*/);
+                bool isDown = context.WaitEvent<BWResult>(out outResultData, 400*(int)(context.Task.durationForMeasBW_ms) - (int)mlsc);
                 if (isDown == false) // таймут - результатов нет
                 {
                     var error = new ExceptionProcessBandWidth();
@@ -119,14 +115,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outResultData != null)
                     {
                         DM.MeasResults measResult = new DM.MeasResults();
-
                         context.Task.CountSendResults++;
                         measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
                         measResult.Status = "N";
                         measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                         measResult.Levels_dBm = outResultData.Levels_dBm;
-                        var floatFreq_Hz = outResultData.Freq_Hz.Cast<float>().ToArray();
-                        measResult.Frequencies = floatFreq_Hz;
+                        if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length>0))
+                        {
+                            var floatFreq_Hz = outResultData.Freq_Hz.Select(x => (float)x).ToArray();
+                            measResult.Frequencies = floatFreq_Hz;
+                        }
                         measResult.BandwidthResult = new BandwidthMeasResult();
                         measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
                         measResult.BandwidthResult.Bandwidth_kHz = outResultData.Bandwidth_kHz;
@@ -183,7 +181,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
                         publisher.Dispose();
                         context.Task.MeasBWResults = null;
-                        //context.Task.LastTimeSend = currTime;
                     }
                 });
 

@@ -10,6 +10,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
     public class BandWidthTask : MeasurementTaskBase
     {
+        public string bandwidthEstimationType;
+        public double X_Beta;
+        public int MaximumIgnorPoint;
         public BWResult MeasBWResults; //  результат измерения
         public long maximumTimeForWaitingResultBandWidth; // (максимальное время ожидания результата)
         public DateTime? LastTimeSend = null;

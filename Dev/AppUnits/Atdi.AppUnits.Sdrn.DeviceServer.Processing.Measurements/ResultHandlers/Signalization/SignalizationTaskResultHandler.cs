@@ -165,8 +165,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 bandWidtTask.taskParameters = taskParametersForBW;
                 bandWidtTask.mesureTraceParameter = taskContext.Task.mesureTraceParameter;
                 _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, taskContext);
-
-
                 Thread.Sleep((int)(bandWidtTask.durationForMeasBW_ms / 4));
             }
         }
