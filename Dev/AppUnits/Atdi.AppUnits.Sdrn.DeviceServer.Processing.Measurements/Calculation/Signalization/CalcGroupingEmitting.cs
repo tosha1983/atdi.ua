@@ -44,91 +44,101 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     emittingsTempTemp = EmittingsTemp.ToList();
                 }
 
-
-                for (int i = 0; EmittingsRaw.Length > i; i++)
+                if (EmittingsRaw!=null)
                 {
-                    bool isSuccess = false;
-                    bool existTheSameEmitting = false;
-                    for (int j = 0; emittingsSummaryTemp.Count > j; j++)
+                    for (int i = 0; EmittingsRaw.Length > i; i++)
                     {
-                        existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
-                        if (existTheSameEmitting)
+                        bool isSuccess = false;
+                        bool existTheSameEmitting = false;
+                        for (int j = 0; emittingsSummaryTemp.Count > j; j++)
                         {
-                            var em = emittingsSummaryTemp[j];
-                            JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm); emittingsSummaryTemp[j] = em;
-                            isSuccess = true;
-                            break;
-                        }
-                    }
-
-                    if (isSuccess == false)
-                    {
-                        for (int l = 0; emittingsTempTemp.Count > l; l++)
-                        {
-                            existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[l], EmittingsRaw[i]);
+                            existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
                             if (existTheSameEmitting)
                             {
-                                var em = emittingsTempTemp[l];
-                                JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm);
-                                emittingsTempTemp[l] = em;
+                                var em = emittingsSummaryTemp[j];
+                                JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm); emittingsSummaryTemp[j] = em;
+                                isSuccess = true;
                                 break;
                             }
                         }
-                        if (!existTheSameEmitting)
+
+                        if (isSuccess == false)
                         {
-                            if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
+                            for (int l = 0; emittingsTempTemp.Count > l; l++)
                             {
-                                EmittingsRaw[i] = FillEmittingForStorage(EmittingsRaw[i],logger);
-                                emittingsSummaryTemp.Add(EmittingsRaw[i]);
+                                existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[l], EmittingsRaw[i]);
+                                if (existTheSameEmitting)
+                                {
+                                    var em = emittingsTempTemp[l];
+                                    JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm);
+                                    emittingsTempTemp[l] = em;
+                                    break;
+                                }
                             }
-                            else
+                            if (!existTheSameEmitting)
                             {
-                                EmittingsRaw[i] = FillEmittingForStorage(EmittingsRaw[i], logger);
-                                emittingsTempTemp.Add(EmittingsRaw[i]);
+                                if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
+                                {
+                                    EmittingsRaw[i] = FillEmittingForStorage(EmittingsRaw[i], logger);
+                                    emittingsSummaryTemp.Add(EmittingsRaw[i]);
+                                }
+                                else
+                                {
+                                    EmittingsRaw[i] = FillEmittingForStorage(EmittingsRaw[i], logger);
+                                    emittingsTempTemp.Add(EmittingsRaw[i]);
+                                }
                             }
                         }
                     }
-
                 }
                 // перебрасываем из temp хорошие сигналы в Summary
-                for (int i = 0; i< emittingsTempTemp.Count; i++)
+                if (emittingsTempTemp != null)
                 {
-                    if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
+                    for (int i = 0; i < emittingsTempTemp.Count; i++)
                     {
-                        emittingsSummaryTemp.Add(CreatIndependEmitting(emittingsTempTemp[i]));
-                        emittingsTempTemp.RemoveRange(i, 1);
-                        i--;
+                        if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
+                        {
+                            emittingsSummaryTemp.Add(CreatIndependEmitting(emittingsTempTemp[i]));
+                            emittingsTempTemp.RemoveRange(i, 1);
+                            i--;
+                        }
                     }
                 }
                 // Пройдемся по Summary нет ли дублирующихся сигналов 
-                for (int i = 0; emittingsSummaryTemp.Count > i; i++)
+                if (emittingsSummaryTemp != null)
                 {
-                    for (int j = i+1; emittingsSummaryTemp.Count > j; j++)
+                    for (int i = 0; emittingsSummaryTemp.Count > i; i++)
                     {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j]);
-                        if (existTheSameEmitting)
+                        for (int j = i + 1; emittingsSummaryTemp.Count > j; j++)
                         {
-                            var em = emittingsSummaryTemp[i];
-                            JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
-                            emittingsSummaryTemp[i] = em;
-                            emittingsSummaryTemp.RemoveRange(j, 1);
-                            j--;
+                            bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j]);
+                            if (existTheSameEmitting)
+                            {
+                                var em = emittingsSummaryTemp[i];
+                                JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
+                                emittingsSummaryTemp[i] = em;
+                                emittingsSummaryTemp.RemoveRange(j, 1);
+                                j--;
+                            }
                         }
                     }
                 }
                 // Пройдемся по temp нет ли дублирующихся сигналов 
-                for (int i = 0; emittingsTempTemp.Count > i; i++)
+                if (emittingsTempTemp!=null)
                 {
-                    for (int j = i + 1; emittingsTempTemp.Count > j; j++)
+                    for (int i = 0; emittingsTempTemp.Count > i; i++)
                     {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j]);
-                        if (existTheSameEmitting)
+                        for (int j = i + 1; emittingsTempTemp.Count > j; j++)
                         {
-                            var em = emittingsTempTemp[i];
-                            JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
-                            emittingsTempTemp[i] = em;
-                            emittingsTempTemp.RemoveRange(j, 1);
-                            j--;
+                            bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j]);
+                            if (existTheSameEmitting)
+                            {
+                                var em = emittingsTempTemp[i];
+                                JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
+                                emittingsTempTemp[i] = em;
+                                emittingsTempTemp.RemoveRange(j, 1);
+                                j--;
+                            }
                         }
                     }
                 }

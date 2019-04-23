@@ -67,11 +67,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //////////////////////////////////////////////
                 var datenow = DateTime.Now;
                 var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
-                deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
-                deviceCommand.Delay = 0;
                 deviceCommand.Options = CommandOption.StartImmediately;
-                deviceCommand.StartTimeStamp = TimeStamp.Ticks;
-                _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
+                //_logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, "Check time start" + Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                 (
                     ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
@@ -80,8 +77,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
                 });
 
-                var dateTimeValue = DateTime.Now - datenow;
-                var mlsc = dateTimeValue.TotalMilliseconds;
 
                 //////////////////////////////////////////////
                 // 
@@ -89,7 +84,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //
                 //////////////////////////////////////////////
                 BWResult outResultData = null;
-                bool isDown = context.WaitEvent<BWResult>(out outResultData, 400*(int)(context.Task.durationForMeasBW_ms) - (int)mlsc);
+                bool isDown = context.WaitEvent<BWResult>(out outResultData, 1000 /*(int)(context.Task.durationForMeasBW_ms) - (int)mlsc*/);
                 if (isDown == false) // таймут - результатов нет
                 {
                     var error = new ExceptionProcessBandWidth();

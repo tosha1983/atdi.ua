@@ -21,9 +21,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 try
                 {
-                    //  с файла конфигурации
-                    //  BandWidthEstimation.BandwidthEstimationType.beta, 1, 1 -вынести в сигнализацию
-                    var measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                    MeasBandwidthResult measBandWidthResults = null;
+                    var parentProcess = taskContext.Descriptor.Parent;
+                    if (parentProcess != null)
+                    {
+                        if ((parentProcess is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>)==false)
+                        {
+                            BandWidthEstimation.BandwidthEstimationType bandwidthEstimationType;
+                            if (Enum.TryParse(taskContext.Task.bandwidthEstimationType, out bandwidthEstimationType))
+                            {
+                                measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationType, taskContext.Task.X_Beta, taskContext.Task.MaximumIgnorPoint);
+                            }
+                            else
+                            {
+                                measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                            }
+                        }
+                        else
+                        {
+                            measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                        }
+                    }
+                    else
+                    {
+                        measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                    }
+
+
+                    
                     if ((measBandWidthResults.СorrectnessEstimations!=null) && (measBandWidthResults.СorrectnessEstimations == true))
                     {
                         taskContext.Task.MeasBWResults = new BWResult();
@@ -48,13 +73,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         taskContext.Task.MeasBWResults.Freq_Hz = result.Freq_Hz;
                         taskContext.Task.MeasBWResults.СorrectnessEstimations = measBandWidthResults.СorrectnessEstimations.Value;
                     }
-                    else
-                    {
-
-                    }
+                    
 
                     // Отправка результата в родительский процесс (если он есть)
-                    var parentProcess = taskContext.Descriptor.Parent;
                     if (parentProcess != null)
                     {
                         ///если родительский контекст - сигнализация, то отправить результат 
