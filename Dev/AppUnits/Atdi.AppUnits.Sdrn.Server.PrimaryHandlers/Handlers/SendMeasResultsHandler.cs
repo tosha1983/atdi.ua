@@ -246,29 +246,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                     return true;
                                                 });
                                             }
-
-                                            /*
-                                            var levelsDistribution = emittings[l].LevelsDistribution;
-                                            if (levelsDistribution!=null)
-                                            {
-                                                var lstInsLevelsDistributionRaw = new IQueryInsertStatement<MD.ILevelsDistributionRaw>[levelsDistribution.Levels.Length];
-                                                for (int k = 0; k < levelsDistribution.Levels.Length; k++)
-                                                {
-                                                    var lvl = levelsDistribution.Levels[k];
-                                                    var count = levelsDistribution.Count[k];
-                                                    var builderInsertLevelsDistributionRaw = this._dataLayer.GetBuilder<MD.ILevelsDistributionRaw>().Insert();
-                                                    builderInsertLevelsDistributionRaw.SetValue(c => c.level, lvl);
-                                                    builderInsertLevelsDistributionRaw.SetValue(c => c.count, count);
-                                                    builderInsertLevelsDistributionRaw.SetValue(c => c.EmittingId, valInsReferenceEmittingRaw);
-                                                    builderInsertLevelsDistributionRaw.Select(c => c.Id);
-                                                    lstInsLevelsDistributionRaw[k] = builderInsertLevelsDistributionRaw;
-                                                }
-                                                queryExecuter.ExecuteAndFetch(lstInsLevelsDistributionRaw, readerLevelsDistributionRaw =>
-                                                {
-                                                    return true;
-                                                });
-                                            }
-                                            */
                                         }
                                     }
                                     return true;

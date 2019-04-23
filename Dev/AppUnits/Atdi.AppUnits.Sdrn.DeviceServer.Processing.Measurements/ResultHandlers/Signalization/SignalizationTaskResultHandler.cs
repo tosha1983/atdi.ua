@@ -83,8 +83,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Обработка результатов BW если они есть
                 if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
                 {
-                    taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
-                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailed(ref taskContext.Task.EmittingsSummary, taskContext.Task.EmittingsDetailed, ref taskContext.Task.EmittingsTemp);
+                    //taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailed(ref taskContext.Task.EmittingsSummary, listMeasBandwidthResult, taskContext.Task.ReferenceLevels);
                     if (isSuccess == false)
                     {
                         //обработка  ошибка
@@ -102,12 +102,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
 
                 //Нужно ли исследование существующих сигналов?
-                if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsTemp, out taskContext.Task.taskParametersForBW))
+                if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForBW))
                 {
-                    if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
-                    {
-                        taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
-                    }
+                    //if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
+                    //{
+                    //    taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
+                    //}
                     // вызов функции по отправке BandWidthTask в контроллер
                     SendCommandBW(taskContext);
                 }
