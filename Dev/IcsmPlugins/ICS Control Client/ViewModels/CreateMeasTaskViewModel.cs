@@ -20,6 +20,7 @@ using System.Collections;
 using fm = System.Windows.Forms;
 using Atdi.Common;
 using System.Globalization;
+using System.IO;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -335,8 +336,19 @@ namespace XICSM.ICSControlClient.ViewModels
                         fm.OpenFileDialog openFile = new fm.OpenFileDialog() { Filter = "Текстовые файлы(*.csv)|*.csv", Title = shortSensor.Name };
                         if (openFile.ShowDialog() == fm.DialogResult.OK)
                         {
+                            var _waitForm = new FM.WaitForm();
+                            _waitForm.SetMessage("Loading file. Please wait...");
+                            _waitForm.TopMost = true;
+                            _waitForm.Show();
+                            _waitForm.Refresh();
+
                             SDR.ReferenceSituation refSit = new SDR.ReferenceSituation();
                             List<SDR.ReferenceSignal> listRefSig = new List<SDR.ReferenceSignal>();
+
+                            var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id);
+                            SDR.SensorLocation sensorLocation = null;
+                            if (svcSensor.Locations != null)
+                                sensorLocation = svcSensor.Locations[svcSensor.Locations.Length - 1];
 
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
                             {
@@ -354,60 +366,44 @@ namespace XICSM.ICSControlClient.ViewModels
                                         {
                                             SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
 
-                                            if (record[9].Replace(".", sep).TryToDouble().HasValue)
+                                            double? f = record[9].Replace(".", sep).TryToDouble();
+                                            double? l = record[4].Replace(".", sep).TryToDouble();
+                                            double? d = record[11].Replace(".", sep).TryToDouble();
+                                            double? a = record[12].Replace(".", sep).TryToDouble();
+
+                                            if (f.HasValue)
                                             {
-                                                refSig.Frequency_MHz = record[9].Replace(".", sep).TryToDouble().Value;
+                                                refSig.Frequency_MHz = f.Value;
 
-                                                IMRecordset rs2 = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
-                                                rs2.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, refSig.Frequency_MHz);
-                                                rs2.Select("ID,Station.BW");
-                                                for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+                                                if (l.HasValue)
+                                                    refSig.LevelSignal_dBm = l.Value;
+
+                                                if (d.HasValue && a.HasValue)
                                                 {
-                                                    var bw = rs2.GetD("Station.BW");
-                                                    if (bw != 0 && bw != IM.NullD)
-                                                        refSig.Bandwidth_kHz = bw;
-                                                }
-
-                                                if (rs2.IsOpen())
-                                                    rs2.Close();
-                                                rs2.Destroy();
-
-                                                if (refSig.Bandwidth_kHz == 0)
-                                                {
-                                                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
-                                                    rs.SetWhere("TX_FREQ", IMRecordset.Operation.Eq, refSig.Frequency_MHz);
-                                                    rs.Select("ID,Station.BW");
-                                                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                                    refSig.IcsmTable = "MOBSTA_FREQS";
+                                                    if (!this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value))
                                                     {
-                                                        var bw = rs.GetD("Station.BW");
-                                                        if (bw != 0 && bw != IM.NullD)
-                                                            refSig.Bandwidth_kHz = bw;
+                                                        refSig.IcsmTable = "MOBSTA_FREQS2";
+                                                        this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value);
                                                     }
-                                                    if (rs.IsOpen())
-                                                        rs.Close();
-                                                    rs.Destroy();
                                                 }
                                             }
-
-
-                                            if (record[4].Replace(".", sep).TryToDouble().HasValue)
-                                                refSig.LevelSignal_dBm = record[4].Replace(".", sep).TryToDouble().Value;
-
                                             listRefSig.Add(refSig);
                                         }
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception e)
                                 {
-                                    MessageBox.Show("Incorrect format file: " + openFile.FileName + "!\r\n" + "Line: " + i.ToString());
+                                    MessageBox.Show("Incorrect format file: " + openFile.FileName + "!\r\n" + "Line: " + i.ToString() + "\r\n" + e.Message);
+                                    _waitForm.Close();
                                     return;
                                 }
-
-
                             }
+
                             refSit.ReferenceSignal = listRefSig.ToArray();
                             refSit.SensorId = shortSensor.Id;
                             listRef.Add(refSit);
+                            _waitForm.Close();
                         }
                     }
                 }
@@ -477,11 +473,11 @@ namespace XICSM.ICSControlClient.ViewModels
                     RefSituation = listRef.ToArray()
                 };
 
-                var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
-                if (measTaskId == IM.NullI)
-                {
-                    throw new InvalidOperationException($"Could not create a meas task");
-                }
+                //var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
+                //if (measTaskId == IM.NullI)
+                //{
+                //    throw new InvalidOperationException($"Could not create a meas task");
+                //}
                 _measTaskForm.Close();
             }
             catch (Exception e)
@@ -489,7 +485,87 @@ namespace XICSM.ICSControlClient.ViewModels
                 MessageBox.Show(e.ToString());
             }
         }
+        private bool GetRefSignalBySensor(ref SDR.ReferenceSignal refSig, SDR.SensorLocation sensorLocation, double d, double a)
+        {
+            bool result = false;
+            if (sensorLocation == null || !sensorLocation.Lon.HasValue || !sensorLocation.Lat.HasValue) 
+                return false;
 
+            double lonSensor = sensorLocation.Lon.Value;
+            double latSensor = sensorLocation.Lat.Value;
+
+            double lon = lonSensor - d * Math.Sin(a * Math.PI / 180) / (111315 * Math.Cos(latSensor * Math.PI / 180));
+            double lat = latSensor - d * Math.Cos(a * Math.PI / 180) / 111315;
+
+            double mod = double.MaxValue;
+            int eqpId = 0;
+
+            IMRecordset rs = new IMRecordset(refSig.IcsmTable, IMRecordset.Mode.ReadOnly);
+            rs.SetWhere("TX_FREQ", IMRecordset.Operation.Lt, refSig.Frequency_MHz + 0.0001);
+            rs.SetWhere("TX_FREQ", IMRecordset.Operation.Gt, refSig.Frequency_MHz - 0.0001);
+            rs.SetWhere("Station.Position.LONGITUDE", IMRecordset.Operation.Lt, lon + 0.1);
+            rs.SetWhere("Station.Position.LONGITUDE", IMRecordset.Operation.Gt, lon - 0.1);
+            rs.SetWhere("Station.Position.LATITUDE", IMRecordset.Operation.Lt, lat + 0.1);
+            rs.SetWhere("Station.Position.LATITUDE", IMRecordset.Operation.Gt, lat - 0.1);
+            rs.Select("ID,Station.BW, Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.EQUIP_ID");
+            for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+            {
+                double staLon = rs.GetD("Station.Position.LONGITUDE");
+                double staLat = rs.GetD("Station.Position.LATITUDE");
+
+                if (Math.Abs(staLon - lon) + Math.Abs(staLat - lat) < mod)
+                {
+                    mod = Math.Abs(staLon - lon) + Math.Abs(staLat - lat);
+
+                    double bw = rs.GetD("Station.BW");
+                    int id = rs.GetI("ID");
+                    eqpId = rs.GetI("Station.EQUIP_ID");
+
+                    if (bw != 0 && bw != IM.NullD)
+                        refSig.Bandwidth_kHz = bw;
+
+                    refSig.IcsmId = id;
+                }
+                result = true;
+            }
+            if (rs.IsOpen())
+                rs.Close();
+            rs.Destroy();
+
+            if (eqpId > 0)
+            {
+                var listFreq = new List<double>();
+                var listLoss = new List<float>();
+                string table;
+
+                if (refSig.IcsmTable == "MOBSTA_FREQS")
+                    table = "EQUIP_PMR_MPT";
+                else
+                    table = "EQUIP_MOB2_MPT";
+
+                IMRecordset rsEqp = new IMRecordset(table, IMRecordset.Mode.ReadOnly);
+                rsEqp.SetWhere("EQUIP_ID", IMRecordset.Operation.Eq, eqpId);
+                rsEqp.Select("ATTN,FREQ");
+                for (rsEqp.Open(); !rsEqp.IsEOF(); rsEqp.MoveNext())
+                {
+                    listLoss.Add((float)rsEqp.GetD("ATTN"));
+                    listFreq.Add(1000 * rsEqp.GetD("FREQ"));
+                }
+
+                if (rsEqp.IsOpen())
+                    rsEqp.Close();
+                rsEqp.Destroy();
+
+                if (listFreq.Count > 0 && listLoss.Count > 0)
+                {
+                    var signal = new SDR.SignalMask();
+                    signal.Freq_kHz = listFreq.ToArray();
+                    signal.Loss_dB = listLoss.ToArray();
+                    refSig.SignalMask = signal;
+                }
+            }
+            return result;
+        }
         private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
         {
             return new MP.MapDrawingDataPoint
