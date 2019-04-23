@@ -289,8 +289,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 WorkTimes = source.WorkTimes,
                 Spectrum = source.Spectrum,
                 LevelsDistribution = source.LevelsDistribution,
-                SensorName = source.SensorName,
-                SumHitCount = source.WorkTimes.Sum;
+                SensorName = source.SensorName
             };
         }
         public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
