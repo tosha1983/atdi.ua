@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     public static class CalcGroupingEmitting
     {
         /// <summary>
-        /// Мы сливаем все EmittingRaw в EmittingSummary
+        /// Мы сливаем все EmittingRaw в EmittingSummary с групировкой данных если излучения подобны 
         /// </summary>
         /// <param name="EmittingRaw"></param>
         /// <param name="EmittingTemp"></param>
@@ -25,6 +25,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             try
             {
+                // Увеличиваем счетчики у всех излучений
+                for (int i = 0; EmittingsSummary.Length>i; i++)
+                {
+                    EmittingsSummary[i].WorkTimes[EmittingsSummary[i].WorkTimes.Length - 1].TempCount++;
+                }
+                for (int i = 0; EmittingsSummary.Length > i; i++)
+                {
+                    EmittingsTemp[i].WorkTimes[EmittingsTemp[i].WorkTimes.Length - 1].TempCount++;
+                }
+
                 List<Emitting> emittingsSummaryTemp;
                 List<Emitting> emittingsTempTemp;
                 if (EmittingsSummary == null)
@@ -43,107 +53,91 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     emittingsTempTemp = EmittingsTemp.ToList();
                 }
-
-                if (EmittingsRaw!=null)
+                for (int i = 0; EmittingsRaw.Length > i; i++)
                 {
-                    for (int i = 0; EmittingsRaw.Length > i; i++)
+                    bool isSuccess = false;
+                    bool existTheSameEmitting = false;
+                    for (int j = 0; emittingsSummaryTemp.Count > j; j++)
                     {
-                        bool isSuccess = false;
-                        bool existTheSameEmitting = false;
-                        for (int j = 0; emittingsSummaryTemp.Count > j; j++)
+                        existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
+                        if (existTheSameEmitting)
                         {
-                            existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i]);
+                            var em = emittingsSummaryTemp[j];
+                            JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm); emittingsSummaryTemp[j] = em;
+                            isSuccess = true;
+                            break;
+                        }
+                    }
+                    if (isSuccess == false)
+                    {
+                        for (int l = 0; emittingsTempTemp.Count > l; l++)
+                        {
+                            existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[l], EmittingsRaw[i]);
                             if (existTheSameEmitting)
                             {
-                                var em = emittingsSummaryTemp[j];
-                                JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm); emittingsSummaryTemp[j] = em;
-                                isSuccess = true;
+                                var em = emittingsTempTemp[l];
+                                JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm);
+                                emittingsTempTemp[l] = em;
                                 break;
                             }
                         }
-
-                        if (isSuccess == false)
+                        if (!existTheSameEmitting)
                         {
-                            for (int l = 0; emittingsTempTemp.Count > l; l++)
+                            if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
                             {
-                                existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[l], EmittingsRaw[i]);
-                                if (existTheSameEmitting)
-                                {
-                                    var em = emittingsTempTemp[l];
-                                    JoinEmmiting(ref em, EmittingsRaw[i], logger, NoiseLevel_dBm);
-                                    emittingsTempTemp[l] = em;
-                                    break;
-                                }
+                                EmittingsRaw[i] = CalcSignalization.FillEmittingForStorage(EmittingsRaw[i],logger);
+                                emittingsSummaryTemp.Add(EmittingsRaw[i]);
                             }
-                            if (!existTheSameEmitting)
+                            else
                             {
-                                if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
-                                {
-                                    EmittingsRaw[i] = FillEmittingForStorage(EmittingsRaw[i], logger);
-                                    emittingsSummaryTemp.Add(EmittingsRaw[i]);
-                                }
-                                else
-                                {
-                                    EmittingsRaw[i] = FillEmittingForStorage(EmittingsRaw[i], logger);
-                                    emittingsTempTemp.Add(EmittingsRaw[i]);
-                                }
+                                EmittingsRaw[i] = CalcSignalization.FillEmittingForStorage(EmittingsRaw[i], logger);
+                                emittingsTempTemp.Add(EmittingsRaw[i]);
                             }
                         }
                     }
                 }
                 // перебрасываем из temp хорошие сигналы в Summary
-                if (emittingsTempTemp != null)
+                for (int i = 0; i< emittingsTempTemp.Count; i++)
                 {
-                    for (int i = 0; i < emittingsTempTemp.Count; i++)
+                    if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
                     {
-                        if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
-                        {
-                            emittingsSummaryTemp.Add(CreatIndependEmitting(emittingsTempTemp[i]));
-                            emittingsTempTemp.RemoveRange(i, 1);
-                            i--;
-                        }
+                        emittingsSummaryTemp.Add(CalcSignalization.CreatIndependEmitting(emittingsTempTemp[i]));
+                        emittingsTempTemp.RemoveRange(i, 1);
+                        i--;
                     }
                 }
                 // Пройдемся по Summary нет ли дублирующихся сигналов 
-                if (emittingsSummaryTemp != null)
+                for (int i = 0; emittingsSummaryTemp.Count > i; i++)
                 {
-                    for (int i = 0; emittingsSummaryTemp.Count > i; i++)
+                    for (int j = i+1; emittingsSummaryTemp.Count > j; j++)
                     {
-                        for (int j = i + 1; emittingsSummaryTemp.Count > j; j++)
+                        bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j]);
+                        if (existTheSameEmitting)
                         {
-                            bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j]);
-                            if (existTheSameEmitting)
-                            {
-                                var em = emittingsSummaryTemp[i];
-                                JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
-                                emittingsSummaryTemp[i] = em;
-                                emittingsSummaryTemp.RemoveRange(j, 1);
-                                j--;
-                            }
+                            var em = emittingsSummaryTemp[i];
+                            JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
+                            emittingsSummaryTemp[i] = em;
+                            emittingsSummaryTemp.RemoveRange(j, 1);
+                            j--;
                         }
                     }
                 }
                 // Пройдемся по temp нет ли дублирующихся сигналов 
-                if (emittingsTempTemp!=null)
+                for (int i = 0; emittingsTempTemp.Count > i; i++)
                 {
-                    for (int i = 0; emittingsTempTemp.Count > i; i++)
+                    for (int j = i + 1; emittingsTempTemp.Count > j; j++)
                     {
-                        for (int j = i + 1; emittingsTempTemp.Count > j; j++)
+                        bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j]);
+                        if (existTheSameEmitting)
                         {
-                            bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j]);
-                            if (existTheSameEmitting)
-                            {
-                                var em = emittingsTempTemp[i];
-                                JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
-                                emittingsTempTemp[i] = em;
-                                emittingsTempTemp.RemoveRange(j, 1);
-                                j--;
-                            }
+                            var em = emittingsTempTemp[i];
+                            JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
+                            emittingsTempTemp[i] = em;
+                            emittingsTempTemp.RemoveRange(j, 1);
+                            j--;
                         }
                     }
                 }
-
-
                 EmittingsTemp = emittingsTempTemp.ToArray();
                 EmittingsSummary = emittingsSummaryTemp.ToArray();
                 EmittingsRaw = null;
@@ -163,8 +157,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2)
         {
             // константы 
-            double CrossingBWPercentageForGoodSignals = 70;
-            double CrossingBWPercentageForBadSignals = 40;
+            double CrossingBWPercentageForGoodSignals = 70; // определяет насколько процентов должно совпадать излучение если BW определен 
+            double CrossingBWPercentageForBadSignals = 40; // определяет насколько процентов должно совпадать излучение если BW не определен 
             // конец констант
 
             // тупа нет пересечения
@@ -204,76 +198,67 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
         }
         /// <summary>
-        /// Объединяем два излучения в одно.
+        /// Объединяем два излучения в одно
         /// </summary>
         /// <param name="MasterEmitting"></param>
         /// <param name="AttachableEmitting"></param>
         /// <returns></returns>
         public static bool JoinEmmiting(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger, double NoiseLevel_dBm)
         {
-            //константа 
-            double CriticalDeltaPow_dB = 10;
-            //конец констант 
             bool res = false;
+            bool JoinAttachableEmittingToMasterEmitting = true;
             try
             {
-                // определяем какое излучение более качественно 
-                if ((MasterEmitting.Spectrum.СorrectnessEstimations) && (!AttachableEmitting.Spectrum.СorrectnessEstimations))
-                {// коректен мастер
-                    res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting,logger, NoiseLevel_dBm);
-                }
-                else if ((!MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations))
-                {// коректно второе
-
-                    AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                    res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
-                    MasterEmitting = CreatIndependEmitting(AttachableEmitting);
-                }
-                else if ((MasterEmitting.Spectrum.СorrectnessEstimations) || (AttachableEmitting.Spectrum.СorrectnessEstimations))
-                {// коректны оба
-                 // сопоставим мощности 
-                    double DeltaPow = (MasterEmitting.CurentPower_dBm - AttachableEmitting.CurentPower_dBm);
-                    if (Math.Abs(DeltaPow) > CriticalDeltaPow_dB)
-                    {
-                        if (DeltaPow > 0)
+                // определяем кто к кому присоединяется
+                if ((MasterEmitting.SpectrumIsDetailed)|| (AttachableEmitting.SpectrumIsDetailed))
+                {// если уже есть детализация у первого или у второго то это тогда в приоретете 
+                    if ((MasterEmitting.SpectrumIsDetailed) && (AttachableEmitting.SpectrumIsDetailed))
+                    {// Если оба хороши выбираем лучший по критерию мощности 
+                        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
                         {
-                            res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
-                        }
-                        else
-                        {
-                            AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                            res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
-                            MasterEmitting = CreatIndependEmitting(AttachableEmitting);
+                            JoinAttachableEmittingToMasterEmitting = false;
                         }
                     }
-                    else
-                    {// если мощности не критичны сопоставим детализацию сигнала 
-                        if (MasterEmitting.Spectrum.Levels_dBm.Length >= AttachableEmitting.Spectrum.Levels_dBm.Length)
-                        {
-                            res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
-                        }
-                        else
-                        {
-                            AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                            res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
-                            MasterEmitting = CreatIndependEmitting(AttachableEmitting);
-                        }
+                    else if (AttachableEmitting.SpectrumIsDetailed)
+                    {
+                        JoinAttachableEmittingToMasterEmitting = false;
                     }
                 }
                 else
-                {// оба не коректны
-                    double DeltaPow = (MasterEmitting.CurentPower_dBm - AttachableEmitting.CurentPower_dBm);
-                    if (DeltaPow > 0)
+                { // если детализации нет
+                  // определяем есть ли корректное измерение 
+                    if ((MasterEmitting.Spectrum.СorrectnessEstimations) || (AttachableEmitting.Spectrum.СorrectnessEstimations))
                     {
-                        res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
+                        if ((MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations))
+                        {// Если оба хороши выбираем лучший по критерию мощности 
+                            if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
+                            {
+                                JoinAttachableEmittingToMasterEmitting = false;
+                            }
+                        }
+                        else if (AttachableEmitting.Spectrum.СorrectnessEstimations)
+                        {
+                            JoinAttachableEmittingToMasterEmitting = false;
+                        }
                     }
                     else
-                    {
-                        AttachableEmitting = FillEmittingForStorage(AttachableEmitting, logger);
-                        res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
-                        MasterEmitting = CreatIndependEmitting(AttachableEmitting);
+                    {// если оба излучения не коректны выбираем с максимальной мощностью
+                        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
+                        {
+                            JoinAttachableEmittingToMasterEmitting = false;
+                        }
                     }
-
+                }
+                // собственно само присоединение одного к другому
+                if (JoinAttachableEmittingToMasterEmitting)
+                {// присоединяем к мастеру
+                    res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, logger, NoiseLevel_dBm);
+                }
+                else
+                {// мастер становиться присоединяемым
+                    AttachableEmitting = CalcSignalization.FillEmittingForStorage(AttachableEmitting, logger);
+                    res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
+                    MasterEmitting = CalcSignalization.CreatIndependEmitting(AttachableEmitting);
                 }
             }
             catch (Exception ex)
@@ -289,10 +274,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             int TimeBetweenWorkTimes_sec = 60;
             int TypeJoinSpectrum = 0; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
             //константа 
-
             try
             {
-
                 // обединение Распределения уровней
                 if (AttachableEmitting.LevelsDistribution == null)
                 {
@@ -310,7 +293,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
-                // обединение Распределения уровней времени
+                // обединение масивов времени
                 if ((AttachableEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes[0].StopEmitting >= MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting))
                 {
                     TimeSpan timeSpan = AttachableEmitting.WorkTimes[0].StartEmitting - MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
@@ -324,6 +307,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     { // если пауза не большая
                         MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting = AttachableEmitting.WorkTimes[0].StopEmitting;
                         MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount++;
+                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount + MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount;
+                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount = 0;
+                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].PersentAvailability = 100*MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount/ MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount;
                     }
                 }
                 else
@@ -342,6 +328,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
                         {// производим обединение и удаление лишнего
                             WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
+                            WorkTimes[i].HitCount = WorkTimes[i].ScanCount + WorkTimes[i+1].ScanCount + WorkTimes[i].TempCount + WorkTimes[i+1].TempCount;
+                            WorkTimes[i].TempCount = 0;
+                            WorkTimes[i].PersentAvailability = WorkTimes[i].HitCount/ WorkTimes[i].ScanCount;
                             if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
                             { WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting; }
                             WorkTimes.RemoveRange(i + 1, 1);
@@ -354,7 +343,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // обединение уровней
                 if (TypeJoinSpectrum != 0)
                 {
-                    bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
+                    if ((MasterEmitting.SpectrumIsDetailed) && (AttachableEmitting.SpectrumIsDetailed))
+                    { // если оба детальные 
+                        bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
+                    }
+                    else if (((!MasterEmitting.SpectrumIsDetailed) && (!AttachableEmitting.SpectrumIsDetailed))&&
+                        ((MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations)))
+                    { // если оба не детальны
+                        bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
+                    }
                 }
             }
             catch (Exception ex)
@@ -362,53 +359,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 logger.Error(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex.Message);
             }
             return true;
-        }
-        public static Emitting FillEmittingForStorage(Emitting EmittingParameter, ILogger logger)
-        {
-            var emitting = EmittingParameter;
-            // константы 
-            try
-            {
-                int StartLevelsForLevelDistribution = -150;
-                int NumberPointForLevelDistribution = 200;
-                // конец константы 
-                emitting.WorkTimes[0].HitCount = 1;
-                emitting.WorkTimes[0].StartEmitting = DateTime.Now;
-                //Emitting.WorkTimes[0].PersentAvailability = 100;
-                emitting.LevelsDistribution = new LevelsDistribution();
-                emitting.LevelsDistribution.Count = new int[NumberPointForLevelDistribution];
-                emitting.LevelsDistribution.Levels = new int[NumberPointForLevelDistribution];
-                for (int i = 0; i < NumberPointForLevelDistribution; i++)
-                {
-                    emitting.LevelsDistribution.Levels[i] = StartLevelsForLevelDistribution + i;
-                    emitting.LevelsDistribution.Count[i] = 0;
-                }
-                int indexLevel = (int)Math.Floor(emitting.CurentPower_dBm) - emitting.LevelsDistribution.Levels[0];
-                if ((indexLevel >= 0) && (indexLevel < emitting.LevelsDistribution.Levels.Length)) { emitting.LevelsDistribution.Count[indexLevel]++; }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex.Message);
-            }
-            return emitting;
-        }
-        private static Emitting CreatIndependEmitting(Emitting emitting)
-        {
-            Emitting emitting1 = new Emitting()
-            {
-                CurentPower_dBm = emitting.CurentPower_dBm,
-                EmittingParameters = emitting.EmittingParameters,
-                LevelsDistribution = emitting.LevelsDistribution,
-                MeanDeviationFromReference = emitting.MeanDeviationFromReference,
-                ReferenceLevel_dBm = emitting.ReferenceLevel_dBm,
-                SignalMask = emitting.SignalMask,
-                Spectrum = emitting.Spectrum,
-                StartFrequency_MHz = emitting.StartFrequency_MHz,
-                StopFrequency_MHz = emitting.StopFrequency_MHz,
-                TriggerDeviationFromReference = emitting.TriggerDeviationFromReference,
-                WorkTimes = emitting.WorkTimes
-            };
-            return emitting1;
         }
         private static bool JoinSpectrum(ref Spectrum MasterSpectrum, Spectrum AttachableSpectrum, int TypeJoinSpectrum, double NoiseLevel_dBm)
         {// НЕ ТЕСТИРОВАННО
@@ -463,7 +413,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
             }
-            Spectrum spectrum = CalcSearchInterruption.CreateSpectrum(NewLevels_dBm, MinStep_Hz, minStartFreq_Hz, NoiseLevel_dBm);
+            Spectrum spectrum = CalcSignalization.CreateSpectrum(NewLevels_dBm, MinStep_Hz, minStartFreq_Hz, NoiseLevel_dBm);
             if (spectrum.СorrectnessEstimations)
             {
                 MasterSpectrum = spectrum;
