@@ -18,8 +18,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static Emitting[] CalcSearch(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
         {
             Emitting[] emitting = new Emitting[1];
-
-          
             return emitting;
         }
     }

@@ -12,5 +12,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public DateTime StopEmitting;
         public int HitCount;
         public float PersentAvailability;
+        public int ScanCount;
+        public int TempCount;
     }
 }
