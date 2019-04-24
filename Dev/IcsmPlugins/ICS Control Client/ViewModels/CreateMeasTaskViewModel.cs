@@ -473,11 +473,11 @@ namespace XICSM.ICSControlClient.ViewModels
                     RefSituation = listRef.ToArray()
                 };
 
-                //var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
-                //if (measTaskId == IM.NullI)
-                //{
-                //    throw new InvalidOperationException($"Could not create a meas task");
-                //}
+                var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
+                if (measTaskId == IM.NullI)
+                {
+                    throw new InvalidOperationException($"Could not create a meas task");
+                }
                 _measTaskForm.Close();
             }
             catch (Exception e)
