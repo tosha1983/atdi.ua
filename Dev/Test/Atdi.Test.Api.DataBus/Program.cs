@@ -19,7 +19,7 @@ namespace Atdi.Test.Api.DataBus
         {
             Console.WriteLine("Pree any key to start testing ...");
             Console.ReadLine();
-
+            //
             var factory = BusConnector.GateFactory;
             var address1 = "address_1";
             var address2 = "address_2";
@@ -102,7 +102,7 @@ namespace Atdi.Test.Api.DataBus
             }
 
             // Console.ReadLine();
-            var count = 100;
+            var count = 1;
 
             var tasks = new Task[]
             {
@@ -235,10 +235,13 @@ namespace Atdi.Test.Api.DataBus
             config.VirtualHost = "DataBusApiTest";
             config.User = "andrey";
             config.Password = "P@ssw0rd";
-            config.Buffer.Type = BufferType.Filesystem;
+            config.Buffer.Type = BufferType.Database;
             config.Buffer.OutboxFolder = @"C:\Temp\DataBusOutBox\" + folder;
-            config.Buffer.ContentType = ContentType.Binary;
-
+            config.Buffer.ContentType = ContentType.Xml;
+            config.Buffer.ConnectionString = "";
+            config.UseCompression = true;
+            config.UseEncryption = true;
+            config.ContentType = ContentType.Xml;
             return config;
         }
     }
