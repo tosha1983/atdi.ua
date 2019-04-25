@@ -10,6 +10,38 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.Handlers
 {
+    public sealed class TestHandler205 : IMessageHandler<TestMessage4, TestDeliveryObject4>
+    {
+        private readonly IPublisher publisher;
+        private readonly ILogger logger;
+
+        public TestHandler205(IPublisher publisher, ILogger logger)
+        {
+            this.publisher = publisher;
+            this.logger = logger;
+        }
+        public void Handle(IIncomingEnvelope<TestMessage4, TestDeliveryObject4> envelope, IHandlingResult result)
+        {
+            try
+            {
+                var retEnvelope = publisher.CreateEnvelope<TestMessage4, TestDeliveryObject4>();
+
+                retEnvelope.To = "SomeAddressTo";
+                retEnvelope.DeliveryObject = envelope.DeliveryObject;
+
+                result.Status = MessageHandlingStatus.Confirmed;
+            }
+            catch (Exception e)
+            {
+                result.Status = MessageHandlingStatus.Rejected;
+                result.Reason = e.Message;
+                result.Detail = e.ToString();
+            }
+
+            
+
+        }
+    }
     public sealed class TestHandler1_1 : IMessageHandler<TestMessage1, TestDeliveryObject1>
     {
         private readonly IPublisher publisher;
@@ -28,7 +60,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.Handlers
             result.Detail = $"Input delivery object: Index =  '{envelope.DeliveryObject.Index}', Data = '{envelope.DeliveryObject.Data}'";
 
             var retEnvelope = publisher.CreateEnvelope<TestMessage1, TestDeliveryObject1>();
-            retEnvelope.To = "AggregationServer";
+            retEnvelope.To =  "AggregationServer";
             retEnvelope.DeliveryObject = new TestDeliveryObject1
             {
                 Index = envelope.DeliveryObject.Index + 1,
