@@ -32,6 +32,11 @@ namespace Atdi.DataModels.Sdrns.Device
         public string EquipmentTechId { get; set; }
 
         /// <summary>
+        /// Sensor identifier
+        /// </summary>
+        [DataMember]
+        public int SensorId { get; set; }
+        /// <summary>
         /// Task identifier
         /// </summary>
         [DataMember]

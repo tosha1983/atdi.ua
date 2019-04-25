@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Name="grid1" Margin="10">
+    <Grid Name="grid1" Margin="10" MouseUp="ChartCanvas_MouseUp">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -33,10 +33,10 @@
             </TextBlock.LayoutTransform>
         </TextBlock>
 
-        <Grid  Margin="0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1" ClipToBounds="True" Background="Transparent" SizeChanged="chartGrid_SizeChanged" />
+        <Grid  Margin="0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1" ClipToBounds="True" Background="Transparent" SizeChanged="ChartGrid_SizeChanged" />
         <Canvas Margin="2" Name="textCanvas" ClipToBounds="True" Grid.Column="1" Grid.Row="1">
-            <Canvas Name="chartCanvas" Background="Transparent" ClipToBounds="True" MouseDown="chartCanvas_MouseDown" MouseMove="chartCanvas_MouseMove" MouseUp="chartCanvas_MouseUp">
-                <Canvas Name="legendCanvas" Background="Transparent" MouseDown="chartCanvas_MouseDown" MouseMove="chartCanvas_MouseMove" MouseUp="chartCanvas_MouseUp" />
+            <Canvas Name="chartCanvas" Background="Transparent" ClipToBounds="True" MouseDown="ChartCanvas_MouseDown" MouseMove="ChartCanvas_MouseMove">
+                <Canvas Name="legendCanvas" Background="Transparent" MouseDown="ChartCanvas_MouseDown" MouseMove="ChartCanvas_MouseMove" />
             </Canvas>
         </Canvas>
     </Grid>

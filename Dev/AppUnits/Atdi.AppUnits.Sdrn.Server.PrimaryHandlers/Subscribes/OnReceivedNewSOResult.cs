@@ -51,7 +51,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     if (result)
                     {
                         DM.MeasurementType measurement;
-                        if (!Enum.TryParse(reader.GetValue(c => c.TypeMeasurements), out measurement))
+                        if ((!Enum.TryParse(reader.GetValue(c => c.TypeMeasurements), out measurement)) || (string.IsNullOrEmpty(reader.GetValue(c => c.TypeMeasurements))))
                             measurement = DM.MeasurementType.MonitoringStations;
 
                         measResult.Measurement = measurement;
@@ -97,7 +97,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     validationResult = VaildateMeasResultSignaling(ref measResult, @event.ResultId);
                     if (validationResult)
                     {
-                        SaveMeasResultSignaling(measResult);
+                        int newResMeasId; int newResSensorId;
+                        if (SaveMeasResultSignaling(measResult, out newResMeasId, out newResSensorId))
+                            DeleteOldMeasResultSignaling(measResult, newResMeasId, newResSensorId);
                     }
                 }
 
@@ -128,7 +130,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             else if (measResult.TaskId.Length > 200)
                 measResult.TaskId.SubString(200);
 
-            if (!(measResult.ScansNumber >= 1 && measResult.ScansNumber <= 10000000))
+            if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
                 WriteLog("Incorrect value SwNumber", "IResMeasRaw");
 
             #region Route
@@ -179,7 +181,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 }
                 return true;
             });
-            if (listRoutes.Count > 0)
+            if (listRoutes.Count >= 0)
                 measResult.Routes = listRoutes.ToArray();
             else
                 result = false;
@@ -558,9 +560,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 measResult.StationResults = listStationMeasResult.ToArray();
             else
                 result = false;
-
             return result;
-
             #endregion
         }
         private bool SaveMeasResultMonitoringStations(DEV.MeasResults measResult)
@@ -607,10 +607,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     builderUpdateResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                     builderUpdateResMeas.SetValue(c => c.Status, measResult.Status);
                     builderUpdateResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
+                    builderUpdateResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
                     builderUpdateResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
                     builderUpdateResMeas.Where(c => c.Id, ConditionOperator.Equal, idResMeas);
                     queryExecuter.Execute(builderUpdateResMeas);
-
                 }
                 else
                 {
@@ -621,6 +621,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                     builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                    builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
                     builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
                     builderInsertIResMeas.Select(c => c.Id);
@@ -981,6 +982,359 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     }
                                                     return res;
                                                 });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var listStationIds = new List<int>();
+                                int valInsResMeasStation = 0;
+
+                                builderResMeasStationSearch = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                                builderResMeasStationSearch.Select(c => c.Id);
+                                builderResMeasStationSearch.Where(c => c.MeasGlobalSID, ConditionOperator.Equal, station.RealGlobalSid);
+                                builderResMeasStationSearch.Where(c => c.Standard, ConditionOperator.Equal, station.Standard);
+                                queryExecuter.Fetch(builderResMeasStationSearch, readerResMeasStation =>
+                                {
+                                    while (readerResMeasStation.Read())
+                                    {
+                                        valInsResMeasStation = readerResMeasStation.GetValue(c => c.Id);
+                                        listStationIds.Add(valInsResMeasStation);
+                                    }
+                                    return true;
+                                });
+
+
+                                if (listStationIds.Count == 0)
+                                {
+                                    int Idstation; int IdSector;
+                                    station = measResult.StationResults[n];
+                                    var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
+                                    builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
+                                    builderInsertResMeasStation.SetValue(c => c.MeasGlobalSID, station.RealGlobalSid);
+                                    builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
+                                    builderInsertResMeasStation.SetValue(c => c.ResMeasId, idResMeas);
+                                    builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
+                                    if (int.TryParse(station.StationId, out Idstation))
+                                    {
+                                        builderInsertResMeasStation.SetValue(c => c.StationId, Idstation);
+                                    }
+                                    if (int.TryParse(station.SectorId, out IdSector))
+                                    {
+                                        builderInsertResMeasStation.SetValue(c => c.SectorId, IdSector);
+                                    }
+                                    builderInsertResMeasStation.Select(c => c.Id);
+
+                                    queryExecuter
+                                   .ExecuteAndFetch(builderInsertResMeasStation, reader =>
+                                   {
+                                       var res = reader.Read();
+                                       if (res)
+                                       {
+                                           valInsResMeasStation = reader.GetValue(c => c.Id);
+                                           listStationIds.Add(valInsResMeasStation);
+                                       }
+                                       return res;
+                                   });
+                                }
+
+                                if (listStationIds.Count > 0)
+                                {
+                                    for (int p = 0; p < listStationIds.Count; p++)
+                                    {
+                                        valInsResMeasStation = listStationIds[p];
+                                        int StationId;
+
+                                        if (int.TryParse(station.StationId, out StationId))
+                                        {
+                                            var builderILinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Delete();
+                                            builderILinkResSensor.Where(c => c.ResMeasStaId, ConditionOperator.Equal, valInsResMeasStation);
+                                            builderILinkResSensor.Where(c => c.SensorId, ConditionOperator.Equal, StationId);
+                                            queryExecuter.Execute(builderILinkResSensor);
+                                        }
+
+                                      
+                                        int idLinkRes = -1;
+                                        var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
+                                        builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                        if (int.TryParse(station.StationId, out StationId))
+                                        {
+                                            builderInsertLinkResSensor.SetValue(c => c.SensorId, StationId);
+                                        }
+                                        builderInsertLinkResSensor.Select(c => c.Id);
+                                        queryExecuter
+                                        .ExecuteAndFetch(builderInsertLinkResSensor, reader =>
+                                        {
+                                            var res = reader.Read();
+                                            if (res)
+                                            {
+                                                idLinkRes = reader.GetValue(c => c.Id);
+                                            }
+                                            return res;
+                                        });
+
+
+                                        var generalResult = station.GeneralResult;
+                                        if (generalResult != null)
+                                        {
+                                            var builderIResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().Delete();
+                                            builderIResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, valInsResMeasStation);
+                                            queryExecuter.Execute(builderIResStGeneral);
+
+
+                                            int IDResGeneral = -1;
+                                            var builderInsertResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().Insert();
+                                            builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
+                                            builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
+                                            builderInsertResStGeneral.SetValue(c => c.CentralFrequencyMeas, generalResult.CentralFrequencyMeas_MHz);
+                                            builderInsertResStGeneral.SetValue(c => c.CentralFrequency, generalResult.CentralFrequency_MHz);
+                                            builderInsertResStGeneral.SetValue(c => c.DurationMeas, generalResult.MeasDuration_sec);
+                                            if (generalResult.BandwidthResult != null)
+                                            {
+                                                var bandwidthResult = generalResult.BandwidthResult;
+                                                builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
+                                                builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
+                                                builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
+                                                builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
+                                                builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations);
+                                            }
+                                            builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
+                                            builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
+                                            builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, Convert.ToDouble(generalResult.SpectrumSteps_kHz));
+                                            builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
+                                            builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
+                                            builderInsertResStGeneral.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                            builderInsertResStGeneral.Select(c => c.Id);
+                                            queryExecuter
+                                            .ExecuteAndFetch(builderInsertResStGeneral, reader =>
+                                            {
+                                                var res = reader.Read();
+                                                if (res)
+                                                {
+                                                    IDResGeneral = reader.GetValue(c => c.Id);
+                                                }
+                                                return res;
+                                            });
+
+
+                                            if (IDResGeneral > -1)
+                                            {
+
+                                                var builderDelSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfo>().Delete();
+                                                builderDelSysInfo.Where(c => c.ResStGeneralId, ConditionOperator.Equal, IDResGeneral);
+                                                queryExecuter.Execute(builderDelSysInfo);
+
+                                                if (station.GeneralResult.StationSysInfo != null)
+                                                {
+                                                    var stationSysInfo = station.GeneralResult.StationSysInfo;
+                                                    int IDResSysInfoGeneral = -1;
+                                                    var builderInsertResSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfo>().Insert();
+                                                    if (stationSysInfo.Location != null)
+                                                    {
+                                                        var stationSysInfoLocation = stationSysInfo.Location;
+                                                        builderInsertResSysInfo.SetValue(c => c.Agl, stationSysInfoLocation.AGL);
+                                                        builderInsertResSysInfo.SetValue(c => c.Asl, stationSysInfoLocation.ASL);
+                                                        builderInsertResSysInfo.SetValue(c => c.Lat, stationSysInfoLocation.Lat);
+                                                        builderInsertResSysInfo.SetValue(c => c.Lon, stationSysInfoLocation.Lon);
+                                                    }
+                                                    builderInsertResSysInfo.SetValue(c => c.Bandwidth, stationSysInfo.BandWidth);
+                                                    builderInsertResSysInfo.SetValue(c => c.BaseId, stationSysInfo.BaseID);
+                                                    builderInsertResSysInfo.SetValue(c => c.Bsic, stationSysInfo.BSIC);
+                                                    builderInsertResSysInfo.SetValue(c => c.ChannelNumber, stationSysInfo.ChannelNumber);
+                                                    builderInsertResSysInfo.SetValue(c => c.Cid, stationSysInfo.CID);
+                                                    builderInsertResSysInfo.SetValue(c => c.Code, stationSysInfo.Code);
+                                                    builderInsertResSysInfo.SetValue(c => c.Ctoi, stationSysInfo.CtoI);
+                                                    builderInsertResSysInfo.SetValue(c => c.Eci, stationSysInfo.ECI);
+                                                    builderInsertResSysInfo.SetValue(c => c.Enodebid, stationSysInfo.eNodeBId);
+                                                    builderInsertResSysInfo.SetValue(c => c.Freq, stationSysInfo.Freq);
+                                                    builderInsertResSysInfo.SetValue(c => c.Icio, stationSysInfo.IcIo);
+                                                    builderInsertResSysInfo.SetValue(c => c.InbandPower, stationSysInfo.INBAND_POWER);
+                                                    builderInsertResSysInfo.SetValue(c => c.Iscp, stationSysInfo.ISCP);
+                                                    builderInsertResSysInfo.SetValue(c => c.Lac, stationSysInfo.LAC);
+                                                    builderInsertResSysInfo.SetValue(c => c.Mcc, stationSysInfo.MCC);
+                                                    builderInsertResSysInfo.SetValue(c => c.Mnc, stationSysInfo.MNC);
+                                                    builderInsertResSysInfo.SetValue(c => c.Nid, stationSysInfo.NID);
+                                                    builderInsertResSysInfo.SetValue(c => c.Pci, stationSysInfo.PCI);
+                                                    builderInsertResSysInfo.SetValue(c => c.Pn, stationSysInfo.PN);
+                                                    builderInsertResSysInfo.SetValue(c => c.Power, stationSysInfo.Power);
+                                                    builderInsertResSysInfo.SetValue(c => c.Ptotal, stationSysInfo.Ptotal);
+                                                    builderInsertResSysInfo.SetValue(c => c.Rnc, stationSysInfo.RNC);
+                                                    builderInsertResSysInfo.SetValue(c => c.Rscp, stationSysInfo.RSCP);
+                                                    builderInsertResSysInfo.SetValue(c => c.Rsrp, stationSysInfo.RSRP);
+                                                    builderInsertResSysInfo.SetValue(c => c.Rsrq, stationSysInfo.RSRQ);
+                                                    builderInsertResSysInfo.SetValue(c => c.Sc, stationSysInfo.SC);
+                                                    builderInsertResSysInfo.SetValue(c => c.Sid, stationSysInfo.SID);
+                                                    builderInsertResSysInfo.SetValue(c => c.Tac, stationSysInfo.TAC);
+                                                    builderInsertResSysInfo.SetValue(c => c.TypeCdmaevdo, stationSysInfo.TypeCDMAEVDO);
+                                                    builderInsertResSysInfo.SetValue(c => c.Ucid, stationSysInfo.UCID);
+                                                    builderInsertResSysInfo.SetValue(c => c.ResStGeneralId, IDResGeneral);
+                                                    builderInsertResSysInfo.Select(c => c.Id);
+
+                                                    queryExecuter
+                                                    .ExecuteAndFetch(builderInsertResSysInfo, reader =>
+                                                    {
+                                                        var res = reader.Read();
+                                                        if (res)
+                                                        {
+                                                            IDResSysInfoGeneral = reader.GetValue(c => c.Id);
+                                                        }
+                                                        return res;
+                                                    });
+
+
+                                                    if (IDResSysInfoGeneral > -1)
+                                                    {
+                                                        if (stationSysInfo.InfoBlocks != null)
+                                                        {
+                                                            foreach (DEV.StationSysInfoBlock blocks in stationSysInfo.InfoBlocks)
+                                                            {
+                                                                int IDResSysInfoBlocks = -1;
+                                                                var builderInsertStationSysInfoBlock = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>().Insert();
+                                                                builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);
+                                                                builderInsertStationSysInfoBlock.SetValue(c => c.Type, blocks.Type);
+                                                                builderInsertStationSysInfoBlock.SetValue(c => c.ResSysInfoId, IDResSysInfoGeneral);
+                                                                builderInsertStationSysInfoBlock.Select(c => c.Id);
+                                                                queryExecuter
+                                                                .ExecuteAndFetch(builderInsertStationSysInfoBlock, reader =>
+                                                                {
+                                                                    var res = reader.Read();
+                                                                    if (res)
+                                                                    {
+                                                                        IDResSysInfoBlocks = reader.GetValue(c => c.Id);
+                                                                    }
+                                                                    return res;
+                                                                });
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                if (station.GeneralResult.BWMask != null)
+                                                {
+                                                    if (station.GeneralResult.BWMask.Length > 0)
+                                                    {
+                                                        var lstIns = new IQueryInsertStatement<MD.IResStMaskElement>[station.GeneralResult.BWMask.Length];
+                                                        for (int l = 0; l < station.GeneralResult.BWMask.Length; l++)
+                                                        {
+                                                            DEV.ElementsMask maskElem = station.GeneralResult.BWMask[l];
+                                                            var builderInsertmaskElem = this._dataLayer.GetBuilder<MD.IResStMaskElement>().Insert();
+                                                            builderInsertmaskElem.SetValue(c => c.Bw, maskElem.BW_kHz);
+                                                            builderInsertmaskElem.SetValue(c => c.Level, maskElem.Level_dB);
+                                                            builderInsertmaskElem.SetValue(c => c.ResStGeneralId, IDResGeneral);
+                                                            builderInsertmaskElem.Select(c => c.Id);
+                                                            lstIns[l] = builderInsertmaskElem;
+                                                        }
+                                                        queryExecuter.ExecuteAndFetch(lstIns, reader =>
+                                                        {
+                                                            return true;
+                                                        });
+                                                    }
+                                                }
+
+                                                if (station.GeneralResult.LevelsSpectrum_dBm != null)
+                                                {
+                                                    if (station.GeneralResult.LevelsSpectrum_dBm.Length > 0)
+                                                    {
+                                                        var lstIns = new IQueryInsertStatement<MD.IResStLevelsSpect>[station.GeneralResult.LevelsSpectrum_dBm.Length];
+                                                        for (int l = 0; l < station.GeneralResult.LevelsSpectrum_dBm.Length; l++)
+                                                        {
+                                                            double lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
+                                                            var builderInsertResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpect>().Insert();
+                                                            builderInsertResStLevelsSpect.SetValue(c => c.LevelSpecrum, lvl);
+                                                            builderInsertResStLevelsSpect.SetValue(c => c.ResStGeneralId, IDResGeneral);
+                                                            builderInsertResStLevelsSpect.Select(c => c.Id);
+                                                            lstIns[l] = builderInsertResStLevelsSpect;
+                                                        }
+                                                        queryExecuter.ExecuteAndFetch(lstIns, reader =>
+                                                        {
+                                                            return true;
+                                                        });
+                                                    }
+                                                }
+
+
+                                                if (station.LevelResults != null)
+                                                {
+                                                    if (station.LevelResults.Length > 0)
+                                                    {
+
+                                                        var lstIns = new IQueryInsertStatement<MD.IResStLevelCar>[station.LevelResults.Length];
+                                                        for (int l = 0; l < station.LevelResults.Length; l++)
+                                                        {
+                                                            DEV.LevelMeasResult car = station.LevelResults[l];
+                                                            var builderInsertResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().Insert();
+                                                            if (car.Location != null)
+                                                            {
+                                                                builderInsertResStLevelCar.SetValue(c => c.Agl, car.Location.AGL);
+                                                                builderInsertResStLevelCar.SetValue(c => c.Altitude, car.Location.ASL);
+                                                                builderInsertResStLevelCar.SetValue(c => c.Lon, car.Location.Lon);
+                                                                builderInsertResStLevelCar.SetValue(c => c.Lat, car.Location.Lat);
+                                                            }
+                                                            builderInsertResStLevelCar.SetValue(c => c.DifferenceTimeStamp, car.DifferenceTimeStamp_ns);
+                                                            builderInsertResStLevelCar.SetValue(c => c.LevelDbm, car.Level_dBm);
+                                                            builderInsertResStLevelCar.SetValue(c => c.LevelDbmkvm, car.Level_dBmkVm);
+                                                            builderInsertResStLevelCar.SetValue(c => c.TimeOfMeasurements, car.MeasurementTime);
+
+                                                            if (station.GeneralResult != null)
+                                                            {
+                                                                var generalResults = station.GeneralResult;
+                                                                builderInsertResStLevelCar.SetValue(c => c.CentralFrequency, generalResults.CentralFrequency_MHz);
+                                                                if (generalResults.BandwidthResult != null)
+                                                                {
+                                                                    builderInsertResStLevelCar.SetValue(c => c.Bw, generalResults.BandwidthResult.Bandwidth_kHz);
+                                                                }
+                                                            }
+                                                            builderInsertResStLevelCar.SetValue(c => c.ResStationId, valInsResMeasStation);
+                                                            builderInsertResStLevelCar.Select(c => c.Id);
+                                                            lstIns[l] = builderInsertResStLevelCar;
+
+                                                        }
+                                                        queryExecuter.ExecuteAndFetch(lstIns, reader =>
+                                                        {
+                                                            return true;
+                                                        });
+                                                    }
+                                                }
+
+                                                if (station.Bearings != null)
+                                                {
+                                                    if (station.Bearings.Length > 0)
+                                                    {
+                                                        var listBearings = station.Bearings;
+                                                        var lstInsBearingRaw = new IQueryInsertStatement<MD.IBearingRaw>[listBearings.Length];
+                                                        for (int v = 0; v < listBearings.Length; v++)
+                                                        {
+                                                            DEV.DirectionFindingData directionFindingData = listBearings[v];
+                                                            var builderInsertBearingRaw = this._dataLayer.GetBuilder<MD.IBearingRaw>().Insert();
+                                                            builderInsertBearingRaw.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                                            if (directionFindingData.Location != null)
+                                                            {
+                                                                builderInsertBearingRaw.SetValue(c => c.Agl, directionFindingData.Location.AGL);
+                                                                builderInsertBearingRaw.SetValue(c => c.Asl, directionFindingData.Location.ASL);
+                                                                builderInsertBearingRaw.SetValue(c => c.Lon, directionFindingData.Location.Lon);
+                                                                builderInsertBearingRaw.SetValue(c => c.Lat, directionFindingData.Location.Lat);
+                                                            }
+
+                                                            builderInsertBearingRaw.SetValue(c => c.Level_dBm, directionFindingData.Level_dBm);
+                                                            builderInsertBearingRaw.SetValue(c => c.Level_dBmkVm, directionFindingData.Level_dBmkVm);
+                                                            builderInsertBearingRaw.SetValue(c => c.MeasurementTime, directionFindingData.MeasurementTime);
+                                                            builderInsertBearingRaw.SetValue(c => c.Quality, directionFindingData.Quality);
+                                                            builderInsertBearingRaw.SetValue(c => c.AntennaAzimut, directionFindingData.AntennaAzimut);
+                                                            builderInsertBearingRaw.SetValue(c => c.Bandwidth_kHz, directionFindingData.Bandwidth_kHz);
+                                                            builderInsertBearingRaw.SetValue(c => c.Bearing, directionFindingData.Bearing);
+                                                            builderInsertBearingRaw.SetValue(c => c.CentralFrequency_MHz, directionFindingData.CentralFrequency_MHz);
+                                                            builderInsertBearingRaw.Select(c => c.Id);
+                                                            lstInsBearingRaw[p] = builderInsertBearingRaw;
+                                                        }
+
+                                                        queryExecuter.ExecuteAndFetch(lstInsBearingRaw, reader =>
+                                                        {
+                                                            return true;
+                                                        });
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -1363,7 +1717,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
                 measResult.Location = geoLocation;
 
-            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
             builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Execute(builderDelLocSensor);
 
@@ -1554,7 +1908,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
                 measResult.Location = geoLocation;
 
-            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
             builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Execute(builderDelLocSensor);
 
@@ -1562,7 +1916,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             var listEmitting = new List<DEV.Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c =>c.SensorId)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
             queryExecuter.Fetch(queryEmitting, reader =>
             {
@@ -1602,6 +1956,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue && reader.GetValue(c => c.TriggerDeviationFromReference).Value >= 0 && reader.GetValue(c => c.TriggerDeviationFromReference).Value <= 1)
                         emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
 
+                    if (reader.GetValue(c => c.SensorId).HasValue)
+                    {
+                        emitting.SensorId = reader.GetValue(c => c.SensorId).Value;
+                    }
 
                     if (reader.GetValue(c => c.LevelsDistribution)!=null)
                     {
@@ -1950,17 +2308,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
             return result;
         }
-        private bool SaveMeasResultSignaling(DEV.MeasResults measResult)
+        private bool SaveMeasResultSignaling(DEV.MeasResults measResult, out int ResMeasId, out int ResSensorId)
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            int valInsResMeas = 0;
+            int sensorId = -1;
             try
             {
                 queryExecuter.BeginTransaction();
 
-                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
+                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int resultId = -1;
                 GetIds(measResult.ResultId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
 
-                int valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
@@ -1982,12 +2341,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         valInsResMeas = reader.GetValue(c => c.Id);
                     }
                     
-
                     return res;
                 });
 
                 if (valInsResMeas > 0)
                 {
+                    var builderInsertResLocSensorMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Insert();
+                    builderInsertResLocSensorMeas.SetValue(c => c.Agl, measResult.Location.AGL);
+                    builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
+                    builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
+                    builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
+                    builderInsertResLocSensorMeas.SetValue(c => c.ResMeasId, valInsResMeas);
+                    builderInsertResLocSensorMeas.Select(c => c.Id);
+                    queryExecuter.Execute(builderInsertResLocSensorMeas);
+
                     if (measResult.RefLevels != null)
                     {
                         int valInsReferenceLevels = 0;
@@ -2023,6 +2390,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             builderInsertEmitting.SetValue(c => c.MeanDeviationFromReference, emittings[l].MeanDeviationFromReference);
                             builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emittings[l].ReferenceLevel_dBm);
                             builderInsertEmitting.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertEmitting.SetValue(c => c.SensorId, emittings[l].SensorId);
                             if (emittings[l].EmittingParameters != null)
                             {
                                 builderInsertEmitting.SetValue(c => c.RollOffFactor, emittings[l].EmittingParameters.RollOffFactor);
@@ -2132,40 +2500,119 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             }
                                         }
 
+                                   }
+                                }
+                                return true;
+                            });
+                        }
+                    }
+                }
 
-                                        /*
-                                        var levelsDistribution = emittings[l].LevelsDistribution;
-                                        if (levelsDistribution != null)
+                ResMeasId = valInsResMeas; ResSensorId = sensorId;
+                queryExecuter.CommitTransaction();
+                return true;
+            }
+            catch (Exception exp)
+            {
+                ResMeasId = valInsResMeas; ResSensorId = sensorId;
+                _logger.Exception(Contexts.ThisComponent, exp);
+                queryExecuter.RollbackTransaction();
+                return false;
+            }
+        }
+        private bool DeleteOldMeasResultSignaling(DEV.MeasResults measResult, int ResMeasId, int ResSensorId)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            try
+            {
+                queryExecuter.BeginTransaction();
+
+                bool isCopyRefLev = false;
+
+                var queryResMeas = this._dataLayer.GetBuilder<MD.IResMeas>()
+                .From()
+                .Select(c => c.Id, c => c.TimeMeas)
+                .Where(c => c.MeasTaskId, ConditionOperator.Equal, measResult.TaskId)
+                .Where(c => c.SensorId, ConditionOperator.Equal, ResSensorId)
+                .Where(c => c.Id, ConditionOperator.NotEqual, ResMeasId)
+                .OrderByDesc(c => c.TimeMeas);
+                queryExecuter.Fetch(queryResMeas, reader =>
+                {
+                    while (reader.Read())
+                    {
+                        int ResOldMeasId = reader.GetValue(c => c.Id);
+                        DateTime? timeMeas = reader.GetValue(c => c.TimeMeas);
+
+                        if (timeMeas.HasValue && measResult.Measured.Year == timeMeas.Value.Year && measResult.Measured.Month == timeMeas.Value.Month && measResult.Measured.Day == timeMeas.Value.Day && measResult.Location != null)
+                        {
+                            var queryLoc = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>()
+                            .From()
+                            .Select(c => c.Id, c => c.Lon, c => c.Lat)
+                            .Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                            queryExecuter.Fetch(queryLoc, readerLoc =>
+                            {
+                                while (readerLoc.Read())
+                                {
+                                    double? lon = readerLoc.GetValue(c => c.Lon);
+                                    double? lat = readerLoc.GetValue(c => c.Lat);
+
+                                    if (lon.HasValue && lat.HasValue && Math.Abs(measResult.Location.Lon - lon.Value) <= 0.0004 && Math.Abs(measResult.Location.Lat - lat.Value) <= 0.0004)
+                                    {
+                                        if (measResult.RefLevels == null)
                                         {
-                                            if (levelsDistribution.Levels != null)
+                                            if (!isCopyRefLev)
                                             {
-                                                var lstInsLevelsDistribution = new IQueryInsertStatement<MD.ILevelsDistribution>[levelsDistribution.Levels.Length];
-                                                for (int k = 0; k < levelsDistribution.Levels.Length; k++)
-                                                {
-                                                    var lvl = levelsDistribution.Levels[k];
-                                                    var count = levelsDistribution.Count[k];
-                                                    var builderInsertLevelsDistribution = this._dataLayer.GetBuilder<MD.ILevelsDistribution>().Insert();
-                                                    builderInsertLevelsDistribution.SetValue(c => c.level, lvl);
-                                                    builderInsertLevelsDistribution.SetValue(c => c.count, count);
-                                                    builderInsertLevelsDistribution.SetValue(c => c.EmittingId, valInsReferenceEmitting);
-                                                    builderInsertLevelsDistribution.Select(c => c.Id);
-                                                    lstInsLevelsDistribution[k] = builderInsertLevelsDistribution;
-                                                }
-                                                queryExecuter.ExecuteAndFetch(lstInsLevelsDistribution, readerLevelsDistribution =>
-                                                {
-                                                    return true;
-                                                });
+                                                var builderUpdateRefLev = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Update();
+                                                builderUpdateRefLev.SetValue(c => c.ResMeasId, ResMeasId);
+                                                builderUpdateRefLev.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+
+                                                if (queryExecuter.Execute(builderUpdateRefLev) > 0)
+                                                    isCopyRefLev = true;
                                             }
                                         }
-                                        */
+
+                                        var builderLevelDel = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Delete();
+                                        builderLevelDel.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderLevelDel);
+
+                                        var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+                                        builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderDelLocSensor);
+
+                                        var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
+                                        .From()
+                                        .Select(c => c.Id)
+                                        .Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Fetch(queryEmitting, readerEmitt =>
+                                        {
+                                            while (readerEmitt.Read())
+                                            {
+                                                var builderDelTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Delete();
+                                                builderDelTime.Where(c => c.EmittingId, ConditionOperator.Equal, readerEmitt.GetValue(c => c.Id));
+                                                queryExecuter.Execute(builderDelTime);
+
+                                                var builderSignalDel = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();
+                                                builderSignalDel.Where(c => c.EmittingId, ConditionOperator.Equal, readerEmitt.GetValue(c => c.Id));
+                                                queryExecuter.Execute(builderSignalDel);
+
+                                                var builderSpectrumDel = this._dataLayer.GetBuilder<MD.ISpectrum>().Delete();
+                                                builderSpectrumDel.Where(c => c.EmittingId, ConditionOperator.Equal, readerEmitt.GetValue(c => c.Id));
+                                                queryExecuter.Execute(builderSpectrumDel);
+                                            }
+                                            return true;
+                                        });
+
+                                        var builderDelEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Delete();
+                                        builderDelEmitting.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderDelEmitting);
                                     }
                                 }
                                 return true;
                             });
                         }
                     }
-
-                }
+                    return true;
+                });
 
                 queryExecuter.CommitTransaction();
                 return true;

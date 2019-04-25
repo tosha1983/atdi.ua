@@ -12,6 +12,7 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
 using Atdi.DataModels.EntityOrm;
 using Atdi.DataModels.Sdrns.Device;
+using System.Linq;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
@@ -58,32 +59,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
 
-                DateTime dateTimeNow = DateTime.Now;
-                TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
-                if (waitStartTask.TotalMilliseconds > 0)
-                {
-                    //Засыпаем до начала выполнения задачи
-                    Thread.Sleep((int)waitStartTask.TotalMilliseconds);
-                }
-
-                var maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
-                // 
-                //  Вычисление MesureTraceParameter
-                // 
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                //context.Task.mesureTraceParameter
-
 
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер 
                 //
                 //////////////////////////////////////////////
+                var datenow = DateTime.Now;
                 var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
-                DateTime currTime = DateTime.Now;
+                deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
+                deviceCommand.Delay = 0;
+                deviceCommand.Options = CommandOption.StartImmediately;
+                deviceCommand.StartTimeStamp = TimeStamp.Ticks;
                 _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                 (
@@ -92,13 +79,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
                 });
+
+                var dateTimeValue = DateTime.Now - datenow;
+                var mlsc = dateTimeValue.TotalMilliseconds;
+
                 //////////////////////////////////////////////
                 // 
                 // Получение очередного  результат от Result Handler
                 //
                 //////////////////////////////////////////////
-                MeasBandwidthResult outResultData = null;
-                bool isDown = context.WaitEvent<MeasBandwidthResult>(out outResultData, (int)context.Task.maximumTimeForWaitingResultBandWidth);
+                BWResult outResultData = null;
+                bool isDown = context.WaitEvent<BWResult>(out outResultData, 400*(int)(context.Task.durationForMeasBW_ms) - (int)mlsc);
                 if (isDown == false) // таймут - результатов нет
                 {
                     var error = new ExceptionProcessBandWidth();
@@ -107,39 +98,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (error._ex != null)
                         {
                             /// реакция на ошибку выполнения команды
-                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
-                            switch (error._failureReason)
-                            {
-                                case CommandFailureReason.DeviceIsBusy:
-                                case CommandFailureReason.CanceledExecution:
-                                case CommandFailureReason.TimeoutExpired:
-                                case CommandFailureReason.CanceledBeforeExecution:
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas), error._ex.StackTrace);
-                                    Thread.Sleep((int)maximumDurationMeas);
-                                    return;
-                                case CommandFailureReason.NotFoundConvertor:
-                                case CommandFailureReason.NotFoundDevice:
-                                    var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.KoeffWaitingDevice;
-                                    TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
-                                    if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
-                                    {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
-                                        context.Cancel();
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas), error._ex.StackTrace);
-                                        Thread.Sleep(durationToRepietMeas);
-                                    }
-                                    break;
-                                case CommandFailureReason.Exception:
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
-                                    context.Cancel();
-                                    return;
-                                default:
-                                    throw new NotImplementedException($"Type {error._failureReason} not supported");
-                            }
+                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
+                             context.Cancel();
                         }
                     }
                 }
@@ -148,24 +108,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // есть результат
                 }
 
-
+                DateTime currTime = DateTime.Now;
                 var action = new Action(() =>
                 {
                     //реакция на принятые результаты измерения
                     if (outResultData != null)
                     {
                         DM.MeasResults measResult = new DM.MeasResults();
-
                         context.Task.CountSendResults++;
                         measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
                         measResult.Status = "N";
                         measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
+                        measResult.Levels_dBm = outResultData.Levels_dBm;
+                        if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length>0))
+                        {
+                            var floatFreq_Hz = outResultData.Freq_Hz.Select(x => (float)x).ToArray();
+                            measResult.Frequencies = floatFreq_Hz;
+                        }
                         measResult.BandwidthResult = new BandwidthMeasResult();
-                        measResult.BandwidthResult.Bandwidth_kHz = outResultData.BandwidthkHz;
                         measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
+                        measResult.BandwidthResult.Bandwidth_kHz = outResultData.Bandwidth_kHz;
                         measResult.BandwidthResult.T1 = outResultData.T1;
                         measResult.BandwidthResult.T2 = outResultData.T2;
                         measResult.BandwidthResult.СorrectnessEstimations = outResultData.СorrectnessEstimations;
+                        measResult.BandwidthResult.TraceCount = outResultData.TraceCount;
                         measResult.StartTime = context.Task.LastTimeSend.Value;
                         measResult.StopTime = currTime;
                         measResult.Location = new DataModels.Sdrns.GeoLocation();
@@ -214,8 +180,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         var publisher = this._busGate.CreatePublisher("main");
                         publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
                         publisher.Dispose();
-                        context.Task.MeasResults = null;
-                        context.Task.LastTimeSend = currTime;
+                        context.Task.MeasBWResults = null;
                     }
                 });
 

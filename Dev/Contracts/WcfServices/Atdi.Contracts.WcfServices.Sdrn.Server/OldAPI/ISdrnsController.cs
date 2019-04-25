@@ -303,5 +303,24 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
         ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
+        /// <summary>
+        /// Delete emittings
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool DeleteEmitting(int[] emittingsId);
+
+        /// <summary>
+        /// Add association station by emitting
+        /// </summary>
+        /// <param name="emittingId"></param>
+        /// <param name="AssociatedStationID"></param>
+        /// <param name="AssociatedStationTableName"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName);
+
+
     }
 }

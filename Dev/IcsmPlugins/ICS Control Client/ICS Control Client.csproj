@@ -114,6 +114,12 @@
     <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\WaitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WaitForm.Designer.cs">
+      <DependentUpon>WaitForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
       <SubType>Form</SubType>
@@ -242,6 +248,7 @@
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
+    <Compile Include="WpfControls\Charts\ChartLine.cs" />
     <Compile Include="WpfControls\Charts\ChartLineStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartOption.cs" />
     <Compile Include="WpfControls\Charts\ChartPoints.cs" />
@@ -269,6 +276,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WaitForm.resx">
+      <DependentUpon>WaitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">
       <DependentUpon>CalcSODlg1Form.cs</DependentUpon>

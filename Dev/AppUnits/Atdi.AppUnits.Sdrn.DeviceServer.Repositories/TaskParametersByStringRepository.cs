@@ -74,12 +74,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 builderInsertTaskParameters.Select(c => c.VBW_Hz);
                 builderInsertTaskParameters.Select(c => c.SweepTime_ms);
                 builderInsertTaskParameters.Select(c => c.Id);
+                builderInsertTaskParameters.Select(c => c.SensorId);
                 builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, SDRTaskId);
                 queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
                 {
                     if (readerMeasTask.Read())
                     {
                         taskParameters = new TaskParameters();
+
+                        taskParameters.SensorId = readerMeasTask.GetValue(c => c.SensorId);
 
                         if (readerMeasTask.GetValue(c => c.LevelMinOccup_dBm) != null)
                         {

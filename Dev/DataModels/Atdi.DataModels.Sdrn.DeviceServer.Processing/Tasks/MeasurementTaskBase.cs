@@ -12,17 +12,15 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     {
         public MesureTraceParameter mesureTraceParameter;
         public TaskParameters taskParameters;
-        public TaskParameters[] taskParametersForBW;
 
         public int CountSendResults = 0;
         public int CountMeasurementDone = 0;
-        //public long durationForSendResult;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
         public long KoeffWaitingDevice;  // в разах коэфициент который показывает в сколько раз больше и будем спать при проблемах с девайсом относительно времени между измерениями
         public long SleepTimePeriodForWaitingStartingMeas;  // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
 
         public long durationForSendResultSignaling;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
         public long durationForSendResultBandWidth;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
         public long durationForSendResultSO;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
-
+        public long durationForMeasBW_ms; // в миллисекундах из файла конфигурации - максимальное время, выделяемое для выполнения измерения BW
     }
 }

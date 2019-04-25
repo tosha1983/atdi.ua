@@ -200,7 +200,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static MeasurementResults GetMeasurementResultByResId(int resId, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
-            var result = Execute(contract => contract.GetMeasurementResultByResId(resId, StartFrequency_Hz, StopFrequency_Hz));
+            var result = Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
 
             return result;
         }

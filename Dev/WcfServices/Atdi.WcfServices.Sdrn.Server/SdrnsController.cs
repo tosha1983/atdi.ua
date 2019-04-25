@@ -24,11 +24,22 @@ namespace Atdi.WcfServices.Sdrn.Server
             this._logger = logger;
         }
 
+        public bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        {
+            var saveResDb = new SaveResults(_dataLayer, _logger);
+            return saveResDb.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName);
+        }
 
         public MeasTaskIdentifier CreateMeasTask(MeasTask task)
         {
             var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer, _logger);
             return createMeasTaskHandler.Handle(task);
+        }
+
+        public bool DeleteEmitting(int[] emittingsId)
+        {
+            var saveResDb = new SaveResults(_dataLayer, _logger);
+            return saveResDb.DeleteEmitting(emittingsId);
         }
 
         public CommonOperationDataResult<int> DeleteMeasResults(MeasurementResultsIdentifier MeasResultsId)

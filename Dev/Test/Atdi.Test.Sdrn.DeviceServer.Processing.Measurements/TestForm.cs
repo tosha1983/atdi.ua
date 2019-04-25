@@ -50,7 +50,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Processing.Measurements
 
 
 
-                            ReferenceLevels referenceLevels = CalcReferenceLevels.CalcRefLevels(referenceSituation, mesureTraceResult, mesureTraceDeviceProperties);
+                            //ReferenceLevels referenceLevels = CalcReferenceLevels.CalcRefLevels(referenceSituation, mesureTraceResult, mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm);
                         }
                     }
                     catch (SerializationException eX)

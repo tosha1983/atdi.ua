@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    /// <summary>
+    /// Базовый класс для обработки излучений.
+    /// </summary>
     public class Emitting
     {
         public double StartFrequency_MHz;
@@ -19,5 +22,8 @@ namespace Atdi.DataModels.Sdrns.Device
         public Spectrum Spectrum;
         public LevelsDistribution LevelsDistribution;
         public EmittingParameters EmittingParameters;
+        public int? SensorId;
+        public DateTime LastDetaileMeas; // Время последнего детального измерения
+        public bool SpectrumIsDetailed; // Флаг было ли произведено детальное измерение Если было произведено детальное измерение следовательно оно в приоретете.
     }
 }

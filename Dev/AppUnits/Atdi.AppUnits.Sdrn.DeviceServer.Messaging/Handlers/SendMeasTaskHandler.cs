@@ -55,10 +55,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             {
                 if ((message.Data != null) && (message.Data.SdrnServer != null) && (message.Data.SensorName != null) && (message.Data.EquipmentTechId != null))
                 {
-                    // здесь предварительная проверка(валидация) таска на возможность физической обработки
-                    if (Validation(message.Data)) // пока заглушка
+                    DM.Sensor sensor = null;
+                    var sensors = this._repositorySensor.LoadAllObjects();
+                    if ((sensors!=null) && (sensors.Length>0))
                     {
-
+                        sensor = sensors[0];
+                    }
+                    // здесь предварительная проверка(валидация) таска на возможность физической обработки
+                    if (Validation(message.Data, sensor)) // пока заглушка
+                    {
                         var lastUpdate = new LastUpdate()
                         {
                             TableName = "XBS_TASKPARAMETERS",
@@ -162,17 +167,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         /// </summary>
         /// <param name="measTask"></param>
         /// <returns></returns>
-        public bool Validation(DM.MeasTask measTask/*, DM.Sensor sensor*/)
+        public bool Validation(DM.MeasTask measTask, DM.Sensor sensor)
         {
-            /*
             bool isSuccessValidation = false;
             if ((measTask.SensorName == sensor.Name) && (measTask.EquipmentTechId == sensor.Equipment.TechId))
             {
                 isSuccessValidation = true;
             }
             return isSuccessValidation;
-            */
-            return true;
         }
     }
 }

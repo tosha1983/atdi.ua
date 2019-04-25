@@ -28,6 +28,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("TriggerDeviationFromReference", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public double TriggerDeviationFromReference { get; set; }
 
+        [WpfColumn("EmissionFreqMHz", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public double EmissionFreqMHz { get; set; }
+
         [WpfColumn("Bandwidth_kHz", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public double Bandwidth_kHz { get; set; }
 
@@ -45,6 +48,19 @@ namespace XICSM.ICSControlClient.Models.Views
 
         [WpfColumn("StandardBW", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public double StandardBW { get; set; }
+
+        [WpfColumn("SensorName", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string SensorName { get; set; }
+
+        [WpfColumn("SumHitCount", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public int SumHitCount { get; set; }
+
+        [WpfColumn("IcsmID", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public int IcsmID { get; set; }
+
+        [WpfColumn("IcsmTable", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string IcsmTable { get; set; }
+
 
         public WorkTime[] WorkTimes { get; set; }
         public Spectrum Spectrum { get; set; }

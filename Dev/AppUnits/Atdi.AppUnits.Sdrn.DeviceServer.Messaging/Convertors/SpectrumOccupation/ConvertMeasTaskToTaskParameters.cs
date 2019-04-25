@@ -111,7 +111,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 }
                 else if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
                 {
-                    if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SignalizationNChenal; }
+                    //if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SignalizationNChenal; }
+                    taskParameters.NChenal = SignalizationNChenal;
                     if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
                     {
                         // формируем начало и конец для измерений 
@@ -164,9 +165,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 }
             }
 
-            taskParameters.TypeTechnology = TypeTechnology.Ununknown;
+            taskParameters.TypeTechnology = TypeTechnology.Unknown;
             // до конца не определенные блоки
             taskParameters.ReceivedIQStreemDuration_sec = 1.0;
+            taskParameters.SensorId = taskSDR.SensorId;
             return taskParameters;
         }
 

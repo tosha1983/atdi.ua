@@ -15,6 +15,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Bandwidth_kHz { get; set; }
         double? LevelSignal_dBm { get; set; }
         int? RefSituationId { get; set; }
+        int? IcsmId { get; set; }
+        string IcsmTable { get; set; }
         IReferenceSituation REFSITUATION { get; set; }
     }
 }

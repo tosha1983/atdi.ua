@@ -288,7 +288,12 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StandardBW = source.EmittingParameters.StandardBW,
                 WorkTimes = source.WorkTimes,
                 Spectrum = source.Spectrum,
-                LevelsDistribution = source.LevelsDistribution
+                LevelsDistribution = source.LevelsDistribution,
+                SensorName = source.SensorName,
+                SumHitCount = source.WorkTimes == null ? 0 : source.WorkTimes.Sum(c => c.HitCount),
+                EmissionFreqMHz = source.Spectrum.SpectrumSteps_kHz * (source.Spectrum.T2 + source.Spectrum.T1)/2000 + source.Spectrum.SpectrumStartFreq_MHz,
+                IcsmID = source.AssociatedStationID,
+                IcsmTable = source.AssociatedStationTableName
             };
         }
         public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
@@ -303,7 +308,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StartEmitting = source.StartEmitting,
                 StopEmitting = source.StopEmitting,
                 HitCount = source.HitCount,
-                PersentAvailability = source.HitCount
+                PersentAvailability = source.PersentAvailability
             };
         }
     }
