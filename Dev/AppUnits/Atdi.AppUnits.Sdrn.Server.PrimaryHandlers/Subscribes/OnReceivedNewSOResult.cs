@@ -2575,9 +2575,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         builderLevelDel.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
                                         queryExecuter.Execute(builderLevelDel);
 
-                                        var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
-                                        builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
-                                        queryExecuter.Execute(builderDelLocSensor);
+                                        //var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
+                                        //builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
+                                        //queryExecuter.Execute(builderDelLocSensor);
 
                                         var queryEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>()
                                         .From()
