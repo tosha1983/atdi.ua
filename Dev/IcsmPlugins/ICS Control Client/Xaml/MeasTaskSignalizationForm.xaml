@@ -147,6 +147,7 @@
                       <DataGridTextColumn Header="SensorTechId" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
                       <DataGridTextColumn Header="CountStationMeasurements" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
                       <DataGridTextColumn Header="CountUnknownStationMeasurements" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
+                      <DataGridTextColumn Header="ScansNumber" Binding="{Binding Path=ScansNumber}"></DataGridTextColumn>
                     </DataGrid.Columns>
                   </cdg:CustomDataGridMeasResult>
                 </Grid>

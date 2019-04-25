@@ -20,6 +20,10 @@
       </Style>
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
+      <Menu DockPanel.Dock="Top">
+        <MenuItem Header="Detailed for RefLevel on that Frequency" Command="{Binding DetailForRefLevelCommand}"/>
+        <MenuItem Header="View Station in ICSM" Command="{Binding ViewStationCommand}"/>
+      </Menu>      
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
