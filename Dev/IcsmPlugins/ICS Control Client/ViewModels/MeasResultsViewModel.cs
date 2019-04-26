@@ -37,7 +37,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand SearchStationCommand { get; set; }
         #endregion
 
-        #region Corrent Objects
+        #region Current Objects
         private MeasurementResultsViewModel _currentMeasurementResults;
         private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStation;
         private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStationData;

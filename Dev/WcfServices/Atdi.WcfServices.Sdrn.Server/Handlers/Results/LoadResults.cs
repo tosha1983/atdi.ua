@@ -432,8 +432,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
                .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
                .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
-               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
-               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId);
+               //.Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
                 queryExecuter.Fetch(queryLevels, readerLevels =>
                 {
                     while (readerLevels.Read())
@@ -511,8 +511,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
                .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
                .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
-               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
-               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId);
+               //.Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
                 queryExecuter.Fetch(queryLevels, readerLevels =>
                 {
                     while (readerLevels.Read())
@@ -608,6 +608,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MeasSubTaskId).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.ScansNumber) != null)
+                        {
+                            levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
+                        }
+
                         if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
                         {
                             levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
@@ -1888,6 +1893,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.ScansNumber) != null)
+                        {
+                            levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
+                        }
                         if (readerResMeas.GetValue(c => c.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
@@ -2146,6 +2155,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MeasSubTaskId).Value;
                         }
+                        if (readerResMeas.GetValue(c => c.ScansNumber) != null)
+                        {
+                            levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
+                        }
                         if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
                         {
                             levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
@@ -2234,6 +2247,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
                         {
                             levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
+                        }
+                        if (readerResMeas.GetValue(c => c.ScansNumber) != null)
+                        {
+                            levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
                         }
                         if (readerResMeas.GetValue(c => c.TimeMeas) != null)
                         {

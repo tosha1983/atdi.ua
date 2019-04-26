@@ -108,11 +108,23 @@
     <Compile Include="Forms\MeasResultSignalizationForm.Designer.cs">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MeasStationsSignalizationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasStationsSignalizationForm.Designer.cs">
+      <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasTaskSignalizationForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\WaitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WaitForm.Designer.cs">
+      <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
@@ -182,6 +194,7 @@
     <Compile Include="Models\Common\Location.cs" />
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
+    <Compile Include="Models\Common\MeasStationsSignalization.cs" />
     <Compile Include="Models\DTO\Station.cs" />
     <Compile Include="Metadata\Employee.cs" />
     <Compile Include="Metadata\MobStationFrequencies.cs" />
@@ -207,6 +220,7 @@
     <Compile Include="Models\Views\EmittingViewModel.cs" />
     <Compile Include="Models\Views\EmittingWorkTimeViewModel.cs" />
     <Compile Include="Models\Views\LevelMeasurementsCarViewModel.cs" />
+    <Compile Include="Models\Views\MeasStationsSignalizationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
@@ -220,6 +234,7 @@
     <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\Mappers.cs" />
+    <Compile Include="Models\WcfDataApadters\MeasStationsSignalizationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasurementResultsDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
@@ -237,6 +252,7 @@
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
+    <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
@@ -268,8 +284,14 @@
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasStationsSignalizationForm.resx">
+      <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WaitForm.resx">
+      <DependentUpon>WaitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">
       <DependentUpon>CalcSODlg1Form.cs</DependentUpon>
@@ -315,17 +337,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xaml\" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>5</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">

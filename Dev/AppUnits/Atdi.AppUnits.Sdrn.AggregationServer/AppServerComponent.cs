@@ -102,6 +102,8 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer
             {
                 dataBusDispatcher.Activate();
                 Logger.Info(Contexts.ThisComponent, Categories.Activating, Events.DispatcherWasActivated);
+
+                //
             });
         }
     }

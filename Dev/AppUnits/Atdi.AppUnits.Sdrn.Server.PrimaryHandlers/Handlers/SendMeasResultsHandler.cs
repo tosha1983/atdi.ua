@@ -101,7 +101,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         if (resObject.RefLevels != null)
                         {
                             // пишем RefLevels только для первого результата
-                            if (resultId == 1)
+                            //if (resultId == 1)
                             {
                                 int valInsReferenceLevelsRaw = 0;
                                 var refLevels = resObject.RefLevels;
