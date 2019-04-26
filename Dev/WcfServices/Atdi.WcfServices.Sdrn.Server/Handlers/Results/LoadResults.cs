@@ -432,8 +432,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
                .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
                .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
-               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
-               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId);
+               //.Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
                 queryExecuter.Fetch(queryLevels, readerLevels =>
                 {
                     while (readerLevels.Read())
@@ -511,8 +511,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
                .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
                .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
-               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId)
-               .Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId);
+               //.Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
                 queryExecuter.Fetch(queryLevels, readerLevels =>
                 {
                     while (readerLevels.Read())
