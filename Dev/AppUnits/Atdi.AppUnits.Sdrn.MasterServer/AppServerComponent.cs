@@ -104,7 +104,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer
                 dataBusDispatcher.Activate();
                 Logger.Info(Contexts.ThisComponent, Categories.Activating, Events.DispatcherWasActivated);
 
-                //some test
+                ////some test
                 //var publisher = this.Resolver.Resolve<IPublisher>();
                 //var envelope = publisher.CreateEnvelope<TestMessage1, TestDeliveryObject1>();
                 //envelope.DeliveryObject = new TestDeliveryObject1
@@ -113,12 +113,13 @@ namespace Atdi.AppUnits.Sdrn.MasterServer
                 //    Data = "MasterServer.Start"
                 //};
                 //envelope.To = "MasterServer";
-
+                //envelope.Options |= SendingOptions.UseCompression | SendingOptions.UseEncryption;
+                //envelope.ContentType = ContentType.Binary
                 //for (int i = 0; i < 10000; i++)
                 //{
                 //    publisher.Send(envelope);
                 //}
-                
+
             });
 
         }

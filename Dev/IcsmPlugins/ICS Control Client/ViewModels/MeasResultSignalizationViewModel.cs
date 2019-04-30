@@ -68,6 +68,8 @@ namespace XICSM.ICSControlClient.ViewModels
         #region Commands
         public WpfCommand ZoomUndoCommand { get; set; }
         public WpfCommand ZoomDefaultCommand { get; set; }
+        public WpfCommand DetailForRefLevelCommand { get; set; }
+        public WpfCommand ViewStationCommand { get; set; }
         #endregion
 
         public MeasResultSignalizationViewModel(int resultId)
@@ -77,6 +79,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
+            this.DetailForRefLevelCommand = new WpfCommand(this.OnDetailForRefLevelCommand);
+            this.ViewStationCommand = new WpfCommand(this.OnViewStationCommand);
             this.ReloadMeasResult();
             this.UpdateCurrentChartOption(null, null);
             this.UpdateCurrentChartLevelsDistrbutionOption();
@@ -196,6 +200,45 @@ namespace XICSM.ICSControlClient.ViewModels
             this.FilterEmittings(null, null);
             UpdateCurrentChartOption(null, null);
         }
+        private void OnDetailForRefLevelCommand(object parameter)
+        {
+            try
+            {
+                var stationData = new List<MeasStationsSignalization>();
+
+                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station1" });
+                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station2" });
+                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station3" });
+                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station4" });
+                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station5" });
+
+
+
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnViewStationCommand(object parameter)
+        {
+            try
+            {
+                var stationData = new List<MeasStationsSignalization>();
+
+
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
         private string GetCurrentRBWValue()
         {
             if (_currentMeasResult.RefLevels == null)
@@ -297,15 +340,21 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 foreach (EmittingViewModel emitting in this._currentEmittings)
                 {
-                    var count = emitting.Spectrum.Levels_dBm.Count();
-                    var points = new List<Point>();
-
-                    for (int i = 0; i < count; i++)
+                    if (emitting.Spectrum != null)
                     {
-                        if (emitting.Spectrum != null)
+                        double constStep = 0;
+                        if (Math.Abs(_currentMeasResult.RefLevels.StepFrequency_Hz - emitting.Spectrum.SpectrumSteps_kHz) > 0.01 && _currentMeasResult.RefLevels.StepFrequency_Hz != 0)
+                        {
+                            constStep = 10 * Math.Log10(emitting.Spectrum.SpectrumSteps_kHz * 1000 / _currentMeasResult.RefLevels.StepFrequency_Hz);
+                        }
+
+                        var count = emitting.Spectrum.Levels_dBm.Count();
+                        var points = new List<Point>();
+
+                        for (int i = 0; i < count; i++)
                         {
                             var valX = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * i) / 1000000;
-                            var valY = (double)emitting.Spectrum.Levels_dBm[i];
+                            var valY = (double)emitting.Spectrum.Levels_dBm[i] + constStep;
 
                             if (startFreq.HasValue && valX < startFreq.Value || stopFreq.HasValue && valX > stopFreq.Value)
                                 continue;
@@ -327,16 +376,17 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             points.Add(point);
                         }
+
+                        pointsList.Add(new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkRed });
+
+                        if (emitting.Spectrum.T1 != 0)
+                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                        if (emitting.Spectrum.T2 != 0)
+                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                        if (emitting.Spectrum.MarkerIndex != 0)
+                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+
                     }
-
-                    pointsList.Add(new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkRed });
-
-                    if (emitting.Spectrum.T1 != 0)
-                        linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkGreen, IsHorizontal = false, IsVertical = true });
-                    if (emitting.Spectrum.T2 != 0)
-                        linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkGreen, IsHorizontal = false, IsVertical = true });
-                    if (emitting.Spectrum.MarkerIndex != 0)
-                        linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkGreen, IsHorizontal = false, IsVertical = true });
                 }
             }
 

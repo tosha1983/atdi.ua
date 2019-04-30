@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using VM = XICSM.ICSControlClient.Models.Views;
+using M = XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Environment.Wpf;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 
@@ -166,8 +167,6 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 return null;
             }
 
-            //var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(source.Id.MeasSdrResultsId);
-
             return new VM.MeasurementResultsViewModel
             {
                 AntVal = source.AntVal.ToNull(),
@@ -195,7 +194,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 CountStationMeasurements = source.CountStationMeasurements,
                 CountUnknownStationMeasurements = source.CountUnknownStationMeasurements,
                 StartTime = source.StartTime,
-                StopTime = source.StopTime
+                StopTime = source.StopTime,
+                ScansNumber = source.ScansNumber
             };
         }
 
@@ -289,7 +289,11 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 WorkTimes = source.WorkTimes,
                 Spectrum = source.Spectrum,
                 LevelsDistribution = source.LevelsDistribution,
-                SensorName = source.SensorName
+                SensorName = source.SensorName,
+                SumHitCount = source.WorkTimes == null ? 0 : source.WorkTimes.Sum(c => c.HitCount),
+                EmissionFreqMHz = source.Spectrum.SpectrumSteps_kHz * (source.Spectrum.T2 + source.Spectrum.T1)/2000 + source.Spectrum.SpectrumStartFreq_MHz,
+                IcsmID = source.AssociatedStationID,
+                IcsmTable = source.AssociatedStationTableName
             };
         }
         public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
@@ -305,6 +309,29 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StopEmitting = source.StopEmitting,
                 HitCount = source.HitCount,
                 PersentAvailability = source.PersentAvailability
+            };
+        }
+        public static VM.MeasStationsSignalizationViewModel Map(M.MeasStationsSignalization source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.MeasStationsSignalizationViewModel
+            {
+                Agl = source.Agl,
+                Bw = source.Bw,
+                Lat = source.Lat,
+                Lon = source.Lon,
+                Distance = source.Distance,
+                Eirp = source.Eirp,
+                Freq = source.Freq,
+                Owner = source.Owner,
+                RelivedLevel = source.RelivedLevel,
+                Standart = source.Standart,
+                StationName = source.StationName,
+                Status = source.Status
             };
         }
     }

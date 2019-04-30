@@ -44,8 +44,10 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Calculation\CalcSDRParameters.cs" />
     <Compile Include="Calculation\BandWidth\BandWidthEstimation.cs" />
+    <Compile Include="Calculation\Common\SmoothTrace.cs" />
     <Compile Include="Calculation\Common\CommonCalcPowFromTrace.cs" />
     <Compile Include="Calculation\Common\CommonConvertors.cs" />
+    <Compile Include="Calculation\Signalization\EmissionCounting.cs" />
     <Compile Include="Calculation\Signalization\CalcEmittingSummuryByEmittingDetailed.cs" />
     <Compile Include="Calculation\Signalization\CalcGroupingEmitting.cs" />
     <Compile Include="Calculation\Signalization\CalcEmittingDetailed.cs" />

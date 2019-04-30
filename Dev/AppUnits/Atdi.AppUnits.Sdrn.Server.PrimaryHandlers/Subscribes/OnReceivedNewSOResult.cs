@@ -99,7 +99,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     {
                         int newResMeasId; int newResSensorId;
                         if (SaveMeasResultSignaling(measResult, out newResMeasId, out newResSensorId))
+                        {
                             DeleteOldMeasResultSignaling(measResult, newResMeasId, newResSensorId);
+                        }
                     }
                 }
 
@@ -2605,6 +2607,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         var builderDelEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Delete();
                                         builderDelEmitting.Where(c => c.ResMeasId, ConditionOperator.Equal, ResOldMeasId);
                                         queryExecuter.Execute(builderDelEmitting);
+
+                                        var builderResMeasDel = this._dataLayer.GetBuilder<MD.IResMeas>().Delete();
+                                        builderResMeasDel.Where(c => c.Id, ConditionOperator.Equal, ResOldMeasId);
+                                        queryExecuter.Execute(builderResMeasDel);
+
                                     }
                                 }
                                 return true;
@@ -2613,6 +2620,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     }
                     return true;
                 });
+
+              
 
                 queryExecuter.CommitTransaction();
                 return true;

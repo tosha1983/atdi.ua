@@ -144,5 +144,10 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public int? CountUnknownStationMeasurements;
+        /// <summary>
+        /// Scans Number
+        /// </summary>
+        [DataMember]
+        public int? ScansNumber;
     }
 }
