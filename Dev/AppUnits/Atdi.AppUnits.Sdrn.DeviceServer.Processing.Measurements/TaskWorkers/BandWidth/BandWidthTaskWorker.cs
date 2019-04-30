@@ -60,22 +60,51 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
 
+
+                var parentProc = context.Descriptor.Parent;
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер 
                 //
                 //////////////////////////////////////////////
                 var datenow = DateTime.Now;
+                //context.Task.CountCallBW++;
                 var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
+                if (context.Task.durationForMeasBW_ms > 0)
+                {
+                    deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
+                }
+                else
+                {
+                    deviceCommand.Timeout = 200;
+                }
+                deviceCommand.Delay = 0;
                 deviceCommand.Options = CommandOption.StartImmediately;
                 //_logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, "Check time start" + Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
-                this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
-                (
-                    ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                ) =>
+
+                if (parentProc != null)
                 {
-                    taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
-                });
+                    if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
+                    {
+                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        (
+                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            parentProc.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
+                        });
+                    }
+                }
+                else
+                {
+                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                    (
+                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                    ) =>
+                    {
+                        taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
+                    });
+                }
 
 
                 //////////////////////////////////////////////
@@ -83,114 +112,119 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // Получение очередного  результат от Result Handler
                 //
                 //////////////////////////////////////////////
-                BWResult outResultData = null;
-                bool isDown = context.WaitEvent<BWResult>(out outResultData, 1000 /*(int)(context.Task.durationForMeasBW_ms) - (int)mlsc*/);
-                if (isDown == false) // таймут - результатов нет
+                ///
+                if (parentProc == null)
                 {
-                    var error = new ExceptionProcessBandWidth();
-                    if (context.WaitEvent<ExceptionProcessBandWidth>(out error, 1) == true)
+                    BWResult outResultData = null;
+                    bool isDown = context.WaitEvent<BWResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
+                    if (isDown == false) // таймут - результатов нет
                     {
-                        if (error._ex != null)
+                        //context.Task.CountGetResultBWNegative++;
+                        var error = new ExceptionProcessBandWidth();
+                        if (context.WaitEvent<ExceptionProcessBandWidth>(out error, 1) == true)
                         {
-                            /// реакция на ошибку выполнения команды
-                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
-                             context.Cancel();
+                            if (error._ex != null)
+                            {
+                                /// реакция на ошибку выполнения команды
+                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
+                                context.Cancel();
+                            }
                         }
                     }
-                }
-                else
-                {
-                    // есть результат
-                }
+                    else
+                    {
+                        // есть результат
+                        //context.Task.CountGetResultBWPositive++;
+                    }
 
-                DateTime currTime = DateTime.Now;
-                var action = new Action(() =>
-                {
+                    DateTime currTime = DateTime.Now;
+                    var action = new Action(() =>
+                    {
                     //реакция на принятые результаты измерения
                     if (outResultData != null)
-                    {
-                        DM.MeasResults measResult = new DM.MeasResults();
-                        context.Task.CountSendResults++;
-                        measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
-                        measResult.Status = "N";
-                        measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
-                        measResult.Levels_dBm = outResultData.Levels_dBm;
-                        if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length>0))
                         {
-                            var floatFreq_Hz = outResultData.Freq_Hz.Select(x => (float)x).ToArray();
-                            measResult.Frequencies = floatFreq_Hz;
-                        }
-                        measResult.BandwidthResult = new BandwidthMeasResult();
-                        measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
-                        measResult.BandwidthResult.Bandwidth_kHz = outResultData.Bandwidth_kHz;
-                        measResult.BandwidthResult.T1 = outResultData.T1;
-                        measResult.BandwidthResult.T2 = outResultData.T2;
-                        measResult.BandwidthResult.СorrectnessEstimations = outResultData.СorrectnessEstimations;
-                        measResult.BandwidthResult.TraceCount = outResultData.TraceCount;
-                        measResult.StartTime = context.Task.LastTimeSend.Value;
-                        measResult.StopTime = currTime;
-                        measResult.Location = new DataModels.Sdrns.GeoLocation();
-                        measResult.Measured = currTime;
+                            DM.MeasResults measResult = new DM.MeasResults();
+                            context.Task.CountSendResults++;
+                            measResult.ResultId = string.Format("{0}|{1}", context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            measResult.Status = "N";
+                            measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
+                            measResult.Levels_dBm = outResultData.Levels_dBm;
+                            if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length > 0))
+                            {
+                                var floatFreq_Hz = outResultData.Freq_Hz.Select(x => (float)x).ToArray();
+                                measResult.Frequencies = floatFreq_Hz;
+                            }
+                            measResult.BandwidthResult = new BandwidthMeasResult();
+                            measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
+                            measResult.BandwidthResult.Bandwidth_kHz = outResultData.Bandwidth_kHz;
+                            measResult.BandwidthResult.T1 = outResultData.T1;
+                            measResult.BandwidthResult.T2 = outResultData.T2;
+                            measResult.BandwidthResult.СorrectnessEstimations = outResultData.СorrectnessEstimations;
+                            measResult.BandwidthResult.TraceCount = outResultData.TraceCount;
+                            measResult.StartTime = context.Task.LastTimeSend.Value;
+                            measResult.StopTime = currTime;
+                            measResult.Location = new DataModels.Sdrns.GeoLocation();
+                            measResult.Measured = currTime;
                         //////////////////////////////////////////////
                         // 
                         //  Здесь получаем данные с GPS приемника
                         //  
                         //////////////////////////////////////////////
                         var parentProcess = context.Process.Parent;
-                        if (parentProcess != null)
-                        {
-                            if (parentProcess is DispatchProcess)
+                            if (parentProcess != null)
                             {
-                                DispatchProcess dispatchProcessParent = null;
-                                try
+                                if (parentProcess is DispatchProcess)
                                 {
-                                    dispatchProcessParent = (parentProcess as DispatchProcess);
-                                    if (dispatchProcessParent != null)
+                                    DispatchProcess dispatchProcessParent = null;
+                                    try
                                     {
-                                        measResult.Location.ASL = dispatchProcessParent.Asl;
-                                        measResult.Location.Lon = dispatchProcessParent.Lon;
-                                        measResult.Location.Lat = dispatchProcessParent.Lat;
+                                        dispatchProcessParent = (parentProcess as DispatchProcess);
+                                        if (dispatchProcessParent != null)
+                                        {
+                                            measResult.Location.ASL = dispatchProcessParent.Asl;
+                                            measResult.Location.Lon = dispatchProcessParent.Lon;
+                                            measResult.Location.Lat = dispatchProcessParent.Lat;
+                                        }
+                                        else
+                                        {
+                                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
                                     }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
                                 }
                             }
                             else
                             {
-                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
-                        }
-                        else
-                        {
-                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
-                        }
-                        measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
+                            measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
                         //Отправка результатов в шину 
                         var publisher = this._busGate.CreatePublisher("main");
-                        publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
-                        publisher.Dispose();
-                        context.Task.MeasBWResults = null;
+                            publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                            publisher.Dispose();
+                            context.Task.MeasBWResults = null;
+                        }
+                    });
+
+
+                    //////////////////////////////////////////////
+                    // 
+                    //  Принять решение о полноте результатов
+                    //  
+                    //////////////////////////////////////////////
+                    if (outResultData != null)
+                    {
+                        action.Invoke();
                     }
-                });
 
-
-                //////////////////////////////////////////////
-                // 
-                //  Принять решение о полноте результатов
-                //  
-                //////////////////////////////////////////////
-                if (outResultData != null)
-                {
-                    action.Invoke();
                 }
-
-
                 //////////////////////////////////////////////
                 // 
                 // Принятие решение о завершении таска

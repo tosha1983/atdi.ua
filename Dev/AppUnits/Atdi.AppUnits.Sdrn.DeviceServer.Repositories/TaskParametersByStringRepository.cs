@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public TaskParameters[] LoadAllObjects()

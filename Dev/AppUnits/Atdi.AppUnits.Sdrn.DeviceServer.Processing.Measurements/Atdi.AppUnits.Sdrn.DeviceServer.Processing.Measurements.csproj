@@ -61,6 +61,7 @@
     <Compile Include="ExampleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultHandlers\BandWidth\BandWidthTaskResultHandler.cs" />
+    <Compile Include="ResultHandlers\BandWidth\ConvertTaskParametersToMesureTraceParameterForBandWidth.cs" />
     <Compile Include="ResultHandlers\Signalization\SignalizationTaskResultHandler.cs" />
     <Compile Include="ResultHandlers\SpectrumOccupation\SOTaskResultHandler.cs" />
     <Compile Include="Specification.cs" />

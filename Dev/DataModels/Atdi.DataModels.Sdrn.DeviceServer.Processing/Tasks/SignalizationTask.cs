@@ -26,5 +26,12 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public Emitting[] EmittingsSummary;
         public double NoiseLevel_dBm = -100; //константа пока
         public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
+
+        //public int CountCallSignaling = 0;
+        //public int CountGetResultBWPositive = 0;
+
+        //public int CountCallBW = 0;
+        //public int CountGetResultBWNegative = 0;
+        //public int CountGetResultBWN = 0;
     }
 }

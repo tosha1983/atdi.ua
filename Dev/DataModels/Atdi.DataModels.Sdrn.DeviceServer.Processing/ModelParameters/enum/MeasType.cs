@@ -8,6 +8,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
     public enum MeasType
     {
+        Unknown,
         SpectrumOccupation,
         Level,
         Offset,

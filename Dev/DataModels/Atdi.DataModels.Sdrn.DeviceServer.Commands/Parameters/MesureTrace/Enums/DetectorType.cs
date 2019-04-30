@@ -8,6 +8,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
 {
     public enum DetectorType
     {
+        Unknown,
         Auto,
         MaxPeak, 
         MinPeak, 

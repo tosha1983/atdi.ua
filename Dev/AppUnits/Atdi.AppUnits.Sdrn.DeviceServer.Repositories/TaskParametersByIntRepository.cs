@@ -696,7 +696,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         TaskParameters[] IRepository<TaskParameters, int?>.LoadAllObjects()

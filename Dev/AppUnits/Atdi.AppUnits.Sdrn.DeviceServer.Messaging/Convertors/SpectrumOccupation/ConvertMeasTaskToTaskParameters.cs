@@ -20,7 +20,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 
 
             const int SO_NChenal = 10;
-            const int SignalizationNChenal = 100;
+            const int SignalizationNChenal = 50;
 
             var taskParameters = new TaskParameters();
 

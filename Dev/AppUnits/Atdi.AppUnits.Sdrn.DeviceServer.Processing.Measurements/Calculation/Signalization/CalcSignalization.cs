@@ -82,7 +82,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingParameter"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static Emitting FillEmittingForStorage(Emitting EmittingParameter, ILogger logger = null)
+        public static Emitting FillEmittingForStorage(Emitting EmittingParameter, ILogger logger)
         {
             var emitting = EmittingParameter;
             // константы 
@@ -91,12 +91,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 int StartLevelsForLevelDistribution = -150;
                 int NumberPointForLevelDistribution = 200;
                 // конец константы 
-                emitting.WorkTimes[0].HitCount = 1;
-                emitting.WorkTimes[0].StartEmitting = DateTime.Now;
-                emitting.WorkTimes[0].ScanCount = 1;
-                emitting.WorkTimes[0].TempCount = 0;
-                emitting.WorkTimes[0].PersentAvailability = 100;
-                emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting;
+                if ((emitting.WorkTimes != null) && (emitting.WorkTimes.Length > 0))
+                {
+                    emitting.WorkTimes[0].HitCount = 1;
+                    emitting.WorkTimes[0].StartEmitting = DateTime.Now;
+                    emitting.WorkTimes[0].ScanCount = 1;
+                    emitting.WorkTimes[0].TempCount = 0;
+                    emitting.WorkTimes[0].PersentAvailability = 100;
+                    emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting;
+                }
                 emitting.LevelsDistribution = new LevelsDistribution();
                 emitting.LevelsDistribution.Count = new int[NumberPointForLevelDistribution];
                 emitting.LevelsDistribution.Levels = new int[NumberPointForLevelDistribution];

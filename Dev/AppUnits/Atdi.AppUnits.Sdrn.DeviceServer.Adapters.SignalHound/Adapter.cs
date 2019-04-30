@@ -196,11 +196,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (command.Parameter.RBW_Hz < 0)
                     {
-                        int[] ar = new int[] { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
-                        decimal magic = 38.146966101334357m;
+                        decimal[] ar = new decimal[] { 0.0078125m, 0.015625m, 0.03125m, 0.0625m, 0.125m, 0.25m, 0.5m, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
+                        decimal magic = 38.146966101334357m; //9.536741525333588m;
                         decimal m1 = FreqSpan / command.Parameter.TracePoint;//хотим
-                        int m2 = (int)(m1 / magic);
-                        int delta = int.MaxValue, index = 0;
+                        decimal m2 = m1 / magic;
+                        decimal delta = decimal.MaxValue;
+                        int index = 0;
                         for (int i = 0; i < ar.Length; i++)
                         {
                             if (Math.Abs(ar[i] - m2) < delta)
@@ -211,7 +212,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                         m2 = ar[index];
                         decimal d = FreqSpan / magic / m2;
-                        if (((int)d) < command.Parameter.TracePoint)
+                        if (((int)d) < command.Parameter.TracePoint && index > 0)
                         {
                             m2 = ar[index - 1];
                         }
@@ -233,7 +234,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         VBW = vbw;
                         SweepTime = (decimal)command.Parameter.SweepTime_s;
                         StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));
-                  
+
                     }
                     else
                     {
