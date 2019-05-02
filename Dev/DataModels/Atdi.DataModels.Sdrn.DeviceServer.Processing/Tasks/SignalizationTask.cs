@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public MesureTraceDeviceProperties mesureTraceDeviceProperties;
         public ReferenceLevels ReferenceLevels;
         public TaskParameters[] taskParametersForBW;
-        
+
         //сырой поток излучений после трейса
         public Emitting[] EmittingsRaw;
         // обработанные излучения которые нелзя выдавать в результаты
@@ -26,6 +26,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public Emitting[] EmittingsSummary;
         public double NoiseLevel_dBm = -100; //константа пока
         public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
+        public Func<TaskParameters, MesureTraceParameter> actionConvertBW = null;
+       
 
         //public int CountCallSignaling = 0;
         //public int CountGetResultBWPositive = 0;
@@ -33,5 +35,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         //public int CountCallBW = 0;
         //public int CountGetResultBWNegative = 0;
         //public int CountGetResultBWN = 0;
+
     }
+   
 }
