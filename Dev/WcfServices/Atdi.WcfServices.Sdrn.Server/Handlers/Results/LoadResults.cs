@@ -1840,6 +1840,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         public MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz=null, double? StopFrequency_Hz = null)
         {
             var levelmeasurementResults = new MeasurementResults();
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
             try
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCallGetMeasurementResultByResIdMethod.Text);
@@ -1867,6 +1868,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     while (readerResMeas.Read())
                     {
+
                         levelmeasurementResults.AntVal = readerResMeas.GetValue(c => c.AntVal);
                         levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.DataRank);
                         levelmeasurementResults.N = readerResMeas.GetValue(c => c.N);
@@ -1876,6 +1878,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             int measTaskId = -1; int.TryParse(readerResMeas.GetValue(c => c.MeasTaskId), out measTaskId);
                             levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
+                            levelmeasurementResults.MeasTask = loadMeasTask.GetMeasTaskHeader(new MeasTaskIdentifier() { Value = measTaskId });
                         }
                         levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.Id);
                         levelmeasurementResults.StationMeasurements = new StationMeasurements();

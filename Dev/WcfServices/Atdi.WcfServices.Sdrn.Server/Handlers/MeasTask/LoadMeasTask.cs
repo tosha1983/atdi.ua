@@ -218,6 +218,37 @@ namespace Atdi.WcfServices.Sdrn.Server
             return measTask;
         }
 
+
+        public MeasTask GetMeasTaskById(int id)
+        {
+            MeasTask result = null;
+            if (id>0)
+            {
+                var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+                var Res = loadMeasTask.ShortReadTask(id);
+                if (Res != null)
+                {
+                    if (Res.Count > 0)
+                    {
+                        result = Res[0];
+                    }
+                    else
+                    {
+                        result = null;
+                    }
+                }
+                else
+                {
+                    result = null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+            return result;
+        }
+
         public MeasTask GetMeasTaskHeader(MeasTaskIdentifier taskId)
         {
             MeasTask result = null;
