@@ -1878,7 +1878,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             int measTaskId = -1; int.TryParse(readerResMeas.GetValue(c => c.MeasTaskId), out measTaskId);
                             levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                            levelmeasurementResults.MeasTask = loadMeasTask.GetMeasTaskHeader(new MeasTaskIdentifier() { Value = measTaskId });
                         }
                         levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.Id);
                         levelmeasurementResults.StationMeasurements = new StationMeasurements();

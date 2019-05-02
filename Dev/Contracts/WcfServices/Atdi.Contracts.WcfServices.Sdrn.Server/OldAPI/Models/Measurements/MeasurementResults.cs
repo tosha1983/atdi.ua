@@ -149,10 +149,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public int? ScansNumber;
-        /// <summary>
-        /// Meas task
-        /// </summary>
-        [DataMember]
-        public MeasTask MeasTask;
+
     }
 }
