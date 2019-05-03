@@ -57,6 +57,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private CS.ChartOption _currentChartOption;
         private CS.ChartOption _currentChartLevelsDistrbutionOption;
         private double[] _selectedRangeX;
+        private Point _mouseClickPoint;
         private Stack<double[]> _zoomHistory = new Stack<double[]>();
         #endregion
 
@@ -79,8 +80,6 @@ namespace XICSM.ICSControlClient.ViewModels
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
-            this.DetailForRefLevelCommand = new WpfCommand(this.OnDetailForRefLevelCommand);
-            this.ViewStationCommand = new WpfCommand(this.OnViewStationCommand);
             this.ReloadMeasResult();
             this.UpdateCurrentChartOption(null, null);
             this.UpdateCurrentChartLevelsDistrbutionOption();
@@ -137,6 +136,25 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
             }
         }
+
+        public Point MouseClickPoint
+        {
+            get => this._mouseClickPoint;
+            set => this.Set(ref this._mouseClickPoint, value);
+
+        }
+        public MenuItem MenuClick
+        {
+            set
+            {
+                //System.Windows.MessageBox.Show("Hi from " + value.Name + " x = " + _mouseClickPoint.X.ToString() + "; y = " + _mouseClickPoint.Y.ToString());
+                if (value.Name == "DetailForRefLevel")
+                    this.OnDetailForRefLevelCommand();
+                if (value.Name == "ViewStation")
+                    this.OnViewStationCommand();
+            }
+        }
+
         private void ReloadMeasResult()
         {
             _currentMeasResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId, null, null);
@@ -200,18 +218,83 @@ namespace XICSM.ICSControlClient.ViewModels
             this.FilterEmittings(null, null);
             UpdateCurrentChartOption(null, null);
         }
-        private void OnDetailForRefLevelCommand(object parameter)
+        private void OnDetailForRefLevelCommand()
         {
             try
             {
+                var measTask = SVC.SdrnsControllerWcfClient.GetMeasTaskById(_currentMeasResult.Id.MeasTaskId.Value);
                 var stationData = new List<MeasStationsSignalization>();
 
-                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station1" });
-                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station2" });
-                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station3" });
-                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station4" });
-                stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 1.33, Lon = 2.33, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station5" });
+                var freq = _mouseClickPoint.X;
+                double lonSensor = 0;
+                double latSensor = 0;
 
+                if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                {
+                    var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
+
+                    if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                    {
+                        lonSensor = _currentSensorLocation.Lon.Value;
+                        latSensor = _currentSensorLocation.Lat.Value;
+                    }
+                }
+
+                if (measTask.RefSituation != null)
+                {
+                    foreach (var refSituation in measTask.RefSituation)
+                    {
+                        foreach (var refSignal in refSituation.ReferenceSignal)
+                        {
+                            if (refSignal.Frequency_MHz - refSignal.Bandwidth_kHz / 2000 <= freq && freq <= refSignal.Frequency_MHz + refSignal.Bandwidth_kHz / 2000)
+                            {
+                                if (!string.IsNullOrEmpty(refSignal.IcsmTable) && refSignal.IcsmId > 0)
+                                {
+                                    IMRecordset rs = new IMRecordset(refSignal.IcsmTable, IMRecordset.Mode.ReadOnly);
+                                    rs.SetWhere("ID", IMRecordset.Operation.Eq, refSignal.IcsmId);
+                                    rs.Select("NAME,STANDARD,STATUS,Position.LONGITUDE,Position.LATITUDE,AGL,POWER,BW,Owner.NAME");
+                                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                                    {
+                                        var measStationSignalization = new MeasStationsSignalization()
+                                        {
+                                            StationName = rs.GetS("NAME"),
+                                            Standart = rs.GetS("STANDARD"),
+                                            Status = rs.GetS("STATUS"),
+                                            Lon = rs.GetD("Position.LONGITUDE"),
+                                            Lat = rs.GetD("Position.LATITUDE"),
+                                            Agl = rs.GetD("AGL"),
+                                            Eirp = rs.GetD("POWER"),
+                                            Bw = rs.GetD("BW"),
+                                            Freq = refSignal.Frequency_MHz,
+                                            Owner = rs.GetS("Owner.NAME"),
+                                            RelivedLevel = refSignal.LevelSignal_dBm
+                                        };
+
+                                        if (measStationSignalization.Lon != IM.NullD && measStationSignalization.Lat != IM.NullD)
+                                        {
+                                            measStationSignalization.Distance = 111.315 * Math.Pow((Math.Pow((lonSensor - measStationSignalization.Lon) * Math.Cos(measStationSignalization.Lat * Math.PI / 180), 2) + Math.Pow((latSensor - measStationSignalization.Lat), 2)), 0.5);
+                                        }
+                                        stationData.Add(measStationSignalization);
+                                    }
+                                    if (rs.IsOpen())
+                                        rs.Close();
+                                    rs.Destroy();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.50, Lon = 30.64, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station1" });
+                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.60, Lon = 30.60, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station2" });
+                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.70, Lon = 30.40, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station3" });
+                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.30, Lon = 30.45, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station4" });
+                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.20, Lon = 30.55, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station5" });
+                if (stationData.Count == 0)
+                {
+                    System.Windows.MessageBox.Show("No Stations");
+                    return;
+                }
 
 
                 var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult);
@@ -223,12 +306,14 @@ namespace XICSM.ICSControlClient.ViewModels
                 MessageBox.Show(e.ToString());
             }
         }
-        private void OnViewStationCommand(object parameter)
+        private void OnViewStationCommand()
         {
             try
             {
                 var stationData = new List<MeasStationsSignalization>();
 
+                System.Windows.MessageBox.Show("Under construction!!!");
+                return;
 
                 var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult);
                 measTaskForm.ShowDialog();
@@ -385,7 +470,6 @@ namespace XICSM.ICSControlClient.ViewModels
                             linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
                         if (emitting.Spectrum.MarkerIndex != 0)
                             linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
-
                     }
                 }
             }
@@ -402,9 +486,13 @@ namespace XICSM.ICSControlClient.ViewModels
             option.XMin = preparedDataX.MinValue;// + preparedDataX.Step;
             option.XMax = preparedDataX.MaxValue;// - preparedDataX.Step;
 
+            var menuItems = new List<CS.ChartMenuItem>();
+            menuItems.Add(new CS.ChartMenuItem() { Header = "Detailed for RefLevel on that Frequency", Name = "DetailForRefLevel" });
+            menuItems.Add(new CS.ChartMenuItem() { Header = "View Station in ICSM", Name = "ViewStation" });
 
             option.PointsArray = pointsList.ToArray();
             option.LinesArray = linesList.ToArray();
+            option.MenuItems = menuItems.ToArray();
 
             return option;
         }

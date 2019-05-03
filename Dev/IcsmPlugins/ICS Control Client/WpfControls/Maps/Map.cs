@@ -46,7 +46,7 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                         var mapPoint = this.FromLatLngToLocal(new PointLatLng(point.Location.Lat, point.Location.Lon));
 
                         var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon));
-                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width };
+                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
                         marker.ZIndex = int.MaxValue;
                         this.Markers.Add(marker);
                     });
@@ -86,21 +86,6 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                     {
                         if (route.Points != null && route.Points.Length > 0)
                         {
-                            //IList<PointLatLng> routePoints = new List<PointLatLng>();
-                            //route.Points.ToList().ForEach(point =>
-                            //{
-                            //    routePoints.Add(new PointLatLng(point.Lat, point.Lon));
-                            //});
-
-                            //GMapRoute mapRoute = new GMapRoute(routePoints);
-                            //mapRoute.RegenerateShape(this);
-
-                            //((System.Windows.Shapes.Path)mapRoute.Shape).Stroke = new System.Windows.Media.SolidColorBrush(route.Color);
-                            //((System.Windows.Shapes.Path)mapRoute.Shape).StrokeThickness = 1;
-
-                            ////mapRoute.ZIndex = int.MaxValue;
-                            //this.Markers.Add(mapRoute);
-
                             for (int i = 0; i < route.Points.Count(); i++)
                             {
                                 if (i + 1 < route.Points.Count())

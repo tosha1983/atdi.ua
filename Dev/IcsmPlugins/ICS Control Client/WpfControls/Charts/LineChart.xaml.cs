@@ -46,6 +46,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         private ChartGridStyle _gridStyle;
 
         private double[] _selectedRangeX;
+        private Point _mouseClickPoint;
+        private ContextMenu _contextMenu;
 
         private static ChartOption GetDefaultChartOption()
         {
@@ -104,7 +106,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 Thickness = 1,
                 Pattern = LinePatternEnum.Solid
             };
-            
+
+            _contextMenu = new ContextMenu();
         }
         private void ChartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -550,6 +553,26 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             {
                 //SetValue(OptionProperty, value);
                 this._option = value;
+
+                foreach (MenuItem menuItem in _contextMenu.Items)
+                {
+                    menuItem.Click -= Menu_Click;
+                }
+                _contextMenu.Items.Clear();
+                chartCanvas.ContextMenu = null;
+
+                if (this._option.MenuItems != null && this._option.MenuItems.Length > 0)
+                {
+                    foreach (ChartMenuItem menuItem in this._option.MenuItems)
+                    {
+                        var item = new MenuItem();
+                        item.Header = menuItem.Header;
+                        item.Name = menuItem.Name;
+                        item.Click += Menu_Click;
+                        _contextMenu.Items.Add(item);
+                    }
+                    chartCanvas.ContextMenu = _contextMenu;
+                }
                 DrawChart();
             }
         }
@@ -621,6 +644,31 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             }
         }
 
+        public static DependencyProperty MouseClickPointProperty = DependencyProperty.Register("MouseClickPoint", typeof(Point), typeof(LineChart),
+           new FrameworkPropertyMetadata(default(Point), new PropertyChangedCallback(OnPropertyChanged)));
+
+        public Point MouseClickPoint
+        {
+            get { return (Point)GetValue(MouseClickPointProperty); }
+            set
+            {
+                SetValue(MouseClickPointProperty, value);
+                this._mouseClickPoint = value;
+            }
+        }
+
+        public static DependencyProperty MenuClickProperty = DependencyProperty.Register("MenuClick", typeof(MenuItem), typeof(LineChart),
+            new FrameworkPropertyMetadata(default(MenuItem), new PropertyChangedCallback(OnPropertyChanged)));
+
+        public MenuItem MenuClick
+        {
+            get { return (MenuItem)GetValue(MenuClickProperty); }
+            set
+            {
+                SetValue(MenuClickProperty, value);
+            }
+        }
+
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             LineChart lcc = sender as LineChart;
@@ -635,12 +683,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 lcc.IsYGrid = (bool)e.NewValue;
             else if (e.Property == OptionProperty)
                 lcc.Option = (ChartOption)e.NewValue;
-            //else if (e.Property == SelectedRangeXProperty)
-            //    lcc.SelectedRangeX = (double[])e.NewValue;
-
         }
-
-        private void ChartCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ChartCanvas_LeftMouseDown(object sender, MouseButtonEventArgs e)
         {
             try
             {
@@ -685,13 +729,11 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 Debug.Print(msg.Message);
             }
         }
-
-        private void ChartCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ChartCanvas_LeftMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (this._option.UseZoom)
             {
-                var pos = e.GetPosition(chartCanvas);
-                Point point1 = new Point() { X = startPoint.X, Y = startPoint.Y};
+                Point point1 = new Point() { X = startPoint.X, Y = startPoint.Y };
                 Point point2 = new Point() { X = stopPoint.X, Y = stopPoint.Y };
 
                 var realPoint1 = DeNormalizePoint(point1);
@@ -706,6 +748,36 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 if (realPoint1.X != realPoint2.X)
                     this.SelectedRangeX = result;
             }
+
+            var pos = e.GetPosition(chartCanvas);
+            _mouseClickPoint = DeNormalizePoint(new Point() { X = pos.X, Y = pos.Y });
+        }
+
+        private void ChartCanvas_RightMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var pos = e.GetPosition(chartCanvas);
+            _mouseClickPoint = DeNormalizePoint(new Point() { X = pos.X, Y = pos.Y });
+
+            //if (this._option.MenuItems != null && this._option.MenuItems.Length > 0)
+            //{
+            //    var canvas = sender as Canvas;
+            //    var menu = new ContextMenu();
+
+            //    foreach (var menuItem in this._option.MenuItems)
+            //    {
+            //        var item = new MenuItem();
+            //        item.Header = menuItem.Header;
+            //        item.Name = menuItem.Name;
+            //        item.Click += Menu_Click; //new RoutedEventHandler(Menu_Click);
+            //        menu.Items.Add(item);
+            //    }
+            //   canvas.ContextMenu = menu;
+            //}
+        }
+        private void Menu_Click(object sender, RoutedEventArgs e)
+        {
+            MouseClickPoint = _mouseClickPoint;
+            MenuClick = sender as MenuItem;
         }
     }
 }

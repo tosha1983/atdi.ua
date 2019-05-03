@@ -260,6 +260,7 @@
     <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartLine.cs" />
     <Compile Include="WpfControls\Charts\ChartLineStyle.cs" />
+    <Compile Include="WpfControls\Charts\ChartMenuItem.cs" />
     <Compile Include="WpfControls\Charts\ChartOption.cs" />
     <Compile Include="WpfControls\Charts\ChartPoints.cs" />
     <Compile Include="WpfControls\Charts\ChartStyle.cs" />

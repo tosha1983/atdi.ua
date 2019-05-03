@@ -20,10 +20,6 @@
       </Style>
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
-      <Menu DockPanel.Dock="Top">
-        <MenuItem Header="Detailed for RefLevel on that Frequency" Command="{Binding DetailForRefLevelCommand}"/>
-        <MenuItem Header="View Station in ICSM" Command="{Binding ViewStationCommand}"/>
-      </Menu>      
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -72,7 +68,7 @@
               <Button Grid.Column="9" Content="Zoom undo" Command="{Binding ZoomUndoCommand}" Width="120" Height="40"/>
               <Button Grid.Column="10" Content="Default Zoom" Command="{Binding ZoomDefaultCommand}" Width="120" Height="40"/>
             </Grid>
-            <cs:LineChart Grid.Row="1" Option="{Binding CurrentChartOption}" SelectedRangeX="{Binding SelectedRangeX, Mode=TwoWay}"/>
+            <cs:LineChart Grid.Row="1" Option="{Binding CurrentChartOption}" SelectedRangeX="{Binding SelectedRangeX, Mode=TwoWay}" MouseClickPoint="{Binding MouseClickPoint, Mode=TwoWay}" MenuClick="{Binding MenuClick, Mode=TwoWay}" />
           </Grid>  
         </GroupBox>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>

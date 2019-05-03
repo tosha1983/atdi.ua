@@ -200,9 +200,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static MeasurementResults GetMeasurementResultByResId(int resId, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
-            var result = Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
-
-            return result;
+            return Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
         }
         public static MeasTask GetMeasTaskHeaderById(int taskId)
         {
@@ -245,6 +243,10 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 return new ShortMeasurementResults[] { };
             }
             return result;
+        }
+        public static MeasTask GetMeasTaskById(int taskId)
+        {
+            return Execute(contract => contract.GetMeasTaskById(taskId));
         }
 
         #endregion

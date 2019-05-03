@@ -12,6 +12,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
     {
         public string Title { get; set; }
 
+        public ChartMenuItem[] MenuItems { get; set; }
+
         public Point[] Points { get; set; }
 
         public ChartPoints[] PointsArray { get; set; }

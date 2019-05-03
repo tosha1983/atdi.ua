@@ -43,6 +43,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
     public class MeasStationsSignalizationFormViewModel : WpfViewModelBase
     {
+        private SDR.LocationSensorMeasurement _currentSensorLocation;
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
 
@@ -57,13 +58,18 @@ namespace XICSM.ICSControlClient.ViewModels
             this._stationData = stationData;
             this._measResult = measResult;
             this._stations = new MeasStationsSignalizationDataAdapter();
+            this._currentSensorLocation = new SDR.LocationSensorMeasurement();
             this.ReloadData();
             this.RedrawMap();
         }
         public IList CurrentStations
         {
             get => this._currentStations;
-            set => this.Set(ref this._currentStations, value, () => { RedrawMap(); });
+            set
+            {
+                this._currentStations = value;
+                RedrawMap();
+            }
         }
         public MP.MapDrawingData CurrentMapData
         {
@@ -73,6 +79,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadData()
         {
             this._stations.Source = this._stationData;
+            //SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(this._measResult.t)
         }
         private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat)
         {
@@ -103,16 +110,38 @@ namespace XICSM.ICSControlClient.ViewModels
             var data = new MP.MapDrawingData();
             var points = new List<MP.MapDrawingDataPoint>();
 
-            var sensorLocation = new SDR.LocationSensorMeasurement();
-
             if (this._measResult != null && this._measResult.LocationSensorMeasurement != null && this._measResult.LocationSensorMeasurement.Count() > 0)
             {
-                sensorLocation = this._measResult.LocationSensorMeasurement[this._measResult.LocationSensorMeasurement.Count() - 1];
+                this._currentSensorLocation = this._measResult.LocationSensorMeasurement[this._measResult.LocationSensorMeasurement.Count() - 1];
 
-                if (sensorLocation.Lon.HasValue && sensorLocation.Lat.HasValue)
-                    points.Add(this.MakeDrawingPointForSensor("A", sensorLocation.Lon.Value, sensorLocation.Lat.Value));
+                if (this._currentSensorLocation.Lon.HasValue && this._currentSensorLocation.Lat.HasValue)
+                    points.Add(this.MakeDrawingPointForSensor("A", this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value));
             }
 
+            if (this._stationData != null && this._stationData.Length > 0)
+            {
+                foreach (var station in this._stationData)
+                {
+                    if (station.Lat != IM.NullD && station.Lon != IM.NullD)
+                        points.Add(this.MakeDrawingPointForStation(station.Lon, station.Lat));
+                }
+            }
+
+            var routes = new List<MP.MapDrawingDataRoute>();
+            if (this._currentStations != null && this._currentStations.Count > 0)
+            {
+                foreach (MeasStationsSignalizationViewModel station in this._currentStations)
+                {
+                    if (station.Lat != IM.NullD && station.Lon != IM.NullD)
+                    {
+                        var routePoints = new List<Location>();
+                        routePoints.Add(new Location(station.Lon, station.Lat));
+                        routePoints.Add(new Location(this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value));
+                        routes.Add(new MP.MapDrawingDataRoute() { Points = routePoints.ToArray(), Color = System.Windows.Media.Colors.Green, Fill = System.Windows.Media.Colors.Green });
+                    }
+                }
+            }
+            data.Routes = routes.ToArray();
             data.Points = points.ToArray();
             this.CurrentMapData = data;
         }
