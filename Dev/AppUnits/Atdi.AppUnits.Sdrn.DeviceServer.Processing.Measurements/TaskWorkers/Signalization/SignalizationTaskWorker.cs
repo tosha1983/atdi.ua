@@ -113,7 +113,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Отправка команды в контроллер 
                     //
                     //////////////////////////////////////////////
+                    //context.Task.CountCallSignaling++;
                     var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
+                    deviceCommand.Delay = 0;
+                    //deviceCommand.Options = CommandOption.StartImmediately;
                     DateTime currTime = DateTime.Now;
                     _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
                     this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,

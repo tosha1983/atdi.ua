@@ -9,12 +9,13 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
+using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcEmittingSummuryByEmittingDetailed
     {
-        public static bool GetEmittingDetailed(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels)
+        public static bool GetEmittingDetailed(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
         {
             //Константа 
             double PersentForJoinDetailEmToSummEm = 20;
@@ -52,12 +53,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else
                 {
                     // создаем новый емитинг
-                    var emitting = CreateEmittingFromBWRes(BWRes, referenceLevels);
+                    var emitting = CreateEmittingFromBWRes(BWRes, referenceLevels, logger);
+                    var listEmittingSummary = emittingSummary.ToList();
+                    listEmittingSummary.Add(emitting);
+                    emittingSummary = listEmittingSummary.ToArray();
                 }
             }
             return true;
         }
-        private static Emitting CreateEmittingFromBWRes(BWResult BWResult, ReferenceLevels referenceLevels)
+        private static Emitting CreateEmittingFromBWRes(BWResult BWResult, ReferenceLevels referenceLevels, ILogger logger)
         {// НЕ ПРОВЕРЕННО
 
             Emitting emitting = new Emitting();
@@ -75,12 +79,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             emitting.Spectrum.MarkerIndex = BWResult.MarkerIndex;
             emitting.Spectrum.SignalLevel_dBm = (float)emitting.CurentPower_dBm;
             emitting.Spectrum.SpectrumStartFreq_MHz = BWResult.Freq_Hz[0] / 1000000;
-            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz;
+            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz/1000;
             emitting.Spectrum.T1 = BWResult.T1;
             emitting.Spectrum.T2 = BWResult.T2;
             emitting.Spectrum.TraceCount  = BWResult.TraceCount;
             emitting.Spectrum.СorrectnessEstimations = BWResult.СorrectnessEstimations;
-            CalcSignalization.FillEmittingForStorage(emitting);
+            CalcSignalization.FillEmittingForStorage(emitting, logger);
             return emitting;
         }
         private static bool JoinBWResToEmitting(ref Emitting emitting, BWResult BWResult, ReferenceLevels referenceLevels)
@@ -99,19 +103,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             emitting.Spectrum.MarkerIndex = BWResult.MarkerIndex;
             emitting.Spectrum.SignalLevel_dBm = (float)emitting.CurentPower_dBm;
             emitting.Spectrum.SpectrumStartFreq_MHz = BWResult.Freq_Hz[0] / 1000000;
-            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz;
+            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz/1000;
             emitting.Spectrum.T1 = BWResult.T1;
             emitting.Spectrum.T2 = BWResult.T2;
             emitting.Spectrum.TraceCount = BWResult.TraceCount;
             emitting.Spectrum.СorrectnessEstimations = BWResult.СorrectnessEstimations;
             int indexLevel = (int)Math.Floor(emitting.CurentPower_dBm) - emitting.LevelsDistribution.Levels[0];
             if ((indexLevel >= 0) && (indexLevel < emitting.LevelsDistribution.Levels.Length)) { emitting.LevelsDistribution.Count[indexLevel]++; }
-            emitting.WorkTimes[emitting.WorkTimes.Length - 1].StopEmitting = BWResult.TimeMeas;
-            emitting.WorkTimes[emitting.WorkTimes.Length - 1].HitCount++;
-            emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount = emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount + emitting.WorkTimes[emitting.WorkTimes.Length - 1].TempCount + 1;
-            emitting.WorkTimes[emitting.WorkTimes.Length - 1].TempCount = 0;
-            emitting.WorkTimes[emitting.WorkTimes.Length - 1].PersentAvailability =100*emitting.WorkTimes[emitting.WorkTimes.Length - 1].HitCount/ emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount;
-
+            if ((emitting.WorkTimes != null) && (emitting.WorkTimes.Length > 0))
+            {
+                emitting.WorkTimes[emitting.WorkTimes.Length - 1].StopEmitting = BWResult.TimeMeas;
+                emitting.WorkTimes[emitting.WorkTimes.Length - 1].HitCount++;
+                emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount = emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount + emitting.WorkTimes[emitting.WorkTimes.Length - 1].TempCount + 1;
+                emitting.WorkTimes[emitting.WorkTimes.Length - 1].TempCount = 0;
+                emitting.WorkTimes[emitting.WorkTimes.Length - 1].PersentAvailability = 100 * emitting.WorkTimes[emitting.WorkTimes.Length - 1].HitCount / emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount;
+            }
             return true;
         }
     }

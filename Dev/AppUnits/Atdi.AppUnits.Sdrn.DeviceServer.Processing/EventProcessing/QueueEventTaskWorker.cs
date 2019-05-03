@@ -80,14 +80,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         System.Threading.Thread.Sleep(this._config.DurationWaitingCheckNewTasks);
 
                         // проверка признака поступления новых тасков в БД
-                        var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
+
                         LastUpdate lastUpdateTaskParameter = null;
+                        var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
                         if ((allTablesLastUpdated != null) && (allTablesLastUpdated.Length > 0))
                         {
                             var listAlTables = allTablesLastUpdated.ToList();
                             lastUpdateTaskParameter = listAlTables.Find(z => z.TableName == "XBS_TASKPARAMETERS");
                         }
-
                         Action action = new Action(() =>
                         {
                             /////////////////////////////////////////////////////////////////
@@ -128,6 +128,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 signalTask.LastTimeSend = DateTime.Now;
                                 signalTask.taskParameters = context.Task.taskParameters;
                                 signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
+                                signalTask.actionConvertBW = ConvertTaskParametersToMesureTraceParameterForBandWidth.ConvertForBW;
                                 var deviceProperties = this._controller.GetDevicesProperties();
                                 var listTraceDeviceProperties = deviceProperties.Values.ToArray();
                                 for (int i = 0; i < listTraceDeviceProperties.Length; i++)
@@ -168,6 +169,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 bandWidtTask.taskParameters = context.Task.taskParameters;
                                 bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                                 _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(bandWidtTask.Id));
+                                //_logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, "Check time start");
                                 _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                 _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(bandWidtTask.Id));
                             }

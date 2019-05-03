@@ -149,5 +149,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public int? ScansNumber;
+
     }
 }

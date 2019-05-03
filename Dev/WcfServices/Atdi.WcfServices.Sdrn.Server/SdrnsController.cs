@@ -78,6 +78,12 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadMeasTask.GetMeasTaskHeader(taskId);
         }
 
+        public MeasTask GetMeasTaskById(int id)
+        {
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+            return loadMeasTask.GetMeasTaskById(id);
+        }
+
         public MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);

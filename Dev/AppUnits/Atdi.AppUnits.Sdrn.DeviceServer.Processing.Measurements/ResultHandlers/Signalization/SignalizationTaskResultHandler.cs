@@ -66,12 +66,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 var listMeasBandwidthResult = new List<BWResult>();
                 while (true)
                 {
+                    var error = new ExceptionProcessBandWidth();
+                    if (taskContext.WaitEvent<ExceptionProcessBandWidth>(out error,1) == true)
+                    {
+                        //if (error._ex!=null)
+                        //{
+                            //if (error._ex.Message!= "MeasBWResults is Null")
+                            //{
+                                //taskContext.Task.CountGetResultBWN++;
+                            //}
+                        //}
+                        //taskContext.Task.CountGetResultBWNegative++;
+                    }
+
                     BWResult outMeasBandwidthResultData = null;
-                    bool isDown = taskContext.WaitEvent<BWResult>(out outMeasBandwidthResultData, 1);
+                    bool isDown = taskContext.WaitEvent<BWResult>(out outMeasBandwidthResultData,1);
                     if (isDown == true)
                     {
                         if (outMeasBandwidthResultData != null)
                         {
+                            //taskContext.Task.CountGetResultBWPositive++;
                             listMeasBandwidthResult.Add(outMeasBandwidthResultData);
                         }
                     }
@@ -84,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
                 {
                     //taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
-                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailed(ref taskContext.Task.EmittingsSummary, listMeasBandwidthResult, taskContext.Task.ReferenceLevels);
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailed(ref taskContext.Task.EmittingsSummary, listMeasBandwidthResult, taskContext.Task.ReferenceLevels, this._logger);
                     if (isSuccess == false)
                     {
                         //обработка  ошибка
@@ -99,7 +113,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //обработка  ошибка
                     _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.CalcGroupingNull);
                 }
-
 
                 //Нужно ли исследование существующих сигналов?
                 if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForBW))
@@ -151,21 +164,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="taskContext"></param>
         private void SendCommandBW(DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
         {
-            for (int i = 0; i < taskContext.Task.taskParametersForBW.Length; i++)
+            if (taskContext.Task.taskParametersForBW != null)
             {
-                var taskParametersForBW = taskContext.Task.taskParametersForBW[i];
-                var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(taskContext.Process);
-                var bandWidtTask = new BandWidthTask();
-                bandWidtTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
-                bandWidtTask.durationForSendResultBandWidth = taskContext.Task.durationForSendResultBandWidth; // файл конфигурации (с него надо брать)
-                bandWidtTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
-                bandWidtTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;
-                bandWidtTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
-                bandWidtTask.LastTimeSend = DateTime.Now;
-                bandWidtTask.taskParameters = taskParametersForBW;
-                bandWidtTask.mesureTraceParameter = taskContext.Task.mesureTraceParameter;
-                _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, taskContext);
-                Thread.Sleep((int)(bandWidtTask.durationForMeasBW_ms / 4));
+                for (int i = 0; i < taskContext.Task.taskParametersForBW.Length; i++)
+                {
+                    var taskParametersForBW = taskContext.Task.taskParametersForBW[i];
+                    var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(taskContext.Process);
+                    var bandWidtTask = new BandWidthTask();
+                    bandWidtTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
+                    bandWidtTask.durationForSendResultBandWidth = taskContext.Task.durationForSendResultBandWidth; // файл конфигурации (с него надо брать)
+                    bandWidtTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
+                    bandWidtTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;
+                    bandWidtTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
+                    bandWidtTask.LastTimeSend = DateTime.Now;
+                    bandWidtTask.taskParameters = taskParametersForBW;
+                    bandWidtTask.mesureTraceParameter = taskContext.Task.actionConvertBW.Invoke(bandWidtTask.taskParameters);
+                    _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, taskContext);
+                }
             }
         }
     }

@@ -273,6 +273,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
+        MeasTask GetMeasTaskById(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
         StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(MeasTaskIdentifier taskId);
 
         /// <summary>

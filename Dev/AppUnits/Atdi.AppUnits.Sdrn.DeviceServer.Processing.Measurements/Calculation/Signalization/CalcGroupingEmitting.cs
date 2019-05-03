@@ -26,15 +26,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 // Увеличиваем счетчики у всех излучений
-                for (int i = 0; EmittingsSummary.Length>i; i++)
+                if (EmittingsSummary != null)
                 {
-                    EmittingsSummary[i].WorkTimes[EmittingsSummary[i].WorkTimes.Length - 1].TempCount++;
+                    for (int i = 0; EmittingsSummary.Length > i; i++)
+                    {
+                        if (EmittingsSummary[i].WorkTimes != null)
+                        {
+                            EmittingsSummary[i].WorkTimes[EmittingsSummary[i].WorkTimes.Length - 1].TempCount++;
+                        }
+                    }
                 }
-                for (int i = 0; EmittingsSummary.Length > i; i++)
+                if (EmittingsTemp != null)
                 {
-                    EmittingsTemp[i].WorkTimes[EmittingsTemp[i].WorkTimes.Length - 1].TempCount++;
-                }
+                    for (int i = 0; EmittingsTemp.Length > i; i++)
+                    {
+                        if (EmittingsTemp[i].WorkTimes != null)
+                        {
+                            EmittingsTemp[i].WorkTimes[EmittingsTemp[i].WorkTimes.Length - 1].TempCount++;
+                        }
+                    }
 
+                }
                 List<Emitting> emittingsSummaryTemp;
                 List<Emitting> emittingsTempTemp;
                 if (EmittingsSummary == null)
@@ -294,7 +306,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 // обединение масивов времени
-                if ((AttachableEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes[0].StopEmitting >= MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting))
+                if ((AttachableEmitting.WorkTimes!=null) && ((MasterEmitting.WorkTimes!=null) && (MasterEmitting.WorkTimes.Length>0)) && (AttachableEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes[0].StopEmitting >= MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting))
                 {
                     TimeSpan timeSpan = AttachableEmitting.WorkTimes[0].StartEmitting - MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
                     if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
@@ -315,30 +327,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else
                 {
                     // обединяем массивы
-                    var workTimes1 = MasterEmitting.WorkTimes.ToList();
-                    var workTimes2 = AttachableEmitting.WorkTimes.ToList();
-                    workTimes1.AddRange(workTimes2);
-                    var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
-                    List<WorkTime> WorkTimes = NewWorkTimes.ToList();
-                    
-                    // найдем и удалим пересечения 
-                    for (int i = 0; WorkTimes.Count - 1 > i; i++)
+                    List<WorkTime> workTimes1 = null;
+                    if (MasterEmitting.WorkTimes != null)
                     {
-                        TimeSpan timeSpan = WorkTimes[i+1].StartEmitting - WorkTimes[i].StopEmitting;
-                        if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
-                        {// производим обединение и удаление лишнего
-                            WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
-                            WorkTimes[i].HitCount = WorkTimes[i].ScanCount + WorkTimes[i+1].ScanCount + WorkTimes[i].TempCount + WorkTimes[i+1].TempCount;
-                            WorkTimes[i].TempCount = 0;
-                            WorkTimes[i].PersentAvailability = WorkTimes[i].HitCount/ WorkTimes[i].ScanCount;
-                            if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
-                            { WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting; }
-                            WorkTimes.RemoveRange(i + 1, 1);
-                            i--;
-                        }
+                        workTimes1 = MasterEmitting.WorkTimes.ToList();
                     }
-                   
-                    MasterEmitting.WorkTimes = WorkTimes.ToArray();
+                    List<WorkTime> workTimes2 = null;
+                    if (AttachableEmitting.WorkTimes != null)
+                    {
+                        workTimes2 = AttachableEmitting.WorkTimes.ToList();
+                    }
+                    if ((workTimes2 != null) && (workTimes1 != null))
+                    {
+                        workTimes1.AddRange(workTimes2);
+                        var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
+                        List<WorkTime> WorkTimes = NewWorkTimes.ToList();
+
+                        // найдем и удалим пересечения 
+                        for (int i = 0; WorkTimes.Count - 1 > i; i++)
+                        {
+                            TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
+                            if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
+                            {// производим обединение и удаление лишнего
+                                WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
+                                WorkTimes[i].HitCount = WorkTimes[i].ScanCount + WorkTimes[i + 1].ScanCount + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount;
+                                WorkTimes[i].TempCount = 0;
+                                WorkTimes[i].PersentAvailability = WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
+                                if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
+                                { WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting; }
+                                WorkTimes.RemoveRange(i + 1, 1);
+                                i--;
+                            }
+                        }
+
+                        MasterEmitting.WorkTimes = WorkTimes.ToArray();
+                    }
                 }
                 // обединение уровней
                 if (TypeJoinSpectrum != 0)

@@ -16,5 +16,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public BWResult MeasBWResults; //  результат измерения
         public long maximumTimeForWaitingResultBandWidth; // (максимальное время ожидания результата)
         public DateTime? LastTimeSend = null;
+
+        //public int CountCallBW = 0;
+        //public int CountGetResultBWPositive = 0;
+        //public int CountGetResultBWNegative = 0;
     }
 }
