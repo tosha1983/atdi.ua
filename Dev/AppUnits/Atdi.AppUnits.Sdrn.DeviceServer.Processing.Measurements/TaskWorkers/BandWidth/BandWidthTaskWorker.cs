@@ -94,6 +94,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             parentProc.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
                         });
                     }
+                    else
+                    {
+                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        (
+                            ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
+                        });
+                    }
                 }
                 else
                 {
