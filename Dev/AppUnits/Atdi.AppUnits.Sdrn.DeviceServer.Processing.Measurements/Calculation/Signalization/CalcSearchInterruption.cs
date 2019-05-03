@@ -14,6 +14,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSearchInterruption
     {
+        // константы потом стоит передать в виде переменных
+        private static bool CompareTraceJustWithRefLevels = false;
+        private static bool AutoDivisionEmitting = true;
+        private static double DifferenceMaxMax = 20;
+        private static bool FiltrationTrace = true;
+
+        // конец констант
         /// <summary>
         /// Сопоставляем излучения реальные с реферативными уровнями. В случае превышения формируем излучение. 
         /// </summary>
@@ -25,8 +32,40 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // Константы 
             int NumberPointForChangeExcess=10; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
             // Конец констант
+            if (refLevels.levels.Length != Trace.Level.Length)
+            {
+                return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
+            }
+            // выделение мест где произошло превышение порога 
+            List<int> index_start_stop = new List<int>();
+            if (CompareTraceJustWithRefLevels)
+            {
+                index_start_stop = SearchStartStopCompaireWithRefLevels(refLevels, Trace, NoiseLevel_dBm, NumberPointForChangeExcess);
+            }
+            else
+            {
+                index_start_stop = SearchStartStopCompaireWithNoiseLevels(refLevels, Trace, NoiseLevel_dBm, NumberPointForChangeExcess);
+            }
+            // конец выделения 
+            //возможно необходимо произвести разделение нескольких излучений которые моги быть ошибочно восприняты как одно
+            if (AutoDivisionEmitting) { index_start_stop = DivisionEmitting(index_start_stop, Trace); }
 
-
+            //Формируем помехи.
+            double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
+            Emitting[] newEmittings = CreateEmittings(Trace.Level, refLevels.levels, index_start_stop, stepBW_kHz, Trace.Freq_Hz[0]/1000000, NoiseLevel_dBm);
+            // сформировали новые параметры излучения теперь надо накатить старые по идее.
+            return newEmittings;
+        }
+        /// <summary>
+        /// Производит выделение излучений на основании сравнения уровня RefLevels и полученного. Если превышение наблюдается подряд менее чем в NumberPointForChangeExcess точек то оно игнорируется.   
+        /// </summary>
+        /// <param name="refLevels"></param>
+        /// <param name="Trace"></param>
+        /// <param name="NoiseLevel_dBm"></param>
+        /// <param name="NumberPointForChangeExcess"></param>
+        /// <returns></returns>
+        private static List<int> SearchStartStopCompaireWithRefLevels(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm, int NumberPointForChangeExcess = 10)
+        {
             if (refLevels.levels.Length != Trace.Level.Length)
             {
                 return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
@@ -75,9 +114,78 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 excess = false;
             }
             // выделение произошло. 
-            Emitting[] newEmittings = CreateEmittings(Trace.Level, refLevels.levels, index_start_stop, (Trace.Freq_Hz[2] - Trace.Freq_Hz[1])/1000, Trace.Freq_Hz[0]/1000000, NoiseLevel_dBm);
-            // сформировали новые параметры излучения теперь надо накатить старые по идее.
-            return newEmittings;
+            return (index_start_stop);
+        }
+        /// <summary>
+        /// Производит выделение излучений на основании сравнения полученного уровня c шумом а потом с RefLevels. Если превышение наблюдается подряд менее чем в NumberPointForChangeExcess точек то оно игнорируется.   
+        /// </summary>
+        /// <param name="refLevels"></param>
+        /// <param name="Trace"></param>
+        /// <param name="NoiseLevel_dBm"></param>
+        /// <param name="NumberPointForChangeExcess"></param>
+        /// <returns></returns>
+        private static List<int> SearchStartStopCompaireWithNoiseLevels(ReferenceLevels refLevels_, MesureTraceResult Trace, double NoiseLevel_dBm, int NumberPointForChangeExcess = 10)
+        {// должны произвести разделение согласно пересечению шумового уровня
+            bool excess = false; int startSignalIndex = 0;
+            int NumberPointBeforExcess = 0;
+            int NumberPointAfterExcess = 0;
+            if (Trace.Level[0] > NoiseLevel_dBm) { excess = true; startSignalIndex = 0; }
+            // выделение мест где произошло превышение порога 
+            List<int> index_start_stop = new List<int>();
+            for (int i = 0; i < Trace.Level.Length; i++)
+            {
+                if (Trace.Level[i] > NoiseLevel_dBm)
+                { //Превышение
+                    NumberPointAfterExcess = 0;
+                    if (!excess)
+                    {//начало превышения
+                        NumberPointBeforExcess++;
+                        if (NumberPointBeforExcess >= NumberPointForChangeExcess)
+                        {
+                            startSignalIndex = i - NumberPointBeforExcess + 1;
+                            excess = true;
+                        }
+                    }
+                }
+                else
+                { // Не превышение
+                    NumberPointBeforExcess = 0;
+                    if (excess)
+                    {
+                        NumberPointAfterExcess++;
+                        if (NumberPointAfterExcess >= NumberPointForChangeExcess)
+                        {
+                            // Конец превышения
+                            index_start_stop.Add(startSignalIndex);
+                            index_start_stop.Add(i - NumberPointAfterExcess + 1);
+                            excess = false;
+                        }
+                    }
+                }
+            }
+            if (excess)
+            { // Конец превышения
+                index_start_stop.Add(startSignalIndex);
+                index_start_stop.Add(Trace.Level.Length - 1);
+                excess = false;
+            }
+            // выделение произошло. 
+            return (index_start_stop);
+        }
+
+        private static List<int> DivisionEmitting (List<int> index_start_stop,  MesureTraceResult Trace)
+        { // НЕ ПРОВЕРЕННО
+            List<int> ResultStartStopIndexArr = new List<int>();
+            for (int i = 0; i < index_start_stop.Count - 1; i = i + 2)
+            {
+                int[] StartStopAnalized;
+                int count = EmissionCounting.Counting(Trace.Level, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, DifferenceMaxMax, FiltrationTrace);
+                for (int j = 0; j< StartStopAnalized.Length; j++)
+                {
+                    ResultStartStopIndexArr.Add(StartStopAnalized[j]);
+                }
+            }
+            return ResultStartStopIndexArr;
         }
         private static Emitting[] CreateEmittings(float[] levels, float[] refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm)
         { // задача локализовать излучения
@@ -89,7 +197,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             int NumberIgnoredPoints = 1;
             double MinExcessNoseLevel_dB = 5;
             // константы конец
-
             for (int i = 0; i < index_start_stop.Count; i = i + 2)
             {
                 // для каждого излучения вычислим BW 

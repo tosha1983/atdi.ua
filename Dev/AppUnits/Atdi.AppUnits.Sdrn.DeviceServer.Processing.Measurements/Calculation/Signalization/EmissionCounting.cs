@@ -14,7 +14,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class EmissionCounting
     {   /// <summary>
-        /// По заддоному масиву Level_dBm функция возвращает в масив StartStop значения начала и конца излучений. Промежуточные точки одновременно начало и конец 
+        /// По заддоному масиву Level_dBm функция возвращает в масив StartStop значения начала и конца излучений. 
         /// </summary>
         /// <param name="Level_dBm"></param>
         /// <param name="PointStart"></param>
@@ -55,7 +55,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         LocMax1 = Level[i]; IndexLocMax1 = i;
                         if (LocMax1 - LocMin1 >= DifferenceMaxMax)
                         { // мы превысили уровень. Теперь точно можно зафиксировать минимум. 
-                            MinMax.Add(IndexLocMin1);
+                            if (MinMax.Count == 0)
+                            {
+                                MinMax.Add(IndexLocMin1);
+                            }
+                            else
+                            {
+                                MinMax.Add(IndexLocMin1);
+                                MinMax.Add(IndexLocMin1);
+                            }
                             LocMin1 = Level[i]; IndexLocMin1 = i;
                             gotoMax = false;
                         }
@@ -86,13 +94,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 MinMax.Add(0); MinMax.Add(Level.Length - 1);
             }
-            if (!gotoMax) { MinMax.Add(Level.Length - 1);}
+            else
+            {
+
+                if (!gotoMax) {MinMax.Add(Level.Length - 1);}
+                else { MinMax.RemoveAt(MinMax.Count - 1);}
+            }
             StartStop = new int[MinMax.Count];
             for (int i = 0; MinMax.Count>i; i++)
             {
                 StartStop[i] = MinMax[i] + PointStart;
             }
-            return 1;
+            return (int)(StartStop.Length/2);
         }
     }
 }
