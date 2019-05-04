@@ -48,6 +48,7 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                         var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon));
                         marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
                         marker.ZIndex = int.MaxValue;
+                        marker.Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 };
                         this.Markers.Add(marker);
                     });
                 }

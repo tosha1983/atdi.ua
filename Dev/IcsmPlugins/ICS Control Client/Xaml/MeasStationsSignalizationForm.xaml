@@ -31,6 +31,8 @@
         </Grid.RowDefinitions>
         <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}">
           <DataGrid.Columns>
+            <DataGridTextColumn Header="Icsm Table" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Icsm Id" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
             <DataGridTextColumn Header="Station Name" Binding="{Binding Path=StationName}"></DataGridTextColumn>
             <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
             <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
