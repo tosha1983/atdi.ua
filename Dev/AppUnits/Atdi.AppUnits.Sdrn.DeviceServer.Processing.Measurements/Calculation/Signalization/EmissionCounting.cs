@@ -68,7 +68,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             gotoMax = false;
                         }
                     }
-                    if (Level[i] < LocMin1)
+                    else if(Level[i] < LocMin1)
                     {
                         LocMin1 = Level[i]; IndexLocMin1 = i;
                     }
@@ -96,8 +96,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             else
             {
-
-                if (!gotoMax) {MinMax.Add(Level.Length - 1);}
+                if (gotoMax) {MinMax.Add(IndexLocMin1);}
                 else { MinMax.RemoveAt(MinMax.Count - 1);}
             }
             StartStop = new int[MinMax.Count];
