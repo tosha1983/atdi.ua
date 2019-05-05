@@ -668,12 +668,18 @@ namespace XICSM.ICSControlClient.ViewModels
                                 maxFreq = frq;
                         }
                     }
+                    if (rs.IsOpen())
+                        rs.Close();
+                    rs.Destroy();
 
                     if (minFreq.HasValue && maxFreq.HasValue && minFreq - 0.2 < (double)freq && (double)freq < maxFreq + 0.2)
                         stations.Add(source.GetI("ID"), source.GetI("ID"));
 
                     //MessageBox.Show(source.GetS("ID") + " - " + source.GetS("NAME") + "(" + source.GetD("Position.LONGITUDE").ToString() + ":" + source.GetD("Position.LATITUDE").ToString() + ")");
                 }
+                if (source.IsOpen())
+                    source.Close();
+                source.Destroy();
 
                 if (stations.Count() > 0)
                 {
