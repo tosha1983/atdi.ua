@@ -19,11 +19,8 @@ namespace Atdi.Common
             int cnt = 1;
             for (int i = 0; i < elements.Length; i++)
             {
-                if (cnt <= CountInParams)
-                {
-                    listIntEmitting.Add(elements[i]);
-                }
-                else
+                listIntEmitting.Add(elements[i]);
+                if (cnt >= CountInParams)
                 {
                     arrIntEmitting.Add(listIntEmitting.ToArray());
                     listIntEmitting.Clear();
@@ -44,11 +41,8 @@ namespace Atdi.Common
             int cnt = 1;
             for (int i = 0; i < elements.Length; i++)
             {
-                if (cnt <= CountInParams)
-                {
-                    listIntEmitting.Add(elements[i]);
-                }
-                else
+                listIntEmitting.Add(elements[i]);
+                if (cnt >= CountInParams)
                 {
                     arrIntEmitting.Add(listIntEmitting.ToArray());
                     listIntEmitting.Clear();

@@ -230,7 +230,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                 });
             }
 
-
             var listIntEmittingSpectrum = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
             for (int i = 0; i < listIntEmittingSpectrum.Count; i++)
             {
@@ -253,7 +252,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 listLevelsdBm.AddRange(levelsdBm as float[]);
                             }
                         }
-
+                       
                         if (spectrum.SpectrumStartFreq_MHz == 0)
                         {
                             if (readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).HasValue)
@@ -309,7 +308,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                         }
                         spectrum.Levels_dBm = listLevelsdBm.ToArray();
-
                         listSpectrum.Add(new KeyValuePair<int, Spectrum>(readerSpectrum.GetValue(c => c.EMITTING.Id), spectrum));
                     }
                     return true;
