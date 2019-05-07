@@ -7,6 +7,8 @@ namespace XICSM.ICSControlClient.Models
 {
     public class MeasStationsSignalization
     {
+        public string IcsmTable;
+        public int IcsmId;
         public string StationName;
         public string Standart;
         public string Status;

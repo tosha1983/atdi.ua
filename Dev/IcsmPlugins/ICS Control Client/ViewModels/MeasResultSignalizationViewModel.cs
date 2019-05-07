@@ -257,6 +257,8 @@ namespace XICSM.ICSControlClient.ViewModels
                                     {
                                         var measStationSignalization = new MeasStationsSignalization()
                                         {
+                                            IcsmId = refSignal.IcsmId,
+                                            IcsmTable = refSignal.IcsmTable,
                                             StationName = rs.GetS("NAME"),
                                             Standart = rs.GetS("STANDARD"),
                                             Status = rs.GetS("STATUS"),
@@ -430,7 +432,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         double constStep = 0;
                         if (Math.Abs(_currentMeasResult.RefLevels.StepFrequency_Hz - emitting.Spectrum.SpectrumSteps_kHz) > 0.01 && _currentMeasResult.RefLevels.StepFrequency_Hz != 0)
                         {
-                            constStep = 10 * Math.Log10(emitting.Spectrum.SpectrumSteps_kHz * 1000 / _currentMeasResult.RefLevels.StepFrequency_Hz);
+                            constStep = -10 * Math.Log10(emitting.Spectrum.SpectrumSteps_kHz * 1000 / _currentMeasResult.RefLevels.StepFrequency_Hz);
                         }
 
                         var count = emitting.Spectrum.Levels_dBm.Count();
