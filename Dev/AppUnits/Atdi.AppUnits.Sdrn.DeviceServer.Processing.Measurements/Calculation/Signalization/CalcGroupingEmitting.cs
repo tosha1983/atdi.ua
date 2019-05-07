@@ -327,12 +327,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else
                 {
                     // обединяем массивы
-                    List<WorkTime> workTimes1 = null;
+                    List<WorkTime> workTimes1 = new List<WorkTime>();
                     if (MasterEmitting.WorkTimes != null)
                     {
                         workTimes1 = MasterEmitting.WorkTimes.ToList();
                     }
-                    List<WorkTime> workTimes2 = null;
+                    List<WorkTime> workTimes2 = new List<WorkTime>();
                     if (AttachableEmitting.WorkTimes != null)
                     {
                         workTimes2 = AttachableEmitting.WorkTimes.ToList();
