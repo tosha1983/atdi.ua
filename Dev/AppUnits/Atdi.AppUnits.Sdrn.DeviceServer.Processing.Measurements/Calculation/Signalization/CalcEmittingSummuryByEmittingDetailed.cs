@@ -92,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             emitting.WorkTimes[0].HitCount = 1;
             emitting.WorkTimes[0].ScanCount = 1;
             emitting.WorkTimes[0].TempCount = 0;
-            emitting.WorkTimes[0].PersentAvailability = 100 * emitting.WorkTimes[0].HitCount / emitting.WorkTimes[0].ScanCount;
+            emitting.WorkTimes[0].PersentAvailability = 100;
 
 
             CalcSignalization.FillEmittingForStorage(emitting, logger);
