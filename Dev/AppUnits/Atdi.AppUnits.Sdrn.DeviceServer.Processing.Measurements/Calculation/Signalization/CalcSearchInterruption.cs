@@ -289,6 +289,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel[j] / 10);
                     emitting.CurentPower_dBm = emitting.CurentPower_dBm + Math.Pow(10, levels[j] / 10);
                 }
+
+                //if ((emitting.StartFrequency_MHz>428.4) && (emitting.StopFrequency_MHz < 428.6) && ((emitting.StopFrequency_MHz - emitting.StartFrequency_MHz)>0.1))
+                //{
+
+                //}
+
                 emitting.ReferenceLevel_dBm = 10 * Math.Log10(emitting.ReferenceLevel_dBm);
                 emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);
                 emitting.WorkTimes = new WorkTime[1];
