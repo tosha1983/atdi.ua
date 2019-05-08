@@ -102,7 +102,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this._stations.Source = this._stationData;
         }
-        private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat)
+        private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat, string name)
         {
             return new MP.MapDrawingDataPoint
             {
@@ -111,10 +111,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 Location = new Models.Location(lon, lat),
                 Opacity = 0.85,
                 Width = 10,
-                Height = 10
+                Height = 10,
+                Name = name
             };
         }
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
+        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat, string name)
         {
             return new MP.MapDrawingDataPoint
             {
@@ -123,7 +124,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 Location = new Models.Location(lon, lat),
                 Opacity = 0.85,
                 Width = 10,
-                Height = 10
+                Height = 10,
+                Name = name
             };
         }
         private void RedrawMap()
@@ -136,7 +138,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._currentSensorLocation = this._measResult.LocationSensorMeasurement[this._measResult.LocationSensorMeasurement.Count() - 1];
 
                 if (this._currentSensorLocation.Lon.HasValue && this._currentSensorLocation.Lat.HasValue)
-                    points.Add(this.MakeDrawingPointForSensor("A", this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value));
+                    points.Add(this.MakeDrawingPointForSensor("A", this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value, this._measResult.SensorName));
             }
 
             if (this._stationData != null && this._stationData.Length > 0)
@@ -144,7 +146,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (var station in this._stationData)
                 {
                     if (station.Lat != IM.NullD && station.Lon != IM.NullD)
-                        points.Add(this.MakeDrawingPointForStation(station.Lon, station.Lat));
+                        points.Add(this.MakeDrawingPointForStation(station.Lon, station.Lat, station.StationName));
                 }
             }
 
