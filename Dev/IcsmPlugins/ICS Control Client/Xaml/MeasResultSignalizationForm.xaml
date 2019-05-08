@@ -82,27 +82,57 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <cdg:CustomDataGridEmitting Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItemsList="{Binding CurrentEmittings, Mode=TwoWay}" SelectedItem="{Binding CurrentEmitting}">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="StartFreq_MHz" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="StopFreq_MHz" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="CurentPower_dBm" Binding="{Binding Path=CurentPower_dBm}"></DataGridTextColumn>
-                <DataGridTextColumn Header="ReferenceLevel_dBm" Binding="{Binding Path=ReferenceLevel_dBm}"></DataGridTextColumn>
-                <DataGridTextColumn Header="EmissionFreqMHz" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Bandwidth_kHz" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="CorrectnessEstimations" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
-                <DataGridTextColumn Header="TraceCount" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
-                <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
-                <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
-                <DataGridTextColumn Header="StandardBW" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
-                <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="SumHitCount" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IcsmID" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-                <DataGridTextColumn Header="MeanDeviationFromReference" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
-                <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
-              </DataGrid.Columns>
-            </cdg:CustomDataGridEmitting>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+              </Grid.RowDefinitions>
+              <cdg:CustomDataGridEmitting Grid.ColumnSpan="20" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItemsList="{Binding CurrentEmittings, Mode=TwoWay}" SelectedItem="{Binding CurrentEmitting}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="StartFreq_MHz" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="StopFreq_MHz" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="CurentPower_dBm" Binding="{Binding Path=CurentPower_dBm}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="ReferenceLevel_dBm" Binding="{Binding Path=ReferenceLevel_dBm}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="EmissionFreqMHz" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Bandwidth_kHz" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="CorrectnessEstimations" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="TraceCount" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="StandardBW" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="SumHitCount" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="IcsmID" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="MeanDeviationFromReference" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
+                </DataGrid.Columns>
+              </cdg:CustomDataGridEmitting>
+              <Button Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" Content="Add Association Station" Command="{Binding AddAssociationStationCommand}" Width="120" Height="40"/>
+              <Button Grid.Row="1" Grid.Column="10" Grid.ColumnSpan="2" Content="Delete Emission" Command="{Binding DeleteEmissionCommand}" Width="120" Height="40"/>
+            </Grid>
             <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>
             <Grid Grid.Column="2">
               <Grid.ColumnDefinitions>

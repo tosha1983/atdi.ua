@@ -43,24 +43,41 @@ namespace XICSM.ICSControlClient.ViewModels
 
     public class MeasStationsSignalizationFormViewModel : WpfViewModelBase
     {
+        public FM.MeasStationsSignalizationForm _form;
+        private Visibility _buttonAssociatedVisibility;
         private SDR.LocationSensorMeasurement _currentSensorLocation;
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
+        private int? _emittingId;
 
         private MP.MapDrawingData _currentMapData;
         private IList _currentStations;
+        private MeasStationsSignalizationViewModel _currentStation;
         private MeasStationsSignalizationDataAdapter _stations;
 
         public MeasStationsSignalizationDataAdapter Stations => this._stations;
 
-        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult)
+        public WpfCommand AssociatedCommand { get; set; }
+
+        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, int? emittingId)
         {
             this._stationData = stationData;
             this._measResult = measResult;
+            this._emittingId = emittingId;
+            if (buttonAssociatedVisible)
+                this._buttonAssociatedVisibility = Visibility.Visible;
+            else
+                this._buttonAssociatedVisibility = Visibility.Hidden;
             this._stations = new MeasStationsSignalizationDataAdapter();
             this._currentSensorLocation = new SDR.LocationSensorMeasurement();
+            this.AssociatedCommand = new WpfCommand(this.OnAssociatedCommand);
             this.ReloadData();
             this.RedrawMap();
+        }
+        public Visibility ButtonAssociatedVisibility
+        {
+            get => this._buttonAssociatedVisibility;
+            set => this.Set(ref this._buttonAssociatedVisibility, value);
         }
         public IList CurrentStations
         {
@@ -71,6 +88,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 RedrawMap();
             }
         }
+        public MeasStationsSignalizationViewModel CurrentStation
+        {
+            get => this._currentStation;
+            set => this.Set(ref this._currentStation, value);
+        }
         public MP.MapDrawingData CurrentMapData
         {
             get => this._currentMapData;
@@ -79,7 +101,6 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadData()
         {
             this._stations.Source = this._stationData;
-            //SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(this._measResult.t)
         }
         private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat)
         {
@@ -144,6 +165,14 @@ namespace XICSM.ICSControlClient.ViewModels
             data.Routes = routes.ToArray();
             data.Points = points.ToArray();
             this.CurrentMapData = data;
+        }
+        private void OnAssociatedCommand(object parameter)
+        {
+            if (this._emittingId.HasValue && this._currentStation != null)
+            {
+                SVC.SdrnsControllerWcfClient.AddAssociationStationByEmitting(new int[] { this._emittingId.Value }, this._currentStation.IcsmId, this._currentStation.IcsmTable);
+                _form.Close();
+            }
         }
     }
 }

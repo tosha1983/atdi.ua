@@ -248,7 +248,6 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._currentResultsMeasurementsStationData;
             set => this.Set(ref this._currentResultsMeasurementsStationData, value);
         }
-
         #region Sources (Adapters)
 
         public LevelMeasurementsCarDataAdapter LevelMeasurements => this._levelMeasurements;
