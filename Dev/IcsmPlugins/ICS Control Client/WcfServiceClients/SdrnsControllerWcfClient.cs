@@ -289,6 +289,24 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Stop the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
+        public static void DeleteEmittingById(int[] emittingId)
+        {
+            var result = Execute(contract => contract.DeleteEmitting(emittingId));
+
+            if (!result)
+            {
+                System.Windows.Forms.MessageBox.Show("Unknown error", "Delete Emittings faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+        public static void AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        {
+            var result = Execute(contract => contract.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName));
+            if (!result)
+            {
+                System.Windows.Forms.MessageBox.Show("Unknown error", "Add association station by emitting faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+        
         #endregion
     }
 }

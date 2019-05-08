@@ -216,36 +216,36 @@
                                     </Style>
                                   </Expander.Style>
                                   <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="130" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                        </Grid.RowDefinitions>
-                                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
-                                        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}"  IsReadOnly="True"/>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="130" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
+                                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}"  IsReadOnly="True"/>
 
-                                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"  />
-                                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}"  IsReadOnly="True" />
+                                    <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"  />
+                                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}"  IsReadOnly="True" />
 
-                                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"  />
-                                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}"  IsReadOnly="True" />
+                                    <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"  />
+                                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}"  IsReadOnly="True" />
 
-                                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"  />
-                                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasDtParamDetectType}"  IsReadOnly="True"/>
+                                    <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"  />
+                                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasDtParamDetectType}"  IsReadOnly="True"/>
 
-                                        <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"  />
-                                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}"  IsReadOnly="True" />
+                                    <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"  />
+                                    <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}"  IsReadOnly="True" />
 
-                                        <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"  />
-                                        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}"  IsReadOnly="True" />                                    
-                                     </Grid>
+                                    <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"  />
+                                    <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}"  IsReadOnly="True" />                                    
+                                  </Grid>
                                 </Expander>                              
                                 <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Other">
                                   <Expander.Style>

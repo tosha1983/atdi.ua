@@ -274,6 +274,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
             return new VM.EmittingViewModel
             {
+                Id = source.Id,
                 StartFrequency_MHz = source.StartFrequency_MHz,
                 StopFrequency_MHz = source.StopFrequency_MHz,
                 CurentPower_dBm = source.CurentPower_dBm,
