@@ -11,6 +11,7 @@ using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.DataModels.EntityOrm;
 using Atdi.DataModels.Sdrns.Device;
+using System.Linq;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
@@ -252,7 +253,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             }
 
                             outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
-                            
+
+
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
                             publisher.Send<DM.MeasResults>("SendMeasResults", outResultData);

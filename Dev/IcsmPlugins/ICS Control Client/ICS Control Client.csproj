@@ -108,6 +108,12 @@
     <Compile Include="Forms\MeasResultSignalizationForm.Designer.cs">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MeasStationsSignalizationDlg1Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasStationsSignalizationDlg1Form.Designer.cs">
+      <DependentUpon>MeasStationsSignalizationDlg1Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasStationsSignalizationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -285,6 +291,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasStationsSignalizationDlg1Form.resx">
+      <DependentUpon>MeasStationsSignalizationDlg1Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasStationsSignalizationForm.resx">
       <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>

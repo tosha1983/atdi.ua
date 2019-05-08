@@ -274,16 +274,17 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
             return new VM.EmittingViewModel
             {
+                Id = source.Id,
                 StartFrequency_MHz = source.StartFrequency_MHz,
                 StopFrequency_MHz = source.StopFrequency_MHz,
                 CurentPower_dBm = source.CurentPower_dBm,
                 ReferenceLevel_dBm = source.ReferenceLevel_dBm,
                 MeanDeviationFromReference = source.MeanDeviationFromReference,
                 TriggerDeviationFromReference = source.TriggerDeviationFromReference,
-                Bandwidth_kHz = source.Spectrum.Bandwidth_kHz,
-                CorrectnessEstimations = source.Spectrum.CorrectnessEstimations,
-                TraceCount = source.Spectrum.TraceCount,
-                SignalLevel_dBm = source.Spectrum.SignalLevel_dBm,
+                Bandwidth_kHz = source.Spectrum == null ? 0 : source.Spectrum.Bandwidth_kHz,
+                CorrectnessEstimations = source.Spectrum == null ? true : source.Spectrum.CorrectnessEstimations,
+                TraceCount = source.Spectrum == null ? 0 : source.Spectrum.TraceCount,
+                SignalLevel_dBm = source.Spectrum == null ? 0 : source.Spectrum.SignalLevel_dBm,
                 RollOffFactor = source.EmittingParameters.RollOffFactor,
                 StandardBW = source.EmittingParameters.StandardBW,
                 WorkTimes = source.WorkTimes,
@@ -291,7 +292,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 LevelsDistribution = source.LevelsDistribution,
                 SensorName = source.SensorName,
                 SumHitCount = source.WorkTimes == null ? 0 : source.WorkTimes.Sum(c => c.HitCount),
-                EmissionFreqMHz = source.Spectrum.SpectrumSteps_kHz * (source.Spectrum.T2 + source.Spectrum.T1)/2000 + source.Spectrum.SpectrumStartFreq_MHz,
+                EmissionFreqMHz = source.Spectrum == null ? 0 : source.Spectrum.SpectrumSteps_kHz * (source.Spectrum.T2 + source.Spectrum.T1)/2000 + source.Spectrum.SpectrumStartFreq_MHz,
                 IcsmID = source.AssociatedStationID,
                 IcsmTable = source.AssociatedStationTableName
             };
@@ -320,6 +321,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
             return new VM.MeasStationsSignalizationViewModel
             {
+                IcsmId = source.IcsmId,
+                IcsmTable = source.IcsmTable,
                 Agl = source.Agl,
                 Bw = source.Bw,
                 Lat = source.Lat,

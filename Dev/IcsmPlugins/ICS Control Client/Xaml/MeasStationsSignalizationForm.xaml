@@ -29,8 +29,10 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}">
+        <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}"  SelectedItem="{Binding CurrentStation}">
           <DataGrid.Columns>
+            <DataGridTextColumn Header="Icsm Table" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Icsm Id" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
             <DataGridTextColumn Header="Station Name" Binding="{Binding Path=StationName}"></DataGridTextColumn>
             <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
             <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
@@ -46,7 +48,30 @@
           </DataGrid.Columns>
         </cdg:CustomDataGridStations>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
-        <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
+        <Grid Grid.Row="2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+          </Grid.RowDefinitions>
+          <maps:Map Grid.Row="0" DrawingData="{Binding CurrentMapData}">
+            <!--<Map.Style>
+              <Style TargetType="Map">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding ButtonAssociatedVisibility}" Value="Hidden">
+                    <Setter Property="Grid.RowSpan" Value="2"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding ButtonAssociatedVisibility}" Value="Visible">
+                    <Setter Property="Grid.Row" Value="0"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Map.Style>-->
+          </maps:Map>
+          <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Content="Associated" Command="{Binding AssociatedCommand}" Width="120" Height="40"/>
+        </Grid>
     </Grid>
     </DockPanel>
 </UserControl>

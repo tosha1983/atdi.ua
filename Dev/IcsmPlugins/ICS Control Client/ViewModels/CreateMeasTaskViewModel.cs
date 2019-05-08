@@ -293,7 +293,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
-
                 var measFreqParam = new SDR.MeasFreqParam() { Mode = this._currentMeasTask.MeasFreqParamMode, Step = this._currentMeasTask.MeasFreqParamStep };
 
                 switch (measFreqParam.Mode)
@@ -380,10 +379,10 @@ namespace XICSM.ICSControlClient.ViewModels
 
                                                 if (d.HasValue && a.HasValue)
                                                 {
-                                                    refSig.IcsmTable = "MOBSTA_FREQS";
+                                                    refSig.IcsmTable = "MOB_STATION";
                                                     if (!this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value))
                                                     {
-                                                        refSig.IcsmTable = "MOBSTA_FREQS2";
+                                                        refSig.IcsmTable = "MOB_STATION2";
                                                         this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value);
                                                     }
                                                 }
@@ -478,6 +477,19 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     throw new InvalidOperationException($"Could not create a meas task");
                 }
+                else
+                {
+                    IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadWrite);
+                    rsAllot.Select("ID,STATUS,CUST_NBR1");
+                    rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
+                    using (rsAllot.OpenWithScope())
+                    {
+                        rsAllot.Edit();
+                        rsAllot.Put("STATUS", "dur");
+                        rsAllot.Put("CUST_NBR1", measTaskId);
+                        rsAllot.Update();
+                    }
+                }
                 _measTaskForm.Close();
             }
             catch (Exception e)
@@ -500,14 +512,21 @@ namespace XICSM.ICSControlClient.ViewModels
             double mod = double.MaxValue;
             int eqpId = 0;
 
-            IMRecordset rs = new IMRecordset(refSig.IcsmTable, IMRecordset.Mode.ReadOnly);
+            string freqTableName = "";
+
+            if (refSig.IcsmTable == "MOB_STATION")
+                freqTableName = "MOBSTA_FREQS";
+            else
+                freqTableName = "MOBSTA_FREQS2";
+
+            IMRecordset rs = new IMRecordset(freqTableName, IMRecordset.Mode.ReadOnly);
             rs.SetWhere("TX_FREQ", IMRecordset.Operation.Lt, refSig.Frequency_MHz + 0.0001);
             rs.SetWhere("TX_FREQ", IMRecordset.Operation.Gt, refSig.Frequency_MHz - 0.0001);
             rs.SetWhere("Station.Position.LONGITUDE", IMRecordset.Operation.Lt, lon + 0.1);
             rs.SetWhere("Station.Position.LONGITUDE", IMRecordset.Operation.Gt, lon - 0.1);
             rs.SetWhere("Station.Position.LATITUDE", IMRecordset.Operation.Lt, lat + 0.1);
             rs.SetWhere("Station.Position.LATITUDE", IMRecordset.Operation.Gt, lat - 0.1);
-            rs.Select("ID,Station.BW, Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.EQUIP_ID");
+            rs.Select("ID,Station.BW, Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.EQUIP_ID,Station.ID");
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
                 double staLon = rs.GetD("Station.Position.LONGITUDE");
@@ -524,7 +543,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     if (bw != 0 && bw != IM.NullD)
                         refSig.Bandwidth_kHz = bw;
 
-                    refSig.IcsmId = id;
+                    refSig.IcsmId = rs.GetI("Station.ID");
                 }
                 result = true;
             }
@@ -538,13 +557,14 @@ namespace XICSM.ICSControlClient.ViewModels
                 var listLoss = new List<float>();
                 string table;
 
-                if (refSig.IcsmTable == "MOBSTA_FREQS")
+                if (refSig.IcsmTable == "MOB_STATION")
                     table = "EQUIP_PMR_MPT";
                 else
                     table = "EQUIP_MOB2_MPT";
 
                 IMRecordset rsEqp = new IMRecordset(table, IMRecordset.Mode.ReadOnly);
                 rsEqp.SetWhere("EQUIP_ID", IMRecordset.Operation.Eq, eqpId);
+                rsEqp.SetWhere("TYPE", IMRecordset.Operation.Eq, "TS");
                 rsEqp.Select("ATTN,FREQ");
                 for (rsEqp.Open(); !rsEqp.IsEOF(); rsEqp.MoveNext())
                 {

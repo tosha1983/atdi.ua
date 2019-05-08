@@ -19,6 +19,7 @@ using ICSM;
 using System.Windows.Controls;
 using INP = System.Windows.Input;
 using System.Collections;
+using System.Globalization;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -69,8 +70,8 @@ namespace XICSM.ICSControlClient.ViewModels
         #region Commands
         public WpfCommand ZoomUndoCommand { get; set; }
         public WpfCommand ZoomDefaultCommand { get; set; }
-        public WpfCommand DetailForRefLevelCommand { get; set; }
-        public WpfCommand ViewStationCommand { get; set; }
+        public WpfCommand AddAssociationStationCommand { get; set; }
+        public WpfCommand DeleteEmissionCommand { get; set; }
         #endregion
 
         public MeasResultSignalizationViewModel(int resultId)
@@ -80,6 +81,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
+            this.AddAssociationStationCommand = new WpfCommand(this.OnAddAssociationStationCommand);
+            this.DeleteEmissionCommand = new WpfCommand(this.OnDeleteEmissionCommand);
             this.ReloadMeasResult();
             this.UpdateCurrentChartOption(null, null);
             this.UpdateCurrentChartLevelsDistrbutionOption();
@@ -147,7 +150,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             set
             {
-                //System.Windows.MessageBox.Show("Hi from " + value.Name + " x = " + _mouseClickPoint.X.ToString() + "; y = " + _mouseClickPoint.Y.ToString());
                 if (value.Name == "DetailForRefLevel")
                     this.OnDetailForRefLevelCommand();
                 if (value.Name == "ViewStation")
@@ -218,6 +220,137 @@ namespace XICSM.ICSControlClient.ViewModels
             this.FilterEmittings(null, null);
             UpdateCurrentChartOption(null, null);
         }
+        private void OnDeleteEmissionCommand(object parameter)
+        {
+            try
+            {
+                if (this._currentEmittings != null)
+                {
+                    List<int> emitings = new List<int>();
+                    foreach (EmittingViewModel emitting in this._currentEmittings)
+                    {
+                        if (emitting.Id.HasValue)
+                            emitings.Add(emitting.Id.Value);
+                    }
+                    SVC.SdrnsControllerWcfClient.DeleteEmittingById(emitings.ToArray());
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnAddAssociationStationCommand(object parameter)
+        {
+            try
+            {
+                if (this._currentEmitting == null)
+                    return;
+
+                var stationData = new List<MeasStationsSignalization>();
+
+                string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                double lonSensor = 0;
+                double latSensor = 0;
+
+                if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                {
+                    var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
+
+                    if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                    {
+                        lonSensor = _currentSensorLocation.Lon.Value;
+                        latSensor = _currentSensorLocation.Lat.Value;
+                    }
+                }
+
+                double freq = this._currentEmitting.EmissionFreqMHz == IM.NullD ? (this._currentEmitting.StartFrequency_MHz + this._currentEmitting.StopFrequency_MHz) / 2 : this._currentEmitting.EmissionFreqMHz;
+                double bw = this._currentEmitting.Bandwidth_kHz == IM.NullD ? (this._currentEmitting.StopFrequency_MHz - this._currentEmitting.StartFrequency_MHz) * 1000 : this._currentEmitting.Bandwidth_kHz;
+
+                string sqlQuery = "[TX_FREQ] - " + (bw / 2000).ToString().Replace(sep, ".") + " - [Station.BW] / 2000 <= " + freq.ToString().Replace(sep, ".");
+                sqlQuery = sqlQuery + " and " + "[TX_FREQ] + " + (bw / 2000).ToString().Replace(sep, ".") + " + [Station.BW] / 2000 >= " + freq.ToString().Replace(sep, ".");
+                //sqlQuery = sqlQuery + " and " + "111.315 * POWER((POWER(((" + lonSensor.ToString().Replace(sep, ".") + " - [Station.Position.LONGITUDE]) * COS([Station.Position.LATITUDE] * 3.14159265359 / 180)), 2) + POWER((" + latSensor.ToString().Replace(sep, ".") + " - [Station.Position.LATITUDE]), 2)), 0.5)  < " + distance.ToString().Replace(sep, ".");
+                {
+                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                    rs.SetAdditional(sqlQuery);
+                    rs.Select("Station.NAME,Station.STANDARD,Station.STATUS,Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.AGL,Station.POWER,Station.BW,Station.Owner.NAME,TX_FREQ,Station.ID");
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        var measStationSignalization = new MeasStationsSignalization()
+                        {
+                            IcsmId = rs.GetI("Station.ID"),
+                            IcsmTable = "MOB_STATION",
+                            StationName = rs.GetS("Station.NAME"),
+                            Standart = rs.GetS("Station.STANDARD"),
+                            Status = rs.GetS("Station.STATUS"),
+                            Lon = rs.GetD("Station.Position.LONGITUDE"),
+                            Lat = rs.GetD("Station.Position.LATITUDE"),
+                            Agl = rs.GetD("Station.AGL"),
+                            Eirp = rs.GetD("Station.POWER"),
+                            Bw = rs.GetD("Station.BW"),
+                            Freq = rs.GetD("TX_FREQ"),
+                            Owner = rs.GetS("Station.Owner.NAME"),
+                            RelivedLevel = 0
+                        };
+
+                        if (measStationSignalization.Lon != IM.NullD && measStationSignalization.Lat != IM.NullD)
+                        {
+                            measStationSignalization.Distance = 111.315 * Math.Pow((Math.Pow((lonSensor - measStationSignalization.Lon) * Math.Cos(measStationSignalization.Lat * Math.PI / 180), 2) + Math.Pow((latSensor - measStationSignalization.Lat), 2)), 0.5);
+                        }
+                        stationData.Add(measStationSignalization);
+                    }
+                    if (rs.IsOpen())
+                        rs.Close();
+                    rs.Destroy();
+                }
+                {
+                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                    rs.SetAdditional(sqlQuery);
+                    rs.Select("Station.NAME,Station.STANDARD,Station.STATUS,Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.AGL,Station.POWER,Station.BW,Station.Owner.NAME,TX_FREQ,Station.ID");
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        var measStationSignalization = new MeasStationsSignalization()
+                        {
+                            IcsmId = rs.GetI("Station.ID"),
+                            IcsmTable = "MOB_STATION2",
+                            StationName = rs.GetS("Station.NAME"),
+                            Standart = rs.GetS("Station.STANDARD"),
+                            Status = rs.GetS("Station.STATUS"),
+                            Lon = rs.GetD("Station.Position.LONGITUDE"),
+                            Lat = rs.GetD("Station.Position.LATITUDE"),
+                            Agl = rs.GetD("Station.AGL"),
+                            Eirp = rs.GetD("Station.POWER"),
+                            Bw = rs.GetD("Station.BW"),
+                            Freq = rs.GetD("TX_FREQ"),
+                            Owner = rs.GetS("Station.Owner.NAME"),
+                            RelivedLevel = 0
+                        };
+
+                        if (measStationSignalization.Lon != IM.NullD && measStationSignalization.Lat != IM.NullD)
+                        {
+                            measStationSignalization.Distance = 111.315 * Math.Pow((Math.Pow((lonSensor - measStationSignalization.Lon) * Math.Cos(measStationSignalization.Lat * Math.PI / 180), 2) + Math.Pow((latSensor - measStationSignalization.Lat), 2)), 0.5);
+                        }
+                        stationData.Add(measStationSignalization);
+                    }
+                    if (rs.IsOpen())
+                        rs.Close();
+                    rs.Destroy();
+                }
+                
+                if (stationData.Count == 0)
+                {
+                    System.Windows.MessageBox.Show("No Stations");
+                    return;
+                }
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.OrderBy(c => c.Distance).ToArray(), this._currentMeasResult, true, this._currentEmitting.Id);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
         private void OnDetailForRefLevelCommand()
         {
             try
@@ -257,6 +390,8 @@ namespace XICSM.ICSControlClient.ViewModels
                                     {
                                         var measStationSignalization = new MeasStationsSignalization()
                                         {
+                                            IcsmId = refSignal.IcsmId,
+                                            IcsmTable = refSignal.IcsmTable,
                                             StationName = rs.GetS("NAME"),
                                             Standart = rs.GetS("STANDARD"),
                                             Status = rs.GetS("STATUS"),
@@ -285,19 +420,12 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
 
-                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.50, Lon = 30.64, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station1" });
-                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.60, Lon = 30.60, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station2" });
-                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.70, Lon = 30.40, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station3" });
-                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.30, Lon = 30.45, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station4" });
-                //stationData.Add(new MeasStationsSignalization() { Agl = 55, Bw = 66, Distance = 100, Eirp = 5, Freq = 150, Lat = 50.20, Lon = 30.55, Owner = "Test", Standart = "qqq", Status = "aa", RelivedLevel = 2, StationName = "Station5" });
                 if (stationData.Count == 0)
                 {
                     System.Windows.MessageBox.Show("No Stations");
                     return;
                 }
-
-
-                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult);
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult, false, null);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
             }
@@ -312,10 +440,105 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 var stationData = new List<MeasStationsSignalization>();
 
-                System.Windows.MessageBox.Show("Under construction!!!");
-                return;
+                string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                var freq = _mouseClickPoint.X;
+                double lonSensor = 0;
+                double latSensor = 0;
 
-                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult);
+                if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                {
+                    var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
+
+                    if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                    {
+                        lonSensor = _currentSensorLocation.Lon.Value;
+                        latSensor = _currentSensorLocation.Lat.Value;
+                    }
+                }
+
+                var dlgForm = new FM.MeasStationsSignalizationDlg1Form(10, 200);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+
+                double distance = dlgForm.Distance;
+                double bw = dlgForm.Bw;
+
+                string sqlQuery = "[TX_FREQ] - " + (bw / 2000).ToString().Replace(sep, ".") + " - [Station.BW] / 2000 <= " + freq.ToString().Replace(sep, ".");
+                sqlQuery = sqlQuery + " and " + "[TX_FREQ] + " + (bw / 2000).ToString().Replace(sep, ".") + " + [Station.BW] / 2000 >= " + freq.ToString().Replace(sep, ".");
+                sqlQuery = sqlQuery + " and " + "111.315 * POWER((POWER(((" + lonSensor.ToString().Replace(sep, ".") + " - [Station.Position.LONGITUDE]) * COS([Station.Position.LATITUDE] * 3.14159265359 / 180)), 2) + POWER((" + latSensor.ToString().Replace(sep, ".") + " - [Station.Position.LATITUDE]), 2)), 0.5)  < " + distance.ToString().Replace(sep, ".");
+                {
+                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                    rs.SetAdditional(sqlQuery);
+                    rs.Select("Station.NAME,Station.STANDARD,Station.STATUS,Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.AGL,Station.POWER,Station.BW,Station.Owner.NAME,TX_FREQ,Station.ID");
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        var measStationSignalization = new MeasStationsSignalization()
+                        {
+                            IcsmId = rs.GetI("Station.ID"),
+                            IcsmTable = "MOB_STATION",
+                            StationName = rs.GetS("Station.NAME"),
+                            Standart = rs.GetS("Station.STANDARD"),
+                            Status = rs.GetS("Station.STATUS"),
+                            Lon = rs.GetD("Station.Position.LONGITUDE"),
+                            Lat = rs.GetD("Station.Position.LATITUDE"),
+                            Agl = rs.GetD("Station.AGL"),
+                            Eirp = rs.GetD("Station.POWER"),
+                            Bw = rs.GetD("Station.BW"),
+                            Freq = rs.GetD("TX_FREQ"),
+                            Owner = rs.GetS("Station.Owner.NAME"),
+                            RelivedLevel = 0
+                        };
+
+                        if (measStationSignalization.Lon != IM.NullD && measStationSignalization.Lat != IM.NullD)
+                        {
+                            measStationSignalization.Distance = 111.315 * Math.Pow((Math.Pow((lonSensor - measStationSignalization.Lon) * Math.Cos(measStationSignalization.Lat * Math.PI / 180), 2) + Math.Pow((latSensor - measStationSignalization.Lat), 2)), 0.5);
+                        }
+                        stationData.Add(measStationSignalization);
+                    }
+                    if (rs.IsOpen())
+                        rs.Close();
+                    rs.Destroy();
+                }
+                {
+                    IMRecordset rs = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                    rs.SetAdditional(sqlQuery);
+                    rs.Select("Station.NAME,Station.STANDARD,Station.STATUS,Station.Position.LONGITUDE,Station.Position.LATITUDE,Station.AGL,Station.POWER,Station.BW,Station.Owner.NAME,TX_FREQ,Station.ID");
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                    {
+                        var measStationSignalization = new MeasStationsSignalization()
+                        {
+                            IcsmId = rs.GetI("Station.ID"),
+                            IcsmTable = "MOB_STATION2",
+                            StationName = rs.GetS("Station.NAME"),
+                            Standart = rs.GetS("Station.STANDARD"),
+                            Status = rs.GetS("Station.STATUS"),
+                            Lon = rs.GetD("Station.Position.LONGITUDE"),
+                            Lat = rs.GetD("Station.Position.LATITUDE"),
+                            Agl = rs.GetD("Station.AGL"),
+                            Eirp = rs.GetD("Station.POWER"),
+                            Bw = rs.GetD("Station.BW"),
+                            Freq = rs.GetD("TX_FREQ"),
+                            Owner = rs.GetS("Station.Owner.NAME"),
+                            RelivedLevel = 0
+                        };
+
+                        if (measStationSignalization.Lon != IM.NullD && measStationSignalization.Lat != IM.NullD)
+                        {
+                            measStationSignalization.Distance = 111.315 * Math.Pow((Math.Pow((lonSensor - measStationSignalization.Lon) * Math.Cos(measStationSignalization.Lat * Math.PI / 180), 2) + Math.Pow((latSensor - measStationSignalization.Lat), 2)), 0.5);
+                        }
+                        stationData.Add(measStationSignalization);
+                    }
+                    if (rs.IsOpen())
+                        rs.Close();
+                    rs.Destroy();
+                }
+
+                if (stationData.Count == 0)
+                {
+                    System.Windows.MessageBox.Show("No Stations");
+                    return;
+                }
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult, false, null);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
             }
@@ -430,7 +653,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         double constStep = 0;
                         if (Math.Abs(_currentMeasResult.RefLevels.StepFrequency_Hz - emitting.Spectrum.SpectrumSteps_kHz) > 0.01 && _currentMeasResult.RefLevels.StepFrequency_Hz != 0)
                         {
-                            constStep = 10 * Math.Log10(emitting.Spectrum.SpectrumSteps_kHz * 1000 / _currentMeasResult.RefLevels.StepFrequency_Hz);
+                            constStep = -10 * Math.Log10(emitting.Spectrum.SpectrumSteps_kHz * 1000 / _currentMeasResult.RefLevels.StepFrequency_Hz);
                         }
 
                         var count = emitting.Spectrum.Levels_dBm.Count();
@@ -464,12 +687,25 @@ namespace XICSM.ICSControlClient.ViewModels
 
                         pointsList.Add(new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkRed });
 
-                        if (emitting.Spectrum.T1 != 0)
-                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
-                        if (emitting.Spectrum.T2 != 0)
-                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
-                        if (emitting.Spectrum.MarkerIndex != 0)
-                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                        if (this._currentEmittings.Count == 1)
+                        {
+                            if (emitting.Spectrum.T1 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T1" });
+                            if (emitting.Spectrum.T2 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T2" });
+                            if (emitting.Spectrum.MarkerIndex != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "MarkerIndex" });
+                        }
+                        else
+                        {
+                            if (emitting.Spectrum.T1 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                            if (emitting.Spectrum.T2 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                            if (emitting.Spectrum.MarkerIndex != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                        }
+
                     }
                 }
             }
@@ -519,6 +755,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 var count = this._currentEmitting.LevelsDistribution.Levels.Count();
                 var points = new List<Point>();
+                var linesList = new List<CS.ChartLine>();
                 var maxX = default(double);
                 var minX = default(double);
                 var maxY = default(double);
@@ -576,6 +813,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     maxX = maxX + 1;
                 }
 
+                if (this._currentEmitting.ReferenceLevel_dBm != IM.NullD)
+                    linesList.Add(new CS.ChartLine() { Point = new Point { X = this._currentEmitting.ReferenceLevel_dBm, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+
                 var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 6);
                 option.XTick = preparedDataX.Step;
                 option.XMin = preparedDataX.MinValue;
@@ -584,6 +824,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 option.YMax = 1;
                 option.YTick = 0.2; // Math.Round(maxY / 5, 3) != 0 ? Math.Round(maxY / 5, 3) : 1;
                 option.Points = points.ToArray();
+                option.LinesArray = linesList.ToArray();
             }
 
             return option;

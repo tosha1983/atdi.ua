@@ -51,7 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (AutoDivisionEmitting) { index_start_stop = DivisionEmitting(index_start_stop, Trace); }
 
             //Формируем помехи.
-            double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
+            double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length-1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
             Emitting[] newEmittings = CreateEmittings(Trace.Level, refLevels.levels, index_start_stop, stepBW_kHz, Trace.Freq_Hz[0]/1000000, NoiseLevel_dBm);
             // сформировали новые параметры излучения теперь надо накатить старые по идее.
             return newEmittings;
@@ -126,15 +126,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         private static List<int> SearchStartStopCompaireWithNoiseLevels(ReferenceLevels refLevels_, MesureTraceResult Trace, double NoiseLevel_dBm, int NumberPointForChangeExcess = 10)
         {// должны произвести разделение согласно пересечению шумового уровня
+
+            // константа
+            double allowableExcess_dB = 10;
+            // константа
+
             bool excess = false; int startSignalIndex = 0;
             int NumberPointBeforExcess = 0;
             int NumberPointAfterExcess = 0;
-            if (Trace.Level[0] > NoiseLevel_dBm) { excess = true; startSignalIndex = 0; }
+            if (Trace.Level[0] > NoiseLevel_dBm + allowableExcess_dB) { excess = true; startSignalIndex = 0; }
             // выделение мест где произошло превышение порога 
             List<int> index_start_stop = new List<int>();
             for (int i = 0; i < Trace.Level.Length; i++)
             {
-                if (Trace.Level[i] > NoiseLevel_dBm)
+                if (Trace.Level[i] > NoiseLevel_dBm + allowableExcess_dB)
                 { //Превышение
                     NumberPointAfterExcess = 0;
                     if (!excess)
@@ -284,6 +289,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel[j] / 10);
                     emitting.CurentPower_dBm = emitting.CurentPower_dBm + Math.Pow(10, levels[j] / 10);
                 }
+
+                //if ((emitting.StartFrequency_MHz>428.4) && (emitting.StopFrequency_MHz < 428.6) && ((emitting.StopFrequency_MHz - emitting.StartFrequency_MHz)>0.1))
+                //{
+
+                //}
+
                 emitting.ReferenceLevel_dBm = 10 * Math.Log10(emitting.ReferenceLevel_dBm);
                 emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);
                 emitting.WorkTimes = new WorkTime[1];
@@ -291,9 +302,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.WorkTimes[0].StartEmitting = DateTime.Now;
                 emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting;
                 emitting.WorkTimes[0].HitCount = 1;
-                emitting.WorkTimes[0].ScanCount = 1;
+                emitting.WorkTimes[0].ScanCount = 0;
                 emitting.WorkTimes[0].TempCount= 0;
-                emitting.WorkTimes[0].PersentAvailability = 100;
+                //emitting.WorkTimes[0].PersentAvailability = 100;
                 emittings.Add(emitting);
             }
             return emittings.ToArray();

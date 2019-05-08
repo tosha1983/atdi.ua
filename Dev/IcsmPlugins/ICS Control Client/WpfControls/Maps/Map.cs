@@ -10,6 +10,7 @@ using GMap.NET;
 using GMap.NET.WindowsPresentation;
 using GMap.NET.MapProviders;
 using System.Windows.Shapes;
+using System.Windows.Media;
 
 namespace XICSM.ICSControlClient.WpfControls.Maps
 {
@@ -46,8 +47,11 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                         var mapPoint = this.FromLatLngToLocal(new PointLatLng(point.Location.Lat, point.Location.Lon));
 
                         var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon));
-                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, ToolTip = point.Name };
                         marker.ZIndex = int.MaxValue;
+                        marker.Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 };
+                        
+                        //marker. 
                         this.Markers.Add(marker);
                     });
                 }

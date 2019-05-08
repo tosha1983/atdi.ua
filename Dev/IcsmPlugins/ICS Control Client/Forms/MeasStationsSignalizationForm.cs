@@ -21,11 +21,15 @@ namespace XICSM.ICSControlClient.Forms
     {
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
+        private bool _buttonAssociatedVisible;
+        private int? _emittingId;
         private ElementHost _wpfElementHost;
-        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult)
+        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, int? emittingId)
         {
             this._stationData = stationData;
             this._measResult = measResult;
+            this._buttonAssociatedVisible = buttonAssociatedVisible;
+            this._emittingId = emittingId;
             InitializeComponent();
         }
 
@@ -42,7 +46,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult);
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emittingId) { _form = this };
             }
 
         }

@@ -16,6 +16,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     {
         public static bool CalcBW(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, int NumberIgnoredPoints, ref int IndexStart, ref int IndexStop)
         {
+            //if ((start>55590) && (stop<55680) && ((stop - start)>70))
+            //{
+
+            //}
             IndexStart = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
             IndexStop = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, true, NumberIgnoredPoints);
             if ((IndexStart == -1) || (IndexStop == -1)) { return false; }
@@ -37,7 +41,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static int SearchEdgeIndex(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, bool MoveRight, int NumberIgnoredPoints)
         {
             // коснстанты 
-            double fluctuationCoef = 10;
+            double fluctuationCoef = 20;
             // конец констант
 
             // конверсия если перепутали местами
@@ -49,9 +53,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             // определим уровень флуктуаций на графике
             double everage_fluct = 0;
-            for (int i = start; i > stop; i++)
+            for (int i = start; i < stop; i++)
             {
-                everage_fluct = Math.Abs(levels[i + 1] - levels[i]);
+                everage_fluct = everage_fluct + Math.Abs(levels[i + 1] - levels[i]);
             }
             everage_fluct = everage_fluct / (stop - start);
             // найдем максимальный уровень излучения в диапазоне притом исключая резкие скачки
