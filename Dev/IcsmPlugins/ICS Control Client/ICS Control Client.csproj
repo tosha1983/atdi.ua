@@ -201,6 +201,7 @@
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
     <Compile Include="Models\Common\MeasStationsSignalization.cs" />
+    <Compile Include="Models\DataStore.cs" />
     <Compile Include="Models\DTO\Station.cs" />
     <Compile Include="Metadata\Employee.cs" />
     <Compile Include="Metadata\MobStationFrequencies.cs" />
@@ -357,6 +358,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager UCRF"</PostBuildEvent>
+copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager UCRF"
+copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -10,6 +10,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 {
     public class ChartLine
     {
+        public string Name { get; set; }
         public Point Point { get; set; }
         public Brush LineColor { get; set; }
         public bool IsHorizontal { get; set; }

@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Threading;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace XICSM.ICSControlClient.Environment
 {
@@ -104,6 +105,8 @@ namespace XICSM.ICSControlClient.Environment
         {
             try
             {
+                Debug.Print($"Invoke service method: {action.Method.Name}");
+
                 return action(this._service);
             }
             catch (FaultException e)

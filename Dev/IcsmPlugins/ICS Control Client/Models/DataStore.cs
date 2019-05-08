@@ -1,0 +1,176 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SVC = XICSM.ICSControlClient.WcfServiceClients;
+using Atdi.Contracts.WcfServices.Sdrn.Server;
+using Atdi.DataModels.DataConstraint;
+using XICSM.ICSControlClient.Models.Views;
+using XICSM.ICSControlClient.Models.WcfDataApadters;
+
+namespace XICSM.ICSControlClient.Models
+{
+    public class DataStore
+    {
+        private static DataStore _instance = new DataStore();
+
+        private ConcurrentDictionary<int, MeasurementResults[]> _GetMeasResultsHeaderByTaskIdCache;
+        private ConcurrentDictionary<int, ShortSensor[]> _GetShortSensorsByTaskCache;
+        private ShortSensor[] _shortSensors = null;
+
+        private ConcurrentDictionary<int, MeasTaskViewModel> _GetMeasTaskHeaderByIdCache;
+        private ConcurrentDictionary<int, StationDataForMeasurements[]> _GetStationDataForMeasurementsByTaskIdCache;
+        private ConcurrentDictionary<int, Sensor> _GetSensorByIdCache;
+
+
+        public static DataStore GetStore()
+        {
+            return DataStore._instance;
+        }
+
+        private DataStore()
+        {
+            this.Reset();
+        }
+
+        public MeasurementResults[] GetMeasResultsHeaderByTaskId(int taskId)
+        {
+            var cache = this._GetMeasResultsHeaderByTaskIdCache;
+
+            if (!cache.TryGetValue(taskId, out MeasurementResults[] data))
+            {
+                data = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(taskId);
+                if (!cache.TryAdd(taskId, data))
+                {
+                    if (cache.TryGetValue(taskId, out MeasurementResults[] data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public ShortSensor[] GetShortSensors()
+        {
+            if (this._shortSensors == null)
+            {
+                this._shortSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
+            }
+            return this._shortSensors;
+        }
+
+        public ShortSensor[] GetShortSensorsByTask(MeasTaskViewModel measTask)
+        {
+            var allSensors = this.GetShortSensors();
+            if (measTask == null)
+            {
+                return allSensors;
+            }
+
+            var cache = this._GetShortSensorsByTaskCache;
+
+            if (!cache.TryGetValue(measTask.Id, out ShortSensor[] data))
+            {
+                if (measTask.Stations != null && measTask.Stations.Length > 0)
+                {
+                    data = allSensors
+                        .Where(sdrSensor => measTask.Stations
+                                .FirstOrDefault(s => s.StationId.Value == sdrSensor.Id.Value) != null
+                            )
+                        .ToArray();
+                }
+                else
+                {
+                    data = new ShortSensor[] { };
+                }
+
+                if (!cache.TryAdd(measTask.Id, data))
+                {
+                    if (cache.TryGetValue(measTask.Id, out ShortSensor[] data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public MeasTaskViewModel GetMeasTaskHeaderById(int taskId)
+        {
+            var cache = this._GetMeasTaskHeaderByIdCache;
+
+            if (taskId == 0)
+            {
+                return null;
+            }
+
+            if (!cache.TryGetValue(taskId, out MeasTaskViewModel data))
+            {
+                var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(taskId);
+                data = Mappers.Map(task);
+                if (!cache.TryAdd(taskId, data))
+                {
+                    if (cache.TryGetValue(taskId, out MeasTaskViewModel data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(int taskId)
+        {
+            var cache = this._GetStationDataForMeasurementsByTaskIdCache;
+
+            if (!cache.TryGetValue(taskId, out StationDataForMeasurements[] data))
+            {
+                data = SVC.SdrnsControllerWcfClient.GetStationDataForMeasurementsByTaskId(taskId);
+                if (!cache.TryAdd(taskId, data))
+                {
+                    if (cache.TryGetValue(taskId, out StationDataForMeasurements[] data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public Sensor GetSensorById(int sensorId)
+        {
+            var cache = this._GetSensorByIdCache;
+
+            if (sensorId == 0)
+            {
+                return null;
+            }
+
+            if (!cache.TryGetValue(sensorId, out Sensor data))
+            {
+                data = SVC.SdrnsControllerWcfClient.GetSensorById(sensorId);
+                if (!cache.TryAdd(sensorId, data))
+                {
+                    if (cache.TryGetValue(sensorId, out Sensor data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public void Reset()
+        {
+            this._GetMeasResultsHeaderByTaskIdCache = new ConcurrentDictionary<int, MeasurementResults[]>();
+            this._GetShortSensorsByTaskCache = new ConcurrentDictionary<int, ShortSensor[]>();
+            this._shortSensors = null;
+            this._GetMeasTaskHeaderByIdCache = new ConcurrentDictionary<int, MeasTaskViewModel>();
+            this._GetStationDataForMeasurementsByTaskIdCache = new ConcurrentDictionary<int, StationDataForMeasurements[]>();
+            this._GetSensorByIdCache = new ConcurrentDictionary<int, Sensor>();
+        }
+    }
+}

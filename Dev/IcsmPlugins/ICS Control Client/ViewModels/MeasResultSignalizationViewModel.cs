@@ -687,12 +687,25 @@ namespace XICSM.ICSControlClient.ViewModels
 
                         pointsList.Add(new CS.ChartPoints() { Points = points.ToArray(), LineColor = System.Windows.Media.Brushes.DarkRed });
 
-                        if (emitting.Spectrum.T1 != 0)
-                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
-                        if (emitting.Spectrum.T2 != 0)
-                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
-                        if (emitting.Spectrum.MarkerIndex != 0)
-                            linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                        if (this._currentEmittings.Count == 1)
+                        {
+                            if (emitting.Spectrum.T1 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T1" });
+                            if (emitting.Spectrum.T2 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T2" });
+                            if (emitting.Spectrum.MarkerIndex != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "MarkerIndex" });
+                        }
+                        else
+                        {
+                            if (emitting.Spectrum.T1 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                            if (emitting.Spectrum.T2 != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                            if (emitting.Spectrum.MarkerIndex != 0)
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+                        }
+
                     }
                 }
             }
@@ -742,6 +755,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 var count = this._currentEmitting.LevelsDistribution.Levels.Count();
                 var points = new List<Point>();
+                var linesList = new List<CS.ChartLine>();
                 var maxX = default(double);
                 var minX = default(double);
                 var maxY = default(double);
@@ -799,6 +813,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     maxX = maxX + 1;
                 }
 
+                if (this._currentEmitting.ReferenceLevel_dBm != IM.NullD)
+                    linesList.Add(new CS.ChartLine() { Point = new Point { X = this._currentEmitting.ReferenceLevel_dBm, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true });
+
                 var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 6);
                 option.XTick = preparedDataX.Step;
                 option.XMin = preparedDataX.MinValue;
@@ -807,6 +824,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 option.YMax = 1;
                 option.YTick = 0.2; // Math.Round(maxY / 5, 3) != 0 ? Math.Round(maxY / 5, 3) : 1;
                 option.Points = points.ToArray();
+                option.LinesArray = linesList.ToArray();
             }
 
             return option;

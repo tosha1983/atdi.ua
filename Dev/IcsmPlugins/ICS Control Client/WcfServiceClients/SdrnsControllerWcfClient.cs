@@ -202,6 +202,19 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         {
             return Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
         }
+
+        public static MeasurementResults GetMeasurementResultByResId(int resId)
+        {
+            var isLoadAllData = false;
+            double? start = 0;
+            double? stop = 0;
+            var result1 = Execute(contract => contract.GetMeasurementResultByResId(resId, isLoadAllData, start, stop));
+
+            //isLoadAllData = true;
+            //var result2 = Execute(contract => contract.GetMeasurementResultByResId(resId, isLoadAllData, start, stop));
+            return result1;
+        }
+
         public static MeasTask GetMeasTaskHeaderById(int taskId)
         {
             var result = Execute(contract => contract.GetMeasTaskHeader(new MeasTaskIdentifier { Value = taskId }));
