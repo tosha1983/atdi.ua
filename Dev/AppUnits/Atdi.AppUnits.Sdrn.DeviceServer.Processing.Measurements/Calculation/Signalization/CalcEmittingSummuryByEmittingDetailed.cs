@@ -94,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             emitting.WorkTimes[0].TempCount = 0;
             emitting.WorkTimes[0].PersentAvailability = 100;
 
-
+            bool chackSpecter = CalcSignalization.CheckContravention(ref emitting.Spectrum, referenceLevels);
             CalcSignalization.FillEmittingForStorage(emitting, logger);
             return emitting;
         }

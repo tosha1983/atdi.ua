@@ -52,7 +52,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
             //Формируем помехи.
             double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length-1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
-            Emitting[] newEmittings = CreateEmittings(Trace.Level, refLevels.levels, index_start_stop, stepBW_kHz, Trace.Freq_Hz[0]/1000000, NoiseLevel_dBm);
+            Emitting[] newEmittings = CreateEmittings(Trace.Level, refLevels, index_start_stop, stepBW_kHz, Trace.Freq_Hz[0]/1000000, NoiseLevel_dBm);
             // сформировали новые параметры излучения теперь надо накатить старые по идее.
             return newEmittings;
         }
@@ -192,7 +192,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return ResultStartStopIndexArr;
         }
-        private static Emitting[] CreateEmittings(float[] levels, float[] refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm)
+        private static Emitting[] CreateEmittings(float[] levels, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm)
         { // задача локализовать излучения
             // константы начало
             List<Emitting> emittings = new List<Emitting>();
@@ -286,7 +286,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.CurentPower_dBm = 0;
                 for (int j = start; j < stop; j++)
                 {
-                    emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel[j] / 10);
+                    emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel.levels[j] / 10);
                     emitting.CurentPower_dBm = emitting.CurentPower_dBm + Math.Pow(10, levels[j] / 10);
                 }
 
@@ -304,10 +304,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.WorkTimes[0].HitCount = 1;
                 emitting.WorkTimes[0].ScanCount = 0;
                 emitting.WorkTimes[0].TempCount= 0;
+                bool checkcontr = CalcSignalization.CheckContravention(ref emitting.Spectrum, refLevel);
                 //emitting.WorkTimes[0].PersentAvailability = 100;
                 emittings.Add(emitting);
             }
             return emittings.ToArray();
         }
+      
     }
 }

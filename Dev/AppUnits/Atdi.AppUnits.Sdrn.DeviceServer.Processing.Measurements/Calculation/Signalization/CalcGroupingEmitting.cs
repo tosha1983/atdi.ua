@@ -444,6 +444,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
             }
             Spectrum spectrum = CalcSignalization.CreateSpectrum(NewLevels_dBm, MinStep_Hz, minStartFreq_Hz, NoiseLevel_dBm);
+            if ((MasterSpectrum.Contravention) || (AttachableSpectrum.Contravention))
+            { spectrum.Contravention = true; }
+            else { spectrum.Contravention = false; }
             if (spectrum.СorrectnessEstimations)
             {
                 MasterSpectrum = spectrum;
