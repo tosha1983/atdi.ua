@@ -54,6 +54,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStart);
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
 

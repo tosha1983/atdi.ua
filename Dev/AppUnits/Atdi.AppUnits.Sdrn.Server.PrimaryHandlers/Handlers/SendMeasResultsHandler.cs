@@ -35,22 +35,72 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._logger = logger;
         }
 
-        public void GetMeasTaskSDRIdentifier(string TaskId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId)
+        public void GetMeasTaskSDRIdentifier(string ResultIds, string TaskId, string SensorName, string SensorTechId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId)
         {
             SubTaskId = -1;
             SubTaskStationId = -1;
             SensorId = -1;
             ResultId = -1;
 
-            if (TaskId != null)
+            if (ResultIds != null)
             {
-                string[] word = TaskId.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] word = ResultIds.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 if ((word != null) && (word.Length == 5))
                 {
                     SubTaskId = int.Parse(word[1]);
                     SubTaskStationId = int.Parse(word[2]);
                     SensorId = int.Parse(word[3]);
                     ResultId = int.Parse(word[4]);
+                }
+                else
+                {
+                    int SubTaskIdTemp = -1;
+                    int SubTaskStationIdTemp = -1;
+                    int SensorIdTemp = -1;
+                    int taskId = -1;
+                    if (int.TryParse(TaskId, out taskId))
+                    {
+                        var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                        var builderFromIMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
+                        builderFromIMeasSubTaskSta.Select(c => c.Id, c => c.MEASSUBTASK.Id, c => c.SensorId, c => c.MEASSUBTASK.TimeStart);
+                        builderFromIMeasSubTaskSta.Where(c => c.MEASSUBTASK.MEASTASK.Id, ConditionOperator.Equal, taskId);
+                        builderFromIMeasSubTaskSta.OrderByDesc(c => c.MEASSUBTASK.TimeStart);
+                        queryExecuter.Fetch(builderFromIMeasSubTaskSta, reader =>
+                        {
+                            while (reader.Read())
+                            {
+                                SubTaskIdTemp = reader.GetValue(c => c.MEASSUBTASK.Id);
+                                SubTaskStationIdTemp = reader.GetValue(c => c.Id);
+                                if (reader.GetValue(c => c.SensorId).HasValue)
+                                {
+                                    SensorIdTemp = reader.GetValue(c => c.SensorId).Value;
+                                }
+                                break;
+                            }
+                            return true;
+                        });
+
+                        SubTaskId = SubTaskIdTemp;
+                        SubTaskStationId = SubTaskStationIdTemp;
+                        SensorId = SensorIdTemp;
+
+                        if (SensorId == -1)
+                        {
+                            var builderISensor = this._dataLayer.GetBuilder<MD.ISensor>().From();
+                            builderISensor.Select(c => c.Id, c => c.Name, c => c.TechId);
+                            builderISensor.Where(c => c.Name, ConditionOperator.Equal, SensorName);
+                            builderISensor.Where(c => c.TechId, ConditionOperator.Equal, SensorTechId);
+                            queryExecuter.Fetch(builderISensor, reader =>
+                            {
+                                while (reader.Read())
+                                {
+                                    SensorIdTemp = reader.GetValue(c => c.Id);
+                                }
+                                return true;
+                            });
+                            SensorId = SensorIdTemp;
+                        }
+                    }
                 }
             }
         }
@@ -69,7 +119,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     var resObject = incomingEnvelope.DeliveryObject;
                     int SensorId; int SubMeasTaskId; int SubMeasTaskStationId; int resultId;
 
-                    GetMeasTaskSDRIdentifier(resObject.ResultId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId);
+                    
+
+                    GetMeasTaskSDRIdentifier(resObject.ResultId, resObject.TaskId, incomingEnvelope.SensorName, incomingEnvelope.SensorTechId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId);
 
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Insert();
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, resObject.Measured);
@@ -408,6 +460,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStaRaw>().Insert();
                                 builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
                                 builderInsertResMeasStation.SetValue(c => c.MeasGlobalSID, station.RealGlobalSid);
+                                builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
                                 builderInsertResMeasStation.SetValue(c => c.ResMeasId, valInsResMeas);
                                 builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                                 if (int.TryParse(station.StationId, out Idstation))
@@ -511,8 +564,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
                                             builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
                                             builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
+                                            builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
                                             builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
-                                            builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations);
+                                            builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations==true ? 1 : 0);
                                         }
                                         builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
                                         builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
