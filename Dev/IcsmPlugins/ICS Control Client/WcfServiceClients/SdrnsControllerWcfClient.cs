@@ -202,6 +202,19 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         {
             return Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
         }
+
+        public static MeasurementResults GetMeasurementResultByResId(int resId)
+        {
+            var isLoadAllData = false;
+            double? start = 0;
+            double? stop = 0;
+            var result1 = Execute(contract => contract.GetMeasurementResultByResId(resId, isLoadAllData, start, stop));
+
+            //isLoadAllData = true;
+            //var result2 = Execute(contract => contract.GetMeasurementResultByResId(resId, isLoadAllData, start, stop));
+            return result1;
+        }
+
         public static MeasTask GetMeasTaskHeaderById(int taskId)
         {
             var result = Execute(contract => contract.GetMeasTaskHeader(new MeasTaskIdentifier { Value = taskId }));
@@ -289,6 +302,24 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Stop the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
+        public static void DeleteEmittingById(int[] emittingId)
+        {
+            var result = Execute(contract => contract.DeleteEmitting(emittingId));
+
+            if (!result)
+            {
+                System.Windows.Forms.MessageBox.Show("Unknown error", "Delete Emittings faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+        public static void AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        {
+            var result = Execute(contract => contract.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName));
+            if (!result)
+            {
+                System.Windows.Forms.MessageBox.Show("Unknown error", "Add association station by emitting faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+        
         #endregion
     }
 }

@@ -18,6 +18,7 @@ using VM = XICSM.ICSControlClient.Models.Views;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using ADS = XICSM.ICSControlClient.Models.WcfDataApadters;
 using XICSM.ICSControlClient.ViewModels;
+using XICSM.ICSControlClient.Models;
 
 namespace XICSM.ICSControlClient.WpfControls
 {
@@ -29,7 +30,7 @@ namespace XICSM.ICSControlClient.WpfControls
         public MainFormWpfControl()
         {
             InitializeComponent();
-            this.DataContext = new ControlClientViewModel();
+            this.DataContext = new ControlClientViewModel(DataStore.GetStore());
         }
     }
 }

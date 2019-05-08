@@ -18,6 +18,7 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
         public double Opacity;
         public double Width;
         public double Height;
+        public string Name;
     }
     public class MapDrawingDataRoute
     {

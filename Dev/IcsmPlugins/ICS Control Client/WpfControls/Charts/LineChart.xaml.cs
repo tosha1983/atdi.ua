@@ -154,6 +154,9 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             else if (this._option.ChartType == ChartType.Columns)
             {
                 this.DrawColumns();
+
+                if (this._option.LinesArray != null)
+                    this.DrawNewLines();
             }
 
         }
@@ -422,6 +425,18 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     line.Points.Add(new Point() { X = point.X, Y = 0 });
                     line.Points.Add(new Point() { X = point.X, Y = chartCanvas.ActualHeight });
                     chartCanvas.Children.Add(line);
+
+                    if (!string.IsNullOrEmpty(lines.Name))
+                    {
+                        var tb = new TextBlock();
+                        tb.Foreground = lines.LineColor;
+                        tb.FontSize = 10;
+                        tb.Text = lines.Name;
+                        tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                        chartCanvas.Children.Add(tb);
+                        Canvas.SetLeft(tb, point.X + 5);
+                        Canvas.SetTop(tb, chartCanvas.ActualHeight - 25);
+                    }
                 }
             }
         }
@@ -453,62 +468,69 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
         private void DrawColumns()
         {
-            var points = this._option.Points;
-            var normolizedPoints = points.Select(p => this.NormalizePoint(p)).ToArray();
-
-            if (normolizedPoints.Length > 2)
+            try
             {
-                for (int i = 0; i < points.Length; i++)
+                var points = this._option.Points;
+                var normolizedPoints = points.Select(p => this.NormalizePoint(p)).ToArray();
 
+                if (normolizedPoints.Length > 2)
+                {
+                    for (int i = 0; i < points.Length; i++)
+
+                    {
+                        var rect = new Rectangle();
+                        this.ApplyStyleToColumnRectangle(rect);
+
+                        var currentPoint = normolizedPoints[i];
+                        var posX = currentPoint.X;
+                        var posY = currentPoint.Y;
+
+                        rect.Height = chartCanvas.Height - Math.Abs(currentPoint.Y);
+
+                        if (i == 0)
+                        {
+                            var nextPoint = normolizedPoints[i + 1];
+                            rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2);
+                        }
+                        else if (i == normolizedPoints.Length - 1)
+                        {
+                            var prevPoint = normolizedPoints[i - 1];
+                            rect.Width = 0.9 * ((currentPoint.X - prevPoint.X) / 2);
+                            posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
+                        }
+                        else
+                        {
+                            var nextPoint = normolizedPoints[i + 1];
+                            var prevPoint = normolizedPoints[i - 1];
+                            rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2 + (currentPoint.X - prevPoint.X) / 2);
+                            posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
+                        }
+
+                        chartCanvas.Children.Add(rect);
+                        Canvas.SetLeft(rect, posX);
+                        Canvas.SetTop(rect, posY);
+                    }
+
+                }
+                else if (normolizedPoints.Length == 1)
                 {
                     var rect = new Rectangle();
                     this.ApplyStyleToColumnRectangle(rect);
 
-                    var currentPoint = normolizedPoints[i];
-                    var posX = currentPoint.X;
+                    var currentPoint = normolizedPoints[0];
+
+                    var posX = currentPoint.X - 5;
                     var posY = currentPoint.Y;
-
-                    rect.Height = chartCanvas.Height - Math.Abs(currentPoint.Y);
-
-                    if (i == 0)
-                    {
-                        var nextPoint = normolizedPoints[i + 1];
-                        rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2);
-                    }
-                    else if (i == normolizedPoints.Length - 1)
-                    {
-                        var prevPoint = normolizedPoints[i - 1];
-                        rect.Width = 0.9 * ((currentPoint.X - prevPoint.X) / 2);
-                        posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
-                    }
-                    else
-                    {
-                        var nextPoint = normolizedPoints[i + 1];
-                        var prevPoint = normolizedPoints[i - 1];
-                        rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2 + (currentPoint.X - prevPoint.X) / 2);
-                        posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
-                    }
-
+                    rect.Height = Math.Abs(currentPoint.Y);
+                    rect.Width = 10;
                     chartCanvas.Children.Add(rect);
                     Canvas.SetLeft(rect, posX);
                     Canvas.SetTop(rect, posY);
                 }
-
             }
-            else if (normolizedPoints.Length == 1)
+            catch (Exception)
             {
-                var rect = new Rectangle();
-                this.ApplyStyleToColumnRectangle(rect);
-
-                var currentPoint = normolizedPoints[0];
-
-                var posX = currentPoint.X - 5;
-                var posY = currentPoint.Y;
-                rect.Height = Math.Abs(currentPoint.Y);
-                rect.Width = 10;
-                chartCanvas.Children.Add(rect);
-                Canvas.SetLeft(rect, posX);
-                Canvas.SetTop(rect, posY);
+                //throw;
             }
         }
 

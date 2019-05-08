@@ -15,6 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             
             int N = (int)Math.Floor(ArrIn.Length * PersentLongFilterFromTrace / 200); // Длина фильтра
             N = N * 2 + 1;
+            if (N <= 2) { return ArrIn;}
             double[] H = new double[N]; // Импульсная характеристика фильтра
             // Расчет импульсной характеристики фильтра Блекмана
             for (int i = 0; N > i; i++)
@@ -51,7 +52,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     if (i - j >= 0)
                     {
-                        if (i - j <= ArrIn1.Length)
+                        if (i - j <= ArrIn1.Length-1)
                         {
                             outArr[i - st] = outArr[i - st] + H[j] * ArrIn1[i - j]; // самая формула фильтра
                         }

@@ -10,6 +10,8 @@ namespace XICSM.ICSControlClient.Models.Views
 {
     public class EmittingViewModel
     {
+        public int? Id { get; set; }
+
         [WpfColumn("StartFrequency_MHz", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public double StartFrequency_MHz { get; set; }
 

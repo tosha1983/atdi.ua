@@ -84,6 +84,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             emitting.Spectrum.T2 = BWResult.T2;
             emitting.Spectrum.TraceCount  = BWResult.TraceCount;
             emitting.Spectrum.СorrectnessEstimations = BWResult.СorrectnessEstimations;
+
+            //вставка от 05.05.2019
+            emitting.WorkTimes = new WorkTime[1];
+            emitting.WorkTimes[0] = new WorkTime();
+            emitting.WorkTimes[0].StopEmitting = BWResult.TimeMeas;
+            emitting.WorkTimes[0].HitCount = 1;
+            emitting.WorkTimes[0].ScanCount = 1;
+            emitting.WorkTimes[0].TempCount = 0;
+            emitting.WorkTimes[0].PersentAvailability = 100;
+
+            bool chackSpecter = CalcSignalization.CheckContravention(ref emitting.Spectrum, referenceLevels);
             CalcSignalization.FillEmittingForStorage(emitting, logger);
             return emitting;
         }

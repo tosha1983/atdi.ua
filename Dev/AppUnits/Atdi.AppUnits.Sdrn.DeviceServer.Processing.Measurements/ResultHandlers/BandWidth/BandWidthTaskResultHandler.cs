@@ -19,8 +19,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (result != null)
             {
+                //  constant
+                bool Smooth = true; // параметер прокинуть туда откуда береться и taskContext.Task.bandwidthEstimationType там его и присвоить
+                BandWidthEstimation.BandwidthEstimationType bandwidthEstimationTypeDefault = BandWidthEstimation.BandwidthEstimationType.xFromCentr;
+                double X_beta = 25;
+                // end constant
+
                 try
                 {
+                    float[] Levels = result.Level;
+                    if (Smooth) { Levels = SmoothTrace.blackman(Levels); }
+                    int MaximumIgnorPoint =(int)Math.Round(result.Level.Length / 300.0);
                     MeasBandwidthResult measBandWidthResults = null;
                     var parentProcess = taskContext.Descriptor.Parent;
                     if (parentProcess != null)
@@ -34,17 +43,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             }
                             else
                             {
-                                measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                                measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationTypeDefault, X_beta, MaximumIgnorPoint);
                             }
                         }
                         else
                         {
-                            measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                            measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationTypeDefault, X_beta, MaximumIgnorPoint);
                         }
                     }
                     else
                     {
-                        measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
+                        measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationTypeDefault, X_beta, MaximumIgnorPoint);
                     }
 
 

@@ -137,5 +137,37 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             };
             return emitting1;
         }
+        /// <summary>
+        /// Проверка на то выходит ли излучение за пределы RefLevels
+        /// </summary>
+        /// <param name="emitting"></param>
+        /// <param name="referenceLevels"></param>
+        /// <returns></returns>
+        public static bool CheckContravention(ref Spectrum spectrum, ReferenceLevels referenceLevels, bool Smooth = true)
+        { // НЕ ТЕСТИРОВАЛОСЬ
+            float[] Levels = new float[spectrum.Levels_dBm.Length];
+            if (Smooth)
+            {
+                Levels = SmoothTrace.blackman(spectrum.Levels_dBm);
+            }
+            else
+            {
+                Levels = spectrum.Levels_dBm;
+            }
+            double LogFreqSpectrum = 10 * Math.Log10(spectrum.SpectrumSteps_kHz * 1000);
+            double LogFreqRef = 10 * Math.Log10(referenceLevels.StepFrequency_Hz);
+            for (int i = 0; i < Levels.Length; i++)
+            {
+                double DensityLevel = Levels[i] - LogFreqSpectrum;
+                double freq_Level_Hz = spectrum.SpectrumStartFreq_MHz * 1000000 + spectrum.SpectrumSteps_kHz * i * 1000;
+                int IndexRef = (int)Math.Round((freq_Level_Hz - referenceLevels.StartFrequency_Hz) / referenceLevels.StepFrequency_Hz);
+                if ((IndexRef >= 0) && (IndexRef < referenceLevels.levels.Length))
+                {
+                    if (referenceLevels.levels[IndexRef] - LogFreqRef > Levels[i] - LogFreqSpectrum)
+                    { spectrum.Contravention = true; return spectrum.Contravention; }
+                }
+            }
+            spectrum.Contravention = false;  return spectrum.Contravention;
+        }
     }
 }

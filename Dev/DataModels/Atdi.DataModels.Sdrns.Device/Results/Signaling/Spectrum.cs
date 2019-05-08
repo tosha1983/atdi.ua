@@ -18,5 +18,6 @@ namespace Atdi.DataModels.Sdrns.Device
         public bool СorrectnessEstimations; 
         public int TraceCount;
         public float SignalLevel_dBm;
+        public bool Contravention; // при нарушении true
     }
 }
