@@ -27,11 +27,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {// расчитываем уровеньшума по трейсу // Надо проверить
                 triggerLevel_dBm_Hz = GetNoiseLeveldBm(Trace, PercentForCalcNoise) - 10*Math.Log10(Trace.Freq_Hz[1] - Trace.Freq_Hz[0]);
             }
-            NoiseLevel_dBm = triggerLevel_dBm_Hz + 10*Math.Log10(Trace.Freq_Hz[1] - Trace.Freq_Hz[0]);
+            double stepTraceHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length - 1] - Trace.Freq_Hz[0]) / (Trace.Freq_Hz.Length - 1);
+            NoiseLevel_dBm = triggerLevel_dBm_Hz + 10*Math.Log10(stepTraceHz);
             ReferenceLevels referenceLevels = new ReferenceLevels();
             referenceLevels.StartFrequency_Hz = Trace.Freq_Hz[0];
-            referenceLevels.StepFrequency_Hz = (Trace.Freq_Hz[1]- Trace.Freq_Hz[0]);
+            referenceLevels.StepFrequency_Hz = (stepTraceHz);
             referenceLevels.levels = new float[Trace.Level.Length];
+            bool corectMask = SortReferenceSituationMask(ref referenceSituation);
             for (int i = 0; i < referenceLevels.levels.Length; i++)
             {
                 // расчет уровня для одной частоты StartFrequency_Hz + StepFrequency_Hz*i
@@ -45,6 +47,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                     for (int j = 0; j < referenceSituation.ReferenceSignal.Length; j++)
                     {
+
+                        
+
                         // проверка на попадение
                         double freqStartSignal;
                         double freqStopSignal; 
@@ -64,6 +69,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         { // попали определяем долю сигнала в данном таймштампе в ватах
                             //double interseption = (Math.Min(freqStop, freqStopSignal) - Math.Max(freqStart, freqStartSignal)) / (freqStopSignal - freqStartSignal);
                             //levelFromSignal_mW = levelFromSignal_mW + interseption * Math.Pow(10, referenceSituation.ReferenceSignal[j].LevelSignal_dBm / 10);
+
                             levelFromSignal_mW = levelFromSignal_mW + GetPowerOfSignalInBand_mW(referenceSituation.ReferenceSignal[j], freqStart, freqStop);
                         }
                     }
@@ -71,7 +77,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 if (levelFromSignal_mW > 0)
                 {// доп проверка на нулевые значения
                     double lev = levelFromSignal_mW / (Math.Pow(10, gainInFreq / 10));
-                    referenceLevels.levels[i] = (float)(10 * Math.Log10(Math.Pow(10, referenceLevels.levels[i] / 10) + lev) + allowableExcess_dB);
+                    lev = lev * Math.Pow(10, allowableExcess_dB / 10);
+                    referenceLevels.levels[i] = (float)(10 * Math.Log10(Math.Pow(10, referenceLevels.levels[i] / 10) + lev));
                 }
             }
             return referenceLevels;
@@ -102,24 +109,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static bool SortReferenceSituationMask(ref ReferenceSituation referenceSituation)
         { //НЕ ПРОТЕСТИРОВАННО
-            for (int i = 0; referenceSituation.ReferenceSignal.Length > i; i++)
-            {// цикл по сигналам
-                if ((referenceSituation.ReferenceSignal[i].SignalMask != null) && (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz != null)&&
-                    (referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB != null)&& (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length >0) && 
-                    (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length == referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB.Length))
+            if (referenceSituation != null)
+            {
+                if (referenceSituation.ReferenceSignal != null)
                 {
-                    for (int k = 0; k < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length - 1;  k++)
-                    {
-                        for (int j = k + 1; j < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length; j++)
+                    for (int i = 0; referenceSituation.ReferenceSignal.Length > i; i++)
+                    {// цикл по сигналам
+                        if ((referenceSituation.ReferenceSignal[i].SignalMask != null) && (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz != null) &&
+                            (referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB != null) && (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length > 0) &&
+                            (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length == referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB.Length))
                         {
-                            if (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k] > referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j])
+                            for (int k = 0; k < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length - 1; k++)
                             {
-                                double TempFreq = referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k];
-                                float TempLoss = referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[k];
-                                referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k] = referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j];
-                                referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[k] = referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[j];
-                                referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j] = TempFreq;
-                                referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[j]= TempLoss;
+                                for (int j = k + 1; j < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length; j++)
+                                {
+                                    if (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k] > referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j])
+                                    {
+                                        double TempFreq = referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k];
+                                        float TempLoss = referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[k];
+                                        referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k] = referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j];
+                                        referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[k] = referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[j];
+                                        referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j] = TempFreq;
+                                        referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB[j] = TempLoss;
+                                    }
+                                }
                             }
                         }
                     }

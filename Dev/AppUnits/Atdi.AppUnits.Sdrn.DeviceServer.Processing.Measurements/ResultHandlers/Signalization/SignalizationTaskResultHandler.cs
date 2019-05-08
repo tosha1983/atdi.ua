@@ -60,8 +60,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
                 }
                 // Результат содержится в taskContext.Task.EmittingsRaw
-
-
                 //получаем результаты BW
                 var listMeasBandwidthResult = new List<BWResult>();
                 while (true)

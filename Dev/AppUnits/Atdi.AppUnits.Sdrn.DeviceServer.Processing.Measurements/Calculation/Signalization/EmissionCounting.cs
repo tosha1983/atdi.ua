@@ -23,18 +23,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="DifferenceMaxMax"></param>
         /// <param name="FiltrationTrace"></param>
         /// <returns></returns>
-        public static int Counting(float[] Level_dBm, int PointStart, int PointStop, out int[]StartStop, double DifferenceMaxMax=20, bool FiltrationTrace = true)
+        public static int Counting(float[] Level_dBm, int PointStart, int PointStop, out int[] StartStop, double DifferenceMaxMax = 20, bool FiltrationTrace = true)
         { // НЕ ТЕСТИРОВАЛОСЬ
-            // проверка коректности принимаемых данных
+          // проверка коректности принимаемых данных
             if (PointStop < PointStart) { int T = PointStop; PointStop = PointStart; PointStart = T; }
             if (PointStart < 0) { PointStart = 0; }
-            if (PointStop > Level_dBm.Length-1) { PointStop = Level_dBm.Length - 1; }
+            if (PointStop > Level_dBm.Length - 1) { PointStop = Level_dBm.Length - 1; }
             if (DifferenceMaxMax < 5) { DifferenceMaxMax = 5; }
             // конец проверки корректности 
 
             float[] Level = new float[PointStop - PointStart + 1];
             Array.Copy(Level_dBm, PointStart, Level, 0, PointStop - PointStart + 1);
-            if (FiltrationTrace) { Level = SmoothTrace.blackman(Level, false);} // провели сглаживание массива
+            if (FiltrationTrace) { Level = SmoothTrace.blackman(Level, false); } // провели сглаживание массива
 
             double LocMax1; int IndexLocMax1;
             double LocMin1; int IndexLocMin1;
@@ -46,14 +46,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             LocMax1 = Level[0]; IndexLocMax1 = 0;
             gotoMax = true;
 
-            for (int i = 1; Level.Length>i; i++)
+            for (int i = 1; Level.Length > i; i++)
             {
                 if (gotoMax)
                 {
                     if (Level[i] > LocMax1)
                     {
                         LocMax1 = Level[i]; IndexLocMax1 = i;
-                        if (LocMax1 - LocMin1 >= DifferenceMaxMax)
+                    }
+                    if (Level[i] < LocMin1)
+                    {
+                        LocMin1 = Level[i]; IndexLocMin1 = i;
+                    }
+                    if (LocMax1 - LocMin1 >= DifferenceMaxMax)
+                        if ((IndexLocMin1 < IndexLocMax1))
                         { // мы превысили уровень. Теперь точно можно зафиксировать минимум. 
                             if (MinMax.Count == 0)
                             {
@@ -67,11 +73,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             LocMin1 = Level[i]; IndexLocMin1 = i;
                             gotoMax = false;
                         }
-                    }
-                    if (Level[i] < LocMin1)
-                    {
-                        LocMin1 = Level[i]; IndexLocMin1 = i;
-                    }
+                        else
+                        {
+                            LocMax1 = Level[i]; IndexLocMax1 = i;
+                        }
                 }
                 else
                 {
@@ -82,10 +87,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (Level[i] < LocMin1)
                     {
                         LocMin1 = Level[i]; IndexLocMin1 = i;
-                        if (LocMax1 - LocMin1 >= DifferenceMaxMax)
-                        { // мы превысили уровень. Теперь точно можно зафиксировать максимум. 
+                    }
+                    if (LocMax1 - LocMin1 >= DifferenceMaxMax)
+                    {
+                        if (IndexLocMin1 > IndexLocMax1)
+                        {
+                            // мы превысили уровень. Теперь точно можно зафиксировать максимум. 
                             LocMax1 = Level[i]; IndexLocMax1 = i;
                             gotoMax = true;
+                        }
+                        else
+                        {
+                            LocMin1 = Level[i]; IndexLocMin1 = i;
                         }
                     }
                 }
@@ -96,16 +109,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             else
             {
-
-                if (!gotoMax) {MinMax.Add(Level.Length - 1);}
-                else { MinMax.RemoveAt(MinMax.Count - 1);}
+                if (gotoMax) { MinMax.Add(IndexLocMin1); }
+                else { MinMax.RemoveAt(MinMax.Count - 1); }
             }
             StartStop = new int[MinMax.Count];
-            for (int i = 0; MinMax.Count>i; i++)
+            for (int i = 0; MinMax.Count > i; i++)
             {
                 StartStop[i] = MinMax[i] + PointStart;
             }
-            return (int)(StartStop.Length/2);
+            return (int)(StartStop.Length / 2);
         }
     }
 }
