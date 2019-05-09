@@ -15,11 +15,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcEmittingSummuryByEmittingDetailed
     {
+        //Константа 
+        private const double PersentForJoinDetailEmToSummEm = 20;
+
+
         public static bool GetEmittingDetailed(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
         {
-            //Константа 
-            double PersentForJoinDetailEmToSummEm = 20;
-
             // обновляем emittingSummary результатами новых измерений
             for (int i = 0; listBWResult.Count > i; i++)
             {

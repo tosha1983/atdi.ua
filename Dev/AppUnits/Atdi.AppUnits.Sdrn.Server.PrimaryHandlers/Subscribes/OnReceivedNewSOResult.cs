@@ -2141,7 +2141,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     var listLevelsdBm = new List<float>();
                     var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrumRaw>()
                     .From()
-                    .Select(c => c.Id, c => c.Bandwidth_kHz, c => c.CorrectnessEstimations, c => c.MarkerIndex, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.T1, c => c.T2, c => c.TraceCount, c => c.LevelsdBm)
+                    .Select(c => c.Id, c => c.Bandwidth_kHz, c => c.CorrectnessEstimations, c => c.MarkerIndex, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.T1, c => c.T2, c => c.TraceCount, c => c.LevelsdBm, c => c.Contravention)
                     .Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
                     queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                     {
@@ -2174,6 +2174,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
                             {
                                 spectrum.СorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
+                            }
+
+                            if (readerSpectrum.GetValue(c => c.Contravention).HasValue)
+                            {
+                                spectrum.Contravention = readerSpectrum.GetValue(c => c.Contravention).Value == 1 ? true : false;
                             }
 
 
@@ -2467,6 +2472,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
                                             builderInsertISpectrum.SetValue(c => c.EmittingId, valInsReferenceEmitting);
                                             builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations==true ? 1: 0);
+                                            builderInsertISpectrum.SetValue(c => c.Contravention, spectrum.Contravention == true ? 1 : 0);
                                             builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
                                             builderInsertISpectrum.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
                                             builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);

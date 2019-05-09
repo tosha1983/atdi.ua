@@ -45,6 +45,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// <summary>
         /// 
         /// </summary>
+        public bool Smooth { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         [ComponentConfigProperty("X_Beta.double")]
         public double X_Beta { get; set; }
 

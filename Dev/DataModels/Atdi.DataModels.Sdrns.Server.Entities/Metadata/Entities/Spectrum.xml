@@ -22,6 +22,7 @@
     <Field Desc="SignalLevel_dBm" Title="SignalLevel_dBm" Name="SignalLevel_dBm" DataType="Decimal.22.8" SourceName="SIGNALLEVEL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="LevelsdBm" Title="LevelsdBm" Name="LevelsdBm" DataType="Bytes.MAX" SourceName="LEVELSDBM" SourceType="Column" Required="false"/>
     <Field Desc="EmittingId" Title="EmittingId" Name="EmittingId" DataType="Integer.64" SourceName="EMITTING_ID" SourceType="Column" Required="true"/>
+    <Field Desc="Contravention" Title="Contravention" Name="Contravention" DataType="Integer.32" SourceName="CONTRAVENTION" SourceType="Column" Required="false"/>
     <Field Name="EMITTING" SourceType="Reference" SourceName="Emitting" Title="Relation Spectrum to Emitting">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">EmittingId</Mapped>

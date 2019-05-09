@@ -129,6 +129,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 
             if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
             {
+                taskParameters.CompareTraceJustWithRefLevels = false;
+                taskParameters.AutoDivisionEmitting = true;
+                taskParameters.DifferenceMaxMax = 20;
+                taskParameters.FiltrationTrace = true;
+                taskParameters.allowableExcess_dB = 10;
+                taskParameters.PercentForCalcNoise = 10;
+        
                 if (taskSDR.RefSituation != null)
                 {
                     var listReferenceSituation = new List<ReferenceSituation>();

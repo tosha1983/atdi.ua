@@ -14,31 +14,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSearchInterruption
     {
-        // константы потом стоит передать в виде переменных
-        private static bool CompareTraceJustWithRefLevels = false;
-        private static bool AutoDivisionEmitting = true;
-        private static double DifferenceMaxMax = 20;
-        private static bool FiltrationTrace = true;
+        // Константы 
+        private static int NumberPointForChangeExcess = 10; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
+        private static double allowableExcess_dB = 10;
+        private static double DiffLevelForCalcBW = 25;
+        private static double windowBW = 1.5;
+        private static double nDbLevel_dB = 15;
+        private static int NumberIgnoredPoints = 1;
+        private static double MinExcessNoseLevel_dB = 5;
+        // Конец констант
 
-        // конец констант
         /// <summary>
         /// Сопоставляем излучения реальные с реферативными уровнями. В случае превышения формируем излучение. 
         /// </summary>
         /// <param name="referenceLevels"></param>
         /// <param name="Trace"></param>
         /// <returns></returns>
-        public static Emitting[] Calc(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
+        public static Emitting[] Calc(TaskParameters taskParameters, ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
         { //НЕ ТЕСТИРОВАННО
-            // Константы 
-            int NumberPointForChangeExcess=10; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
-            // Конец констант
+            
             if (refLevels.levels.Length != Trace.Level.Length)
             {
                 return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
             }
             // выделение мест где произошло превышение порога 
             List<int> index_start_stop = new List<int>();
-            if (CompareTraceJustWithRefLevels)
+            if (taskParameters.CompareTraceJustWithRefLevels)
             {
                 index_start_stop = SearchStartStopCompaireWithRefLevels(refLevels, Trace, NoiseLevel_dBm, NumberPointForChangeExcess);
             }
@@ -48,7 +49,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             // конец выделения 
             //возможно необходимо произвести разделение нескольких излучений которые моги быть ошибочно восприняты как одно
-            if (AutoDivisionEmitting) { index_start_stop = DivisionEmitting(index_start_stop, Trace); }
+            if (taskParameters.AutoDivisionEmitting) { index_start_stop = DivisionEmitting(taskParameters, index_start_stop, Trace); }
 
             //Формируем помехи.
             double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length-1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
@@ -126,11 +127,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         private static List<int> SearchStartStopCompaireWithNoiseLevels(ReferenceLevels refLevels_, MesureTraceResult Trace, double NoiseLevel_dBm, int NumberPointForChangeExcess = 10)
         {// должны произвести разделение согласно пересечению шумового уровня
-
-            // константа
-            double allowableExcess_dB = 10;
-            // константа
-
             bool excess = false; int startSignalIndex = 0;
             int NumberPointBeforExcess = 0;
             int NumberPointAfterExcess = 0;
@@ -178,13 +174,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             return (index_start_stop);
         }
 
-        private static List<int> DivisionEmitting (List<int> index_start_stop,  MesureTraceResult Trace)
+        private static List<int> DivisionEmitting (TaskParameters taskParameters, List<int> index_start_stop,  MesureTraceResult Trace)
         { // НЕ ПРОВЕРЕННО
             List<int> ResultStartStopIndexArr = new List<int>();
             for (int i = 0; i < index_start_stop.Count - 1; i = i + 2)
             {
                 int[] StartStopAnalized;
-                int count = EmissionCounting.Counting(Trace.Level, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, DifferenceMaxMax, FiltrationTrace);
+                int count = EmissionCounting.Counting(Trace.Level, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, taskParameters.DifferenceMaxMax, taskParameters.FiltrationTrace);
                 for (int j = 0; j< StartStopAnalized.Length; j++)
                 {
                     ResultStartStopIndexArr.Add(StartStopAnalized[j]);
@@ -194,14 +190,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static Emitting[] CreateEmittings(float[] levels, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm)
         { // задача локализовать излучения
-            // константы начало
-            List<Emitting> emittings = new List<Emitting>();
-            double DiffLevelForCalcBW = 25;
-            double windowBW = 1.5;
-            double nDbLevel_dB = 15;
-            int NumberIgnoredPoints = 1;
-            double MinExcessNoseLevel_dB = 5;
-            // константы конец
+            var emittings = new List<Emitting>();
             for (int i = 0; i < index_start_stop.Count; i = i + 2)
             {
                 // для каждого излучения вычислим BW 
@@ -289,11 +278,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel.levels[j] / 10);
                     emitting.CurentPower_dBm = emitting.CurentPower_dBm + Math.Pow(10, levels[j] / 10);
                 }
-
-                //if ((emitting.StartFrequency_MHz>428.4) && (emitting.StopFrequency_MHz < 428.6) && ((emitting.StopFrequency_MHz - emitting.StartFrequency_MHz)>0.1))
-                //{
-
-                //}
 
                 emitting.ReferenceLevel_dBm = 10 * Math.Log10(emitting.ReferenceLevel_dBm);
                 emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);

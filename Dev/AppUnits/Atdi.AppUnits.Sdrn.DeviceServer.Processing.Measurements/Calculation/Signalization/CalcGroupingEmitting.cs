@@ -14,6 +14,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcGroupingEmitting
     {
+
+        //константа 
+        private const int TimeBetweenWorkTimes_sec = 60;
+        private const int TypeJoinSpectrum = 0; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
+        private const double CrossingBWPercentageForGoodSignals = 70; // определяет насколько процентов должно совпадать излучение если BW определен 
+        private const double CrossingBWPercentageForBadSignals = 40; // определяет насколько процентов должно совпадать излучение если BW не определен 
+        // конец констант
+
         /// <summary>
         /// Мы сливаем все EmittingRaw в EmittingSummary с групировкой данных если излучения подобны 
         /// </summary>
@@ -168,11 +176,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2)
         {
-            // константы 
-            double CrossingBWPercentageForGoodSignals = 70; // определяет насколько процентов должно совпадать излучение если BW определен 
-            double CrossingBWPercentageForBadSignals = 40; // определяет насколько процентов должно совпадать излучение если BW не определен 
-            // конец констант
-
             // тупа нет пересечения
             if ((emitting1.StopFrequency_MHz < emitting2.StartFrequency_MHz)||(emitting1.StartFrequency_MHz > emitting2.StopFrequency_MHz)) { return false; }
 
@@ -282,10 +285,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         public static bool JoinSecondToFirst(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger, double NoiseLevel_dBm)
         {
-            //константа 
-            int TimeBetweenWorkTimes_sec = 60;
-            int TypeJoinSpectrum = 0; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
-            //константа 
+         
             try
             {
                 // обединение Распределения уровней

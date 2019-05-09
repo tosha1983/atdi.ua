@@ -14,12 +14,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcBWSignalization
     {
+        // коснстанты 
+        private const double fluctuationCoef = 20;
+        // конец констант
+
+
         public static bool CalcBW(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, int NumberIgnoredPoints, ref int IndexStart, ref int IndexStop)
         {
-            //if ((start>55590) && (stop<55680) && ((stop - start)>70))
-            //{
-
-            //}
             IndexStart = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
             IndexStop = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, true, NumberIgnoredPoints);
             if ((IndexStart == -1) || (IndexStop == -1)) { return false; }
@@ -40,10 +41,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         private static int SearchEdgeIndex(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, bool MoveRight, int NumberIgnoredPoints)
         {
-            // коснстанты 
-            double fluctuationCoef = 20;
-            // конец констант
-
             // конверсия если перепутали местами
             if (start > stop)
             {

@@ -18,5 +18,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public bool CorrectnessEstimations;
         public int TraceCount;
         public float SignalLevel_dBm;
+        public bool Contravention; // при нарушении true
     }
 }

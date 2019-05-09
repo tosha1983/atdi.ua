@@ -117,10 +117,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 StartStop[i] = MinMax[i] + PointStart;
             }
-            //if ((StartStop.Length/2)>1)
-            //{
-
-            //}
             return (int)(StartStop.Length / 2);
         }
     }

@@ -406,7 +406,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                        .From()
-                       .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id)
+                       .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                        .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
                 queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                 {
@@ -487,6 +487,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
                             {
                                 spectrum.CorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
+                            }
+
+                            if (readerSpectrum.GetValue(c => c.Contravention).HasValue)
+                            {
+                                spectrum.Contravention = readerSpectrum.GetValue(c => c.Contravention).Value == 1 ? true : false;
                             }
                         }
                         spectrum.Levels_dBm = listLevelsdBm.ToArray();

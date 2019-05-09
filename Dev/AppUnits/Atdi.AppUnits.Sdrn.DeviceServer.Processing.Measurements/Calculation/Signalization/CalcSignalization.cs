@@ -14,8 +14,10 @@ using Atdi.Platform.Logging;
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSignalization
-
     {
+        private static int StartLevelsForLevelDistribution = -150;
+        private static int NumberPointForLevelDistribution = 200;
+
         public static Spectrum CreateSpectrum(float[] templevels, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm, double DiffLevelForCalcBW = 25, double windowBW = 1.5,
            double nDbLevel_dB = 15, int NumberIgnoredPoints = 1, double MinExcessNoseLevel_dB = 5)
         {
@@ -85,12 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static Emitting FillEmittingForStorage(Emitting EmittingParameter, ILogger logger)
         {
             var emitting = EmittingParameter;
-            // константы 
             try
             {
-                int StartLevelsForLevelDistribution = -150;
-                int NumberPointForLevelDistribution = 200;
-                // конец константы 
                 if ((emitting.WorkTimes != null) && (emitting.WorkTimes.Length > 0))
                 {
                     emitting.WorkTimes[0].HitCount = 1;
