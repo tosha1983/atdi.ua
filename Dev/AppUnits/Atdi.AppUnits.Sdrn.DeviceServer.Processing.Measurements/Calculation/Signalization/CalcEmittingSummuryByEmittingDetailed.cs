@@ -89,6 +89,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             //вставка от 05.05.2019
             emitting.WorkTimes = new WorkTime[1];
             emitting.WorkTimes[0] = new WorkTime();
+            emitting.WorkTimes[0].StartEmitting = BWResult.TimeMeas;
             emitting.WorkTimes[0].StopEmitting = BWResult.TimeMeas;
             emitting.WorkTimes[0].HitCount = 1;
             emitting.WorkTimes[0].ScanCount = 1;
