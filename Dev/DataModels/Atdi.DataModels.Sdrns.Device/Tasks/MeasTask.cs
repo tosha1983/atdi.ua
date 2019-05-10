@@ -143,5 +143,12 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public StandardScanParameter[] ScanParameters { get; set; }
+
+        /// <summary>
+        /// Set Signaling MeasTask parameters
+        /// </summary>
+        [DataMember]
+        public SignalingMeasTask  SignalingMeasTaskParameters { get; set; }
+        
     }
 }
