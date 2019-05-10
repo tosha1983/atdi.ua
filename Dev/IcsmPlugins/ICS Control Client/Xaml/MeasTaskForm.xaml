@@ -71,6 +71,7 @@
                       <RowDefinition Height="Auto"></RowDefinition>
                       <RowDefinition Height="Auto"></RowDefinition>
                       <RowDefinition Height="Auto"></RowDefinition>
+                      <RowDefinition Height="Auto"></RowDefinition>
                       <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
@@ -316,25 +317,135 @@
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
-                        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                                  <Setter  Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz" IsEnabled="{Binding Path=IsEnabledDtParam}"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                                  <Setter  Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"  />
-                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}"/>
+                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s" IsEnabled="{Binding Path=IsEnabledDtParam}"/>
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                                  <Setter  Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"  />
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}"/>
+                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting" IsEnabled="{Binding Path=IsEnabledDtParam}"/>
+                        <ComboBox Grid.Column="1" Grid.Row="3" SelectedValue="{Binding MeasDtParamDetectType, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamDetectTypeValues}">
+                          <ComboBox.Style>
+                            <Style TargetType="ComboBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                                  <Setter  Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </ComboBox.Style>
+                        </ComboBox>
 
-                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"  />
-                        <ComboBox Grid.Column="1" Grid.Row="3" SelectedValue="{Binding MeasDtParamDetectType, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamDetectTypeValues}"/>
+                        <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB" IsEnabled="{Binding Path=IsEnabledDtParam}"/>
+                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                                  <Setter  Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"  />
-                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}"/>
-
-                        <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"  />
-                        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}"/>
-                      </Grid>
+                        <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB" IsEnabled="{Binding Path=IsEnabledDtParam}"/>
+                        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                                  <Setter  Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                                  <Setter  Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+                    </Grid>
                     </Expander>
                     <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Other">
+                      <Expander.Style>
+                        <Style TargetType="Expander">
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                              <Setter  Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                              <Setter  Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                              <Setter  Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </Expander.Style>
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="160" />
@@ -363,6 +474,59 @@
                         <ComboBox Grid.Column="1" Grid.Row="4" SelectedValue="{Binding ResultType, Mode=TwoWay}" ItemsSource="{Binding ResultTypeValues}"/>
                       </Grid>
                     </Expander>
+                    <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="Monitoring emission parameters">
+                      <Expander.Style>
+                        <Style TargetType="Expander">
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
+                              <Setter  Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
+                              <Setter  Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Level">
+                              <Setter  Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </Expander.Style>
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="160" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto"></RowDefinition>
+                          <RowDefinition Height="Auto"></RowDefinition>
+                          <RowDefinition Height="Auto"></RowDefinition>
+                          <RowDefinition Height="Auto"></RowDefinition>
+                          <RowDefinition Height="Auto"></RowDefinition>
+                          <RowDefinition Height="Auto"></RowDefinition>
+                          <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analyze just contravention of Reference Levels"  />
+                        <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CompareTraceJustWithRefLevels}"/>
+
+                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Automatic division of emissions"  />
+                        <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding Path=AutoDivisionEmitting}"/>
+
+                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Levels difference for emissions division, dB"  />
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=DifferenceMaxMax}"/>
+
+                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Using smoothing for analyze trace"  />
+                        <CheckBox Grid.Column="1" Grid.Row="3" IsChecked="{Binding Path=FiltrationTrace}"/>
+
+                        <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Margin for calculation Reference Levels, dB"  />
+                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=allowableExcess_dB}"/>
+
+                        <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Trace points count in channel"  />
+                        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=SignalizationNChenal}"/>
+
+                        <Label Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Maximum count scan in one day"  />
+                        <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=SignalizationNCount}"/>
+
+                      </Grid>
+                    </Expander>                    
                   </Grid>
                 </ScrollViewer>
                 <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
@@ -374,7 +538,6 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                   </Grid.RowDefinitions>
-                  <!--<ProgressBar Grid.Row="0" Minimum="0" Maximum="{Binding PbMaxValue}" Value="{Binding PbValue}"/>-->
                   <Button Grid.Row="1" Content="Start" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40"/>
                 </Grid> 
               </Grid>

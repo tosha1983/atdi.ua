@@ -415,6 +415,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     line.Points.Add(new Point() { X = chartCanvas.ActualWidth, Y = point.Y });
                     chartCanvas.Children.Add(line);
 
+                    if (!string.IsNullOrEmpty(lines.Name))
+                    {
+                        var tb = new TextBlock();
+                        tb.Foreground = lines.LineColor;
+                        tb.FontSize = 10;
+                        tb.Text = lines.Name;
+                        tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                        chartCanvas.Children.Add(tb);
+                        Canvas.SetLeft(tb, 5);
+                        Canvas.SetTop(tb, point.Y + 5);
+                    }
                 }
                 if (lines.IsVertical)
                 {

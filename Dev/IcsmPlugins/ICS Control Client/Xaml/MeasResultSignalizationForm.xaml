@@ -64,9 +64,9 @@
               <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
               </Grid.RowDefinitions>
-              <Label Grid.Column="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{Binding RBW}"  />
-              <Button Grid.Column="9" Content="Zoom undo" Command="{Binding ZoomUndoCommand}" Width="120" Height="40"/>
-              <Button Grid.Column="10" Content="Default Zoom" Command="{Binding ZoomDefaultCommand}" Width="120" Height="40"/>
+              <Label Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{Binding RBW}"  />
+              <Button Grid.Column="9" Content="Zoom undo" Command="{Binding ZoomUndoCommand}" Height="30"/>
+              <Button Grid.Column="10" Content="Default Zoom" Command="{Binding ZoomDefaultCommand}" Height="30"/>
             </Grid>
             <cs:LineChart Grid.Row="1" Option="{Binding CurrentChartOption}" SelectedRangeX="{Binding SelectedRangeX, Mode=TwoWay}" MouseClickPoint="{Binding MouseClickPoint, Mode=TwoWay}" MenuClick="{Binding MenuClick, Mode=TwoWay}" />
           </Grid>  
@@ -118,6 +118,7 @@
                   <DataGridTextColumn Header="EmissionFreqMHz" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
                   <DataGridTextColumn Header="Bandwidth_kHz" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
                   <DataGridTextColumn Header="CorrectnessEstimations" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Contravention" Binding="{Binding Path=Contravention}"></DataGridTextColumn>
                   <DataGridTextColumn Header="TraceCount" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
                   <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
                   <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
@@ -130,8 +131,8 @@
                   <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
                 </DataGrid.Columns>
               </cdg:CustomDataGridEmitting>
-              <Button Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" Content="Add Association Station" Command="{Binding AddAssociationStationCommand}" Width="120" Height="40"/>
-              <Button Grid.Row="1" Grid.Column="10" Grid.ColumnSpan="2" Content="Delete Emission" Command="{Binding DeleteEmissionCommand}" Width="120" Height="40"/>
+              <Button Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" Content="Add Association Station" Command="{Binding AddAssociationStationCommand}" Height="30"/>
+              <Button Grid.Row="1" Grid.Column="10" Grid.ColumnSpan="2" Content="Delete Emission" Command="{Binding DeleteEmissionCommand}" Height="30"/>
             </Grid>
             <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>
             <Grid Grid.Column="2">
