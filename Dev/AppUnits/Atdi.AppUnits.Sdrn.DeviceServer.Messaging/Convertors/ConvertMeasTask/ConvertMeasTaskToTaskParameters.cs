@@ -218,7 +218,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 else if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
                 {
                     //if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SignalizationNChenal; }
-                    taskParameters.NChenal = SignalizationNChenal.Value;
+                    //taskParameters.NChenal = SignalizationNChenal.Value;
                     if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
                     {
                         // формируем начало и конец для измерений 
@@ -258,15 +258,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 taskParameters.PercentForCalcNoise = PercentForCalcNoise;
                 if (SignalizationNChenal != null)
                 {
-                    taskParameters.SignalizationNChenal = SignalizationNChenal.Value;
+                    //taskParameters.SignalizationNChenal = SignalizationNChenal.Value;
+                    taskParameters.NChenal = SignalizationNChenal.Value;
                 }
                 if (SignalizationNCount != null)
                 {
-                    taskParameters.SignalizationNCount = SignalizationNCount.Value;
+                    //taskParameters.SignalizationNCount = SignalizationNCount.Value;
+                    taskParameters.NCount = SignalizationNCount.Value;
                 }
 
 
-                taskParameters.NCount = SignalizationNCount.Value;
+                //taskParameters.NCount = SignalizationNCount.Value;
 
                 if (taskSDR.RefSituation != null)
                 {
