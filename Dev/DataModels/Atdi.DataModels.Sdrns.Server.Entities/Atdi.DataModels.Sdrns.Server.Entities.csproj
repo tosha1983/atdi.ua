@@ -49,6 +49,7 @@
     <Compile Include="Entities\IEmitting.cs" />
     <Compile Include="Entities\ILevelsDistribution.cs" />
     <Compile Include="Entities\ILevelsDistributionRaw.cs" />
+    <Compile Include="Entities\IMeasTaskSignaling.cs" />
     <Compile Include="Entities\IReferenceLevels.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
     <Compile Include="Entities\IReferenceSignal.cs" />
@@ -172,6 +173,7 @@
     <Content Include="Metadata\Entities\FreqSample.xml" />
     <Content Include="Metadata\Entities\LinkResSensorRaw.xml" />
     <Content Include="Metadata\Entities\Logs.xml" />
+    <Content Include="Metadata\Entities\MeasTaskSignaling.xml" />
     <Content Include="Metadata\Entities\ReferenceSituation.xml" />
     <Content Include="Metadata\Entities\ReferenceSignal.xml" />
     <Content Include="Metadata\Entities\SignalMask.xml" />
