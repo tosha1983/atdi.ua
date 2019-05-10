@@ -182,6 +182,50 @@ namespace Atdi.WcfServices.Sdrn.Server
                     });
                     if (ID != null)
                     {
+                        if (value.SignalingMeasTaskParameters != null)
+                        {
+                            int valueIdMeasTaskSignaling = -1;
+                            var builderInsertMeasTaskSignaling = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().Insert();
+                            if (value.SignalingMeasTaskParameters.allowableExcess_dB != null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.allowableExcess_dB, value.SignalingMeasTaskParameters.allowableExcess_dB);
+                            }
+                            if (value.SignalingMeasTaskParameters.AutoDivisionEmitting != null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.AutoDivisionEmitting, value.SignalingMeasTaskParameters.AutoDivisionEmitting == true ? 1 : 0);
+                            }
+                            if (value.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels != null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.CompareTraceJustWithRefLevels, value.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels == true ? 1 : 0);
+                            }
+                            if (value.SignalingMeasTaskParameters.DifferenceMaxMax != null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.DifferenceMaxMax, value.SignalingMeasTaskParameters.DifferenceMaxMax);
+                            }
+                            if (value.SignalingMeasTaskParameters.FiltrationTrace!= null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.FiltrationTrace, value.SignalingMeasTaskParameters.FiltrationTrace == true ? 1 : 0);
+                            }
+                            if (value.SignalingMeasTaskParameters.SignalizationNChenal != null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.SignalizationNChenal, value.SignalingMeasTaskParameters.SignalizationNChenal);
+                            }
+                            if (value.SignalingMeasTaskParameters.SignalizationNCount != null)
+                            {
+                                builderInsertMeasTaskSignaling.SetValue(c => c.SignalizationNCount, value.SignalingMeasTaskParameters.SignalizationNCount);
+                            }
+                            builderInsertMeasTaskSignaling.SetValue(c => c.IdMeasTask, ID);
+                            builderInsertMeasTaskSignaling.Select(c => c.Id);
+                            queryExecuter.ExecuteAndFetch(builderInsertMeasTaskSignaling, readerIMeasTaskSignaling =>
+                            {
+                                while (readerIMeasTaskSignaling.Read())
+                                {
+                                    valueIdMeasTaskSignaling = readerIMeasTaskSignaling.GetValue(c => c.Id);
+                                }
+                                return true;
+                            });
+                        }
+
                         if (value.RefSituation != null)
                         {
                             for (int l = 0; l < value.RefSituation.Length; l++)

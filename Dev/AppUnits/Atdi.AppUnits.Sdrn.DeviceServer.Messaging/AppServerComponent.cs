@@ -23,6 +23,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
 
         protected override void OnInstallUnit()
         {
+            var exampleConfig = this.Config.Extract<ConfigMessaging>();
+            this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
             this.Container.Register<Handlers.SendCommandHandler>(ServiceLifetime.Singleton);
             this.Container.Register<Handlers.SendMeasTaskHandler>(ServiceLifetime.Singleton);
             this.Container.Register<Handlers.SendRegistrationResultHandler>(ServiceLifetime.Singleton);

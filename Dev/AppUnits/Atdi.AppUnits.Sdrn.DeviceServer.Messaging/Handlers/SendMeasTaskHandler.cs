@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly IRepository<DM.Sensor, int?> _repositorySensor;
         private readonly ITimeService _timeService;
         private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
-
+        private readonly ConfigMessaging _config;
 
         public SendMeasTaskHandler(
            ITimeService timeService,
@@ -35,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
            IRepository<DM.Sensor, int?> repositorySensor,
            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
            ITaskStarter taskStarter,
+           ConfigMessaging config,
            ILogger logger)
         {
             this._processingDispatcher = processingDispatcher;
@@ -45,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             this._repositorySensor = repositorySensor;
             this._timeService = timeService;
             this._repositoryLastUpdateByInt = repositoryLastUpdateByInt;
+            this._config = config;
         }
 
 
@@ -92,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                         {
 
-                            var taskParameters = message.Data.Convert();
+                            var taskParameters = message.Data.Convert(_config);
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
@@ -103,7 +105,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
                         {
 
-                            var taskParameters = message.Data.Convert();
+                            var taskParameters = message.Data.Convert(_config);
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
@@ -114,7 +116,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
                         {
 
-                            var taskParameters = message.Data.Convert();
+                            var taskParameters = message.Data.Convert(_config);
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);

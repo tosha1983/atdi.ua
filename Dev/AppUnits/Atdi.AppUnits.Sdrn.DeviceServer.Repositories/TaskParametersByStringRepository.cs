@@ -81,12 +81,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 builderInsertTaskParameters.Select(c => c.FiltrationTrace);
                 builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
                 builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+                builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+                builderInsertTaskParameters.Select(c => c.SignalizationNCount);
                 builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, SDRTaskId);
                 queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
                 {
                     if (readerMeasTask.Read())
                     {
                         taskParameters = new TaskParameters();
+
+                        if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
+                        {
+                            taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
+                        {
+                            taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
+                        }
 
                         if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
                         {

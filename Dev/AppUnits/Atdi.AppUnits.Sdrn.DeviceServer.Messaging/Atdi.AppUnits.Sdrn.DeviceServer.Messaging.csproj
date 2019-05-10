@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="ConfigMessaging.cs" />
     <Compile Include="Convertors\ConvertMeasTask\ConvertMeasTaskToTaskParameters.cs" />
     <Compile Include="Handlers\SendCommandHandler.cs" />
     <Compile Include="Handlers\SendRegistrationResultHandler.cs" />

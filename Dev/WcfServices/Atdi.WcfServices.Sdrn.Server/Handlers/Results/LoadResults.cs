@@ -222,6 +222,10 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 while (reader.Read())
                 {
+
+                    //if (((reader.GetValue(c => c.Id) == 1373901) || (reader.GetValue(c => c.Id) == 1373902)) == false)
+                        //continue;
+
                     var emitting = new Emitting();
                     emitting.Id = reader.GetValue(c => c.Id);
                     if (reader.GetValue(c => c.StationID).HasValue)
@@ -424,11 +428,22 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 ////////////////////
                                 /*
-                                if (readerSpectrum.GetValue(c => c.Id) == 1216364)
+                                if (readerSpectrum.GetValue(c => c.Id) == 1373893)
                                 {
                                     var lelvDbm = levelsdBm as float[];
-                                    int[] startStop;
-                                    var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
+                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
+                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
+                                    //int[] startStop;
+                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
+                                }
+
+                                if (readerSpectrum.GetValue(c => c.Id) == 1373894)
+                                {
+                                    var lelvDbm = levelsdBm as float[];
+                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
+                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
+                                    //int[] startStop;
+                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
                                 }
                                 */
                                 /////
