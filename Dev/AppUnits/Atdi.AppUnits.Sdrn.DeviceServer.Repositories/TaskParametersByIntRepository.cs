@@ -60,6 +60,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.FiltrationTrace);
             builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
             builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+            builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+            builderInsertTaskParameters.Select(c => c.SignalizationNCount);
             builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, SDRTaskId);
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
@@ -67,6 +69,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     taskParameters = new TaskParameters();
 
+                    if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
+                    {
+                        taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
+                    }
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
+                    {
+                        taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
+                    }
 
                     if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
                     {
@@ -335,6 +346,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.FiltrationTrace);
             builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
             builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+            builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+            builderInsertTaskParameters.Select(c => c.SignalizationNCount);
 
             builderInsertTaskParameters.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.GreaterThan, 0);
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
@@ -344,6 +357,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     taskParameters = new TaskParameters();
                     taskParameters.SensorId = readerMeasTask.GetValue(c => c.SensorId);
 
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
+                    {
+                        taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
+                    }
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
+                    {
+                        taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
+                    }
 
 
                     if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
@@ -606,7 +629,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
                     builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
                     builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
-
+                    builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
+                    builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
 
                     if (item.TypeTechnology != TypeTechnology.Unknown)
                     {
@@ -761,6 +785,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
                     builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
                     builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
+                    builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
+                    builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
+
                     builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
                     int cntUpdate = queryExecuter.Execute(builderInsertTaskParameters);
                     if (cntUpdate > 0)
@@ -819,6 +846,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.FiltrationTrace);
             builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
             builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+            builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+            builderInsertTaskParameters.Select(c => c.SignalizationNCount);
 
             builderInsertTaskParameters.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.GreaterThan, 0);
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
@@ -828,6 +857,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     TaskParameters taskParameters = new TaskParameters();
 
                     taskParameters.SensorId = readerMeasTask.GetValue(c => c.SensorId);
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
+                    {
+                        taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
+                    }
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
+                    {
+                        taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
+                    }
 
                     if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
                     {
@@ -1095,6 +1134,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.FiltrationTrace);
             builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
             builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+            builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+            builderInsertTaskParameters.Select(c => c.SignalizationNCount);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
             //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
@@ -1104,6 +1145,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     TaskParameters taskParameters = new TaskParameters();
 
                     taskParameters.SensorId = readerMeasTask.GetValue(c => c.SensorId);
+
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
+                    {
+                        taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
+                    }
+
+                    if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
+                    {
+                        taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
+                    }
 
                     if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
                     {

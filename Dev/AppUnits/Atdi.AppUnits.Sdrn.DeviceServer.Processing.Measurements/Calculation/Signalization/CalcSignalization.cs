@@ -162,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 int IndexRef = (int)Math.Round((freq_Level_Hz - referenceLevels.StartFrequency_Hz) / referenceLevels.StepFrequency_Hz);
                 if ((IndexRef >= 0) && (IndexRef < referenceLevels.levels.Length))
                 {
-                    if (referenceLevels.levels[IndexRef] - LogFreqRef > Levels[i] - LogFreqSpectrum)
+                    if (referenceLevels.levels[IndexRef] - LogFreqRef < Levels[i] - LogFreqSpectrum)
                     { spectrum.Contravention = true; return spectrum.Contravention; }
                 }
             }

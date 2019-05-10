@@ -30,6 +30,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public int NCount = 0; //количество сканированиия за измерение (он вичисляется в проессе трансформации из MeasTask)
         public ReferenceSituation RefSituation { get; set; }
         public int SensorId { get; set; }
+        public int SignalizationNChenal { get; set; }
+        public int SignalizationNCount { get; set; }
         public bool CompareTraceJustWithRefLevels { get; set; }
         public bool AutoDivisionEmitting { get; set; }
         public double DifferenceMaxMax { get; set; }
