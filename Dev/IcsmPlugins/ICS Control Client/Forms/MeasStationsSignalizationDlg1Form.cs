@@ -8,22 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
-
-
 namespace XICSM.ICSControlClient.Forms
 {
     public partial class MeasStationsSignalizationDlg1Form : Form
     {
         double _distance;
         double _bw;
-        public MeasStationsSignalizationDlg1Form(double defaultDistance, double defaultBw)
+        public MeasStationsSignalizationDlg1Form(double defaultDistance, double defaultBw, bool isHideBw)
         {
             InitializeComponent();
             icsDistance.Value = defaultDistance;
             this._distance = defaultDistance;
             icsBw.Value = defaultBw;
             this._bw = defaultBw;
+            if (isHideBw)
+            {
+                icsBw.Visible = false;
+                lblBw.Visible = false;
+                this.Height = 170;
+            }
         }
 
         public double Distance

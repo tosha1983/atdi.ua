@@ -166,7 +166,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     MTSDR.Frequencies.Step_kHz = task.MeasFreqParam.Step;
                                 }
 
-                                if (task.RefSituation!=null)
+                                if (task.SignalingMeasTaskParameters != null)
+                                {
+                                    MTSDR.SignalingMeasTaskParameters = new DEV.SignalingMeasTask();
+                                    MTSDR.SignalingMeasTaskParameters.allowableExcess_dB = task.SignalingMeasTaskParameters.allowableExcess_dB;
+                                    MTSDR.SignalingMeasTaskParameters.AutoDivisionEmitting = task.SignalingMeasTaskParameters.AutoDivisionEmitting;
+                                    MTSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = task.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels;
+                                    MTSDR.SignalingMeasTaskParameters.DifferenceMaxMax = task.SignalingMeasTaskParameters.DifferenceMaxMax;
+                                    MTSDR.SignalingMeasTaskParameters.FiltrationTrace = task.SignalingMeasTaskParameters.FiltrationTrace;
+                                    MTSDR.SignalingMeasTaskParameters.SignalizationNChenal = task.SignalingMeasTaskParameters.SignalizationNChenal;
+                                    MTSDR.SignalingMeasTaskParameters.SignalizationNCount = task.SignalingMeasTaskParameters.SignalizationNCount;
+                                }
+
+                                    if (task.RefSituation!=null)
                                 {
                                     if (task.RefSituation != null)
                                     {

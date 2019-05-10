@@ -186,12 +186,24 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MeasTimeParamListTimeStart = DateTime.Today;
             this._currentMeasTask.MeasTimeParamListTimeStop = DateTime.Today.AddDays(1).AddMinutes(-1);
             this._currentMeasTask.MeasTimeParamListPerInterval = 600;
-            this._currentMeasTask.MeasDtParamRBW = 100;
-            this._currentMeasTask.MeasDtParamVBW = 100;
-            this._currentMeasTask.MeasDtParamMeasTime = 0.001;
-            this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.Avarage;
-            this._currentMeasTask.MeasDtParamRfAttenuation = 0;
-            this._currentMeasTask.MeasDtParamPreamplification = 0;
+            if (_measType == SDR.MeasurementType.Signaling)
+            {
+                this._currentMeasTask.MeasDtParamRBW = null;
+                this._currentMeasTask.MeasDtParamVBW = null;
+                this._currentMeasTask.MeasDtParamMeasTime = null;
+                this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.Avarage;
+                //this._currentMeasTask.MeasDtParamRfAttenuation = 0;
+                //this._currentMeasTask.MeasDtParamPreamplification = 0;
+            }
+            else
+            {
+                this._currentMeasTask.MeasDtParamRBW = 100;
+                this._currentMeasTask.MeasDtParamVBW = 100;
+                this._currentMeasTask.MeasDtParamMeasTime = 0.001;
+                this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.Avarage;
+                this._currentMeasTask.MeasDtParamRfAttenuation = 0;
+                this._currentMeasTask.MeasDtParamPreamplification = 0;
+            }
             this._currentMeasTask.MeasOtherTypeSpectrumOccupation = SDR.SpectrumOccupationType.FreqChannelOccupation;
             this._currentMeasTask.MeasOtherLevelMinOccup = -75;
             this._currentMeasTask.MeasOtherSwNumber = 10;
@@ -201,6 +213,13 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.Task = SDR.MeasTaskType.Scan;
             this._currentMeasTask.DateCreated = DateTime.Now;
             this._currentMeasTask.CreatedBy = IM.ConnectedUser();
+            this._currentMeasTask.CompareTraceJustWithRefLevels = false;
+            this._currentMeasTask.AutoDivisionEmitting = true;
+            this._currentMeasTask.DifferenceMaxMax = 20;
+            this._currentMeasTask.FiltrationTrace = true;
+            this._currentMeasTask.allowableExcess_dB = 10;
+            this._currentMeasTask.SignalizationNChenal = 50;
+            this._currentMeasTask.SignalizationNCount = 1000000;
         }
         private void ReloadShortSensors()
         {
@@ -463,6 +482,16 @@ namespace XICSM.ICSControlClient.ViewModels
                         TimeStop = this._currentMeasTask.MeasTimeParamListTimeStop,
                         Days = this._currentMeasTask.MeasTimeParamListDays,
                         PerInterval = this._currentMeasTask.MeasTimeParamListPerInterval
+                    },
+                    SignalingMeasTaskParameters = new SDR.SignalingMeasTask()
+                    {
+                        allowableExcess_dB = this._currentMeasTask.allowableExcess_dB,
+                        AutoDivisionEmitting = this._currentMeasTask.AutoDivisionEmitting,
+                        CompareTraceJustWithRefLevels = this._currentMeasTask.CompareTraceJustWithRefLevels,
+                        DifferenceMaxMax = this._currentMeasTask.DifferenceMaxMax,
+                        FiltrationTrace = this._currentMeasTask.FiltrationTrace,
+                        SignalizationNChenal = this._currentMeasTask.SignalizationNChenal,
+                        SignalizationNCount = this._currentMeasTask.SignalizationNCount
                     },
                     Stations = stationsList.ToArray(),
                     Task = SDR.MeasTaskType.Scan,

@@ -283,6 +283,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 TriggerDeviationFromReference = source.TriggerDeviationFromReference,
                 Bandwidth_kHz = source.Spectrum == null ? 0 : source.Spectrum.Bandwidth_kHz,
                 CorrectnessEstimations = source.Spectrum == null ? true : source.Spectrum.CorrectnessEstimations,
+                Contravention = source.Spectrum == null ? true : source.Spectrum.Contravention,
                 TraceCount = source.Spectrum == null ? 0 : source.Spectrum.TraceCount,
                 SignalLevel_dBm = source.Spectrum == null ? 0 : source.Spectrum.SignalLevel_dBm,
                 RollOffFactor = source.EmittingParameters.RollOffFactor,
