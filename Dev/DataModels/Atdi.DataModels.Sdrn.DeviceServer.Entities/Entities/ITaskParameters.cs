@@ -36,5 +36,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         int? FiltrationTrace { get; set; }
         double? AllowableExcess_dB { get; set; }
         double? PercentForCalcNoise { get; set; }
+        int? SignalizationNChenal { get; set; }
+        int? SignalizationNCount { get; set; }
     }
 }

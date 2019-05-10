@@ -176,7 +176,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     bandWidtTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
                     bandWidtTask.LastTimeSend = DateTime.Now;
                     bandWidtTask.taskParameters = taskParametersForBW;
-                    bandWidtTask.Smooth = true;
+                    bandWidtTask.Smooth = taskParametersForBW.Smooth;
                     bandWidtTask.mesureTraceParameter = taskContext.Task.actionConvertBW.Invoke(bandWidtTask.taskParameters);
                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, taskContext);
                 }

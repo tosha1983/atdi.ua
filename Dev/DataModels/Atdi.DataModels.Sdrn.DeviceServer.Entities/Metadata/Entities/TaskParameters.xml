@@ -35,6 +35,8 @@
     <Field Desc="DifferenceMaxMax" Title="DifferenceMaxMax" Name="DifferenceMaxMax" DataType="Decimal.22.8" SourceName="DIFFMINMAX" SourceType="Column" Required="true"/>
     <Field Desc="AllowableExcess_dB" Title="AllowableExcess_dB" Name="AllowableExcess_dB" DataType="Decimal.22.8" SourceName="ALLOWEXCESSDB" SourceType="Column" Required="true"/>
     <Field Desc="PercentForCalcNoise" Title="PercentForCalcNoise" Name="PercentForCalcNoise" DataType="Decimal.22.8" SourceName="PERCENTFORCALCNOICE" SourceType="Column" Required="true"/>
+    <Field Desc="SignalizationNCount" Title="SignalizationNCount" Name="SignalizationNCount" DataType="Integer.32" SourceName="SIGNALIZATIONNCOUNT" SourceType="Column" Required="false"/>
+    <Field Desc="SignalizationNChenal" Title="SignalizationNChenal" Name="SignalizationNChenal" DataType="Integer.32" SourceName="SIGNALIZATIONNCHENAL" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
