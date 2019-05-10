@@ -14,15 +14,33 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
     {
         public static TaskParameters Convert(this MeasTask taskSDR)
         {
+            const bool Smooth = true; // из клиента для BW
+            // сигнализация
+            const bool CompareTraceJustWithRefLevels = false; // из клиента
+            const bool  AutoDivisionEmitting = true; // из клиента
+            const double DifferenceMaxMax = 20; // из клиента
+            const bool FiltrationTrace = true; // из клиента 
+            const double allowableExcess_dB = 10; // из клиента
+            const int SignalizationNCount = 1000000; // из клиента
+            const int SignalizationNChenal = 50; // из клиента
+
+
+            const double PercentForCalcNoise = 10; // из конфигурации 
+
+            
+            // сигнализация
+
+
+
             const int SO_Ncount = 10000;
-            const int SignalizationNCount = 1000000;
             const int OtherNCount = 1000;
 
 
             const int SO_NChenal = 10;
-            const int SignalizationNChenal = 50;
+
 
             var taskParameters = new TaskParameters();
+            taskParameters.Smooth = Smooth;
 
             //
             //taskParameters.NCount = необходимо вичислить
@@ -135,7 +153,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 taskParameters.FiltrationTrace = true;
                 taskParameters.allowableExcess_dB = 10;
                 taskParameters.PercentForCalcNoise = 10;
-        
+                taskParameters.NCount = SignalizationNCount;
+
                 if (taskSDR.RefSituation != null)
                 {
                     var listReferenceSituation = new List<ReferenceSituation>();

@@ -36,5 +36,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public bool FiltrationTrace { get; set; }
         public double allowableExcess_dB { get; set; }
         public double PercentForCalcNoise { get; set; }
+        public bool Smooth { get; set; } // требования по усреднению спектра при проведении оценки BandWidth и др.
     }
 }
