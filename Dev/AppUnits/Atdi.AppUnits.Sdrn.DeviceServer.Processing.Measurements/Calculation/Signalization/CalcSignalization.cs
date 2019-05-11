@@ -14,8 +14,10 @@ using Atdi.Platform.Logging;
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public static class CalcSignalization
-
     {
+        private static int StartLevelsForLevelDistribution = -150;
+        private static int NumberPointForLevelDistribution = 200;
+
         public static Spectrum CreateSpectrum(float[] templevels, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm, double DiffLevelForCalcBW = 25, double windowBW = 1.5,
            double nDbLevel_dB = 15, int NumberIgnoredPoints = 1, double MinExcessNoseLevel_dB = 5)
         {
@@ -85,12 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static Emitting FillEmittingForStorage(Emitting EmittingParameter, ILogger logger)
         {
             var emitting = EmittingParameter;
-            // константы 
             try
             {
-                int StartLevelsForLevelDistribution = -150;
-                int NumberPointForLevelDistribution = 200;
-                // конец константы 
                 if ((emitting.WorkTimes != null) && (emitting.WorkTimes.Length > 0))
                 {
                     emitting.WorkTimes[0].HitCount = 1;
@@ -137,5 +135,40 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             };
             return emitting1;
         }
+        /// <summary>
+        /// Проверка на то выходит ли излучение за пределы RefLevels
+        /// </summary>
+        /// <param name="emitting"></param>
+        /// <param name="referenceLevels"></param>
+        /// <returns></returns>
+        public static bool CheckContravention(ref Spectrum spectrum, ReferenceLevels referenceLevels, bool Smooth = true)
+        { // НЕ ТЕСТИРОВАЛОСЬ
+            float[] Levels = new float[spectrum.Levels_dBm.Length];
+            if (Smooth)
+            {
+                Levels = SmoothTrace.blackman(spectrum.Levels_dBm);
+            }
+            else
+            {
+                Levels = spectrum.Levels_dBm;
+            }
+            double LogFreqSpectrum = 10 * Math.Log10(spectrum.SpectrumSteps_kHz * 1000.0);
+            double LogFreqRef = 10 * Math.Log10(referenceLevels.StepFrequency_Hz);
+
+            for (int i = 0; i < Levels.Length; i++)
+            {
+                // double DensityLevel = Levels[i] - LogFreqSpectrum;
+                double freq_Level_Hz = spectrum.SpectrumStartFreq_MHz * 1000000.0 + spectrum.SpectrumSteps_kHz * i * 1000.0;
+                int IndexRef = (int)Math.Round((freq_Level_Hz - referenceLevels.StartFrequency_Hz) / referenceLevels.StepFrequency_Hz);
+                if ((IndexRef >= 0) && (IndexRef < referenceLevels.levels.Length))
+                {
+                    if (referenceLevels.levels[IndexRef] - LogFreqRef < Levels[i] - LogFreqSpectrum)
+                    { spectrum.Contravention = true; return spectrum.Contravention; }
+                }
+            }
+            spectrum.Contravention = false;  return spectrum.Contravention;
+        }
     }
 }
+
+

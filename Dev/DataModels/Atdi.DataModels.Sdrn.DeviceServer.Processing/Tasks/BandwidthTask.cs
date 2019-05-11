@@ -10,7 +10,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
     public class BandWidthTask : MeasurementTaskBase
     {
-        public string bandwidthEstimationType;
+        public bool Smooth;
+        public string BandwidthEstimationType;
         public double X_Beta;
         public int MaximumIgnorPoint;
         public BWResult MeasBWResults; //  результат измерения

@@ -55,9 +55,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     if (taskContext.Task.CountMeasurementDone == 0)
                     {
-                        taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm);
+                        taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters, taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm);
                     }
-                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
                 }
                 // Результат содержится в taskContext.Task.EmittingsRaw
                 //получаем результаты BW
@@ -176,6 +176,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     bandWidtTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
                     bandWidtTask.LastTimeSend = DateTime.Now;
                     bandWidtTask.taskParameters = taskParametersForBW;
+                    bandWidtTask.Smooth = taskParametersForBW.Smooth;
                     bandWidtTask.mesureTraceParameter = taskContext.Task.actionConvertBW.Invoke(bandWidtTask.taskParameters);
                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, taskContext);
                 }

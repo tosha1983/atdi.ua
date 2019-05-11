@@ -12,17 +12,123 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 {
     public static class ConvertMeasTaskToTaskParameters
     {
-        public static TaskParameters Convert(this MeasTask taskSDR)
+        public static TaskParameters Convert(this MeasTask taskSDR, ConfigMessaging configMessaging)
         {
+            const bool Smooth = true; // из клиента для BW
+         
+            // сигнализация
+            bool? CompareTraceJustWithRefLevels = null;
+            bool? AutoDivisionEmitting = null;
+            double? DifferenceMaxMax = null;
+            bool? FiltrationTrace = null;
+            double? allowableExcess_dB = null;
+            int? SignalizationNCount = null;
+            int? SignalizationNChenal = null;
+
+            if (taskSDR.SignalingMeasTaskParameters != null)
+            {
+                if (taskSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels != null)
+                {
+                    CompareTraceJustWithRefLevels = taskSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels;
+                }
+                else
+                {
+                    CompareTraceJustWithRefLevels = configMessaging.CompareTraceJustWithRefLevels;
+                }
+
+                if (taskSDR.SignalingMeasTaskParameters.AutoDivisionEmitting != null)
+                {
+                    AutoDivisionEmitting = taskSDR.SignalingMeasTaskParameters.AutoDivisionEmitting;
+                }
+                else
+                {
+                    AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
+                }
+
+                if (taskSDR.SignalingMeasTaskParameters.DifferenceMaxMax != null)
+                {
+                    DifferenceMaxMax = taskSDR.SignalingMeasTaskParameters.DifferenceMaxMax;
+                }
+                else
+                {
+                    DifferenceMaxMax = configMessaging.DifferenceMaxMax;
+                }
+
+                if (taskSDR.SignalingMeasTaskParameters.FiltrationTrace != null)
+                {
+                    FiltrationTrace = taskSDR.SignalingMeasTaskParameters.FiltrationTrace;
+                }
+                else
+                {
+                    FiltrationTrace = configMessaging.FiltrationTrace;
+                }
+
+
+                if (taskSDR.SignalingMeasTaskParameters.allowableExcess_dB != null)
+                {
+                    allowableExcess_dB = taskSDR.SignalingMeasTaskParameters.allowableExcess_dB;
+                }
+                else
+                {
+                    allowableExcess_dB = configMessaging.allowableExcess_dB;
+                }
+
+                if (taskSDR.SignalingMeasTaskParameters.SignalizationNCount != null)
+                {
+                    SignalizationNCount = taskSDR.SignalingMeasTaskParameters.SignalizationNCount;
+                }
+                else
+                {
+                    SignalizationNCount = configMessaging.SignalizationNCount;
+                }
+
+
+                if (taskSDR.SignalingMeasTaskParameters.SignalizationNChenal != null)
+                {
+                    SignalizationNChenal = taskSDR.SignalingMeasTaskParameters.SignalizationNChenal;
+                }
+                else
+                {
+                    SignalizationNChenal = configMessaging.SignalizationNChenal;
+                }
+
+            }
+            else
+            {
+                CompareTraceJustWithRefLevels = configMessaging.CompareTraceJustWithRefLevels;
+                AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
+                DifferenceMaxMax = configMessaging.DifferenceMaxMax;
+                FiltrationTrace = configMessaging.FiltrationTrace;
+                allowableExcess_dB = configMessaging.allowableExcess_dB;
+                SignalizationNCount = configMessaging.SignalizationNCount;
+                SignalizationNChenal = configMessaging.SignalizationNChenal;
+            }
+
+            double PercentForCalcNoise = configMessaging.PercentForCalcNoise;
+
+            /*
+            bool? CompareTraceJustWithRefLevels = false; // из клиента
+            bool?  AutoDivisionEmitting = true; // из клиента
+            double? DifferenceMaxMax = 20; // из клиента
+            bool? FiltrationTrace = true; // из клиента 
+            double? allowableExcess_dB = 10; // из клиента
+            int? SignalizationNCount = 1000000; // из клиента
+            int? SignalizationNChenal = 50; // из клиента
+            */
+           
+            // сигнализация
+
+
+
             const int SO_Ncount = 10000;
-            const int SignalizationNCount = 1000000;
             const int OtherNCount = 1000;
 
 
             const int SO_NChenal = 10;
-            const int SignalizationNChenal = 50;
+
 
             var taskParameters = new TaskParameters();
+            taskParameters.Smooth = Smooth;
 
             //
             //taskParameters.NCount = необходимо вичислить
@@ -78,7 +184,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                             taskParameters.NCount = SO_Ncount;
                             break;
                         case DataModels.Sdrns.MeasurementType.Signaling:
-                            taskParameters.NCount = SignalizationNCount;
+                            taskParameters.NCount = SignalizationNCount.Value;
                             break;
                         default:
                             taskParameters.NCount = OtherNCount;
@@ -112,7 +218,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 else if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
                 {
                     //if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SignalizationNChenal; }
-                    taskParameters.NChenal = SignalizationNChenal;
+                    //taskParameters.NChenal = SignalizationNChenal.Value;
                     if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
                     {
                         // формируем начало и конец для измерений 
@@ -129,6 +235,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 
             if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
             {
+                if (CompareTraceJustWithRefLevels != null)
+                {
+                    taskParameters.CompareTraceJustWithRefLevels = CompareTraceJustWithRefLevels.Value;
+                }
+                if (AutoDivisionEmitting != null)
+                {
+                    taskParameters.AutoDivisionEmitting = AutoDivisionEmitting.Value;
+                }
+                if (DifferenceMaxMax != null)
+                {
+                    taskParameters.DifferenceMaxMax = DifferenceMaxMax.Value;
+                }
+                if (FiltrationTrace != null)
+                {
+                    taskParameters.FiltrationTrace = FiltrationTrace.Value;
+                }
+                if (allowableExcess_dB != null)
+                {
+                    taskParameters.allowableExcess_dB = allowableExcess_dB.Value;
+                }
+                taskParameters.PercentForCalcNoise = PercentForCalcNoise;
+                if (SignalizationNChenal != null)
+                {
+                    //taskParameters.SignalizationNChenal = SignalizationNChenal.Value;
+                    taskParameters.NChenal = SignalizationNChenal.Value;
+                }
+                if (SignalizationNCount != null)
+                {
+                    //taskParameters.SignalizationNCount = SignalizationNCount.Value;
+                    taskParameters.NCount = SignalizationNCount.Value;
+                }
+
+
+                //taskParameters.NCount = SignalizationNCount.Value;
+
                 if (taskSDR.RefSituation != null)
                 {
                     var listReferenceSituation = new List<ReferenceSituation>();

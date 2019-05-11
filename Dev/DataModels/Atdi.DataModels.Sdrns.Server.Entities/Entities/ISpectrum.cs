@@ -18,6 +18,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? MarkerIndex { get; set; }
         double? Bandwidth_kHz { get; set; }
         int? CorrectnessEstimations { get; set; }
+        int? Contravention { get; set; }
         int? TraceCount { get; set; }
         double? SignalLevel_dBm { get; set; }
         int? EmittingId { get; set; }

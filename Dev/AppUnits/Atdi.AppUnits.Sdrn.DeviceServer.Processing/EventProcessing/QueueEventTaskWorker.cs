@@ -157,7 +157,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             {
                                 var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(context.Process);
                                 var bandWidtTask = new BandWidthTask();
-                                bandWidtTask.bandwidthEstimationType = this._config.BandwidthEstimationType;
+                                bandWidtTask.BandwidthEstimationType = this._config.BandwidthEstimationType;
+                                bandWidtTask.Smooth = this._config.Smooth;
                                 bandWidtTask.X_Beta = this._config.X_Beta;
                                 bandWidtTask.MaximumIgnorPoint = this._config.MaximumIgnorPoint;
                                 bandWidtTask.durationForMeasBW_ms = this._config.durationForMeasBW_ms;

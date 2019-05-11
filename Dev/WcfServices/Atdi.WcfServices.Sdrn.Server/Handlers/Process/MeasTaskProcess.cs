@@ -280,6 +280,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                         Process(measTaskedit, massSensor, MeasTaskMode.Del.ToString(), false, out isSuccessTemp, out id, true);
                         result.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
+
+                        var saveResDb = new SaveResults(_dataLayer, _logger);
+                        var valDelRes = saveResDb.DeleteResultFromDB(new MeasurementResultsIdentifier() { MeasTaskId = new MeasTaskIdentifier() { Value = taskId.Value } }, Status.Z.ToString());  
+                        if (valDelRes.State== CommonOperationState.Fault)
+                        {
+                            result.State = CommonOperationState.Fault;
+                        }
                     }
                     else result.State = CommonOperationState.Fault;
                 }
@@ -287,6 +294,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     result.State = CommonOperationState.Fault;
                 }
+
             }
             catch (Exception e)
             {

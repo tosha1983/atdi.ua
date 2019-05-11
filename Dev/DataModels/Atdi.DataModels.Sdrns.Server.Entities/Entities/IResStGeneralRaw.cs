@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface IResStGeneralRaw
     {
         int Id { get; set; }
+        double? BW { get; set; }
         double? Rbw { get; set; }
         double? Vbw { get; set; }
         int? ResMeasStaId { get; set; }
@@ -25,7 +26,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? OffsetFrequency { get; set; }
         double? SpecrumStartFreq { get; set; }
         double? SpecrumSteps { get; set; }
-        bool? Correctnessestim { get; set; }
+        int? Correctnessestim { get; set; }
         int? TraceCount { get; set; }
         IResMeasStaRaw RESMEASSTA { get; set; }
     }

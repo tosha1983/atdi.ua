@@ -54,6 +54,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStart);
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
 
@@ -181,6 +182,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measTask.Task = Task;
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
+
+
 
                         var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
                         builderMeasDtParam.Select(c => c.Id);
@@ -339,6 +342,36 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measTask.Task = Task;
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
+
+
+                        measTask.SignalingMeasTaskParameters = new SignalingMeasTask();
+                        var builderMeasTaskSignaling = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().From();
+                        builderMeasTaskSignaling.Select(c => c.Id);
+                        builderMeasTaskSignaling.Select(c => c.allowableExcess_dB);
+                        builderMeasTaskSignaling.Select(c => c.AutoDivisionEmitting);
+                        builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
+                        builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
+                        builderMeasTaskSignaling.Select(c => c.FiltrationTrace);
+                        builderMeasTaskSignaling.Select(c => c.IdMeasTask);
+                        builderMeasTaskSignaling.Select(c => c.SignalizationNChenal);
+                        builderMeasTaskSignaling.Select(c => c.SignalizationNCount);
+                        builderMeasTaskSignaling.Where(c => c.IdMeasTask, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        queryExecuter.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
+                        {
+                            var resultMeasTaskSignaling = true;
+                            while (readerMeasTaskSignaling.Read())
+                            {
+                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
+                                measTask.SignalingMeasTaskParameters.AutoDivisionEmitting = readerMeasTaskSignaling.GetValue(c => c.AutoDivisionEmitting) == 1 ? true : false;
+                                measTask.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = readerMeasTaskSignaling.GetValue(c => c.CompareTraceJustWithRefLevels) == 1 ? true : false;
+                                measTask.SignalingMeasTaskParameters.FiltrationTrace = readerMeasTaskSignaling.GetValue(c => c.FiltrationTrace) == 1 ? true : false;
+                                measTask.SignalingMeasTaskParameters.DifferenceMaxMax = readerMeasTaskSignaling.GetValue(c => c.DifferenceMaxMax);
+                                measTask.SignalingMeasTaskParameters.SignalizationNChenal = readerMeasTaskSignaling.GetValue(c => c.SignalizationNChenal);
+                                measTask.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
+                            }
+                            return resultMeasTaskSignaling;
+                        });
+
 
 
                         //Ref situation
@@ -764,7 +797,35 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
 
-                 
+
+                        measTask.SignalingMeasTaskParameters = new SignalingMeasTask();
+                        var builderMeasTaskSignaling = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().From();
+                        builderMeasTaskSignaling.Select(c => c.Id);
+                        builderMeasTaskSignaling.Select(c => c.allowableExcess_dB);
+                        builderMeasTaskSignaling.Select(c => c.AutoDivisionEmitting);
+                        builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
+                        builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
+                        builderMeasTaskSignaling.Select(c => c.FiltrationTrace);
+                        builderMeasTaskSignaling.Select(c => c.IdMeasTask);
+                        builderMeasTaskSignaling.Select(c => c.SignalizationNChenal);
+                        builderMeasTaskSignaling.Select(c => c.SignalizationNCount);
+                        builderMeasTaskSignaling.Where(c => c.IdMeasTask, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        queryExecuter.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
+                        {
+                            var resultMeasTaskSignaling = true;
+                            while (readerMeasTaskSignaling.Read())
+                            {
+                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
+                                measTask.SignalingMeasTaskParameters.AutoDivisionEmitting = readerMeasTaskSignaling.GetValue(c => c.AutoDivisionEmitting) == 1 ? true : false;
+                                measTask.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = readerMeasTaskSignaling.GetValue(c => c.CompareTraceJustWithRefLevels) == 1 ? true : false;
+                                measTask.SignalingMeasTaskParameters.FiltrationTrace = readerMeasTaskSignaling.GetValue(c => c.FiltrationTrace) == 1 ? true : false;
+                                measTask.SignalingMeasTaskParameters.DifferenceMaxMax = readerMeasTaskSignaling.GetValue(c => c.DifferenceMaxMax);
+                                measTask.SignalingMeasTaskParameters.SignalizationNChenal = readerMeasTaskSignaling.GetValue(c => c.SignalizationNChenal);
+                                measTask.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
+                            }
+                            return resultMeasTaskSignaling;
+                        });
+
 
                         // MeasTimeParamList
 

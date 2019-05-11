@@ -28,7 +28,177 @@ namespace Atdi.WcfServices.Sdrn.Server
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
+        /*
+        public static float[] blackman(float[] ArrIn, bool LogInterpolation = false)
+        { // НЕ ТЕСТИРОВАННО
 
+            double PersentLongFilterFromTrace = 3;
+            int N = (int)Math.Floor(ArrIn.Length * PersentLongFilterFromTrace / 200); // Длина фильтра
+            N = N * 2 + 1;
+            if (N <= 2) { return ArrIn; }
+            double[] H = new double[N]; // Импульсная характеристика фильтра
+            // Расчет импульсной характеристики фильтра Блекмана
+            for (int i = 0; N > i; i++)
+            {
+                H[i] = 0.42 - 0.5 * Math.Cos((2 * Math.PI * (i - 1)) / (N - 1)) + 0.08 * Math.Cos((4 * Math.PI * (i - 1)) / (N - 1));
+            }
+            //Нормировка импульсной характеристики
+            double SUM = 0;
+            for (int i = 0; N > i; i++)
+            {
+                SUM = SUM + H[i];
+            }
+            for (int i = 0; N > i; i++)
+            {
+                H[i] = H[i] / SUM;  // сумма коэффициентов равна 1
+            }
+
+            int z = ArrIn.Length;
+            double[] outArr = new double[z];
+            double[] ArrIn1 = new double[z];
+            // Фильтрация входных данных
+            if (!LogInterpolation)
+            {
+                for (int i = 0; z > i; i++)
+                {
+                    ArrIn1[i] = Math.Pow(10, ArrIn[i] / 10);
+                }
+            }
+            int st = (int)(Math.Floor(N / 2.0)); // Индекс точки с максимальной характеристикой 
+            for (int i = st; z + st > i; i++)
+            {
+                outArr[i - st] = 0;
+                for (int j = 0; N > j; j++)
+                {
+                    if (i - j >= 0)
+                    {
+                        if (i - j <= ArrIn1.Length - 1)
+                        {
+                            outArr[i - st] = outArr[i - st] + H[j] * ArrIn1[i - j]; // самая формула фильтра
+                        }
+                        else
+                        {
+                            outArr[i - st] = outArr[i - st] + H[j] * ArrIn1[ArrIn1.Length - 1];
+                        }
+                    }
+                    else
+                    {
+                        outArr[i - st] = outArr[i - st] + H[j] * ArrIn1[0];
+                    }
+                }
+            }
+            if (!LogInterpolation)
+            {
+                for (int i = 0; z > i; i++)
+                {
+                    outArr[i] = 10 * Math.Log10(outArr[i]);
+                }
+            }
+            float[] ArrOut = new float[outArr.Length];
+            for (int i = 0; z > i; i++)
+            {
+                ArrOut[i] = (float)outArr[i];
+            }
+            return ArrOut as float[];
+        }
+
+        public static int Counting(float[] Level_dBm, int PointStart, int PointStop, out int[] StartStop, double DifferenceMaxMax = 20, bool FiltrationTrace = true)
+        { // НЕ ТЕСТИРОВАЛОСЬ
+          // проверка коректности принимаемых данных
+            if (PointStop < PointStart) { int T = PointStop; PointStop = PointStart; PointStart = T; }
+            if (PointStart < 0) { PointStart = 0; }
+            if (PointStop > Level_dBm.Length - 1) { PointStop = Level_dBm.Length - 1; }
+            if (DifferenceMaxMax < 5) { DifferenceMaxMax = 5; }
+            // конец проверки корректности 
+
+            float[] Level = new float[PointStop - PointStart + 1];
+            Array.Copy(Level_dBm, PointStart, Level, 0, PointStop - PointStart + 1);
+            if (FiltrationTrace) { Level = blackman(Level, false); } // провели сглаживание массива
+
+            double LocMax1; int IndexLocMax1;
+            double LocMin1; int IndexLocMin1;
+            bool gotoMax;
+
+            List<int> MinMax = new List<int>();
+
+            LocMin1 = Level[0]; IndexLocMin1 = 0;
+            LocMax1 = Level[0]; IndexLocMax1 = 0;
+            gotoMax = true;
+
+            for (int i = 1; Level.Length > i; i++)
+            {
+                if (gotoMax)
+                {
+                    if (Level[i] > LocMax1)
+                    {
+                        LocMax1 = Level[i]; IndexLocMax1 = i;
+                    }
+                    if (Level[i] < LocMin1)
+                    {
+                        LocMin1 = Level[i]; IndexLocMin1 = i;
+                    }
+                    if (LocMax1 - LocMin1 >= DifferenceMaxMax)
+                        if ((IndexLocMin1 < IndexLocMax1))
+                        { // мы превысили уровень. Теперь точно можно зафиксировать минимум. 
+                            if (MinMax.Count == 0)
+                            {
+                                MinMax.Add(IndexLocMin1);
+                            }
+                            else
+                            {
+                                MinMax.Add(IndexLocMin1);
+                                MinMax.Add(IndexLocMin1);
+                            }
+                            LocMin1 = Level[i]; IndexLocMin1 = i;
+                            gotoMax = false;
+                        }
+                        else
+                        {
+                            LocMax1 = Level[i]; IndexLocMax1 = i;
+                        }
+                }
+                else
+                {
+                    if (Level[i] > LocMax1)
+                    {
+                        LocMax1 = Level[i]; IndexLocMax1 = i;
+                    }
+                    if (Level[i] < LocMin1)
+                    {
+                        LocMin1 = Level[i]; IndexLocMin1 = i;
+                    }
+                    if (LocMax1 - LocMin1 >= DifferenceMaxMax)
+                    {
+                        if (IndexLocMin1 > IndexLocMax1)
+                        {
+                            // мы превысили уровень. Теперь точно можно зафиксировать максимум. 
+                            LocMax1 = Level[i]; IndexLocMax1 = i;
+                            gotoMax = true;
+                        }
+                        else
+                        {
+                            LocMin1 = Level[i]; IndexLocMin1 = i;
+                        }
+                    }
+                }
+            }
+            if (MinMax.Count == 0)
+            {
+                MinMax.Add(0); MinMax.Add(Level.Length - 1);
+            }
+            else
+            {
+                if (gotoMax) { MinMax.Add(IndexLocMin1); }
+                else { MinMax.RemoveAt(MinMax.Count - 1); }
+            }
+            StartStop = new int[MinMax.Count];
+            for (int i = 0; MinMax.Count > i; i++)
+            {
+                StartStop[i] = MinMax[i] + PointStart;
+            }
+            return (int)(StartStop.Length / 2);
+        }
+        */
 
         public void GetEmittingAndReferenceLevels(int resId, bool isLoadAllData, out Emitting[] emittings, out ReferenceLevels referenceLevels, double? StartFrequency_Hz = null, double? StopFrequency_Hz = null)
         {
@@ -47,10 +217,15 @@ namespace Atdi.WcfServices.Sdrn.Server
             .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c => c.SensorId, c => c.StationID, c => c.StationTableName)
             .OrderByAsc(c => c.StartFrequency_MHz)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+            //.Where(c => c.Id, ConditionOperator.Equal, 1216364);
             queryExecuter.Fetch(queryEmitting, reader =>
             {
                 while (reader.Read())
                 {
+
+                    //if (((reader.GetValue(c => c.Id) == 1373901) || (reader.GetValue(c => c.Id) == 1373902)) == false)
+                        //continue;
+
                     var emitting = new Emitting();
                     emitting.Id = reader.GetValue(c => c.Id);
                     if (reader.GetValue(c => c.StationID).HasValue)
@@ -235,7 +410,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                        .From()
-                       .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id)
+                       .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                        .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
                 queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                 {
@@ -250,6 +425,28 @@ namespace Atdi.WcfServices.Sdrn.Server
                             if (levelsdBm != null)
                             {
                                 listLevelsdBm.AddRange(levelsdBm as float[]);
+
+                                ////////////////////
+                                /*
+                                if (readerSpectrum.GetValue(c => c.Id) == 1373893)
+                                {
+                                    var lelvDbm = levelsdBm as float[];
+                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
+                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
+                                    //int[] startStop;
+                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
+                                }
+
+                                if (readerSpectrum.GetValue(c => c.Id) == 1373894)
+                                {
+                                    var lelvDbm = levelsdBm as float[];
+                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
+                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
+                                    //int[] startStop;
+                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
+                                }
+                                */
+                                /////
                             }
                         }
                        
@@ -305,6 +502,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
                             {
                                 spectrum.CorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
+                            }
+
+                            if (readerSpectrum.GetValue(c => c.Contravention).HasValue)
+                            {
+                                spectrum.Contravention = readerSpectrum.GetValue(c => c.Contravention).Value == 1 ? true : false;
                             }
                         }
                         spectrum.Levels_dBm = listLevelsdBm.ToArray();
@@ -579,6 +781,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.TypeMeasurements);
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
+                builderResMeas.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
@@ -779,6 +982,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         builderResMeas.Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, measResultsId.SubMeasTaskStationId);
                     }
+                    builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
 
                     queryExecuter.Fetch(builderResMeas, readerResMeas =>
                     {
@@ -1156,6 +1360,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.SpecrumSteps);
                         builderResStGeneral.Select(c => c.T1);
                         builderResStGeneral.Select(c => c.T2);
+                        builderResStGeneral.Select(c => c.BW);
                         builderResStGeneral.Select(c => c.TimeFinishMeas);
                         builderResStGeneral.Select(c => c.TimeStartMeas);
                         builderResStGeneral.Select(c => c.TraceCount);
@@ -1451,6 +1656,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.SpecrumSteps);
                         builderResStGeneral.Select(c => c.T1);
                         builderResStGeneral.Select(c => c.T2);
+                        builderResStGeneral.Select(c => c.BW);
                         builderResStGeneral.Select(c => c.TimeFinishMeas);
                         builderResStGeneral.Select(c => c.TimeStartMeas);
                         builderResStGeneral.Select(c => c.TraceCount);
@@ -1577,6 +1783,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStGeneral.Select(c => c.SpecrumSteps);
                 builderResStGeneral.Select(c => c.T1);
                 builderResStGeneral.Select(c => c.T2);
+                builderResStGeneral.Select(c => c.BW);
                 builderResStGeneral.Select(c => c.TimeFinishMeas);
                 builderResStGeneral.Select(c => c.TimeStartMeas);
                 builderResStGeneral.Select(c => c.TraceCount);
@@ -1705,6 +1912,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.SpecrumSteps);
                         builderResStGeneral.Select(c => c.T1);
                         builderResStGeneral.Select(c => c.T2);
+                        builderResStGeneral.Select(c => c.BW);
                         builderResStGeneral.Select(c => c.TimeFinishMeas);
                         builderResStGeneral.Select(c => c.TimeStartMeas);
                         builderResStGeneral.Select(c => c.TraceCount);
@@ -1862,6 +2070,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.TypeMeasurements);
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.Id, ConditionOperator.Equal, ResId);
+                builderResMeas.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
@@ -2130,6 +2339,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.TypeMeasurements);
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.MeasTaskId, ConditionOperator.Equal, MeasTaskId.ToString());
+                builderResMeas.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
@@ -2219,6 +2429,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.TypeMeasurements);
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.MeasTaskId, ConditionOperator.Equal, MeasTaskId.ToString());
+                builderResMeas.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
@@ -2434,6 +2645,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResStGeneral.Select(c => c.SpecrumSteps);
                                 builderResStGeneral.Select(c => c.T1);
                                 builderResStGeneral.Select(c => c.T2);
+                                builderResStGeneral.Select(c => c.BW);
                                 builderResStGeneral.Select(c => c.TimeFinishMeas);
                                 builderResStGeneral.Select(c => c.TimeStartMeas);
                                 builderResStGeneral.Select(c => c.TraceCount);
@@ -2602,8 +2814,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResLocSensorMeasFast.Select(c => c.RESMEAS.TypeMeasurements);
                 builderResLocSensorMeasFast.Select(c => c.RESMEAS.SENSOR.Name);
                 builderResLocSensorMeasFast.Select(c => c.RESMEAS.SENSOR.TechId);
-
                 builderResLocSensorMeasFast.Select(c => c.ResMeasId);
+                builderResLocSensorMeasFast.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 builderResLocSensorMeasFast.OrderByAsc(c => c.Id);
                 var locationSensorMeasurement = new LocationSensorMeasurement();
                 queryExecuter.Fetch(builderResLocSensorMeasFast, readerResLocSensorMeas =>
@@ -2840,6 +3052,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, MeasTaskId.ToString());
+                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
@@ -2969,6 +3182,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.RESMEAS.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
                 builderResMeas.Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId.ToString());
+                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
@@ -3097,6 +3311,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
                 builderResMeas.OrderByAsc(c => c.Id);
                 builderResMeas.Where(c => c.RESMEAS.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
+                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
