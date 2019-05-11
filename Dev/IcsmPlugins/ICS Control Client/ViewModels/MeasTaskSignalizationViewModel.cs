@@ -33,9 +33,12 @@ namespace XICSM.ICSControlClient.ViewModels
             this.SelectedItemsList = this.SelectedItems;
             foreach (MeasurementResultsViewModel item in this.SelectedItemsList)
             {
-                var dlgForm = new FM.MeasResultSignalizationForm(item.MeasSdrResultsId);
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
+                if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
+                { 
+                    var dlgForm = new FM.MeasResultSignalizationForm(item.MeasSdrResultsId);
+                    dlgForm.ShowDialog();
+                    dlgForm.Dispose();
+                }
             }
         }
         public IList SelectedItemsList

@@ -256,6 +256,11 @@
     <Compile Include="Handlers\Tour\Commands\CreateMeasTaskCommand.cs" />
     <Compile Include="Handlers\Tour\Commands\BuildInspectionsCommand.cs" />
     <Compile Include="Handlers\Tour\ToursContextMenuBuilder.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
@@ -330,6 +335,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StationListForm.resx">
       <DependentUpon>StationListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
