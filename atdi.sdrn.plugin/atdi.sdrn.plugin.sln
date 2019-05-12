@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Common", "..\Dev\Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Api.DataBus", "..\Dev\DataModels\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj", "{F43550A2-FB1B-459C-A839-EA13CD5CD95B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10 Build", "10 Build", "{CB31DF8C-3E50-4E6C-B742-0CC9D952225D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.Plugin", "..\Dev\Build\Atdi.Build.Sdrn.Plugin\Atdi.Build.Sdrn.Plugin.csproj", "{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,9 +85,20 @@ Global
 		{F43550A2-FB1B-459C-A839-EA13CD5CD95B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F43550A2-FB1B-459C-A839-EA13CD5CD95B}.Release|x64.ActiveCfg = Release|Any CPU
 		{F43550A2-FB1B-459C-A839-EA13CD5CD95B}.Release|x64.Build.0 = Release|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Debug|x64.Build.0 = Debug|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|x64.ActiveCfg = Release|Any CPU
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4} = {CB31DF8C-3E50-4E6C-B742-0CC9D952225D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE24617F-E5FD-4742-A229-1F49BB66DE1C}
