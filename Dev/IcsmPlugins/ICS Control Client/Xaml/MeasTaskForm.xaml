@@ -359,7 +359,7 @@
                             <Style TargetType="TextBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="False"/>
+                                  <Setter  Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="True"/>
@@ -378,7 +378,7 @@
                             <Style TargetType="ComboBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="False"/>
+                                  <Setter  Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="True"/>
@@ -492,7 +492,7 @@
                       </Expander.Style>
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="160" />
+                          <ColumnDefinition Width="240" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
