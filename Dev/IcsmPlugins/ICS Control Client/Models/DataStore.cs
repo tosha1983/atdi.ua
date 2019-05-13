@@ -14,6 +14,12 @@ namespace XICSM.ICSControlClient.Models
 {
     public class DataStore
     {
+        public delegate void OnBeginInvokeEventHandler(string description);
+        public delegate void OnEndInvokeEventHandler(string description);
+
+        public event OnBeginInvokeEventHandler OnBeginInvoke;
+        public event OnEndInvokeEventHandler OnEndInvoke;
+
         private static DataStore _instance = new DataStore();
 
         private ConcurrentDictionary<int, MeasurementResults[]> _GetMeasResultsHeaderByTaskIdCache;
@@ -23,7 +29,8 @@ namespace XICSM.ICSControlClient.Models
         private ConcurrentDictionary<int, MeasTaskViewModel> _GetMeasTaskHeaderByIdCache;
         private ConcurrentDictionary<int, StationDataForMeasurements[]> _GetStationDataForMeasurementsByTaskIdCache;
         private ConcurrentDictionary<int, Sensor> _GetSensorByIdCache;
-
+        private ConcurrentDictionary<int, ResultsMeasurementsStation[]> _GetResMeasStationHeaderByResIdCache;
+        private ConcurrentDictionary<int, MeasurementResults> _GetMeasurementResultByResIdCache;
 
         public static DataStore GetStore()
         {
@@ -37,11 +44,16 @@ namespace XICSM.ICSControlClient.Models
 
         public MeasurementResults[] GetMeasResultsHeaderByTaskId(int taskId)
         {
+            
             var cache = this._GetMeasResultsHeaderByTaskIdCache;
 
             if (!cache.TryGetValue(taskId, out MeasurementResults[] data))
             {
+                var decription = $"Measurement Results for task with ID #{taskId}";
+                this.OnBeginInvoke?.Invoke(decription);
                 data = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(taskId);
+                this.OnEndInvoke?.Invoke(decription);
+
                 if (!cache.TryAdd(taskId, data))
                 {
                     if (cache.TryGetValue(taskId, out MeasurementResults[] data2))
@@ -57,7 +69,10 @@ namespace XICSM.ICSControlClient.Models
         {
             if (this._shortSensors == null)
             {
+                var decription = $"Short info of all sensors";
+                this.OnBeginInvoke?.Invoke(decription);
                 this._shortSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
+                this.OnEndInvoke?.Invoke(decription);
             }
             return this._shortSensors;
         }
@@ -109,7 +124,11 @@ namespace XICSM.ICSControlClient.Models
 
             if (!cache.TryGetValue(taskId, out MeasTaskViewModel data))
             {
+                var decription = $"Measurement Task Header with ID #{taskId}";
+                this.OnBeginInvoke?.Invoke(decription);
                 var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(taskId);
+                this.OnEndInvoke?.Invoke(decription);
+
                 data = Mappers.Map(task);
                 if (!cache.TryAdd(taskId, data))
                 {
@@ -128,7 +147,11 @@ namespace XICSM.ICSControlClient.Models
 
             if (!cache.TryGetValue(taskId, out StationDataForMeasurements[] data))
             {
+                var decription = $"Station Data For Measurements by task with ID #{taskId}";
+                this.OnBeginInvoke?.Invoke(decription);
                 data = SVC.SdrnsControllerWcfClient.GetStationDataForMeasurementsByTaskId(taskId);
+                this.OnEndInvoke?.Invoke(decription);
+
                 if (!cache.TryAdd(taskId, data))
                 {
                     if (cache.TryGetValue(taskId, out StationDataForMeasurements[] data2))
@@ -151,10 +174,58 @@ namespace XICSM.ICSControlClient.Models
 
             if (!cache.TryGetValue(sensorId, out Sensor data))
             {
+                var decription = $"Sensor Full Info with ID #{sensorId}";
+                this.OnBeginInvoke?.Invoke(decription);
                 data = SVC.SdrnsControllerWcfClient.GetSensorById(sensorId);
+                this.OnEndInvoke?.Invoke(decription);
+
                 if (!cache.TryAdd(sensorId, data))
                 {
                     if (cache.TryGetValue(sensorId, out Sensor data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int resultsId)
+        {
+            var cache = this._GetResMeasStationHeaderByResIdCache;
+
+            if (!cache.TryGetValue(resultsId, out ResultsMeasurementsStation[] data))
+            {
+                var decription = $"Result Measurement Station Header by the result set with ID #{resultsId}";
+                this.OnBeginInvoke?.Invoke(decription);
+                data = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(resultsId);
+                this.OnEndInvoke?.Invoke(decription);
+
+                if (!cache.TryAdd(resultsId, data))
+                {
+                    if (cache.TryGetValue(resultsId, out ResultsMeasurementsStation[] data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
+        public MeasurementResults GetMeasurementResultByResId(int resultsId)
+        {
+            var cache = this._GetMeasurementResultByResIdCache;
+
+            if (!cache.TryGetValue(resultsId, out MeasurementResults data))
+            {
+                var decription = $"Measurement Results by the result set with ID #{resultsId}";
+                this.OnBeginInvoke?.Invoke(decription);
+                data = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(resultsId);
+                this.OnEndInvoke?.Invoke(decription);
+
+                if (!cache.TryAdd(resultsId, data))
+                {
+                    if (cache.TryGetValue(resultsId, out MeasurementResults data2))
                     {
                         return data2;
                     }
@@ -171,6 +242,8 @@ namespace XICSM.ICSControlClient.Models
             this._GetMeasTaskHeaderByIdCache = new ConcurrentDictionary<int, MeasTaskViewModel>();
             this._GetStationDataForMeasurementsByTaskIdCache = new ConcurrentDictionary<int, StationDataForMeasurements[]>();
             this._GetSensorByIdCache = new ConcurrentDictionary<int, Sensor>();
+            this._GetResMeasStationHeaderByResIdCache = new ConcurrentDictionary<int, ResultsMeasurementsStation[]>();
+            this._GetMeasurementResultByResIdCache = new ConcurrentDictionary<int, MeasurementResults>();
         }
     }
 }

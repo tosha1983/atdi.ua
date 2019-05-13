@@ -24,13 +24,14 @@ namespace XICSM.ICSControlClient.Forms
         private bool _buttonAssociatedVisible;
         private int? _emittingId;
         private ElementHost _wpfElementHost;
-        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, int? emittingId)
+        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, int? emittingId, string captionAdd)
         {
             this._stationData = stationData;
             this._measResult = measResult;
             this._buttonAssociatedVisible = buttonAssociatedVisible;
             this._emittingId = emittingId;
             InitializeComponent();
+            this.Text = this.Text + captionAdd;
         }
 
         private void MeasStationsSignalizationForm_Load(object sender, EventArgs e)

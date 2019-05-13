@@ -39,6 +39,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("CorrectnessEstimations", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public bool CorrectnessEstimations { get; set; }
 
+        [WpfColumn("Contravention", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public bool Contravention { get; set; }
+
         [WpfColumn("TraceCount", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public int TraceCount { get; set; }
 

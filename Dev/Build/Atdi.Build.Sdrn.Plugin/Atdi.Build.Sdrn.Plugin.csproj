@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Build.Sdrn.Plugin</RootNamespace>
+    <AssemblyName>Atdi.Build.Sdrn.Plugin</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
+      <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj">
+      <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
+      <Name>Atdi.DataModels.Api.DataBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IcsmPlugins\ICS Control Client\ICS Control Client.csproj">
+      <Project>{8943c072-6f62-4601-bcda-1295dde93c3a}</Project>
+      <Name>ICS Control Client</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)XICSM_ICSControlClient.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\*.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

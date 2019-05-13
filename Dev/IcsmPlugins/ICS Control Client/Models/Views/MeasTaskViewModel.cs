@@ -123,6 +123,16 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public MeasStation[] Stations { get; set; }
 
+        public SignalingMeasTask SignalingMeasTaskParameters { get; set; }
+
+        public bool? CompareTraceJustWithRefLevels { get; set; }
+        public bool? AutoDivisionEmitting { get; set; }
+        public double? DifferenceMaxMax { get; set; }
+        public bool? FiltrationTrace { get; set; }
+        public double? allowableExcess_dB { get; set; }
+        public int? SignalizationNCount { get; set; }
+        public int? SignalizationNChenal { get; set; }
+
         public string this[string columnName]
         {
             get
