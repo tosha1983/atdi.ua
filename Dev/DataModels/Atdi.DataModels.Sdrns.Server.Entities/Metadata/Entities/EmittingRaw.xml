@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Entity
   Name        = "EmittingRaw"
   Title       = "EmittingRaw"
@@ -7,7 +7,7 @@
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>XBS_EMITTINGRAW</Name>
-    <Schema>ICSM</Schema>
+    <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
