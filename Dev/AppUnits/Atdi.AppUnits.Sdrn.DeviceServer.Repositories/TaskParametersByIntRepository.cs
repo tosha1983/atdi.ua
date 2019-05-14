@@ -1293,7 +1293,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     });
 
                     //ReferenceSignal
-
+                    
                     var listReferenceSituation = new List<DataModels.Sdrns.Device.ReferenceSituation>();
                     var builderReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().From();
                     builderReferenceSituationRaw.Select(c => c.Id);
@@ -1336,6 +1336,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     {
                                         referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
                                     }
+
 
                                     referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
                                     List<double> freqs = new List<double>();
@@ -1381,7 +1382,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     {
                         taskParameters.RefSituation = listReferenceSituation[0];
                     }
-
                     listTaskParameters.Add(taskParameters);
                 }
 
