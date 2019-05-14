@@ -142,7 +142,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="referenceLevels"></param>
         /// <returns></returns>
         public static bool CheckContravention(ref Spectrum spectrum, ReferenceLevels referenceLevels, bool Smooth = true)
-        { // НЕ ТЕСТИРОВАЛОСЬ
+        { // ПРОТЕСТИРОВАНО
             float[] Levels = new float[spectrum.Levels_dBm.Length];
             if (Smooth)
             {

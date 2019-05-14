@@ -135,6 +135,47 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     var sortedByFreqAsc = from z in allEmitting orderby z.StartFrequency_MHz ascending select z;
                     measResults.Emittings = sortedByFreqAsc.ToArray();
                     measResults.RefLevels = taskContext.Task.ReferenceLevels;
+                    /*
+                    if (measResults.Emittings != null)
+                    {
+                        for (int i = 0; i < measResults.Emittings.Length; i++)
+                        {
+                            var fnd = measResults.Emittings[i];
+                            if (fnd.WorkTimes != null)
+                            {
+                                var f = fnd.WorkTimes.ToList().Find(c => c.PersentAvailability < 0 || c.PersentAvailability > 100);
+                                if (f != null)
+                                {
+
+                                }
+
+                                var f_hit = fnd.WorkTimes.ToList().Find(c => c.HitCount == 0);
+                                if (f_hit != null)
+                                {
+
+                                }
+
+                            }
+
+                            if (fnd.LevelsDistribution == null)
+                            {
+
+                            }
+                            else
+                            {
+                                if (fnd.LevelsDistribution != null)
+                                {
+                                    int f_cnt = fnd.LevelsDistribution.Count.Count(x => x == 0);
+                                    if (f_cnt == fnd.LevelsDistribution.Count.Length)
+                                    {
+
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    */
                     taskContext.SetEvent(measResults);
                 }
 

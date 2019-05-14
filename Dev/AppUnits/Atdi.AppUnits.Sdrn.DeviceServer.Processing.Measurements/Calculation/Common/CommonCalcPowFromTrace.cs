@@ -37,17 +37,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (StartSignalFreq_Hz < StartLevelFreq_Hz) { return -999; }
             if (StopSignalFreq_Hz > StartLevelFreq_Hz + StepLevelFreq_Hz * (Levels_dBm.Length - 1)) { return -999; }
             int T1 = (int) Math.Ceiling((StartSignalFreq_Hz - StartLevelFreq_Hz) / StepLevelFreq_Hz);
-            int T2 = (int)Math.Floor((StartSignalFreq_Hz - StartLevelFreq_Hz) / StepLevelFreq_Hz);
+            int T2 = (int)Math.Floor((StopSignalFreq_Hz - StartLevelFreq_Hz) / StepLevelFreq_Hz);
             if (T1 < 0) { T1 = 0;}
             if (T2 > Levels_dBm.Length - 1) { T2 = Levels_dBm.Length - 1; }
             if (T1 >= T2) { return Levels_dBm[T1] + 10 * Math.Log10((-StartSignalFreq_Hz + StopSignalFreq_Hz)/StepLevelFreq_Hz);}
             double Pow_mW = 0;
-            Pow_mW = Levels_dBm[T1] + 10 * Math.Log10((StartLevelFreq_Hz + StepLevelFreq_Hz*T1 - StartSignalFreq_Hz) / StepLevelFreq_Hz);
+            if ((StartLevelFreq_Hz + StepLevelFreq_Hz * T1 - StartSignalFreq_Hz) > 0)
+            {
+                Pow_mW = Levels_dBm[T1] + 10 * Math.Log10((StartLevelFreq_Hz + StepLevelFreq_Hz * T1 - StartSignalFreq_Hz) / StepLevelFreq_Hz);
+                Pow_mW = Math.Pow(10, Pow_mW / 10);
+            }
+
             for (int i = T1; i <= T2; i++)
             {
                 Pow_mW = Pow_mW + Math.Pow(10, Levels_dBm[i] / 10);
             }
-            Pow_mW = Levels_dBm[T2] + 10 * Math.Log10((StopSignalFreq_Hz - StartLevelFreq_Hz - StepLevelFreq_Hz * T2) / StepLevelFreq_Hz);
+            if (StopSignalFreq_Hz - StartLevelFreq_Hz - StepLevelFreq_Hz * T2 > 0)
+            {
+                double PowEndPoint_mW = Levels_dBm[T2] + 10 * Math.Log10((StopSignalFreq_Hz - StartLevelFreq_Hz - StepLevelFreq_Hz * T2) / StepLevelFreq_Hz);
+                Pow_mW = Pow_mW + Math.Pow(10, PowEndPoint_mW / 10);
+            }
+
             return 10 * Math.Log10(Pow_mW);
         }
     }
