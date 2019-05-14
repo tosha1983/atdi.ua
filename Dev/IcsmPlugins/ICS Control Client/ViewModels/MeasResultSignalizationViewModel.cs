@@ -20,6 +20,8 @@ using System.Windows.Controls;
 using INP = System.Windows.Input;
 using System.Collections;
 using System.Globalization;
+using System.Timers;
+using XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -67,6 +69,13 @@ namespace XICSM.ICSControlClient.ViewModels
         public EmittingDataAdapter Emittings => this._emittings;
         public EmittingWorkTimeDataAdapter EmittingWorkTimes => this._emittingWorkTimes;
 
+        private readonly DataStore _dataStore;
+        private bool _statusBarIsIndeterminate = false;
+        private string _statusBarTitle = "";
+        private string _statusBarDecription = "";
+        private Timer _timer = null;
+        private WaitForm _waitForm = null;
+
         #region Commands
         public WpfCommand ZoomUndoCommand { get; set; }
         public WpfCommand ZoomDefaultCommand { get; set; }
@@ -76,6 +85,10 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public MeasResultSignalizationViewModel(int resultId)
         {
+            this._dataStore = DataStore.GetStore();
+            this._dataStore.OnBeginInvoke += _dataStore_OnBeginInvoke;
+            this._dataStore.OnEndInvoke += _dataStore_OnEndInvoke;
+
             this._resultId = resultId;
             this._emittings = new EmittingDataAdapter();
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
@@ -83,10 +96,80 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
             this.AddAssociationStationCommand = new WpfCommand(this.OnAddAssociationStationCommand);
             this.DeleteEmissionCommand = new WpfCommand(this.OnDeleteEmissionCommand);
-            this.ReloadMeasResult();
-            this.UpdateCurrentChartOption(null, null);
-            this.UpdateCurrentChartLevelsDistrbutionOption();
+
+            Task.Run(() => this.ReloadMeasResult());
+
+            
         }
+
+        private void _dataStore_OnEndInvoke(string description)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (_timer != null)
+                {
+                    _timer.Enabled = false;
+                    _timer = null;
+                }
+
+                this.StatusBarIsIndeterminate = false;
+                this.StatusBarTitle = $"Loaded data of {description}";
+
+
+                if (_waitForm != null)
+                {
+                    _waitForm.Close();
+                    _waitForm.Dispose();
+                    _waitForm = null;
+                }
+            }));
+        }
+
+        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                _timer.Enabled = false;
+                _waitForm = new FM.WaitForm();
+                _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
+                _waitForm.TopMost = true;
+                _waitForm.ShowDialog();
+                //_waitForm.FormBorderStyle = FRM.FormBorderStyle.FixedSingle;
+                //_waitForm.Refresh();
+            }));
+        }
+
+        private void _dataStore_OnBeginInvoke(string description)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                this.StatusBarIsIndeterminate = true;
+                this.StatusBarTitle = $"Loading data of {description} ...";
+
+                this._timer = new Timer(300);
+                this._timer.Elapsed += _timer_Elapsed;
+                this._timer.Enabled = true;
+            }));
+        }
+
+        public string StatusBarTitle
+        {
+            get => this._statusBarTitle;
+            set => this.Set(ref this._statusBarTitle, value);
+        }
+
+        public string StatusBarDescription
+        {
+            get => this._statusBarDecription;
+            set => this.Set(ref this._statusBarDecription, value);
+        }
+
+        public bool StatusBarIsIndeterminate
+        {
+            get => this._statusBarIsIndeterminate;
+            set => this.Set(ref this._statusBarIsIndeterminate, value);
+        }
+
         public string EmittingCaption
         {
             get => this._emittingCaption;
@@ -159,9 +242,18 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void ReloadMeasResult()
         {
-            _currentMeasResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId, null, null);
-            this._emittings.Source = this._currentMeasResult.Emittings;
-            this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+            _currentMeasResult = this._dataStore.GetFullMeasurementResultByResId(_resultId); //SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId, null, null);
+
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                this._emittings.Source = this._currentMeasResult.Emittings;
+                this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+                this.UpdateCurrentChartOption(null, null);
+                this.UpdateCurrentChartLevelsDistrbutionOption();
+
+            }));
         }
         private void UpdateCurrentChartOption(double? startFreq, double? stopFreq)
         {
@@ -227,12 +319,66 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (this._currentEmittings != null)
                 {
                     List<int> emitings = new List<int>();
+                    HashSet<int?> ids = new HashSet<int?>();
                     foreach (EmittingViewModel emitting in this._currentEmittings)
                     {
                         if (emitting.Id.HasValue)
+                        {
                             emitings.Add(emitting.Id.Value);
+                            ids.Add(emitting.Id.Value);
+                        }
+                            
                     }
-                    SVC.SdrnsControllerWcfClient.DeleteEmittingById(emitings.ToArray());
+
+                    this.StatusBarTitle = $"Deleting emissions ({emitings.Count}) ...";
+                    this.StatusBarIsIndeterminate = true;
+
+                    _waitForm = new FM.WaitForm();
+                    _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
+                    _waitForm.TopMost = true;
+
+                    Task.Run(() =>
+                    {
+
+                        try
+                        {
+
+                            SVC.SdrnsControllerWcfClient.DeleteEmittingById(emitings.ToArray());
+
+                            this._currentMeasResult.Emittings = this._currentMeasResult.Emittings.Where(e => !ids.Contains(e.Id)).ToArray();
+
+                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+
+                                this._emittings.Source = this._currentMeasResult.Emittings;
+                                this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+                                if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                {
+                                    this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
+                                }
+                                this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
+                            }));
+                        }
+                        catch (Exception e)
+                        {
+                            this.StatusBarTitle = $"An error occurred while the emissions deleting: {e.Message}";
+                        }
+                    }).ContinueWith(task =>
+                    {
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            this.StatusBarIsIndeterminate = false;
+                            if (_waitForm != null)
+                            {
+                                _waitForm.Close();
+                                _waitForm = null;
+                            }
+                        }));
+                    });
+
+                    _waitForm.ShowDialog();
+
                 }
             }
             catch (Exception e)
@@ -579,8 +725,9 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private string GetCurrentEmittingCaption()
         {
-            return "Illegal emission (" + this._emittings.Count().ToString() + ")";
+            return $"Emissions ({this._emittings.Count()})";
         }
+
         private CS.ChartOption GetChartOption(double? startFreq, double? stopFreq)
         {
             var option = new CS.ChartOption
@@ -770,7 +917,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             if (this._currentEmitting != null)
             {
-                var count = this._currentEmitting.LevelsDistribution.Levels.Count();
+                var count = this._currentEmitting.LevelsDistribution.Levels.Length;
                 var points = new List<Point>();
                 var linesList = new List<CS.ChartLine>();
                 var maxX = default(double);
@@ -781,21 +928,26 @@ namespace XICSM.ICSControlClient.ViewModels
                 int sumCount = this._currentEmitting.LevelsDistribution.Count.Sum();
 
                 int j = 0;
-                int startPos = 0;
-                int stopPos = 0;
+                int startPos = -1;
+                int stopPos = -1;
 
                 for (int i = 0; i < count; i++)
                 {
                     double valY = sumCount != 0 ? (double)this._currentEmitting.LevelsDistribution.Count[i] / sumCount : 0;
 
-                    if (valY > 0 && startPos == 0)
+                    if (valY > 0 && startPos == -1)
                         startPos = i;
 
                     if (valY > 0)
                         stopPos = i;
                 }
-
+                //sumCount = 0;
+                //for (int i = startPos; i <= stopPos; i++)
+                //{
+                //    sumCount += this._currentEmitting.LevelsDistribution.Count[i];
+                //}
                 for (int i = 0; i < count; i++)
+                //for (int i = startPos; i <= stopPos; i++)
                 {
                     var valX = this._currentEmitting.LevelsDistribution.Levels[i];
                     double valY = sumCount != 0 ? (double)this._currentEmitting.LevelsDistribution.Count[i] / sumCount : 0;

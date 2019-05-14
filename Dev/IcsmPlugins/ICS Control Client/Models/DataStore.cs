@@ -31,6 +31,7 @@ namespace XICSM.ICSControlClient.Models
         private ConcurrentDictionary<int, Sensor> _GetSensorByIdCache;
         private ConcurrentDictionary<int, ResultsMeasurementsStation[]> _GetResMeasStationHeaderByResIdCache;
         private ConcurrentDictionary<int, MeasurementResults> _GetMeasurementResultByResIdCache;
+        private ConcurrentDictionary<int, MeasurementResults> _GetFullMeasurementResultByResIdCache;
 
         public static DataStore GetStore()
         {
@@ -234,6 +235,28 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
+        public MeasurementResults GetFullMeasurementResultByResId(int resultsId)
+        {
+            var cache = this._GetFullMeasurementResultByResIdCache;
+
+            if (!cache.TryGetValue(resultsId, out MeasurementResults data))
+            {
+                var decription = $"Full Measurement Results by the result set with ID #{resultsId}";
+                this.OnBeginInvoke?.Invoke(decription);
+                data = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(resultsId, null, null);
+                this.OnEndInvoke?.Invoke(decription);
+
+                if (!cache.TryAdd(resultsId, data))
+                {
+                    if (cache.TryGetValue(resultsId, out MeasurementResults data2))
+                    {
+                        return data2;
+                    }
+                }
+            }
+            return data;
+        }
+
         public void Reset()
         {
             this._GetMeasResultsHeaderByTaskIdCache = new ConcurrentDictionary<int, MeasurementResults[]>();
@@ -244,6 +267,7 @@ namespace XICSM.ICSControlClient.Models
             this._GetSensorByIdCache = new ConcurrentDictionary<int, Sensor>();
             this._GetResMeasStationHeaderByResIdCache = new ConcurrentDictionary<int, ResultsMeasurementsStation[]>();
             this._GetMeasurementResultByResIdCache = new ConcurrentDictionary<int, MeasurementResults>();
+            this._GetFullMeasurementResultByResIdCache = new ConcurrentDictionary<int, MeasurementResults>();
         }
     }
 }
