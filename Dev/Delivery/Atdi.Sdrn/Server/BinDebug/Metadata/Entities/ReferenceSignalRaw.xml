@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Entity
   Name        = "ReferenceSignalRaw"
   Title       = "ReferenceSignalRaw"
@@ -7,7 +7,7 @@
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>XBS_REFSIGNALRAW</Name>
-    <Schema>ICSM</Schema>
+    <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
@@ -15,6 +15,8 @@
     <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BANDWIDTH_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="LevelSignal_dBm" Title="LevelSignal_dBm" Name="LevelSignal_dBm" DataType="Decimal.22.8" SourceName="LEVELSIGNAL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="RefSituationId" Title="RefSituationId" Name="RefSituationId" DataType="Integer.64" SourceName="REFSITUATIONID" SourceType="Column" Required="true"/>
+    <Field Desc="IcsmId" Title="IcsmId" Name="IcsmId" DataType="Integer.64" SourceName="ICSMID" SourceType="Column" Required="true"/>
+    <Field Desc="IcsmTable" Title="IcsmTable" Name="IcsmTable" DataType="Text.50" SourceName="ICSMTABLE" SourceType="Column" Required="false"/>
     <Field Name="REFSITUATION" SourceType="Reference" SourceName="ReferenceSituation" Title="Relation ReferenceSignalRaw to ReferenceSituation">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">RefSituationId</Mapped>

@@ -130,7 +130,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, SubMeasTaskId);
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, SubMeasTaskStationId);
                     builderInsertIResMeas.SetValue(c => c.DataRank, resObject.SwNumber);
-                    builderInsertIResMeas.SetValue(c => c.Status, resObject.Status);
+                    //builderInsertIResMeas.SetValue(c => c.Status, resObject.Status);
+                    builderInsertIResMeas.SetValue(c => c.Status, "N");
                     builderInsertIResMeas.SetValue(c => c.TypeMeasurements, resObject.Measurement.ToString());
                     builderInsertIResMeas.SetValue(c => c.MeasResultSID, resObject.ResultId);
                     builderInsertIResMeas.SetValue(c => c.StartTime, resObject.StartTime);

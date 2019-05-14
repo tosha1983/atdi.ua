@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Entity
   Name        = "EmittingRaw"
   Title       = "EmittingRaw"
@@ -7,7 +7,7 @@
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>XBS_EMITTINGRAW</Name>
-    <Schema>ICSM</Schema>
+    <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
@@ -21,6 +21,9 @@
     <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Decimal.22.8" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
     <Field Desc="LevelsDistribution" Title="LevelsDistribution" Name="LevelsDistribution" DataType="Bytes.MAX" SourceName="LEVELSDISTR" SourceType="Column" Required="false"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="false"/>
+    <Field Desc="StationID" Title="StationID" Name="StationID" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="true"/>
+    <Field Desc="StationTableName" Title="StationTableName" Name="StationTableName" DataType="Text.50" SourceName="STATIONTABLENAME" SourceType="Column" Required="false"/>
     <Field Name="RESMEASRAW" SourceType="Reference" SourceName="ResMeasRaw" Title="Relation EmittingRaw to ResMeasRaw">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>

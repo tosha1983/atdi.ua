@@ -7,7 +7,7 @@
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>XBS_RESSTGENERALRAW</Name>
-    <Schema>ICSM</Schema>
+    <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
@@ -23,10 +23,11 @@
     <Field Desc="OffsetFrequency" Title="OffsetFrequency" Name="OffsetFrequency" DataType="Decimal.22.8" SourceName="OFFSETFREQUENCY" SourceType="Column" Required="false"/>
     <Field Desc="SpecrumStartFreq" Title="SpecrumStartFreq" Name="SpecrumStartFreq" DataType="Decimal.30.10" SourceName="SPECRUMSTARTFREQ" SourceType="Column" Required="false"/>
     <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Decimal.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
-    <Field Desc="Correctnessestim" Title="Correctnessestim" Name="Correctnessestim" DataType="boolean" SourceName="СORRECTNESSESTIM" SourceType="Column" Required="false"/>
+    <Field Desc="Correctnessestim" Title="Correctnessestim" Name="Correctnessestim" DataType="Integer.32" SourceName="CORRECTNESSESTIM" SourceType="Column" Required="false"/>
     <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
     <Field Desc="Rbw" Title="Rbw" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false"/>
     <Field Desc="Vbw" Title="Vbw" Name="Vbw" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false"/>
+    <Field Desc="BW" Title="BW" Name="BW" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStaRaw" Title="Relation ResStGeneralRaw to ResMeasStaRaw">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>
