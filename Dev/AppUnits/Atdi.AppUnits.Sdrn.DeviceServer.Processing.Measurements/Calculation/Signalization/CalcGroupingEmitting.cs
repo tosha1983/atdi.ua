@@ -271,7 +271,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 else
                 {// мастер становиться присоединяемым
-                    AttachableEmitting = CalcSignalization.FillEmittingForStorage(AttachableEmitting, logger);
+                    //AttachableEmitting = CalcSignalization.FillEmittingForStorage(AttachableEmitting, logger);
                     res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting, logger, NoiseLevel_dBm);
                     MasterEmitting = CalcSignalization.CreatIndependEmitting(AttachableEmitting);
                 }
@@ -294,7 +294,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     int indexLevel = (int)Math.Floor(AttachableEmitting.CurentPower_dBm) - MasterEmitting.LevelsDistribution.Levels[0];
                     if ((indexLevel >= 0) && (indexLevel < MasterEmitting.LevelsDistribution.Levels.Length)) { MasterEmitting.LevelsDistribution.Count[indexLevel]++; }
                 }
-                else
+                else if (MasterEmitting.LevelsDistribution == null)
+                {
+                    int indexLevel = (int)Math.Floor(MasterEmitting.CurentPower_dBm) - AttachableEmitting.LevelsDistribution.Levels[0];
+                    if ((indexLevel >= 0) && (indexLevel < AttachableEmitting.LevelsDistribution.Levels.Length)) { AttachableEmitting.LevelsDistribution.Count[indexLevel]++; }
+                    var arrLev = AttachableEmitting.LevelsDistribution.Levels.ToList();
+                    var arrCount = AttachableEmitting.LevelsDistribution.Count.ToList();
+                    MasterEmitting.LevelsDistribution = new LevelsDistribution();
+                    MasterEmitting.LevelsDistribution.Levels = arrLev.ToArray();
+                    MasterEmitting.LevelsDistribution.Count = arrCount.ToArray();
+                }
+                else 
                 {
                     int k = MasterEmitting.LevelsDistribution.Levels[0] - AttachableEmitting.LevelsDistribution.Levels[0];
                     for (int i = 0; MasterEmitting.LevelsDistribution.Levels.Length > i; i++)
@@ -306,26 +316,73 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 // обединение масивов времени
-                if ((AttachableEmitting.WorkTimes!=null) && ((MasterEmitting.WorkTimes!=null) && (MasterEmitting.WorkTimes.Length>0)) && (AttachableEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes[0].StopEmitting >= MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting))
+                if ((AttachableEmitting.WorkTimes != null) && (MasterEmitting.WorkTimes != null) && ((MasterEmitting.WorkTimes.Length == 1) || (AttachableEmitting.WorkTimes.Length == 1)))
                 {
-                    TimeSpan timeSpan = AttachableEmitting.WorkTimes[0].StartEmitting - MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
-                    if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
-                    { // если пауза затянулась более TimeBetweenWorkTimes_sec
-                        var workTimesTemp = MasterEmitting.WorkTimes.ToList();
-                        workTimesTemp.Add(AttachableEmitting.WorkTimes[0]);
-                        MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                    bool MasterISFirst;
+                    if ((MasterEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes.Length == 1))
+                    {
+                        if (MasterEmitting.WorkTimes[0].StopEmitting < AttachableEmitting.WorkTimes[0].StopEmitting)
+                        { MasterISFirst = true;}
+                        else
+                        { MasterISFirst = false;}
                     }
                     else
-                    { // если пауза не большая
-                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting = AttachableEmitting.WorkTimes[0].StopEmitting;
-                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount + AttachableEmitting.WorkTimes[0].HitCount;
-                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount + MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount 
-                            + AttachableEmitting.WorkTimes[0].ScanCount + AttachableEmitting.WorkTimes[0].TempCount;
-                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount = 0;
-                        MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].PersentAvailability = 100*MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount/ MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount;
+                    {
+                        if (MasterEmitting.WorkTimes.Length == 1)
+                        { MasterISFirst = false;}
+                        else
+                        { MasterISFirst = true;}
+                    }
+                    if (MasterISFirst)
+                    {
+                        TimeSpan timeSpan = AttachableEmitting.WorkTimes[0].StartEmitting - MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
+                        if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
+                        { // если пауза затянулась более TimeBetweenWorkTimes_sec
+                            var workTimesTemp = MasterEmitting.WorkTimes.ToList();
+                            if ((AttachableEmitting.WorkTimes[0].ScanCount == 0) && (AttachableEmitting.WorkTimes[0].TempCount == 0))
+                            {
+                                AttachableEmitting.WorkTimes[0].ScanCount = 1;
+                            }
+                            workTimesTemp.Add(AttachableEmitting.WorkTimes[0]);
+                            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                        }
+                        else
+                        { // если пауза не большая
+                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting = AttachableEmitting.WorkTimes[0].StopEmitting;
+                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount + AttachableEmitting.WorkTimes[0].HitCount;
+                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount + MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount
+                                + AttachableEmitting.WorkTimes[0].ScanCount + AttachableEmitting.WorkTimes[0].TempCount;
+                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount = 0;
+                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].PersentAvailability = 100 * MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount / MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount;
+                        }
+                    }
+                    else
+                    {
+                        TimeSpan timeSpan = MasterEmitting.WorkTimes[0].StartEmitting - AttachableEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
+                        if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
+                        { // если пауза затянулась более TimeBetweenWorkTimes_sec
+                            var workTimesTemp = AttachableEmitting.WorkTimes.ToList();
+                            if ((MasterEmitting.WorkTimes[0].ScanCount == 0) && (MasterEmitting.WorkTimes[0].TempCount == 0))
+                            {
+                                MasterEmitting.WorkTimes[0].ScanCount = 1;
+                            }
+                            workTimesTemp.Add(MasterEmitting.WorkTimes[0]);
+                            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                        }
+                        else
+                        { // если пауза не большая
+                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].StopEmitting = MasterEmitting.WorkTimes[0].StopEmitting;
+                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount = AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount + MasterEmitting.WorkTimes[0].HitCount;
+                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount = AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount + AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].TempCount
+                                + MasterEmitting.WorkTimes[0].ScanCount + MasterEmitting.WorkTimes[0].TempCount;
+                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].TempCount = 0;
+                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].PersentAvailability = 100 * AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount / AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount;
+                            var workTimesTemp = AttachableEmitting.WorkTimes.ToList();
+                            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                        }
                     }
                 }
-                else
+                else 
                 {
                     // обединяем массивы
                     List<WorkTime> workTimes1 = new List<WorkTime>();
@@ -354,14 +411,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
                                 {
                                     WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting;
-                                    WorkTimes[i].ScanCount = WorkTimes[i].ScanCount + WorkTimes[i + 1].ScanCount + WorkTimes[i].TempCount;
-                                    WorkTimes[i].TempCount = WorkTimes[i + 1].TempCount;
                                 }
-                                else
-                                {
-                                    WorkTimes[i].ScanCount = WorkTimes[i].ScanCount + WorkTimes[i + 1].ScanCount + WorkTimes[i+1].TempCount;
-                                    WorkTimes[i].TempCount = WorkTimes[i].TempCount;
-                                }
+                                WorkTimes[i].ScanCount = WorkTimes[i].ScanCount + WorkTimes[i + 1].ScanCount + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount; ;
+                                WorkTimes[i].TempCount = 0;
                                 WorkTimes[i].PersentAvailability = 100 * WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
                                 WorkTimes.RemoveRange(i + 1, 1);
                                 i--;

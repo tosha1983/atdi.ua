@@ -80,7 +80,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         taskContext.Task.MeasBWResults.Levels_dBm = result.Level;
                         taskContext.Task.MeasBWResults.Freq_Hz = result.Freq_Hz;
                         taskContext.Task.MeasBWResults.СorrectnessEstimations = measBandWidthResults.СorrectnessEstimations.Value;
-
+                        taskContext.Task.MeasBWResults.TimeMeas = DateTime.Now;
                         /*
                         string val = "";
                         string newVal = "";
