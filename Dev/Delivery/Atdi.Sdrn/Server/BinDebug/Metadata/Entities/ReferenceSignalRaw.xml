@@ -15,8 +15,8 @@
     <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BANDWIDTH_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="LevelSignal_dBm" Title="LevelSignal_dBm" Name="LevelSignal_dBm" DataType="Decimal.22.8" SourceName="LEVELSIGNAL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="RefSituationId" Title="RefSituationId" Name="RefSituationId" DataType="Integer.64" SourceName="REFSITUATIONID" SourceType="Column" Required="true"/>
-    <Field Desc="IcsmId" Title="IcsmId" Name="IcsmId" DataType="Integer.64" SourceName="ICSMID" SourceType="Column" Required="true"/>
-    <Field Desc="IcsmTable" Title="IcsmTable" Name="IcsmTable" DataType="Text.50" SourceName="ICSMTABLE" SourceType="Column" Required="false"/>
+    <Field Desc="IcsmId" Title="IcsmId" Name="IcsmId" DataType="Integer.64" SourceName="ICSCID" SourceType="Column" Required="true"/>
+    <Field Desc="IcsmTable" Title="IcsmTable" Name="IcsmTable" DataType="Text.50" SourceName="ICSCTABLE" SourceType="Column" Required="false"/>
     <Field Name="REFSITUATION" SourceType="Reference" SourceName="ReferenceSituation" Title="Relation ReferenceSignalRaw to ReferenceSituation">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">RefSituationId</Mapped>
