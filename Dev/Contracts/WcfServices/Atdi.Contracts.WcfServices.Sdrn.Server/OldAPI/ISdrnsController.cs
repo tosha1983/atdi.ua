@@ -330,6 +330,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
         bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName);
 
+        /// <summary>
+        /// Get Emittings by IcsmId identifiers
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="icsmTableName"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Emitting[] GetEmittingsByIcsmId(int[] ids, string icsmTableName);
 
     }
 }

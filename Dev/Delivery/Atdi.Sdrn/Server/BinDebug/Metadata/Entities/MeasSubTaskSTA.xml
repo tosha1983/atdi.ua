@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Entity
   Name        = "MeasSubTaskSta"
   Title       = "MeasSubTaskSta"
@@ -7,7 +7,7 @@
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>XBS_MEASSUBTASKSTA</Name>
-    <Schema>ICSM</Schema>
+    <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>

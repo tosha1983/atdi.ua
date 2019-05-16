@@ -12,7 +12,7 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.DataModels.EntityOrm;
 using Atdi.DataModels.Sdrns.Device;
 using System.Linq;
-
+using System.Collections.Generic;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
@@ -253,17 +253,110 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             }
 
                             outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
+                            var arrEmit = new Emitting[outResultData.Emittings.Length];
+                            for (int i=0; i< outResultData.Emittings.Length; i++)
+                            {
+                                var val = outResultData.Emittings[i];
+                                var emit = CopyHelper.CreateDeepCopy(val);
+                                var levelDistributionCorrCount = new List<int>();
+                                var levelDistributionCorrLevel = new List<int>();
+                                if (emit!=null)
+                                {
+                                    if (emit.LevelsDistribution!=null)
+                                    {
+                                        var newEmittingLevelsDistributionCount = emit.LevelsDistribution.Count;
+                                        var newEmittingLevelsDistributionLevel = emit.LevelsDistribution.Levels;
+                                        int startIndex = -1;
+                                        int endIndex = -1;
+                                        for (int j=0; j< newEmittingLevelsDistributionCount.Length; j++)
+                                        {
+                                            var valCount = newEmittingLevelsDistributionCount[j];
+                                            var valLevel = newEmittingLevelsDistributionLevel[j];
+                                            if (valCount==0)
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                startIndex = j;
+                                                break;
+                                            }
+                                        }
 
+                                        for (int j = newEmittingLevelsDistributionCount.Length - 1; j >=0; j--)
+                                        {
+                                            var valCount = newEmittingLevelsDistributionCount[j];
+                                            var valLevel = newEmittingLevelsDistributionLevel[j];
+                                            if (valCount == 0)
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                endIndex = j;
+                                                break;
+                                            }
+                                        }
+
+                                        if ((startIndex >= 0) && (endIndex >= 0))
+                                        {
+                                            for (int k = startIndex; k <= endIndex; k++)
+                                            {
+                                                var valCount = newEmittingLevelsDistributionCount[k];
+                                                var valLevel = newEmittingLevelsDistributionLevel[k];
+
+                                                levelDistributionCorrCount.Add(valCount);
+                                                levelDistributionCorrLevel.Add(valLevel);
+                                            }
+                                            emit.LevelsDistribution.Levels = levelDistributionCorrLevel.ToArray();
+                                            emit.LevelsDistribution.Count = levelDistributionCorrCount.ToArray();
+                                        }
+                                        else
+                                        {
+                                            emit.LevelsDistribution.Levels = newEmittingLevelsDistributionLevel.ToArray();
+                                            emit.LevelsDistribution.Count = newEmittingLevelsDistributionCount.ToArray();
+                                        }
+                                    }
+                                }
+                                arrEmit[i] = emit;
+                            }
+
+                            CheckPercentAvailability.CheckPercent(ref arrEmit);
+
+                            DM.MeasResults measResultsNew = new MeasResults()
+                            {
+                                BandwidthResult = outResultData.BandwidthResult,
+                                Emittings = arrEmit,
+                                Frequencies = outResultData.Frequencies,
+                                FrequencySamples = outResultData.FrequencySamples,
+                                Levels_dBm = outResultData.Levels_dBm,
+                                Location = outResultData.Location,
+                                Measured = outResultData.Measured,
+                                Measurement = outResultData.Measurement,
+                                RefLevels = outResultData.RefLevels,
+                                ResultId = outResultData.ResultId,
+                                Routes = outResultData.Routes,
+                                ScansNumber = outResultData.ScansNumber,
+                                StartTime = outResultData.StartTime,
+                                StationResults = outResultData.StationResults,
+                                Status = outResultData.Status,
+                                StopTime = outResultData.StopTime,
+                                SwNumber = outResultData.SwNumber,
+                                TaskId = outResultData.TaskId
+                            };
+
+                            
 
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
-                            publisher.Send<DM.MeasResults>("SendMeasResults", outResultData);
+                            publisher.Send<DM.MeasResults>("SendMeasResults", measResultsNew);
                             publisher.Dispose();
                             context.Task.MeasResults = null;
                             context.Task.LastTimeSend = currTime;
                         }
                     });
 
+                    
 
                     //////////////////////////////////////////////
                     // 

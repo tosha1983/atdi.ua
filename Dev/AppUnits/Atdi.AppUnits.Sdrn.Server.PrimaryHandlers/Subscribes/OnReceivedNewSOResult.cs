@@ -43,7 +43,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 var measResult = new DEV.MeasResults();
                 var queryResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>()
                 .From()
-                .Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.TimeMeas, c => c.Status, c => c.TypeMeasurements, c => c.DataRank, c => c.ScansNumber, c => c.StartTime, c => c.StopTime)
+                .Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.TimeMeas, c => c.Status, c => c.TypeMeasurements, c => c.DataRank, c => c.ScansNumber, c => c.StartTime, c => c.StopTime, c => c.SensorId)
                 .Where(c => c.Id, ConditionOperator.Equal, @event.ResultId);
                 queryExecuter.Fetch(queryResMeas, reader =>
                 {
@@ -68,6 +68,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             measResult.StartTime = reader.GetValue(c => c.StartTime).Value;
                         if (reader.GetValue(c => c.StopTime).HasValue)
                             measResult.StopTime = reader.GetValue(c => c.StopTime).Value;
+                        if (reader.GetValue(c => c.SensorId).HasValue)
+                            measResult.SensorId = reader.GetValue(c => c.SensorId).Value;
                     }
                     return result;
                 });
@@ -131,6 +133,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             else if (measResult.TaskId.Length > 200)
                 measResult.TaskId.SubString(200);
+
+            
+
 
             if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
                 WriteLog("Incorrect value SwNumber", "IResMeasRaw");
@@ -594,7 +599,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas, c => c.DataRank);
                 builderResMeasSearch.OrderByAsc(c => c.Id);
                 builderResMeasSearch.Where(c => c.MeasTaskId, ConditionOperator.Equal, measResult.TaskId);
-                builderResMeasSearch.Where(c => c.Status, ConditionOperator.IsNull);
+                //builderResMeasSearch.Where(c => c.Status, ConditionOperator.IsNull);
+                builderResMeasSearch.Where(c => c.Status, ConditionOperator.Equal, "N");
                 builderResMeasSearch.Where(c => c.TimeMeas, ConditionOperator.Between, new DateTime?[] { measResult.Measured.AddHours(-1), measResult.Measured.AddHours(1) });
                 queryExecuter.Fetch(builderResMeasSearch, readerResMeas =>
                 {
@@ -636,7 +642,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
                     builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
-                    builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
+                    builderInsertIResMeas.SetValue(c => c.SensorId, measResult.SensorId!=null ? measResult.SensorId : sensorId);
                     builderInsertIResMeas.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertIResMeas, reader =>
                     {
