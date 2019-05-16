@@ -594,7 +594,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas, c => c.DataRank);
                 builderResMeasSearch.OrderByAsc(c => c.Id);
                 builderResMeasSearch.Where(c => c.MeasTaskId, ConditionOperator.Equal, measResult.TaskId);
-                builderResMeasSearch.Where(c => c.Status, ConditionOperator.IsNull);
+                //builderResMeasSearch.Where(c => c.Status, ConditionOperator.IsNull);
+                builderResMeasSearch.Where(c => c.Status, ConditionOperator.Equal, "N");
                 builderResMeasSearch.Where(c => c.TimeMeas, ConditionOperator.Between, new DateTime?[] { measResult.Measured.AddHours(-1), measResult.Measured.AddHours(1) });
                 queryExecuter.Fetch(builderResMeasSearch, readerResMeas =>
                 {
