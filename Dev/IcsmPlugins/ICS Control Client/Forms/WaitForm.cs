@@ -19,6 +19,7 @@ namespace XICSM.ICSControlClient.Forms
         public void SetMessage(string message)
         {
             lblMain.Text = message;
+            lblMain.Refresh();
         }
     }
 }

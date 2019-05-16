@@ -20,6 +20,34 @@
       </Style>
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
+      <StatusBar DockPanel.Dock="Bottom">
+          <StatusBar.ItemsPanel>
+            <ItemsPanelTemplate>
+              <Grid>
+                  <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="200" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="200" />
+                  </Grid.ColumnDefinitions>
+              </Grid>
+            </ItemsPanelTemplate>
+          </StatusBar.ItemsPanel>
+          <StatusBarItem>
+            <ProgressBar Value="0" Width="190" Height="16" IsIndeterminate="{Binding StatusBarIsIndeterminate}"/>
+              
+          </StatusBarItem>
+          <Separator Grid.Column="1" />
+          <StatusBarItem Grid.Column="2">
+            <TextBlock Text="{Binding StatusBarTitle}" />
+          </StatusBarItem>
+          <Separator Grid.Column="3" />
+          <StatusBarItem Grid.Column="4">
+            <TextBlock Text="{Binding StatusBarDescription}" />
+          </StatusBarItem>
+      </StatusBar>
+
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />

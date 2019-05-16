@@ -27,6 +27,7 @@ namespace XICSM.ICSControlClient.Forms
         }
         private void MeasResultSignalizationForm_Load(object sender, EventArgs e)
         {
+
             _wpfElementHost = new ElementHost();
             _wpfElementHost.Dock = DockStyle.Fill;
             this.Controls.Add(_wpfElementHost);
