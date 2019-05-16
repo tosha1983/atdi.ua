@@ -599,13 +599,12 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listWorkTimes = new List<KeyValuePair<int, WorkTime>>();
             var listSignalMask = new List<KeyValuePair<int, SignalMask>>();
             var listSpectrum = new List<KeyValuePair<int, Spectrum>>();
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var listSensors = new List<Sensor>();
             var listEmitting = new List<Emitting>();
-
-
             var listIntids = BreakDownElemBlocks.BreakDown(ids);
-            for (int l = 0; l < ids.Length; l++)
+            var arrIntids = listIntids.ToArray();
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            for (int l = 0; l < arrIntids.Length; l++)
             {
                 int?[] listIntIdsConvert = listIntids[l].Select(n => (int?)(n)).ToArray();
                 var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
@@ -817,29 +816,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if (levelsdBm != null)
                                 {
                                     listLevelsdBm.AddRange(levelsdBm as float[]);
-
-                                ////////////////////
-                                /*
-                                if (readerSpectrum.GetValue(c => c.Id) == 1373893)
-                                {
-                                    var lelvDbm = levelsdBm as float[];
-                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
-                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
-                                    //int[] startStop;
-                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
                                 }
-
-                                if (readerSpectrum.GetValue(c => c.Id) == 1373894)
-                                {
-                                    var lelvDbm = levelsdBm as float[];
-                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
-                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
-                                    //int[] startStop;
-                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
-                                }
-                                */
-                                /////
-                            }
                             }
 
                             if (spectrum.SpectrumStartFreq_MHz == 0)
