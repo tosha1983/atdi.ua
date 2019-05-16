@@ -10,6 +10,8 @@ namespace Atdi.CoreServices.EntityOrm
 {
     static class Contexts
     {
+        
+        public static readonly EventContext QueryExecutor = "QueryExecutor";
         public static readonly EventContext DataLayerCoreServices = "DataLayer Core Services";
         public static readonly EventContext SqlServerEngine = "SQL Server Engine";
         public static readonly EventContext OracleEngine = "Oracle Engine";
@@ -18,6 +20,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventContext BuidJoinExtension= "Build Join Extension";
         public static readonly EventContext BuidJoinReference = "Build Join Reference";
     }
+
 
     static class Templates
     {
@@ -39,6 +42,9 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventCategory CommandExecuting = "Executing command";
         public static readonly EventCategory ResultHandling = "Handling result";
         public static readonly EventCategory OpeningConnection = "Opening connection";
+        public static readonly EventCategory ExecuteQuery = "Execute query";
+        
+
     }
 
     static class Events
@@ -50,6 +56,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventText UnableToCloseHost = "Unable to close the service host: {0}";
         public static readonly EventText UnableToDisposeHost = "Unable to dispose the service host: {0}";
         public static readonly EventText ServiceHostDescriptor = "{0}";
+        public static readonly EventText NoFieldsSpecified = "No fields specified(empty)";
     }
     static class TraceScopeNames
     {
@@ -81,6 +88,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly ExceptionText AbortedBuildDeleteStatement = "Aborted sql query building for data deletion";
         public static readonly ExceptionText AbortedBuildUpdateStatement = "Aborted sql query building for data updateion";
         public static readonly ExceptionText AbortedBuildInsertStatement = "Aborted sql query building for data creation";
+        public static readonly ExceptionText AbortedBuildSqlStatement = "Aborted sql query building - no request fields specified(empty)";
         public static readonly ExceptionText NotFoundOrmField = "Not found ORM field with path '{0}' into table with name '{1}'";
         public static readonly ExceptionText UndefinedParameter = "Undefined parameter with name '{0}'";
         public static readonly ExceptionText QueryStatementNotSupported = "The type of query statement with name '{0}' is not supported.";
