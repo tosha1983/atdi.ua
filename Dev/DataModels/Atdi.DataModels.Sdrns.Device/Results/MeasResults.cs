@@ -14,6 +14,12 @@ namespace Atdi.DataModels.Sdrns.Device
     public class MeasResults
     {
         /// <summary>
+        /// Identifier sensor ID
+        /// </summary>
+        [DataMember]
+        public int? SensorId { get; set; }
+
+        /// <summary>
         /// Results identifier (SpectrumOccupation, Level, BandwidthMeas, MonitoringStations, Spectr)
         /// </summary>
         [DataMember]

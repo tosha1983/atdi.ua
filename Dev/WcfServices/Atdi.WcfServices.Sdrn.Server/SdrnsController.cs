@@ -234,9 +234,15 @@ namespace Atdi.WcfServices.Sdrn.Server
             var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
             return measTaskProcess.StopMeasTask(taskId);
         }
-    }
 
-    
+        public Emitting[] GetEmittingsByIcsmId(int[] ids, string icsmTableName)
+        {
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetEmittingsByIcsmId(ids, icsmTableName);
+        }
+        
+    }
+   
 
 }
 
