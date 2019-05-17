@@ -38,6 +38,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         {
             try
             {
+                this._logger.Verbouse(Contexts.PrimaryHandler, Categories.OnReceivedNewSOResultEvent, Events.StartOperationWriting);
                 bool validationResult = true;
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var measResult = new DEV.MeasResults();
@@ -106,7 +107,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         }
                     }
                 }
-
+                this._logger.Verbouse(Contexts.PrimaryHandler, Categories.OnReceivedNewSOResultEvent, Events.EndOperationWriting);
             }
             catch (Exception e)
             {
