@@ -53,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
             //Формируем помехи.
             double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length-1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
-            Emitting[] newEmittings = CreateEmittings(Trace.Level, refLevels, index_start_stop, stepBW_kHz, Trace.Freq_Hz[0]/1000000, NoiseLevel_dBm);
+            Emitting[] newEmittings = CreateEmittings(Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm, taskParameters.CompareTraceJustWithRefLevels);
             // сформировали новые параметры излучения теперь надо накатить старые по идее.
             return newEmittings;
         }
@@ -188,8 +188,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return ResultStartStopIndexArr;
         }
-        private static Emitting[] CreateEmittings(float[] levels, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm)
+        private static Emitting[] CreateEmittings(MesureTraceResult trace, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double NoiseLevel_dBm, bool CompareTraceJustWithRefLevels)
         { // задача локализовать излучения
+
+            float[] levels = trace.Level;
             var emittings = new List<Emitting>();
             for (int i = 0; i < index_start_stop.Count; i = i + 2)
             {
@@ -213,11 +215,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (measSdrBandwidthResults.T2 != null) { stop = start_ + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
                         if (measSdrBandwidthResults.MarkerIndex != null) { emitting.Spectrum.MarkerIndex = measSdrBandwidthResults.MarkerIndex.Value; }
                         emitting.Spectrum.Bandwidth_kHz = (stop - start) * stepBW_kHz;
-                        emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start_ / 1000;
+                        emitting.Spectrum.SpectrumStartFreq_MHz = trace.Freq_Hz[start_]/1000000.0;
                         emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                         emitting.Spectrum.Levels_dBm = templevel;
-                        emitting.StartFrequency_MHz = startFreq_MHz + stepBW_kHz * start / 1000.0;
-                        emitting.StopFrequency_MHz = startFreq_MHz + stepBW_kHz * stop / 1000.0;
+                        emitting.StartFrequency_MHz = trace.Freq_Hz[start] / 1000000.0;
+                        emitting.StopFrequency_MHz = trace.Freq_Hz[stop] / 1000000.0;
                         emitting.Spectrum.СorrectnessEstimations = true;
                     }
                     else
@@ -227,33 +229,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         bool CorectCalcBW = CalcBWSignalization.CalcBW(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, NumberIgnoredPoints, ref startreal, ref stoptreal);
                         if (CorectCalcBW)
                         {
-                            // необходимо найти корректное значение полосы частот
-                            double tempBW = StandartBW.GetStandartBW_kHz((stoptreal - startreal) * stepBW_kHz);
-                            double CentralFreq = startFreq_MHz + stepBW_kHz * (startreal + stoptreal) / 2000;
-
-                            emitting.StartFrequency_MHz = CentralFreq - tempBW / 2000;
-                            emitting.StopFrequency_MHz = CentralFreq + tempBW / 2000;
-                            start = (int)Math.Floor((emitting.StartFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
-                            if (start < 0) { start = 0; }
-                            stop = (int)Math.Ceiling((emitting.StopFrequency_MHz - startFreq_MHz) / (stepBW_kHz / 1000));
-                            if (stop >= levels.Length) { stop = levels.Length - 1; }
-
+                            // поиск коректной полосы 
+                            if (CompareTraceJustWithRefLevels)
+                            {
+                                double tempBW = StandartBW.GetStandartBW_kHz((stoptreal - startreal) * stepBW_kHz);
+                                double CentralFreq = (trace.Freq_Hz[startreal] + trace.Freq_Hz[stoptreal]) / 2000000.0;
+                                emitting.StartFrequency_MHz = CentralFreq - tempBW / 2000;
+                                emitting.StopFrequency_MHz = CentralFreq + tempBW / 2000;
+                                start = (int)Math.Floor((emitting.StartFrequency_MHz - trace.Freq_Hz[0] / 1000000.0) / (stepBW_kHz / 1000));
+                                stop = (int)Math.Ceiling((emitting.StopFrequency_MHz - trace.Freq_Hz[0] / 1000000.0) / (stepBW_kHz / 1000));
+                                if (start < 0) { start = 0; }
+                                if (stop >= levels.Length) { stop = levels.Length - 1; }
+                            }
                             emitting.Spectrum.Levels_dBm = new float[stop - start];
-
                             Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
-                            emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start / 1000;
+                            emitting.Spectrum.SpectrumStartFreq_MHz = trace.Freq_Hz[start] / 1000000.0;
                             emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                             emitting.Spectrum.СorrectnessEstimations = true;
                         }
                         else
                         {
-                            emitting.StartFrequency_MHz = startFreq_MHz + stepBW_kHz * start / 1000.0;
-                            emitting.StopFrequency_MHz = startFreq_MHz + stepBW_kHz * stop / 1000.0;
+                            emitting.StartFrequency_MHz = trace.Freq_Hz[start] / 1000000.0; 
+                            emitting.StopFrequency_MHz = trace.Freq_Hz[stop] / 1000000.0;
                             emitting.Spectrum.Levels_dBm = new float[stop - start];
-
-
                             Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
-                            emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start / 1000;
+                            emitting.Spectrum.SpectrumStartFreq_MHz = trace.Freq_Hz[start] / 1000000.0;
                             emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                             emitting.Spectrum.Levels_dBm = templevel;
                             emitting.Spectrum.СorrectnessEstimations = false;
@@ -262,11 +262,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 else
                 {
-                    emitting.StartFrequency_MHz = startFreq_MHz + stepBW_kHz * start / 1000.0;
-                    emitting.StopFrequency_MHz = startFreq_MHz + stepBW_kHz * stop / 1000.0;
+                    emitting.StartFrequency_MHz = trace.Freq_Hz[start] / 1000000.0; 
+                    emitting.StopFrequency_MHz = trace.Freq_Hz[stop] / 1000000.0;
                     emitting.Spectrum.Levels_dBm = new float[stop_ - start_];
                     Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop_ - start_);
-                    emitting.Spectrum.SpectrumStartFreq_MHz = startFreq_MHz + stepBW_kHz * start_ / 1000;
+                    emitting.Spectrum.SpectrumStartFreq_MHz = trace.Freq_Hz[start_] / 1000000.0;  
                     emitting.Spectrum.SpectrumSteps_kHz = stepBW_kHz;
                     emitting.Spectrum.Levels_dBm = templevel;
                     emitting.Spectrum.СorrectnessEstimations = false;
