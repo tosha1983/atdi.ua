@@ -17,6 +17,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
     {
         public static readonly EventCategory MessageProcessing = "Processing";
         public static readonly EventCategory Notify = "Notify";
+        public static readonly EventCategory OnReceivedNewSOResultEvent = "OnReceivedNewSOResultEvent";
+        
     }
 
     static class Events
@@ -26,6 +28,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
         //public static readonly EventText UnableToCloseHost = "Unable to close the service host: {0}";
         //public static readonly EventText UnableToDisposeHost = "Unable to dispose the service host: {0}";
         //public static readonly EventText ServiceHostDescriptor = "{0}";
+        public static readonly EventText StartOperationWriting = "Start of validation operation and writing to main tables";
+        public static readonly EventText EndOperationWriting = "End of validation operation and writing to main tables";
+
     }
     static class TraceScopeNames
     {
