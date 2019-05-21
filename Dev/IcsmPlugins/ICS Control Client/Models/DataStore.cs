@@ -257,6 +257,26 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
+        public Emitting[] GetEmittingsBy(int[] stations, string tableName)
+        {
+            try
+            {
+                var decription = $"Emittings by the stations from '{tableName}'";
+                this.OnBeginInvoke?.Invoke(decription);
+                var data = SVC.SdrnsControllerWcfClient.GetEmittingsByIcsmId(stations, tableName);
+                this.OnEndInvoke?.Invoke(decription);
+
+
+                return data;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+        }
+
         public void Reset()
         {
             this._GetMeasResultsHeaderByTaskIdCache = new ConcurrentDictionary<int, MeasurementResults[]>();

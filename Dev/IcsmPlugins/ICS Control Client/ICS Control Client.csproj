@@ -102,6 +102,12 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\MeasResultSignalizationViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasResultSignalizationViewForm.Designer.cs">
+      <DependentUpon>MeasResultSignalizationViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasResultSignalizationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,6 +276,7 @@
     </Compile>
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
+    <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
@@ -303,6 +310,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasResultSignalizationViewForm.resx">
+      <DependentUpon>MeasResultSignalizationViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasStationsSignalizationDlg1Form.resx">
       <DependentUpon>MeasStationsSignalizationDlg1Form.cs</DependentUpon>
