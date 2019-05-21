@@ -1111,6 +1111,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderStation.Select(c => c.OwnerDataId);
                 builderStation.Select(c => c.Standart);
                 builderStation.Select(c => c.StartDate);
+                builderStation.Select(c => c.IdPermission);
                 builderStation.Select(c => c.StationId);
                 builderStation.Select(c => c.StationSiteId);
                 builderStation.Select(c => c.Status);
@@ -1129,7 +1130,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         perm.CloseDate = readerStation.GetValue(c => c.CloseDate);
                         perm.DozvilName = readerStation.GetValue(c => c.DozvilName);
                         perm.EndDate = readerStation.GetValue(c => c.EndDate);
-                        perm.Id = null;
+                        perm.Id = readerStation.GetValue(c => c.IdPermission);
                         perm.StartDate = readerStation.GetValue(c => c.StartDate);
                         measStation.LicenseParameter = perm;
                         measStation.IdSite = readerStation.GetValue(c => c.StationSiteId) != null ? readerStation.GetValue(c => c.StationSiteId).Value : -1;

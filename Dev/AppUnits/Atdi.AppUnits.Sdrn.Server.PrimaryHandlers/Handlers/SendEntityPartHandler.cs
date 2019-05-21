@@ -42,7 +42,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 int valIns = 0;
                 try
                 {
-                    result.Status = SdrnMessageHandlingStatus.Trash;
                     var entityObject = incomingEnvelope.DeliveryObject;
 
                     queryExecuter.BeginTransaction();
@@ -64,11 +63,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 {
                     queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
-                    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
-                    {
-                        result.Status = SdrnMessageHandlingStatus.Error;
-                        result.ReasonFailure = e.ToString();
-                    }
+                    result.Status = SdrnMessageHandlingStatus.Error;
+                    result.ReasonFailure = e.ToString();
                 }
                 finally
                 {

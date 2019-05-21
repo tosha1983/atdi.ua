@@ -500,6 +500,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderStation.Select(c => c.StartDate);
                 builderStation.Select(c => c.StationId);
                 builderStation.Select(c => c.StationSiteId);
+                builderStation.Select(c => c.IdPermission);
                 builderStation.Select(c => c.Status);
                 builderStation.Where(c => c.MeasTaskId, ConditionOperator.Equal, taskId);
                 builderStation.OrderByAsc(c => c.Id);
@@ -516,7 +517,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         perm.CloseDate = readerStation.GetValue(c => c.CloseDate);
                         perm.DozvilName = readerStation.GetValue(c => c.DozvilName);
                         perm.EndDate = readerStation.GetValue(c => c.EndDate);
-                        perm.Id = null;
+                        perm.Id = readerStation.GetValue(c => c.IdPermission);
                         perm.StartDate = readerStation.GetValue(c => c.StartDate);
                         measStation.LicenseParameter = perm;
                         measStation.IdSite = readerStation.GetValue(c => c.StationSiteId) != null ? readerStation.GetValue(c => c.StationSiteId).Value : -1;
@@ -607,6 +608,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 builderLinkSectorFreq.Select(c => c.SECTORFREQ.Frequency);
                                 builderLinkSectorFreq.Select(c => c.SECTORFREQ.Id);
                                 builderLinkSectorFreq.Select(c => c.SECTORFREQ.PlanId);
+                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.IdFreq);
                                 builderLinkSectorFreq.Where(c => c.SectorId, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
                                 builderLinkSectorFreq.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderLinkSectorFreq, readerLinkSectorFreq =>
@@ -616,7 +618,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         var freqM = new FrequencyForSectorFormICSM();
                                         freqM.ChannalNumber = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.ChannelNumber);
                                         freqM.Frequency = (decimal)readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.Frequency);
-                                        freqM.Id = null;
+                                        freqM.Id = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.IdFreq);
                                         freqM.IdPlan = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.PlanId);
                                         lFreqICSM.Add(freqM);
                                     }

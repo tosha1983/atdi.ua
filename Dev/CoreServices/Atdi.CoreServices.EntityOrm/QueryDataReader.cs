@@ -3589,18 +3589,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsClrEnum(columnIndex);
         }
 
-        public Object GetValue(Expression<Func<TModel, Object>> columnExpression)
-        {
-            if (columnExpression == null)
-            {
-                throw new ArgumentNullException(nameof(columnExpression));
-            }
-
-            var columnName = columnExpression.Body.GetMemberName();
-            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
-            return GetValueAsClrType(columnIndex);
-        }
-
 
         public bool GetValue(Expression<Func<TModel, bool>> columnExpression)
         {

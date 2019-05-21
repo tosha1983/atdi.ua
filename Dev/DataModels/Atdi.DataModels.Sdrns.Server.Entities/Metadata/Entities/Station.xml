@@ -22,6 +22,7 @@
     <Field Desc="DozvilName" Title="DozvilName" Name="DozvilName" DataType="Text.100" SourceName="DOZVILNAME" SourceType="Column" Required="false"/>
     <Field Desc="OwnerDataId" Title="OwnerDataId" Name="OwnerDataId" DataType="Integer.64" SourceName="ID_XBS_OWNERDATA" SourceType="Column" Required="true"/>
     <Field Desc="StationSiteId" Title="StationSiteId" Name="StationSiteId" DataType="Integer.64" SourceName="ID_XBS_STATIONSITE" SourceType="Column" Required="true"/>
+    <Field Desc="IdPermission" Title="IdPermission" Name="IdPermission" DataType="Integer.64" SourceName="ID_PERMISSION" SourceType="Column" Required="true"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasLocationParam to MeasTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>

@@ -16,6 +16,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Standart { get; set; }
         int? MeasTaskId { get; set; }
         int? StationId { get; set; }
+        int? IdPermission { get; set; }
         DateTime StartDate { get; set; }
         DateTime EndDate { get; set; }
         DateTime CloseDate { get; set; }

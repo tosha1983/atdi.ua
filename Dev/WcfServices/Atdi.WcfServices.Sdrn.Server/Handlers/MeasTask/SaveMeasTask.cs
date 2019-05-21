@@ -559,6 +559,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     builderInsertStation.SetValue(c => c.DozvilName, stationDataParam.LicenseParameter.DozvilName);
                                     builderInsertStation.SetValue(c => c.EndDate, stationDataParam.LicenseParameter.EndDate);
                                     builderInsertStation.SetValue(c => c.StartDate, stationDataParam.LicenseParameter.StartDate);
+                                    builderInsertStation.SetValue(c => c.IdPermission, stationDataParam.LicenseParameter.Id);
                                 }
                                 if (idSite > -1)
                                 {
@@ -636,6 +637,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
                                                 builderInsertSectorFreq.SetValue(c => c.Frequency, (double?)freq.Frequency);
                                                 builderInsertSectorFreq.SetValue(c => c.PlanId, freq.IdPlan);
+                                                builderInsertSectorFreq.SetValue(c => c.IdFreq, freq.Id);
                                                 builderInsertSectorFreq.Select(c => c.Id);
                                                 queryExecuter.ExecuteAndFetch(builderInsertSectorFreq, readerSectorFreq =>
                                                 {

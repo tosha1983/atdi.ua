@@ -1619,10 +1619,6 @@ namespace Atdi.LegacyServices.Icsm
             throw new NotImplementedException();
         }
 
-        public object GetValue(Expression<Func<TModel, object>> columnExpression)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     //public static class DataReaderExtenstions
