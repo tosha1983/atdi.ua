@@ -175,6 +175,8 @@
     <Compile Include="Forms\MeasTaskForm.Designer.cs">
       <DependentUpon>MeasTaskForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\OtherTerrestrialStations\Commands\ShowResultMonitoringCommand.cs" />
+    <Compile Include="Handlers\OtherTerrestrialStations\OtherTerrestrialStationsContextMenuBuilder.cs" />
     <Compile Include="Handlers\Tour\Forms\SelectAreaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,9 +196,12 @@
     <Compile Include="Forms\StationListForm.Designer.cs">
       <DependentUpon>StationListForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\YetOtherTerrestrialStations\Commands\ShowResultMonitoringCommand.cs" />
+    <Compile Include="Handlers\YetOtherTerrestrialStations\YetOtherTerrestrialStationsContextMenuBuilder.cs" />
     <Compile Include="Metadata\FreqPlanChan.cs" />
     <Compile Include="Metadata\AllStations.cs" />
     <Compile Include="Metadata\Allotments.cs" />
+    <Compile Include="Metadata\MobStations2.cs" />
     <Compile Include="Models\Common\Location.cs" />
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
@@ -211,6 +216,8 @@
     <Compile Include="Models\Processes\BuildInspections\NfraApplication.cs" />
     <Compile Include="Models\Processes\BuildInspections\Tour.cs" />
     <Compile Include="Metadata\Inspection.cs" />
+    <Compile Include="Models\Processes\ShowResultMonitoring\MobStations2.cs" />
+    <Compile Include="Models\Processes\ShowResultMonitoring\MobStations.cs" />
     <Compile Include="Models\Processes\StartMeasurementsSO\Allotment.cs" />
     <Compile Include="Models\Processes\StartMeasurementsSO\FreqPlanChan.cs" />
     <Compile Include="Models\Processes\CreateMeasTask\Inspection.cs" />

@@ -24,6 +24,7 @@ namespace XICSM.ICSControlClient
             public static readonly string SaveTaskToLog = "Save task to log";
             public static readonly string StartMeasurementsSO = "Start Measurements Spectrum Occupation";
             public static readonly string SelectArea = "Select Area";
+            public static readonly string ShowResultMonitoring = "Show Result Monitoring";
         }
 
         public static class Menu
@@ -60,6 +61,15 @@ namespace XICSM.ICSControlClient
             {
                 public static readonly string ExportFieldStrength = "Export field strength";
             }
+            public static class OtherTerrestrialStations
+            {
+                public static readonly string ShowResultMonitoring = "Show Result Monitoring (Fix Sensor)";
+            }
+            public static class YetOtherTerrestrialStations
+            {
+                public static readonly string ShowResultMonitoring = "Show Result Monitoring (Fix Sensor)";
+            }
+
         }
 
     }

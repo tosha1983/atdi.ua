@@ -32,6 +32,21 @@ namespace XICSM.ICSControlClient.Environment
             return entity;
         }
 
+        public static T[] GetEntitiesBySelected<T>(IMDBList selectedItems)
+            where T : class, IRepositoryEntity, IRepositoryReadedEntity, new()
+        {
+            var data = new List<T>();
+            using (var reader = Repository.ReadEntitiesBySelected<T>(selectedItems))
+            {
+                while (reader.Read())
+                {
+                    data.Add(reader.GetEntity());
+                }
+            }
+
+            return data.ToArray();
+        }
+
         public static T ReadFirstEntity<T>(Action<IMRecordset> conditionHandler)
             where T : class, IRepositoryEntity, IRepositoryReadedEntity, new()
         {
@@ -68,6 +83,24 @@ namespace XICSM.ICSControlClient.Environment
             var source = new IMRecordset(entityDbName, IMRecordset.Mode.ReadOnly);
             conditionHandler(source);
             source.Select(fields);
+
+            var reader = new RepositoryEntityReader<T>(source);
+
+            return reader;
+        }
+
+        public static RepositoryEntityReader<T> ReadEntitiesBySelected<T>(IMDBList selectedItems)
+            where T : class, IRepositoryEntity, IRepositoryReadedEntity, new()
+        {
+            var entity = new T();
+
+            var entityDbName = entity.GetTableName();
+            var idFieldName = entity.GetIdFieldName();
+            var fields = entity.GetFieldNames();
+
+            var source = new IMRecordset(entityDbName, IMRecordset.Mode.ReadOnly);
+            source.Select(fields);
+            source.AddSelectionFrom(selectedItems, IMRecordset.WhereCopyOptions.SelectedLines);
 
             var reader = new RepositoryEntityReader<T>(source);
 
