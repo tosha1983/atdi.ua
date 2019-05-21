@@ -67,8 +67,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
             Emitting emitting = new Emitting();
             double stepBW_Hz = (BWResult.Freq_Hz[BWResult.Freq_Hz.Length - 1] - BWResult.Freq_Hz[0]) / (BWResult.Freq_Hz.Length - 1);
-            emitting.StartFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T1) / 1000000;
-            emitting.StopFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T2) / 1000000;
+            emitting.StartFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T1) / 1000000.0;
+            emitting.StopFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T2) / 1000000.0;
             emitting.SpectrumIsDetailed = true;
             emitting.LastDetaileMeas = BWResult.TimeMeas;
             emitting.CurentPower_dBm = CommonCalcPowFromTrace.GetPow_dBm(BWResult);
@@ -79,8 +79,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             BWResult.Levels_dBm.CopyTo(emitting.Spectrum.Levels_dBm, 0);
             emitting.Spectrum.MarkerIndex = BWResult.MarkerIndex;
             emitting.Spectrum.SignalLevel_dBm = (float)emitting.CurentPower_dBm;
-            emitting.Spectrum.SpectrumStartFreq_MHz = BWResult.Freq_Hz[0] / 1000000;
-            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz/1000;
+            emitting.Spectrum.SpectrumStartFreq_MHz = BWResult.Freq_Hz[0] / 1000000.0;
+            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz/1000.0;
             emitting.Spectrum.T1 = BWResult.T1;
             emitting.Spectrum.T2 = BWResult.T2;
             emitting.Spectrum.TraceCount  = BWResult.TraceCount;
@@ -102,25 +102,36 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static bool JoinBWResToEmitting(ref Emitting emitting, BWResult BWResult, ReferenceLevels referenceLevels)
         {
-            double stepBW_Hz = (BWResult.Freq_Hz[BWResult.Freq_Hz.Length - 1] - BWResult.Freq_Hz[0]) / (BWResult.Freq_Hz.Length - 1);
-            emitting.StartFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T1) / 1000000;
-            emitting.StopFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T2) / 1000000;
-            emitting.SpectrumIsDetailed = true;
+            double New_CurentPow = CommonCalcPowFromTrace.GetPow_dBm(BWResult);
+            bool Use_new_spectr = false;
+            
+            // условие обновление спектра
+            if (emitting.SpectrumIsDetailed == false) { Use_new_spectr = true; }
+            else if (New_CurentPow > emitting.CurentPower_dBm) { Use_new_spectr = true; }
+            // конец условиям обновления спектра
+            if (Use_new_spectr)
+            {
+                double stepBW_Hz = (BWResult.Freq_Hz[BWResult.Freq_Hz.Length - 1] - BWResult.Freq_Hz[0]) / (BWResult.Freq_Hz.Length - 1);
+                emitting.StartFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T1) / 1000000.0;
+                emitting.StopFrequency_MHz = (BWResult.Freq_Hz[0] + stepBW_Hz * BWResult.T2) / 1000000.0;
+                emitting.SpectrumIsDetailed = true;
+                emitting.CurentPower_dBm = New_CurentPow;
+                emitting.ReferenceLevel_dBm = CommonCalcPowFromTrace.GetPow_dBm(referenceLevels.levels, referenceLevels.StartFrequency_Hz, referenceLevels.StepFrequency_Hz, emitting.StartFrequency_MHz * 1000000, emitting.StopFrequency_MHz * 1000000);
+                emitting.Spectrum = new Spectrum();
+                emitting.Spectrum.Bandwidth_kHz = BWResult.Bandwidth_kHz;
+                emitting.Spectrum.Levels_dBm = new float[BWResult.Levels_dBm.Length];
+                BWResult.Levels_dBm.CopyTo(emitting.Spectrum.Levels_dBm, 0);
+                emitting.Spectrum.MarkerIndex = BWResult.MarkerIndex;
+                emitting.Spectrum.SignalLevel_dBm = (float)emitting.CurentPower_dBm;
+                emitting.Spectrum.SpectrumStartFreq_MHz = BWResult.Freq_Hz[0] / 1000000.0;
+                emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz / 1000.0;
+                emitting.Spectrum.T1 = BWResult.T1;
+                emitting.Spectrum.T2 = BWResult.T2;
+                emitting.Spectrum.TraceCount = BWResult.TraceCount;
+                emitting.Spectrum.СorrectnessEstimations = BWResult.СorrectnessEstimations;
+                bool chackSpecter = CalcSignalization.CheckContravention(ref emitting.Spectrum, referenceLevels);
+            }
             emitting.LastDetaileMeas = BWResult.TimeMeas;
-            emitting.CurentPower_dBm = CommonCalcPowFromTrace.GetPow_dBm(BWResult);
-            emitting.ReferenceLevel_dBm = CommonCalcPowFromTrace.GetPow_dBm(referenceLevels.levels, referenceLevels.StartFrequency_Hz, referenceLevels.StepFrequency_Hz, emitting.StartFrequency_MHz * 1000000, emitting.StopFrequency_MHz * 1000000);
-            emitting.Spectrum = new Spectrum();
-            emitting.Spectrum.Bandwidth_kHz = BWResult.Bandwidth_kHz;
-            emitting.Spectrum.Levels_dBm = new float[BWResult.Levels_dBm.Length];
-            BWResult.Levels_dBm.CopyTo(emitting.Spectrum.Levels_dBm, 0);
-            emitting.Spectrum.MarkerIndex = BWResult.MarkerIndex;
-            emitting.Spectrum.SignalLevel_dBm = (float)emitting.CurentPower_dBm;
-            emitting.Spectrum.SpectrumStartFreq_MHz = BWResult.Freq_Hz[0] / 1000000;
-            emitting.Spectrum.SpectrumSteps_kHz = stepBW_Hz/1000;
-            emitting.Spectrum.T1 = BWResult.T1;
-            emitting.Spectrum.T2 = BWResult.T2;
-            emitting.Spectrum.TraceCount = BWResult.TraceCount;
-            emitting.Spectrum.СorrectnessEstimations = BWResult.СorrectnessEstimations;
             int indexLevel = (int)Math.Floor(emitting.CurentPower_dBm) - emitting.LevelsDistribution.Levels[0];
             if ((indexLevel >= 0) && (indexLevel < emitting.LevelsDistribution.Levels.Length)) { emitting.LevelsDistribution.Count[indexLevel]++; }
             if ((emitting.WorkTimes != null) && (emitting.WorkTimes.Length > 0))
