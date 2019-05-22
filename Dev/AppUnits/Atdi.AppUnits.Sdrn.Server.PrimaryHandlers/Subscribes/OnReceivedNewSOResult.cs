@@ -75,9 +75,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     return result;
                 });
 
-                var builderDelMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Delete();
-                builderDelMeas.Where(c => c.Id, ConditionOperator.Equal, @event.ResultId);
-                queryExecuter.Execute(builderDelMeas);
+                //var builderDelMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Delete();
+                //builderDelMeas.Where(c => c.Id, ConditionOperator.Equal, @event.ResultId);
+                //queryExecuter.Execute(builderDelMeas);
 
                 if (measResult.Measurement == DM.MeasurementType.MonitoringStations)
                 {
@@ -135,9 +135,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             else if (measResult.TaskId.Length > 200)
                 measResult.TaskId.SubString(200);
 
-            
-
-
             if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
                 WriteLog("Incorrect value SwNumber", "IResMeasRaw");
 
@@ -158,10 +155,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     var listRoutePoints = new List<DEV.RoutePoint>();
                     var routePoint = new DEV.RoutePoint();
 
-                    if (reader.GetValue(c => c.Lon).HasValue)
-                        routePoint.Lon = reader.GetValue(c => c.Lon).Value;
-                    if (reader.GetValue(c => c.Lat).HasValue)
-                        routePoint.Lat = reader.GetValue(c => c.Lat).Value;
+                    var lon = reader.GetValue(c => c.Lon);
+                    var lat = reader.GetValue(c => c.Lat);
+                    if (lon.HasValue)
+                        routePoint.Lon = lon.Value;
+                    if (lat.HasValue)
+                        routePoint.Lat = lat.Value;
                     routePoint.ASL = reader.GetValue(c => c.Asl);
                     routePoint.AGL = reader.GetValue(c => c.Agl);
 
@@ -170,10 +169,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     DM.PointStayType pst;
                     if (Enum.TryParse(reader.GetValue(c => c.PointStayType), out pst))
                         routePoint.PointStayType = pst;
-                    if (reader.GetValue(c => c.StartTime).HasValue)
-                        routePoint.StartTime = reader.GetValue(c => c.StartTime).Value;
-                    if (reader.GetValue(c => c.FinishTime).HasValue)
-                        routePoint.FinishTime = reader.GetValue(c => c.FinishTime).Value;
+
+                    var startTime = reader.GetValue(c => c.StartTime);
+                    var finishTime = reader.GetValue(c => c.FinishTime);
+                    if (startTime.HasValue)
+                        routePoint.StartTime = startTime.Value;
+                    if (finishTime.HasValue)
+                        routePoint.FinishTime = finishTime.Value;
 
                     if (routePoint.StartTime > routePoint.FinishTime)
                     {
@@ -194,9 +196,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             else
                 result = false;
 
-            var builderDelRoute = this._dataLayer.GetBuilder<MD.IResRoutesRaw>().Delete();
-            builderDelRoute.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderDelRoute);
+            //var builderDelRoute = this._dataLayer.GetBuilder<MD.IResRoutesRaw>().Delete();
+            //builderDelRoute.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderDelRoute);
 
             #endregion
 
@@ -211,12 +213,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 while (reader.Read())
                 {
                     var measStation = new DEV.StationMeasResult();
-                    if (reader.GetValue(c => c.StationId).HasValue)
-                        measStation.StationId = reader.GetValue(c => c.StationId).Value.ToString().SubString(50);
+                    var stationId = reader.GetValue(c => c.StationId);
+                    if (stationId.HasValue)
+                        measStation.StationId = stationId.Value.ToString().SubString(50);
                     measStation.TaskGlobalSid = reader.GetValue(c => c.GlobalSID).SubString(50);
                     measStation.RealGlobalSid = reader.GetValue(c => c.MeasGlobalSID).SubString(50);
-                    if (reader.GetValue(c => c.SectorId).HasValue)
-                        measStation.SectorId = reader.GetValue(c => c.SectorId).Value.ToString().SubString(50);
+
+                    var sectorId = reader.GetValue(c => c.SectorId);
+                    if (sectorId.HasValue)
+                        measStation.SectorId = sectorId.Value.ToString().SubString(50);
                     measStation.Status = reader.GetValue(c => c.Status).SubString(5);
                     measStation.Standard = reader.GetValue(c => c.Standard).SubString(50);
 
@@ -234,10 +239,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             var levelMeasResult = new DEV.LevelMeasResult();
                             var geoLocation = new DM.GeoLocation();
 
-                            if (readerLev.GetValue(c => c.Lon).HasValue)
-                                geoLocation.Lon = readerLev.GetValue(c => c.Lon).Value;
-                            if (readerLev.GetValue(c => c.Lat).HasValue)
-                                geoLocation.Lat = readerLev.GetValue(c => c.Lat).Value;
+                            var lon = readerLev.GetValue(c => c.Lon);
+                            var lat = readerLev.GetValue(c => c.Lat);
+
+                            if (lon.HasValue)
+                                geoLocation.Lon = lon.Value;
+                            if (lat.HasValue)
+                                geoLocation.Lat = lat.Value;
                             geoLocation.ASL = readerLev.GetValue(c => c.Altitude);
                             geoLocation.AGL = readerLev.GetValue(c => c.Agl);
 
@@ -245,24 +253,27 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             if (validationResult)
                                 levelMeasResult.Location = geoLocation;
 
-                            if (readerLev.GetValue(c => c.LevelDbm).HasValue && readerLev.GetValue(c => c.LevelDbm) >= -150 && readerLev.GetValue(c => c.LevelDbm) <= 20)
-                                levelMeasResult.Level_dBm = readerLev.GetValue(c => c.LevelDbm).Value;
+                            var levelDbm = readerLev.GetValue(c => c.LevelDbm);
+                            if (levelDbm.HasValue && levelDbm >= -150 && levelDbm <= 20)
+                                levelMeasResult.Level_dBm = levelDbm.Value;
                             else
                             {
                                 WriteLog("Incorrect value LevelDbm", "IResStLevelCarRaw");
                                 validationResult = false;
                             }
 
-                            if (readerLev.GetValue(c => c.LevelDbmkvm).HasValue && readerLev.GetValue(c => c.LevelDbmkvm) >= -10 && readerLev.GetValue(c => c.LevelDbmkvm) <= 140)
-                                levelMeasResult.Level_dBmkVm = readerLev.GetValue(c => c.LevelDbmkvm).Value;
+                            var levelDbmkvm = readerLev.GetValue(c => c.LevelDbmkvm);
+                            if (levelDbmkvm.HasValue && levelDbmkvm >= -10 && levelDbmkvm <= 140)
+                                levelMeasResult.Level_dBmkVm = levelDbmkvm.Value;
                             else
                             {
                                 WriteLog("Incorrect value LevelDbmkvm", "IResStLevelCarRaw");
                                 validationResult = false;
                             }
 
-                            if (readerLev.GetValue(c => c.TimeOfMeasurements).HasValue)
-                                levelMeasResult.MeasurementTime = readerLev.GetValue(c => c.TimeOfMeasurements).Value;
+                            var timeOfMeasurements = readerLev.GetValue(c => c.TimeOfMeasurements);
+                            if (timeOfMeasurements.HasValue)
+                                levelMeasResult.MeasurementTime = timeOfMeasurements.Value;
                             levelMeasResult.DifferenceTimeStamp_ns = readerLev.GetValue(c => c.DifferenceTimeStamp);
 
                             if (levelMeasResult.DifferenceTimeStamp_ns.HasValue && (levelMeasResult.DifferenceTimeStamp_ns < 0 && levelMeasResult.DifferenceTimeStamp_ns > 999999999))
@@ -280,9 +291,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     measStation.LevelResults = listLevelMeasResult.ToArray();
 
-                    var builderDelResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCarRaw>().Delete();
-                    builderDelResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderDelResStLevelCar);
+                    //var builderDelResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCarRaw>().Delete();
+                    //builderDelResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderDelResStLevelCar);
                     #endregion
 
                     #region DirectionFindingData
@@ -299,10 +310,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             var findingData = new DEV.DirectionFindingData();
                             var geoLocation = new DM.GeoLocation();
 
-                            if (readerData.GetValue(c => c.Lon).HasValue)
-                                geoLocation.Lon = readerData.GetValue(c => c.Lon).Value;
-                            if (readerData.GetValue(c => c.Lat).HasValue)
-                                geoLocation.Lat = readerData.GetValue(c => c.Lat).Value;
+                            var lon = readerData.GetValue(c => c.Lon);
+                            var lat = readerData.GetValue(c => c.Lat);  
+                            if (lon.HasValue)
+                                geoLocation.Lon = lon.Value;
+                            if (lat.HasValue)
+                                geoLocation.Lat = lat.Value;
                             geoLocation.ASL = readerData.GetValue(c => c.Asl);
                             geoLocation.AGL = readerData.GetValue(c => c.Agl);
 
@@ -324,9 +337,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     });
                     measStation.Bearings = listFindingData.ToArray();
 
-                    var builderDelBearing = this._dataLayer.GetBuilder<MD.IBearingRaw>().Delete();
-                    builderDelBearing.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderDelBearing);
+                    //var builderDelBearing = this._dataLayer.GetBuilder<MD.IBearingRaw>().Delete();
+                    //builderDelBearing.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderDelBearing);
                     #endregion
 
                     #region GeneralMeasResult
@@ -340,19 +353,30 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         while (readerGeneralResult.Read())
                         {
                             var generalMeasResult = new DEV.GeneralMeasResult();
-                            if (readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && readerGeneralResult.GetValue(c => c.CentralFrequency) >= 0.001 && readerGeneralResult.GetValue(c => c.CentralFrequency) <= 400000)
-                                generalMeasResult.CentralFrequency_MHz = readerGeneralResult.GetValue(c => c.CentralFrequency).Value;
-                            if (readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && readerGeneralResult.GetValue(c => c.CentralFrequencyMeas) >= 0.001 && readerGeneralResult.GetValue(c => c.CentralFrequencyMeas) <= 400000)
-                                generalMeasResult.CentralFrequencyMeas_MHz = readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).Value;
+
+                            var centralFrequency = readerGeneralResult.GetValue(c => c.CentralFrequency);
+                            if (centralFrequency.HasValue && centralFrequency >= 0.001 && centralFrequency <= 400000)
+                                generalMeasResult.CentralFrequency_MHz = centralFrequency.Value;
+
+                            var centralFrequencyMeas = readerGeneralResult.GetValue(c => c.CentralFrequencyMeas);
+                            if (centralFrequencyMeas.HasValue && centralFrequencyMeas >= 0.001 && centralFrequencyMeas <= 400000)
+                                generalMeasResult.CentralFrequencyMeas_MHz = centralFrequencyMeas.Value;
+
                             generalMeasResult.OffsetFrequency_mk = readerGeneralResult.GetValue(c => c.OffsetFrequency);
-                            if (readerGeneralResult.GetValue(c => c.SpecrumStartFreq) >= 0.001 && readerGeneralResult.GetValue(c => c.SpecrumStartFreq) <= 400000)
-                                generalMeasResult.SpectrumStartFreq_MHz = (decimal)readerGeneralResult.GetValue(c => c.SpecrumStartFreq);
+
+                            var specrumStartFreq = readerGeneralResult.GetValue(c => c.SpecrumStartFreq);
+                            if (specrumStartFreq >= 0.001 && specrumStartFreq <= 400000)
+                                generalMeasResult.SpectrumStartFreq_MHz = (decimal)specrumStartFreq;
                             else
                                 removeGroup1 = true;
-                            if (readerGeneralResult.GetValue(c => c.SpecrumSteps) >= 0.001 && readerGeneralResult.GetValue(c => c.SpecrumSteps) <= 100000)
-                                generalMeasResult.SpectrumSteps_kHz = (decimal)readerGeneralResult.GetValue(c => c.SpecrumSteps);
+
+                            var specrumSteps = readerGeneralResult.GetValue(c => c.SpecrumSteps);
+
+                            if (specrumSteps >= 0.001 && specrumSteps <= 100000)
+                                generalMeasResult.SpectrumSteps_kHz = (decimal)specrumSteps;
                             else
                                 removeGroup1 = true;
+
                             generalMeasResult.MeasDuration_sec = readerGeneralResult.GetValue(c => c.DurationMeas).Value;
                             generalMeasResult.MeasStartTime = readerGeneralResult.GetValue(c => c.TimeStartMeas);
                             generalMeasResult.MeasFinishTime = readerGeneralResult.GetValue(c => c.TimeFinishMeas);
@@ -374,48 +398,60 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 #region BandwidthMeasResult
                                 var bandwidthMeasResult = new DEV.BandwidthMeasResult();
                                 bool isValidBandwith = true;
-                                if (readerGeneralResult.GetValue(c => c.MarkerIndex).HasValue && readerGeneralResult.GetValue(c => c.T1).HasValue && readerGeneralResult.GetValue(c => c.T2).HasValue)
+
+                                var markerIndex = readerGeneralResult.GetValue(c => c.MarkerIndex);
+                                var t1 = readerGeneralResult.GetValue(c => c.T1);
+                                var t2 = readerGeneralResult.GetValue(c => c.T2);
+
+                                if (markerIndex.HasValue && t1.HasValue && t2.HasValue)
                                 {
-                                    if (!(readerGeneralResult.GetValue(c => c.T1).Value >= 0 && readerGeneralResult.GetValue(c => c.T1).Value <= readerGeneralResult.GetValue(c => c.MarkerIndex).Value
-                                        && readerGeneralResult.GetValue(c => c.T2).Value >= readerGeneralResult.GetValue(c => c.MarkerIndex).Value && readerGeneralResult.GetValue(c => c.T2).Value <= 100000
-                                        && readerGeneralResult.GetValue(c => c.MarkerIndex).Value >= readerGeneralResult.GetValue(c => c.T1).Value && readerGeneralResult.GetValue(c => c.MarkerIndex) <= readerGeneralResult.GetValue(c => c.T2).Value))
+                                    if (!(t1.Value >= 0 && t1.Value <= markerIndex.Value
+                                        && t2.Value >= markerIndex.Value && t2.Value <= 100000
+                                        && markerIndex.Value >= t1.Value && markerIndex.Value <= t2.Value))
                                     {
                                         isValidBandwith = false;
                                     }
                                 }
                                 else
                                     isValidBandwith = false;
-                                bandwidthMeasResult.T1 = readerGeneralResult.GetValue(c => c.T1);
-                                bandwidthMeasResult.T2 = readerGeneralResult.GetValue(c => c.T2);
-                                bandwidthMeasResult.Bandwidth_kHz = readerGeneralResult.GetValue(c => c.BW);
-                                bandwidthMeasResult.MarkerIndex = readerGeneralResult.GetValue(c => c.MarkerIndex);
-                                if (readerGeneralResult.GetValue(c => c.Correctnessestim).HasValue)
-                                {
-                                    bandwidthMeasResult.СorrectnessEstimations = readerGeneralResult.GetValue(c => c.Correctnessestim).Value == 1 ? true : false;
-                                }
-                                else
-                                {
-                                    bandwidthMeasResult.СorrectnessEstimations = false;
-                                }
-                                if (readerGeneralResult.GetValue(c => c.TraceCount).HasValue && readerGeneralResult.GetValue(c => c.TraceCount).Value >= 1 && readerGeneralResult.GetValue(c => c.TraceCount).Value <= 100000)
-                                    bandwidthMeasResult.TraceCount = readerGeneralResult.GetValue(c => c.TraceCount).Value;
 
                                 if (isValidBandwith)
+                                {
+                                    bandwidthMeasResult.T1 = t1.Value;
+                                    bandwidthMeasResult.T2 = t2.Value;
+                                    bandwidthMeasResult.Bandwidth_kHz = readerGeneralResult.GetValue(c => c.BW);
+                                    bandwidthMeasResult.MarkerIndex = markerIndex;
+
+                                    var correctnessestim = readerGeneralResult.GetValue(c => c.Correctnessestim);
+                                    if (correctnessestim.HasValue)
+                                        bandwidthMeasResult.СorrectnessEstimations = correctnessestim.Value == 1 ? true : false;
+                                    else
+                                        bandwidthMeasResult.СorrectnessEstimations = false;
+
+                                    var traceCount = readerGeneralResult.GetValue(c => c.TraceCount);
+                                    if (traceCount.HasValue && traceCount.Value >= 1 && traceCount.Value <= 100000)
+                                        bandwidthMeasResult.TraceCount = traceCount.Value;
+
+
                                     generalMeasResult.BandwidthResult = bandwidthMeasResult;
+                                }
+
                                 #endregion
 
                                 var listStLevelsSpect = new List<float>();
                                 var queryStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpectRaw>()
                                 .From()
                                 .Select(c => c.Id, c => c.LevelSpecrum)
+                                .OrderByAsc(c => c.Id)
                                 .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
                                 queryExecuter.Fetch(queryStLevelsSpect, readerStLevelsSpect =>
                                 {
                                     while (readerStLevelsSpect.Read())
                                     {
-                                        if (readerStLevelsSpect.GetValue(c => c.LevelSpecrum).HasValue)
+                                        var levelSpecrum = readerStLevelsSpect.GetValue(c => c.LevelSpecrum);
+                                        if (levelSpecrum.HasValue)
                                         {
-                                            listStLevelsSpect.Add((float)readerStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
+                                            listStLevelsSpect.Add((float)levelSpecrum.Value);
                                         }
                                     }
                                     return true;
@@ -423,9 +459,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 generalMeasResult.LevelsSpectrum_dBm = listStLevelsSpect.ToArray();
                             }
 
-                            var builderDelResStLevels = this._dataLayer.GetBuilder<MD.IResStLevelsSpectRaw>().Delete();
-                            builderDelResStLevels.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
-                            queryExecuter.Execute(builderDelResStLevels);
+                            //var builderDelResStLevels = this._dataLayer.GetBuilder<MD.IResStLevelsSpectRaw>().Delete();
+                            //builderDelResStLevels.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
+                            //queryExecuter.Execute(builderDelResStLevels);
 
                             #region MaskElement
                             var isValidElementMask = true;
@@ -440,13 +476,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 {
                                     var elementMask = new DEV.ElementsMask();
 
-                                    if (readerElementsMask.GetValue(c => c.Level).HasValue && readerElementsMask.GetValue(c => c.Level).Value >= -300 && readerElementsMask.GetValue(c => c.Level).Value <= 300)
-                                        elementMask.Level_dB = readerElementsMask.GetValue(c => c.Level);
+                                    var level = readerElementsMask.GetValue(c => c.Level);
+                                    if (level.HasValue && level.Value >= -300 && level.Value <= 300)
+                                        elementMask.Level_dB = level;
                                     else
                                         isValidElementMask = false;
 
-                                    if (readerElementsMask.GetValue(c => c.Bw).HasValue && readerElementsMask.GetValue(c => c.Bw).Value >= 1 && readerElementsMask.GetValue(c => c.Bw).Value <= 200000)
-                                        elementMask.BW_kHz = readerElementsMask.GetValue(c => c.Bw);
+                                    var bw = readerElementsMask.GetValue(c => c.Bw);
+                                    if (bw.HasValue && bw.Value >= 1 && bw.Value <= 200000)
+                                        elementMask.BW_kHz = bw;
                                     else
                                         isValidElementMask = false;
 
@@ -457,9 +495,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             });
                             generalMeasResult.BWMask = listElementsMask.ToArray();
 
-                            var builderDelMaskElem = this._dataLayer.GetBuilder<MD.IResStMaskElementRaw>().Delete();
-                            builderDelMaskElem.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
-                            queryExecuter.Execute(builderDelMaskElem);
+                            //var builderDelMaskElem = this._dataLayer.GetBuilder<MD.IResStMaskElementRaw>().Delete();
+                            //builderDelMaskElem.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
+                            //queryExecuter.Execute(builderDelMaskElem);
                             #endregion
 
                             #region StationSysInfo
@@ -475,10 +513,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     var stationSysInfo = new DEV.StationSysInfo();
                                     var location = new DM.GeoLocation();
 
-                                    if (readerStationSysInfo.GetValue(c => c.Lat).HasValue)
-                                        location.Lat = readerStationSysInfo.GetValue(c => c.Lat).Value;
-                                    if (readerStationSysInfo.GetValue(c => c.Lon).HasValue)
-                                        location.Lon = readerStationSysInfo.GetValue(c => c.Lon).Value;
+                                    var lat = readerStationSysInfo.GetValue(c => c.Lat);
+                                    var lon = readerStationSysInfo.GetValue(c => c.Lon);
+                                    if (lat.HasValue)
+                                        location.Lat = lat.Value;
+                                    if (lon.HasValue)
+                                        location.Lon = lon.Value;
                                     location.AGL = readerStationSysInfo.GetValue(c => c.Agl);
                                     location.ASL = readerStationSysInfo.GetValue(c => c.Asl);
 
@@ -532,9 +572,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             listStationSysInfoBls.Add(stationSysInfoBls);
                                         }
 
-                                        var builderDelResSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlsRaw>().Delete();
-                                        builderDelResSysInfoBls.Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
-                                        queryExecuter.Execute(builderDelResSysInfoBls);
+                                        //var builderDelResSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlsRaw>().Delete();
+                                        //builderDelResSysInfoBls.Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                        //queryExecuter.Execute(builderDelResSysInfoBls);
 
                                         return true;
                                     });
@@ -545,9 +585,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 return true;
                             });
 
-                            var builderDelResSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfoRaw>().Delete();
-                            builderDelResSysInfo.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
-                            queryExecuter.Execute(builderDelResSysInfo);
+                            //var builderDelResSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfoRaw>().Delete();
+                            //builderDelResSysInfo.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
+                            //queryExecuter.Execute(builderDelResSysInfo);
                             #endregion
 
                             measStation.GeneralResult = generalMeasResult;
@@ -559,21 +599,21 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     listStationMeasResult.Add(measStation);
 
-                    var builderDelLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Delete();
-                    builderDelLinkResSensor.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderDelLinkResSensor);
+                    //var builderDelLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Delete();
+                    //builderDelLinkResSensor.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderDelLinkResSensor);
 
-                    var builderDelResGeneral = this._dataLayer.GetBuilder<MD.IResStGeneralRaw>().Delete();
-                    builderDelResGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderDelResGeneral);
+                    //var builderDelResGeneral = this._dataLayer.GetBuilder<MD.IResStGeneralRaw>().Delete();
+                    //builderDelResGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderDelResGeneral);
                 }
 
                 return true;
             });
 
-            var builderDelStation = this._dataLayer.GetBuilder<MD.IResMeasStaRaw>().Delete();
-            builderDelStation.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderDelStation);
+            //var builderDelStation = this._dataLayer.GetBuilder<MD.IResMeasStaRaw>().Delete();
+            //builderDelStation.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderDelStation);
 
             if (listStationMeasResult.Count > 0)
                 measResult.StationResults = listStationMeasResult.ToArray();
@@ -729,10 +769,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                 return true;
                                             });
 
+                                            var centralFrequency = readerGeneralResult.GetValue(c => c.CentralFrequency);
+                                            var centralFrequencyMeas = readerGeneralResult.GetValue(c => c.CentralFrequencyMeas);
 
-                                            if ((readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && station.GeneralResult.CentralFrequency_MHz.HasValue && readerGeneralResult.GetValue(c => c.CentralFrequency).Value == station.GeneralResult.CentralFrequency_MHz.Value)
-                                                || (readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && station.GeneralResult.CentralFrequencyMeas_MHz.HasValue && Math.Abs(readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).Value - station.GeneralResult.CentralFrequencyMeas_MHz.Value) <= 0.005)
-                                                || (!readerGeneralResult.GetValue(c => c.CentralFrequency).HasValue && !station.GeneralResult.CentralFrequency_MHz.HasValue && !readerGeneralResult.GetValue(c => c.CentralFrequencyMeas).HasValue && !station.GeneralResult.CentralFrequencyMeas_MHz.HasValue))
+                                            if ((centralFrequency.HasValue && station.GeneralResult.CentralFrequency_MHz.HasValue && centralFrequency.Value == station.GeneralResult.CentralFrequency_MHz.Value)
+                                                || (centralFrequencyMeas.HasValue && station.GeneralResult.CentralFrequencyMeas_MHz.HasValue && Math.Abs(centralFrequencyMeas.Value - station.GeneralResult.CentralFrequencyMeas_MHz.Value) <= 0.005)
+                                                || (!centralFrequency.HasValue && !station.GeneralResult.CentralFrequency_MHz.HasValue && !centralFrequencyMeas.HasValue && !station.GeneralResult.CentralFrequencyMeas_MHz.HasValue))
                                             {
                                                 if (!measStartTime.HasValue || measStartTime.Value > readerGeneralResult.GetValue(c => c.TimeStartMeas) || idMeasResultStation == 0)
                                                 {
@@ -838,17 +880,37 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 }
 
                                 int Idstation; int IdSector;
+                                bool isUpdate = false;
+
                                 var builderUpdateMeasResult = this._dataLayer.GetBuilder<MD.IResMeasStation>().Update();
                                 if (!string.IsNullOrEmpty(station.StationId) && int.TryParse(station.StationId, out Idstation))
+                                {
                                     builderUpdateMeasResult.SetValue(c => c.StationId, Idstation);
+                                    isUpdate = true;
+                                }
                                 if (!string.IsNullOrEmpty(station.SectorId) && int.TryParse(station.SectorId, out IdSector))
+                                { 
                                     builderUpdateMeasResult.SetValue(c => c.SectorId, IdSector);
+                                    isUpdate = true;
+                                }
                                 if (!string.IsNullOrEmpty(station.TaskGlobalSid))
+                                { 
                                     builderUpdateMeasResult.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
+                                    isUpdate = true;
+                                }
+
                                 if (!string.IsNullOrEmpty(station.Status))
+                                { 
                                     builderUpdateMeasResult.SetValue(c => c.Status, station.Status);
-                                builderUpdateMeasResult.Where(c => c.Id, ConditionOperator.Equal, idMeasResultStation);
-                                queryExecuter.Execute(builderUpdateMeasResult);
+                                    isUpdate = true;
+                                }
+
+                                if (isUpdate)
+                                {
+                                    builderUpdateMeasResult.Where(c => c.Id, ConditionOperator.Equal, idMeasResultStation);
+                                    queryExecuter.Execute(builderUpdateMeasResult);
+                                    isUpdate = false;
+                                }
 
                                 var generalResult = station.GeneralResult;
                                 if (generalResult != null)
@@ -856,15 +918,30 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     var builderUpdateResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().Update();
 
                                     if (generalResult.RBW_kHz.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.VBW_kHz.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.CentralFrequencyMeas_MHz.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.CentralFrequencyMeas, generalResult.CentralFrequencyMeas_MHz);
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.CentralFrequency_MHz.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.CentralFrequency, generalResult.CentralFrequency_MHz);
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.MeasDuration_sec.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.DurationMeas, generalResult.MeasDuration_sec);
+                                                                            isUpdate = true;
+                                    }
                                     if (generalResult.BandwidthResult != null)
                                     {
                                         var bandwidthResult = generalResult.BandwidthResult;
@@ -880,19 +957,39 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         builderUpdateResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
                                         if (bandwidthResult.СorrectnessEstimations.HasValue)
                                             builderUpdateResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
+                                        isUpdate = true;
                                     }
                                     if (generalResult.OffsetFrequency_mk.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.SpectrumStartFreq_MHz.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.SpectrumSteps_kHz.HasValue)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.SpecrumSteps, Convert.ToDouble(generalResult.SpectrumSteps_kHz));
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.MeasStartTime.HasValue && startTime.HasValue && generalResult.MeasStartTime.Value < startTime)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
+                                        isUpdate = true;
+                                    }
                                     if (generalResult.MeasFinishTime.HasValue && finishTime.HasValue && generalResult.MeasFinishTime.Value > finishTime)
+                                    { 
                                         builderUpdateResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
-                                    builderUpdateResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, idMeasResultStation);
-                                    queryExecuter.Execute(builderUpdateResStGeneral);
+                                        isUpdate = true;
+                                    }
+                                    if (isUpdate)
+                                    {
+                                        builderUpdateResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, idMeasResultStation);
+                                        queryExecuter.Execute(builderUpdateResStGeneral);
+                                        isUpdate = false;
+                                    }
                                 }
 
                                 if (station.GeneralResult.BWMask != null)
@@ -1729,10 +1826,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 while (reader.Read())
                 {
-                    if (reader.GetValue(c => c.Lon).HasValue)
-                        geoLocation.Lon = reader.GetValue(c => c.Lon).Value;
-                    if (reader.GetValue(c => c.Lat).HasValue)
-                        geoLocation.Lat = reader.GetValue(c => c.Lat).Value;
+                    var lon = reader.GetValue(c => c.Lon);
+                    var lat = reader.GetValue(c => c.Lat);
+
+                    if (lon.HasValue)
+                        geoLocation.Lon = lon.Value;
+                    if (lat.HasValue)
+                        geoLocation.Lat = lat.Value;
                     geoLocation.ASL = reader.GetValue(c => c.Asl);
                     geoLocation.AGL = reader.GetValue(c => c.Agl);
                 }
@@ -1742,9 +1842,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
                 measResult.Location = geoLocation;
 
-            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
-            builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderDelLocSensor);
+            //var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
+            //builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderDelLocSensor);
 
 
             #region FrequencySample
@@ -1760,38 +1860,51 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     bool validationResult = true;
                     var freqSample = new DEV.FrequencySample();
 
-                    if (reader.GetValue(c => c.Freq_MHz).HasValue && reader.GetValue(c => c.Freq_MHz) >= 0 && reader.GetValue(c => c.Freq_MHz).Value <= 400000)
-                        freqSample.Freq_MHz = (float)reader.GetValue(c => c.Freq_MHz).Value;
+                    var freq_MHz = reader.GetValue(c => c.Freq_MHz);
+                    if (freq_MHz.HasValue && freq_MHz >= 0 && freq_MHz.Value <= 400000)
+                        freqSample.Freq_MHz = (float)freq_MHz.Value;
                     else
                     {
                         WriteLog("Incorrect value Freq_MHz", "IFreqSampleRaw");
                         validationResult = false;
                     }
-                    if (reader.GetValue(c => c.OccupationPt).HasValue && reader.GetValue(c => c.OccupationPt) >= 0 && reader.GetValue(c => c.OccupationPt).Value <= 100)
-                        freqSample.Occupation_Pt = (float)reader.GetValue(c => c.OccupationPt).Value;
+
+                    var occupationPt = reader.GetValue(c => c.OccupationPt);
+                    if (occupationPt.HasValue && occupationPt >= 0 && occupationPt.Value <= 100)
+                        freqSample.Occupation_Pt = (float)occupationPt.Value;
                     else
                     {
                         WriteLog("Incorrect value Freq_MHz", "IFreqSampleRaw");
                         validationResult = false;
                     }
-                    if (reader.GetValue(c => c.Level_dBm).HasValue && reader.GetValue(c => c.Level_dBm).Value >= -150 && reader.GetValue(c => c.Level_dBm).Value <= 20)
-                        freqSample.Level_dBm = (float)reader.GetValue(c => c.Level_dBm).Value;
-                    if (reader.GetValue(c => c.Level_dBmkVm).HasValue && reader.GetValue(c => c.Level_dBmkVm).Value >= 10 && reader.GetValue(c => c.Level_dBmkVm).Value <= 140)
-                        freqSample.Level_dBmkVm = (float)reader.GetValue(c => c.Level_dBmkVm).Value;
-                    if (reader.GetValue(c => c.LevelMin_dBm).HasValue && reader.GetValue(c => c.LevelMin_dBm).Value >= -120 && reader.GetValue(c => c.LevelMin_dBm).Value <= 20)
-                        freqSample.LevelMin_dBm = (float)reader.GetValue(c => c.LevelMin_dBm).Value;
-                    if (reader.GetValue(c => c.LevelMax_dBm).HasValue && reader.GetValue(c => c.LevelMax_dBm).Value >= -120 && reader.GetValue(c => c.LevelMax_dBm).Value <= 20)
-                        freqSample.LevelMax_dBm = (float)reader.GetValue(c => c.LevelMax_dBm).Value;
 
                     if (validationResult)
+                    {
+                        var level_dBm = reader.GetValue(c => c.Level_dBm);
+                        if (level_dBm.HasValue && level_dBm.Value >= -150 && level_dBm.Value <= 20)
+                            freqSample.Level_dBm = (float)level_dBm.Value;
+
+                        var level_dBmkVm = reader.GetValue(c => c.Level_dBmkVm);
+                        if (level_dBmkVm.HasValue && level_dBmkVm.Value >= 10 && level_dBmkVm.Value <= 140)
+                            freqSample.Level_dBmkVm = (float)level_dBmkVm.Value;
+
+                        var levelMin_dBm = reader.GetValue(c => c.LevelMin_dBm);
+                        if (levelMin_dBm.HasValue && levelMin_dBm.Value >= -120 && levelMin_dBm.Value <= 20)
+                            freqSample.LevelMin_dBm = (float)levelMin_dBm.Value;
+
+                        var levelMax_dBm = reader.GetValue(c => c.LevelMax_dBm);
+                        if (levelMax_dBm.HasValue && levelMax_dBm.Value >= -120 && levelMax_dBm.Value <= 20)
+                            freqSample.LevelMax_dBm = (float)levelMax_dBm.Value;
+
                         listFrequencySample.Add(freqSample);
+                    }
                 }
                 return true;
             });
 
-            var builderDelFreqSample = this._dataLayer.GetBuilder<MD.IFreqSampleRaw>().Delete();
-            builderDelFreqSample.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderDelFreqSample);
+            //var builderDelFreqSample = this._dataLayer.GetBuilder<MD.IFreqSampleRaw>().Delete();
+            //builderDelFreqSample.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderDelFreqSample);
 
             if (listFrequencySample.Count > 0)
                 measResult.FrequencySamples = listFrequencySample.ToArray();
@@ -1920,10 +2033,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 while (reader.Read())
                 {
-                    if (reader.GetValue(c => c.Lon).HasValue)
-                        geoLocation.Lon = reader.GetValue(c => c.Lon).Value;
-                    if (reader.GetValue(c => c.Lat).HasValue)
-                        geoLocation.Lat = reader.GetValue(c => c.Lat).Value;
+                    var lon = reader.GetValue(c => c.Lon);
+                    var lat = reader.GetValue(c => c.Lat);
+
+                    if (lon.HasValue)
+                        geoLocation.Lon = lon.Value;
+                    if (lat.HasValue)
+                        geoLocation.Lat = lat.Value;
                     geoLocation.ASL = reader.GetValue(c => c.Asl);
                     geoLocation.AGL = reader.GetValue(c => c.Agl);
                 }
@@ -1933,9 +2049,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (this.ValidateGeoLocation<DM.GeoLocation>(geoLocation, "IResMeasRaw"))
                 measResult.Location = geoLocation;
 
-            var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
-            builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderDelLocSensor);
+            //var builderDelLocSensor = this._dataLayer.GetBuilder<MD.IResLocSensorRaw>().Delete();
+            //builderDelLocSensor.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderDelLocSensor);
 
             #region Emittings
             var listEmitting = new List<DEV.Emitting>();
@@ -1953,42 +2069,56 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     bool validationLevelResult = true;
                     var emitting = new DEV.Emitting();
 
-                    if ((reader.GetValue(c => c.StartFrequency_MHz).HasValue && !(reader.GetValue(c => c.StartFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StartFrequency_MHz).Value <= 400000)) || (!reader.GetValue(c => c.StartFrequency_MHz).HasValue))
+                    var startFrequency_MHz = reader.GetValue(c => c.StartFrequency_MHz);
+                    var stopFrequency_MHz = reader.GetValue(c => c.StopFrequency_MHz);
+                    if ((startFrequency_MHz.HasValue && !(startFrequency_MHz >= 0.009 && startFrequency_MHz.Value <= 400000)) || (!startFrequency_MHz.HasValue))
                     {
                         WriteLog("Incorrect value StartFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
                     }
-                    if ((reader.GetValue(c => c.StopFrequency_MHz).HasValue && !(reader.GetValue(c => c.StopFrequency_MHz) >= 0.009 && reader.GetValue(c => c.StopFrequency_MHz).Value <= 400000)) || (!reader.GetValue(c => c.StopFrequency_MHz).HasValue))
+                    if ((stopFrequency_MHz.HasValue && !(stopFrequency_MHz >= 0.009 && stopFrequency_MHz.Value <= 400000)) || (!stopFrequency_MHz.HasValue))
                     {
                         WriteLog("Incorrect value StopFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
                     }
-                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue && reader.GetValue(c => c.StopFrequency_MHz).HasValue && reader.GetValue(c => c.StartFrequency_MHz).Value > reader.GetValue(c => c.StopFrequency_MHz).Value)
+                    if (startFrequency_MHz.HasValue && stopFrequency_MHz.HasValue && startFrequency_MHz.Value > stopFrequency_MHz.Value)
                     {
                         WriteLog("StartFrequency_MHz must be less than StopFrequency_MHz", "IEmittingRaw");
                         validationResult = false;
                     }
-                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue)
-                        emitting.StartFrequency_MHz = reader.GetValue(c => c.StartFrequency_MHz).Value;
-                    if (reader.GetValue(c => c.StopFrequency_MHz).HasValue)
-                        emitting.StopFrequency_MHz = reader.GetValue(c => c.StopFrequency_MHz).Value;
-                    if (reader.GetValue(c => c.CurentPower_dBm).HasValue && reader.GetValue(c => c.CurentPower_dBm).Value >= -200 && reader.GetValue(c => c.CurentPower_dBm).Value <= 50)
-                        emitting.CurentPower_dBm = reader.GetValue(c => c.CurentPower_dBm).Value;
-                    if (reader.GetValue(c => c.ReferenceLevel_dBm).HasValue && reader.GetValue(c => c.ReferenceLevel_dBm).Value >= -200 && reader.GetValue(c => c.ReferenceLevel_dBm).Value <= 50)
-                        emitting.ReferenceLevel_dBm = reader.GetValue(c => c.ReferenceLevel_dBm).Value;
-                    if (reader.GetValue(c => c.MeanDeviationFromReference).HasValue && reader.GetValue(c => c.MeanDeviationFromReference).Value >= 0 && reader.GetValue(c => c.MeanDeviationFromReference).Value <= 1)
-                        emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
-                    if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue && reader.GetValue(c => c.TriggerDeviationFromReference).Value >= 0 && reader.GetValue(c => c.TriggerDeviationFromReference).Value <= 1)
-                        emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
+
+                    if (!validationResult)
+                        continue;
+
+                    if (startFrequency_MHz.HasValue)
+                        emitting.StartFrequency_MHz = startFrequency_MHz.Value;
+                    if (stopFrequency_MHz.HasValue)
+                        emitting.StopFrequency_MHz = stopFrequency_MHz.Value;
+
+                    var curentPower_dBm = reader.GetValue(c => c.CurentPower_dBm);
+                    if (curentPower_dBm.HasValue && curentPower_dBm.Value >= -200 && curentPower_dBm.Value <= 50)
+                        emitting.CurentPower_dBm = curentPower_dBm.Value;
+
+                    var referenceLevel_dBm = reader.GetValue(c => c.ReferenceLevel_dBm);
+                    if (referenceLevel_dBm.HasValue && referenceLevel_dBm.Value >= -200 && referenceLevel_dBm.Value <= 50)
+                        emitting.ReferenceLevel_dBm = referenceLevel_dBm.Value;
+
+                    var meanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference);
+                    if (meanDeviationFromReference.HasValue && meanDeviationFromReference.Value >= 0 && meanDeviationFromReference.Value <= 1)
+                        emitting.MeanDeviationFromReference = meanDeviationFromReference.Value;
+
+                    var triggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference);
+                    if (triggerDeviationFromReference.HasValue && triggerDeviationFromReference.Value >= 0 && triggerDeviationFromReference.Value <= 1)
+                        emitting.TriggerDeviationFromReference = triggerDeviationFromReference.Value;
 
                     if (reader.GetValue(c => c.SensorId).HasValue)
-                    {
                         emitting.SensorId = reader.GetValue(c => c.SensorId).Value;
-                    }
 
-                    if (reader.GetValue(c => c.LevelsDistribution)!=null)
+                    var levelsDistribution = reader.GetValue(c => c.LevelsDistribution);
+
+                    if (levelsDistribution != null)
                     {
-                        var objLevelsDistribution = BinaryDecoder.Deserialize<string>(reader.GetValue(c => c.LevelsDistribution));
+                        var objLevelsDistribution = BinaryDecoder.Deserialize<string>(levelsDistribution);
                         if (!string.IsNullOrEmpty(objLevelsDistribution))
                         {
                             var wrds = objLevelsDistribution.Split(new char[] { ';'}, StringSplitOptions.RemoveEmptyEntries);
@@ -2036,14 +2166,17 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     var emittingParam = new DEV.EmittingParameters();
 
-                    if (reader.GetValue(c => c.RollOffFactor).HasValue && reader.GetValue(c => c.RollOffFactor).Value >= 0 && reader.GetValue(c => c.RollOffFactor).Value <= 2.5)
-                        emittingParam.RollOffFactor = reader.GetValue(c => c.RollOffFactor).Value;
-                    if (reader.GetValue(c => c.StandardBW).HasValue && reader.GetValue(c => c.StandardBW).Value >= 0 && reader.GetValue(c => c.StandardBW).Value <= 1000000)
+                    var rollOffFactor = reader.GetValue(c => c.RollOffFactor);
+                    if (rollOffFactor.HasValue && rollOffFactor.Value >= 0 && rollOffFactor.Value <= 2.5)
+                        emittingParam.RollOffFactor = rollOffFactor.Value;
+
+                    var standardBW = reader.GetValue(c => c.StandardBW);
+                    if (standardBW.HasValue && standardBW.Value >= 0 && standardBW.Value <= 1000000)
                     {
-                        emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
+                        emittingParam.StandardBW = standardBW.Value;
                         emitting.EmittingParameters = emittingParam;
                     }
-                    else if (reader.GetValue(c => c.StandardBW).HasValue && !(reader.GetValue(c => c.StandardBW).Value >= 0 && reader.GetValue(c => c.StandardBW).Value <= 1000000))
+                    else if (standardBW.HasValue && !(standardBW.Value >= 0 && standardBW.Value <= 1000000))
                     {
                         WriteLog("Incorrect value StandardBW", "IEmittingRaw");
                     }
@@ -2061,19 +2194,30 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             bool validationTimeResult = true;
                             var workTime = new DEV.WorkTime();
 
-                            if (readerTime.GetValue(c => c.StartEmitting).HasValue && readerTime.GetValue(c => c.StopEmitting).HasValue && readerTime.GetValue(c => c.StartEmitting).Value > readerTime.GetValue(c => c.StopEmitting).Value)
+                            var startEmitting = readerTime.GetValue(c => c.StartEmitting);
+                            var stopEmitting = readerTime.GetValue(c => c.StopEmitting);
+
+                            if (startEmitting.HasValue && stopEmitting.HasValue && startEmitting.Value > stopEmitting.Value)
                             {
                                 WriteLog("StartEmitting must be less than StopEmitting", "IWorkTimeRaw");
                                 validationTimeResult = false;
                             }
-                            if (readerTime.GetValue(c => c.StartEmitting).HasValue)
-                                workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting).Value;
-                            if (readerTime.GetValue(c => c.StopEmitting).HasValue)
-                                workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting).Value;
-                            if (readerTime.GetValue(c => c.HitCount).HasValue && readerTime.GetValue(c => c.HitCount).Value >= 0 && readerTime.GetValue(c => c.HitCount).Value <= Int32.MaxValue)
-                                workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
-                            if (readerTime.GetValue(c => c.PersentAvailability).HasValue && readerTime.GetValue(c => c.PersentAvailability).Value >= 0 && readerTime.GetValue(c => c.PersentAvailability).Value <= 100)
-                                workTime.PersentAvailability = (float)readerTime.GetValue(c => c.PersentAvailability).Value;
+
+                            if (!validationTimeResult)
+                                continue;
+
+                            if (startEmitting.HasValue)
+                                workTime.StartEmitting = startEmitting.Value;
+                            if (stopEmitting.HasValue)
+                                workTime.StopEmitting = stopEmitting.Value;
+
+                            var hitCount = readerTime.GetValue(c => c.HitCount);
+                            if (hitCount.HasValue && hitCount.Value >= 0 && hitCount.Value <= Int32.MaxValue)
+                                workTime.HitCount = hitCount.Value;
+
+                            var persentAvailability = readerTime.GetValue(c => c.PersentAvailability);
+                            if (persentAvailability.HasValue && persentAvailability.Value >= 0 && persentAvailability.Value <= 100)
+                                workTime.PersentAvailability = (float)persentAvailability.Value;
                             else
                             {
                                 WriteLog("Incorrect value PersentAvailability", "IWorkTimeRaw");
@@ -2087,9 +2231,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     if (listTime.Count > 0)
                         emitting.WorkTimes = listTime.ToArray();
 
-                    var builderDelTime = this._dataLayer.GetBuilder<MD.IWorkTimeRaw>().Delete();
-                    builderDelTime.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderDelTime);
+                    //var builderDelTime = this._dataLayer.GetBuilder<MD.IWorkTimeRaw>().Delete();
+                    //builderDelTime.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderDelTime);
 
                     #endregion
 
@@ -2104,12 +2248,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     {
                         while (readerSignalMask.Read())
                         {
-                            if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue && readerSignalMask.GetValue(c => c.Loss_dB).Value >= -100 && readerSignalMask.GetValue(c => c.Loss_dB).Value <= 500)
-                                listLoss_dB.Add((float)readerSignalMask.GetValue(c => c.Loss_dB).Value);
+                            var loss_dB = readerSignalMask.GetValue(c => c.Loss_dB);
+                            var freq_kHz = readerSignalMask.GetValue(c => c.Freq_kHz);
+
+                            if (loss_dB.HasValue && loss_dB.Value >= -100 && loss_dB.Value <= 500)
+                                listLoss_dB.Add((float)loss_dB.Value);
                             else
                                 WriteLog("Incorrect value Loss_dB", "ISignalMaskRaw");
-                            if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue && readerSignalMask.GetValue(c => c.Freq_kHz).Value >= -1000000 && readerSignalMask.GetValue(c => c.Freq_kHz).Value <= 1000000)
-                                listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
+                            if (freq_kHz.HasValue && freq_kHz.Value >= -1000000 && freq_kHz.Value <= 1000000)
+                                listFreq_kHz.Add(freq_kHz.Value);
                             else
                                 WriteLog("Incorrect value Freq_kHz", "ISignalMaskRaw");
                         }
@@ -2124,9 +2271,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     emitting.SignalMask = signalMask;
 
-                    var builderSignalDel = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Delete();
-                    builderSignalDel.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderSignalDel);
+                    //var builderSignalDel = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Delete();
+                    //builderSignalDel.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderSignalDel);
 
                     #endregion
 
@@ -2156,9 +2303,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         {
                             #region LevelsdBm
 
-                            if (readerSpectrum.GetValue(c => c.LevelsdBm) != null)
+                            var levelsdBmB = readerSpectrum.GetValue(c => c.LevelsdBm);
+                            if (levelsdBmB != null)
                             {
-                                object levelsdBm = BinaryDecoder.Deserialize<float[]>(readerSpectrum.GetValue(c => c.LevelsdBm));
+                                object levelsdBm = BinaryDecoder.Deserialize<float[]>(levelsdBmB);
                                 if (levelsdBm != null)
                                 {
                                     var lvldBms = levelsdBm as float[];
@@ -2178,65 +2326,69 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 validationSpectrumResult = false;
 
                             #endregion
-                            if (readerSpectrum.GetValue(c => c.CorrectnessEstimations).HasValue)
-                            {
-                                spectrum.СorrectnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations).Value == 1 ? true : false;
-                            }
+                            var correctnessEstimations = readerSpectrum.GetValue(c => c.CorrectnessEstimations);
+                            if (correctnessEstimations.HasValue)
+                                spectrum.СorrectnessEstimations = correctnessEstimations.Value == 1 ? true : false;
 
-                            if (readerSpectrum.GetValue(c => c.Contravention).HasValue)
-                            {
-                                spectrum.Contravention = readerSpectrum.GetValue(c => c.Contravention).Value == 1 ? true : false;
-                            }
+                            var contravention = readerSpectrum.GetValue(c => c.Contravention);
+                            if (contravention.HasValue)
+                                spectrum.Contravention = contravention.Value == 1 ? true : false;
 
-
-                            if (readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).HasValue && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value >= 0.009 && readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value <= 400000)
-                                spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
+                            var spectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz);
+                            if (spectrumStartFreq_MHz.HasValue && spectrumStartFreq_MHz.Value >= 0.009 && spectrumStartFreq_MHz.Value <= 400000)
+                                spectrum.SpectrumStartFreq_MHz = spectrumStartFreq_MHz.Value;
                             else
                             {
                                 WriteLog("Incorrect value SpectrumStartFreq_MHz", "ISpectrumRaw");
                                 validationSpectrumResult = false;
                             }
 
-                            if (readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).HasValue && readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value >= 0.001 && readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value <= 1000000)
-                                spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
+                            var spectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz);
+                            if (spectrumSteps_kHz.HasValue && spectrumSteps_kHz.Value >= 0.001 && spectrumSteps_kHz.Value <= 1000000)
+                                spectrum.SpectrumSteps_kHz = spectrumSteps_kHz.Value;
                             else
                             {
                                 WriteLog("Incorrect value SpectrumSteps_kHz", "ISpectrumRaw");
                                 validationSpectrumResult = false;
                             }
 
-                            if (readerSpectrum.GetValue(c => c.Bandwidth_kHz).HasValue && readerSpectrum.GetValue(c => c.Bandwidth_kHz).Value >= 0 && readerSpectrum.GetValue(c => c.Bandwidth_kHz).Value <= 1000000)
-                                spectrum.Bandwidth_kHz = readerSpectrum.GetValue(c => c.Bandwidth_kHz).Value;
+                            var bandwidth_kHz = readerSpectrum.GetValue(c => c.Bandwidth_kHz);
+                            if (bandwidth_kHz.HasValue && bandwidth_kHz.Value >= 0 && bandwidth_kHz.Value <= 1000000)
+                                spectrum.Bandwidth_kHz = bandwidth_kHz.Value;
                             else
                                 WriteLog("Incorrect value Bandwidth_kHz", "ISpectrumRaw");
 
-                            if (readerSpectrum.GetValue(c => c.TraceCount).HasValue && readerSpectrum.GetValue(c => c.TraceCount).Value >= 0 && readerSpectrum.GetValue(c => c.TraceCount).Value <= 10000)
-                                spectrum.TraceCount = readerSpectrum.GetValue(c => c.TraceCount).Value;
+                            var traceCount = readerSpectrum.GetValue(c => c.TraceCount);
+                            if (traceCount.HasValue && traceCount.Value >= 0 && traceCount.Value <= 10000)
+                                spectrum.TraceCount = traceCount.Value;
                             else
                                 WriteLog("Incorrect value TraceCount", "ISpectrumRaw");
 
-                            if (readerSpectrum.GetValue(c => c.SignalLevel_dBm).HasValue && readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value >= -200 && readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value <= 50)
-                                spectrum.SignalLevel_dBm = (float)readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value;
+                            var signalLevel_dBm = readerSpectrum.GetValue(c => c.SignalLevel_dBm);
+                            if (signalLevel_dBm.HasValue && signalLevel_dBm.Value >= -200 && signalLevel_dBm.Value <= 50)
+                                spectrum.SignalLevel_dBm = (float)signalLevel_dBm.Value;
                             else
                                 WriteLog("Incorrect value SignalLevel_dBm", "ISpectrumRaw");
 
+                            var t1 = readerSpectrum.GetValue(c => c.T1);
+                            var t2 = readerSpectrum.GetValue(c => c.T2);
+                            var markerIndex = readerSpectrum.GetValue(c => c.MarkerIndex);
 
-                            if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.MarkerIndex).HasValue
-                            && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.MarkerIndex).Value && readerSpectrum.GetValue(c => c.MarkerIndex).Value <= readerSpectrum.GetValue(c => c.T2).Value)
-                            spectrum.MarkerIndex = readerSpectrum.GetValue(c => c.MarkerIndex).Value;
+                            if (t1.HasValue && t2.HasValue && markerIndex.HasValue && t1.Value <= markerIndex.Value && markerIndex.Value <= t2.Value)
+                                spectrum.MarkerIndex = markerIndex.Value;
                             else
-                            WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
+                                WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
 
-                            if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.T1).Value >= 0 && readerSpectrum.GetValue(c => c.T1).Value <= readerSpectrum.GetValue(c => c.T2).Value)
-                                spectrum.T1 = readerSpectrum.GetValue(c => c.T1).Value;
+                            if (t1.HasValue && t2.HasValue && t1.Value >= 0 && t1.Value <= t2.Value)
+                                spectrum.T1 = t1.Value;
                             else
                             {
                                 WriteLog("Incorrect value T1", "ISpectrumRaw");
                                 validationSpectrumResult = false;
                             }
 
-                            if (readerSpectrum.GetValue(c => c.T1).HasValue && readerSpectrum.GetValue(c => c.T2).HasValue && readerSpectrum.GetValue(c => c.T2).Value >= readerSpectrum.GetValue(c => c.T1).Value && readerSpectrum.GetValue(c => c.T2).Value <= spectrum.Levels_dBm.Length)
-                                spectrum.T2 = readerSpectrum.GetValue(c => c.T2).Value;
+                            if (t1.HasValue && t2.HasValue && t2.Value >= t1.Value && t2.Value <= spectrum.Levels_dBm.Length)
+                                spectrum.T2 = t2.Value;
                             else
                             {
                                 WriteLog("Incorrect value T2", "ISpectrumRaw");
@@ -2252,21 +2404,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         emitting.Spectrum = spectrum;
                     }
 
-                    var builderSpectrumDel = this._dataLayer.GetBuilder<MD.ISpectrumRaw>().Delete();
-                    builderSpectrumDel.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                    queryExecuter.Execute(builderSpectrumDel);
+                    //var builderSpectrumDel = this._dataLayer.GetBuilder<MD.ISpectrumRaw>().Delete();
+                    //builderSpectrumDel.Where(c => c.EmittingId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                    //queryExecuter.Execute(builderSpectrumDel);
 
                     #endregion
 
-                    if (validationResult)
-                        listEmitting.Add(emitting);
+                    listEmitting.Add(emitting);
                 }
                 return true;
             });
 
-            var builderDelEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>().Delete();
-            builderDelEmitting.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderDelEmitting);
+            //var builderDelEmitting = this._dataLayer.GetBuilder<MD.IEmittingRaw>().Delete();
+            //builderDelEmitting.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderDelEmitting);
 
             if (listEmitting.Count > 0)
                 measResult.Emittings = listEmitting.ToArray();
@@ -2287,22 +2438,23 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 while (readerLevels.Read())
                 {
-                    if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue && readerLevels.GetValue(c => c.StartFrequency_Hz).Value >= 9000 && readerLevels.GetValue(c => c.StartFrequency_Hz).Value <= 400000000000)
-                        level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                    var startFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz);
+                    if (startFrequency_Hz.HasValue && startFrequency_Hz.Value >= 9000 && startFrequency_Hz.Value <= 400000000000)
+                        level.StartFrequency_Hz = startFrequency_Hz.Value;
                     else
                     {
                         validationLevelsResult = false;
                         WriteLog("Incorrect value StartFrequency_Hz", "IReferenceLevelsRaw");
                     }
 
-                    if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue && readerLevels.GetValue(c => c.StepFrequency_Hz).Value >= 1 && readerLevels.GetValue(c => c.StepFrequency_Hz).Value <= 1000000000)
-                        level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                    var stepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz);
+                    if (stepFrequency_Hz.HasValue && stepFrequency_Hz.Value >= 1 && stepFrequency_Hz.Value <= 1000000000)
+                        level.StepFrequency_Hz = stepFrequency_Hz.Value;
                     else
                     {
                         validationLevelsResult = false;
                         WriteLog("Incorrect value StepFrequency_Hz", "IReferenceLevelsRaw");
                     }
-
 
                     object refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
                     if (refLevels != null)
@@ -2330,9 +2482,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             if (validationLevelsResult)
                 measResult.RefLevels = level;
 
-            var builderLevelDel = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>().Delete();
-            builderLevelDel.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
-            queryExecuter.Execute(builderLevelDel);
+            //var builderLevelDel = this._dataLayer.GetBuilder<MD.IReferenceLevelsRaw>().Delete();
+            //builderLevelDel.Where(c => c.ResMeasId, ConditionOperator.Equal, resultId);
+            //queryExecuter.Execute(builderLevelDel);
 
             #endregion
 
