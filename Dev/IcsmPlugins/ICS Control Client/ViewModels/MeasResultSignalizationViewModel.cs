@@ -175,10 +175,15 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._emittingCaption;
             set => this.Set(ref this._emittingCaption, value);
         }
+
+        private string _rbw = string.Empty;
+
         public string RBW
         {
-            get => this.GetCurrentRBWValue();
+            get => this._rbw; // this.GetCurrentRBWValue();
+            set => this.Set(ref this._rbw, value);
         }
+
         public CS.ChartOption CurrentChartOption
         {
             get => this._currentChartOption;
@@ -248,6 +253,7 @@ namespace XICSM.ICSControlClient.ViewModels
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 this._emittings.Source = this._currentMeasResult.Emittings;
+                this.RBW = this.GetCurrentRBWValue();
                 this.EmittingCaption = this.GetCurrentEmittingCaption();
 
                 this.UpdateCurrentChartOption(null, null);
@@ -705,23 +711,24 @@ namespace XICSM.ICSControlClient.ViewModels
         private string GetCurrentRBWValue()
         {
             if (_currentMeasResult.RefLevels == null)
-                return "";
-            else
             {
-                string res = "";
-                double rbw = _currentMeasResult.RefLevels.StepFrequency_Hz;
-
-                if (rbw > 1000)
-                    res = Math.Round(rbw, 1).ToString();
-                else if (1000 > rbw && rbw > 100)
-                    res = Math.Round(rbw, 2).ToString();
-                else if (100 > rbw && rbw > 10)
-                    res = Math.Round(rbw, 3).ToString();
-                else if (10 > rbw && rbw > 1)
-                    res = Math.Round(rbw, 4).ToString();
-
-                return "RBW = " + res + " kHz";
+                return "RBW = (unknown) kHz";
             }
+
+            string res = "";
+            double rbw = _currentMeasResult.RefLevels.StepFrequency_Hz / 1000;
+
+            if (rbw > 1000)
+                res = Math.Round(rbw, 1).ToString();
+            else if (1000 > rbw && rbw > 100)
+                res = Math.Round(rbw, 2).ToString();
+            else if (100 > rbw && rbw > 10)
+                res = Math.Round(rbw, 3).ToString();
+            else // if (10 > rbw && rbw > 1)
+                res = Math.Round(rbw, 4).ToString();
+
+            return "RBW = " + res + " kHz";
+
         }
         private string GetCurrentEmittingCaption()
         {

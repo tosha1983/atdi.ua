@@ -44,7 +44,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasResultSignalizationViewViewModel(stations, tableName);
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasResultSignalizationViewViewModel(stations, tableName, this);
             }
         }
     }
