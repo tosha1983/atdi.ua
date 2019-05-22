@@ -532,7 +532,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
                     var posX = currentPoint.X - 5;
                     var posY = currentPoint.Y;
-                    rect.Height = Math.Abs(currentPoint.Y);
+                    rect.Height = chartCanvas.Height - Math.Abs(currentPoint.Y);
+                    //rect.Height = Math.Abs(currentPoint.Y);
                     rect.Width = 10;
                     chartCanvas.Children.Add(rect);
                     Canvas.SetLeft(rect, posX);
