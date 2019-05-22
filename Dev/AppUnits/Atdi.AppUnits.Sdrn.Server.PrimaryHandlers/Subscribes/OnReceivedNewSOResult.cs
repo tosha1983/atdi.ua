@@ -442,6 +442,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 var queryStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpectRaw>()
                                 .From()
                                 .Select(c => c.Id, c => c.LevelSpecrum)
+                                .OrderByAsc(c => c.Id)
                                 .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerGeneralResult.GetValue(c => c.Id));
                                 queryExecuter.Fetch(queryStLevelsSpect, readerStLevelsSpect =>
                                 {
