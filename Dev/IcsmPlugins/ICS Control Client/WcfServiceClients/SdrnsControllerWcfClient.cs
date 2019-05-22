@@ -203,6 +203,17 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
         }
 
+        public static Emitting[] GetEmittingsByIcsmId(int[] stations, string tableName)
+        {
+            var result = Execute(contract => contract.GetEmittingsByIcsmId(stations, tableName));
+
+            if (result == null)
+            {
+                return new Emitting[] { };
+            }
+            return result;
+        }
+
         public static MeasurementResults GetMeasurementResultByResId(int resId)
         {
             var isLoadAllData = false;
