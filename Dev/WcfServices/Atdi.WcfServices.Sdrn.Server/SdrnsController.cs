@@ -17,7 +17,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
 
-        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer,  ILogger logger)
         {
             this._eventEmitter = eventEmitter;
             this._dataLayer = dataLayer;
@@ -32,7 +32,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public MeasTaskIdentifier CreateMeasTask(MeasTask task)
         {
-            var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer, _logger);
+            var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer,  _logger);
             return createMeasTaskHandler.Handle(task);
         }
 

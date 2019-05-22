@@ -12,6 +12,7 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
     <Field Desc="Data" Title="Data" Name="Data" DataType="Text.4000" SourceName="DATA" SourceType="Column" Required="false"/>
+    <Field Desc="BinData" Title="BinData" Name="BinData" DataType="Bytes.MAX" SourceName="BINDATA" SourceType="Column" Required="false"/>
     <Field Desc="Type" Title="Type" Name="Type" DataType="Text.50" SourceName="TYPE" SourceType="Column" Required="false"/>
     <Field Desc="ResSysInfoId" Title="ResSysInfoId" Name="ResSysInfoId" DataType="Integer.64" SourceName="XBS_RESSYSINFO_ID" SourceType="Column" Required="false"/>
     <Field Name="RESSYSINFO" SourceType="Reference" SourceName="ResSysInfoRaw" Title="Relation ResSysInfoBlsRaw to ResSysInfoRaw">

@@ -19,7 +19,6 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
-
         public SaveMeasTask(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;

@@ -21,11 +21,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         private readonly ISdrnServerEnvironment _environment;
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
+        private readonly Configs _configs;
 
         public SendMeasResultsHandler(
             ISdrnMessagePublisher messagePublisher, 
             IDataLayer<EntityDataOrm> dataLayer, 
-            ISdrnServerEnvironment environment, 
+            ISdrnServerEnvironment environment,
+            Configs configs,
             IEventEmitter eventEmitter, ILogger logger)
         {
             this._messagePublisher = messagePublisher;
@@ -33,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._environment = environment;
             this._eventEmitter = eventEmitter;
             this._logger = logger;
+            this._configs = configs;
         }
 
         public void GetMeasTaskSDRIdentifier(string ResultIds, string TaskId, string SensorName, string SensorTechId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId, out int TaskIdOut)
@@ -124,6 +127,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
+                var resSysInfoData = this._configs.ResSysInfoData;
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 int valInsResMeas = 0;
@@ -700,7 +704,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                                             int IDResSysInfoBlocks = -1;
                                                             var builderInsertStationSysInfoBlock = this._dataLayer.GetBuilder<MD.IResSysInfoBlsRaw>().Insert();
-                                                            builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);
+                                                            if (resSysInfoData==true)
+                                                            {
+                                                                builderInsertStationSysInfoBlock.SetValue(c => c.BinData, BinaryDecoder.ObjectToByteArray(blocks.Data));
+                                                            }
                                                             builderInsertStationSysInfoBlock.SetValue(c => c.Type, blocks.Type);
                                                             builderInsertStationSysInfoBlock.SetValue(c => c.ResSysInfoId, IDResSysInfoGeneral);
                                                             builderInsertStationSysInfoBlock.Select(c => c.Id);
