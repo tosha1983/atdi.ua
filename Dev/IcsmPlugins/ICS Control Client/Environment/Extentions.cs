@@ -69,6 +69,16 @@ namespace XICSM.ICSControlClient
                 );
         }
 
+        public static void AddContextMenuToolForSelectionOfRecords(this List<IMQueryMenuNode> nodes, string caption, IMQueryMenuNode.Handler handler)
+        {
+            nodes.Add(
+                    new IMQueryMenuNode(
+                        caption, null,
+                        handler,
+                        IMQueryMenuNode.ExecMode.SelectionOfRecords)
+                );
+        }
+
         public static bool ExecuteContextMenuAction(this IMQueryMenuNode.Context context, string process, Func<int, bool> action)
         {
             try
@@ -76,6 +86,22 @@ namespace XICSM.ICSControlClient
                 using (var scope = Logger.StartTrace(process, "Execute", () => context.TableId, () => context.TableName))
                 {
                     return action(context.TableId);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteExeption(process, e);
+                return false;
+            }
+        }
+
+        public static bool ExecuteContextMenuAction(this IMQueryMenuNode.Context context, string process, Func<IMDBList, bool> action)
+        {
+            try
+            {
+                using (var scope = Logger.StartTrace(process, "Execute", () => context.TableId, () => context.TableName))
+                {
+                    return action(context.DataList);
                 }
             }
             catch (Exception e)
