@@ -21,11 +21,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         private readonly ISdrnServerEnvironment _environment;
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
+        private readonly Configs _configs;
 
         public SendMeasResultsHandler(
             ISdrnMessagePublisher messagePublisher, 
             IDataLayer<EntityDataOrm> dataLayer, 
-            ISdrnServerEnvironment environment, 
+            ISdrnServerEnvironment environment,
+            Configs configs,
             IEventEmitter eventEmitter, ILogger logger)
         {
             this._messagePublisher = messagePublisher;
@@ -33,17 +35,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._environment = environment;
             this._eventEmitter = eventEmitter;
             this._logger = logger;
+            this._configs = configs;
         }
 
-        public void GetMeasTaskSDRIdentifier(string ResultIds, string TaskId, string SensorName, string SensorTechId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId)
+        public void GetMeasTaskSDRIdentifier(string ResultIds, string TaskId, string SensorName, string SensorTechId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId, out int TaskIdOut)
         {
+            TaskIdOut = -1;
             SubTaskId = -1;
             SubTaskStationId = -1;
             SensorId = -1;
             ResultId = -1;
 
+            if (TaskId != null)
+            {
+                TaskId = TaskId.Replace("||", "|");
+                string[] word = TaskId.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if ((word != null) && (word.Length == 4))
+                {
+                    TaskIdOut = int.Parse(word[0]);
+                    SubTaskId = int.Parse(word[1]);
+                    SubTaskStationId = int.Parse(word[2]);
+                    SensorId = int.Parse(word[3]);
+                }
+            }
+
             if (ResultIds != null)
             {
+                ResultIds = ResultIds.Replace("||", "|");
                 string[] word = ResultIds.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 if ((word != null) && (word.Length == 5))
                 {
@@ -109,23 +127,73 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
+                var resSysInfoData = this._configs.ResSysInfoData;
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 int valInsResMeas = 0;
                 try
                 {
+                    bool isCancelled = false;
                     queryExecuter.BeginTransaction();
-                    result.Status = SdrnMessageHandlingStatus.Trash;
                     var resObject = incomingEnvelope.DeliveryObject;
-                    int SensorId; int SubMeasTaskId; int SubMeasTaskStationId; int resultId;
 
-                    
+                    int SensorId; int SubMeasTaskId; int SubMeasTaskStationId; int resultId; int taskIdOut = -1;
+                    GetMeasTaskSDRIdentifier(resObject.ResultId, resObject.TaskId, incomingEnvelope.SensorName, incomingEnvelope.SensorTechId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId, out taskIdOut);
 
-                    GetMeasTaskSDRIdentifier(resObject.ResultId, resObject.TaskId, incomingEnvelope.SensorName, incomingEnvelope.SensorTechId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId);
+                    if (resObject.Measurement== DataModels.Sdrns.MeasurementType.MonitoringStations)
+                    {
+                        var queryIResMeasRaw = this._dataLayer.GetBuilder<MD.IResMeasRaw>()
+                        .From()
+                        .Select(c => c.Id, c => c.MeasResultSID)
+                        .Where(c => c.MeasResultSID, ConditionOperator.Equal, resObject.ResultId)
+                        .Where(c => c.MeasTaskId, ConditionOperator.Equal, taskIdOut.ToString())
+                        .Where(c => c.MeasSubTaskId, ConditionOperator.Equal, SubMeasTaskId)
+                        .Where(c => c.MeasSubTaskStationId, ConditionOperator.Equal, SubMeasTaskStationId)
+                        .Where(c => c.SensorId, ConditionOperator.Equal, SensorId);
+                        queryExecuter.Fetch(queryIResMeasRaw, readerResMeasRaw =>
+                        {
+                            while (readerResMeasRaw.Read())
+                            {
+                                var builderInsertLogs = this._dataLayer.GetBuilder<MD.ILogs>().Insert();
+                                builderInsertLogs.SetValue(c => c.Lcount, 1);
+                                builderInsertLogs.SetValue(c => c.TableName, "IResMeasRaw");
+                                builderInsertLogs.SetValue(c => c.When, DateTime.Now);
+                                builderInsertLogs.SetValue(c => c.Event, Categories.MessageProcessing.ToString());
+                                builderInsertLogs.SetValue(c => c.Who, Contexts.PrimaryHandler.ToString());
+                                builderInsertLogs.SetValue(c => c.Info, Events.IsAlreadySaveResults.With(resObject.ResultId, readerResMeasRaw.GetValue(c => c.Id)).ToString());
+                                builderInsertLogs.Select(c => c.Id);
+                                queryExecuter.ExecuteAndFetch(builderInsertLogs, readerLogs =>
+                                {
+                                    return true;
+                                });
+
+                                this._logger.Warning(Contexts.PrimaryHandler, Categories.MessageProcessing, Events.IsAlreadySaveResults.With(resObject.ResultId, readerResMeasRaw.GetValue(c => c.Id)).ToString());
+                                isCancelled = true;
+                                break;
+                            }
+                            return true;
+                        });
+
+                        result.Status = SdrnMessageHandlingStatus.Confirmed;
+                    }
+
+                    if (isCancelled)
+                    {
+                        queryExecuter.CommitTransaction();
+                        return;
+                    }
+
 
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Insert();
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, resObject.Measured);
-                    builderInsertIResMeas.SetValue(c => c.MeasTaskId, resObject.TaskId);
+                    if (taskIdOut == -1)
+                    {
+                        builderInsertIResMeas.SetValue(c => c.MeasTaskId, resObject.TaskId);
+                    }
+                    else
+                    {
+                        builderInsertIResMeas.SetValue(c => c.MeasTaskId, taskIdOut.ToString());
+                    }
                     builderInsertIResMeas.SetValue(c => c.SensorId, SensorId);
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, SubMeasTaskId);
                     builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, SubMeasTaskStationId);
@@ -142,12 +210,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     .ExecuteAndFetch(builderInsertIResMeas, reader =>
                     {
                         var res = reader.Read();
-                       if (res)
-                       {
-                           valInsResMeas = reader.GetValue(c => c.Id);
-                       }
-                       return res;
-                   });
+                        if (res)
+                        {
+                            valInsResMeas = reader.GetValue(c => c.Id);
+                        }
+                        return res;
+                    });
 
                     if (valInsResMeas > 0)
                     {
@@ -530,23 +598,44 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                     int StationId;
                                     int idLinkRes = -1;
-                                    var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Insert();
-                                    builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+
                                     if (int.TryParse(station.StationId, out StationId))
                                     {
-                                        builderInsertLinkResSensor.SetValue(c => c.SensorId, StationId);
-                                    }
-                                    builderInsertLinkResSensor.Select(c => c.Id);
-                                    queryExecuter
-                                    .ExecuteAndFetch(builderInsertLinkResSensor, reader =>
-                                    {
-                                        var res = reader.Read();
-                                        if (res)
+                                        var builderLinkResSensorRaw = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().From();
+                                        builderLinkResSensorRaw.Select(c => c.Id);
+                                        builderLinkResSensorRaw.Where(c => c.ResMeasStaId, ConditionOperator.Equal, valInsResMeasStation);
+                                        builderLinkResSensorRaw.Where(c => c.SensorId, ConditionOperator.Equal, StationId);
+                                        queryExecuter.Fetch(builderLinkResSensorRaw, readerLinkResSensorRaw =>
                                         {
-                                            idLinkRes = reader.GetValue(c => c.Id);
+                                            while (readerLinkResSensorRaw.Read())
+                                            {
+                                                idLinkRes = readerLinkResSensorRaw.GetValue(c => c.Id);
+                                                break;
+                                            }
+                                            return true;
+                                        });
+                                    }
+
+                                    if (idLinkRes == -1)
+                                    {
+                                        var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Insert();
+                                        builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                                        if (int.TryParse(station.StationId, out StationId))
+                                        {
+                                            builderInsertLinkResSensor.SetValue(c => c.SensorId, StationId);
                                         }
-                                        return res;
-                                    });
+                                        builderInsertLinkResSensor.Select(c => c.Id);
+                                        queryExecuter
+                                        .ExecuteAndFetch(builderInsertLinkResSensor, reader =>
+                                        {
+                                            var res = reader.Read();
+                                            if (res)
+                                            {
+                                                idLinkRes = reader.GetValue(c => c.Id);
+                                            }
+                                            return res;
+                                        });
+                                    }
 
 
                                     var generalResult = station.GeneralResult;
@@ -659,7 +748,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
                                                             int IDResSysInfoBlocks = -1;
                                                             var builderInsertStationSysInfoBlock = this._dataLayer.GetBuilder<MD.IResSysInfoBlsRaw>().Insert();
-                                                            builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);
+                                                            if (resSysInfoData==true)
+                                                            {
+                                                                builderInsertStationSysInfoBlock.SetValue(c => c.BinData, BinaryDecoder.ObjectToByteArray(blocks.Data));
+                                                            }
                                                             builderInsertStationSysInfoBlock.SetValue(c => c.Type, blocks.Type);
                                                             builderInsertStationSysInfoBlock.SetValue(c => c.ResSysInfoId, IDResSysInfoGeneral);
                                                             builderInsertStationSysInfoBlock.Select(c => c.Id);
@@ -781,11 +873,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 {
                     queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
-                    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
-                    {
-                        result.Status = SdrnMessageHandlingStatus.Error;
-                        result.ReasonFailure = e.ToString();
-                    }
+                     result.Status = SdrnMessageHandlingStatus.Error;
+                     result.ReasonFailure = e.ToString();
                 }
                 finally
                 {

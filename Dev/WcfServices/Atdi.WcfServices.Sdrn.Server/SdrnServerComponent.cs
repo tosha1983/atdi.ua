@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.Logging;
-
+using Atdi.Contracts.Sdrn.Server;
+using Atdi.Platform.DependencyInjection;
 
 namespace Atdi.WcfServices.Sdrn.Server
 {
@@ -20,13 +21,9 @@ namespace Atdi.WcfServices.Sdrn.Server
            
         }
 
-
-
         protected override void OnInstall()
         {
             base.OnInstall();
-
-            
         }
 
         protected override void OnActivate()

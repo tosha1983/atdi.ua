@@ -1800,6 +1800,78 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     return true;
                                 });
                                 measurementsParameterGeneral.LevelsSpecrum = levelSpectrum.ToArray();
+
+
+                                var valSysInfo = "";
+
+
+                                var queryStationSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfo>()
+                               .From()
+                               .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Bandwidth, c => c.BaseId, c => c.Bsic, c => c.ChannelNumber, c => c.Cid, c => c.Code, c => c.Ctoi, c => c.Eci, c => c.Enodebid, c => c.Freq, c => c.Icio, c => c.InbandPower, c => c.Iscp, c => c.Lac)
+                               .Select(c => c.Lat, c => c.Lon, c => c.Mcc, c => c.Mnc, c => c.Nid, c => c.Pci, c => c.Pn, c => c.Power, c => c.Ptotal, c => c.Rnc, c => c.Rscp, c => c.Rsrp, c => c.Rsrq, c => c.Sc, c => c.Sid, c => c.Tac, c => c.TypeCdmaevdo, c => c.Ucid)
+                               .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                queryExecuter.Fetch(queryStationSysInfo, readerStationSysInfo =>
+                                {
+                                    while (readerStationSysInfo.Read())
+                                    {
+
+                                        valSysInfo += string.Format("AGL : {0}", readerStationSysInfo.GetValue(c => c.Agl)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ASL : {0}", readerStationSysInfo.GetValue(c => c.Asl)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BandWidth : {0}", readerStationSysInfo.GetValue(c => c.Bandwidth)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BaseID : {0}", readerStationSysInfo.GetValue(c => c.BaseId)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BSIC : {0}", readerStationSysInfo.GetValue(c => c.Bsic)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ChannelNumber : {0}", readerStationSysInfo.GetValue(c => c.ChannelNumber)) + Environment.NewLine;
+                                        valSysInfo += string.Format("CID : {0}", readerStationSysInfo.GetValue(c => c.Cid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Code : {0}", readerStationSysInfo.GetValue(c => c.Code)) + Environment.NewLine;
+                                        valSysInfo += string.Format("CtoI : {0}", readerStationSysInfo.GetValue(c => c.Ctoi)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ECI : {0}", readerStationSysInfo.GetValue(c => c.Eci)) + Environment.NewLine;
+                                        valSysInfo += string.Format("eNodeBId : {0}", readerStationSysInfo.GetValue(c => c.Enodebid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Freq : {0}", readerStationSysInfo.GetValue(c => c.Freq)) + Environment.NewLine;
+                                        valSysInfo += string.Format("IcIo : {0}", readerStationSysInfo.GetValue(c => c.Icio)) + Environment.NewLine;
+                                        valSysInfo += string.Format("INBAND_POWER : {0}", readerStationSysInfo.GetValue(c => c.InbandPower)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ISCP : {0}", readerStationSysInfo.GetValue(c => c.Iscp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("LAC : {0}", readerStationSysInfo.GetValue(c => c.Lac)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Lat : {0}", readerStationSysInfo.GetValue(c => c.Lat)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Lon : {0}", readerStationSysInfo.GetValue(c => c.Lon)) + Environment.NewLine;
+                                        valSysInfo += string.Format("MCC : {0}", readerStationSysInfo.GetValue(c => c.Mcc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("MNC : {0}", readerStationSysInfo.GetValue(c => c.Mnc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("NID : {0}", readerStationSysInfo.GetValue(c => c.Nid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("PCI : {0}", readerStationSysInfo.GetValue(c => c.Pci)) + Environment.NewLine;
+                                        valSysInfo += string.Format("PN : {0}", readerStationSysInfo.GetValue(c => c.Pn)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Power : {0}", readerStationSysInfo.GetValue(c => c.Power)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Ptotal : {0}", readerStationSysInfo.GetValue(c => c.Ptotal)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RNC : {0}", readerStationSysInfo.GetValue(c => c.Rnc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSCP : {0}", readerStationSysInfo.GetValue(c => c.Rscp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSRP : {0}", readerStationSysInfo.GetValue(c => c.Rsrp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSRQ : {0}", readerStationSysInfo.GetValue(c => c.Rsrq)) + Environment.NewLine;
+                                        valSysInfo += string.Format("SC : {0}", readerStationSysInfo.GetValue(c => c.Sc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("SID : {0}", readerStationSysInfo.GetValue(c => c.Sid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("TAC : {0}", readerStationSysInfo.GetValue(c => c.Tac)) + Environment.NewLine;
+                                        valSysInfo += string.Format("TypeCDMAEVDO : {0}", readerStationSysInfo.GetValue(c => c.TypeCdmaevdo)) + Environment.NewLine;
+                                        valSysInfo += string.Format("UCID : {0}", readerStationSysInfo.GetValue(c => c.Ucid)) + Environment.NewLine;
+
+
+                                        var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
+                                        .From()
+                                        .Select(c => c.Id, c => c.BinData, c => c.Type)
+                                        .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                        queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
+                                        {
+                                            while (readerStationSysInfoBls.Read())
+                                            {
+                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData))) + Environment.NewLine;
+                                                valSysInfo += string.Format("SysInfoBlocks.Type  : {0}", readerStationSysInfoBls.GetValue(c => c.Type)) + Environment.NewLine;
+                                            }
+                                            return true;
+                                        });
+
+                                        resMeasStatiion.StationSysInfo = valSysInfo;
+
+                                        break;
+                                    }
+                                    return true;
+                                });
+
                             }
                             return true;
                         });
@@ -2130,6 +2202,77 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
 
                             resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                            /*
+                            var valSysInfo = "";
+
+
+                            var queryStationSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfo>()
+                           .From()
+                           .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Bandwidth, c => c.BaseId, c => c.Bsic, c => c.ChannelNumber, c => c.Cid, c => c.Code, c => c.Ctoi, c => c.Eci, c => c.Enodebid, c => c.Freq, c => c.Icio, c => c.InbandPower, c => c.Iscp, c => c.Lac)
+                           .Select(c => c.Lat, c => c.Lon, c => c.Mcc, c => c.Mnc, c => c.Nid, c => c.Pci, c => c.Pn, c => c.Power, c => c.Ptotal, c => c.Rnc, c => c.Rscp, c => c.Rsrp, c => c.Rsrq, c => c.Sc, c => c.Sid, c => c.Tac, c => c.TypeCdmaevdo, c => c.Ucid)
+                           .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c=>c.Id));
+                            queryExecuter.Fetch(queryStationSysInfo, readerStationSysInfo =>
+                            {
+                                while (readerStationSysInfo.Read())
+                                {
+
+                                    valSysInfo += string.Format("AGL : {0}", readerStationSysInfo.GetValue(c => c.Agl)) + Environment.NewLine;
+                                    valSysInfo += string.Format("ASL : {0}", readerStationSysInfo.GetValue(c => c.Asl)) + Environment.NewLine;
+                                    valSysInfo += string.Format("BandWidth : {0}", readerStationSysInfo.GetValue(c => c.Bandwidth)) + Environment.NewLine;
+                                    valSysInfo += string.Format("BaseID : {0}", readerStationSysInfo.GetValue(c => c.BaseId)) + Environment.NewLine;
+                                    valSysInfo += string.Format("BSIC : {0}", readerStationSysInfo.GetValue(c => c.Bsic)) + Environment.NewLine;
+                                    valSysInfo += string.Format("ChannelNumber : {0}", readerStationSysInfo.GetValue(c => c.ChannelNumber)) + Environment.NewLine;
+                                    valSysInfo += string.Format("CID : {0}", readerStationSysInfo.GetValue(c => c.Cid)) + Environment.NewLine;
+                                    valSysInfo += string.Format("Code : {0}", readerStationSysInfo.GetValue(c => c.Code)) + Environment.NewLine;
+                                    valSysInfo += string.Format("CtoI : {0}", readerStationSysInfo.GetValue(c => c.Ctoi)) + Environment.NewLine;
+                                    valSysInfo += string.Format("ECI : {0}", readerStationSysInfo.GetValue(c => c.Eci)) + Environment.NewLine;
+                                    valSysInfo += string.Format("eNodeBId : {0}", readerStationSysInfo.GetValue(c => c.Enodebid)) + Environment.NewLine;
+                                    valSysInfo += string.Format("Freq : {0}", readerStationSysInfo.GetValue(c => c.Freq)) + Environment.NewLine;
+                                    valSysInfo += string.Format("IcIo : {0}", readerStationSysInfo.GetValue(c => c.Icio)) + Environment.NewLine;
+                                    valSysInfo += string.Format("INBAND_POWER : {0}", readerStationSysInfo.GetValue(c => c.InbandPower)) + Environment.NewLine;
+                                    valSysInfo += string.Format("ISCP : {0}", readerStationSysInfo.GetValue(c => c.Iscp)) + Environment.NewLine;
+                                    valSysInfo += string.Format("LAC : {0}", readerStationSysInfo.GetValue(c => c.Lac)) + Environment.NewLine;
+                                    valSysInfo += string.Format("Lat : {0}", readerStationSysInfo.GetValue(c => c.Lat)) + Environment.NewLine;
+                                    valSysInfo += string.Format("Lon : {0}", readerStationSysInfo.GetValue(c => c.Lon)) + Environment.NewLine;
+                                    valSysInfo += string.Format("MCC : {0}", readerStationSysInfo.GetValue(c => c.Mcc)) + Environment.NewLine;
+                                    valSysInfo += string.Format("MNC : {0}", readerStationSysInfo.GetValue(c => c.Mnc)) + Environment.NewLine;
+                                    valSysInfo += string.Format("NID : {0}", readerStationSysInfo.GetValue(c => c.Nid)) + Environment.NewLine;
+                                    valSysInfo += string.Format("PCI : {0}", readerStationSysInfo.GetValue(c => c.Pci)) + Environment.NewLine;
+                                    valSysInfo += string.Format("PN : {0}", readerStationSysInfo.GetValue(c => c.Pn)) + Environment.NewLine;
+                                    valSysInfo += string.Format("Power : {0}", readerStationSysInfo.GetValue(c => c.Power)) + Environment.NewLine;
+                                    valSysInfo += string.Format("Ptotal : {0}", readerStationSysInfo.GetValue(c => c.Ptotal)) + Environment.NewLine;
+                                    valSysInfo += string.Format("RNC : {0}", readerStationSysInfo.GetValue(c => c.Rnc)) + Environment.NewLine;
+                                    valSysInfo += string.Format("RSCP : {0}", readerStationSysInfo.GetValue(c => c.Rscp)) + Environment.NewLine;
+                                    valSysInfo += string.Format("RSRP : {0}", readerStationSysInfo.GetValue(c => c.Rsrp)) + Environment.NewLine;
+                                    valSysInfo += string.Format("RSRQ : {0}", readerStationSysInfo.GetValue(c => c.Rsrq)) + Environment.NewLine;
+                                    valSysInfo += string.Format("SC : {0}", readerStationSysInfo.GetValue(c => c.Sc)) + Environment.NewLine;
+                                    valSysInfo += string.Format("SID : {0}", readerStationSysInfo.GetValue(c => c.Sid)) + Environment.NewLine;
+                                    valSysInfo += string.Format("TAC : {0}", readerStationSysInfo.GetValue(c => c.Tac)) + Environment.NewLine;
+                                    valSysInfo += string.Format("TypeCDMAEVDO : {0}", readerStationSysInfo.GetValue(c => c.TypeCdmaevdo)) + Environment.NewLine;
+                                    valSysInfo += string.Format("UCID : {0}", readerStationSysInfo.GetValue(c => c.Ucid)) + Environment.NewLine;
+
+
+                                    var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
+                                    .From()
+                                    .Select(c => c.Id, c => c.BinData, c => c.Type)
+                                    .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                    queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
+                                    {
+                                        while (readerStationSysInfoBls.Read())
+                                        {
+                                            valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData))) + Environment.NewLine;
+                                            valSysInfo += string.Format("SysInfoBlocks.Type  : {0}", readerStationSysInfoBls.GetValue(c => c.Type)) + Environment.NewLine;
+                                        }
+                                        return true;
+                                    });
+
+
+                                }
+                                return true;
+                            });
+
+                            resMeasStatiion.StationSysInfo = valSysInfo;
+                            */
                             listResMeasStatiion.Add(resMeasStatiion);
                         }
 
@@ -2276,6 +2419,82 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 });
                                 measurementsParameterGeneral.LevelsSpecrum = levelSpectrum.ToArray();
+
+
+
+                                var valSysInfo = "";
+
+
+                                var queryStationSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfo>()
+                               .From()
+                               .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Bandwidth, c => c.BaseId, c => c.Bsic, c => c.ChannelNumber, c => c.Cid, c => c.Code, c => c.Ctoi, c => c.Eci, c => c.Enodebid, c => c.Freq, c => c.Icio, c => c.InbandPower, c => c.Iscp, c => c.Lac)
+                               .Select(c => c.Lat, c => c.Lon, c => c.Mcc, c => c.Mnc, c => c.Nid, c => c.Pci, c => c.Pn, c => c.Power, c => c.Ptotal, c => c.Rnc, c => c.Rscp, c => c.Rsrp, c => c.Rsrq, c => c.Sc, c => c.Sid, c => c.Tac, c => c.TypeCdmaevdo, c => c.Ucid)
+                               .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                queryExecuter.Fetch(queryStationSysInfo, readerStationSysInfo =>
+                                {
+                                    while (readerStationSysInfo.Read())
+                                    {
+
+                                        valSysInfo += string.Format("AGL : {0}", readerStationSysInfo.GetValue(c => c.Agl)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ASL : {0}", readerStationSysInfo.GetValue(c => c.Asl)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BandWidth : {0}", readerStationSysInfo.GetValue(c => c.Bandwidth)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BaseID : {0}", readerStationSysInfo.GetValue(c => c.BaseId)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BSIC : {0}", readerStationSysInfo.GetValue(c => c.Bsic)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ChannelNumber : {0}", readerStationSysInfo.GetValue(c => c.ChannelNumber)) + Environment.NewLine;
+                                        valSysInfo += string.Format("CID : {0}", readerStationSysInfo.GetValue(c => c.Cid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Code : {0}", readerStationSysInfo.GetValue(c => c.Code)) + Environment.NewLine;
+                                        valSysInfo += string.Format("CtoI : {0}", readerStationSysInfo.GetValue(c => c.Ctoi)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ECI : {0}", readerStationSysInfo.GetValue(c => c.Eci)) + Environment.NewLine;
+                                        valSysInfo += string.Format("eNodeBId : {0}", readerStationSysInfo.GetValue(c => c.Enodebid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Freq : {0}", readerStationSysInfo.GetValue(c => c.Freq)) + Environment.NewLine;
+                                        valSysInfo += string.Format("IcIo : {0}", readerStationSysInfo.GetValue(c => c.Icio)) + Environment.NewLine;
+                                        valSysInfo += string.Format("INBAND_POWER : {0}", readerStationSysInfo.GetValue(c => c.InbandPower)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ISCP : {0}", readerStationSysInfo.GetValue(c => c.Iscp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("LAC : {0}", readerStationSysInfo.GetValue(c => c.Lac)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Lat : {0}", readerStationSysInfo.GetValue(c => c.Lat)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Lon : {0}", readerStationSysInfo.GetValue(c => c.Lon)) + Environment.NewLine;
+                                        valSysInfo += string.Format("MCC : {0}", readerStationSysInfo.GetValue(c => c.Mcc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("MNC : {0}", readerStationSysInfo.GetValue(c => c.Mnc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("NID : {0}", readerStationSysInfo.GetValue(c => c.Nid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("PCI : {0}", readerStationSysInfo.GetValue(c => c.Pci)) + Environment.NewLine;
+                                        valSysInfo += string.Format("PN : {0}", readerStationSysInfo.GetValue(c => c.Pn)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Power : {0}", readerStationSysInfo.GetValue(c => c.Power)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Ptotal : {0}", readerStationSysInfo.GetValue(c => c.Ptotal)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RNC : {0}", readerStationSysInfo.GetValue(c => c.Rnc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSCP : {0}", readerStationSysInfo.GetValue(c => c.Rscp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSRP : {0}", readerStationSysInfo.GetValue(c => c.Rsrp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSRQ : {0}", readerStationSysInfo.GetValue(c => c.Rsrq)) + Environment.NewLine;
+                                        valSysInfo += string.Format("SC : {0}", readerStationSysInfo.GetValue(c => c.Sc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("SID : {0}", readerStationSysInfo.GetValue(c => c.Sid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("TAC : {0}", readerStationSysInfo.GetValue(c => c.Tac)) + Environment.NewLine;
+                                        valSysInfo += string.Format("TypeCDMAEVDO : {0}", readerStationSysInfo.GetValue(c => c.TypeCdmaevdo)) + Environment.NewLine;
+                                        valSysInfo += string.Format("UCID : {0}", readerStationSysInfo.GetValue(c => c.Ucid)) + Environment.NewLine;
+
+
+                                        var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
+                                        .From()
+                                        .Select(c => c.Id, c => c.BinData, c => c.Type)
+                                        .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                        queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
+                                        {
+                                            while (readerStationSysInfoBls.Read())
+                                            {
+                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData))) + Environment.NewLine;
+                                                valSysInfo += string.Format("SysInfoBlocks.Type  : {0}", readerStationSysInfoBls.GetValue(c => c.Type)) + Environment.NewLine;
+                                            }
+                                            return true;
+                                        });
+
+                                        resMeasStatiion.StationSysInfo = valSysInfo;
+
+                                        break;
+                                    }
+                                    return true;
+                                });
+
+
+                                
+
                             }
                             return true;
                         });

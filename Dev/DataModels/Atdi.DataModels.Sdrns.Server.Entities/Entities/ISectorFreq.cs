@@ -13,6 +13,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int Id { get; set; }
         int? PlanId { get; set; }
         int? ChannelNumber { get; set; }
+        int? IdFreq { get; set; }
         double? Frequency { get; set; }
     }
 }

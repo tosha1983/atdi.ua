@@ -62,7 +62,7 @@ namespace XICSM.ICSControlClient.ViewModels
         //public WpfCommand DeleteEmissionCommand { get; set; }
         #endregion
 
-        public MeasResultSignalizationViewViewModel(int[] stations, string tableName)
+        public MeasResultSignalizationViewViewModel(int[] stations, string tableName, MeasResultSignalizationViewForm form)
         {
             this._dataStore = DataStore.GetStore();
             this._dataStore.OnBeginInvoke += _dataStore_OnBeginInvoke;
@@ -78,7 +78,7 @@ namespace XICSM.ICSControlClient.ViewModels
             //this.AddAssociationStationCommand = new WpfCommand(this.OnAddAssociationStationCommand);
             //this.DeleteEmissionCommand = new WpfCommand(this.OnDeleteEmissionCommand);
 
-            Task.Run(() => this.ReloadMeasResult());
+            Task.Run(() => this.ReloadMeasResult(form));
 
             
         }
@@ -156,10 +156,14 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._emittingCaption;
             set => this.Set(ref this._emittingCaption, value);
         }
+        private string _rbw = string.Empty;
+
         public string RBW
         {
-            get => this.GetCurrentRBWValue();
+            get => this._rbw; // this.GetCurrentRBWValue();
+            set => this.Set(ref this._rbw, value);
         }
+
         public CS.ChartOption CurrentChartOption
         {
             get => this._currentChartOption;
@@ -221,7 +225,7 @@ namespace XICSM.ICSControlClient.ViewModels
             }
         }
 
-        private void ReloadMeasResult()
+        private void ReloadMeasResult(MeasResultSignalizationViewForm form)
         {
 
             var emittings = this._dataStore.GetEmittingsBy(_stations, _tableName); //SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(_resultId, null, null);
@@ -229,10 +233,20 @@ namespace XICSM.ICSControlClient.ViewModels
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 this._emittings.Source = emittings;
+                this.RBW = this.GetCurrentRBWValue();
                 this.EmittingCaption = this.GetCurrentEmittingCaption();
 
                 this.UpdateCurrentChartOption(null, null);
                 this.UpdateCurrentChartLevelsDistrbutionOption();
+
+                if (emittings == null || emittings.Length == 0)
+                {
+                    MessageBox.Show("No Emissions", "Result Monitoring (Fix Sensor) Station", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    if (form != null)
+                    {
+                        form.Close();
+                    }
+                }
 
             }));
         }
@@ -685,26 +699,28 @@ namespace XICSM.ICSControlClient.ViewModels
         //}
         private string GetCurrentRBWValue()
         {
-            return string.Empty;
+            if (this._emittings.Source == null || this._emittings.Source.Length == 0)
+            {
+                return "RBW = (unknown) kHz";
+            }
 
-            //if (_currentMeasResult.RefLevels == null)
-            //    return "";
-            //else
-            //{
-            //    string res = "";
-            //    double rbw = _currentMeasResult.RefLevels.StepFrequency_Hz;
 
-            //    if (rbw > 1000)
-            //        res = Math.Round(rbw, 1).ToString();
-            //    else if (1000 > rbw && rbw > 100)
-            //        res = Math.Round(rbw, 2).ToString();
-            //    else if (100 > rbw && rbw > 10)
-            //        res = Math.Round(rbw, 3).ToString();
-            //    else if (10 > rbw && rbw > 1)
-            //        res = Math.Round(rbw, 4).ToString();
+            var firstEmession = ((SDR.Emitting)this._emittings.Source[0]);
+            var rbw =  firstEmession.Spectrum.SpectrumSteps_kHz;
 
-            //    return "RBW = " + res + " kHz";
-            //}
+            var res = string.Empty;
+
+            if (rbw > 1000)
+                res = Math.Round(rbw, 1).ToString();
+            else if (1000 > rbw && rbw > 100)
+                res = Math.Round(rbw, 2).ToString();
+            else if (100 > rbw && rbw > 10)
+                res = Math.Round(rbw, 3).ToString();
+            else 
+                res = Math.Round(rbw, 4).ToString();
+
+            return "RBW = " + res + " kHz";
+            
         }
         private string GetCurrentEmittingCaption()
         {

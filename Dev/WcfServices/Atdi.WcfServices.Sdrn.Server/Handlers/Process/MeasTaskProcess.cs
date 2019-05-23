@@ -17,7 +17,6 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly ILogger _logger;
 
 
-
         public MeasTaskProcess(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;

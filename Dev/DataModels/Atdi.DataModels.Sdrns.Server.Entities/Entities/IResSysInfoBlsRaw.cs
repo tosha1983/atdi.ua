@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         int Id { get; set; }
         string Data { get; set; }
+        byte[] BinData { get; set; }
         string Type { get; set; }
         int? ResSysInfoId { get; set; }
         IResSysInfoRaw RESSYSINFO { get; set; }

@@ -30,6 +30,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
         //public static readonly EventText ServiceHostDescriptor = "{0}";
         public static readonly EventText StartOperationWriting = "Start of validation operation and writing to main tables";
         public static readonly EventText EndOperationWriting = "End of validation operation and writing to main tables";
+        public static readonly EventText IsAlreadySaveResults = "ResultId = {0} is already recorded in the XBS_RESMEASRAW table with Id = {1}, repeated recording is canceled";
 
     }
     static class TraceScopeNames
