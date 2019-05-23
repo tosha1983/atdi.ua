@@ -258,8 +258,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 levelMeasResult.Level_dBm = levelDbm.Value;
                             else
                             {
-                                WriteLog("Incorrect value LevelDbm", "IResStLevelCarRaw");
-                                validationResult = false;
+                                if (levelDbm.HasValue)
+                                {
+                                    WriteLog("Incorrect value LevelDbm", "IResStLevelCarRaw");
+                                    validationResult = false;
+                                }
                             }
 
                             var levelDbmkvm = readerLev.GetValue(c => c.LevelDbmkvm);
@@ -267,8 +270,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 levelMeasResult.Level_dBmkVm = levelDbmkvm.Value;
                             else
                             {
-                                WriteLog("Incorrect value LevelDbmkvm", "IResStLevelCarRaw");
-                                validationResult = false;
+                                if (levelDbmkvm.HasValue)
+                                {
+                                    WriteLog("Incorrect value LevelDbmkvm", "IResStLevelCarRaw");
+                                    validationResult = false;
+                                }
                             }
 
                             var timeOfMeasurements = readerLev.GetValue(c => c.TimeOfMeasurements);
