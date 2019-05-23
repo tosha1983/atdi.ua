@@ -261,7 +261,7 @@ namespace XICSM.ICSControlClient.Models
         {
             try
             {
-                var decription = $"Emittings by the stations from '{tableName}'";
+                var decription = $"Emissions by the stations";
                 this.OnBeginInvoke?.Invoke(decription);
                 var data = SVC.SdrnsControllerWcfClient.GetEmittingsByIcsmId(stations, tableName);
                 this.OnEndInvoke?.Invoke(decription);
