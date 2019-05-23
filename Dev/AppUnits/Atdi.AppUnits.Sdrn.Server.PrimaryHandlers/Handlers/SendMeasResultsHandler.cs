@@ -133,12 +133,56 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 int valInsResMeas = 0;
                 try
                 {
+                    bool isCancelled = false;
                     queryExecuter.BeginTransaction();
                     var resObject = incomingEnvelope.DeliveryObject;
+
                     int SensorId; int SubMeasTaskId; int SubMeasTaskStationId; int resultId; int taskIdOut = -1;
-
-
                     GetMeasTaskSDRIdentifier(resObject.ResultId, resObject.TaskId, incomingEnvelope.SensorName, incomingEnvelope.SensorTechId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId, out taskIdOut);
+
+                    if (resObject.Measurement== DataModels.Sdrns.MeasurementType.MonitoringStations)
+                    {
+                        var queryIResMeasRaw = this._dataLayer.GetBuilder<MD.IResMeasRaw>()
+                        .From()
+                        .Select(c => c.Id, c => c.MeasResultSID)
+                        .Where(c => c.MeasResultSID, ConditionOperator.Equal, resObject.ResultId)
+                        .Where(c => c.MeasTaskId, ConditionOperator.Equal, taskIdOut.ToString())
+                        .Where(c => c.MeasSubTaskId, ConditionOperator.Equal, SubMeasTaskId)
+                        .Where(c => c.MeasSubTaskStationId, ConditionOperator.Equal, SubMeasTaskStationId)
+                        .Where(c => c.SensorId, ConditionOperator.Equal, SensorId);
+                        queryExecuter.Fetch(queryIResMeasRaw, readerResMeasRaw =>
+                        {
+                            while (readerResMeasRaw.Read())
+                            {
+                                var builderInsertLogs = this._dataLayer.GetBuilder<MD.ILogs>().Insert();
+                                builderInsertLogs.SetValue(c => c.Lcount, 1);
+                                builderInsertLogs.SetValue(c => c.TableName, "IResMeasRaw");
+                                builderInsertLogs.SetValue(c => c.When, DateTime.Now);
+                                builderInsertLogs.SetValue(c => c.Event, Categories.MessageProcessing.ToString());
+                                builderInsertLogs.SetValue(c => c.Who, Contexts.PrimaryHandler.ToString());
+                                builderInsertLogs.SetValue(c => c.Info, Events.IsAlreadySaveResults.With(resObject.ResultId, readerResMeasRaw.GetValue(c => c.Id)).ToString());
+                                builderInsertLogs.Select(c => c.Id);
+                                queryExecuter.ExecuteAndFetch(builderInsertLogs, readerLogs =>
+                                {
+                                    return true;
+                                });
+
+                                this._logger.Warning(Contexts.PrimaryHandler, Categories.MessageProcessing, Events.IsAlreadySaveResults.With(resObject.ResultId, readerResMeasRaw.GetValue(c => c.Id)).ToString());
+                                isCancelled = true;
+                                break;
+                            }
+                            return true;
+                        });
+
+                        result.Status = SdrnMessageHandlingStatus.Confirmed;
+                    }
+
+                    if (isCancelled)
+                    {
+                        queryExecuter.CommitTransaction();
+                        return;
+                    }
+
 
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeasRaw>().Insert();
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, resObject.Measured);
