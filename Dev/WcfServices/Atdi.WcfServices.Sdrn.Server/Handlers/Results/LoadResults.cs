@@ -1270,6 +1270,23 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
                         }
 
                         var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
@@ -1441,6 +1458,22 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     }
                                     return true;
                                 });
+
+
+                                builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                                builderResMeasStation.Select(c => c.Id);
+                                builderResMeasStation.Select(c => c.Status);
+                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
+                                builderResMeasStation.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                                {
+                                    while (readerResMeasStation.Read())
+                                    {
+                                        levelmeasurementResults.CountStationMeasurements++;
+                                    }
+                                    return true;
+                                });
                             }
 
                         }
@@ -1570,6 +1603,22 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation.Select(c => c.Status);
                             builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {
@@ -2790,6 +2839,24 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
 
 
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
                             var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                             builderLinkResSensoT.Select(c => c.Id);
                             builderLinkResSensoT.Select(c => c.SensorId);
@@ -3652,6 +3719,21 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
@@ -3783,6 +3865,22 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
@@ -3904,6 +4002,23 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation.Select(c => c.Status);
                             builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
+                            builderResMeasStation.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                            {
+                                while (readerResMeasStation.Read())
+                                {
+                                    levelmeasurementResults.CountStationMeasurements++;
+                                }
+                                return true;
+                            });
+
+
+
+                            builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                            builderResMeasStation.Select(c => c.Id);
+                            builderResMeasStation.Select(c => c.Status);
+                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                             {

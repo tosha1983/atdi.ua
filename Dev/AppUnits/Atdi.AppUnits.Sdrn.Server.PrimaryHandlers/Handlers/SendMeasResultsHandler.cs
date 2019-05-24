@@ -599,12 +599,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                     int StationId;
                                     int idLinkRes = -1;
 
-                                    if (int.TryParse(station.StationId, out StationId))
+                                    var stationIdTemp = SensorId;
+
+                                    //if (int.TryParse(station.StationId, out StationId))
                                     {
                                         var builderLinkResSensorRaw = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().From();
                                         builderLinkResSensorRaw.Select(c => c.Id);
                                         builderLinkResSensorRaw.Where(c => c.ResMeasStaId, ConditionOperator.Equal, valInsResMeasStation);
-                                        builderLinkResSensorRaw.Where(c => c.SensorId, ConditionOperator.Equal, StationId);
+                                        builderLinkResSensorRaw.Where(c => c.SensorId, ConditionOperator.Equal, stationIdTemp);
                                         queryExecuter.Fetch(builderLinkResSensorRaw, readerLinkResSensorRaw =>
                                         {
                                             while (readerLinkResSensorRaw.Read())
@@ -620,10 +622,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                     {
                                         var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Insert();
                                         builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
-                                        if (int.TryParse(station.StationId, out StationId))
-                                        {
-                                            builderInsertLinkResSensor.SetValue(c => c.SensorId, StationId);
-                                        }
+                                        //if (int.TryParse(station.StationId, out StationId))
+                                        //{
+                                            builderInsertLinkResSensor.SetValue(c => c.SensorId, stationIdTemp);
+                                        //}
                                         builderInsertLinkResSensor.Select(c => c.Id);
                                         queryExecuter
                                         .ExecuteAndFetch(builderInsertLinkResSensor, reader =>
@@ -885,22 +887,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         EquipmentTechId = incomingEnvelope.SensorTechId,
                         SensorName = incomingEnvelope.SensorName,
                         SdrnServer = this._environment.ServerInstance,
-                        Command = "SendMeasResultsResult",
+                        Command = "SendMeasResultsConfirmed",
                         CommandId = "SendCommand",
                         CustTxt1 = "Success"
                     };
 
                     if (result.Status == SdrnMessageHandlingStatus.Error)
                     {
-                        deviceCommandResult.CustTxt1 = "Error";
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + incomingEnvelope.DeliveryObject.ResultId + "\"", "\"Message\"", "\"" + result.ReasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
                     }
                     else if (valInsResMeas > 0)
                     {
-                        deviceCommandResult.CustTxt1 = "Success";
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\"" + incomingEnvelope.DeliveryObject.ResultId + "\"", "\"Message\"", "\"\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
                     }
                     else
                     {
-                        deviceCommandResult.CustTxt1 = "Error";
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + incomingEnvelope.DeliveryObject.ResultId + "\"", "\"Message\"", "\"" + result.ReasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
                     }
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
                     envelop.SensorName = incomingEnvelope.SensorName;
