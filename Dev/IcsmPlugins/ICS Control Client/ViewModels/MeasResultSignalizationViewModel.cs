@@ -893,10 +893,11 @@ namespace XICSM.ICSControlClient.ViewModels
             option.XMin = preparedDataX.MinValue;// + preparedDataX.Step;
             option.XMax = preparedDataX.MaxValue;// - preparedDataX.Step;
 
-            var menuItems = new List<CS.ChartMenuItem>();
-            menuItems.Add(new CS.ChartMenuItem() { Header = "Detailed for RefLevel on that Frequency", Name = "DetailForRefLevel" });
-            menuItems.Add(new CS.ChartMenuItem() { Header = "View Station in ICSM", Name = "ViewStation" });
-
+            var menuItems = new List<CS.ChartMenuItem>()
+            {
+                new CS.ChartMenuItem() { Header = "Detailed for RefLevel on that Frequency", Name = "DetailForRefLevel" },
+                new CS.ChartMenuItem() { Header = "View Station in ICSM", Name = "ViewStation" }
+            };
             option.PointsArray = pointsList.ToArray();
             option.LinesArray = linesList.ToArray();
             option.MenuItems = menuItems.ToArray();

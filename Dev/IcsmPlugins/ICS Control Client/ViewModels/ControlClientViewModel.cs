@@ -730,9 +730,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 int taskId = this._currentMeasurementResults.MeasTaskId;
                 string stationId = this._currentResultsMeasurementsStationData.StationId;
 
-                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog();
-                sfd.Filter = "CSV (*.csv)|*.csv";
-                sfd.FileName = "FS_Meas_Res_" + taskId.ToString() + "_" + stationId + ".csv";
+                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = "FS_Meas_Res_" + taskId.ToString() + "_" + stationId + ".csv" };
                 if (sfd.ShowDialog() == FRM.DialogResult.OK)
                 {
                     //MessageBox.Show("Data will be exported and you will be notified when it is ready.");
@@ -892,8 +890,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (stations.Count() > 0)
                 {
-                    var dlgForm = new FM.StationListForm();
-                    dlgForm.stationIDs = string.Join(",", stations.Keys.ToArray());
+                    var dlgForm = new FM.StationListForm() { stationIDs = string.Join(",", stations.Keys.ToArray()) };
                     dlgForm.ShowDialog();
                     dlgForm.Dispose();
                 }
