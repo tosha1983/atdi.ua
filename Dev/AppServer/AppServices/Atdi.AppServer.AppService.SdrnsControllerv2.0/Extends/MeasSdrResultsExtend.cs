@@ -92,7 +92,13 @@ namespace Atdi.AppServer.AppService.SdrnsControllerv2_0
                                     {
                                         if (sdrRes.StationResults[i].LevelResults[j].Location != null) MRs.ResultsMeasStation[i].LevelMeasurements[j].Altitude = sdrRes.StationResults[i].LevelResults[j].Location.ASL;
                                         if (sdrRes.StationResults[i].GeneralResult.BandwidthResult != null) MRs.ResultsMeasStation[i].LevelMeasurements[j].BW = sdrRes.StationResults[i].GeneralResult.BandwidthResult.Bandwidth_kHz;
-                                        if (sdrRes.StationResults[i].GeneralResult != null) MRs.ResultsMeasStation[i].LevelMeasurements[j].CentralFrequency = (decimal)sdrRes.StationResults[i].GeneralResult.CentralFrequency_MHz;
+                                        if (sdrRes.StationResults[i].GeneralResult != null)
+                                        {
+                                            if (sdrRes.StationResults[i].GeneralResult.CentralFrequency_MHz != null)
+                                            {
+                                                MRs.ResultsMeasStation[i].LevelMeasurements[j].CentralFrequency = (decimal)sdrRes.StationResults[i].GeneralResult.CentralFrequency_MHz;
+                                            }
+                                        }
                                         MRs.ResultsMeasStation[i].LevelMeasurements[j].DifferenceTimestamp = sdrRes.StationResults[i].LevelResults[j].DifferenceTimeStamp_ns;
                                         if (sdrRes.StationResults[i].LevelResults[j].Location != null) MRs.ResultsMeasStation[i].LevelMeasurements[j].Lat = sdrRes.StationResults[i].LevelResults[j].Location.Lat;
                                         if (sdrRes.StationResults[i].LevelResults[j].Location != null) MRs.ResultsMeasStation[i].LevelMeasurements[j].Lon = sdrRes.StationResults[i].LevelResults[j].Location.Lon;

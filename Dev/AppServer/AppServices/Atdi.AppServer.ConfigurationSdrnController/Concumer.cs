@@ -383,7 +383,7 @@ namespace Atdi.AppServer.ConfigurationSdrnController
                 result = false;
                 channel.BasicAck(message.DeliveryTag, false);
                 channel.BasicPublish(message.Exchange, string.Format("Q.SDRN.Server.[{0}].[errors].[v2.0]", sdrnServer), message.BasicProperties, message.Body);
-                this._logger.Error(e.Message);
+                this._logger.Error(e.Message+" "+e.StackTrace);
             }
 
             // подтверждение обработки сообщения
