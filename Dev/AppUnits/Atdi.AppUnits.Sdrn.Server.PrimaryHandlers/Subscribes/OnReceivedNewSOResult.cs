@@ -53,8 +53,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     var result = reader.Read();
                     if (result)
                     {
-                        DM.MeasurementType measurement;
-                        if ((!Enum.TryParse(reader.GetValue(c => c.TypeMeasurements), out measurement)) || (string.IsNullOrEmpty(reader.GetValue(c => c.TypeMeasurements))))
+                        if ((!Enum.TryParse(reader.GetValue(c => c.TypeMeasurements), out DM.MeasurementType measurement)) || (string.IsNullOrEmpty(reader.GetValue(c => c.TypeMeasurements))))
                             measurement = DM.MeasurementType.MonitoringStations;
 
                         measResult.Measurement = measurement;
@@ -102,8 +101,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     validationResult = VaildateMeasResultSignaling(ref measResult, @event.ResultId);
                     if (validationResult)
                     {
-                        int newResMeasId; int newResSensorId;
-                        if (SaveMeasResultSignaling(measResult, out newResMeasId, out newResSensorId))
+                        if (SaveMeasResultSignaling(measResult, out int newResMeasId, out int newResSensorId))
                         {
                             DeleteOldMeasResultSignaling(measResult, newResMeasId, newResSensorId);
                         }
@@ -152,8 +150,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 while (reader.Read())
                 {
                     bool validationResult = true;
-                    var route = new DEV.Route();
-                    route.RouteId = reader.GetValue(c => c.RouteId);
+                    var route = new DEV.Route() { RouteId = reader.GetValue(c => c.RouteId) };
 
                     var listRoutePoints = new List<DEV.RoutePoint>();
                     var routePoint = new DEV.RoutePoint();
@@ -169,8 +166,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     validationResult = this.ValidateGeoLocation<DEV.RoutePoint>(routePoint, "IResRoutesRaw");
 
-                    DM.PointStayType pst;
-                    if (Enum.TryParse(reader.GetValue(c => c.PointStayType), out pst))
+                    if (Enum.TryParse(reader.GetValue(c => c.PointStayType), out DM.PointStayType pst))
                         routePoint.PointStayType = pst;
 
                     var startTime = reader.GetValue(c => c.StartTime);
@@ -590,10 +586,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     {
                                         while (readerStationSysInfoBls.Read())
                                         {
-                                            var stationSysInfoBls = new DEV.StationSysInfoBlock();
-                                            stationSysInfoBls.Data = BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData));
-                                            stationSysInfoBls.Type = readerStationSysInfoBls.GetValue(c => c.Type);
-
+                                            var stationSysInfoBls = new DEV.StationSysInfoBlock()
+                                            {
+                                                Data = BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData)),
+                                                Type = readerStationSysInfoBls.GetValue(c => c.Type)
+                                            };
                                             listStationSysInfoBls.Add(stationSysInfoBls);
                                         }
 
@@ -656,7 +653,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             try
             {
                 var listStationIdsTemp = new List<int>();
-                var dic = new List<KeyValuePair<string, string>>();
+                //var dic = new List<KeyValuePair<string, string>>();
+                var dic = new Dictionary<string, string>();
                 queryExecuter.BeginTransaction();
 
                 int idResMeas = 0;
@@ -667,7 +665,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 GetIds(measResult.ResultId, measResult.TaskId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
 
                 var builderResMeasSearch = this._dataLayer.GetBuilder<MD.IResMeas>().From();
-                builderResMeasSearch.Select(c => c.Id, c => c.MeasResultSID, c => c.MeasTaskId, c => c.Status, c => c.TimeMeas, c => c.DataRank);
+                builderResMeasSearch.Select(c => c.Id, c => c.TimeMeas, c => c.DataRank);
                 builderResMeasSearch.OrderByAsc(c => c.Id);
                 builderResMeasSearch.Where(c => c.MeasTaskId, ConditionOperator.Equal, measResult.TaskId);
                 //builderResMeasSearch.Where(c => c.Status, ConditionOperator.IsNull);
@@ -677,11 +675,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 {
                     while (readerResMeas.Read())
                     {
-                        if (!readerResMeas.GetValue(c => c.DataRank).HasValue || readerResMeas.GetValue(c => c.DataRank).Value == measResult.SwNumber)
+                        var dataRank = readerResMeas.GetValue(c => c.DataRank);
+                        if (!dataRank.HasValue || dataRank.Value == measResult.SwNumber)
                         {
-                            if (diffDates == null || diffDates > Math.Abs((readerResMeas.GetValue(c => c.TimeMeas).Value - measResult.Measured).TotalMilliseconds))
+                            var timeMeas = readerResMeas.GetValue(c => c.TimeMeas);
+                            if (diffDates == null || diffDates > Math.Abs((timeMeas.Value - measResult.Measured).TotalMilliseconds))
                             {
-                                diffDates = Math.Abs((readerResMeas.GetValue(c => c.TimeMeas).Value - measResult.Measured).TotalMilliseconds);
+                                diffDates = Math.Abs((timeMeas.Value - measResult.Measured).TotalMilliseconds);
                                 idResMeas = readerResMeas.GetValue(c => c.Id);
                                 isMerge = true;
                             }
@@ -789,12 +789,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             DateTime? startTime = null;
                             DateTime? finishTime = null;
 
-
-                             
-
-                            if ((!string.IsNullOrEmpty(station.RealGlobalSid)) && (dic.Find(x=>x.Key==station.RealGlobalSid && x.Value==station.Standard).Key == null))
+                            //if ((!string.IsNullOrEmpty(station.RealGlobalSid)) && (dic.Find(x=>x.Key==station.RealGlobalSid && x.Value==station.Standard).Key == null))
+                            if ((!string.IsNullOrEmpty(station.RealGlobalSid)) && !dic.ContainsKey(station.RealGlobalSid + @"/|\" + station.Standard))
                             {
-                                dic.Add(new KeyValuePair<string, string>(station.RealGlobalSid, station.Standard));
+                                //dic.Add(new KeyValuePair<string, string>(station.RealGlobalSid, station.Standard));
+                                dic.Add(station.RealGlobalSid + @"/|\" + station.Standard, "");
 
                                 var builderResMeasStationSearch = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                                 builderResMeasStationSearch.Select(c => c.Id);
@@ -828,17 +827,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                                                     var centralFrequency = readerGeneralResult.GetValue(c => c.CentralFrequency);
                                                     var centralFrequencyMeas = readerGeneralResult.GetValue(c => c.CentralFrequencyMeas);
+                                                    var timeStartMeas = readerGeneralResult.GetValue(c => c.TimeStartMeas);
 
                                                     if ((centralFrequency.HasValue && station.GeneralResult.CentralFrequency_MHz.HasValue && centralFrequency.Value == station.GeneralResult.CentralFrequency_MHz.Value)
                                                         || (centralFrequencyMeas.HasValue && station.GeneralResult.CentralFrequencyMeas_MHz.HasValue && Math.Abs(centralFrequencyMeas.Value - station.GeneralResult.CentralFrequencyMeas_MHz.Value) <= 0.005)
                                                         || (!centralFrequency.HasValue && !station.GeneralResult.CentralFrequency_MHz.HasValue && !centralFrequencyMeas.HasValue && !station.GeneralResult.CentralFrequencyMeas_MHz.HasValue))
                                                     {
-                                                        if (!measStartTime.HasValue || measStartTime.Value > readerGeneralResult.GetValue(c => c.TimeStartMeas) || idMeasResultStation == 0)
+                                                        if (!measStartTime.HasValue || measStartTime.Value > timeStartMeas || idMeasResultStation == 0)
                                                         {
                                                             if (itemCount == 0 || station.GeneralResult == null)
                                                             {
                                                                 idMeasResultStation = readerResMeasStation.GetValue(c => c.Id);
-                                                                startTime = readerGeneralResult.GetValue(c => c.TimeStartMeas);
+                                                                startTime = timeStartMeas;
                                                                 finishTime = readerGeneralResult.GetValue(c => c.TimeFinishMeas);
                                                                 idMeasResultGeneral = readerGeneralResult.GetValue(c => c.Id);
                                                                 isMergeStation = true;
@@ -846,7 +846,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                         }
                                                     }
                                                 }
-
                                                 return true;
                                             });
                                     }
@@ -938,16 +937,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     }
                                 }
 
-                                int Idstation; int IdSector;
                                 bool isUpdate = false;
 
                                 var builderUpdateMeasResult = this._dataLayer.GetBuilder<MD.IResMeasStation>().Update();
-                                if (!string.IsNullOrEmpty(station.StationId) && int.TryParse(station.StationId, out Idstation))
+                                if (!string.IsNullOrEmpty(station.StationId) && int.TryParse(station.StationId, out int Idstation))
                                 {
                                     builderUpdateMeasResult.SetValue(c => c.StationId, Idstation);
                                     isUpdate = true;
                                 }
-                                if (!string.IsNullOrEmpty(station.SectorId) && int.TryParse(station.SectorId, out IdSector))
+                                if (!string.IsNullOrEmpty(station.SectorId) && int.TryParse(station.SectorId, out int IdSector))
                                 {
                                     builderUpdateMeasResult.SetValue(c => c.SectorId, IdSector);
                                     isUpdate = true;
@@ -1193,7 +1191,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                                 if (listStationIds.Count == 0)
                                 {
-                                    int Idstation; int IdSector;
                                     station = measResult.StationResults[n];
                                     var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
                                     builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
@@ -1201,11 +1198,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
                                     builderInsertResMeasStation.SetValue(c => c.ResMeasId, idResMeas);
                                     builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
-                                    if (int.TryParse(station.StationId, out Idstation))
+                                    if (int.TryParse(station.StationId, out int Idstation))
                                     {
                                         builderInsertResMeasStation.SetValue(c => c.StationId, Idstation);
                                     }
-                                    if (int.TryParse(station.SectorId, out IdSector))
+                                    if (int.TryParse(station.SectorId, out int IdSector))
                                     {
                                         builderInsertResMeasStation.SetValue(c => c.SectorId, IdSector);
                                     }
@@ -1234,10 +1231,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     for (int p = 0; p < listStationIds.Count; p++)
                                     {
                                         valInsResMeasStation = listStationIds[p];
-                                        int StationId;
                                         int idLinkRes = -1;
 
-                                        //if (int.TryParse(station.StationId, out StationId))
+                                        //if (int.TryParse(station.StationId, out int StationId))
                                         //{
                                         //var builderILinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Delete();
                                         //builderILinkResSensor.Where(c => c.ResMeasStaId, ConditionOperator.Equal, valInsResMeasStation);
@@ -1245,7 +1241,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         //queryExecuter.Execute(builderILinkResSensor);
                                         //}
 
-                                        //if (int.TryParse(station.StationId, out StationId))
+                                        //if (int.TryParse(station.StationId, out int StationId))
                                         //{
                                         var builderLinkResSensorRaw = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                                         builderLinkResSensorRaw.Select(c => c.Id);
@@ -1594,7 +1590,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         for (int n = 0; n < measResult.StationResults.Length; n++)
                         {
                             int valInsResMeasStation = 0;
-                            int Idstation; int IdSector;
                             DEV.StationMeasResult station = measResult.StationResults[n];
                             var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
                             builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
@@ -1602,34 +1597,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
                             builderInsertResMeasStation.SetValue(c => c.ResMeasId, idResMeas);
                             builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
-                            if (int.TryParse(station.StationId, out Idstation))
+                            if (int.TryParse(station.StationId, out int Idstation))
                             {
                                 builderInsertResMeasStation.SetValue(c => c.StationId, Idstation);
                             }
-                            if (int.TryParse(station.SectorId, out IdSector))
+                            if (int.TryParse(station.SectorId, out int IdSector))
                             {
                                 builderInsertResMeasStation.SetValue(c => c.SectorId, IdSector);
                             }
                             builderInsertResMeasStation.Select(c => c.Id);
 
                             queryExecuter
-                           .ExecuteAndFetch(builderInsertResMeasStation, reader =>
-                           {
-                               var res = reader.Read();
-                               if (res)
-                               {
-                                   valInsResMeasStation = reader.GetValue(c => c.Id);
-                               }
-                               return res;
-                           });
+                            .ExecuteAndFetch(builderInsertResMeasStation, reader =>
+                            {
+                                var res = reader.Read();
+                                if (res)
+                                {
+                                    valInsResMeasStation = reader.GetValue(c => c.Id);
+                                }
+                                return res;
+                            });
 
 
                             if (valInsResMeasStation > 0)
                             {
-                                int StationId;
                                 int idLinkRes = -1;
 
-                                //if (int.TryParse(station.StationId, out StationId))
+                                //if (int.TryParse(station.StationId, out int StationId))
                                 {
                                     var builderLinkResSensorRaw = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                                     builderLinkResSensorRaw.Select(c => c.Id);
@@ -1652,7 +1646,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
                                     builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
                                     builderInsertLinkResSensor.SetValue(c => c.SensorId, measResult.SensorId);
-                                    //if (int.TryParse(station.StationId, out StationId))
+                                    //if (int.TryParse(station.StationId, out int StationId))
                                     //{
                                     //builderInsertLinkResSensor.SetValue(c => c.SensorId, StationId);
                                     //}
@@ -1688,12 +1682,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         return true;
                                     });
 
-
                                     if (IDResGeneral == -1)
                                     {
-
-
-
                                         var builderInsertResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().Insert();
                                         builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
                                         builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
@@ -2318,8 +2308,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         var wrdLevelCount = oneString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                                         if ((wrdLevelCount != null) && (wrdLevelCount.Length == 2))
                                         {
-                                            int levelValue;   int countValue;
-                                            if ((int.TryParse(wrdLevelCount[0], out levelValue)) && (int.TryParse(wrdLevelCount[1], out countValue)))
+                                            if ((int.TryParse(wrdLevelCount[0], out int levelValue)) && (int.TryParse(wrdLevelCount[1], out int countValue)))
                                             {
                                                 if (levelValue >= -200 && levelValue <= 100)
                                                     validationLevelResult = true;

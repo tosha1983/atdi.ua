@@ -46,10 +46,12 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                     {
                         var mapPoint = this.FromLatLngToLocal(new PointLatLng(point.Location.Lat, point.Location.Lon));
 
-                        var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon));
-                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, ToolTip = point.Name };
-                        marker.ZIndex = int.MaxValue;
-                        marker.Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 };
+                        var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon))
+                        {
+                            Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, ToolTip = point.Name },
+                            ZIndex = int.MaxValue,
+                            Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 }
+                        };
                         
                         //marker. 
                         this.Markers.Add(marker);

@@ -168,10 +168,9 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             double offset = 0;
             double dx, dy;
 
-            TextBlock tb = new TextBlock();
+            TextBlock tb = new TextBlock() { Text = this._option.XMax.ToString() };
 
             //  determine right offset:
-            tb.Text = this._option.XMax.ToString();
             tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             Size size = tb.DesiredSize;
             var rightOffset = size.Width / 2 + 2;
@@ -180,9 +179,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             for (dy = this._option.YMin; dy <= this._option.YMax; dy += this._option.YTick)
             {
                 pt = NormalizePoint(new Point(this._option.XMin, dy));
-                tb = new TextBlock();
-                tb.Text = dy.ToString();
-                tb.TextAlignment = TextAlignment.Right;
+                tb = new TextBlock() { Text = dy.ToString(), TextAlignment = TextAlignment.Right };
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 if (offset < size.Width)
@@ -195,10 +192,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             Canvas.SetBottom(chartCanvas, bottomOffset);
             chartCanvas.Width = Math.Abs(textCanvas.Width - leftOffset - rightOffset);
             chartCanvas.Height = Math.Abs(textCanvas.Height - bottomOffset - size.Height / 2);
-            Rectangle chartRect = new Rectangle();
-            chartRect.Stroke = Brushes.Black;
-            chartRect.Width = chartCanvas.Width;
-            chartRect.Height = chartCanvas.Height;
+            Rectangle chartRect = new Rectangle() { Stroke = Brushes.Black, Width = chartCanvas.Width, Height = chartCanvas.Height };
             chartCanvas.Children.Add(chartRect);
 
             // Create vertical gridlines:
@@ -265,16 +259,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             for (dx = this._option.XMin; dx.LessOrEqual(this._option.XMax); dx += this._option.XTick)
             {
                 pt = NormalizePoint(new Point(dx, this._option.YMin));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X;
-                tick.Y1 = pt.Y + 5;
-                tick.X2 = pt.X;
-                tick.Y2 = pt.Y - 5;
+                tick = new Line()
+                {
+                    Stroke = Brushes.Black,
+                    X1 = pt.X,
+                    Y1 = pt.Y + 5,
+                    X2 = pt.X,
+                    Y2 = pt.Y - 5
+                };
                 chartCanvas.Children.Add(tick);
 
-                tb = new TextBlock();
-                tb.Text = dx.ToString();
+                tb = new TextBlock() { Text = dx.ToString() };
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 textCanvas.Children.Add(tb);
@@ -299,16 +294,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             for (dy = this._option.YMin; dy.LessOrEqual(this._option.YMax); dy += this._option.YTick)
             {
                 pt = NormalizePoint(new Point(this._option.XMin, dy));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X - 5;
-                tick.Y1 = pt.Y;
-                tick.X2 = pt.X + 5;
-                tick.Y2 = pt.Y;
+                tick = new Line()
+                {
+                    Stroke = Brushes.Black,
+                    X1 = pt.X - 5,
+                    Y1 = pt.Y,
+                    X2 = pt.X + 5,
+                    Y2 = pt.Y
+                };
                 chartCanvas.Children.Add(tick);
 
-                tb = new TextBlock();
-                tb.Text = dy.ToString();
+                tb = new TextBlock() { Text = dy.ToString() };
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 textCanvas.Children.Add(tb);
@@ -417,10 +413,12 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
                     if (!string.IsNullOrEmpty(lines.Name))
                     {
-                        var tb = new TextBlock();
-                        tb.Foreground = lines.LineColor;
-                        tb.FontSize = 10;
-                        tb.Text = lines.Name;
+                        var tb = new TextBlock()
+                        {
+                            Foreground = lines.LineColor,
+                            FontSize = 10,
+                            Text = lines.Name
+                        };
                         tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                         chartCanvas.Children.Add(tb);
                         Canvas.SetLeft(tb, 5);
@@ -439,10 +437,12 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
                     if (!string.IsNullOrEmpty(lines.Name))
                     {
-                        var tb = new TextBlock();
-                        tb.Foreground = lines.LineColor;
-                        tb.FontSize = 10;
-                        tb.Text = lines.Name;
+                        var tb = new TextBlock()
+                        {
+                            Foreground = lines.LineColor,
+                            FontSize = 10,
+                            Text = lines.Name,
+                        };
                         tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                         chartCanvas.Children.Add(tb);
                         Canvas.SetLeft(tb, point.X + 5);
@@ -552,9 +552,11 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 chartCanvas.Width = 270;
             if (chartCanvas.Height.ToString() == "NaN")
                 chartCanvas.Height = 250;
-            Point result = new Point();
-            result.X = (pt.X - this._option.XMin) * chartCanvas.Width / (this._option.XMax - this._option.XMin);
-            result.Y = chartCanvas.Height - (pt.Y - this._option.YMin) * chartCanvas.Height / (this._option.YMax - this._option.YMin);
+            Point result = new Point()
+            {
+                X = (pt.X - this._option.XMin) * chartCanvas.Width / (this._option.XMax - this._option.XMin),
+                Y = chartCanvas.Height - (pt.Y - this._option.YMin) * chartCanvas.Height / (this._option.YMax - this._option.YMin)
+            };
             return result;
         }
         private Point DeNormalizePoint(Point pt)
@@ -563,9 +565,11 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 chartCanvas.Width = 270;
             if (chartCanvas.Height.ToString() == "NaN")
                 chartCanvas.Height = 250;
-            Point result = new Point();
-            result.X = (pt.X * (this._option.XMax - this._option.XMin) / chartCanvas.Width) + this._option.XMin;
-            result.Y = ((chartCanvas.Height - pt.Y) * (this._option.YMax - this._option.YMin) + this._option.YMin * chartCanvas.Height) / chartCanvas.Height;
+            Point result = new Point()
+            {
+                X = (pt.X * (this._option.XMax - this._option.XMin) / chartCanvas.Width) + this._option.XMin,
+                Y = ((chartCanvas.Height - pt.Y) * (this._option.YMax - this._option.YMin) + this._option.YMin * chartCanvas.Height) / chartCanvas.Height
+            };
             return result;
         }
 
@@ -599,9 +603,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 {
                     foreach (ChartMenuItem menuItem in this._option.MenuItems)
                     {
-                        var item = new MenuItem();
-                        item.Header = menuItem.Header;
-                        item.Name = menuItem.Name;
+                        var item = new MenuItem() { Header = menuItem.Header, Name = menuItem.Name };
                         item.Click += Menu_Click;
                         _contextMenu.Items.Add(item);
                     }
