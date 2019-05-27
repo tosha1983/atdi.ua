@@ -37,18 +37,25 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 if ((@event.MeasTaskId>0) && (@event.SensorId >0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
                 {
-                    var loadMeasTask = new LoadMeasTask(this._dataLayer, this._logger);
-                    var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
-                    var loadTask = loadMeasTask.ReadTask(@event.MeasTaskId);
-                    var listMeasTask = saveMeasTask.CreateeasTaskSDRsApi(loadTask, @event.SensorName, this._environment.ServerInstance, @event.EquipmentTechId, @event.MeasTaskId, @event.SensorId, "New");
-                    for (int i=0; i< listMeasTask.Length; i++)
+                    try
                     {
-                        var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
-                        envelop.SensorName = @event.SensorName;
-                        envelop.SensorTechId = @event.EquipmentTechId;
-                        listMeasTask[i].SensorId = @event.SensorId;
-                        envelop.DeliveryObject = listMeasTask[i];
-                        _messagePublisher.Send(envelop);
+                        var loadMeasTask = new LoadMeasTask(this._dataLayer, this._logger);
+                        var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
+                        var loadTask = loadMeasTask.ReadTask(@event.MeasTaskId);
+                        var listMeasTask = saveMeasTask.CreateeasTaskSDRsApi(loadTask, @event.SensorName, this._environment.ServerInstance, @event.EquipmentTechId, @event.MeasTaskId, @event.SensorId, "New");
+                        for (int i = 0; i < listMeasTask.Length; i++)
+                        {
+                            var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
+                            envelop.SensorName = @event.SensorName;
+                            envelop.SensorTechId = @event.EquipmentTechId;
+                            listMeasTask[i].SensorId = @event.SensorId;
+                            envelop.DeliveryObject = listMeasTask[i];
+                            _messagePublisher.Send(envelop);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        this._logger.Exception(Contexts.PrimaryHandler, ex);
                     }
                 }
             }
