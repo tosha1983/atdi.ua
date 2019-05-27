@@ -631,6 +631,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             {
                                                 var freq = sector.Frequencies[d];
 
+                                                this._logger.Info(Contexts.ThisComponent, $"ChannalNumber-{freq.ChannalNumber};Frequency-{freq.Frequency};IdPlan-{freq.IdPlan};Id-{freq.Id}");
+
                                                 int? idSectorFreq = null;
                                                 var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
                                                 builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
