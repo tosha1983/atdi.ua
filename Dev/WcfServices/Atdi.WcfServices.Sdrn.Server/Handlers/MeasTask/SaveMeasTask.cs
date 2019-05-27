@@ -604,9 +604,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var sector = stationDataParam.Sectors[g];
 
                                         int? idSecForMeas = -1;
+                                        //this._logger.Info(Contexts.ThisComponent, $"AGL-{sector.AGL};Azimut-{sector.Azimut};BW-{sector.BW};ClassEmission-{sector.ClassEmission};EIRP-{sector.EIRP};IdSector-{sector.IdSector};idstationDataParam-{idstationDataParam}");
                                         var builderInsertSector = this._dataLayer.GetBuilder<MD.ISector>().Insert();
                                         builderInsertSector.SetValue(c => c.Agl, sector.AGL);
-                                        builderInsertSector.SetValue(c => c.Azimut, sector.Azimut);
+                                        if (sector.Azimut != 1E-99)
+                                        {
+                                            builderInsertSector.SetValue(c => c.Azimut, sector.Azimut);
+                                        }
                                         builderInsertSector.SetValue(c => c.Bw, sector.BW);
                                         builderInsertSector.SetValue(c => c.ClassEmission, sector.ClassEmission);
                                         builderInsertSector.SetValue(c => c.Eirp, sector.EIRP);
@@ -630,9 +634,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             for (int d = 0; d < sector.Frequencies.Length; d++)
                                             {
                                                 var freq = sector.Frequencies[d];
-
-                                                this._logger.Info(Contexts.ThisComponent, $"ChannalNumber-{freq.ChannalNumber};Frequency-{freq.Frequency};IdPlan-{freq.IdPlan};Id-{freq.Id}");
-
+                                                //this._logger.Info(Contexts.ThisComponent, $"ChannalNumber-{freq.ChannalNumber};Frequency-{freq.Frequency};IdPlan-{freq.IdPlan};Id-{freq.Id}");
                                                 int? idSectorFreq = null;
                                                 var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
                                                 builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
