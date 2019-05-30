@@ -52,12 +52,12 @@ namespace Atdi.Platform.Logging.EventsConsumers
             buffer.Append($".{timeString3.Substring(3)}");
 
             // the part of thread
-            var treadString = $" #{@event.ManagedThread:D4}";
+            var treadString = $" {@event.ManagedThread}";
             buffer.Append(treadString);
 
             // the part of event level
             var levelTitle = GetTitleByEventLevel(@event.Level);
-            buffer.Append($" [{levelTitle}]");
+            buffer.Append($" {levelTitle}");
 
             // the part of context
             buffer.Append(" " + this._resourceResolver.Resolve(@event.Context.Name));
@@ -84,13 +84,31 @@ namespace Atdi.Platform.Logging.EventsConsumers
             {
                 if (traceEvent is IBeginTraceEvent beginTraceEvent)
                 {
-                    buffer.Append($": Begin scope '{beginTraceEvent.ScopeData.Name}'");
+                    var scopeName = beginTraceEvent.ScopeData.Name?.ToString();
+                    if (string.IsNullOrEmpty(scopeName))
+                    {
+                        buffer.Append($": Begin");
+                    }
+                    else
+                    {
+                        buffer.Append($": Begin '{scopeName}'");
+                    }
+                        
                 }
                 else
                 {
                     if (traceEvent is IEndTraceEvent endTraceEvent)
                     {
-                        buffer.Append($": End scope '{endTraceEvent.ScopeData.Name}'");
+                        var scopeName = endTraceEvent.ScopeData.Name?.ToString();
+                        if (string.IsNullOrEmpty(scopeName))
+                        {
+                            buffer.Append($": End");
+                        }
+                        else
+                        {
+                            buffer.Append($": End '{endTraceEvent.ScopeData.Name}'");
+                        }
+                        
                     }
                     else
                     {
@@ -100,14 +118,14 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 if (traceEvent.Duration.HasValue)
                 {
                     var durationMsString = traceEvent.Duration.Value.TotalMilliseconds.ToString();
-                    var durationTksString = traceEvent.Duration.Value.Ticks.ToString();
+                    //var durationTksString = traceEvent.Duration.Value.Ticks.ToString();
 
-                    buffer.Append($" (+{durationMsString}ms/+{durationTksString}ts)");
+                    buffer.Append($" (+{durationMsString}ms)");
                 }
 
                 if (!string.IsNullOrEmpty(eventText))
                 {
-                    buffer.Append($" >> '{eventText}'");
+                    buffer.Append($" '{eventText}'");
                 }
             }
             else
@@ -154,21 +172,21 @@ namespace Atdi.Platform.Logging.EventsConsumers
             switch (level)
             {
                 case EventLevel.Trace:
-                    return "--Trace--";
+                    return "Trc";
                 case EventLevel.Debug:
-                    return "--Debug--";
+                    return "Dbg";
                 case EventLevel.Verbouse:
-                    return "Verbouse-";
+                    return "Vrb";
                 case EventLevel.Info:
-                    return "--Info---";
+                    return "Inf";
                 case EventLevel.Warning:
-                    return "--Warn---";
+                    return "Wrn";
                 case EventLevel.Error:
-                    return "--Error--";
+                    return "Err";
                 case EventLevel.Exception:
-                    return "Exception";
+                    return "Exp";
                 case EventLevel.Critical:
-                    return "Critical-";
+                    return "Crl";
                 default:
                     return "Unknown";
             }

@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Elements of signal spectrum mask
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class ElementsMask
     {
         /// <summary>

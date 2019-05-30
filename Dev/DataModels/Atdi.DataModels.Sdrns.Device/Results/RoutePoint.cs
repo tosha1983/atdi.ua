@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Presents point of route
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class RoutePoint: GeoLocation
     {
         /// <summary>

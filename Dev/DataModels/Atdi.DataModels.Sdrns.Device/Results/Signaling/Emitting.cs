@@ -9,6 +9,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// <summary>
     /// Базовый класс для обработки излучений.
     /// </summary>
+    [Serializable]
     public class Emitting
     {
         public double StartFrequency_MHz;

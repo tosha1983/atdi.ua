@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns
     /// Point geolocation parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class GeoLocation
     {
         /// <summary>

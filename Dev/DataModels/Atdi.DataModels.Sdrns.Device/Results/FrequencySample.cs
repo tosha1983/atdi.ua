@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Contains the results of signal level measurements on the defined frequency
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class FrequencySample
     {
         /// <summary>

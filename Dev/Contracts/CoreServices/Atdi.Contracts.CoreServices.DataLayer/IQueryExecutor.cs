@@ -29,6 +29,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int InsertSelect<TModelInsert,TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement);
 
+        //TPKResult Insert<TPKResult>(IQueryInsertStatement statements);
+
         void BeginTransaction();
 
         void CommitTransaction();

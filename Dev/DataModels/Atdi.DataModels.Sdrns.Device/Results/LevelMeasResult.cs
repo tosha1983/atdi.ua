@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Contains the signal level measurement result, obtained in one point from some transmitter
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class LevelMeasResult
     {
         /// <summary>
