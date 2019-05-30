@@ -9,6 +9,8 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
     public interface ITimeService
     {
         ITimeStamp TimeStamp { get;  }
+
+        long TimeCorrection { get; set; }
     }
 
     public interface ITimeStamp

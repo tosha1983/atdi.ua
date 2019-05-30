@@ -224,6 +224,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
     public class DummyTimeService : ITimeService
     {
         private readonly ITimeStamp _timeStamp;
+        private long _timeCorrection;
 
         public DummyTimeService()
         {
@@ -231,6 +232,18 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
 
         public ITimeStamp TimeStamp => this._timeStamp;
+
+        public long TimeCorrection
+        {
+            get
+            {
+                return Interlocked.Read(ref this._timeCorrection);
+            }
+            set
+            {
+                Interlocked.Exchange(ref this._timeCorrection, value);
+            }
+        }
     }
     class TimeStamp : ITimeStamp
     {
