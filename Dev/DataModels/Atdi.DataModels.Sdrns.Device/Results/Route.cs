@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Route during measurements
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class Route
     {
         /// <summary>

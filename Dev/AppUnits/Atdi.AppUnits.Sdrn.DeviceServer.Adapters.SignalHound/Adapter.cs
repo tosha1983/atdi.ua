@@ -58,40 +58,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 /// включем устройство
                 /// иницируем его параметрами сконфигурации
                 /// проверяем к чем оно готово
-                //Status = AdapterDriver.bbOpenDevice(ref _Device_ID);
-                int snac = int.Parse(_adapterConfig.SerialNumber);
-                bool err = StatusError(AdapterDriver.bbOpenDeviceBySerialNumber(ref _Device_ID, snac));
-                if (!err)
+
+                if (Connect(_adapterConfig.SerialNumber))
                 {
-                    throw new Exception("Error: Unable to open BB60. Status:" + AdapterDriver.bbGetStatusString(Status));
-                }
-                else
-                {
-                    Device_Type = AdapterDriver.bbGetDeviceName(_Device_ID);
-
-                    StatusError(AdapterDriver.bbGetSerialNumber(_Device_ID, ref Device_SerialNumber));
-                    Device_APIVersion = AdapterDriver.bbGetAPIString();
-                    if (Device_APIVersion != Device_APIVersionActual)
-                    {
-                        throw new Exception("Unsupported version of API SignalHound");
-                    }
-                    StatusError(AdapterDriver.bbGetFirmwareVersion(_Device_ID, ref Device_FirmwareVersion));
-                    if (Device_FirmwareVersion != Device_FirmwareVersionActual)
-                    {
-                        throw new Exception("Unsupported firmware version");
-                    }
-
-                    GetSystemInfo();
-                    SetTraceDetectorAndScale();
-                    SetFreqCentrSpan();
-                    SetRefATT();
-                    SetGain();
-                    SetRbwVbwSweepTimeRbwType();
-                    SetPortType();
-                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, 0));
-                    IsRuning = true;
-                    IdleState = true;
-
                     string filename = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + Device_SerialNumber + ".xml";
                     TAC = new CFG.ThisAdapterConfig() { };
                     if (!TAC.GetThisAdapterConfig(filename))
@@ -104,7 +73,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     {
                         MainConfig = TAC.Main;
                     }
-
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(MainConfig);
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
@@ -118,6 +86,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             #endregion
         }
+
+
 
         /// <summary>
         /// Метод вызывается контрллером когда необходимо выгрузит адаптер с памяти
@@ -161,14 +131,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     // что то меряем
                     if (IdleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
                     {
                         FreqStart = LPC.FreqStart(this, command.Parameter.FreqStart_Hz);
                         FreqStop = LPC.FreqStop(this, command.Parameter.FreqStop_Hz);
-                        StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
                     }
 
                     EN.Attenuator att = LPC.Attenuator(command.Parameter.Att_dB);
@@ -184,14 +154,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             RefLevel = command.Parameter.RefLevel_dBm;
                         }
 
-                        StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
                     }
 
                     EN.Gain gain = LPC.Gain(command.Parameter.PreAmp_dB);
                     if (gain != Gain)
                     {
                         Gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                        StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
                     }
 
                     if (command.Parameter.RBW_Hz < 0)
@@ -234,7 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         VBW = vbw;
                         SweepTime = (decimal)command.Parameter.SweepTime_s;
                         StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));
-
+                  
                     }
                     else
                     {
@@ -245,7 +215,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             RBW = rbw;
                             VBW = vbw;
                             SweepTime = (decimal)command.Parameter.SweepTime_s;
-                            StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));                            
+                            StatusErrorWithExecutionContext(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection), context);
                         }
                     }
 
@@ -260,7 +230,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         throw new Exception("TraceCount must be set greater than zero.");
                     }
                     LPC.DetectorType(this, command.Parameter.DetectorType);
-                    StatusError(AdapterDriver.bbConfigureAcquisition(_Device_ID, (uint)DetectorToSet, (uint)Scale));                    
+                    StatusErrorWithExecutionContext(AdapterDriver.bbConfigureAcquisition(_Device_ID, (uint)DetectorToSet, (uint)Scale), context);
 
                     TraceType = LPC.TraceType(command.Parameter.TraceType);
                     LevelUnit = LPC.LevelUnit(command.Parameter.LevelUnit);
@@ -270,8 +240,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         DeviceMode = EN.Mode.Sweeping;
                         FlagMode = EN.Flag.StreamIQ;
                     }
-                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode));
-                    
+                    StatusErrorWithExecutionContext(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
+
                     IdleState = true;
                     //Меряем
                     //Если TraceType ClearWrite то пушаем каждый результат
@@ -297,7 +267,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 }
                                 //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
                                 result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                                
+
 
                                 context.PushResult(result);
                             }
@@ -363,9 +333,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                         if (TraceCountToMeas == TraceCount)
                         {
-                            var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final);
-                            result.Freq_Hz = new double[FreqArr.Length];
-                            result.Level = new float[FreqArr.Length];
+                            var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
+                            {
+                                Freq_Hz = new double[FreqArr.Length],
+                                Level = new float[FreqArr.Length]
+                            };
                             for (int j = 0; j < FreqArr.Length; j++)
                             {
                                 result.Freq_Hz[j] = FreqArr[j];
@@ -380,7 +352,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (IdleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     // снимаем блокировку с текущей команды
@@ -405,7 +377,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     if (IdleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                 }
@@ -470,14 +442,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (IdleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
                     {
                         (FreqStart, FreqStop) = LPC.IQFreqStartStop(this, command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz);
-
-                        StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
                     }
 
                     EN.Attenuator att = LPC.Attenuator(command.Parameter.Att_dB);
@@ -492,25 +463,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             RefLevel = command.Parameter.RefLevel_dBm;
                         }
-                        StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
                     }
 
                     EN.Gain gain = LPC.Gain(command.Parameter.PreAmp_dB);
                     if (gain != Gain)
                     {
                         Gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                        StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
                     }
 
                     DownsampleFactor = LPC.IQDownsampleFactor(command.Parameter.BitRate_MBs, FreqSpan);
-                    StatusError(AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan));                    
+                    StatusErrorWithExecutionContext(AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan), context);
 
                     if (DeviceMode != EN.Mode.Streaming || FlagMode != EN.Flag.StreamIQ)
                     {
                         DeviceMode = EN.Mode.Streaming;
                         FlagMode = EN.Flag.StreamIQ;
                     }
-                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode));                    
+                    StatusErrorWithExecutionContext(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
 
                     (double BlockDuration, double ReceiveTime) = LPC.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
 
@@ -518,8 +489,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if ((command.Parameter.MandatoryPPS && MainConfig.AvailabilityPPS) || !command.Parameter.MandatoryPPS)
                     {
                         return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
-                        StatusError(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec));
-                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec), context);
+
                         IdleState = true;
 
                         //инициализация перед пуском, подготавливаемся к приему данных 
@@ -533,6 +504,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             //пушаем
                             context.PushResult(result);
+
+                            ///dell
+                            //string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(AppPath + "\\" + FreqCentr.ToString() + ".txt", false))
+                            //{
+                            //    for (int i = 0; i < result.iq_samples.Length; i++)
+                            //    {
+                            //        for (int j = 0; j < result.iq_samples[i].Length; j++)
+                            //        {
+                            //            file.Write(result.iq_samples[i][j].ToString("G")+";");
+                            //        }
+                            //    }
+                            //}
                         }
                     }
                     else
@@ -541,7 +525,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                     if (IdleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     context.Unlock();
@@ -558,7 +542,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     if (IdleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID));                        
+                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                 }
@@ -567,7 +551,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
-
                 // дальше кода быть не должно, освобождаем поток
             }
 
@@ -799,11 +782,108 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #endregion Param
 
         #region Private Method
+        private bool Connect(string SN)
+        {
+            bool res = false;
+            /// включем устройство
+            /// иницируем его параметрами сконфигурации
+            /// проверяем к чем оно готово
+
+            //Status = AdapterDriver.bbOpenDevice(ref _Device_ID);
+            int snac = int.Parse(SN);
+            bool err = StatusError(AdapterDriver.bbOpenDeviceBySerialNumber(ref _Device_ID, snac));
+            if (!err)
+            {
+                throw new Exception("Error: Unable to open BB60. Status:" + AdapterDriver.bbGetStatusString(Status));
+            }
+            else
+            {
+                Device_Type = AdapterDriver.bbGetDeviceName(_Device_ID);
+
+                StatusError(AdapterDriver.bbGetSerialNumber(_Device_ID, ref Device_SerialNumber));
+                Device_APIVersion = AdapterDriver.bbGetAPIString();
+                if (Device_APIVersion != Device_APIVersionActual)
+                {
+                    throw new Exception("Unsupported version of API SignalHound");
+                }
+                StatusError(AdapterDriver.bbGetFirmwareVersion(_Device_ID, ref Device_FirmwareVersion));
+                if (Device_FirmwareVersion != Device_FirmwareVersionActual)
+                {
+                    throw new Exception("Unsupported firmware version");
+                }
+
+                GetSystemInfo();
+                SetTraceDetectorAndScale();
+                SetFreqCentrSpan();
+                SetRefATT();
+                SetGain();
+                SetRbwVbwSweepTimeRbwType();
+                SetPortType();
+                StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, 0));
+                IsRuning = true;
+                IdleState = true;
+                res = true;
+            }
+            return res;
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="status"></param>
+        /// <param name="context"></param>
         /// <returns>true = NoErrore, false = AnyError</returns>
+        private bool StatusErrorWithExecutionContext(EN.Status status, IExecutionContext context)
+        {
+            Status = status;
+            bool res = true;
+            if (status != EN.Status.NoError)
+            {
+                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                res = false;
+                if (status == EN.Status.ADCOverflow) { RFOverload = 1; }
+                else { RFOverload = 0; }
+            }
+            //Приближенно при этих ошибках необходимо переподключить устройство, возможно еще какие-то есть
+            if (status == EN.Status.DeviceConnectionErr || status == EN.Status.DeviceInvalidErr)
+            {
+                //оповестим о проблемах с устройством, и перезапустим его
+                var result = new COMR.MesureTraceResult(0, CommandResultStatus.Ragged)
+                {
+                    DeviceStatus = COMR.Enums.DeviceStatus.StartReset
+                };
+                context.PushResult(result);
+                //отключим SignalHound по USB 
+                DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
+                Thread.Sleep(3000);//надо подождать пока система все сделает
+                //подключим SignalHound по USB 
+                DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
+                Thread.Sleep(3000);//надо подождать пока система все сделает
+
+                try
+                {
+                    if (Connect(_adapterConfig.SerialNumber))
+                    {
+                        //оповестим о завершении перезапуска устройства
+                        var result2 = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
+                        {
+                            DeviceStatus = COMR.Enums.DeviceStatus.FinishReset
+                        };
+                        context.PushResult(result2);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    _logger.Exception(Contexts.ThisComponent, exp);
+                    context.Abort(exp);
+                }
+            }
+            return res;
+        }/// <summary>
+         /// 
+         /// </summary>
+         /// <param name="status"></param>
+         /// <returns>true = NoErrore, false = AnyError</returns>
         private bool StatusError(EN.Status status)
         {
             Status = status;
@@ -816,13 +896,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 else { RFOverload = 0; }
             }
             //Приближенно при этих ошибках необходимо переподключить устройство, возможно еще какие-то есть
-            if (status == EN.Status.DeviceConnectionErr|| status == EN.Status.DeviceInvalidErr)
+            if (status == EN.Status.DeviceConnectionErr || status == EN.Status.DeviceInvalidErr)
             {
+                //var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.DeviceResetStarted);
+                //context.PushResult(result2);
+                //DeviceReset.SignalHoundBB60StatePrepared("16319373", false);
+                //Thread.Sleep(5000);
+                //DeviceReset.SignalHoundBB60StatePrepared("16319373", true);
+                //var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.DeviceResetFinished);
+
+                //Thread.Sleep(5000);
+                //context.PushResult(result2);
                 //Что-то что переподлючит устройство               
             }
             return res;
         }
-
 
         private void GetSystemInfo()
         {
@@ -907,7 +995,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureIO(_Device_ID, 0, (uint)EN.Port2.InTriggerRisingEdge));                
+                StatusError(AdapterDriver.bbConfigureIO(_Device_ID, 0, (uint)EN.Port2.InTriggerRisingEdge));
+                //StatusError(AdapterDriver.bbConfigureIO(_Device_ID, 1, (uint)EN.Port1.ExtRefIn));
             }
             #region Exception
             catch (Exception exp)
@@ -942,7 +1031,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             uint trace_len = 0;
             double bin_size = 0.0;
             double start_freq = 0.0;
-            StatusError(AdapterDriver.bbQueryTraceInfo(_Device_ID, ref trace_len, ref bin_size, ref start_freq));            
+            StatusError(AdapterDriver.bbQueryTraceInfo(_Device_ID, ref trace_len, ref bin_size, ref start_freq));
 
             FreqStep = (decimal)bin_size;
 
@@ -959,13 +1048,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             sweep_min = new float[trace_len];
 
             StatusError(AdapterDriver.bbFetchTrace_32f(_Device_ID, unchecked((int)trace_len), sweep_min, sweep_max));
-            
+
             if (Status == EN.Status.DeviceConnectionErr)
             {
                 res = false;
             }
             else
-            {                
+            {
                 SetTraceData((int)trace_len, sweep_min, sweep_max, (decimal)start_freq, (decimal)bin_size);
                 LastUpdate = DateTime.Now.Ticks;
             }
@@ -1284,6 +1373,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             // сформировано пустое место
         }
+        //public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
         private bool GetIQStream(ref COMR.MesureIQStreamResult IQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool WithPPS, bool JustWithSignal)
         {
             bool done = false;
@@ -1469,8 +1559,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 #region обработка полученных данных
                 if (ReceivedBlockWithErrors)
                 {
-                    IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged);
-                    IQStreamResult.iq_samples = new float[IQStopIndex - IQStartIndex][];
+                    IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
+                    {
+                        iq_samples = new float[IQStopIndex - IQStartIndex][]
+                    };
                     Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
                 }
                 else
@@ -1511,6 +1603,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion обработка полученных данных  
                 done = true;
+                //IQArr = new float[tempIQStream.IQData.Length * tempIQStream.IQData[0].Length];//del
+                //for (int i = 0; i < tempIQStream.IQData.Length; i++)//del
+                //{
+                //    Array.Copy(tempIQStream.IQData[i], 0, IQArr, i * tempIQStream.IQData[i].Length, tempIQStream.IQData[i].Length);//del
+                //}
             }
             return done;
         }
@@ -1615,7 +1712,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             return rpps;
         }
         #endregion Adapter Properties
-        #endregion Private Method
+#endregion Private Method
 
 
         private class TempIQData

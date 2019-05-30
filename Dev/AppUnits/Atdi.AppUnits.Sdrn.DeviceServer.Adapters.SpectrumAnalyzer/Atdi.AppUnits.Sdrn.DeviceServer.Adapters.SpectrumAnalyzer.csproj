@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,6 +53,10 @@
     <Compile Include="Adapter.cs" />
     <Compile Include="AdapterConfig.cs" />
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="AveragedTrace.cs" />
+    <Compile Include="Enums\Mode.cs" />
+    <Compile Include="Enums\Optimization.cs" />
+    <Compile Include="Enums\PowerRegister.cs" />
     <Compile Include="Enums\SweepType.cs" />
     <Compile Include="Enums\TraceDetector.cs" />
     <Compile Include="Enums\TraceType.cs" />

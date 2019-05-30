@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represent the bearing of signal with additional data. 
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class DirectionFindingData
     {
         /// <summary>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    [Serializable]
     public class SignalMask
     {
         public float[] Loss_dB;

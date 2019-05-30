@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Contains the result of signal bandwidth measurement
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class BandwidthMeasResult
     {
         /// <summary>
