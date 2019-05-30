@@ -45,6 +45,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             SubTaskStationId = -1;
             SensorId = -1;
             ResultId = -1;
+            int SensorIdTemp = -1;
+
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
 
             if (TaskId != null)
             {
@@ -74,11 +77,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 {
                     int SubTaskIdTemp = -1;
                     int SubTaskStationIdTemp = -1;
-                    int SensorIdTemp = -1;
                     int taskId = -1;
                     if (int.TryParse(TaskId, out taskId))
                     {
-                        var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                         var builderFromIMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
                         builderFromIMeasSubTaskSta.Select(c => c.Id, c => c.MEASSUBTASK.Id, c => c.SensorId, c => c.MEASSUBTASK.TimeStart);
                         builderFromIMeasSubTaskSta.Where(c => c.MEASSUBTASK.MEASTASK.Id, ConditionOperator.Equal, taskId);
@@ -101,25 +102,25 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                         SubTaskId = SubTaskIdTemp;
                         SubTaskStationId = SubTaskStationIdTemp;
                         SensorId = SensorIdTemp;
-
-                        if (SensorId == -1)
-                        {
-                            var builderISensor = this._dataLayer.GetBuilder<MD.ISensor>().From();
-                            builderISensor.Select(c => c.Id, c => c.Name, c => c.TechId);
-                            builderISensor.Where(c => c.Name, ConditionOperator.Equal, SensorName);
-                            builderISensor.Where(c => c.TechId, ConditionOperator.Equal, SensorTechId);
-                            queryExecuter.Fetch(builderISensor, reader =>
-                            {
-                                while (reader.Read())
-                                {
-                                    SensorIdTemp = reader.GetValue(c => c.Id);
-                                }
-                                return true;
-                            });
-                            SensorId = SensorIdTemp;
-                        }
                     }
                 }
+            }
+
+            if (SensorId == -1)
+            {
+                var builderISensor = this._dataLayer.GetBuilder<MD.ISensor>().From();
+                builderISensor.Select(c => c.Id, c => c.Name, c => c.TechId);
+                builderISensor.Where(c => c.Name, ConditionOperator.Equal, SensorName);
+                builderISensor.Where(c => c.TechId, ConditionOperator.Equal, SensorTechId);
+                queryExecuter.Fetch(builderISensor, reader =>
+                {
+                    while (reader.Read())
+                    {
+                        SensorIdTemp = reader.GetValue(c => c.Id);
+                    }
+                    return true;
+                });
+                SensorId = SensorIdTemp;
             }
         }
 
@@ -136,9 +137,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     bool isCancelled = false;
                     queryExecuter.BeginTransaction();
                     var resObject = incomingEnvelope.DeliveryObject;
+                    
 
-                    int SensorId; int SubMeasTaskId; int SubMeasTaskStationId; int resultId; int taskIdOut = -1;
-                    GetMeasTaskSDRIdentifier(resObject.ResultId, resObject.TaskId, incomingEnvelope.SensorName, incomingEnvelope.SensorTechId, out SubMeasTaskId, out SubMeasTaskStationId, out SensorId, out resultId, out taskIdOut);
+                    GetMeasTaskSDRIdentifier(resObject.ResultId, resObject.TaskId, incomingEnvelope.SensorName, incomingEnvelope.SensorTechId, out int SubMeasTaskId, out int SubMeasTaskStationId, out int SensorId, out int resultId, out int taskIdOut);
 
                     if (resObject.Measurement== DataModels.Sdrns.MeasurementType.MonitoringStations)
                     {
@@ -525,7 +526,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                             for (int n = 0; n < resObject.StationResults.Length; n++)
                             {
                                 int valInsResMeasStation = 0;
-                                int Idstation; int IdSector;
                                 StationMeasResult station = resObject.StationResults[n];
                                 var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStaRaw>().Insert();
                                 builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
@@ -533,11 +533,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                 builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
                                 builderInsertResMeasStation.SetValue(c => c.ResMeasId, valInsResMeas);
                                 builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
-                                if (int.TryParse(station.StationId, out Idstation))
+                                if (int.TryParse(station.StationId, out int Idstation))
                                 {
                                     builderInsertResMeasStation.SetValue(c => c.StationId, Idstation);
                                 }
-                                if (int.TryParse(station.SectorId, out IdSector))
+                                if (int.TryParse(station.SectorId, out int IdSector))
                                 {
                                     builderInsertResMeasStation.SetValue(c => c.SectorId, IdSector);
                                 }
@@ -596,12 +596,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                     }
 
 
-                                    int StationId;
                                     int idLinkRes = -1;
 
                                     var stationIdTemp = SensorId;
 
-                                    //if (int.TryParse(station.StationId, out StationId))
+                                    //if (int.TryParse(station.StationId, out int StationId))
                                     {
                                         var builderLinkResSensorRaw = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().From();
                                         builderLinkResSensorRaw.Select(c => c.Id);
@@ -622,7 +621,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                     {
                                         var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensorRaw>().Insert();
                                         builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
-                                        //if (int.TryParse(station.StationId, out StationId))
+                                        //if (int.TryParse(station.StationId, out int StationId))
                                         //{
                                             builderInsertLinkResSensor.SetValue(c => c.SensorId, stationIdTemp);
                                         //}

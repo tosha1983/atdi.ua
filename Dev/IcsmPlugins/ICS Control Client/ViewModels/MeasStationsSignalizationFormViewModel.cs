@@ -157,9 +157,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     if (station.Lat != IM.NullD && station.Lon != IM.NullD)
                     {
-                        var routePoints = new List<Location>();
-                        routePoints.Add(new Location(station.Lon, station.Lat));
-                        routePoints.Add(new Location(this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value));
+                        var routePoints = new List<Location>()
+                        {
+                            new Location(station.Lon, station.Lat),
+                            new Location(this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value)
+                        };
                         routes.Add(new MP.MapDrawingDataRoute() { Points = routePoints.ToArray(), Color = System.Windows.Media.Colors.Green, Fill = System.Windows.Media.Colors.Green });
                     }
                 }

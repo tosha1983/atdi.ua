@@ -218,7 +218,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.AutoDivisionEmitting = true;
             this._currentMeasTask.DifferenceMaxMax = 20;
             this._currentMeasTask.FiltrationTrace = true;
-            this._currentMeasTask.allowableExcess_dB = 10;
+            this._currentMeasTask.AllowableExcess_dB = 10;
             this._currentMeasTask.SignalizationNChenal = 50;
             this._currentMeasTask.SignalizationNCount = 1000000;
         }
@@ -329,8 +329,7 @@ namespace XICSM.ICSControlClient.ViewModels
                             var freqArray = FreqParams.Replace(';', ',').Split(',');
                             foreach (var freq in freqArray)
                             {
-                                double freqD;
-                                if (double.TryParse(freq, out freqD))
+                                if (double.TryParse(freq, out double freqD))
                                 {
                                     measFreqParam.MeasFreqs = measFreqParam.MeasFreqs.Concat(new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = freqD } }).ToArray();
                                 }
@@ -486,7 +485,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     },
                     SignalingMeasTaskParameters = new SDR.SignalingMeasTask()
                     {
-                        allowableExcess_dB = this._currentMeasTask.allowableExcess_dB,
+                        allowableExcess_dB = this._currentMeasTask.AllowableExcess_dB,
                         AutoDivisionEmitting = this._currentMeasTask.AutoDivisionEmitting,
                         CompareTraceJustWithRefLevels = this._currentMeasTask.CompareTraceJustWithRefLevels,
                         DifferenceMaxMax = this._currentMeasTask.DifferenceMaxMax,
@@ -608,9 +607,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (listFreq.Count > 0 && listLoss.Count > 0)
                 {
-                    var signal = new SDR.SignalMask();
-                    signal.Freq_kHz = listFreq.ToArray();
-                    signal.Loss_dB = listLoss.ToArray();
+                    var signal = new SDR.SignalMask() { Freq_kHz = listFreq.ToArray(), Loss_dB = listLoss.ToArray() };
                     refSig.SignalMask = signal;
                 }
             }
