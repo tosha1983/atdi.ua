@@ -244,6 +244,19 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 Interlocked.Exchange(ref this._timeCorrection, value);
             }
         }
+
+        public DateTime GetGnssTime()
+        {
+            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
+            return DateTime.Now; 
+
+        }
+
+        public DateTime GetGnssUtcTime()
+        {
+            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
+            return DateTime.UtcNow;
+        }
     }
     class TimeStamp : ITimeStamp
     {

@@ -31,5 +31,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 Interlocked.Exchange(ref this._timeCorrection, value);
             }
         }
+
+        public DateTime GetGnssTime()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime GetGnssUtcTime()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

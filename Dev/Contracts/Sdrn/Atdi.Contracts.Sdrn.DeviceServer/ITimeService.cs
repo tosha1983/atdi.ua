@@ -11,6 +11,21 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
         ITimeStamp TimeStamp { get;  }
 
         long TimeCorrection { get; set; }
+
+        /// <summary>
+        /// возвращается текущее системное время плюс поправка
+        /// </summary>
+        /// <returns></returns>
+        DateTime GetGnssTime();
+
+        /// <summary>
+        /// возвращается текущее системное время по UTC плюс поправка
+        /// </summary>
+        /// <returns></returns>
+        DateTime GetGnssUtcTime();
+
+
+
     }
 
     public interface ITimeStamp
